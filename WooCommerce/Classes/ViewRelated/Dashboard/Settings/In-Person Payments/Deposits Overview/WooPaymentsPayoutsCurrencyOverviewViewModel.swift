@@ -164,7 +164,7 @@ private extension WooPaymentsPayoutsCurrencyOverviewViewModel {
             comment: "String used when there's no date available for a payout type on the WooPayments Payouts View.")
         static let estimatedDateString = NSLocalizedString(
             "Est. %1$@",
-            comment: "String indicating that a payout date is an estimate. Shown on when WooPayments Payouts View. " +
+            comment: "String indicating that a payout date is an estimate. Shown on the WooPayments Payouts View. " +
             "%1$@ will be replaced with a locale-appropriate date string.")
     }
 }

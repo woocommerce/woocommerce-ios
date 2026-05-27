@@ -85,7 +85,7 @@ struct POSLockScreenModelTests {
 
         // Then
         #expect(sut.isLocked == true)
-        #expect(sut.pinEntryState == .error(message: "Incorrect PIN. Try again."))
+        #expect(sut.pinEntryState == .error(kind: .invalidPIN))
     }
 
     @Test func test_signIn_when_error_is_unknown_then_shows_generic_error() async {
@@ -98,7 +98,7 @@ struct POSLockScreenModelTests {
 
         // Then
         #expect(sut.isLocked == true)
-        #expect(sut.pinEntryState == .error(message: "Something went wrong. Try again."))
+        #expect(sut.pinEntryState == .error(kind: .generic))
     }
 
     private func makeStaff() -> POSStaff {

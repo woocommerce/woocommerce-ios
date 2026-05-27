@@ -9,19 +9,25 @@ final class MockPOSAccessSession: POSAccessSession {
     var isLocked: Bool
     var hasAnyPINs: Bool
     var signInResult: Result<POSStaff, POSAuthError>
+    var managerApprovalResult: Result<Void, POSAuthError>
     var signInPINs: [String] = []
+    var managerApprovalPINs: [String] = []
+    var managerApprovalCapabilities: [POSCapability] = []
     var onSignIn: (() -> Void)?
+    var onManagerApproval: (() -> Void)?
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
          hasAnyPINs: Bool = true,
          signInResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(displayName: "Maya", role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-         )) {
+         ),
+         managerApprovalResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
         self.isLocked = isLocked
         self.hasAnyPINs = hasAnyPINs
         self.signInResult = signInResult
+        self.managerApprovalResult = managerApprovalResult
     }
 
     func allows(_ capability: POSCapability) -> Bool {
@@ -41,7 +47,18 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {}
+    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+        managerApprovalPINs.append(pin)
+        managerApprovalCapabilities.append(capability)
+        onManagerApproval?()
+
+        switch managerApprovalResult {
+        case .success:
+            break
+        case .failure(let error):
+            throw error
+        }
+    }
 
     func lock() {
         isLocked = true

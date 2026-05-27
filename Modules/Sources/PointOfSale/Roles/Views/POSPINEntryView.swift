@@ -20,14 +20,7 @@ struct POSPINEntryView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            VStack(spacing: POSSpacing.medium) {
-                dotsRow
-                messageArea
-            }
-            numpad
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        content
         .onAppear { handleStateChange(state) }
         .onChange(of: state) { _, newState in
             handleStateChange(newState)
@@ -49,6 +42,26 @@ private extension POSPINEntryView {
         return false
     }
 
+    var content: some View {
+        VStack(spacing: Self.contentSpacing) {
+            statusRow
+                .frame(maxWidth: .infinity, alignment: .center)
+            numpad
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    var statusRow: some View {
+        switch state {
+        case .lockout(let until):
+            lockoutCountdown(until: until)
+        case .idle, .loading, .error:
+            dotsRow
+        }
+    }
+
     var dotsRow: some View {
         TimelineView(.animation(paused: !isLoading)) { context in
             HStack(spacing: POSSpacing.medium) {
@@ -62,6 +75,7 @@ private extension POSPINEntryView {
             .accessibilityLabel(Localization.dotsAccessibilityLabel)
             .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
+        .frame(height: Constants.statusRowHeight)
     }
 
     func dot(filled: Bool, yOffset: CGFloat) -> some View {
@@ -83,39 +97,25 @@ private extension POSPINEntryView {
         return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
     }
 
-    @ViewBuilder
-    var messageArea: some View {
-        Group {
-            switch state {
-            case .idle, .loading:
-                Color.clear
-            case .error(let message):
-                statusMessage(message)
-            case .lockout(let until):
-                lockoutCountdown(until: until)
-            }
-        }
-        .frame(minHeight: Constants.messageAreaHeight)
-        .fixedSize(horizontal: false, vertical: true)
-    }
-
-    func statusMessage(_ text: String) -> some View {
+    func lockoutMessage(_ text: String) -> some View {
         Text(text)
             .font(.posBodyMediumRegular())
             .foregroundColor(.posError)
             .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minHeight: Constants.statusRowHeight)
     }
 
     func lockoutCountdown(until date: Date) -> some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
-            statusMessage(helper.lockoutMessage(remainingSeconds: helper.remainingLockoutSeconds(until: date, now: context.date)))
+            lockoutMessage(helper.lockoutMessage(remainingSeconds: helper.remainingLockoutSeconds(until: date, now: context.date)))
         }
     }
 
     var numpad: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(spacing: Constants.keySpacing) {
             ForEach(Constants.rows, id: \.self) { row in
-                HStack(spacing: POSSpacing.medium) {
+                HStack(spacing: Constants.keySpacing) {
                     ForEach(row, id: \.self) { key in
                         keyButton(for: key)
                     }
@@ -185,12 +185,13 @@ private extension POSPINEntryView {
     // Parent drives state per attempt (e.g. via .loading) so a repeated failure re-animates, and exits .lockout once the deadline passes.
     func handleStateChange(_ newState: POSPINEntryState) {
         switch newState {
-        case .error:
+        case .error(let kind):
             enteredPIN = ""
             haptics.attemptFailed()
             withAnimation(.linear(duration: Constants.shakeDuration)) {
                 shakeAmount += 1
             }
+            AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
         case .idle:
             enteredPIN = ""
         case .loading, .lockout:
@@ -220,9 +221,11 @@ private struct ShakeEffect: GeometryEffect {
 private extension POSPINEntryView {
     enum Constants {
         static let dotSize: CGFloat = 22
+        static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
         static let keySize: CGFloat = 72
-        static let messageAreaHeight: CGFloat = 40
+        static let keySpacing: CGFloat = POSSpacing.medium
+        static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4
         static let shakeDuration: TimeInterval = 0.4
         static let waveHeight: CGFloat = 6
@@ -261,6 +264,32 @@ private extension POSPINEntryView {
         static func dotsAccessibilityValue(entered: Int, total: Int) -> String {
             String.localizedStringWithFormat(dotsAccessibilityValueFormat, entered, total)
         }
+        static let invalidPINMessage = NSLocalizedString(
+            "pos.pinEntry.error.invalidPIN",
+            value: "Incorrect PIN. Try again.",
+            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+        )
+        static let genericErrorMessage = NSLocalizedString(
+            "pos.pinEntry.error.generic",
+            value: "Something went wrong. Try again.",
+            comment: "VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
+        )
+        static func message(for kind: POSPINErrorKind) -> String {
+            switch kind {
+            case .invalidPIN: invalidPINMessage
+            case .generic: genericErrorMessage
+            }
+        }
+    }
+}
+
+extension POSPINEntryView {
+    static let contentWidth: CGFloat = 420
+    static let contentSpacing: CGFloat = POSSpacing.xLarge
+    static let titleToPINSpacing: CGFloat = POSSpacing.large
+
+    static var preferredHeight: CGFloat {
+        Constants.statusRowHeight + contentSpacing + Constants.keypadHeight
     }
 }
 
@@ -274,7 +303,7 @@ private extension POSPINEntryView {
 }
 
 #Preview("Error") {
-    POSPINEntryView(state: .error(message: "Incorrect PIN. Try again."), onComplete: { _ in })
+    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in })
         .padding()
         .background(Color.posSurfaceContainerLow)
 }
@@ -291,13 +320,12 @@ private extension POSPINEntryView {
         .background(Color.posSurfaceContainerLow)
 }
 
-
 #Preview("Interactive (wrong PIN)") {
     @Previewable @State var state: POSPINEntryState = .idle
     POSPINEntryView(state: state, onComplete: { _ in
         state = .loading
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            state = .error(message: "Incorrect PIN. Try again.")
+            state = .error(kind: .invalidPIN)
         }
     })
     .padding()

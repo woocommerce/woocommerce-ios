@@ -121,7 +121,7 @@ struct POSPINEntryViewHelperTests {
     @Test func test_isInputEnabled_when_idle_or_error_then_true() {
         // Given / When / Then
         #expect(helper.isInputEnabled(for: .idle) == true)
-        #expect(helper.isInputEnabled(for: .error(message: "Incorrect PIN")) == true)
+        #expect(helper.isInputEnabled(for: .error(kind: .invalidPIN)) == true)
     }
 
     @Test func test_isInputEnabled_when_lockout_or_loading_then_false() {

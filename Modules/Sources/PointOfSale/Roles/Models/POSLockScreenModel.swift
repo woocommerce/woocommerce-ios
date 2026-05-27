@@ -46,6 +46,10 @@ final class POSLockScreenModel {
         guard case .lockout = pinEntryState else { return }
         pinEntryState = .idle
     }
+
+    func refreshPINStatus() async {
+        await session.refreshPINStatus()
+    }
 }
 
 private extension POSLockScreenModel {

@@ -35,6 +35,9 @@ struct POSLockScreenView: View {
             .frame(maxWidth: POSPINEntryView.contentWidth)
             .padding(POSPadding.xxLarge)
         }
+        .task {
+            await model.refreshPINStatus()
+        }
     }
 }
 

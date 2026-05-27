@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import struct Networking.POSStaffMember
 import KeychainAccess
@@ -19,21 +20,27 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
         self.keychain = Keychain(service: service)
     }
 
+    // Returns nil for both "absent" and "locked"; callers tolerate stale-cache.
     func string(forKey key: String) -> String? {
         try? keychain.get(key)
     }
 
     func setString(_ value: String?, forKey key: String) {
-        if let value {
-            try? keychain.set(value, key: key)
-        } else {
-            try? keychain.remove(key)
+        do {
+            if let value {
+                try keychain.set(value, key: key)
+            } else {
+                try keychain.remove(key)
+            }
+        } catch {
+            DDLogError("POSStaffCache keychain write failed for key=\(key): \(error)")
         }
     }
 }
 
 /// In-memory `POSStaffKeyValueStorage` for tests.
 ///
+/// Test-only stub. Single-threaded use under main-actor-isolated test suites; not safe for concurrent access.
 final class InMemoryKeyValueStorage: POSStaffKeyValueStorage, @unchecked Sendable {
     private var store: [String: String] = [:]
 
@@ -46,6 +53,9 @@ final class InMemoryKeyValueStorage: POSStaffKeyValueStorage, @unchecked Sendabl
 /// Per-site cache of the `/staff` response, encoded as JSON in Keychain. Tracks `lastFetched`
 /// so `DefaultPOSAccessSession.refreshPINStatus()` can apply a 30s soft TTL.
 ///
+/// Per-site cache of the `/staff` response. Reads/writes flow through the injected `POSStaffKeyValueStorage`.
+/// `@unchecked Sendable` is sound because the default `KeychainPOSStaffStorage` serializes via the system Keychain,
+/// and the test stub is used only under main-actor isolation.
 final class POSStaffCache: @unchecked Sendable {
     private let storage: POSStaffKeyValueStorage
     private let now: @Sendable () -> Date
@@ -69,6 +79,8 @@ final class POSStaffCache: @unchecked Sendable {
         guard let data = try? JSONEncoder().encode(staff),
               let json = String(data: data, encoding: .utf8) else { return }
         storage.setString(json, forKey: staffKey(siteID: siteID))
+        // Timestamp stored as hex bit-pattern of TimeIntervalSinceReferenceDate so save/load round-trips losslessly.
+        // String(Double) and ISO8601 alternatives both lose sub-second precision and break the lastFetched equality check.
         let ref = now().timeIntervalSinceReferenceDate
         storage.setString(String(ref.bitPattern, radix: 16), forKey: timestampKey(siteID: siteID))
     }

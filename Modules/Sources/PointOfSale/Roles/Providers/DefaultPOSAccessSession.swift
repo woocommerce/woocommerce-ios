@@ -104,5 +104,6 @@ final class DefaultPOSAccessSession: POSAccessSession {
         hasAnyPINs = false
         currentStaff = nil
         isLocked = true
+        flagDisabledServerSide = false
     }
 }

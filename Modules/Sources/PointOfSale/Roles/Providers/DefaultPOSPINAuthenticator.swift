@@ -75,7 +75,8 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     private func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
         guard let saltData = Data(base64Encoded: details.salt),
               let expectedHash = Data(base64Encoded: details.hash),
-              let pinData = pin.data(using: .utf8) else {
+              let pinData = pin.data(using: .utf8),
+              let iterations = UInt32(exactly: details.iterations) else {
             return false
         }
         var derived = [UInt8](repeating: 0, count: expectedHash.count)
@@ -88,7 +89,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
                     saltBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
                     saltData.count,
                     CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256),
-                    UInt32(details.iterations),
+                    iterations,
                     &derived,
                     derived.count
                 )
@@ -110,7 +111,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     // MARK: - POSStaff construction
 
     private func staff(from member: POSStaffMember) -> POSStaff {
-        let posCaps = Set(member.capabilities.compactMap { (key, granted) -> String? in
+        let posCaps = Set(member.capabilities.compactMap { key, granted -> String? in
             guard granted, POSCapability(rawValue: key) != nil else { return nil }
             return key
         })

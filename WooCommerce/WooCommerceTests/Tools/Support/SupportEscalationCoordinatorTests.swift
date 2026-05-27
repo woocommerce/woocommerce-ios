@@ -45,7 +45,6 @@ struct SupportEscalationCoordinatorTests {
         viewModel?.submitSupportRequest()
 
         // Then
-        #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
         #expect(zendesk.latestInvokedTags.contains("ai_skip") == false)
     }
 

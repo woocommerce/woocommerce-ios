@@ -43,12 +43,13 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private func showSupportChat() {
         var viewModelHolder: SupportChatViewModel?
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
                                             transcript: transcript,
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
+                                            hasReceivedBotResponse: hasReceivedBotResponse,
                                             onTicketCreated: { [weak viewModelHolder] in
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
@@ -63,6 +64,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
@@ -75,7 +77,8 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                                        transcript: transcript,
                                                        supportAreaInfo: supportAreaInfo,
                                                        entryPoint: entryPoint,
-                                                       siteAddress: viewModel.siteURL.absoluteString)
+                                                       siteAddress: viewModel.siteURL.absoluteString,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {

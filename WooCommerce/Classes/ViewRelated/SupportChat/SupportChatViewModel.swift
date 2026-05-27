@@ -250,7 +250,8 @@ final class SupportChatViewModel {
         _ chatID: Int64?,
         _ transcript: String,
         _ supportAreaInfo: SupportAreaInfo?,
-        _ entryPoint: EntryPoint
+        _ entryPoint: EntryPoint,
+        _ hasReceivedBotResponse: Bool
     ) -> Void
 
     // MARK: - Private Properties
@@ -746,7 +747,7 @@ final class SupportChatViewModel {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint, hasRemoteBotResponse)
     }
 
     private func generateTranscript() -> String {
@@ -990,6 +991,10 @@ final class SupportChatViewModel {
 
     private var latestBotResponse: ChatMessage? {
         messages.last { $0.role == .bot && $0.messageID != nil }
+    }
+
+    private var hasRemoteBotResponse: Bool {
+        messages.contains { $0.role == .bot && $0.messageID != nil }
     }
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,

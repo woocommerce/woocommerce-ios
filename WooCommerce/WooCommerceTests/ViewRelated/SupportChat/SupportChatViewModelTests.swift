@@ -6,7 +6,7 @@ import enum Networking.NetworkError
 
 @MainActor
 struct SupportChatViewModelTests {
-    private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _ in }
+    private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
     // MARK: - Greeting Tests
 
@@ -148,7 +148,7 @@ struct SupportChatViewModelTests {
         let sut = makeSUT(
             entryPoint: .helpAndSupport,
             analyticsProvider: analyticsProvider,
-            onContactHumanSupport: { _, _, _, entryPoint in
+            onContactHumanSupport: { _, _, _, entryPoint, _ in
                 didContactHumanSupport = true
                 receivedEntryPoint = entryPoint
             }
@@ -885,7 +885,7 @@ struct SupportChatViewModelTests {
         let sut = SupportChatViewModel(
             entryPoint: .preLogin,
             stores: stores,
-            onContactHumanSupport: { chatID, _, _, _ in
+            onContactHumanSupport: { chatID, _, _, _, _ in
                 receivedChatID = chatID
             }
         )
@@ -898,6 +898,47 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(receivedChatID == chatID)
+    }
+
+    @Test func contactHumanSupport_before_bot_response_passes_hasReceivedBotResponse_false() {
+        // Given
+        var receivedHasBotResponse: Bool?
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            onContactHumanSupport: { _, _, _, _, hasReceivedBotResponse in
+                receivedHasBotResponse = hasReceivedBotResponse
+            }
+        )
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedHasBotResponse == false)
+    }
+
+    @Test func contactHumanSupport_after_bot_response_passes_hasReceivedBotResponse_true() {
+        // Given
+        var receivedHasBotResponse: Bool?
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            completeSendMessageSuccessfully(action)
+        }
+        let sut = SupportChatViewModel(
+            entryPoint: .preLogin,
+            stores: stores,
+            onContactHumanSupport: { _, _, _, _, hasReceivedBotResponse in
+                receivedHasBotResponse = hasReceivedBotResponse
+            }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(receivedHasBotResponse == true)
     }
 
     @Test func contactHumanSupport_when_prefetched_systemStatusReport_then_passes_it_in_supportAreaInfo() async {
@@ -943,7 +984,7 @@ struct SupportChatViewModelTests {
             entryPoint: .connectivityTool,
             stores: stores,
             systemStatusReport: prefetchedReport,
-            onContactHumanSupport: { _, _, supportAreaInfo, _ in
+            onContactHumanSupport: { _, _, supportAreaInfo, _, _ in
                 receivedSupportAreaInfo = supportAreaInfo
             }
         )
@@ -2018,7 +2059,7 @@ struct SupportChatViewModelTests {
         stores: StoresManager? = nil,
         diagnosticsService: SupportDiagnosticsServicing? = nil,
         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
-        onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _ in },
+        onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in },
         onStartJetpackSetup: @escaping () -> Void = {},
         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
         onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }

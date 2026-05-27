@@ -30,6 +30,7 @@ final class SupportEscalationCoordinator {
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
     private var escalationSiteAddress: String?
+    private var hasReceivedBotResponse = true
 
     /// Creates a new coordinator.
     ///
@@ -74,9 +75,11 @@ final class SupportEscalationCoordinator {
                           transcript: String,
                           supportAreaInfo: SupportAreaInfo?,
                           entryPoint: SupportChatViewModel.EntryPoint,
-                          siteAddress: String? = nil) {
+                          siteAddress: String? = nil,
+                          hasReceivedBotResponse: Bool = true) {
         self.chatID = chatID
         self.escalationSiteAddress = siteAddress
+        self.hasReceivedBotResponse = hasReceivedBotResponse
 
         guard let supportAreaInfo else {
             showSupportForm(transcript: transcript, supportAreaInfo: nil, entryPoint: entryPoint)
@@ -229,7 +232,7 @@ final class SupportEscalationCoordinator {
     }
 
     private func additionalTags(for supportAreaInfo: SupportAreaInfo?) -> [String] {
-        var tags = Tags.additionalTags
+        var tags = hasReceivedBotResponse ? Tags.additionalTags : []
         if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
             tags.append(topic)
         }

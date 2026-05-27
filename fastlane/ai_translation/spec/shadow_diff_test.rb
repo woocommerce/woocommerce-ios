@@ -81,6 +81,24 @@ class ShadowDiffCategorizeTest < Minitest::Test
   def test_extract_placeholders_returns_empty_for_text_without_placeholders
     assert_empty WooAiTranslation::ShadowDiff.extract_placeholders('plain text here')
   end
+
+  def test_extract_placeholders_includes_literal_percent_token
+    # Given a string with the literal-percent token `%%`. Dropping it desyncs
+    # printf parsing, so it MUST be counted as a placeholder.
+    result = WooAiTranslation::ShadowDiff.extract_placeholders('%.0f%% complete')
+
+    # Then both the `%.0f` printf token AND the literal `%%` appear.
+    assert_equal ['%%', '%.0f'], result
+  end
+
+  def test_placeholder_mismatch_when_ai_drops_literal_percent
+    # Reproduces Codex round-3 finding: `%%` was not in the regex, so an AI
+    # translation that dropped a literal-percent (corrupting printf parsing)
+    # used to fall through to `substantive` instead of being flagged as a
+    # hard-fail placeholder_mismatch.
+    assert_equal :placeholder_mismatch,
+                 categorize('%.0f%% complete', '%.0f%% abgeschlossen', '%.0f% abgeschlossen')
+  end
 end
 
 class ShadowDiffSamplingTest < Minitest::Test
@@ -144,6 +162,37 @@ class ShadowDiffSamplingTest < Minitest::Test
     first = WooAiTranslation::ShadowDiff.sample_for_worksheet(entries, seed: 42).map(&:key)
     second = WooAiTranslation::ShadowDiff.sample_for_worksheet(entries, seed: 99).map(&:key)
     refute_equal first, second
+  end
+
+  def test_render_worksheet_passes_seed_through_to_sample_selection
+    # Codex round-3 finding: the CLI calls sample_for_worksheet with the
+    # user's seed to know which entries to feed the AI judge, but
+    # render_worksheet used to call sample_for_worksheet AGAIN with the
+    # default seed (42) — so the rendered rows and the judged entries
+    # were different samples on any --seed != 42. This test pins that the
+    # seed parameter threads through to the underlying sampling.
+    entries = (1..1000).map { |i| make_entry("s#{i}", :substantive) }
+    locale_result = WooAiTranslation::ShadowDiff::LocaleResult.new(locale: 'de', diff_entries: entries)
+
+    # When we render the worksheet with seed=99
+    md = WooAiTranslation::ShadowDiff.render_worksheet(locale_result, seed: 99)
+
+    # And we compute what the seed=99 sample would be directly
+    sampled_keys = WooAiTranslation::ShadowDiff
+                   .sample_for_worksheet(entries, seed: 99)
+                   .map(&:key)
+
+    # Then EVERY sampled key appears in the rendered worksheet — and the
+    # rendered keys are NOT the default-seed (42) sample.
+    sampled_keys.each { |k| assert_includes md, k }
+    default_seed_keys = WooAiTranslation::ShadowDiff
+                        .sample_for_worksheet(entries, seed: 42)
+                        .map(&:key)
+    # Reasonable confidence that seed=99 and seed=42 picked different
+    # samples (overlap will exist for any random sample but should be
+    # well under 100%).
+    overlap = (sampled_keys & default_seed_keys).size
+    assert overlap < sampled_keys.size, 'seed=99 and seed=42 samples should differ'
   end
 end
 

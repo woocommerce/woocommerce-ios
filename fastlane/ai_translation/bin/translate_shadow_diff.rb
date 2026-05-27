@@ -158,10 +158,16 @@ options[:locales].each do |locale|
     advisory = ai_judge.judge_all(sample)
   end
 
-  # Write worksheet + summary.
+  # Write worksheet + summary. Pass through the seed so the worksheet rows
+  # are the same sample we (optionally) ran the AI judge on; otherwise the
+  # advisory column would be sparse and tokens would be wasted on entries
+  # the reviewer never sees.
   worksheet_path = File.join(options[:output], "#{locale}-worksheet.md")
   summary_path = File.join(options[:output], "#{locale}-summary.md")
-  File.write(worksheet_path, WooAiTranslation::ShadowDiff.render_worksheet(locale_result, ai_judge_advisory: advisory))
+  File.write(
+    worksheet_path,
+    WooAiTranslation::ShadowDiff.render_worksheet(locale_result, ai_judge_advisory: advisory, seed: options[:seed])
+  )
   File.write(summary_path, WooAiTranslation::ShadowDiff.render_summary(locale_result))
 
   summaries << locale_result.summary.merge(locale: locale)

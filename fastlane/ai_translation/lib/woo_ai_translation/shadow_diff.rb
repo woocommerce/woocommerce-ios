@@ -44,8 +44,14 @@ module WooAiTranslation
     # change worth human attention.
     LENGTH_SIGNIFICANT_RATIO = 0.20
 
-    # iOS .strings placeholder syntax: %@, %d, %1$@, %2$d, %ld, %lld, %.0f, etc.
-    PLACEHOLDER_RE = /%(?:\d+\$)?[@dxXosfFiluL.0-9]+/
+    # iOS .strings placeholder syntax. Two flavors:
+    #   - Literal percent: `%%` — rendered as a single `%`. MUST be preserved
+    #     verbatim across translations (dropping it desyncs printf parsing).
+    #     Listed first in the alternation so the regex matches it before the
+    #     printf-token branch tries (and fails — `[@dxXos…]+` doesn't accept
+    #     `%`, so without the `%%` arm we silently miss it).
+    #   - Printf token: %@, %d, %1$@, %2$d, %ld, %lld, %.0f, etc.
+    PLACEHOLDER_RE = /%%|%(?:\d+\$)?[@dxXosfFiluL.0-9]+/
 
     # Sampling policy for the reviewer worksheet. Tier 2 (the human reviewer)
     # reviews 100% of these buckets:
@@ -145,9 +151,14 @@ module WooAiTranslation
     # Render a per-locale reviewer worksheet as Markdown. The reviewer adds
     # their judgment in the verdict column (`[ ] AI better / [ ] equivalent /
     # [ ] GP better`) and saves the file alongside their notes.
-    def self.render_worksheet(locale_result, ai_judge_advisory: nil)
+    #
+    # `seed` controls the random sample selection — MUST match the seed used
+    # for `sample_for_worksheet` when building the AI-judge advisory, or the
+    # advisory column will be sparse (judge ran on different entries than
+    # the worksheet renders).
+    def self.render_worksheet(locale_result, ai_judge_advisory: nil, seed: 42)
       header_lines = render_worksheet_header(locale_result)
-      table_lines = render_worksheet_table(locale_result, ai_judge_advisory: ai_judge_advisory)
+      table_lines = render_worksheet_table(locale_result, ai_judge_advisory: ai_judge_advisory, seed: seed)
       (header_lines + table_lines).join("\n")
     end
 
@@ -188,8 +199,8 @@ module WooAiTranslation
       ]
     end
 
-    def self.render_worksheet_table(locale_result, ai_judge_advisory: nil)
-      entries = sample_for_worksheet(locale_result.diff_entries)
+    def self.render_worksheet_table(locale_result, ai_judge_advisory: nil, seed: 42)
+      entries = sample_for_worksheet(locale_result.diff_entries, seed: seed)
       cols = base_columns
       cols << '| Judge (advisory) ' unless ai_judge_advisory.nil?
       cols << '| Verdict | Reviewer notes |'

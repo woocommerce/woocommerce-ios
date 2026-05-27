@@ -69,7 +69,8 @@ final class POSStaffCache: @unchecked Sendable {
         guard let data = try? JSONEncoder().encode(staff),
               let json = String(data: data, encoding: .utf8) else { return }
         storage.setString(json, forKey: staffKey(siteID: siteID))
-        storage.setString(String(now().timeIntervalSince1970), forKey: timestampKey(siteID: siteID))
+        let ref = now().timeIntervalSinceReferenceDate
+        storage.setString(String(ref.bitPattern, radix: 16), forKey: timestampKey(siteID: siteID))
     }
 
     func clear(siteID: Int64) {
@@ -83,8 +84,9 @@ final class POSStaffCache: @unchecked Sendable {
 
     func lastFetched(siteID: Int64) -> Date? {
         guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
-              let interval = Double(raw) else { return nil }
-        return Date(timeIntervalSince1970: interval)
+              let bitPattern = UInt64(raw, radix: 16) else { return nil }
+        let ref = Double(bitPattern: bitPattern)
+        return Date(timeIntervalSinceReferenceDate: ref)
     }
 
     private func staffKey(siteID: Int64) -> String { "staff.\(siteID)" }

@@ -9,17 +9,25 @@ struct POSLockScreenOverlay<Content: View>: View {
         self._model = State(initialValue: POSLockScreenModel(session: session))
     }
 
+    private var shouldPresentLockScreen: Bool {
+        // No-PIN stores have no security boundary to enforce - skip the lock screen entirely
+        // so the device admin can operate POS without setup. Matches the M1 design's
+        // "no PINs => no gating" rule applied symmetrically to capability checks.
+        model.isLocked && model.hasAnyPINs
+    }
+
     var body: some View {
         content
-            .disabled(model.isLocked)
-            .accessibilityHidden(model.isLocked)
+            .disabled(shouldPresentLockScreen)
+            .accessibilityHidden(shouldPresentLockScreen)
             .overlay {
-                if model.isLocked {
+                if shouldPresentLockScreen {
                     POSLockScreenView(model: model)
                         .transition(.opacity)
                 }
             }
-            .animation(.easeInOut(duration: POSLockScreenOverlayConstants.animationDuration), value: model.isLocked)
+            .animation(.easeInOut(duration: POSLockScreenOverlayConstants.animationDuration),
+                       value: shouldPresentLockScreen)
     }
 }
 

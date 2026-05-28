@@ -18,6 +18,29 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .idle)
     }
 
+    @Test func test_hasAnyPINs_when_session_has_pins_then_true() {
+        // Given
+        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: true)
+
+        // When
+        let sut = POSLockScreenModel(session: session)
+
+        // Then - the overlay uses this to decide whether to present at all
+        #expect(sut.hasAnyPINs == true)
+    }
+
+    @Test func test_hasAnyPINs_when_session_has_no_pins_then_false() {
+        // Given
+        let session = MockPOSAccessSession(isLocked: true, hasAnyPINs: false)
+
+        // When
+        let sut = POSLockScreenModel(session: session)
+
+        // Then - lock screen would be suppressed even though isLocked is true
+        #expect(sut.hasAnyPINs == false)
+        #expect(sut.isLocked == true)
+    }
+
     @Test func test_sessionState_when_session_locks_then_model_updates() async {
         // Given
         let session = MockPOSAccessSession(isLocked: false)

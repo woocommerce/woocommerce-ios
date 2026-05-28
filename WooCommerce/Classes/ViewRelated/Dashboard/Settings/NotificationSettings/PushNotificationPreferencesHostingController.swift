@@ -3,10 +3,14 @@ import Yosemite
 
 final class PushNotificationPreferencesHostingController: UIHostingController<PushNotificationPreferencesView> {
     private let viewModel: PushNotificationPreferencesViewModel
+    private let siteID: Int64
+    private let stores: StoresManager
 
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
         let viewModel = PushNotificationPreferencesViewModel(siteID: siteID, stores: stores)
         self.viewModel = viewModel
+        self.siteID = siteID
+        self.stores = stores
         super.init(rootView: PushNotificationPreferencesView(viewModel: viewModel))
         // Set after `super.init` so the closures can capture `self` weakly.
         rootView.onNewOrderTapped = { [weak self] in
@@ -35,7 +39,9 @@ final class PushNotificationPreferencesHostingController: UIHostingController<Pu
     }
 
     private func showNewStockDetail() {
-        let detail = NewStockNotificationPreferencesHostingController(viewModel: viewModel)
+        let detail = NewStockNotificationPreferencesHostingController(viewModel: viewModel,
+                                                                     siteID: siteID,
+                                                                     stores: stores)
         navigationController?.pushViewController(detail, animated: true)
     }
 }

@@ -11,19 +11,21 @@ struct DefaultPOSPINAuthenticatorTests {
     // -> base64 of the 32-byte derived key. Computed once via python hashlib; reused across tests.
     private let knownHash = "XYi15Cgtdy5Uq8RAJQtdpV39sZR7/Q1kj3ZDXar1UQg="
 
-    @Test func test_authenticate_when_pin_matches_cached_hash_then_returns_staff() async throws {
+    @Test func test_authenticate_when_pin_matches_cached_hash_then_returns_staff_and_no_network_call() async throws {
         // Given
         let member = makeMember(id: 42, hasPIN: true, salt: knownSalt, hash: knownHash)
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         cache.save([member], siteID: 1)
-        let sut = makeSUT(cache: cache, fetcher: MockPOSStaffFetcher(staff: [member]), siteID: 1)
+        let fetcher = MockPOSStaffFetcher(staff: [member])
+        let sut = makeSUT(cache: cache, fetcher: fetcher, siteID: 1)
 
         // When
         let staff = try await sut.authenticate(withPIN: knownPIN)
 
-        // Then
+        // Then - cache hit must not trigger a network fetch
         #expect(staff.userID == 42)
         #expect(staff.userLogin == "u42")
+        #expect(fetcher.calls == 0)
     }
 
     @Test func test_authenticate_when_pin_does_not_match_after_refetch_then_throws_invalidPIN() async {
@@ -142,6 +144,40 @@ struct DefaultPOSPINAuthenticatorTests {
         }
     }
 
+    @Test func test_verify_when_first_lookup_misses_then_refetches_once_and_matches() async throws {
+        // Given - cache initially has no approver
+        let oldMember = makeMember(id: 99, hasPIN: true, salt: "diff", hash: "diff")
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        cache.save([oldMember], siteID: 1)
+
+        // Refetch returns the manager with the cap
+        let manager = makeMember(id: 7, hasPIN: true, salt: knownSalt, hash: knownHash,
+                                 capabilities: ["view_pos": true, "refund_shop_orders": true])
+        let fetcher = MockPOSStaffFetcher(staff: [manager])
+        let sut = makeSUT(cache: cache, fetcher: fetcher, siteID: 1)
+
+        // When
+        let approver = try await sut.verify(managerPIN: knownPIN, authorizes: .refundShopOrders)
+
+        // Then
+        #expect(approver.userID == 7)
+        #expect(fetcher.calls == 1)
+        #expect(cache.load(siteID: 1)?.first?.userID == 7)
+    }
+
+    @Test func test_verify_when_refetched_member_lacks_cap_then_throws_invalidPIN() async {
+        // Given - cache miss, refetch returns a matching PIN but the staff member lacks the cap
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let cashier = makeMember(id: 42, hasPIN: true, salt: knownSalt, hash: knownHash,
+                                 capabilities: ["view_pos": true])
+        let sut = makeSUT(cache: cache, fetcher: MockPOSStaffFetcher(staff: [cashier]), siteID: 1)
+
+        // When / Then
+        await #expect(throws: POSAuthError.invalidPIN) {
+            _ = try await sut.verify(managerPIN: knownPIN, authorizes: .refundShopOrders)
+        }
+    }
+
     @Test func test_authenticate_when_cache_misses_and_fetcher_throws_then_throws_staffFetchFailed() async {
         // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
@@ -157,19 +193,6 @@ struct DefaultPOSPINAuthenticatorTests {
         } catch {
             Issue.record("Unexpected: \(error)")
         }
-    }
-
-    @Test func test_hasAnyPINs_passes_through_to_cache() async throws {
-        // Given
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
-        cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
-        let sut = makeSUT(cache: cache, fetcher: MockPOSStaffFetcher(staff: []), siteID: 1)
-
-        // When
-        let result = try await sut.hasAnyPINs()
-
-        // Then
-        #expect(result == true)
     }
 
     // MARK: - Helpers

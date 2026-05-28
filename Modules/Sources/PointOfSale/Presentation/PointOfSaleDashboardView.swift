@@ -576,11 +576,19 @@ private extension PointOfSaleDashboardView {
     }
 
     func errorActionHandler(for error: PointOfSaleErrorState) {
-        Task { await refreshStaff() }
         if error.errorType == .initialCatalogSyncError {
             analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
         }
-        reloadCurrentItemList()
+        Task {
+            async let staffTask: () = refreshStaff()
+            async let itemsTask: () = reloadCurrentItemList()
+            _ = await (staffTask, itemsTask)
+            // Give staff a second attempt so a flaky-network race where items succeeds but
+            // staff fails doesn't force the user into a follow-up staff-error retry tap.
+            if accessSession.pinStatus == .unknown {
+                await refreshStaff()
+            }
+        }
     }
 
     // TODO: WOOMOB-1692 remove specialisation of errors if possible
@@ -589,18 +597,16 @@ private extension PointOfSaleDashboardView {
         return { dismiss() }
     }
 
-    func reloadCurrentItemList() {
-        Task {
-            switch viewStateCoordinator.selectedItemListType {
-            case .products(search: false):
-                await posModel.purchasableItemsController.loadItems(base: .root)
-            case .products(search: true):
-                await posModel.purchasableItemsSearchController.loadItems(base: .root)
-            case .coupons(search: false):
-                await posModel.couponsSearchController.loadItems(base: .root)
-            case .coupons(search: true):
-                await posModel.couponsSearchController.loadItems(base: .root)
-            }
+    func reloadCurrentItemList() async {
+        switch viewStateCoordinator.selectedItemListType {
+        case .products(search: false):
+            await posModel.purchasableItemsController.loadItems(base: .root)
+        case .products(search: true):
+            await posModel.purchasableItemsSearchController.loadItems(base: .root)
+        case .coupons(search: false):
+            await posModel.couponsSearchController.loadItems(base: .root)
+        case .coupons(search: true):
+            await posModel.couponsSearchController.loadItems(base: .root)
         }
     }
 

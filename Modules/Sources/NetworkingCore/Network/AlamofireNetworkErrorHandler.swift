@@ -7,25 +7,8 @@ final class AlamofireNetworkErrorHandler {
     /// Serial queue for UserDefaults operations to prevent race conditions while avoiding deadlocks
     private let userDefaultsQueue = DispatchQueue(label: "com.networkingcore.errorhandler.userdefaults")
     private let userDefaults: UserDefaults
-    private var _credentials: Credentials?
+    private let credentials: Credentials?
     private let notificationCenter: NotificationCenter
-
-    private var credentials: Credentials? {
-        queue.sync { _credentials }
-    }
-
-    /// Updates the credentials used by retry and fallback logic.
-    ///
-    /// Must be called whenever the owning `AlamofireNetwork`'s credentials change
-    /// (for example when POS operator credentials override the admin's session).
-    /// Without this update, retry decisions would be made against stale credentials
-    /// - e.g. retrying a cashier's failed REST request through the Jetpack tunnel
-    /// using a WPCOM token the cashier never had.
-    func updateCredentials(_ newCredentials: Credentials?) {
-        queue.sync(flags: .barrier) { [weak self] in
-            self?._credentials = newCredentials
-        }
-    }
 
     private var _appPasswordFailures: [Int64: Int] = [:]
     private var _retriedJetpackRequests: [RetriedJetpackRequest] = []
@@ -33,7 +16,7 @@ final class AlamofireNetworkErrorHandler {
     init(credentials: Credentials?,
          userDefaults: UserDefaults = .standard,
          notificationCenter: NotificationCenter = .default) {
-        self._credentials = credentials
+        self.credentials = credentials
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
     }

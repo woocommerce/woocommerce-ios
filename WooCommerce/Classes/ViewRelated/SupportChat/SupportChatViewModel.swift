@@ -216,7 +216,11 @@ final class SupportChatViewModel {
         guard !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return shouldShowInputArea || isShowingIssuePicker
+        return true
+    }
+
+    var isContactHumanSupportButtonEnabled: Bool {
+        state != .sending || chatID != nil
     }
 
     var shouldShowResolvedButton: Bool {
@@ -717,6 +721,10 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {
+        guard isContactHumanSupportButtonEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
             source: source,
             entryPoint: entryPoint,
@@ -990,15 +998,6 @@ final class SupportChatViewModel {
 
     private var hasRemoteBotResponse: Bool {
         messages.contains { $0.role == .bot && $0.messageID != nil }
-    }
-
-    private var isShowingIssuePicker: Bool {
-        messages.contains {
-            if case .issuePicker = $0.content {
-                return true
-            }
-            return false
-        }
     }
 
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,

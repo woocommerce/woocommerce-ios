@@ -883,6 +883,33 @@ struct SupportChatViewModelTests {
         #expect(receivedHasBotResponse == false)
     }
 
+    @Test func contactHumanSupport_when_first_message_is_sending_then_does_not_contact_support_or_track_tap() {
+        // Given
+        var didContactHumanSupport = false
+        let analyticsProvider = MockAnalyticsProvider()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = makeSUT(
+            entryPoint: .preLogin,
+            stores: stores,
+            analyticsProvider: analyticsProvider,
+            onContactHumanSupport: { _, _, _, _, _ in
+                didContactHumanSupport = true
+            }
+        )
+        sut.inputText = "Hello"
+        sut.sendMessage()
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.contactHumanSupport()
+
+        // Then
+        #expect(sut.state == .sending)
+        #expect(sut.isContactHumanSupportButtonEnabled == false)
+        #expect(didContactHumanSupport == false)
+        #expect(analyticsProvider.receivedEvents.contains("support_chat_escalation_tapped") == false)
+    }
+
     @Test func contactHumanSupport_after_bot_response_passes_hasReceivedBotResponse_true() {
         // Given
         var receivedHasBotResponse: Bool?
@@ -1163,6 +1190,42 @@ struct SupportChatViewModelTests {
 
         // Then
         #expect(sut.canEscalateToHumanSupport == false)
+    }
+
+    // MARK: - Contact Human Support Button Enabled Tests
+
+    @Test func isContactHumanSupportButtonEnabled_is_false_when_first_message_is_sending_before_chat_is_created() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = makeSUT(entryPoint: .preLogin, stores: stores)
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.state == .sending)
+        #expect(sut.isContactHumanSupportButtonEnabled == false)
+    }
+
+    @Test func isContactHumanSupportButtonEnabled_is_true_when_existing_chat_is_sending_message() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let sut = SupportChatViewModel(
+            entryPoint: .chatHistory,
+            stores: stores,
+            chatID: 123,
+            sessionID: "session-1",
+            onContactHumanSupport: Self.noopContactHumanSupport
+        )
+
+        // When
+        sut.inputText = "Hello"
+        sut.sendMessage()
+
+        // Then
+        #expect(sut.state == .sending)
+        #expect(sut.isContactHumanSupportButtonEnabled == true)
     }
 
     // MARK: - Resolved Button Tests

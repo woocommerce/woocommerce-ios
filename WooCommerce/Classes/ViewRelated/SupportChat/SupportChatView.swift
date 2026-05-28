@@ -21,6 +21,7 @@ struct SupportChatView: View {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
                         }
+                        .disabled(!viewModel.isContactHumanSupportButtonEnabled)
                         .onAppear {
                             viewModel.trackManualEscalationButtonShownIfNeeded()
                         }

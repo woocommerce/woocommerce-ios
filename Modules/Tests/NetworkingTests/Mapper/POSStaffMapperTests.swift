@@ -38,4 +38,25 @@ final class POSStaffMapperTests: XCTestCase {
         // When / Then
         XCTAssertThrowsError(try POSStaffMapper().map(response: response))
     }
+
+    func test_map_when_response_is_wc_rest_error_then_throws_wordpress_api_error() {
+        // Given - the body returned by WC on a 401, where DotcomValidator doesn't recognise the shape
+        let response = #"""
+        {"code":"woocommerce_rest_cannot_view","message":"Sorry, you cannot view resources.","data":{"status":401}}
+        """#.data(using: .utf8)!
+
+        // When / Then
+        do {
+            _ = try POSStaffMapper().map(response: response)
+            XCTFail("Expected WordPressApiError")
+        } catch let error as WordPressApiError {
+            if case .unknown(let code, _) = error {
+                XCTAssertEqual(code, "woocommerce_rest_cannot_view")
+            } else {
+                XCTFail("Expected .unknown case, got \(error)")
+            }
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
 }

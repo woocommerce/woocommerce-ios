@@ -14,7 +14,7 @@ extension POSStaffRemote: POSStaffRemoteProtocol {}
 /// Concrete `POSStaffFetching` in the app target. Calls `POSStaffRemote` and maps Networking
 /// errors to the typed `POSStaffFetchError` so PointOfSale callers can branch by intent.
 ///
-/// HTTP 401, 403 (rest_forbidden), and invalid/expired token responses map to `.adminMissingCapability`.
+/// HTTP 401/403, expired tokens, and `woocommerce_rest_cannot_view` map to `.adminMissingCapability`.
 final class POSStaffAdaptor: POSStaffFetching {
     private let remote: POSStaffRemoteProtocol
 
@@ -43,6 +43,15 @@ final class POSStaffAdaptor: POSStaffFetching {
             default:
                 throw .transient(retryable: true)
             }
+        } catch let error as WordPressApiError {
+            // WC REST returns its own error codes that DotcomValidator doesn't recognise
+            // (the body has `code` rather than `error`). POSStaffMapper retries the decode
+            // as WordPressApiError so we can branch on the specific code here.
+            if case .unknown(let code, _) = error,
+               code.hasPrefix("woocommerce_rest_cannot") || code == "rest_forbidden" {
+                throw .adminMissingCapability
+            }
+            throw .transient(retryable: true)
         } catch {
             throw .transient(retryable: true)
         }

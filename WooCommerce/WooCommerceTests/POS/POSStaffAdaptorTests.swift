@@ -92,6 +92,32 @@ final class POSStaffAdaptorTests: XCTestCase {
         }
     }
 
+    func test_fetchStaff_when_wc_rest_cannot_view_then_throws_adminMissingCapability() async {
+        // Given - the actual error WC returns on 401 (verified live against staging)
+        let error = WordPressApiError.unknown(code: "woocommerce_rest_cannot_view",
+                                              message: "Sorry, you cannot view resources.")
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.adminMissingCapability) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_wc_rest_other_error_then_throws_transient() async {
+        // Given - a non-auth WC error should not silently map to admin-missing-cap
+        let error = WordPressApiError.unknown(code: "woocommerce_rest_invalid_id",
+                                              message: "Invalid resource ID.")
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.transient(retryable: true)) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
     // MARK: - Helpers
 
     private func assertThrows<E: Error & Equatable>(_ expected: E, _ block: () async throws -> Void) async {

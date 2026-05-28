@@ -16,19 +16,13 @@ struct PointOfSaleDashboardViewHelper {
             return .unsupportedWidth
         }
 
-        // Staff gate first: an unresolved pinStatus must not let POS render content.
-        if pinStatus == .unknown && !isStaffRefreshing {
-            return .error(.errorOnLoadingStaff())
-        }
-        if pinStatus == .unknown {
-            return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
-        }
-
         guard let eligibilityState else {
             return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
         }
 
         switch eligibilityState {
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
         case .eligible:
             switch itemsContainerState {
             case let .loading(isCatalogSyncing):
@@ -36,13 +30,17 @@ struct PointOfSaleDashboardViewHelper {
             case .error(let error):
                 return .error(error)
             case .content:
+                if pinStatus == .unknown && !isStaffRefreshing {
+                    return .error(.errorOnLoadingStaff())
+                }
+                if pinStatus == .unknown {
+                    return .loading()
+                }
                 if isLocked && pinStatus == .present {
                     return .locked
                 }
                 return .content
             }
-        case .ineligible(let reason):
-            return .ineligible(reason: reason)
         }
     }
 }

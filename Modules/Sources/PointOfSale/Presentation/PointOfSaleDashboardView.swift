@@ -576,15 +576,11 @@ private extension PointOfSaleDashboardView {
     }
 
     func errorActionHandler(for error: PointOfSaleErrorState) {
-        switch error.errorType {
-        case .staffLoadError:
-            Task { await refreshStaff() }
-        case .initialCatalogSyncError:
+        Task { await refreshStaff() }
+        if error.errorType == .initialCatalogSyncError {
             analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
-            reloadCurrentItemList()
-        default:
-            reloadCurrentItemList()
         }
+        reloadCurrentItemList()
     }
 
     // TODO: WOOMOB-1692 remove specialisation of errors if possible

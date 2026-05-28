@@ -423,9 +423,8 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .loading())
     }
 
-    @Test func determineViewState_when_staff_unknown_takes_priority_over_items_loading_flavor() async throws {
-        // Given - both staff and catalog still loading; staff gate must surface the
-        // isCatalogSyncing flag so the catalog-syncing flavor still shows.
+    @Test func determineViewState_when_items_loading_and_staff_unknown_returns_items_loading() async throws {
+        // Given
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
             itemsContainerState: .loading(isCatalogSyncing: true),
@@ -438,6 +437,39 @@ struct PointOfSaleDashboardViewHelperTests {
 
         // Then
         #expect(result == .loading(isCatalogSyncing: true))
+    }
+
+    @Test func determineViewState_when_items_error_and_staff_unknown_returns_items_error() async throws {
+        // Given - items error must win over staff error so the user sees the real failure.
+        let itemsError = PointOfSaleErrorState.errorOnLoadingProducts()
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .error(itemsError),
+            pinStatus: .unknown,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .error(itemsError))
+    }
+
+    @Test func determineViewState_when_ineligible_and_staff_unknown_returns_ineligible() async throws {
+        // Given
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .ineligible(reason: .featureSwitchDisabled),
+            itemsContainerState: .content,
+            pinStatus: .unknown,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .ineligible(reason: .featureSwitchDisabled))
     }
 
     // MARK: - Lock Gate Tests

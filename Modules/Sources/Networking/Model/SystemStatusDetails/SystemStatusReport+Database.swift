@@ -34,8 +34,30 @@ public extension SystemStatusReport {
     /// Subtype for details about a database table.
     ///
     struct DatabaseTable: Decodable {
-        public let data: String
-        public let index: String
-        public let engine: String
+        public let data: String?
+        public let index: String?
+        public let engine: String?
+
+        public var formattedString: String {
+            let formattedData: String = {
+                if let data {
+                    "Data: \(data)MB"
+                } else {
+                    "Data: null"
+                }
+            }()
+
+            let formattedIndex: String = {
+                if let index {
+                    "Index: \(index)MB"
+                } else {
+                    "Index: null"
+                }
+            }()
+
+            let formattedEngine = "Engine: \(engine ?? "null")"
+
+            return [formattedData, formattedIndex, formattedEngine].joined(separator: " + ")
+        }
     }
 }

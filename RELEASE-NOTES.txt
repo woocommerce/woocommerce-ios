@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.9
 -----
+- [*] Fixed Connectivity Tool failures when system status reports include database tables with missing metadata [https://github.com/woocommerce/woocommerce-ios/pull/17275]
 - [*] Shipping Labels: Updated validation for US territories and domestic-mail customs descriptions [https://github.com/woocommerce/woocommerce-ios/pull/17255]
 - [*] The Store Stats widget is now configurable: choose your size (small / medium / large), metrics, date range, store, and theme. [https://github.com/woocommerce/woocommerce-ios/pull/17170]
 - [*] New Trends widget for the lock screen, with a metric and date-range picker. [https://github.com/woocommerce/woocommerce-ios/pull/17160]

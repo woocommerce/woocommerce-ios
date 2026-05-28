@@ -377,11 +377,16 @@ private extension POSTabCoordinator {
         TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 
-    /// Registers `NotificationCenter` observers that forward logout and site-switch events to
-    /// the PointOfSale module, which then clears the staff PIN Keychain cache. Without this,
-    /// stale PINs could survive across user sessions or site changes.
+    /// Registers `NotificationCenter` observers for logout and site-switch events and clears
+    /// the Keychain-backed staff PIN cache directly via `POSStaffCacheCleaner`. The direct
+    /// call ensures cleanup happens even when POS is not mounted (a notification-only path
+    /// would silently miss the case where the user logs out from elsewhere in the app).
+    /// The `.posShouldClearStaffCache` repost lets the active POS view (if any) reset its
+    /// in-memory session state alongside the persistent wipe.
     func registerStaffCacheCleanup() {
+        let siteID = self.siteID
         let forward: (Notification) -> Void = { _ in
+            POSStaffCacheCleaner.clear(siteID: siteID)
             NotificationCenter.default.post(name: .posShouldClearStaffCache, object: nil)
         }
         cacheCleanupObservers = [
@@ -401,7 +406,7 @@ private extension POSTabCoordinator {
     /// normal operation, but guards against edge cases at the call site).
     func makeStaffFetcher() -> POSStaffFetching {
         guard let creds = credentials else {
-            DDLogError("⛔️ POSTabCoordinator: credentials unavailable - staff fetcher will be inert")
+            DDLogError("POSTabCoordinator: credentials unavailable - staff fetcher will be inert")
             return InertPOSStaffFetcher()
         }
         let network = AlamofireNetwork(credentials: creds,

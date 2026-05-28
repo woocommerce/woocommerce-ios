@@ -51,11 +51,10 @@ final class InMemoryKeyValueStorage: POSStaffKeyValueStorage, @unchecked Sendabl
 }
 
 /// Per-site cache of the `/staff` response, encoded as JSON in Keychain. Tracks `lastFetched`
-/// so `DefaultPOSAccessSession.refreshPINStatus()` can apply a 30s soft TTL.
-///
-/// Per-site cache of the `/staff` response. Reads/writes flow through the injected `POSStaffKeyValueStorage`.
-/// `@unchecked Sendable` is sound because the default `KeychainPOSStaffStorage` serializes via the system Keychain,
-/// and the test stub is used only under main-actor isolation.
+/// so `DefaultPOSAccessSession.refreshPINStatus()` can apply a 30s soft TTL. Reads/writes flow
+/// through the injected `POSStaffKeyValueStorage`. `@unchecked Sendable` is sound because the
+/// default `KeychainPOSStaffStorage` serializes via the system Keychain, and the test stub is
+/// used only under main-actor isolation.
 final class POSStaffCache: @unchecked Sendable {
     private let storage: POSStaffKeyValueStorage
     private let now: @Sendable () -> Date
@@ -103,4 +102,14 @@ final class POSStaffCache: @unchecked Sendable {
 
     private func staffKey(siteID: Int64) -> String { "staff.\(siteID)" }
     private func timestampKey(siteID: Int64) -> String { "lastFetched.\(siteID)" }
+}
+
+/// Public entry point for wiping the per-site staff PIN cache from outside the PointOfSale
+/// module. Used by the app target on logout / site-switch lifecycle events so a previous
+/// tenant's cached PIN hashes can't survive into a new user session. Uses the default
+/// Keychain-backed storage; safe to call when POS is not mounted.
+public enum POSStaffCacheCleaner {
+    public static func clear(siteID: Int64) {
+        POSStaffCache().clear(siteID: siteID)
+    }
 }

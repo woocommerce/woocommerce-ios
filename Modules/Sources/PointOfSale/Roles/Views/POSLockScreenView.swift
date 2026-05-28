@@ -12,64 +12,61 @@ struct POSLockScreenView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.posSurfaceContainerLow
-                .ignoresSafeArea()
-
-            content
-                .frame(maxWidth: POSPINEntryView.contentWidth)
-                .padding(POSPadding.xxLarge)
+        Group {
+            switch model.content {
+            case .loading:
+                // Reuse the shared POS loading view so the lock-screen loading state is
+                // indistinguishable from any other POS loading running in parallel (the
+                // dashboard's own catalog/order syncs all use this same component).
+                PointOfSaleLoadingView()
+            case .pinEntry:
+                pinEntryScreen
+            case .unavailable:
+                unavailableScreen
+            }
         }
         .task {
             await model.refreshPINStatus()
         }
     }
 
-    @ViewBuilder
-    private var content: some View {
-        switch model.content {
-        case .pinEntry:
-            pinEntryContent
-        case .loading:
-            loadingContent
-        case .unavailable:
+    private var pinEntryScreen: some View {
+        ZStack {
+            Color.posSurfaceContainerLow
+                .ignoresSafeArea()
+
+            VStack(spacing: POSPINEntryView.titleToPINSpacing) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+
+                POSPINEntryView(
+                    state: model.pinEntryState,
+                    onComplete: { pin in
+                        await model.signIn(withPIN: pin)
+                    },
+                    onLockoutExpired: { model.lockoutExpired() }
+                )
+                .frame(height: POSPINEntryView.preferredHeight)
+            }
+            .frame(maxWidth: POSPINEntryView.contentWidth)
+            .padding(POSPadding.xxLarge)
+        }
+    }
+
+    private var unavailableScreen: some View {
+        ZStack {
+            Color.posSurfaceContainerLow
+                .ignoresSafeArea()
+
             POSLockScreenUnavailableView {
                 await model.refreshPINStatus()
             }
+            .frame(maxWidth: POSPINEntryView.contentWidth)
+            .padding(POSPadding.xxLarge)
         }
-    }
-
-    private var pinEntryContent: some View {
-        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .foregroundStyle(Color.posOnSurface)
-                .multilineTextAlignment(.center)
-                .accessibilityAddTraits(.isHeader)
-
-            POSPINEntryView(
-                state: model.pinEntryState,
-                onComplete: { pin in
-                    await model.signIn(withPIN: pin)
-                },
-                onLockoutExpired: { model.lockoutExpired() }
-            )
-            .frame(height: POSPINEntryView.preferredHeight)
-        }
-    }
-
-    private var loadingContent: some View {
-        VStack(spacing: POSSpacing.large) {
-            ProgressView()
-                .controlSize(.large)
-                .tint(Color.posPrimary)
-
-            Text(Localization.loading)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .multilineTextAlignment(.center)
-        }
-        .accessibilityElement(children: .combine)
     }
 }
 
@@ -81,11 +78,6 @@ private extension POSLockScreenView {
             "pos.lockScreen.enterYourPIN.title",
             value: "Enter your PIN",
             comment: "Title shown on the POS lock screen."
-        )
-        static let loading = NSLocalizedString(
-            "pos.lockScreen.loading",
-            value: "Loading staff...",
-            comment: "Status text shown on the POS lock screen while the staff list is being fetched."
         )
     }
 }

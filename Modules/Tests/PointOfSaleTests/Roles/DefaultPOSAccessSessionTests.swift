@@ -159,11 +159,10 @@ struct DefaultPOSAccessSessionTests {
     }
 
     @Test func test_initial_state_when_session_created_then_pinStatus_is_unknown_and_locked() {
-        // Given / When - default init state before any refresh runs.
+        // Given / When
         let session = makeSession()
 
-        // Then - the security default: until a refresh confirms otherwise, we don't know
-        // whether there are PINs, so we keep `.unknown` and stay locked.
+        // Then
         #expect(session.pinStatus == .unknown)
         #expect(session.isLocked == true)
     }
@@ -231,7 +230,7 @@ struct DefaultPOSAccessSessionTests {
         // When
         await session.refreshPINStatus()
 
-        // Then - server authoritatively says there's no PIN system, so degrade to .absent.
+        // Then
         #expect(cache.load(siteID: 1) == nil)
         #expect(session.flagDisabledServerSide == true)
         #expect(session.pinStatus == .absent)
@@ -252,19 +251,15 @@ struct DefaultPOSAccessSessionTests {
         // When
         await session.refreshPINStatus()
 
-        // Then - cache is intact and pinStatus mirrors it.
+        // Then
         #expect(cache.load(siteID: 1) == existing)
         #expect(session.pinStatus == .present)
     }
 
     // MARK: - Cold-cache + refresh-failure cases (P1 regression coverage)
-    //
-    // Without these, a fresh install with a network blip would auto-unlock POS despite
-    // never confirming the security boundary. All three error classes that don't have an
-    // authoritative answer must leave `pinStatus == .unknown` and `isLocked == true`.
 
     @Test func test_refreshPINStatus_when_cold_cache_and_transient_error_then_stays_unknown_and_locked() async {
-        // Given - empty cache, fetch fails transiently
+        // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
         let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
@@ -272,14 +267,14 @@ struct DefaultPOSAccessSessionTests {
         // When
         await session.refreshPINStatus()
 
-        // Then - no false unlock; the overlay must keep gating access.
+        // Then
         #expect(session.pinStatus == .unknown)
         #expect(session.isLocked == true)
         #expect(cache.lastFetched(siteID: 1) == nil)
     }
 
     @Test func test_refreshPINStatus_when_cold_cache_and_admin_missing_capability_then_stays_unknown_and_locked() async {
-        // Given - empty cache, fetch fails with auth denial
+        // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let fetcher = MockPOSStaffFetcher(error: .adminMissingCapability)
         let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
@@ -293,7 +288,7 @@ struct DefaultPOSAccessSessionTests {
     }
 
     @Test func test_refreshPINStatus_when_cold_cache_and_malformed_response_then_stays_unknown_and_locked() async {
-        // Given - empty cache, fetch fails on decode
+        // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let fetcher = MockPOSStaffFetcher(error: .malformedResponse)
         let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
@@ -364,7 +359,7 @@ struct DefaultPOSAccessSessionTests {
         // When
         session.clearStaffCache()
 
-        // Then - logout / site-switch returns us to the cold-start state.
+        // Then
         #expect(cache.load(siteID: 1) == nil)
         #expect(session.pinStatus == .unknown)
         #expect(session.currentStaff == nil)
@@ -373,7 +368,7 @@ struct DefaultPOSAccessSessionTests {
     }
 
     @Test func test_refreshPINStatus_when_fetch_returns_no_pins_then_unlocks_session() async {
-        // Given - refresh returns members without PINs (admin removed all)
+        // Given - admin removed all PINs
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let memberWithoutPIN = POSStaffMember(userID: 1, userLogin: "u1", displayName: "U1",
                                               role: "pos_cashier", capabilities: ["view_pos": true],

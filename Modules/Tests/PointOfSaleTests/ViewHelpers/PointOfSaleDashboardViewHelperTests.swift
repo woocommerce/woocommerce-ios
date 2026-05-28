@@ -388,8 +388,6 @@ struct PointOfSaleDashboardViewHelperTests {
     // MARK: - Staff Gate Tests
 
     @Test func determineViewState_when_pinStatus_is_unknown_and_not_refreshing_returns_staffLoadError() async throws {
-        // Given - cold cache + a finished-and-failed refresh leaves us in this state.
-        // Without the staff gate, the dashboard would auto-unlock without confirming PINs.
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
@@ -410,7 +408,6 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test func determineViewState_when_pinStatus_is_unknown_and_refreshing_returns_loading() async throws {
-        // Given - staff refresh in flight, cache not yet populated.
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
@@ -427,9 +424,8 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test func determineViewState_when_staff_unknown_takes_priority_over_items_loading_flavor() async throws {
-        // Given - both staff and catalog still loading; the staff gate fires first but
-        // should still surface the isCatalogSyncing flag so the catalog-syncing flavor
-        // of the loading view shows.
+        // Given - both staff and catalog still loading; staff gate must surface the
+        // isCatalogSyncing flag so the catalog-syncing flavor still shows.
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
             itemsContainerState: .loading(isCatalogSyncing: true),
@@ -447,7 +443,6 @@ struct PointOfSaleDashboardViewHelperTests {
     // MARK: - Lock Gate Tests
 
     @Test func determineViewState_when_eligible_content_and_locked_with_present_pin_returns_locked() async throws {
-        // Given - everything ready, dashboard would be interactive, but PIN required.
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
@@ -464,7 +459,6 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test func determineViewState_when_locked_with_absent_pin_returns_content() async throws {
-        // Given - .absent means no PIN system configured; the lock screen never shows.
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
@@ -481,7 +475,6 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test func determineViewState_when_unlocked_with_present_pin_returns_content() async throws {
-        // Given - PINs exist but session is unlocked (user signed in).
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
@@ -498,9 +491,7 @@ struct PointOfSaleDashboardViewHelperTests {
     }
 
     @Test func determineViewState_when_items_loading_takes_priority_over_lock() async throws {
-        // Given - PINs present + locked, but items still loading.
-        // The lock gate only fires after items resolve to .content; while items are
-        // loading the loading view should show, not the lock screen.
+        // Given - lock gate fires only after items resolve to .content.
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
             itemsContainerState: .loading(isCatalogSyncing: false),

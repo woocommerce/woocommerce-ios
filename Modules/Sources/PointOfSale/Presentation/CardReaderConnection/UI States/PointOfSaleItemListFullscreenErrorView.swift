@@ -18,10 +18,7 @@ struct PointOfSaleItemListFullscreenErrorView: View {
         }
     }
 
-    /// Errors that aren't about the items list itself shouldn't render the items-list title
-    /// (catalog sync is the original case; staff load errors join it because they're a
-    /// startup-time concern, not an items concern).
-    /// TODO: WOOMOB-1692 remove specialisation of errors if possible
+    // TODO: WOOMOB-1692 remove specialisation of errors if possible
     private var hidesItemListTitle: Bool {
         switch error.errorType {
         case .initialCatalogSyncError, .staffLoadError: true

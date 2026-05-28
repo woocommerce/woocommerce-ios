@@ -85,14 +85,12 @@ final class DefaultPOSAccessSession: POSAccessSession {
             case .flagDisabledServerSide:
                 cache.clear(siteID: siteID)
                 flagDisabledServerSide = true
-                // Server authoritatively says there's no PIN system here, so unlock.
                 pinStatus = .absent
                 isLocked = false
             case .adminMissingCapability, .transient, .malformedResponse:
                 DDLogError("POS staff refresh failed: \(error)")
-                // Fall back to last-known-good cache only if there is one. A cold cache plus
-                // a refresh failure must stay `.unknown` so the overlay keeps the boundary up;
-                // otherwise an offline first-open would auto-unlock with no verification.
+                // Stay .unknown without a cached fetch - otherwise an offline first-open
+                // would auto-unlock without ever verifying staff.
                 if cache.lastFetched(siteID: siteID) != nil {
                     applyCachedPINStatus()
                 }
@@ -112,9 +110,6 @@ final class DefaultPOSAccessSession: POSAccessSession {
 }
 
 private extension DefaultPOSAccessSession {
-    /// Translates the cache state into `pinStatus` and unlocks the session if we've confirmed
-    /// there are no PINs to enforce against. Used by the TTL early-return, the post-fetch path,
-    /// and the cache-fallback arm so all three derive `pinStatus` the same way.
     func applyCachedPINStatus() {
         if cache.hasAnyPINs(siteID: siteID) {
             pinStatus = .present

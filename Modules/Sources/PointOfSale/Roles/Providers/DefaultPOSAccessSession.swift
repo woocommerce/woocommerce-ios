@@ -73,6 +73,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
         if let last = cache.lastFetched(siteID: siteID),
            now().timeIntervalSince(last) < Self.refreshTTL {
             hasAnyPINs = cache.hasAnyPINs(siteID: siteID)
+            // Mirror the post-fetch unlock so a cached empty-PIN state can't leave POS locked
+            // (initial isLocked = true would otherwise survive the TTL early-return).
+            if !hasAnyPINs {
+                isLocked = false
+            }
             return
         }
         do {
@@ -93,6 +98,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
             case .adminMissingCapability, .transient, .malformedResponse:
                 DDLogError("POS staff refresh failed: \(error)")
                 hasAnyPINs = cache.hasAnyPINs(siteID: siteID)
+                if !hasAnyPINs {
+                    isLocked = false
+                }
             }
         } catch {
             DDLogError("POS staff refresh failed: \(error)")

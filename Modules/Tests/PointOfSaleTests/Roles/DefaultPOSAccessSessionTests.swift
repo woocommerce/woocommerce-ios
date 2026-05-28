@@ -174,6 +174,24 @@ struct DefaultPOSAccessSessionTests {
         #expect(fetcher.calls == 0)
     }
 
+    @Test func test_refreshPINStatus_when_TTL_path_finds_no_pins_then_unlocks_session() async {
+        // Given - cache has zero PINs and is within the TTL window
+        let now = Date()
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { now })
+        cache.save([], siteID: 1)
+        let fetcher = MockPOSStaffFetcher(staff: [])
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { now.addingTimeInterval(5) })
+
+        // When - refresh hits the TTL early-return path
+        await session.refreshPINStatus()
+
+        // Then - session is unlocked even though the fetcher never fired
+        #expect(fetcher.calls == 0)
+        #expect(session.hasAnyPINs == false)
+        #expect(session.isLocked == false)
+    }
+
     @Test func test_refreshPINStatus_when_TTL_expired_then_refetches() async {
         // Given
         let saveTime = Date()

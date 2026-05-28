@@ -38,18 +38,6 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
     }
 }
 
-/// In-memory `POSStaffKeyValueStorage` for tests.
-///
-/// Test-only stub. Single-threaded use under main-actor-isolated test suites; not safe for concurrent access.
-final class InMemoryKeyValueStorage: POSStaffKeyValueStorage, @unchecked Sendable {
-    private var store: [String: String] = [:]
-
-    func string(forKey key: String) -> String? { store[key] }
-    func setString(_ value: String?, forKey key: String) {
-        if let value { store[key] = value } else { store.removeValue(forKey: key) }
-    }
-}
-
 /// Per-site cache of the `/staff` response, encoded as JSON in Keychain. Tracks `lastFetched`
 /// so `DefaultPOSAccessSession.refreshPINStatus()` can apply a 30s soft TTL. Reads/writes flow
 /// through the injected `POSStaffKeyValueStorage`. `@unchecked Sendable` is sound because the

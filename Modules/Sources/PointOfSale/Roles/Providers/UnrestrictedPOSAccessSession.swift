@@ -4,7 +4,7 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
 
     var currentStaff: POSStaff? { nil }
     var isLocked: Bool { false }
-    var hasAnyPINs: Bool { false }
+    var pinStatus: POSPINStatus { .absent }
 
     func allows(_ capability: POSCapability) -> Bool { true }
     func signIn(withPIN pin: String) async throws(POSAuthError) {}

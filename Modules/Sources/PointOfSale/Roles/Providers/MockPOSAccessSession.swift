@@ -7,19 +7,21 @@ import Observation
 final class MockPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff?
     var isLocked: Bool
-    var hasAnyPINs: Bool
+    var pinStatus: POSPINStatus
     var signInResult: Result<POSStaff, POSAuthError>
     var managerApprovalResult: Result<Void, POSAuthError>
     var checkLockoutResult: Result<Void, POSAuthError>
     var signInPINs: [String] = []
     var managerApprovalPINs: [String] = []
     var managerApprovalCapabilities: [POSCapability] = []
+    var refreshPINStatusCalls: Int = 0
     var onSignIn: (() -> Void)?
     var onManagerApproval: (() -> Void)?
+    var onRefreshPINStatus: (() -> Void)?
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
-         hasAnyPINs: Bool = true,
+         pinStatus: POSPINStatus = .present,
          signInResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(userID: 1, userLogin: "maya", displayName: "Maya",
                      role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
@@ -28,7 +30,7 @@ final class MockPOSAccessSession: POSAccessSession {
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
         self.isLocked = isLocked
-        self.hasAnyPINs = hasAnyPINs
+        self.pinStatus = pinStatus
         self.signInResult = signInResult
         self.managerApprovalResult = managerApprovalResult
         self.checkLockoutResult = checkLockoutResult
@@ -77,7 +79,10 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func refreshPINStatus() async {}
+    func refreshPINStatus() async {
+        refreshPINStatusCalls += 1
+        onRefreshPINStatus?()
+    }
     func clearStaffCache() {}
 }
 

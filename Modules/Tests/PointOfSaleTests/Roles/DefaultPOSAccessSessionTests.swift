@@ -141,7 +141,7 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.currentStaff == staff)
     }
 
-    @Test func test_refreshPINStatus_when_fetch_succeeds_then_caches_and_updates_hasAnyPINs() async {
+    @Test func test_refreshPINStatus_when_fetch_succeeds_then_caches_and_sets_pinStatus_present() async {
         // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let member = POSStaffMember(userID: 1, userLogin: "u1", displayName: "U1",
@@ -154,8 +154,18 @@ struct DefaultPOSAccessSessionTests {
         await session.refreshPINStatus()
 
         // Then
-        #expect(session.hasAnyPINs == true)
+        #expect(session.pinStatus == .present)
         #expect(cache.load(siteID: 1)?.count == 1)
+    }
+
+    @Test func test_initial_state_when_session_created_then_pinStatus_is_unknown_and_locked() {
+        // Given / When - default init state before any refresh runs.
+        let session = makeSession()
+
+        // Then - the security default: until a refresh confirms otherwise, we don't know
+        // whether there are PINs, so we keep `.unknown` and stay locked.
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
     }
 
     @Test func test_refreshPINStatus_when_TTL_not_expired_then_skips_fetch() async {
@@ -188,7 +198,7 @@ struct DefaultPOSAccessSessionTests {
 
         // Then - session is unlocked even though the fetcher never fired
         #expect(fetcher.calls == 0)
-        #expect(session.hasAnyPINs == false)
+        #expect(session.pinStatus == .absent)
         #expect(session.isLocked == false)
     }
 
@@ -208,7 +218,7 @@ struct DefaultPOSAccessSessionTests {
         #expect(fetcher.calls == 1)
     }
 
-    @Test func test_refreshPINStatus_when_flag_disabled_server_side_then_clears_cache_and_sets_flag() async {
+    @Test func test_refreshPINStatus_when_flag_disabled_server_side_then_clears_cache_and_unlocks() async {
         // Given
         let saveTime = Date()
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
@@ -221,13 +231,14 @@ struct DefaultPOSAccessSessionTests {
         // When
         await session.refreshPINStatus()
 
-        // Then
+        // Then - server authoritatively says there's no PIN system, so degrade to .absent.
         #expect(cache.load(siteID: 1) == nil)
         #expect(session.flagDisabledServerSide == true)
-        #expect(session.hasAnyPINs == false)
+        #expect(session.pinStatus == .absent)
+        #expect(session.isLocked == false)
     }
 
-    @Test func test_refreshPINStatus_when_transient_error_then_keeps_existing_cache() async {
+    @Test func test_refreshPINStatus_when_transient_error_with_cache_then_keeps_existing_cache_state() async {
         // Given
         let saveTime = Date()
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
@@ -241,9 +252,58 @@ struct DefaultPOSAccessSessionTests {
         // When
         await session.refreshPINStatus()
 
-        // Then
+        // Then - cache is intact and pinStatus mirrors it.
         #expect(cache.load(siteID: 1) == existing)
-        #expect(session.hasAnyPINs == true)
+        #expect(session.pinStatus == .present)
+    }
+
+    // MARK: - Cold-cache + refresh-failure cases (P1 regression coverage)
+    //
+    // Without these, a fresh install with a network blip would auto-unlock POS despite
+    // never confirming the security boundary. All three error classes that don't have an
+    // authoritative answer must leave `pinStatus == .unknown` and `isLocked == true`.
+
+    @Test func test_refreshPINStatus_when_cold_cache_and_transient_error_then_stays_unknown_and_locked() async {
+        // Given - empty cache, fetch fails transiently
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then - no false unlock; the overlay must keep gating access.
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
+        #expect(cache.lastFetched(siteID: 1) == nil)
+    }
+
+    @Test func test_refreshPINStatus_when_cold_cache_and_admin_missing_capability_then_stays_unknown_and_locked() async {
+        // Given - empty cache, fetch fails with auth denial
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let fetcher = MockPOSStaffFetcher(error: .adminMissingCapability)
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
+    }
+
+    @Test func test_refreshPINStatus_when_cold_cache_and_malformed_response_then_stays_unknown_and_locked() async {
+        // Given - empty cache, fetch fails on decode
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let fetcher = MockPOSStaffFetcher(error: .malformedResponse)
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
     }
 
     @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
@@ -290,8 +350,8 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.refundShopOrders) == false)
     }
 
-    @Test func test_clearStaffCache_resets_flagDisabledServerSide() async {
-        // Given - trigger flagDisabledServerSide=true via a refresh that returns .flagDisabledServerSide
+    @Test func test_clearStaffCache_resets_state_to_unknown_and_locked() async {
+        // Given - prior successful refresh leaves cache populated and flag flipped
         let saveTime = Date()
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
         cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
@@ -304,9 +364,9 @@ struct DefaultPOSAccessSessionTests {
         // When
         session.clearStaffCache()
 
-        // Then
+        // Then - logout / site-switch returns us to the cold-start state.
         #expect(cache.load(siteID: 1) == nil)
-        #expect(session.hasAnyPINs == false)
+        #expect(session.pinStatus == .unknown)
         #expect(session.currentStaff == nil)
         #expect(session.isLocked == true)
         #expect(session.flagDisabledServerSide == false)
@@ -326,7 +386,7 @@ struct DefaultPOSAccessSessionTests {
         await session.refreshPINStatus()
 
         // Then
-        #expect(session.hasAnyPINs == false)
+        #expect(session.pinStatus == .absent)
         #expect(session.isLocked == false)
     }
 }

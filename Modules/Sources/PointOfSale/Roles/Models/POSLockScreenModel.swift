@@ -12,12 +12,12 @@ final class POSLockScreenModel {
         session.isLocked
     }
 
-    /// Whether the cached staff list has at least one PIN configured. The lock-screen overlay
-    /// uses this AND `isLocked` together: with no PINs there is no security boundary to enforce,
-    /// so the screen stays hidden even if `isLocked` is briefly true (initial state, transient
-    /// fetch failure with an empty cache, etc.).
-    var hasAnyPINs: Bool {
-        session.hasAnyPINs
+    /// Tri-state reflecting whether the cached staff list has any PINs. The overlay treats
+    /// `.absent` as "no security boundary, skip the lock screen"; `.unknown` and `.present`
+    /// both keep the boundary up. Distinguishing `.unknown` from `.absent` prevents an offline
+    /// first-open with an empty cache from auto-unlocking the dashboard.
+    var pinStatus: POSPINStatus {
+        session.pinStatus
     }
 
     init(session: POSAccessSession) {

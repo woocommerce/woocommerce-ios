@@ -11,9 +11,10 @@ struct POSLockScreenOverlay<Content: View>: View {
 
     private var shouldPresentLockScreen: Bool {
         // No-PIN stores have no security boundary to enforce - skip the lock screen entirely
-        // so the device admin can operate POS without setup. Matches the M1 design's
-        // "no PINs => no gating" rule applied symmetrically to capability checks.
-        model.isLocked && model.hasAnyPINs
+        // so the device admin can operate POS without setup. `.unknown` deliberately keeps the
+        // overlay up: until we've confirmed there are zero PINs, the safe default is to gate
+        // access (the lock screen renders a retry/loading variant in that branch).
+        model.isLocked && model.pinStatus != .absent
     }
 
     var body: some View {

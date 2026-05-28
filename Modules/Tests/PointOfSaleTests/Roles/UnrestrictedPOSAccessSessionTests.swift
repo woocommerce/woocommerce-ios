@@ -13,13 +13,14 @@ struct UnrestrictedPOSAccessSessionTests {
         }
     }
 
-    @Test func test_state_when_flag_off_then_unlocked_with_no_pins() {
+    @Test func test_state_when_flag_off_then_unlocked_with_absent_pins() {
         // Given
         let sut = UnrestrictedPOSAccessSession()
 
-        // When / Then
+        // When / Then - flag off means no security boundary, so `.absent` (not `.unknown`)
+        // so the overlay's `pinStatus != .absent` rule resolves to "no lock screen".
         #expect(sut.isLocked == false)
-        #expect(sut.hasAnyPINs == false)
+        #expect(sut.pinStatus == .absent)
         #expect(sut.currentStaff == nil)
     }
 

@@ -378,26 +378,27 @@ private extension POSTabCoordinator {
     }
 
     /// Registers `NotificationCenter` observers for logout and site-switch events and clears
-    /// the Keychain-backed staff PIN cache directly via `POSStaffCacheCleaner`. The direct
-    /// call ensures cleanup happens even when POS is not mounted (a notification-only path
-    /// would silently miss the case where the user logs out from elsewhere in the app).
-    /// The `.posShouldClearStaffCache` repost lets the active POS view (if any) reset its
-    /// in-memory session state alongside the persistent wipe.
+    /// the Keychain-backed staff PIN cache directly via `POSStaffCacheCleaner`. Logout wipes
+    /// every cached site so a previous account's PIN hashes can't survive; site-switch only
+    /// clears the current site (the new site's cache is wiped by its own coordinator if it
+    /// ever opens POS again). The direct call ensures cleanup happens even when POS is not
+    /// mounted. The `.posShouldClearStaffCache` repost lets the active POS view (if any)
+    /// reset its in-memory session state alongside the persistent wipe.
     func registerStaffCacheCleanup() {
         let siteID = self.siteID
-        let forward: (Notification) -> Void = { _ in
-            POSStaffCacheCleaner.clear(siteID: siteID)
-            NotificationCenter.default.post(name: .posShouldClearStaffCache, object: nil)
-        }
         cacheCleanupObservers = [
             NotificationCenter.default.addObserver(forName: .logOutEventReceived,
                                                     object: nil,
-                                                    queue: .main,
-                                                    using: forward),
+                                                    queue: .main) { _ in
+                POSStaffCacheCleaner.clearAll()
+                NotificationCenter.default.post(name: .posShouldClearStaffCache, object: nil)
+            },
             NotificationCenter.default.addObserver(forName: .StoresManagerDidUpdateDefaultSite,
                                                     object: nil,
-                                                    queue: .main,
-                                                    using: forward),
+                                                    queue: .main) { _ in
+                POSStaffCacheCleaner.clear(siteID: siteID)
+                NotificationCenter.default.post(name: .posShouldClearStaffCache, object: nil)
+            },
         ]
     }
 

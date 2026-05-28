@@ -38,10 +38,6 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         return staff(from: match)
     }
 
-    func hasAnyPINs() async throws(POSAuthError) -> Bool {
-        cache.hasAnyPINs(siteID: siteID)
-    }
-
     // MARK: - Lookup helpers
 
     private func findMatch(in members: [POSStaffMember], pin: String) -> POSStaffMember? {
@@ -61,9 +57,10 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     // MARK: - Refetch
 
     private func refetch() async throws(POSAuthError) -> [POSStaffMember] {
+        let capturedGeneration = cache.generation
         do {
             let fresh = try await fetcher.fetchStaff(siteID: siteID)
-            cache.save(fresh, siteID: siteID)
+            cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration)
             return fresh
         } catch {
             throw .staffFetchFailed(error)

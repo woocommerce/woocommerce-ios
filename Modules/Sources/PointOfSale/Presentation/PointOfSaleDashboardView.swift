@@ -88,8 +88,14 @@ struct PointOfSaleDashboardView: View {
                     .ignoresSafeArea()
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
-                    Task { await userInitiatedRefresh() }
-                    try await posModel.entryPointController.refreshEligibility(reason: reason)
+                    async let staffAndItems: () = userInitiatedRefresh()
+                    do {
+                        try await posModel.entryPointController.refreshEligibility(reason: reason)
+                    } catch {
+                        await staffAndItems
+                        throw error
+                    }
+                    await staffAndItems
                 })
                 .frame(maxWidth: .infinity)
             case .error(let error):

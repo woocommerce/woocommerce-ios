@@ -93,6 +93,32 @@ struct POSStaffCacheTests {
         #expect(sut.lastFetched(siteID: 1) == nil)
     }
 
+    @Test func test_save_with_generation_guard_when_cache_cleared_in_flight_then_save_is_dropped() {
+        // Given - simulates clear() running after a fetch was captured but before save
+        let storage = InMemoryKeyValueStorage()
+        let sut = POSStaffCache(storage: storage)
+        let captured = sut.generation
+        sut.clear(siteID: 1)
+
+        // When - the in-flight fetch tries to save with the captured (now-stale) generation
+        sut.save([makeMember(id: 1)], siteID: 1, ifGenerationStill: captured)
+
+        // Then - save is dropped; cache stays cleared
+        #expect(sut.load(siteID: 1) == nil)
+    }
+
+    @Test func test_save_with_generation_guard_when_generation_unchanged_then_save_persists() {
+        // Given
+        let sut = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let captured = sut.generation
+
+        // When
+        sut.save([makeMember(id: 1)], siteID: 1, ifGenerationStill: captured)
+
+        // Then
+        #expect(sut.load(siteID: 1)?.count == 1)
+    }
+
     @Test func test_lastFetched_when_staff_payload_corrupt_then_returns_nil_even_with_valid_timestamp() {
         // Given - timestamp valid, staff payload is unreadable garbage
         let storage = InMemoryKeyValueStorage()

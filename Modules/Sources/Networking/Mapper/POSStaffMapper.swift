@@ -19,11 +19,11 @@ struct POSStaffMapper: Mapper {
                 return try decoder.decode(POSStaffDataEnvelope.self, from: response).data.staff
             }
             return try decoder.decode(POSStaffEnvelope.self, from: response).staff
-        } catch let envelopeError {
+        } catch {
             if let wpError = try? decoder.decode(WordPressApiError.self, from: response) {
                 throw wpError
             }
-            throw envelopeError
+            throw error
         }
     }
 }

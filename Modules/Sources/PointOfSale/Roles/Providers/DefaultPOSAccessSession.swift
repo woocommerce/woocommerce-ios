@@ -49,6 +49,10 @@ final class DefaultPOSAccessSession: POSAccessSession {
         isLocked = true
     }
 
+    func checkLockoutState() throws(POSAuthError) {
+        try rateLimiter.checkAllowed()
+    }
+
     func refreshPINStatus() async {
         do {
             hasAnyPINs = try await authenticator.hasAnyPINs()

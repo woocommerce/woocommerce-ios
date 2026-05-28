@@ -180,6 +180,49 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .error(kind: .invalidPIN))
     }
 
+    @Test func test_init_when_session_reports_rate_limited_then_sets_lockout_state() {
+        // Given
+        let lockoutEnd = Date(timeIntervalSinceReferenceDate: 5000)
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            checkLockoutResult: .failure(.rateLimited(until: lockoutEnd))
+        )
+
+        // When
+        let sut = POSLockScreenModel(session: session)
+
+        // Then
+        #expect(sut.pinEntryState == .lockout(until: lockoutEnd))
+    }
+
+    @Test func test_init_when_session_reports_permanently_locked_then_sets_generic_error() {
+        // Given
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            checkLockoutResult: .failure(.permanentlyLocked)
+        )
+
+        // When
+        let sut = POSLockScreenModel(session: session)
+
+        // Then
+        #expect(sut.pinEntryState == .error(kind: .generic))
+    }
+
+    @Test func test_init_when_session_is_clean_then_pin_entry_state_is_idle() {
+        // Given
+        let session = MockPOSAccessSession(
+            isLocked: true,
+            checkLockoutResult: .success(())
+        )
+
+        // When
+        let sut = POSLockScreenModel(session: session)
+
+        // Then
+        #expect(sut.pinEntryState == .idle)
+    }
+
     private func makeStaff() -> POSStaff {
         POSStaff(
             displayName: "Maya",

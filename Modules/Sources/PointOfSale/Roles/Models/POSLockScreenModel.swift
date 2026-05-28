@@ -14,6 +14,11 @@ final class POSLockScreenModel {
 
     init(session: POSAccessSession) {
         self.session = session
+        do {
+            try session.checkLockoutState()
+        } catch {
+            pinEntryState = state(for: error)
+        }
     }
 
     #if DEBUG

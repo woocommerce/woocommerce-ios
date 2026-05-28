@@ -722,9 +722,20 @@ extension PointOfSaleAggregateModel {
         isStaleSyncWarningDismissed = true
     }
 
+    @MainActor
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
-        isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+        let isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+        let shouldTrackShown = isLocalCatalogEligible
+        && isSyncStale
+        && !isStaleSyncWarningDismissed
+        && !showStaleSyncWarning
+
+        self.isSyncStale = isSyncStale
+
+        if shouldTrackShown, let hours = await hoursSinceLastSync() {
+            analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
+        }
     }
 
     /// Calculates the number of hours since the last catalog sync
@@ -741,9 +752,20 @@ extension PointOfSaleAggregateModel {
         sunsetWarningChecker?.recordDismissal(siteID: siteID)
     }
 
+    @MainActor
     func checkSunsetWarningStatus() async {
         guard let sunsetWarningChecker else { return }
-        showSunsetWarning = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
+        let shouldShow = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
+
+        guard shouldShow else {
+            showSunsetWarning = false
+            return
+        }
+
+        guard !showSunsetWarning else { return }
+
+        showSunsetWarning = true
+        analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
     }
 }
 

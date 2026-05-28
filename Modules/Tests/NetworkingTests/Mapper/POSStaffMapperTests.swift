@@ -39,6 +39,31 @@ final class POSStaffMapperTests: XCTestCase {
         XCTAssertThrowsError(try POSStaffMapper().map(response: response))
     }
 
+    func test_map_when_response_is_jetpack_tunnel_data_envelope_then_unwraps_and_returns_staff() throws {
+        // Given - WPCOM Jetpack tunnel wraps WC responses in a top-level `data` envelope,
+        // so a real device opening POS sees `{"data":{"staff":[...]}}` instead of `{"staff":[...]}`.
+        let response = #"""
+        {"data":{"staff":[
+          {"user_id":1,"user_login":"admin","display_name":"Admin","role":"administrator",
+           "capabilities":{"view_pos":true},
+           "pin":{"algo":"pbkdf2-sha256","iterations":10000,"salt":"c2FsdA==","hash":"aGFzaA=="}},
+          {"user_id":2,"user_login":"mike","display_name":"Mike","role":"pos_cashier",
+           "capabilities":{"view_pos":true},
+           "pin":null}
+        ]}}
+        """#.data(using: .utf8)!
+
+        // When
+        let staff = try POSStaffMapper().map(response: response)
+
+        // Then
+        XCTAssertEqual(staff.count, 2)
+        XCTAssertEqual(staff[0].userID, 1)
+        XCTAssertNotNil(staff[0].pin)
+        XCTAssertEqual(staff[1].userID, 2)
+        XCTAssertNil(staff[1].pin)
+    }
+
     func test_map_when_response_is_wc_rest_error_then_throws_wordpress_api_error() {
         // Given - the body returned by WC on a 401, where DotcomValidator doesn't recognise the shape
         let response = #"""

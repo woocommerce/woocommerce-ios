@@ -210,14 +210,21 @@ final class SupportChatViewModel {
     }
 
     /// Whether the trailing toolbar entry point to human support should be visible.
-    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
-    /// AND the conversation has at least one persisted bot response, and only while no ticket
-    /// has been created yet.
+    /// Shown while the issue picker is visible or once the merchant has reached the free-chat phase,
+    /// and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
+        guard !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return hasRemoteBotResponse
+        return true
+    }
+
+    var isContactHumanSupportButtonEnabled: Bool {
+        state != .sending || chatID != nil
+    }
+
+    var isIssuePickerEnabled: Bool {
+        selectedIssue == nil && hasCreatedTicket == false
     }
 
     var shouldShowResolvedButton: Bool {
@@ -251,7 +258,8 @@ final class SupportChatViewModel {
         _ chatID: Int64?,
         _ transcript: String,
         _ supportAreaInfo: SupportAreaInfo?,
-        _ entryPoint: EntryPoint
+        _ entryPoint: EntryPoint,
+        _ hasReceivedBotResponse: Bool
     ) -> Void
 
     // MARK: - Private Properties
@@ -326,11 +334,16 @@ final class SupportChatViewModel {
     /// Selects an issue type and runs diagnostics if needed.
     ///
     func selectIssue(_ issue: SupportIssueType) async {
-        selectedIssue = issue
+        guard isIssuePickerEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
             issueType: issue,
             entryPoint: entryPoint
         ))
+
+        selectedIssue = issue
 
         // Add user's selection as a message
         let userMessage = ChatMessage(role: .user, text: issue.displayName)
@@ -716,6 +729,10 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {
+        guard isContactHumanSupportButtonEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
             source: source,
             entryPoint: entryPoint,
@@ -741,7 +758,7 @@ final class SupportChatViewModel {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint, hasRemoteBotResponse)
     }
 
     private func generateTranscript() -> String {

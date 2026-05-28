@@ -118,6 +118,71 @@ final class POSStaffAdaptorTests: XCTestCase {
         }
     }
 
+    // MARK: - NetworkError paths (REST-direct, e.g. app-password sites)
+
+    func test_fetchStaff_when_network_404_with_rest_no_route_then_throws_flagDisabledServerSide() async {
+        // Given - REST direct path: server has the route gated off
+        let body = #"{"code":"rest_no_route","message":"No route was found","data":{"status":404}}"#.data(using: .utf8)
+        let error = NetworkError.notFound(response: body)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.flagDisabledServerSide) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_network_401_cannot_view_then_throws_adminMissingCapability() async {
+        // Given - REST direct path: device admin lacks manage_pos_staff
+        let body = #"{"code":"woocommerce_rest_cannot_view","message":"Sorry, you cannot view resources.","data":{"status":401}}"#.data(using: .utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 401, response: body)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.adminMissingCapability) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_network_403_rest_forbidden_then_throws_adminMissingCapability() async {
+        // Given
+        let body = #"{"code":"rest_forbidden","message":"Sorry, you are not allowed to do that.","data":{"status":403}}"#.data(using: .utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 403, response: body)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.adminMissingCapability) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_network_500_then_throws_transient() async {
+        // Given
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500, response: nil)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.transient(retryable: true)) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
+    func test_fetchStaff_when_network_timeout_then_throws_transient() async {
+        // Given
+        let error = NetworkError.timeout(response: nil)
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.transient(retryable: true)) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
     // MARK: - Helpers
 
     private func assertThrows<E: Error & Equatable>(_ expected: E, _ block: () async throws -> Void) async {

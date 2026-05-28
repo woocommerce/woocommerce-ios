@@ -7,6 +7,7 @@ final class POSLockScreenModel {
     private let session: POSAccessSession
 
     private(set) var pinEntryState: POSPINEntryState = .idle
+    private(set) var isRefreshing: Bool
 
     var isLocked: Bool {
         session.isLocked
@@ -20,8 +21,25 @@ final class POSLockScreenModel {
         session.pinStatus
     }
 
+    /// Drives which content the lock screen renders. Derived from `pinStatus` and
+    /// `isRefreshing` so the view stays declarative.
+    var content: Content {
+        switch pinStatus {
+        case .present, .absent:
+            // .absent shouldn't reach the lock screen (overlay hides), but render the numpad
+            // defensively in case of a brief state-transition frame.
+            return .pinEntry
+        case .unknown:
+            return isRefreshing ? .loading : .unavailable
+        }
+    }
+
     init(session: POSAccessSession) {
         self.session = session
+        // Assume the lock screen will call `refreshPINStatus()` in `.task` on first appear,
+        // so initialize as refreshing when the session starts uncertain. Avoids a one-frame
+        // flash of the unavailable state on cold start.
+        self.isRefreshing = session.pinStatus == .unknown
         do {
             try session.checkLockoutState()
         } catch {
@@ -30,9 +48,14 @@ final class POSLockScreenModel {
     }
 
     #if DEBUG
-    convenience init(session: POSAccessSession, initialPinEntryState: POSPINEntryState) {
+    convenience init(session: POSAccessSession,
+                     initialPinEntryState: POSPINEntryState = .idle,
+                     isRefreshing: Bool? = nil) {
         self.init(session: session)
         self.pinEntryState = initialPinEntryState
+        if let isRefreshing {
+            self.isRefreshing = isRefreshing
+        }
     }
     #endif
 
@@ -56,7 +79,19 @@ final class POSLockScreenModel {
     }
 
     func refreshPINStatus() async {
+        isRefreshing = true
         await session.refreshPINStatus()
+        isRefreshing = false
+    }
+}
+
+extension POSLockScreenModel {
+    /// Mutually-exclusive content states the lock screen can render. `pinEntry` is the
+    /// numpad happy path; `loading` and `unavailable` cover the two `.unknown` sub-cases.
+    enum Content: Equatable {
+        case loading
+        case pinEntry
+        case unavailable
     }
 }
 

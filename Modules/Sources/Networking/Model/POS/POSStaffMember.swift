@@ -1,7 +1,7 @@
 import Foundation
 
-/// One row of the `GET /wc-pos/v1/staff` response. Mirrors the WordPress user record
-/// surfaced by `POSStaffController::list_staff` in WC core PR #65315.
+/// One row of the `GET /wc-pos/v1/staff` response. Carries the WordPress user record
+/// the iOS client caches and validates PIN entry against locally.
 ///
 public struct POSStaffMember: Codable, Equatable, Sendable {
     public let userID: Int64

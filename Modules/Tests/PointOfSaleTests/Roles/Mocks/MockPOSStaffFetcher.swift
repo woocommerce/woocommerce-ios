@@ -2,6 +2,7 @@ import Foundation
 import struct Networking.POSStaffMember
 @testable import PointOfSale
 
+/// Test stub. Safe under main-actor-isolated Swift Testing suites; not safe for concurrent access.
 final class MockPOSStaffFetcher: POSStaffFetching, @unchecked Sendable {
     var results: [Result<[POSStaffMember], POSStaffFetchError>]
     private(set) var calls: Int = 0

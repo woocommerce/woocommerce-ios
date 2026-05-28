@@ -54,13 +54,16 @@ public enum WooAPIVersion: String {
     ///
     case wcBookings = "wc-bookings/v2"
 
-    /// WooCommerce POS V1.
+    /// Prefix shared by the WooCommerce POS catalog-sync routes. The real registered namespace
+    /// is `wc/pos/v1/catalog`; this enum value is the leading path segment that callers combine
+    /// with `catalog/...` paths.
     ///
     case wcPosV1 = "wc/pos/v1"
 
-    /// POS server-side design v1 namespace. Hosts the M1 staff endpoint and any future POS REST
-    /// routes added under the same proposal. Distinct from `wcPosV1 = "wc/pos/v1"` used by
-    /// catalog sync.
+    /// Top-level namespace for the POS staff endpoint and other POS routes added alongside it.
+    /// Distinct from `wcPosV1` - the server registers `wc-pos/v1` separately from the older
+    /// `wc/pos/v1/catalog` namespace. Routes here are gated by the `point_of_sale_staff`
+    /// server-side feature flag.
     ///
     case pointOfSaleV1 = "wc-pos/v1"
 

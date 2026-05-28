@@ -29,7 +29,6 @@ public struct PointOfSaleEntryPointView: View {
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @State private var accessSession: POSAccessSession
-    @State private var isStaffRefreshing: Bool = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -185,15 +184,12 @@ public struct PointOfSaleEntryPointView: View {
 
     public var body: some View {
         Group {
-            switch startupState {
-            case .loading:
-                PointOfSaleLoadingView()
-            case .staffError:
-                POSStaffErrorView { await refreshStaff() }
-            case .ready(let posModel):
+            if let posModel {
                 PointOfSaleDashboardView()
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+            } else {
+                PointOfSaleLoadingView()
             }
         }
         .task {
@@ -248,45 +244,10 @@ public struct PointOfSaleEntryPointView: View {
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
         }
-        .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
-        .task {
-            // Initial staff refresh runs in parallel with the posModel .task above; the
-            // body's switch on startupState reflects whichever completes last. Goes through
-            // refreshStaff so isStaffRefreshing tracks every caller.
-            await refreshStaff()
-        }
         .onReceive(NotificationCenter.default.publisher(for: .posShouldClearStaffCache)) { _ in
             accessSession.clearStaffCache()
         }
-    }
-
-    /// Combined readiness state. The body shows a single loading view while either the
-    /// dashboard model or the staff fetch is still in flight; the error view only when the
-    /// staff fetch finished without resolving the PIN status (cold cache + no fallback).
-    private enum StartupState {
-        case loading
-        case staffError
-        case ready(PointOfSaleAggregateModel)
-    }
-
-    private var startupState: StartupState {
-        if accessSession.pinStatus == .unknown && !isStaffRefreshing {
-            return .staffError
-        }
-        guard let posModel, accessSession.pinStatus != .unknown else {
-            return .loading
-        }
-        return .ready(posModel)
-    }
-
-    /// Wraps `accessSession.refreshPINStatus()` so isStaffRefreshing tracks every call
-    /// site (initial .task, retry button). Keeping the flag here means any future caller
-    /// has to go through this method to stay in sync.
-    private func refreshStaff() async {
-        isStaffRefreshing = true
-        await accessSession.refreshPINStatus()
-        isStaffRefreshing = false
     }
 }
 

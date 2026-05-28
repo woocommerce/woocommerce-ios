@@ -12,14 +12,6 @@ final class POSLockScreenModel {
         session.isLocked
     }
 
-    /// Tri-state reflecting whether the cached staff list has any PINs. The overlay treats
-    /// `.absent` as "no security boundary, skip the lock screen"; `.present` triggers the
-    /// PIN entry. `.unknown` is handled upstream by the entry point's startup state so it
-    /// never reaches the overlay.
-    var pinStatus: POSPINStatus {
-        session.pinStatus
-    }
-
     init(session: POSAccessSession) {
         self.session = session
         do {

@@ -18,41 +18,6 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .idle)
     }
 
-    @Test func test_pinStatus_when_session_has_pins_then_present() {
-        // Given
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .present)
-
-        // When
-        let sut = POSLockScreenModel(session: session)
-
-        // Then - the overlay shows the lock screen with the numpad active.
-        #expect(sut.pinStatus == .present)
-    }
-
-    @Test func test_pinStatus_when_session_has_no_pins_then_absent() {
-        // Given
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .absent)
-
-        // When
-        let sut = POSLockScreenModel(session: session)
-
-        // Then - .absent tells the overlay to skip the lock screen entirely.
-        #expect(sut.pinStatus == .absent)
-        #expect(sut.isLocked == true)
-    }
-
-    @Test func test_pinStatus_when_session_status_is_unknown_then_unknown() {
-        // Given - cold cache before any refresh resolves
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .unknown)
-
-        // When
-        let sut = POSLockScreenModel(session: session)
-
-        // Then - the overlay still presents (gating until a fetch confirms).
-        #expect(sut.pinStatus == .unknown)
-        #expect(sut.isLocked == true)
-    }
-
     @Test func test_sessionState_when_session_locks_then_model_updates() async {
         // Given
         let session = MockPOSAccessSession(isLocked: false)

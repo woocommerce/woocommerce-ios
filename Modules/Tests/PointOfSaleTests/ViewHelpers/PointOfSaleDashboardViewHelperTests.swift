@@ -18,6 +18,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -36,6 +39,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -56,6 +62,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -82,6 +91,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -102,6 +114,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -120,6 +135,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -151,6 +169,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -171,6 +192,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -189,6 +213,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -207,6 +234,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -227,6 +257,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -245,6 +278,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -263,6 +299,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -281,6 +320,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -304,6 +346,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -326,10 +371,147 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.loading(), false),
-        (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false)
+        (PointOfSaleDashboardView.ViewState.ineligible(reason: .featureSwitchDisabled), false),
+        (PointOfSaleDashboardView.ViewState.locked, false)
     ])
-    func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
+    func showsFloatingControl_when_loading_ineligible_or_locked_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
         // When & Then
         #expect(viewState.showsFloatingControl == expected)
+    }
+
+    @Test func showsFloatingControl_when_error_is_staffLoadError_returns_false() async throws {
+        // When & Then - staff load errors hide the floating control like initial catalog sync errors.
+        let viewState = PointOfSaleDashboardView.ViewState.error(PointOfSaleErrorState.errorOnLoadingStaff())
+        #expect(viewState.showsFloatingControl == false)
+    }
+
+    // MARK: - Staff Gate Tests
+
+    @Test func determineViewState_when_pinStatus_is_unknown_and_not_refreshing_returns_staffLoadError() async throws {
+        // Given - cold cache + a finished-and-failed refresh leaves us in this state.
+        // Without the staff gate, the dashboard would auto-unlock without confirming PINs.
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .content,
+            pinStatus: .unknown,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        if case .error(let errorState) = result {
+            #expect(errorState.errorType == .staffLoadError)
+        } else {
+            Issue.record("Expected .error(.staffLoadError), got \(result)")
+        }
+    }
+
+    @Test func determineViewState_when_pinStatus_is_unknown_and_refreshing_returns_loading() async throws {
+        // Given - staff refresh in flight, cache not yet populated.
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .content,
+            pinStatus: .unknown,
+            isLocked: true,
+            isStaffRefreshing: true,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .loading())
+    }
+
+    @Test func determineViewState_when_staff_unknown_takes_priority_over_items_loading_flavor() async throws {
+        // Given - both staff and catalog still loading; the staff gate fires first but
+        // should still surface the isCatalogSyncing flag so the catalog-syncing flavor
+        // of the loading view shows.
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .loading(isCatalogSyncing: true),
+            pinStatus: .unknown,
+            isLocked: true,
+            isStaffRefreshing: true,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .loading(isCatalogSyncing: true))
+    }
+
+    // MARK: - Lock Gate Tests
+
+    @Test func determineViewState_when_eligible_content_and_locked_with_present_pin_returns_locked() async throws {
+        // Given - everything ready, dashboard would be interactive, but PIN required.
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .content,
+            pinStatus: .present,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .locked)
+    }
+
+    @Test func determineViewState_when_locked_with_absent_pin_returns_content() async throws {
+        // Given - .absent means no PIN system configured; the lock screen never shows.
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .content,
+            pinStatus: .absent,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_unlocked_with_present_pin_returns_content() async throws {
+        // Given - PINs exist but session is unlocked (user signed in).
+        // When
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .content,
+            pinStatus: .present,
+            isLocked: false,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .content)
+    }
+
+    @Test func determineViewState_when_items_loading_takes_priority_over_lock() async throws {
+        // Given - PINs present + locked, but items still loading.
+        // The lock gate only fires after items resolve to .content; while items are
+        // loading the loading view should show, not the lock screen.
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .loading(isCatalogSyncing: false),
+            pinStatus: .present,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .loading())
     }
 }

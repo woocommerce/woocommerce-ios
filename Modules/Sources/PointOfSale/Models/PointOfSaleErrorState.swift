@@ -15,6 +15,7 @@ struct PointOfSaleErrorState: Equatable {
         case couponsRefreshError
         case ordersLoadError
         case ordersNextPageError
+        case staffLoadError
     }
 
     let errorType: ErrorType
@@ -126,6 +127,14 @@ struct PointOfSaleErrorState: Equatable {
             buttonText: Constants.retryButtonTitle)
     }
 
+    static func errorOnLoadingStaff(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .staffLoadError,
+            title: Constants.failedToLoadStaffTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
     private static func subtitle(for error: Error?) -> String {
         if let error, error.isConnectivityError {
             return Constants.connectivityErrorSubtitle
@@ -228,6 +237,11 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to load more orders",
             comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
             "the first. Shown inline with the previously loaded orders above."
+        )
+        static let failedToLoadStaffTitle = NSLocalizedString(
+            "pos.staff.failedToLoadTitle",
+            value: "Unable to load staff",
+            comment: "Title appearing when the POS staff list (used for PIN verification) can't be loaded."
         )
     }
 }

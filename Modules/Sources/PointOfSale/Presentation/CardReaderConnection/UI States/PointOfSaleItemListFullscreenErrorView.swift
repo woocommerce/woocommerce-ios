@@ -13,14 +13,20 @@ struct PointOfSaleItemListFullscreenErrorView: View {
     }
 
     var body: some View {
-        PointOfSaleItemListFullscreenView(showTitle: !isInitialCatalogSyncError) {
+        PointOfSaleItemListFullscreenView(showTitle: !hidesItemListTitle) {
             POSListErrorView(error: error, onAction: onAction, onExit: onExit)
         }
     }
 
-    // TODO: WOOMOB-1692 remove specialisation of errors if possible
-    private var isInitialCatalogSyncError: Bool {
-        error.errorType == .initialCatalogSyncError
+    /// Errors that aren't about the items list itself shouldn't render the items-list title
+    /// (catalog sync is the original case; staff load errors join it because they're a
+    /// startup-time concern, not an items concern).
+    /// TODO: WOOMOB-1692 remove specialisation of errors if possible
+    private var hidesItemListTitle: Bool {
+        switch error.errorType {
+        case .initialCatalogSyncError, .staffLoadError: true
+        default: false
+        }
     }
 }
 

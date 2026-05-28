@@ -522,8 +522,10 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .content)
     }
 
-    @Test func determineViewState_when_items_loading_takes_priority_over_lock() async throws {
-        // Given - lock gate fires only after items resolve to .content.
+    @Test func determineViewState_when_locked_with_present_pin_and_items_loading_returns_locked() async throws {
+        // Given - lock gate must win over items state once staff is known present,
+        // so a locked admin can't bypass the PIN via floating controls during a
+        // catalog/items error or loading state.
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: .eligible,
             itemsContainerState: .loading(isCatalogSyncing: false),
@@ -535,6 +537,22 @@ struct PointOfSaleDashboardViewHelperTests {
         )
 
         // Then
-        #expect(result == .loading())
+        #expect(result == .locked)
+    }
+
+    @Test func determineViewState_when_locked_with_present_pin_and_items_error_returns_locked() async throws {
+        // Given
+        let result = PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: .eligible,
+            itemsContainerState: .error(.errorOnLoadingProducts()),
+            pinStatus: .present,
+            isLocked: true,
+            isStaffRefreshing: false,
+            horizontalSizeClass: .regular,
+            isPhonePrototypeEnabled: false
+        )
+
+        // Then
+        #expect(result == .locked)
     }
 }

@@ -82,6 +82,10 @@ final class POSStaffCache: @unchecked Sendable {
     }
 
     func lastFetched(siteID: Int64) -> Date? {
+        // Atomic with the staff payload: a timestamp without a readable staff list means
+        // the cache is incomplete and must be treated as cold, otherwise a missing/corrupt
+        // staff key reads as "no PINs" and unlocks POS without a verified /staff result.
+        guard load(siteID: siteID) != nil else { return nil }
         guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
               let bitPattern = UInt64(raw, radix: 16) else { return nil }
         let ref = Double(bitPattern: bitPattern)

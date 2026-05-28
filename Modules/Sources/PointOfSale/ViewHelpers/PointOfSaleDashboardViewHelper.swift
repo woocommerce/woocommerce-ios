@@ -24,6 +24,11 @@ struct PointOfSaleDashboardViewHelper {
         case .ineligible(let reason):
             return .ineligible(reason: reason)
         case .eligible:
+            // Lock gate must win over items loading/error once staff is known present,
+            // otherwise items errors expose the floating controls to a locked session.
+            if isLocked && pinStatus == .present {
+                return .locked
+            }
             switch itemsContainerState {
             case let .loading(isCatalogSyncing):
                 return .loading(isCatalogSyncing: isCatalogSyncing)
@@ -35,9 +40,6 @@ struct PointOfSaleDashboardViewHelper {
                 }
                 if pinStatus == .unknown {
                     return .loading()
-                }
-                if isLocked && pinStatus == .present {
-                    return .locked
                 }
                 return .content
             }

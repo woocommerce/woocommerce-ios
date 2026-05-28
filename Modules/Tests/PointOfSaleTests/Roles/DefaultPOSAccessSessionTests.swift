@@ -301,6 +301,29 @@ struct DefaultPOSAccessSessionTests {
         #expect(session.isLocked == true)
     }
 
+    @Test func test_refreshPINStatus_when_cache_payload_missing_then_does_not_unlock_via_torn_cache() async {
+        // Given - torn cache: timestamp valid + within TTL, but staff payload gone.
+        // Without atomicity, the TTL early-return would call applyCachedPINStatus,
+        // see hasAnyPINs == false (because load() returns nil), and unlock POS.
+        let storage = InMemoryKeyValueStorage()
+        let now = Date()
+        let cache = POSStaffCache(storage: storage, now: { now })
+        cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
+        storage.setString(nil, forKey: "staff.1")
+        let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
+                                  now: { now.addingTimeInterval(5) })
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then - the missing payload made lastFetched return nil, so the TTL early-return
+        // was skipped, a real fetch was attempted, it failed, and the session stays gated.
+        #expect(fetcher.calls == 1)
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
+    }
+
     @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
         // Given
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())

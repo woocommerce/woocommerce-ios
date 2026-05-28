@@ -79,6 +79,32 @@ struct POSStaffCacheTests {
         #expect(sut.lastFetched(siteID: 1) == now)
     }
 
+    @Test func test_lastFetched_when_staff_payload_missing_then_returns_nil_even_with_valid_timestamp() {
+        // Given - simulate a torn cache: timestamp written but staff key missing
+        // (selective Keychain wipe / partial write). Without atomicity the session
+        // would unlock POS as "no PINs" because hasAnyPINs returns false.
+        let storage = InMemoryKeyValueStorage()
+        let now = Date()
+        let sut = POSStaffCache(storage: storage, now: { now })
+        sut.save([makeMember(id: 1)], siteID: 1)
+        storage.setString(nil, forKey: "staff.1")
+
+        // When / Then
+        #expect(sut.lastFetched(siteID: 1) == nil)
+    }
+
+    @Test func test_lastFetched_when_staff_payload_corrupt_then_returns_nil_even_with_valid_timestamp() {
+        // Given - timestamp valid, staff payload is unreadable garbage
+        let storage = InMemoryKeyValueStorage()
+        let now = Date()
+        let sut = POSStaffCache(storage: storage, now: { now })
+        sut.save([makeMember(id: 1)], siteID: 1)
+        storage.setString("not-valid-json", forKey: "staff.1")
+
+        // When / Then
+        #expect(sut.lastFetched(siteID: 1) == nil)
+    }
+
     // MARK: - Helpers
 
     private func makeMember(id: Int64, hasPIN: Bool = true) -> POSStaffMember {

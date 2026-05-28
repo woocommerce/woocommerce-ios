@@ -88,6 +88,7 @@ struct PointOfSaleDashboardView: View {
                     .ignoresSafeArea()
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
+                    Task { await userInitiatedRefresh() }
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
                 })
                 .frame(maxWidth: .infinity)
@@ -575,20 +576,17 @@ private extension PointOfSaleDashboardView {
         isStaffRefreshing = false
     }
 
+    func userInitiatedRefresh() async {
+        async let staffTask: () = refreshStaff()
+        async let itemsTask: () = reloadCurrentItemList()
+        _ = await (staffTask, itemsTask)
+    }
+
     func errorActionHandler(for error: PointOfSaleErrorState) {
         if error.errorType == .initialCatalogSyncError {
             analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
         }
-        Task {
-            async let staffTask: () = refreshStaff()
-            async let itemsTask: () = reloadCurrentItemList()
-            _ = await (staffTask, itemsTask)
-            // Give staff a second attempt so a flaky-network race where items succeeds but
-            // staff fails doesn't force the user into a follow-up staff-error retry tap.
-            if accessSession.pinStatus == .unknown {
-                await refreshStaff()
-            }
-        }
+        Task { await userInitiatedRefresh() }
     }
 
     // TODO: WOOMOB-1692 remove specialisation of errors if possible

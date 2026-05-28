@@ -206,6 +206,22 @@ final class SystemStatusReportMapperTests: XCTestCase {
         XCTAssertEqual(tableWithStringValues?.index, "12.75")
         XCTAssertEqual(tableWithStringValues?.engine, "InnoDB")
     }
+
+    func test_database_table_formattedString_when_values_are_nil_then_displays_null() {
+        // Given
+        let table = SystemStatusReport.DatabaseTable(data: nil, index: nil, engine: nil)
+
+        // Then
+        XCTAssertEqual(table.formattedString, "Data: null + Index: null + Engine: null")
+    }
+
+    func test_database_table_formattedString_when_values_are_present_then_displays_values_with_units() {
+        // Given
+        let table = SystemStatusReport.DatabaseTable(data: "8.52", index: "12.75", engine: "InnoDB")
+
+        // Then
+        XCTAssertEqual(table.formattedString, "Data: 8.52MB + Index: 12.75MB + Engine: InnoDB")
+    }
 }
 
 private extension SystemStatusReportMapperTests {

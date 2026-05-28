@@ -178,6 +178,22 @@ struct DefaultPOSPINAuthenticatorTests {
         }
     }
 
+    @Test func test_authenticate_when_cache_cleared_mid_refetch_then_throws_invalidPIN_and_no_stale_match() async {
+        // Given
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let manager = makeMember(id: 7, hasPIN: true, salt: knownSalt, hash: knownHash,
+                                 capabilities: ["view_pos": true])
+        let fetcher = MockPOSStaffFetcher(staff: [manager])
+        let sut = makeSUT(cache: cache, fetcher: fetcher, siteID: 1)
+        fetcher.onFetch = { cache.clear(siteID: 1) }
+
+        // When / Then
+        await #expect(throws: POSAuthError.invalidPIN) {
+            _ = try await sut.authenticate(withPIN: knownPIN)
+        }
+        #expect(cache.load(siteID: 1) == nil)
+    }
+
     @Test func test_authenticate_when_cache_misses_and_fetcher_throws_then_throws_staffFetchFailed() async {
         // Given
         let cache = POSStaffCache(storage: InMemoryKeyValueStorage())

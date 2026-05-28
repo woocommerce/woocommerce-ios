@@ -60,7 +60,9 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         let capturedGeneration = cache.generation
         do {
             let fresh = try await fetcher.fetchStaff(siteID: siteID)
-            cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration)
+            guard cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration) else {
+                return []
+            }
             return fresh
         } catch {
             throw .staffFetchFailed(error)

@@ -68,7 +68,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
         let capturedGeneration = cache.generation
         do {
             let fresh = try await fetcher.fetchStaff(siteID: siteID)
-            cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration)
+            guard cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration) else { return }
             flagDisabledServerSide = false
             applyCachedPINStatus()
         } catch let error as POSStaffFetchError {

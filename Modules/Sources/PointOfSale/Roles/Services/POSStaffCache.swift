@@ -3,16 +3,11 @@ import Foundation
 import struct Networking.POSStaffMember
 import KeychainAccess
 
-/// Backing storage for `POSStaffCache`. Protocol exists so tests can inject an in-memory stub
-/// without touching the real Keychain.
-///
 protocol POSStaffKeyValueStorage: Sendable {
     func string(forKey key: String) -> String?
     func setString(_ value: String?, forKey key: String)
 }
 
-/// `Keychain`-backed `POSStaffKeyValueStorage`.
-///
 struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
     static let service = "com.woocommerce.pos.staffCache"
 
@@ -22,8 +17,6 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
         self.keychain = Keychain(service: service)
     }
 
-    // Returns nil for both "absent" and "locked"; callers tolerate stale-cache. Reads
-    // surface as nil but are logged so a Keychain permission issue isn't silent.
     func string(forKey key: String) -> String? {
         do {
             return try keychain.get(key)
@@ -46,10 +39,8 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
     }
 }
 
-/// Per-site cache of the `/staff` response, encoded as JSON in Keychain. Reads/writes flow
-/// through the injected `POSStaffKeyValueStorage`. `@unchecked Sendable` is sound because the
-/// default `KeychainPOSStaffStorage` serializes via the system Keychain, and the test stub is
-/// used only under main-actor isolation.
+/// `@unchecked Sendable` is sound because `KeychainPOSStaffStorage` serializes via the system
+/// Keychain and the test stub is only used under main-actor isolation.
 final class POSStaffCache: @unchecked Sendable {
     private let storage: POSStaffKeyValueStorage
     private let now: @Sendable () -> Date
@@ -74,12 +65,11 @@ final class POSStaffCache: @unchecked Sendable {
         writeStaff(staff, siteID: siteID)
     }
 
-    /// Save guarded by a generation token captured before the fetch. If `clear` ran while the
-    /// fetch was in flight, the captured generation no longer matches and the save is dropped
-    /// - otherwise a logout/site-switch mid-fetch would repopulate the cache with stale PINs.
-    func save(_ staff: [POSStaffMember], siteID: Int64, ifGenerationStill expectedGeneration: Int) {
-        guard expectedGeneration == generation else { return }
+    @discardableResult
+    func save(_ staff: [POSStaffMember], siteID: Int64, ifGenerationStill expectedGeneration: Int) -> Bool {
+        guard expectedGeneration == generation else { return false }
         writeStaff(staff, siteID: siteID)
+        return true
     }
 
     func clear(siteID: Int64) {
@@ -92,8 +82,7 @@ final class POSStaffCache: @unchecked Sendable {
         guard let data = try? JSONEncoder().encode(staff),
               let json = String(data: data, encoding: .utf8) else { return }
         storage.setString(json, forKey: staffKey(siteID: siteID))
-        // Hex bit-pattern of TimeIntervalSinceReferenceDate round-trips losslessly; String(Double)
-        // and ISO8601 alternatives lose sub-second precision.
+        // Hex bit-pattern round-trips losslessly; String(Double) and ISO8601 lose sub-second precision.
         let ref = now().timeIntervalSinceReferenceDate
         storage.setString(String(ref.bitPattern, radix: 16), forKey: timestampKey(siteID: siteID))
     }
@@ -103,9 +92,8 @@ final class POSStaffCache: @unchecked Sendable {
     }
 
     func lastFetched(siteID: Int64) -> Date? {
-        // Atomic with the staff payload: a timestamp without a readable staff list means
-        // the cache is incomplete and must be treated as cold, otherwise a missing/corrupt
-        // staff key reads as "no PINs" and unlocks POS without a verified /staff result.
+        // Atomic with the staff payload - a torn cache (timestamp present, payload missing)
+        // would otherwise read as "no PINs" and auto-unlock POS without a verified fetch.
         guard load(siteID: siteID) != nil else { return nil }
         guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
               let bitPattern = UInt64(raw, radix: 16) else { return nil }
@@ -117,19 +105,11 @@ final class POSStaffCache: @unchecked Sendable {
     private func timestampKey(siteID: Int64) -> String { "lastFetched.\(siteID)" }
 }
 
-/// Public entry point for wiping the per-site staff PIN cache from outside the PointOfSale
-/// module. Used by the app target on logout / site-switch lifecycle events so a previous
-/// tenant's cached PIN hashes can't survive into a new user session. Uses the default
-/// Keychain-backed storage; safe to call when POS is not mounted.
 public enum POSStaffCacheCleaner {
     public static func clear(siteID: Int64) {
         POSStaffCache().clear(siteID: siteID)
     }
 
-    /// Wipes the staff cache for every site this app has ever cached. Use on logout so a
-    /// previous account's cached PIN hashes can't survive into a new user session - per-site
-    /// `clear` only handles the currently-mounted site and would leave entries from other
-    /// sites the user has ever opened POS for.
     public static func clearAll() {
         do {
             try Keychain(service: KeychainPOSStaffStorage.service).removeAll()

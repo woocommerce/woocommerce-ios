@@ -94,16 +94,16 @@ struct POSStaffCacheTests {
     }
 
     @Test func test_save_with_generation_guard_when_cache_cleared_in_flight_then_save_is_dropped() {
-        // Given - simulates clear() running after a fetch was captured but before save
+        // Given
         let storage = InMemoryKeyValueStorage()
         let sut = POSStaffCache(storage: storage)
         let captured = sut.generation
         sut.clear(siteID: 1)
 
-        // When - the in-flight fetch tries to save with the captured (now-stale) generation
+        // When
         sut.save([makeMember(id: 1)], siteID: 1, ifGenerationStill: captured)
 
-        // Then - save is dropped; cache stays cleared
+        // Then
         #expect(sut.load(siteID: 1) == nil)
     }
 

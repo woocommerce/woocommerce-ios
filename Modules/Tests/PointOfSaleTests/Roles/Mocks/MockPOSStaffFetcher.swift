@@ -5,6 +5,7 @@ import struct Networking.POSStaffMember
 /// Test stub. Safe under main-actor-isolated Swift Testing suites; not safe for concurrent access.
 final class MockPOSStaffFetcher: POSStaffFetching, @unchecked Sendable {
     var results: [Result<[POSStaffMember], POSStaffFetchError>]
+    var onFetch: (@Sendable () -> Void)?
     private(set) var calls: Int = 0
 
     init(results: [Result<[POSStaffMember], POSStaffFetchError>]) {
@@ -21,6 +22,7 @@ final class MockPOSStaffFetcher: POSStaffFetching, @unchecked Sendable {
 
     func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] {
         defer { calls += 1 }
+        onFetch?()
         let result = results[min(calls, results.count - 1)]
         switch result {
         case .success(let staff): return staff

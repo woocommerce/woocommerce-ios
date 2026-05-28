@@ -245,6 +245,22 @@ struct DefaultPOSAccessSessionTests {
         #expect(session.isLocked == true)
     }
 
+    @Test func test_refreshPINStatus_when_cache_cleared_mid_fetch_then_does_not_unlock_or_overwrite_state() async {
+        // Given
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
+        let fetcher = MockPOSStaffFetcher(staff: [makeMember(id: 1, hasPIN: true)])
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
+        fetcher.onFetch = { cache.clear(siteID: 1) }
+
+        // When
+        await session.refreshPINStatus()
+
+        // Then
+        #expect(session.pinStatus == .unknown)
+        #expect(session.isLocked == true)
+        #expect(cache.load(siteID: 1) == nil)
+    }
+
     @Test func test_refreshPINStatus_when_cache_payload_missing_then_does_not_unlock_via_torn_cache() async {
         // Given - torn cache: timestamp valid but staff payload gone. Without atomicity,
         // the cache-fallback arm would call applyCachedPINStatus, see hasAnyPINs == false

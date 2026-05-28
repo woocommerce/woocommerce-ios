@@ -377,13 +377,9 @@ private extension POSTabCoordinator {
         TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 
-    /// Registers `NotificationCenter` observers for logout and site-switch events and clears
-    /// the Keychain-backed staff PIN cache directly via `POSStaffCacheCleaner`. Logout wipes
-    /// every cached site so a previous account's PIN hashes can't survive; site-switch only
-    /// clears the current site (the new site's cache is wiped by its own coordinator if it
-    /// ever opens POS again). The direct call ensures cleanup happens even when POS is not
-    /// mounted. The `.posShouldClearStaffCache` repost lets the active POS view (if any)
-    /// reset its in-memory session state alongside the persistent wipe.
+    /// Logout wipes every cached site (previous account's PINs shouldn't survive); site-switch
+    /// only clears the current site. Direct call so cleanup happens even when POS isn't mounted;
+    /// the notification repost resets the active POS view's in-memory state alongside.
     func registerStaffCacheCleanup() {
         let siteID = self.siteID
         cacheCleanupObservers = [

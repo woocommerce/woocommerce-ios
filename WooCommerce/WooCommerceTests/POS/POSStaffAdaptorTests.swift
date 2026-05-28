@@ -118,6 +118,21 @@ final class POSStaffAdaptorTests: XCTestCase {
         }
     }
 
+    func test_fetchStaff_when_wp_rest_no_route_then_throws_flagDisabledServerSide() async {
+        // Given - Jetpack tunnel surface of "endpoint doesn't exist" (e.g. WC trunk install without
+        // PR #65315 backend code, or feature flag off server-side). Previously fell through to
+        // .transient, which preserved the cache; we want this to clear the cache instead.
+        let error = WordPressApiError.unknown(code: "rest_no_route",
+                                              message: "No route was found matching the URL and request method.")
+        let remote = MockPOSStaffRemote(result: .failure(error))
+        let sut = POSStaffAdaptor(remote: remote)
+
+        // When / Then
+        await assertThrows(POSStaffFetchError.flagDisabledServerSide) {
+            _ = try await sut.fetchStaff(siteID: 1)
+        }
+    }
+
     // MARK: - NetworkError paths (REST-direct, e.g. app-password sites)
 
     func test_fetchStaff_when_network_404_with_rest_no_route_then_throws_flagDisabledServerSide() async {

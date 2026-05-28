@@ -49,8 +49,18 @@ final class POSStaffAdaptor: POSStaffFetching {
             // WC REST returns its own error codes that DotcomValidator doesn't recognise
             // (the body has `code` rather than `error`). POSStaffMapper retries the decode
             // as WordPressApiError so we can branch on the specific code here.
-            if case .unknown(let code, _) = error, Self.isAuthDenialCode(code) {
-                throw .adminMissingCapability
+            //
+            // This arm fires when the request tunnels through Jetpack and the underlying WC
+            // install returns a body whose top-level key is `code` - including the trunk-WC
+            // case where the `wc-pos/v1` namespace doesn't exist, which surfaces as
+            // `rest_no_route` here rather than as `DotcomError.noRestRoute`.
+            if case .unknown(let code, _) = error {
+                if code == "rest_no_route" {
+                    throw .flagDisabledServerSide
+                }
+                if Self.isAuthDenialCode(code) {
+                    throw .adminMissingCapability
+                }
             }
             throw .transient(retryable: true)
         } catch let error as NetworkError {

@@ -62,6 +62,7 @@ struct POSSearchField: View {
                 handleSearchTermChange(newValue)
             }
         }
+        .frame(maxWidth: .infinity)
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
             analytics.track(.pointOfSaleKeyboardDismissedInSearch)

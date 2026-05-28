@@ -1,10 +1,15 @@
 import SwiftUI
 
-/// Shown on the lock screen when the staff fetch hasn't succeeded yet and we have no cached
-/// state to fall back on (cold install + no connectivity, or an auth/decode failure on the
-/// first attempt). The retry button re-runs `session.refreshPINStatus()`; while a fetch is
-/// in flight the parent renders a spinner instead of this view.
-struct POSLockScreenUnavailableView: View {
+/// Shown by the POS entry point when the staff fetch hasn't succeeded yet and we have no
+/// cached state to fall back on (cold install + no connectivity, or an auth/decode failure
+/// on the first attempt). Sibling to the dashboard, not part of the lock-screen overlay -
+/// the lock screen only renders when we know there is a PIN to enter.
+///
+/// The retry button re-runs `accessSession.refreshPINStatus()` via the entry point's
+/// wrapper, which toggles `isStaffRefreshing` so the parent re-derives its startup state.
+/// While a retry is in flight the parent renders `PointOfSaleLoadingView` instead of this
+/// view.
+struct POSStaffErrorView: View {
     let onRetry: () async -> Void
 
     @State private var isRetrying = false
@@ -54,7 +59,7 @@ struct POSLockScreenUnavailableView: View {
     }
 }
 
-private extension POSLockScreenUnavailableView {
+private extension POSStaffErrorView {
     enum Constants {
         static let iconName = "wifi.exclamationmark"
         static let iconSize: CGFloat = 48
@@ -63,27 +68,27 @@ private extension POSLockScreenUnavailableView {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.lockScreen.unavailable.title",
+            "pos.staffError.title",
             value: "Can't load staff",
-            comment: "Title shown on the POS lock screen when the staff list can't be loaded."
+            comment: "Title shown when the POS staff list can't be loaded."
         )
         static let subtitle = NSLocalizedString(
-            "pos.lockScreen.unavailable.subtitle",
+            "pos.staffError.subtitle",
             value: "Check your connection and try again.",
-            comment: "Subtitle shown on the POS lock screen when the staff list can't be loaded."
+            comment: "Subtitle shown when the POS staff list can't be loaded."
         )
         static let retry = NSLocalizedString(
-            "pos.lockScreen.unavailable.retry",
+            "pos.staffError.retry",
             value: "Try Again",
-            comment: "Button label on the POS lock screen to retry loading the staff list."
+            comment: "Button label to retry loading the POS staff list."
         )
     }
 }
 
 #if DEBUG
-#Preview("Unavailable") {
-    POSLockScreenUnavailableView(onRetry: {})
+#Preview("Staff error") {
+    POSStaffErrorView(onRetry: {})
         .padding()
-        .background(Color.posSurfaceContainerLow)
+        .background(Color.posSurface)
 }
 #endif

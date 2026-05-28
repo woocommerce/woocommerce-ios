@@ -10,11 +10,11 @@ struct POSLockScreenOverlay<Content: View>: View {
     }
 
     private var shouldPresentLockScreen: Bool {
-        // No-PIN stores have no security boundary to enforce - skip the lock screen entirely
-        // so the device admin can operate POS without setup. `.unknown` deliberately keeps the
-        // overlay up: until we've confirmed there are zero PINs, the safe default is to gate
-        // access (the lock screen renders a retry/loading variant in that branch).
-        model.isLocked && model.pinStatus != .absent
+        // The lock screen presents only when we have a confirmed PIN to enter. `.unknown`
+        // and `.absent` are handled by the entry point (loading view, staff-error view,
+        // or no overlay at all), so by the time this evaluates, `.present` is the only
+        // case that should trigger the numpad.
+        model.isLocked && model.pinStatus == .present
     }
 
     var body: some View {
@@ -60,6 +60,6 @@ private enum POSLockScreenOverlayConstants {
             .environmentObject(POSModalManager())
             .posLockScreenOverlay()
     }
-    .environment(\.posAccessSession, MockPOSAccessSession(isLocked: true))
+    .environment(\.posAccessSession, MockPOSAccessSession(isLocked: true, pinStatus: .present))
 }
 #endif

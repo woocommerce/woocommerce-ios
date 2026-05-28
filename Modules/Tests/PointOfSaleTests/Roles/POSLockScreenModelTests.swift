@@ -258,69 +258,6 @@ struct POSLockScreenModelTests {
         #expect(sut.pinEntryState == .idle)
     }
 
-    // MARK: - Content state (drives lock-screen body)
-
-    @Test func test_content_when_pinStatus_is_present_then_pinEntry() {
-        // Given
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .present)
-
-        // When
-        let sut = POSLockScreenModel(session: session)
-
-        // Then
-        #expect(sut.content == .pinEntry)
-    }
-
-    @Test func test_content_when_pinStatus_is_unknown_and_refreshing_then_loading() {
-        // Given - cold start; init assumes the lock screen will trigger a refresh
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .unknown)
-
-        // When
-        let sut = POSLockScreenModel(session: session)
-
-        // Then - no flash of the unavailable state on first appear
-        #expect(sut.isRefreshing == true)
-        #expect(sut.content == .loading)
-    }
-
-    @Test func test_content_when_pinStatus_is_unknown_and_not_refreshing_then_unavailable() {
-        // Given - refresh has completed but the session is still uncertain
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .unknown)
-        let sut = POSLockScreenModel(session: session, isRefreshing: false)
-
-        // When / Then
-        #expect(sut.content == .unavailable)
-    }
-
-    @Test func test_refreshPINStatus_when_called_then_toggles_isRefreshing_and_calls_session() async {
-        // Given
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .unknown)
-        let sut = POSLockScreenModel(session: session, isRefreshing: false)
-        #expect(sut.isRefreshing == false)
-
-        // When
-        await sut.refreshPINStatus()
-
-        // Then - isRefreshing flips back to false after the call; session received exactly one call.
-        #expect(sut.isRefreshing == false)
-        #expect(session.refreshPINStatusCalls == 1)
-    }
-
-    @Test func test_refreshPINStatus_while_running_then_isRefreshing_is_true() async {
-        // Given - capture isRefreshing mid-call via the mock's hook
-        let session = MockPOSAccessSession(isLocked: true, pinStatus: .unknown)
-        let sut = POSLockScreenModel(session: session, isRefreshing: false)
-        var refreshingDuringCall = false
-        session.onRefreshPINStatus = {
-            refreshingDuringCall = sut.isRefreshing
-        }
-
-        // When
-        await sut.refreshPINStatus()
-
-        // Then
-        #expect(refreshingDuringCall == true)
-    }
 
     private func makeStaff() -> POSStaff {
         POSStaff(

@@ -14,10 +14,8 @@ final class MockPOSAccessSession: POSAccessSession {
     var signInPINs: [String] = []
     var managerApprovalPINs: [String] = []
     var managerApprovalCapabilities: [POSCapability] = []
-    var refreshPINStatusCalls: Int = 0
     var onSignIn: (() -> Void)?
     var onManagerApproval: (() -> Void)?
-    var onRefreshPINStatus: (() -> Void)?
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
@@ -79,10 +77,7 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    func refreshPINStatus() async {
-        refreshPINStatusCalls += 1
-        onRefreshPINStatus?()
-    }
+    func refreshPINStatus() async {}
     func clearStaffCache() {}
 }
 

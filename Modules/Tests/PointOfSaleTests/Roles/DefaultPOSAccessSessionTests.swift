@@ -167,65 +167,12 @@ struct DefaultPOSAccessSessionTests {
         #expect(session.isLocked == true)
     }
 
-    @Test func test_refreshPINStatus_when_TTL_not_expired_then_skips_fetch() async {
-        // Given
-        let now = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { now })
-        cache.save([], siteID: 1)
-        let fetcher = MockPOSStaffFetcher(staff: [])
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { now.addingTimeInterval(5) })
-
-        // When
-        await session.refreshPINStatus()
-
-        // Then
-        #expect(fetcher.calls == 0)
-    }
-
-    @Test func test_refreshPINStatus_when_TTL_path_finds_no_pins_then_unlocks_session() async {
-        // Given - cache has zero PINs and is within the TTL window
-        let now = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { now })
-        cache.save([], siteID: 1)
-        let fetcher = MockPOSStaffFetcher(staff: [])
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { now.addingTimeInterval(5) })
-
-        // When - refresh hits the TTL early-return path
-        await session.refreshPINStatus()
-
-        // Then - session is unlocked even though the fetcher never fired
-        #expect(fetcher.calls == 0)
-        #expect(session.pinStatus == .absent)
-        #expect(session.isLocked == false)
-    }
-
-    @Test func test_refreshPINStatus_when_TTL_expired_then_refetches() async {
-        // Given
-        let saveTime = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
-        cache.save([], siteID: 1)
-        let fetcher = MockPOSStaffFetcher(staff: [])
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { saveTime.addingTimeInterval(31) })
-
-        // When
-        await session.refreshPINStatus()
-
-        // Then
-        #expect(fetcher.calls == 1)
-    }
-
     @Test func test_refreshPINStatus_when_flag_disabled_server_side_then_clears_cache_and_unlocks() async {
         // Given
-        let saveTime = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
         let fetcher = MockPOSStaffFetcher(error: .flagDisabledServerSide)
-        // Session clock is past TTL so the fetch is not skipped.
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { saveTime.addingTimeInterval(31) })
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
 
         // When
         await session.refreshPINStatus()
@@ -239,14 +186,11 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_refreshPINStatus_when_transient_error_with_cache_then_keeps_existing_cache_state() async {
         // Given
-        let saveTime = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         let existing = [makeMember(id: 1, hasPIN: true)]
         cache.save(existing, siteID: 1)
         let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
-        // Session clock is past TTL so the fetch is not skipped.
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { saveTime.addingTimeInterval(31) })
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
 
         // When
         await session.refreshPINStatus()
@@ -302,23 +246,21 @@ struct DefaultPOSAccessSessionTests {
     }
 
     @Test func test_refreshPINStatus_when_cache_payload_missing_then_does_not_unlock_via_torn_cache() async {
-        // Given - torn cache: timestamp valid + within TTL, but staff payload gone.
-        // Without atomicity, the TTL early-return would call applyCachedPINStatus,
-        // see hasAnyPINs == false (because load() returns nil), and unlock POS.
+        // Given - torn cache: timestamp valid but staff payload gone. Without atomicity,
+        // the cache-fallback arm would call applyCachedPINStatus, see hasAnyPINs == false
+        // (because load() returns nil), and unlock POS.
         let storage = InMemoryKeyValueStorage()
-        let now = Date()
-        let cache = POSStaffCache(storage: storage, now: { now })
+        let cache = POSStaffCache(storage: storage)
         cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
         storage.setString(nil, forKey: "staff.1")
         let fetcher = MockPOSStaffFetcher(error: .transient(retryable: true))
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { now.addingTimeInterval(5) })
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
 
         // When
         await session.refreshPINStatus()
 
-        // Then - the missing payload made lastFetched return nil, so the TTL early-return
-        // was skipped, a real fetch was attempted, it failed, and the session stays gated.
+        // Then - the missing payload makes lastFetched return nil, so the catch-arm
+        // cache fallback is skipped and the session stays gated.
         #expect(fetcher.calls == 1)
         #expect(session.pinStatus == .unknown)
         #expect(session.isLocked == true)
@@ -370,12 +312,10 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_clearStaffCache_resets_state_to_unknown_and_locked() async {
         // Given - prior successful refresh leaves cache populated and flag flipped
-        let saveTime = Date()
-        let cache = POSStaffCache(storage: InMemoryKeyValueStorage(), now: { saveTime })
+        let cache = POSStaffCache(storage: InMemoryKeyValueStorage())
         cache.save([makeMember(id: 1, hasPIN: true)], siteID: 1)
         let fetcher = MockPOSStaffFetcher(error: .flagDisabledServerSide)
-        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1,
-                                  now: { saveTime.addingTimeInterval(31) })
+        let session = makeSession(cache: cache, fetcher: fetcher, siteID: 1)
         await session.refreshPINStatus()
         #expect(session.flagDisabledServerSide == true)
 
@@ -420,7 +360,7 @@ private extension DefaultPOSAccessSessionTests {
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
-        let session = makeSession(authenticator: authenticator, rateLimiter: limiter, now: now)
+        let session = makeSession(authenticator: authenticator, rateLimiter: limiter)
         return SUT(session: session, limiter: limiter, scope: scope)
     }
 
@@ -428,16 +368,14 @@ private extension DefaultPOSAccessSessionTests {
                      rateLimiter: POSLocalRateLimiter? = nil,
                      cache: POSStaffCache = POSStaffCache(storage: InMemoryKeyValueStorage()),
                      fetcher: POSStaffFetching = MockPOSStaffFetcher(staff: []),
-                     siteID: Int64 = 1,
-                     now: @escaping @Sendable () -> Date = Date.init) -> DefaultPOSAccessSession {
+                     siteID: Int64 = 1) -> DefaultPOSAccessSession {
         let resolvedAuthenticator = authenticator ?? MockPOSPINAuthenticator()
         let limiter = rateLimiter ?? POSLocalRateLimiter(siteID: siteID)
         return DefaultPOSAccessSession(authenticator: resolvedAuthenticator,
                                        rateLimiter: limiter,
                                        cache: cache,
                                        fetcher: fetcher,
-                                       siteID: siteID,
-                                       now: now)
+                                       siteID: siteID)
     }
 
     func makeMember(id: Int64, hasPIN: Bool) -> POSStaffMember {

@@ -15,22 +15,17 @@ final class DefaultPOSAccessSession: POSAccessSession {
     @ObservationIgnored private let cache: POSStaffCache
     @ObservationIgnored private let fetcher: POSStaffFetching
     @ObservationIgnored private let siteID: Int64
-    @ObservationIgnored private let now: @Sendable () -> Date
-
-    private static let refreshTTL: TimeInterval = 30
 
     init(authenticator: POSPINAuthenticating,
          rateLimiter: POSLocalRateLimiter,
          cache: POSStaffCache,
          fetcher: POSStaffFetching,
-         siteID: Int64,
-         now: @escaping @Sendable () -> Date = Date.init) {
+         siteID: Int64) {
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
         self.cache = cache
         self.fetcher = fetcher
         self.siteID = siteID
-        self.now = now
     }
 
     func allows(_ capability: POSCapability) -> Bool {
@@ -70,11 +65,6 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {
-        if let last = cache.lastFetched(siteID: siteID),
-           now().timeIntervalSince(last) < Self.refreshTTL {
-            applyCachedPINStatus()
-            return
-        }
         do {
             let fresh = try await fetcher.fetchStaff(siteID: siteID)
             cache.save(fresh, siteID: siteID)

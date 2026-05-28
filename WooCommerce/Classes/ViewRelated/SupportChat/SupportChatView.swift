@@ -186,7 +186,7 @@ struct SupportChatView: View {
                     }
                 }
                 .buttonStyle(SecondaryButtonStyle())
-                .disabled(viewModel.selectedIssue != nil)
+                .disabled(!viewModel.isIssuePickerEnabled)
             }
         }
         .padding(SupportChatLayout.bubblePadding)

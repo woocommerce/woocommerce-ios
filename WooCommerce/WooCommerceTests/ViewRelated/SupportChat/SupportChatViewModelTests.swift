@@ -140,6 +140,21 @@ struct SupportChatViewModelTests {
         #expect(sut.hasProceededToChat == true)
     }
 
+    @Test func selectIssue_when_ticket_has_been_created_then_does_not_select_issue() async {
+        // Given
+        let sut = makeSUT()
+        sut.showGreeting()
+        sut.markChatTicketCreated()
+
+        // When
+        await sut.selectIssue(.other)
+
+        // Then
+        #expect(sut.selectedIssue == nil)
+        #expect(sut.isIssuePickerEnabled == false)
+        #expect(sut.messages.count == 1)
+    }
+
     // MARK: - Analytics Tests
 
     @Test func init_tracks_entryPointTapped() {
@@ -1226,6 +1241,30 @@ struct SupportChatViewModelTests {
         // Then
         #expect(sut.state == .sending)
         #expect(sut.isContactHumanSupportButtonEnabled == true)
+    }
+
+    // MARK: - Issue Picker Enabled Tests
+
+    @Test func isIssuePickerEnabled_is_false_when_ticket_has_been_created() {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        sut.markChatTicketCreated()
+
+        // Then
+        #expect(sut.isIssuePickerEnabled == false)
+    }
+
+    @Test func isIssuePickerEnabled_is_false_when_issue_has_been_selected() async {
+        // Given
+        let sut = makeSUT()
+
+        // When
+        await sut.selectIssue(.other)
+
+        // Then
+        #expect(sut.isIssuePickerEnabled == false)
     }
 
     // MARK: - Resolved Button Tests

@@ -223,6 +223,10 @@ final class SupportChatViewModel {
         state != .sending || chatID != nil
     }
 
+    var isIssuePickerEnabled: Bool {
+        selectedIssue == nil && hasCreatedTicket == false
+    }
+
     var shouldShowResolvedButton: Bool {
         guard shouldPromptHumanSupport == false, isChatResolved == false else {
             return false
@@ -330,6 +334,10 @@ final class SupportChatViewModel {
     /// Selects an issue type and runs diagnostics if needed.
     ///
     func selectIssue(_ issue: SupportIssueType) async {
+        guard isIssuePickerEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
             issueType: issue,
             entryPoint: entryPoint

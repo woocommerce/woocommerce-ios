@@ -11,8 +11,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAccessSession) private var accessSession
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
-
-    // Starts true so cold-start renders in .loading until the .task below resolves it.
     @State private var isStaffRefreshing: Bool = true
 
     @State private var showExitPOSModal: Bool = false

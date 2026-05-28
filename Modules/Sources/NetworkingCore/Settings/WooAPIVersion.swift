@@ -60,11 +60,7 @@ public enum WooAPIVersion: String {
     ///
     case wcPosV1 = "wc/pos/v1"
 
-    /// Top-level namespace for the POS staff endpoint and other POS routes added alongside it.
-    /// Distinct from `wcPosV1` - the server registers `wc-pos/v1` separately from the older
-    /// `wc/pos/v1/catalog` namespace. Routes here are gated by the `point_of_sale_staff`
-    /// server-side feature flag.
-    ///
+    ///  TODO: Use  wcPosV1 instead
     case pointOfSaleV1 = "wc-pos/v1"
 
     /// Returns the path for the current API Version

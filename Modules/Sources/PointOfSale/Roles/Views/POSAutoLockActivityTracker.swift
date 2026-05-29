@@ -11,7 +11,7 @@ extension View {
         session: any POSAccessSession,
         paymentModel: POSPaymentModel,
         aggregateModel: PointOfSaleAggregateModel,
-        timeout: TimeInterval = POSAutoLockActivityTracker.defaultTimeout
+        timeout: TimeInterval = POSAutoLockActivityController.defaultTimeout
     ) -> some View {
         modifier(POSAutoLockActivityTracker(
             session: session,
@@ -23,89 +23,45 @@ extension View {
 }
 
 struct POSAutoLockActivityTracker: ViewModifier {
-    static let defaultTimeout: TimeInterval = 5
-
-    private static let activityThrottle: TimeInterval = 1
-
     let session: any POSAccessSession
     let paymentModel: POSPaymentModel
     let aggregateModel: PointOfSaleAggregateModel
     let timeout: TimeInterval
 
-    @State private var lastActivityAt = Date()
-    @State private var timer: Timer?
+    @State private var controller: POSAutoLockActivityController?
 
     func body(content: Content) -> some View {
         content
             .simultaneousGesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { _ in noteActivityThrottled() }
+                    .onChanged { _ in controller?.noteActivityThrottled() }
             )
             .onChange(of: paymentModel.paymentState) { _, newState in
                 if !newState.isAutoLockSuppressing {
-                    noteActivity()
+                    controller?.noteActivity()
                 }
             }
             .onChange(of: aggregateModel.cart.purchasableItems.count) { _, _ in
-                noteActivity()
+                controller?.noteActivity()
             }
             .onChange(of: session.isLocked) { _, isLocked in
                 // The tracker sits under the lock overlay, so PIN entry never reaches our
                 // gesture or cart observers. Treat the locked -> unlocked transition as
                 // activity so the timer re-arms after sign-in.
                 if !isLocked {
-                    noteActivity()
+                    controller?.noteActivity()
                 }
             }
-            .onAppear { noteActivity() }
-            .onDisappear { stopTimer() }
-    }
-}
-
-private extension POSAutoLockActivityTracker {
-    func noteActivityThrottled() {
-        let now = Date()
-        guard now.timeIntervalSince(lastActivityAt) >= Self.activityThrottle else {
-            return
-        }
-        noteActivity()
-    }
-
-    func noteActivity() {
-        lastActivityAt = Date()
-        restartTimer()
-    }
-
-    func restartTimer() {
-        timer?.invalidate()
-        let scheduled = Timer(timeInterval: timeout, repeats: false) { _ in
-            Task { @MainActor in handleTimerFire() }
-        }
-        RunLoop.main.add(scheduled, forMode: .common)
-        timer = scheduled
-    }
-
-    func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-    }
-
-    func handleTimerFire() {
-        guard session.hasAnyPINs, session.currentStaff != nil else {
-            stopTimer()
-            return
-        }
-        if paymentModel.paymentState.isAutoLockSuppressing {
-            restartTimer()
-            return
-        }
-        // Catch the case where activity landed between the Timer firing and the
-        // @MainActor hop. Without this guard a touch that arrived ~microseconds
-        // before us would still see auto-lock fire on top of the user's hand.
-        if Date().timeIntervalSince(lastActivityAt) < timeout {
-            restartTimer()
-            return
-        }
-        session.lock()
+            .onAppear {
+                if controller == nil {
+                    controller = POSAutoLockActivityController(
+                        session: session,
+                        paymentStateProvider: { paymentModel.paymentState },
+                        timeout: timeout
+                    )
+                }
+                controller?.noteActivity()
+            }
+            .onDisappear { controller?.stop() }
     }
 }

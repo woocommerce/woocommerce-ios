@@ -6,7 +6,7 @@ import Foundation
 final class POSAutoLockActivityController {
     nonisolated static let defaultTimeout: TimeInterval = 5
 
-    private nonisolated static let activityThrottle: TimeInterval = 1
+    nonisolated private static let activityThrottle: TimeInterval = 1
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState

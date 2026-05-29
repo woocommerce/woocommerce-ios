@@ -1232,7 +1232,7 @@ private extension MainTabBarController {
         guard needsPOSAutoReopenCheck else { return }
         needsPOSAutoReopenCheck = false
 
-        guard UserDefaults.standard.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+        guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
 
         DispatchQueue.main.async { [weak self] in
             self?.posTabCoordinator?.onTabSelected()

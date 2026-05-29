@@ -4,9 +4,9 @@ import Foundation
 /// decision is unit-testable.
 @MainActor
 final class POSAutoLockActivityController {
-    static let defaultTimeout: TimeInterval = 300
+    nonisolated static let defaultTimeout: TimeInterval = 5
 
-    private static let activityThrottle: TimeInterval = 1
+    private nonisolated static let activityThrottle: TimeInterval = 1
 
     private let session: any POSAccessSession
     private let paymentStateProvider: () -> PointOfSalePaymentState

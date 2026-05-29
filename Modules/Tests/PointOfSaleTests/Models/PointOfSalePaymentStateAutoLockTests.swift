@@ -30,20 +30,20 @@ struct PointOfSalePaymentStateAutoLockTests {
         #expect(state.isAutoLockSuppressing == false)
     }
 
-    @Test func test_isAutoLockSuppressing_when_cash_collecting_then_true() {
+    @Test func test_isAutoLockSuppressing_when_cash_collecting_then_false() {
         // Given
         let state = PointOfSalePaymentState(card: .idle, cash: .collectingCash)
 
         // When / Then
-        #expect(state.isAutoLockSuppressing == true)
+        #expect(state.isAutoLockSuppressing == false)
     }
 
-    @Test func test_isAutoLockSuppressing_when_cash_succeeded_then_true() {
+    @Test func test_isAutoLockSuppressing_when_cash_succeeded_then_false() {
         // Given
         let state = PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)
 
         // When / Then
-        #expect(state.isAutoLockSuppressing == true)
+        #expect(state.isAutoLockSuppressing == false)
     }
 
     @Test func test_isAutoLockSuppressing_when_scanToPay_showing_qr_then_true() {
@@ -58,12 +58,12 @@ struct PointOfSalePaymentStateAutoLockTests {
         #expect(state.isAutoLockSuppressing == true)
     }
 
-    @Test func test_isAutoLockSuppressing_when_scanToPay_succeeded_then_true() {
+    @Test func test_isAutoLockSuppressing_when_scanToPay_succeeded_then_false() {
         // Given
         let state = PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .paymentSuccess)
 
         // When / Then
-        #expect(state.isAutoLockSuppressing == true)
+        #expect(state.isAutoLockSuppressing == false)
     }
 
     @Test func test_isAutoLockSuppressing_when_markAsPaid_confirming_then_false() {
@@ -82,21 +82,21 @@ struct PointOfSalePaymentStateAutoLockTests {
         #expect(state.isAutoLockSuppressing == true)
     }
 
-    @Test func test_isAutoLockSuppressing_when_markAsPaid_succeeded_then_true() {
+    @Test func test_isAutoLockSuppressing_when_markAsPaid_succeeded_then_false() {
         // Given
         let state = PointOfSalePaymentState(card: .idle, cash: .idle, markAsPaid: .paymentSuccess)
 
         // When / Then
-        #expect(state.isAutoLockSuppressing == true)
+        #expect(state.isAutoLockSuppressing == false)
     }
 }
 
 private extension PointOfSaleCardPaymentState {
     static var suppressingCases: [PointOfSaleCardPaymentState] {
-        [.validatingOrder, .preparingReader, .acceptingCard, .cardInserted, .processingPayment, .cardPaymentSuccessful]
+        [.validatingOrder, .preparingReader, .acceptingCard, .cardInserted, .processingPayment]
     }
 
     static var nonSuppressingCases: [PointOfSaleCardPaymentState] {
-        [.idle, .validatingOrderError, .paymentIntentCreationError, .paymentError]
+        [.idle, .validatingOrderError, .paymentIntentCreationError, .paymentError, .cardPaymentSuccessful]
     }
 }

@@ -82,31 +82,32 @@ struct PointOfSalePaymentState: Equatable {
         return allowsSecondaryPaymentMethod
     }
 
-    /// True while a payment is mid-flight. Errors aren't suppressed - the cashier may walk away.
+    /// True only while the system is actively processing a payment (reader engaged,
+    /// network call in flight, QR being scanned). Success and cash flows aren't suppressed
+    /// - the cashier can re-enter their PIN from the lock screen if they need to keep working.
     var isAutoLockSuppressing: Bool {
         switch card {
         case .validatingOrder, .preparingReader, .acceptingCard,
-             .cardInserted, .processingPayment, .cardPaymentSuccessful:
+             .cardInserted, .processingPayment:
             return true
-        case .idle, .validatingOrderError, .paymentIntentCreationError, .paymentError:
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .paymentError,
+             .cardPaymentSuccessful:
             break
         }
         switch cash {
-        case .collectingCash, .paymentSuccess:
-            return true
-        case .idle:
+        case .idle, .collectingCash, .paymentSuccess:
             break
         }
         switch scanToPay {
-        case .showingQRCode, .paymentSuccess:
+        case .showingQRCode:
             return true
-        case .idle:
+        case .idle, .paymentSuccess:
             break
         }
         switch markAsPaid {
-        case .processing, .paymentSuccess:
+        case .processing:
             return true
-        case .idle, .confirming:
+        case .idle, .confirming, .paymentSuccess:
             break
         }
         return false

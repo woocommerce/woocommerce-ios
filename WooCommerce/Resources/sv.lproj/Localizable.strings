@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-05-17 11:39:00+0000 */
+/* Translation-Revision-Date: 2026-05-19 09:57:50+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -8662,6 +8662,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message shown when a video file failed to export from the local library. */
 "assetExportError.failedToExportVideo.message" = "Det gick inte att exportera vald media.";
 
+/* Placeholder shown on the assistant customer row when the customer has no email. */
+"assistant.externalViews.customer.noEmailPlaceholder" = "Ingen e-postadress registrerad";
+
 /* Plural orders-count badge on the assistant customer row. %1$@ is the count. */
 "assistant.externalViews.customer.orderCount.plural" = "%1$@ beställningar";
 
@@ -8697,6 +8700,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Trailing column title on the assistant orders analytics card. */
 "assistant.externalViews.stats.avgOrderValue" = "Genomsnittligt beställningsvärde";
+
+/* Placeholder shown on the assistant analytics card when a metric is missing from the tool result. */
+"assistant.externalViews.stats.metricUnavailable" = "-";
+
+/* Trailing column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.netSales" = "Nettoförsäljning";
+
+/* Shell title shared by the assistant revenue and orders analytics cards. */
+"assistant.externalViews.stats.shellTitle" = "Analys";
+
+/* Leading column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.totalOrders" = "Totalt antal ordrar";
+
+/* Leading column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.totalSales" = "Total försäljning";
 
 /* Label displayed on audio media items. */
 "audio" = "ljud";
@@ -12213,8 +12231,14 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Markera som betald";
 
+/* Body of the Point of Sale confirmation for manually marking an order as paid. %1$@ is the formatted order total, e.g. $24.99. */
+"pointOfSale.markAsPaid.confirmation.message" = "Detta kommer att markera beställningen %1$@ som slutförd. Använd detta endast om du redan har tagit emot betalning på ett annat sätt.";
+
 /* Label above the optional note text field on the Point of Sale Mark as paid confirmation, where the merchant can record reconciliation context for the order. */
 "pointOfSale.markAsPaid.confirmation.noteLabel" = "Lägg till en anteckning (valfritt)";
+
+/* Placeholder shown inside the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.notePlaceholder" = "t.ex. Banköverföring från Maria, ref 4827";
 
 /* Title of the Point of Sale confirmation for manually marking an order as paid. */
 "pointOfSale.markAsPaid.confirmation.title" = "Markera beställning som betald?";
@@ -12270,8 +12294,14 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "En eller flera produkter";
 
+/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "Använd när betalningen redan har samlats in på ett annat sätt.";
+
 /* Row title in the Other Payment Methods popover for manually marking an order as paid. */
 "pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "Markera beställning som betald";
+
+/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "Visa en QR-kod så att kunden kan betala med sin telefon.";
 
 /* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
 "pointOfSale.otherPaymentMethods.scanToPay.title" = "Skanna för att betala";
@@ -12309,6 +12339,12 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "En kontantbetalning på %1$@ har genomförts.";
 
+/* Message shown to users when an order is marked as paid manually. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.markAsPaid.1" = "En betalning på %1$@ har markerats som mottagen.";
+
+/* Message shown to users when a scan-to-pay payment is confirmed. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.scanToPay.1" = "En betalning via Skanna för att betala på %1$@ har genomförts.";
+
 /* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
 "pointOfSale.paymentSuccessful.receiptSent" = "Ett kvitto har skickats till %1$@.";
 
@@ -12327,8 +12363,17 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale scan-to-pay screen */
 "pointOfSale.scanToPay.navigation.title" = "Skanna för att betala";
 
+/* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.orderNote" = "Kunden betalade via Skanna för att betala";
+
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "Genererar QR-kod …";
+
+/* Message shown when no payment URL is available to render a QR code in Point of Sale scan-to-pay. */
+"pointOfSale.scanToPay.qrUnavailable.message" = "Vi kunde inte generera någon QR-kod för denna beställning. Prova en annan betalningsmetod.";
+
+/* Instruction text shown above the QR code in the Point of Sale scan-to-pay screen. */
+"pointOfSale.scanToPay.scan.instruction" = "Be kunden att skanna QR-koden med sin telefon för att slutföra betalningen.";
 
 /* Status text shown after the backend confirms a scan-to-pay payment, while the app finalizes success. */
 "pointOfSale.scanToPay.status.confirming" = "Betalning mottagen. Bekräftar …";
@@ -12356,6 +12401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Avbryt";
+
+/* Phone-only back button title to return from totals to the items list. */
+"pointOfSaleDashboard.phone.backToItems" = "Artiklar";
 
 /* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
 "pointOfSaleDashboard.phone.cart" = "Varukorg (%1$d)";
@@ -12795,6 +12843,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Kontrollera din internetanslutning och försök igen.";
 
+/* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.subtitle" = "Lägg till en engångsavgift.";
+
 /* Title for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.title" = "Anpassat belopp";
 
@@ -12894,6 +12945,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Beställning";
 
+/* Section title for the items list (products and custom amounts) shown in the loading skeleton */
+"pos.orderDetailsLoadingView.itemsTitle" = "Artiklar";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totalt";
 
@@ -12924,6 +12978,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Utfärda återbetalning";
 
+/* Label for items subtotal (products and custom amounts) in the totals section */
+"pos.orderDetailsView.itemsLabel" = "Artiklar";
+
+/* Section title for the order items list (products and custom amounts) in order details */
+"pos.orderDetailsView.itemsTitle" = "Artiklar";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "Försök igen.";
 
@@ -12947,6 +13007,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Återbetalning av #%1$d";
+
+/* Section title for the refunded items list (products and custom amounts) in order details */
+"pos.orderDetailsView.refundedItemsTitle" = "Återbetalade artiklar";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totalt";
@@ -13215,6 +13278,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
 "pos.refundedProductRow.accessibilityLabel" = "%1$@, Antal: %2$@ för %3$@ styck, Återbetalat %4$@";
+
+/* Accessibility label for refunded custom amount/fee row. %1$@ is the custom amount name, %2$@ is the refund total. */
+"pos.refundedProductRow.lumpSumAccessibilityLabel" = "%1$@, återbetalat %2$@";
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
@@ -14183,6 +14249,9 @@ which should be translated separately and considered part of this sentence. */
 /* Range label for the Month to Date option in the Store Stats widget */
 "storeWidgets.dateRange.monthToDate" = "Månad till datum";
 
+/* Compact range label for the Month to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.monthToDateCompact" = "Denna månad";
+
 /* Range label for the Today option in the Store Stats widget */
 "storeWidgets.dateRange.today" = "Idag";
 
@@ -14192,8 +14261,14 @@ which should be translated separately and considered part of this sentence. */
 /* Range label for the Week to Date option in the Store Stats widget */
 "storeWidgets.dateRange.weekToDate" = "Vecka till datum";
 
+/* Compact range label for the Week to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.weekToDateCompact" = "Denna vecka";
+
 /* Range label for the Yesterday option in the Store Stats widget */
 "storeWidgets.dateRange.yesterday" = "Igår";
+
+/* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.yesterdayCompact.yesterday" = "Igår";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce-statistik idag";
@@ -14225,6 +14300,9 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "Besökare";
+
+/* Compact title for the average order value metric, shown on the widget cell. */
+"storeWidgets.metric.averageOrderValueShort" = "Genomsnittlig beställning";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "Sålda artiklar";
@@ -14261,6 +14339,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
 "storeWidgets.storeInfoRectangularWidget.totalSales" = "Total försäljning";
+
+/* Widget description, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.description" = "Spåra butikstrender på din låsskärm.";
 
 /* Widget title, displayed when selecting the configurable Store Stats trends widget. */
 "storeWidgets.trends.displayName" = "Trender";
@@ -14313,6 +14394,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown after user rates a bot response as not helpful */
 "supportChatFeedbackRow.notHelpful" = "Inte användbart";
+
+/* Accessibility label for thumbs up button to rate bot response as helpful */
+"supportChatFeedbackRow.rateHelpful" = "Betygsätt som användbart";
+
+/* Accessibility label for thumbs down button to rate bot response as not helpful */
+"supportChatFeedbackRow.rateNotHelpful" = "Betygsätt som inte användbart";
 
 /* Fallback title for a support chat history row when no title was captured */
 "supportChatHistoryRow.untitledFallback" = "Chatt utan rubrik";
@@ -14374,6 +14461,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown while running diagnostics in support chat */
 "supportChatView.runningDiagnostics" = "Kör diagnostik …";
 
+/* Message shown when a support ticket has already been created for this chat */
+"supportChatView.ticketCreatedMessage" = "Ett supportärende har skapats för denna chatt. Vi svarar via e-post.";
+
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "Chatta med supporten";
 
@@ -14391,6 +14481,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "Beskriv ditt problem mer detaljerat så att jag kan hjälpa till.";
+
+/* Error message shown when the AI support chat rate limit (HTTP 429) is hit */
+"supportChatViewModel.rateLimitErrorMessage" = "Du har nått chattgränsen. Försök igen senare.";
+
+/* Message shown by the bot when a support chat answer appears to have solved the merchant's issue */
+"supportChatViewModel.resolvedPromptMessage" = "Markera chatten som löst om ditt problem är löst, eller lämna ett meddelande om du har andra frågor.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "Aktivera analys";
@@ -14470,8 +14566,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers diagnostic test */
 "supportDiagnosticsService.test.wpComServers" = "Ansluter till WordPress.com-servrar";
 
+/* Loading message shown while creating a support ticket */
+"supportEscalationCoordinator.creatingTicket" = "Skapar supportförfrågan …";
+
 /* Button on the ticket created alert */
 "supportEscalationCoordinator.gotIt" = "Jag förstår";
+
+/* Alert message shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedMessage" = "Din supportförfrågan har landat säkert i vår inkorg. Vi kommer att svara via e-post så snart vi kan.";
+
+/* Alert title shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedTitle" = "Förfrågan skickad!";
+
+/* Header text before the chat transcript in support ticket description */
+"supportEscalationCoordinator.transcriptHeader" = "Följande är transkriptionen av en AI-supportchattsession i appen:";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Uppfattat";
@@ -14502,6 +14610,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "Vi kan inte skapa supportförfrågningar just nu, försök igen senare.";
+
+/* Subject line for auto-created support tickets for card reader/IPP issues */
+"supportFormViewModel.subject.cardReader" = "Supportförfrågan för kortläsare";
+
+/* Subject line for auto-created support tickets for mobile app issues */
+"supportFormViewModel.subject.mobileApp" = "Supportförfrågan för mobilapp";
+
+/* Subject line for auto-created support tickets for other plugin/extension issues */
+"supportFormViewModel.subject.otherPlugin" = "Supportförfrågan för tillägg";
+
+/* Subject line for auto-created support tickets for WooCommerce plugin issues */
+"supportFormViewModel.subject.wooCommercePlugin" = "Supportförfrågan för WooCommerce-tillägg";
+
+/* Subject line for auto-created support tickets for WooPayments issues */
+"supportFormViewModel.subject.wooPayments" = "Supportförfrågan för WooPayments";
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Vi kan inte skapa supportförfrågningar just nu, försök igen senare.";

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import struct WooFoundation.WooAnalyticsEvent
 
 struct POSFloatingControlView: View {
@@ -79,7 +80,7 @@ private extension POSFloatingControlView {
             )
         }
         .accessibilityIdentifier("pos-exit-menu-item")
-        if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
+        if horizontalSizeClass == .regular || isPhoneLayout {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
@@ -102,6 +103,12 @@ private extension POSFloatingControlView {
                 }
             }
         }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact &&
+        UIDevice.current.userInterfaceIdiom == .phone &&
+        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }
 

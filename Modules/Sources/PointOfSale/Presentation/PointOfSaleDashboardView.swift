@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WooFoundation
 
 struct PointOfSaleDashboardView: View {
@@ -63,7 +64,8 @@ struct PointOfSaleDashboardView: View {
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype),
+            userInterfaceIdiom: UIDevice.current.userInterfaceIdiom
         )
     }
 
@@ -202,7 +204,9 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact && featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact &&
+        UIDevice.current.userInterfaceIdiom == .phone &&
+        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 
     @ViewBuilder

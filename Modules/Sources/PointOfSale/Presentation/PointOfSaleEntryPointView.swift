@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
@@ -232,7 +233,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
+        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -247,6 +248,12 @@ public struct PointOfSaleEntryPointView: View {
         .task {
             await accessSession.refreshPINStatus()
         }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact &&
+        UIDevice.current.userInterfaceIdiom == .phone &&
+        services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }
 

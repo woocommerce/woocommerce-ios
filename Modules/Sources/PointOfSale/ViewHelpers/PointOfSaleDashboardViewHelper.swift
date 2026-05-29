@@ -1,15 +1,19 @@
 import Foundation
 import SwiftUI
+import UIKit
 
 struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
         itemsContainerState: ItemsContainerState,
         horizontalSizeClass: UserInterfaceSizeClass?,
-        isPhonePrototypeEnabled: Bool
+        isPhonePrototypeEnabled: Bool,
+        userInterfaceIdiom: UIUserInterfaceIdiom
     ) -> PointOfSaleDashboardView.ViewState {
 
-        guard isPhonePrototypeEnabled || horizontalSizeClass == .regular else {
+        let isPhoneLayoutSupported = isPhonePrototypeEnabled && userInterfaceIdiom == .phone
+
+        guard isPhoneLayoutSupported || horizontalSizeClass == .regular else {
             return .unsupportedWidth
         }
 

@@ -111,7 +111,6 @@ final class JetpackSetupCoordinator {
             showWPComEmailLogin()
         }
     }
-
 }
 
 // MARK: - Private helpers
@@ -336,7 +335,6 @@ private extension JetpackSetupCoordinator {
                         }
                     })
                 })
-
             }
         }
 

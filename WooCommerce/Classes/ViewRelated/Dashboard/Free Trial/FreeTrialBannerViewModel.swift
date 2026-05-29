@@ -27,7 +27,6 @@ struct FreeTrialBannerViewModel {
             message = String.localizedStringWithFormat(format, daysLeft)
         default:
             message = NSLocalizedString("Your trial has ended.", comment: "Message of the free trial banner when there are no days left")
-
         }
     }
 }

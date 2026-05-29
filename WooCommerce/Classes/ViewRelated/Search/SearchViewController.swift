@@ -340,7 +340,6 @@ private extension SearchViewController {
 
         searchBarSafeAreaTrailingSpace.priority = UILayoutPriority.defaultHigh
         searchBarButtonTrailingSpace.priority = UILayoutPriority.defaultLow
-
     }
 
     func configureHeaderView() {

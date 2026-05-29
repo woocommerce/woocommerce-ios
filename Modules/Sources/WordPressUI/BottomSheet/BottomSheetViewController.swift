@@ -33,7 +33,7 @@ public class BottomSheetViewController: UIViewController {
 
     private let initialPosition: DrawerPosition
 
-    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override public var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return childViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
 
@@ -91,7 +91,6 @@ public class BottomSheetViewController: UIViewController {
                 popoverPresentationController?.delegate = self
                 popoverPresentationController?.backgroundColor = view.backgroundColor
             }
-
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom
@@ -198,7 +197,7 @@ public class BottomSheetViewController: UIViewController {
         return size
     }
 
-    public override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+    override public func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
         super.preferredContentSizeDidChange(forChildContentContainer: container)
         // Update our preferred size in response to a child updating theres.
         // While this leads to a recursive call, the sizes are the same preventing a loop.

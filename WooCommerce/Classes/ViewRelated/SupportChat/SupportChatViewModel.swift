@@ -176,6 +176,10 @@ final class SupportChatViewModel {
     private(set) var hasProceededToChat: Bool = false
     private(set) var isExecutingAction: Bool = false
 
+    var site: Site? {
+        stores.sessionManager.defaultSite
+    }
+
     /// `true` when the view model was seeded with a prior `chatID` — i.e. the merchant
     /// tapped a history row rather than starting fresh. Drives the "Continuing conversation"
     /// header in the chat surface.
@@ -185,11 +189,6 @@ final class SupportChatViewModel {
     /// When true, the escalation button should be hidden.
     private(set) var hasCreatedTicket: Bool = false
 
-    /// `true` once the merchant has typed and sent at least one message via the input field.
-    /// Distinct from `messages.contains(where: { $0.role == .user })`, which is also flipped
-    /// by issue-picker selections — we want the human-support entry to surface only after the
-    /// merchant has actually described their problem.
-    private(set) var hasSentChatMessage: Bool = false
     private(set) var isChatResolved: Bool = false
 
     /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
@@ -211,13 +210,21 @@ final class SupportChatViewModel {
     }
 
     /// Whether the trailing toolbar entry point to human support should be visible.
-    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
-    /// AND has typed and sent at least one message, and only while no ticket has been created yet.
+    /// Shown while the issue picker is visible or once the merchant has reached the free-chat phase,
+    /// and only while no ticket has been created yet.
     var canEscalateToHumanSupport: Bool {
-        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
+        guard !hasCreatedTicket, !isChatResolved else {
             return false
         }
-        return hasSentChatMessage
+        return true
+    }
+
+    var isContactHumanSupportButtonEnabled: Bool {
+        state != .sending || chatID != nil
+    }
+
+    var isIssuePickerEnabled: Bool {
+        selectedIssue == nil && hasCreatedTicket == false
     }
 
     var shouldShowResolvedButton: Bool {
@@ -247,6 +254,14 @@ final class SupportChatViewModel {
 
     var inputText: String = ""
 
+    typealias ContactHumanSupportCallback = (
+        _ chatID: Int64?,
+        _ transcript: String,
+        _ supportAreaInfo: SupportAreaInfo?,
+        _ entryPoint: EntryPoint,
+        _ hasReceivedBotResponse: Bool
+    ) -> Void
+
     // MARK: - Private Properties
 
     private var chatID: Int64?
@@ -257,7 +272,7 @@ final class SupportChatViewModel {
     private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void
+    private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
     private var didTrackResolutionButtonShown = false
@@ -265,6 +280,8 @@ final class SupportChatViewModel {
     private var didTrackBotEscalationButtonShown = false
     private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
+    var onUpdateWooCommercePlugin: (@escaping () -> Void) -> Void
+    var onOpenPushNotificationPreferences: (@escaping () -> Void) -> Void
     private let diagnosticsService: SupportDiagnosticsServicing
 
     /// Pre-fetched system status report, if available (e.g., from connectivity tool).
@@ -284,8 +301,10 @@ final class SupportChatViewModel {
          hasCreatedTicket: Bool = false,
          isChatResolved: Bool = false,
          systemStatusReport: String? = nil,
-         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
-         onStartJetpackSetup: @escaping () -> Void = {}) {
+         onContactHumanSupport: @escaping ContactHumanSupportCallback,
+         onStartJetpackSetup: @escaping () -> Void = {},
+         onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
+         onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -300,6 +319,8 @@ final class SupportChatViewModel {
         self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
+        self.onUpdateWooCommercePlugin = onUpdateWooCommercePlugin
+        self.onOpenPushNotificationPreferences = onOpenPushNotificationPreferences
 
         analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
             entryPoint: entryPoint,
@@ -313,11 +334,16 @@ final class SupportChatViewModel {
     /// Selects an issue type and runs diagnostics if needed.
     ///
     func selectIssue(_ issue: SupportIssueType) async {
-        selectedIssue = issue
+        guard isIssuePickerEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
             issueType: issue,
             entryPoint: entryPoint
         ))
+
+        selectedIssue = issue
 
         // Add user's selection as a message
         let userMessage = ChatMessage(role: .user, text: issue.displayName)
@@ -421,12 +447,22 @@ final class SupportChatViewModel {
             case .setupJetpack:
                 onStartJetpackSetup()
 
+            case .updateWooCommercePlugin:
+                onUpdateWooCommercePlugin { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
+
             case .openNotificationSettings:
                 if let selectedURL = diagnosticsService.openNotificationSettings(),
                    UIApplication.shared.canOpenURL(selectedURL) {
                     await UIApplication.shared.open(selectedURL)
                 }
                 replaceActionWithRetry()
+
+            case .openPushNotificationPreferences:
+                onOpenPushNotificationPreferences { [weak self] in
+                    self?.replaceActionWithRetry()
+                }
 
             case .retryDiagnostics:
                 await rerunAllTests()
@@ -684,7 +720,6 @@ final class SupportChatViewModel {
             sessionID: sessionID,
             context: context
         ) { [weak self] result in
-            self?.hasSentChatMessage = true
             self?.handleSendMessageResult(result,
                                           wasNewChat: wasNewChat,
                                           firstUserMessage: firstUserMessage)
@@ -694,6 +729,10 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {
+        guard isContactHumanSupportButtonEnabled else {
+            return
+        }
+
         analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
             source: source,
             entryPoint: entryPoint,
@@ -719,7 +758,7 @@ final class SupportChatViewModel {
             supportAreaInfo = nil
         }
 
-        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint, hasRemoteBotResponse)
     }
 
     private func generateTranscript() -> String {
@@ -965,6 +1004,10 @@ final class SupportChatViewModel {
         messages.last { $0.role == .bot && $0.messageID != nil }
     }
 
+    private var hasRemoteBotResponse: Bool {
+        messages.contains { $0.role == .bot && $0.messageID != nil }
+    }
+
     private func trackTroubleshootingCompleted(issueType: SupportIssueType,
                                               result: WooAnalyticsEvent.SupportChat.TroubleshootingResult,
                                               failedTest: SupportDiagnosticsService.Test? = nil) {
@@ -1043,7 +1086,7 @@ private extension SupportChatViewModel {
             comment: "Message shown by the bot when a support chat answer appears to have solved the merchant's issue"
         )
         static let errorMessage = NSLocalizedString(
-            "supportChatViewModel.errorMessage",
+            "supportChatViewModel.aiChatConnectionErrorMessage",
             value: "We couldn't connect to AI chat right now.",
             comment: "Generic error message shown when an AI support chat request fails"
         )

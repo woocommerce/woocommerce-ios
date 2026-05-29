@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 public struct AssistantChatView: View {
@@ -58,6 +59,13 @@ public struct AssistantChatView: View {
                     }
                 }
             }
+            .environment(\.openURL, OpenURLAction { url in
+                guard AssistantURLPolicy.allows(url) else {
+                    DDLogWarn("AI Assistant blocked link with disallowed scheme: \(url.scheme ?? "nil")")
+                    return .discarded
+                }
+                return .systemAction
+            })
             .environment(\.assistantConfirmationHandler,
                           AssistantConfirmationHandler(
                             onConfirm: { id in controller.confirmProposal(id) },

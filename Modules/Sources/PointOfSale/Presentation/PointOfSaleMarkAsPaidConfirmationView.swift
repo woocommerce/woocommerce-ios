@@ -23,16 +23,41 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
     }
 
     var body: some View {
+        // Mirror `PointOfSaleScanToPayView` / `PointOfSaleCollectCashView`:
+        // GeometryReader → ScrollView → VStack. The geometry reader gives the
+        // scroll view explicit width so `POSPageHeaderView` at the top fills
+        // the navigation pane edge-to-edge (the merchant reads it as a top
+        // bar) rather than sizing to its intrinsic content width and ending
+        // up centered + inset behind the 480pt-capped content below it.
+        //
+        // `alignment: .top` on the outer frame matters: cash anchors its header
+        // to the top via Spacers in the inner form VStack, but our content
+        // doesn't have any Spacers (it's a short confirmation form), so without
+        // explicit alignment SwiftUI vertical-centers the children when
+        // `minHeight` makes the VStack taller than they need — pushing the
+        // header down to the middle of the screen.
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(alignment: .center, spacing: POSSpacing.medium) {
+                    POSPageHeaderView(
+                        title: Localization.title,
+                        backButtonConfiguration: .init(state: isProcessing ? .disabled : .enabled,
+                                                       action: onCancel)
+                    )
+                    .frame(maxWidth: .infinity)
+
+                    content
+                }
+                .frame(maxWidth: .infinity, minHeight: geometry.size.height, alignment: .top)
+            }
+        }
+    }
+
+    private var content: some View {
         VStack(alignment: .center, spacing: POSSpacing.medium) {
             Image(systemName: "checkmark.circle")
                 .font(.system(size: 36))
                 .foregroundColor(.posPrimary)
-
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .foregroundColor(.posOnSurface)
-                .multilineTextAlignment(.center)
-                .accessibilityAddTraits(.isHeader)
 
             Text(String.localizedStringWithFormat(Localization.message, orderTotal))
                 .font(.posBodyMediumRegular())
@@ -55,13 +80,24 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                     .focused($isNoteFieldFocused)
                     .textInputAutocapitalization(.sentences)
                     .autocorrectionDisabled(false)
-                    .submitLabel(.done)
-                    .onSubmit { isNoteFieldFocused = false }
                     .padding(POSPadding.medium)
                     .background(Color.posSurfaceContainerLow)
                     .cornerRadius(POSCornerRadiusStyle.small.value)
                     .disabled(isProcessing)
                     .accessibilityIdentifier("pos-mark-as-paid-note-field")
+                    // `axis: .vertical` makes the Return key insert a newline
+                    // rather than fire `.onSubmit`, so a keyboard toolbar Done
+                    // button is the only reliable way to dismiss the keyboard
+                    // on a multi-line TextField.
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button(Localization.noteKeyboardDone) {
+                                isNoteFieldFocused = false
+                            }
+                            .accessibilityIdentifier("pos-mark-as-paid-note-keyboard-done")
+                        }
+                    }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -72,23 +108,13 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                     .multilineTextAlignment(.center)
             }
 
-            VStack(spacing: POSSpacing.small) {
-                Button(action: { onConfirm(trimmedNote) }) {
-                    Text(Localization.confirmButton)
-                        .font(POSFontStyle.posBodyLargeBold)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isProcessing))
-                .disabled(isProcessing)
-                .accessibilityIdentifier("pos-mark-as-paid-confirm-button")
-
-                Button(action: onCancel) {
-                    Text(Localization.cancelButton)
-                        .font(POSFontStyle.posBodyLargeBold)
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                .disabled(isProcessing)
-                .accessibilityIdentifier("pos-mark-as-paid-cancel-button")
+            Button(action: { onConfirm(trimmedNote) }) {
+                Text(Localization.confirmButton)
+                    .font(POSFontStyle.posBodyLargeBold)
             }
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isProcessing))
+            .disabled(isProcessing)
+            .accessibilityIdentifier("pos-mark-as-paid-confirm-button")
             .frame(maxWidth: .infinity)
         }
         .padding(POSPadding.large)
@@ -115,11 +141,6 @@ private extension PointOfSaleMarkAsPaidConfirmationView {
             value: "Mark as paid",
             comment: "Confirmation button on the Point of Sale Mark as paid confirmation."
         )
-        static let cancelButton = NSLocalizedString(
-            "pointOfSale.markAsPaid.confirmation.cancelButton",
-            value: "Cancel",
-            comment: "Cancel button on the Point of Sale Mark as paid confirmation."
-        )
         static let noteFieldLabel = NSLocalizedString(
             "pointOfSale.markAsPaid.confirmation.noteLabel",
             value: "Add a note (optional)",
@@ -130,6 +151,11 @@ private extension PointOfSaleMarkAsPaidConfirmationView {
             "pointOfSale.markAsPaid.confirmation.notePlaceholder",
             value: "e.g. Bank transfer from Maria, ref 4827",
             comment: "Placeholder shown inside the optional note text field on the Point of Sale Mark as paid confirmation."
+        )
+        static let noteKeyboardDone = NSLocalizedString(
+            "pointOfSale.markAsPaid.confirmation.noteKeyboardDone",
+            value: "Done",
+            comment: "Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation."
         )
     }
 }

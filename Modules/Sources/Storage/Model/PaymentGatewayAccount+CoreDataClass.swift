@@ -3,5 +3,4 @@ import CoreData
 
 @objc(PaymentGatewayAccount)
 public class PaymentGatewayAccount: NSManagedObject {
-
 }

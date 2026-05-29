@@ -39,6 +39,7 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case pointOfSaleScanToPay
     case pointOfSaleMarkOrderAsPaid
     case wooAIAssistant
+    case arParcelFitting
 
     init?(rawValue: String) {
         switch rawValue {
@@ -66,6 +67,8 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .pointOfSaleMarkOrderAsPaid
         case "woo_mobile_ai_assistant":
             self = .wooAIAssistant
+        case "woo_ar_parcel_fitting":
+            self = .arParcelFitting
         default:
             return nil
         }

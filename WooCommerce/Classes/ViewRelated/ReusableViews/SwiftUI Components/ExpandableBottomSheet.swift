@@ -105,7 +105,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
-                .onChange(of: geometryProxy.size.height) { _, newValue in
+                .onChange(of: geometryProxy.size.height) { _, _ in
                     if !isDragging {
                         DispatchQueue.main.async {
                             withAnimation {
@@ -206,6 +206,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
         } expandableContent: {
             Text("Can be hidden")
         }
-
     }
 }

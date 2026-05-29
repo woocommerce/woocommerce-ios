@@ -110,6 +110,5 @@ private extension EditorFactory {
             "editorFactory.customFieldsValuePlaceholder",
             value: "Enter custom field value",
             comment: "Placeholder text inside the editor's text field.")
-
     }
 }

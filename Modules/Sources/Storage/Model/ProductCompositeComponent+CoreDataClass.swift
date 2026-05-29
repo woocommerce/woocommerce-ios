@@ -3,5 +3,4 @@ import CoreData
 
 @objc(ProductCompositeComponent)
 public class ProductCompositeComponent: NSManagedObject {
-
 }

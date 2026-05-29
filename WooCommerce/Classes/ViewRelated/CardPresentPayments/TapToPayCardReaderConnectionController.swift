@@ -388,7 +388,7 @@ private extension TapToPayCardReaderConnectionController {
     }
 
     func observePermissionChanges() {
-        locationService.observePermissionChanges { [weak self] permission in
+        locationService.observePermissionChanges { [weak self] _ in
             guard let self else { return }
             locationService.stopObservingPermissionChanges()
             if case .requestLocationPermission = state {

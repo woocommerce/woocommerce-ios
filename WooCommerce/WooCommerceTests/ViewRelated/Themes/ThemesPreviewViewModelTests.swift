@@ -158,7 +158,6 @@ final class ThemesPreviewViewModelTests: XCTestCase {
             // Check that the URL is correct
             XCTAssertEqual(page.link, expectedPage.link)
         }
-
     }
 
     func test_fetchPages_failure_sets_right_state() async {

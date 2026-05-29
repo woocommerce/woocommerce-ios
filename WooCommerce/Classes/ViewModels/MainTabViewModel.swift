@@ -112,7 +112,7 @@ private extension MainTabViewModel {
     /// Connect hooks on `ResultsController` and query cached data
     ///
     func configureStatusResultsController() {
-        statusResultsController?.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+        statusResultsController?.onDidChangeObject = { [weak self] updatedOrdersStatus, _, _, _ in
             self?.processBadgeCount(updatedOrdersStatus)
         }
 

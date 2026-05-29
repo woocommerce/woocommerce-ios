@@ -283,22 +283,17 @@ private extension WooAnalytics {
 
             let applicationProperties = self.applicationOpenedProperties(configurationResult)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-                .configurableStoreStatsWidgets
-            ),
-               let infos = try? configurationResult.get() {
-                let snapshot = WidgetSnapshot(from: infos)
-                var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
-                if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
-                    properties.merge(diff.analyticsProperties) { _, new in new }
-                }
-                self.track(.applicationOpened, withProperties: properties)
-            } else {
-                self.track(
-                    .applicationOpened,
-                    withProperties: applicationProperties
-                )
+            guard let infos = try? configurationResult.get() else {
+                self.track(.applicationOpened, withProperties: applicationProperties)
+                return
             }
+
+            let snapshot = WidgetSnapshot(from: infos)
+            var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+            if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                properties.merge(diff.analyticsProperties) { _, new in new }
+            }
+            self.track(.applicationOpened, withProperties: properties)
         }
         applicationOpenedTime = Date()
     }
@@ -317,7 +312,7 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// Builds the necesary properties for the `application_opened` event.
+    /// Builds the necessary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
         guard let installedWidgets = try? configurationResult.get() else {

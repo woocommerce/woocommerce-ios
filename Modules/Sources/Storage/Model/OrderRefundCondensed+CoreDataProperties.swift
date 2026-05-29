@@ -12,5 +12,4 @@ extension OrderRefundCondensed {
     @NSManaged public var reason: String?
     @NSManaged public var total: String?
     @NSManaged public var order: Order?
-
 }

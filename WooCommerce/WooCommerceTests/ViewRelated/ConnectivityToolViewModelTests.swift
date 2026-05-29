@@ -462,7 +462,6 @@ struct ConnectivityToolViewModelTests {
         // Then
         #expect(sut.isBotChatSupported)
     }
-
 }
 
 // MARK: - Helpers

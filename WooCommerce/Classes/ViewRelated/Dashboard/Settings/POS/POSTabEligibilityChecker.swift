@@ -257,7 +257,6 @@ private extension POSTabEligibilityChecker {
             })
         }
     }
-
 }
 
 private enum POSTabEligibilityCheckerError: Error {

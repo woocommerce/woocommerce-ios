@@ -24,7 +24,6 @@ private struct NoOpAssistantExternalNavigation: AssistantExternalNavigationProvi
 }
 
 private struct AssistantExternalNavigationKey: EnvironmentKey {
-    @MainActor
     static let defaultValue: AssistantExternalNavigationProviding = NoOpAssistantExternalNavigation()
 }
 

@@ -9,7 +9,7 @@ import Storage
 public class OrderStore: Store {
     private let remote: OrdersRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -279,7 +279,7 @@ private extension OrderStore {
     /// Loads a specific order associated with a given Site ID from remote.
     ///
     private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
-        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
+        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] order, error in
             guard let order else {
                 if case NetworkError.notFound? = error {
                     self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
@@ -388,7 +388,7 @@ private extension OrderStore {
             guard let self else {
                 return onCompletion(UpdateOrderStatusError.undefinedState)
             }
-            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
+            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] order, error in
                 guard let error else {
                     if let order {
                         self?.upsertStoredOrder(readOnlyOrder: order)

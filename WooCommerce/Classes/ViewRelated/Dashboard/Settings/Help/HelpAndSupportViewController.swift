@@ -413,7 +413,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
+        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] success, _ in
             guard success else {
                 return
             }
@@ -480,17 +480,24 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
+        let initialContext: [String: Any]? = loginSiteURL.map {
+            ["site_url": $0.absoluteString]
+        }
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            initialContext: initialContext,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          siteAddress: loginSiteURL?.absoluteString,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = viewModel
@@ -502,10 +509,17 @@ private extension HelpAndSupportViewController {
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           siteAddress: String? = nil,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: siteAddress,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     /// Chat History action
@@ -533,14 +547,16 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = chatViewModel

@@ -5,13 +5,10 @@ import Networking
 
 /// Type that provides data entries to the widget system.
 ///
-/// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
-/// `AppIntentConfiguration` path (via `AppIntentTimelineProvider` conformance in
-/// `StoreInfoProvider+AppIntentTimelineProvider.swift`). Sharing one provider keeps the
-/// data-fetching logic in a single place while the configurable widget rolls out behind
-/// `FeatureFlag.configurableStoreStatsWidgets`.
+/// Backs the `AppIntentConfiguration` path via `AppIntentTimelineProvider` conformance in
+/// `StoreInfoProvider+AppIntentTimelineProvider.swift`.
 ///
-final class StoreInfoProvider: TimelineProvider {
+final class StoreInfoProvider {
 
     /// Desired data reload interval provided to system = 30 minutes.
     ///
@@ -41,25 +38,8 @@ final class StoreInfoProvider: TimelineProvider {
         )
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
-        completion(placeholder(in: context))
-    }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        Task {
-            // Legacy `StaticConfiguration` path. Hardcoded today range + 4-cell preset, bypassing
-            // the AppIntent metric resolver on purpose — the configurable behavior belongs to
-            // the `AppIntentConfiguration` branch only.
-            let timeline = await loadTimeline(dateRange: .today, metrics: Self.legacyMetricsPreset)
-            completion(timeline)
-        }
-    }
-
-    /// Shared loader for both `TimelineProvider` and `AppIntentTimelineProvider` paths.
-    /// Visible to extensions in this module so the AppIntent conformance can share logic.
-    ///
-    /// The legacy path passes `legacyMetricsPreset`; the AppIntent path passes the resolved
-    /// user selection from `resolveMetricSelection`.
+    /// Shared loader for the `AppIntentTimelineProvider` path. Visible to extensions in this
+    /// module so the AppIntent conformance can share logic.
     ///
     func loadTimeline(
         dateRange: StoreStatsWidgetDateRange,
@@ -74,41 +54,57 @@ final class StoreInfoProvider: TimelineProvider {
         let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
-            let statsPeriod = try await service.fetchStats(
+            async let statsPeriodRequest = service.fetchStats(
                 for: dependencies.store.storeID,
                 dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
             )
+            async let storeRequest = Self.refreshedStoreMetadata(dependencies.store, service: service)
+            let statsPeriod = try await statsPeriodRequest
+            let store = await storeRequest
+            let updatedDependencies = Dependencies(credentials: dependencies.credentials, store: store)
             let entry = Self.dataEntry(
                 for: statsPeriod,
                 dateRange: dateRange,
-                with: dependencies,
+                with: updatedDependencies,
                 metrics: metrics,
                 theme: theme
             )
             return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
         } catch {
             // WooFoundation does not expose `DDLOG` types. Should we include them?
-            print("⛔️ Error fetching today's widget stats: \(error)")
+            print("⛔️ Error fetching widget stats: \(error)")
             return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
+        }
+    }
+
+    static func refreshedStoreMetadata(_ store: StoreMetadata,
+                                       service: StoreInfoDataService,
+                                       currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) async -> StoreMetadata {
+        guard let siteID = store.siteIDNeedingCurrencySettingsRefresh else {
+            return store
+        }
+
+        do {
+            let currencySettings = try await service.fetchGeneralSettings(siteID: siteID)
+            currencyCache.save(currencySettings, forSiteID: siteID)
+            return store.replacingCurrencySettings(currencySettings)
+        } catch {
+            print("⛔️ Error fetching widget currency settings: \(error)")
+            return store
         }
     }
 }
 
-// MARK: - Metric presets
+// MARK: - Placeholder
 
 extension StoreInfoProvider {
-    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
-    /// fallback placeholder selection. Matches the original 4-cell shape — non-WPCom users see
-    /// `visitors` / `conversion` as `.unavailable`. Real AppIntent timelines and snapshots
-    /// derive their selection from the user's stored configuration.
+    /// Convenience placeholder used by other widgets that share `StoreInfoProvider`'s sample
+    /// data (e.g. the Trends widget). Fetches dependencies internally and delegates to the
+    /// per-dependency `placeholderEntry`.
     ///
-    static let legacyMetricsPreset: [StoreInfoMetricType] = [
-        .revenue, .visitors, .orders, .conversion
-    ]
-
     static func placeholderEntry(
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+        metrics: [StoreInfoMetricType]
     ) -> StoreInfoEntry {
         placeholderEntry(for: fetchDependencies(), dateRange: dateRange, metrics: metrics)
     }
@@ -158,7 +154,7 @@ private extension StoreInfoDataService.Stats {
     }
 }
 
-private extension StoreInfoProvider {
+extension StoreInfoProvider {
 
     /// Dependencies needed by the `StoreInfoProvider`
     ///
@@ -172,6 +168,15 @@ private extension StoreInfoProvider {
         let storeName: String
         let storeCurrencySettings: CurrencySettings
         let storeTimeZone: TimeZone
+        let siteIDNeedingCurrencySettingsRefresh: Int64?
+
+        func replacingCurrencySettings(_ currencySettings: CurrencySettings) -> StoreMetadata {
+            StoreMetadata(storeID: storeID,
+                          storeName: storeName,
+                          storeCurrencySettings: currencySettings,
+                          storeTimeZone: storeTimeZone,
+                          siteIDNeedingCurrencySettingsRefresh: nil)
+        }
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
@@ -213,7 +218,8 @@ private extension StoreInfoProvider {
 
     static func selectedStoreMetadata(defaultStore: StoreMetadata,
                                       selectedStoreID: StoreStatsStoreEntity.ID?,
-                                      sites: [WidgetSite]) -> StoreMetadata {
+                                      sites: [WidgetSite],
+                                      currencyCache: WidgetSiteCurrencyCache = WidgetSiteCurrencyCache()) -> StoreMetadata {
         guard let selectedStoreID,
               StoreStatsStoreSelection.isDefaultStoreEntityID(selectedStoreID) == false,
               let selectedSiteID = Int64(selectedStoreID),
@@ -221,17 +227,27 @@ private extension StoreInfoProvider {
             return defaultStore
         }
 
-        let currencySettings: CurrencySettings = {
+        let currencyResult: (settings: CurrencySettings, siteIDNeedingRefresh: Int64?) = {
             guard selectedSite.siteID != defaultStore.storeID else {
-                return defaultStore.storeCurrencySettings
+                return (defaultStore.storeCurrencySettings, nil)
             }
-            return selectedSite.currencySettings ?? defaultStore.storeCurrencySettings
+
+            if let currencySettings = selectedSite.currencySettings {
+                return (currencySettings, nil)
+            }
+
+            if let currencySettings = currencyCache.currencySettings(forSiteID: selectedSite.siteID) {
+                return (currencySettings, nil)
+            }
+
+            return (defaultStore.storeCurrencySettings, selectedSite.siteID)
         }()
 
         return StoreMetadata(storeID: selectedSite.siteID,
                              storeName: selectedSite.name,
-                             storeCurrencySettings: currencySettings,
-                             storeTimeZone: selectedSite.timezone)
+                             storeCurrencySettings: currencyResult.settings,
+                             storeTimeZone: selectedSite.timezone,
+                             siteIDNeedingCurrencySettingsRefresh: currencyResult.siteIDNeedingRefresh)
     }
 
     static func defaultStoreMetadata(sites: [WidgetSite]) -> StoreMetadata? {
@@ -245,7 +261,8 @@ private extension StoreInfoProvider {
         return StoreMetadata(storeID: storeID,
                              storeName: storeName,
                              storeCurrencySettings: storeCurrencySettings,
-                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current)
+                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current,
+                             siteIDNeedingCurrencySettingsRefresh: nil)
     }
 }
 
@@ -254,15 +271,15 @@ private extension StoreInfoProvider {
 private extension StoreInfoProvider {
 
     /// Redacted entry with sample data. If dependencies are available — store name and currency
-    /// settings will be used. Both the legacy String fields and the metric-driven slots derive
-    /// from `Stats.placeholderSample`, while the metric selection mirrors the family-specific
-    /// AppIntent defaults so the widget gallery renders a complete preview with trends and
-    /// charts.
+    /// settings will be used. Both the pre-formatted String fields and the metric-driven slots
+    /// derive from `Stats.placeholderSample`, while the metric selection mirrors the
+    /// family-specific AppIntent defaults so the widget gallery renders a complete preview
+    /// with trends and charts.
     ///
     static func placeholderEntry(
         for dependencies: Dependencies?,
         dateRange: StoreStatsWidgetDateRange = .today,
-        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        metrics: [StoreInfoMetricType],
         theme: StoreWidgetTheme = .brandPurple
     ) -> StoreInfoEntry {
         let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
@@ -298,13 +315,12 @@ private extension StoreInfoProvider {
     }
 
     /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
-    /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
-    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders,
+    /// up by `resolveMetricSelection`. Ordering here is what the home-screen view renders,
     /// including explicit `.none` entries that preserve empty slots.
     ///
     /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
-    /// metric-driven home-screen view can render trend badges. The legacy String fields below
-    /// only reflect the current period.
+    /// metric-driven home-screen view can render trend badges. The pre-formatted String
+    /// fields below only reflect the current period.
     ///
     static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
                           dateRange: StoreStatsWidgetDateRange,

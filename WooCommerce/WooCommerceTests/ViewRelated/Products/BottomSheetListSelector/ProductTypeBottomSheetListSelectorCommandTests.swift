@@ -97,7 +97,7 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: .simple(isVirtual: false)),
             subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
-        ) { (selected) in
+        ) { selected in
             selectedActions.append(selected)
         }
 

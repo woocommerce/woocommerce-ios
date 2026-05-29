@@ -12435,12 +12435,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "自訂金額";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "點選此處，為訂單新增服務費、小費或任何自訂行。";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "新增自訂金額";
-
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "掃描條碼";
 
@@ -12611,9 +12605,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
-
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "新增自訂金額";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "點選商品即可\n 將其新增至購物車，或 ";
@@ -12786,9 +12777,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "訂單 ";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "商品";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "總計";
 
@@ -12834,20 +12822,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "數量：%1$@，每個 %2$@，總金額 %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "商品";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "商品";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "退款編號 %1$d";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "已退款的商品";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "總計";
@@ -14072,9 +14051,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "我的商店";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "今日";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "轉換";
@@ -14096,9 +14072,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "訪客";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "平均訂單金額";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "售出的項目";
@@ -14197,9 +14170,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "嗨！ 我是你的 Woo 行動支援機器人。 你今天遇到什麼問題？";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "確定";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "輸入訊息...";
 
@@ -14212,17 +14182,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "與支援團隊交談";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "發生錯誤。 請再試一次。";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "嗨！ 我是你的 Woo 行動支援機器人。 今天有什麼需要我幫忙的嗎？";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "請更詳細地描述問題，我才能提供協助。";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "我們無法載入上一個對話。 你仍然可以傳送新訊息。";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "啟用分析";
@@ -15403,14 +15367,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "分批出貨";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "無法移除包裹";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "重試";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "無法儲存包裹";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "請從以下格式中，擇一輸入有效的國際交易號碼：AES X12345678901234 或 NOEEI 30.37(a)。";

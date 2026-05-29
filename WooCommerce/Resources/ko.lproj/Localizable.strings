@@ -12438,12 +12438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
 "pos.addCustomAmount.title" = "사용자 정의 금액";
 
-/* Body text for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.message" = "여기를 눌러 주문에 서비스 수수료, 팁 또는 사용자 정의 라인을 추가하세요.";
-
-/* Title for the TipKit popover pointing to the add-custom-amount button in the Point of Sale cart header. */
-"pos.addCustomAmountTip.title" = "사용자 정의 금액 추가";
-
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "바코드 스캔 중";
 
@@ -12614,9 +12608,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "우커머스 설정";
-
-/* Accessibility label for the Point of Sale cart header button that opens the add custom amount form. */
-"pos.cartView.addCustomAmount.header.accessibilityLabel" = "사용자 정의 금액 추가";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "상품을 탭하기\n 장바구니에 추가하거나 ";
@@ -12789,9 +12780,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "주문";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "상품";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "합계";
 
@@ -12837,20 +12825,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "수량: %1$@개, 각 %2$@개, 총 %3$@개";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "상품";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "상품";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "환불 #%1$d";
-
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "환불된 제품";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "합계";
@@ -14075,9 +14054,6 @@ which should be translated separately and considered part of this sentence. */
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "내 상점";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "오늘";
-
 /* Conversion rate metric title for the store info widget.
    Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "전환";
@@ -14099,9 +14075,6 @@ which should be translated separately and considered part of this sentence. */
 /* Visitors metric title for the store info widget.
    Visitors title label for the store info widget */
 "storeWidgets.infoView.visitors" = "방문자";
-
-/* Average order value (AOV) metric title for the store info widget. */
-"storeWidgets.metric.averageOrderValue" = "평균 주문 값";
 
 /* Items sold metric title — total units sold in the period. */
 "storeWidgets.metric.itemsSold" = "판매된 아이템";
@@ -14200,9 +14173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Greeting and header for the issue picker in support chat */
 "supportChatView.issuePickerHeader" = "안녕하세요! Woo 모바일 지원 봇입니다. 오늘 어떤 문제가 있으신가요?";
 
-/* OK button in support chat error alert */
-"supportChatView.ok" = "확인";
-
 /* Placeholder text for the chat input field */
 "supportChatView.placeholder" = "메시지 입력...";
 
@@ -14215,17 +14185,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatView.title" = "지원팀과 채팅";
 
-/* Error message shown when sending a support chat message fails */
-"supportChatViewModel.errorMessage" = "문제가 발생했습니다. 다시 시도해 주세요.";
-
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "안녕하세요! Woo 모바일 지원 봇입니다. 오늘 제가 도와드릴 일이 있나요?";
 
 /* Message prompting user to describe their issue after diagnostics */
 "supportChatViewModel.postDiagnosticsGreeting" = "제가 도와드릴 수 있도록 문제를 자세히 설명해 주세요.";
-
-/* Error message shown when loading a prior support chat transcript fails on resume */
-"supportChatViewModel.resumeErrorMessage" = "이전 대화를 로드할 수 없습니다. 새 메시지는 계속해서 보낼 수 있습니다.";
 
 /* Action button to enable WooCommerce Analytics */
 "supportDiagnosticsService.action.enableAnalytics" = "분석 활성화";
@@ -15406,14 +15370,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "분할 배송";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "패키지를 제거할 수 없음";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "다시 시도";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "패키지를 저장할 수 없음";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "AES X12345678901234 또는 NOEEI 30.37(a) 형식 중 하나로 유효한 ITN을 입력하세요.";

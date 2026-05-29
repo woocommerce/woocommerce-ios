@@ -10,18 +10,18 @@ enum SupportIssueType: String, CaseIterable {
     case other
 
     /// The diagnostic tests to run for this issue type.
-    /// Returns nil for `.other` (no diagnostics needed).
+    /// Returns nil for options that do not run diagnostics.
     ///
     var testsToRun: [SupportDiagnosticsService.Test]? {
         switch self {
         case .loadingOrders:
-            return [.internetConnection, .wpComServers, .site, .siteOrders]
+            return [.internetConnection, .site, .siteOrders]
         case .loadingProducts:
-            return [.internetConnection, .wpComServers, .site, .loadingProducts]
+            return [.internetConnection, .site, .loadingProducts]
         case .loadingAnalytics:
-            return [.internetConnection, .wpComServers, .site, .analyticsSetting]
+            return [.internetConnection, .site, .analyticsSetting]
         case .receivingNotifications:
-            return [.internetConnection, .wpComServers, .site, .notifications]
+            return [.internetConnection, .site, .notifications]
         case .other:
             return nil
         }
@@ -41,7 +41,6 @@ enum SupportIssueType: String, CaseIterable {
             return Localization.other
         }
     }
-
 }
 
 // MARK: - Localization

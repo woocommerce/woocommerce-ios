@@ -75,5 +75,4 @@ final class StatsIntervalDataParserTests: XCTestCase {
         // Then
         XCTAssertEqual(averageOrderValueData, [20, 30])
     }
-
 }

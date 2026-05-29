@@ -97,7 +97,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load One Product Shipping Class returns error")
 
         let remoteID = Int64(96987515)
-        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { (productShippingClass, error) in
+        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { productShippingClass, error in
             XCTAssertNil(productShippingClass)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -105,7 +105,6 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 private extension ProductShippingClassRemoteTests {

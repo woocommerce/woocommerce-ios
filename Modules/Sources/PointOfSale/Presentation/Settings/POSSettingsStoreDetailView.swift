@@ -2,6 +2,10 @@ import SwiftUI
 
 struct POSSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
+    @State private var showingWebView: Bool = false
+
+    @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posAnalytics) private var analytics
 
     let viewModel: POSSettingsStoreViewModel
 
@@ -59,7 +63,7 @@ struct POSSettingsStoreDetailView: View {
     private var receiptInformationView: some View {
         POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                sectionHeaderView(title: Localization.receiptInformation)
+                receiptSectionHeaderView
 
                 VStack(spacing: POSSpacing.medium) {
                     receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
@@ -72,6 +76,47 @@ struct POSSettingsStoreDetailView: View {
                 }
                 .padding(.bottom, POSPadding.medium)
             }
+        }
+        .posFullScreenCover(isPresented: $showingWebView) {
+            if let adminURL = URL(string: viewModel.receiptSettingsAdminURL) {
+                externalViews.createAuthenticatedWebView(
+                    url: adminURL,
+                    title: Localization.editReceiptWebViewTitle) {
+                        showingWebView = false
+                        Task {
+                            isLoading = true
+                            await viewModel.retrievePOSReceiptSettings()
+                            isLoading = false
+                        }
+                    }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var receiptSectionHeaderView: some View {
+        ZStack {
+            cardBackgroundColor
+            HStack {
+                Text(Localization.receiptInformation)
+                    .font(.posBodyLargeBold)
+                    .foregroundColor(.posOnSurface)
+
+                Spacer()
+
+                if !viewModel.receiptSettingsAdminURL.isEmpty {
+                    Button {
+                        analytics.track(.pointOfSaleEditReceiptTapped)
+                        showingWebView = true
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                            .font(.posBodyLargeBold)
+                            .foregroundStyle(Color.posOnSurface)
+                    }
+                    .disabled(isLoading)
+                }
+            }
+            .padding(.vertical, POSPadding.small)
         }
     }
 
@@ -189,6 +234,12 @@ private extension POSSettingsStoreDetailView {
             "pointOfSaleSettingsStoreDetailView.refundReturnsPolicy",
             value: "Refund & Returns Policy",
             comment: "Label for refund and returns policy field in Point of Sale settings."
+        )
+
+        static let editReceiptWebViewTitle = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle",
+            value: "Receipt Settings",
+            comment: "Navigation title for the web view used to edit POS receipt information."
         )
     }
 }

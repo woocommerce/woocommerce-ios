@@ -920,7 +920,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                 default:
                     XCTFail("Unexpected action received: \(action)")
                 }
-
             }
             await viewModel.remotelyValidateAddress()
             viewModel.normalizeAddressVM?.confirmSelectedAddress()

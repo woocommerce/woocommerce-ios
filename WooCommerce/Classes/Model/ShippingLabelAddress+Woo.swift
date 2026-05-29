@@ -20,7 +20,7 @@ extension ShippingLabelAddress {
         return output.joined(separator: "\n")
     }
 
-    /// Returns the Postal Address, formated and ready for display.
+    /// Returns the Postal Address, formatted and ready for display.
     ///
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)

@@ -29,5 +29,4 @@ extension SiteVisitStats {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSSet)
-
 }

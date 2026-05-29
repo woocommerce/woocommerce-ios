@@ -105,7 +105,6 @@ struct CustomerDetailView: View {
                     }
                     .accessibilityLabel(Localization.newOrder)
                     .renderedIf(viewModel.canCreateNewOrder)
-
                 }
             }
 

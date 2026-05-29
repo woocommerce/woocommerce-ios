@@ -73,11 +73,8 @@ private extension ProductsTopBannerFactoryTests {
                                                analytics: analytics,
                                                type: bannerType,
                                                expandedStateChangeHandler: {
-
             }, onGiveFeedbackButtonPressed: {
-
             }, onDismissButtonPressed: {
-
             }) { aBanner in
                 banner = aBanner
                 exp.fulfill()

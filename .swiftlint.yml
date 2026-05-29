@@ -19,11 +19,20 @@ only_rules:
   # Prefer `Array(xs)` over `xs.map { $0 }`.
   - array_init
 
+  # All elements in a collection literal should be vertically aligned.
+  - collection_alignment
+
   # Colons should be next to the identifier when specifying a type.
   - colon
 
   # There should be no space before and one after any comma.
   - comma
+
+  # There should be a space after the comma in inheritance lists.
+  - comma_inheritance
+
+  # Prefer `contains` over `filter(where:).count`.
+  - contains_over_filter_count
 
   # Prefer `contains` over using `filter(where:).isEmpty`.
   - contains_over_filter_is_empty
@@ -54,6 +63,10 @@ only_rules:
   # Prefer checking `isEmpty` over comparing `string` to `""`.
   - empty_string
 
+  # Prefer implicit initializer calls over explicit `.init(...)` when the
+  # type can be inferred.
+  - explicit_init
+
   # Prefer `first(where:)` over `filter { }.first`.
   - first_where
 
@@ -64,10 +77,16 @@ only_rules:
   # explicit empty-string separator since that is the default.
   - joined_default_parameter
 
+  # Prefer `last(where:)` over `filter { }.last`.
+  - last_where
+
   - line_length
 
   # MARK comment should be in valid format.
   - mark
+
+  # Modifiers should follow a canonical order.
+  - modifier_order
 
   # Opening braces should be preceded by a single space and on the same line as
   # the declaration.
@@ -75,15 +94,21 @@ only_rules:
 
   - overridden_super_call
 
+  # No whitespace should follow a period.
+  - period_spacing
+
   # Prefer `0` over explicit type initializers like `CGFloat(0)`.
   - prefer_zero_over_explicit_init
+
+  # Prefer `reduce(into:_:)` over `reduce(_:_:)` for non-trivial accumulator types.
+  - reduce_into
 
   # Type annotations are redundant when the type can be inferred.
   - redundant_type_annotation
 
   # Prefer the shorthand `if let foo` form over `if let foo = foo`.
   - shorthand_optional_binding
-  
+
   # Prefer `min(by:)` / `max(by:)` over `sorted { ... }.first` / `.last`.
   - sorted_first_last
 
@@ -99,7 +124,17 @@ only_rules:
   # Lines should not have trailing whitespace.
   - trailing_whitespace
 
+  # Closure parameters should not be wrapped in parentheses.
+  - unneeded_parentheses_in_closure_argument
+
+  # Unused parameters in a closure should be replaced with `_`.
+  - unused_closure_parameter
+
+  - untyped_error_in_catch
+
   - vertical_whitespace
+
+  - vertical_whitespace_closing_braces
 
   - weak_delegate
 

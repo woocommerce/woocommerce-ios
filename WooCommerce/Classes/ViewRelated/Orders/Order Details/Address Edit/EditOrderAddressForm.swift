@@ -45,7 +45,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -290,7 +290,6 @@ struct SingleAddressForm: View {
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
-
             }
 
             if showPhoneCountryCodeField {

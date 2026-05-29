@@ -42,7 +42,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -130,7 +130,6 @@ struct BlazeCampaignDashboardView: View {
                     .padding(.horizontal, Layout.padding)
             }
             .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -176,7 +175,6 @@ private extension BlazeCampaignDashboardView {
                 .subheadlineStyle()
                 .renderedIf(viewModel.shouldShowSubtitle)
         }
-
     }
 
     var createCampaignButton: some View {

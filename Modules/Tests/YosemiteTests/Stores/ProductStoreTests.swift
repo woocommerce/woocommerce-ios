@@ -208,7 +208,7 @@ final class ProductStoreTests: XCTestCase {
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
-            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -243,7 +243,7 @@ final class ProductStoreTests: XCTestCase {
         // Action
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
-            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -333,7 +333,7 @@ final class ProductStoreTests: XCTestCase {
                                                        productStatus: nil,
                                                        productType: nil,
                                                        productCategory: nil,
-                                                       sortOrder: .nameAscending) { error in
+                                                       sortOrder: .nameAscending) { _ in
             expectation.fulfill()
         }
         productStore.onAction(action)
@@ -946,7 +946,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Track Events: Upsert == 2 / Delete == 0
         var numberOfUpsertEvents = 0
-        entityListener.onUpsert = { upserted in
+        entityListener.onUpsert = { _ in
             numberOfUpsertEvents += 1
         }
 
@@ -1185,7 +1185,7 @@ final class ProductStoreTests: XCTestCase {
                                                            keyword: keyword,
                                                            pageNumber: self.defaultPageNumber,
                                                            pageSize: self.defaultPageSize,
-                                                           onCompletion: { result in
+                                                           onCompletion: { _ in
                                                             store.onAction(nestedAction)
                                                            })
             store.onAction(firstAction)
@@ -2161,7 +2161,7 @@ final class ProductStoreTests: XCTestCase {
                 name: expectedName,
                 description: expectedDescription,
                 language: expectedLangugae
-            ) { result in
+            ) { _ in
                 promise(())
             })
         }
@@ -2192,7 +2192,7 @@ final class ProductStoreTests: XCTestCase {
                 name: "Sample product",
                 description: "Sample description",
                 language: "en"
-            ) { result in
+            ) { _ in
                 promise(())
             })
         }
@@ -2220,7 +2220,7 @@ final class ProductStoreTests: XCTestCase {
                 name: "Sample product",
                 description: "Sample description",
                 language: "en"
-            ) { result in
+            ) { _ in
                 promise(())
             })
         }
@@ -2559,7 +2559,7 @@ final class ProductStoreTests: XCTestCase {
         let onFailure = waitFor { promise in
             let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: self.sampleSiteID,
                                                                         identifier: nonExistingProductIdentifier,
-                                                                        onCompletion: { product in
+                                                                        onCompletion: { _ in
                 promise(false)
             })
             store.onAction(action)
@@ -2583,7 +2583,7 @@ final class ProductStoreTests: XCTestCase {
          let onSuccess: Bool = waitFor { promise in
              let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: self.sampleSiteID,
                                                                                         identifier: expectedProductSKU,
-                                                                                        onCompletion: { product in
+                                                                                        onCompletion: { _ in
                  promise(true)
              })
              store.onAction(action)
@@ -2610,7 +2610,7 @@ final class ProductStoreTests: XCTestCase {
          let onSuccess: Bool = waitFor { promise in
              let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: self.sampleSiteID,
                                                                                         identifier: expectedProductGlobalUniqueId,
-                                                                                        onCompletion: { product in
+                                                                                        onCompletion: { _ in
                  promise(true)
              })
              store.onAction(action)
@@ -2637,7 +2637,7 @@ final class ProductStoreTests: XCTestCase {
          let onSuccess: Bool = waitFor { promise in
              let action = ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier(siteID: self.sampleSiteID,
                                                                                         identifier: expectedProductSKU,
-                                                                                        onCompletion: { product in
+                                                                                        onCompletion: { _ in
                  promise(true)
              })
              store.onAction(action)

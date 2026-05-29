@@ -156,7 +156,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// ViewModel for the edit order note view.
     ///
-    lazy private(set) var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
+    private(set) lazy var noteViewModel = { SimplePaymentsNoteViewModel(analytics: analytics) }()
 
     init(providedAmount: String,
          amountName: String? = nil,
@@ -345,6 +345,5 @@ private extension SimplePaymentsSummaryViewModel {
         static let invalidEmail = NSLocalizedString("Please enter a valid email address.", comment: "Notice text when the merchant enters an invalid email")
         static let tax = NSLocalizedString("Tax",
                                              comment: "Tax label for the tax detail row.")
-
     }
 }

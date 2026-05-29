@@ -37,14 +37,14 @@ extension XCTestCase {
 
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
-            XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { (activity) in
+            XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { _ in
                 add(XCTAttachment(screenshot: XCUIApplication().windows.firstMatch.screenshot()))
             }
         }
     }
 
     public func systemAlertHandler(alertTitle: String, alertButton: String) {
-        addUIInterruptionMonitor(withDescription: alertTitle) { (alert) -> Bool in
+        addUIInterruptionMonitor(withDescription: alertTitle) { alert -> Bool in
             let alertButtonElement = alert.buttons[alertButton]
             XCTAssert(alertButtonElement.waitForExistence(timeout: 5))
             alertButtonElement.tap()
@@ -147,7 +147,7 @@ extension XCUIElement {
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
         let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
         let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)
-        let predicateCompound = NSCompoundPredicate.init(type: .and, subpredicates: [firstPredicate, secondPredicate])
+        let predicateCompound = NSCompoundPredicate(type: .and, subpredicates: [firstPredicate, secondPredicate])
 
         return XCUIApplication().staticTexts.containing(predicateCompound).count == 1
     }

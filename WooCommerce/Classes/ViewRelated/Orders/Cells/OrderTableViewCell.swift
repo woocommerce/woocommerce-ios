@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-final class OrderTableViewCell: UITableViewCell & SearchResultCell {
+final class OrderTableViewCell: UITableViewCell, SearchResultCell {
     typealias SearchModel = OrderListCellViewModel
 
     /// Order's Title
@@ -77,7 +77,6 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         // From iOS 15.0, a focus effect will be applied automatically to a selected cell
         // modifying its style (e.g: by adding a border)
         focusEffect = nil
-
     }
 
     // MARK: - Overridden Methods

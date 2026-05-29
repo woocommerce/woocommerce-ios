@@ -422,6 +422,45 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
 
+        @Test func cancelInFlightCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
+            // Given
+            let cardPresentPaymentService = MockCardPresentPaymentService()
+            let orderController = MockPointOfSaleOrderController()
+            let itemsController = MockPointOfSaleItemsController()
+            var releaseSyncOrder: (() -> Void)?
+            var checkoutTask: Task<Void, Never>?
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+
+            // When
+            await fireOnce { fire in
+                orderController.onSyncOrderCalled = {
+                    await withCheckedContinuation { continuation in
+                        releaseSyncOrder = {
+                            continuation.resume()
+                        }
+                        fire()
+                    }
+                }
+                checkoutTask = Task { @MainActor in
+                    await sut.checkOut()
+                }
+            }
+
+            sut.cancelInFlightCheckout()
+            releaseSyncOrder?()
+            await checkoutTask?.value
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
+        }
+
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {
             // Given
             let receiptSender = MockPOSReceiptSender()
@@ -929,7 +968,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .pluginNotActivated(plugin: .stripe)
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
             try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
@@ -1053,7 +1092,7 @@ struct PointOfSaleAggregateModelTests {
 
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .noConnectionError
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
 
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 

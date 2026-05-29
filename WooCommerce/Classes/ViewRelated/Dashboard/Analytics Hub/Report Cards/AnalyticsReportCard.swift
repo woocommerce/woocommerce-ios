@@ -68,7 +68,6 @@ struct AnalyticsReportCard: View {
                         }
                     }
                     .renderedIf(leadingDelta != nil || leadingChartData.count > 1)
-
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 

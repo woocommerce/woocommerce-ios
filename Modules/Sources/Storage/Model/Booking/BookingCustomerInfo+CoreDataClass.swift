@@ -3,5 +3,4 @@ import CoreData
 
 @objc(BookingCustomerInfo)
 public class BookingCustomerInfo: NSManagedObject {
-
 }

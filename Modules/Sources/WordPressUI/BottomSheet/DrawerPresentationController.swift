@@ -218,7 +218,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         presentedViewController.dismiss(animated: true, completion: nil)
     }
 
-    public override func presentationTransitionWillBegin() {
+    override public func presentationTransitionWillBegin() {
         super.presentationTransitionWillBegin()
 
         configureScrollViewInsets()
@@ -226,7 +226,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
     private var traitChangeRegistration: UITraitChangeRegistration?
 
-    public override func presentationTransitionDidEnd(_ completed: Bool) {
+    override public func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
         hasCompletedPresentation = completed
 
@@ -498,7 +498,6 @@ private extension DrawerPresentationController {
 
             /// Halts scrolling when scrolling down from expanded or up from compact
             haltScrolling(scrollView)
-
         } else if scrollView.isScrolling {
 
             if isPresentedViewAnchored {
@@ -508,7 +507,6 @@ private extension DrawerPresentationController {
                 /// Halts scrolling when panning down from expanded
                 haltScrolling(scrollView)
             }
-
         } else {
             /// Allow normal scrolling (with tracking)
             trackScrolling(scrollView)

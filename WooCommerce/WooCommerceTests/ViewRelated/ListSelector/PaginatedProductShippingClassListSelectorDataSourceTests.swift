@@ -38,7 +38,6 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
 
         XCTAssertEqual(cell.bodyLabel.text, shippingClass.name)
     }
-
 }
 
 private extension PaginatedProductShippingClassListSelectorDataSourceTests {

@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import SwiftUI
 import ParcelFittingCheck
 
@@ -11,6 +12,7 @@ struct WooShippingSelectedPackageView: View {
     @State private var showARResults = false
 
     let lastARState: ARSelectionState?
+    let arAnalytics: ParcelFittingAnalyticsTracking
     weak var parcelFittingDelegate: ParcelFittingDelegate?
     let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
 
@@ -44,6 +46,7 @@ struct WooShippingSelectedPackageView: View {
                     showPackageSelection = false
                     updateSelectedPackage(newPackage)
                 },
+                arAnalytics: arAnalytics,
                 arDelegate: parcelFittingDelegate
             )
         }
@@ -54,7 +57,8 @@ struct WooShippingSelectedPackageView: View {
                         viewModel: ARParcelFittingResultsViewModel(
                             measuredDimensions: arState.measurement,
                             unit: arState.dimensionUnit,
-                            carriers: arState.carriers
+                            carriers: arState.carriers,
+                            analytics: arAnalytics
                         ),
                         starredPackageIDs: arState.starredPackageIDs,
                         delegate: parcelFittingDelegate,
@@ -75,6 +79,7 @@ struct WooShippingSelectedPackageView: View {
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button(Localization.done) {
+                                arAnalytics.track(Event.arfittingResultsDoneTapped)
                                 showARResults = false
                             }
                         }
@@ -148,6 +153,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -163,6 +169,7 @@ private extension WooShippingSelectedPackageView {
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
                                    lastARState: nil,
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

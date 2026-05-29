@@ -141,7 +141,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private var backgroundFTSRebuildTasks: [Int64: Task<Void, Never>] = [:]
 
     /// Observable model for full sync state updates
-    public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
+    nonisolated public let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
@@ -600,7 +600,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     // MARK: - Analytics Helpers
 
-    private nonisolated func trackAnalytics(_ event: WooAnalyticsEvent) {
+    nonisolated private func trackAnalytics(_ event: WooAnalyticsEvent) {
         analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
     }
 
@@ -619,7 +619,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    private nonisolated func getConnectionType() -> String {
+    nonisolated private func getConnectionType() -> String {
         guard let observer = connectivityObserver else { return "unknown" }
         switch observer.currentStatus {
         case .reachable(let connectionType):
@@ -762,7 +762,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         guard let task = backgroundFTSRebuildTasks[siteID] else { return }
         await task.value
     }
-
 }
 
 // MARK: - Syncing State

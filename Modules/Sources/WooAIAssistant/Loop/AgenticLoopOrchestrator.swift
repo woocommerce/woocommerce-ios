@@ -42,7 +42,7 @@ public actor AgenticLoopOrchestrator {
         self.clock = clock
     }
 
-    private nonisolated func emitTelemetry(_ event: AssistantTelemetryEvent) async {
+    nonisolated private func emitTelemetry(_ event: AssistantTelemetryEvent) async {
         let tracker = telemetryTracker
         await MainActor.run { tracker.track(event) }
     }
@@ -99,7 +99,7 @@ public actor AgenticLoopOrchestrator {
         }
     }
 
-    public nonisolated func run(prompt: String) -> AsyncThrowingStream<AssistantEvent, Error> {
+    nonisolated public func run(prompt: String) -> AsyncThrowingStream<AssistantEvent, Error> {
         run(prompt: prompt, priorMessages: [], telemetryContext: nil)
     }
 
@@ -305,8 +305,7 @@ public actor AgenticLoopOrchestrator {
         var finishReason: OpenAIChat.FinishReason?
 
         let stream = chatService.streamTurn(messages: messages,
-                                            tools: tools,
-                                            toolChoice: nil)
+                                            tools: tools)
         for try await event in stream {
             try Task.checkCancellation()
             switch event {

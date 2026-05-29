@@ -69,7 +69,7 @@ extension SelectedSiteSettings {
     /// Setup: ResultsController
     ///
     private func configureResultsController() {
-        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
+        resultsController.onDidChangeObject = { [weak self] object, _, _, _ in
             guard let self else { return }
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
             self.siteSettings = self.resultsController.fetchedObjects
@@ -104,49 +104,5 @@ extension SelectedSiteSettings {
 
         // Needed to correcly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)
-    }
-}
-
-extension CurrencySettings {
-    /// Convenience Initializer:
-    /// This is the preferred way to create an instance with the settings coming from the site.
-    ///
-    convenience init(siteSettings: [Yosemite.SiteSetting]) {
-        self.init()
-
-        siteSettings.forEach { updateCurrencyOptions(with: $0) }
-    }
-
-    func updateCurrencyOptions(with siteSetting: Yosemite.SiteSetting) {
-        let value = siteSetting.value
-
-        switch siteSetting.settingID {
-        case Constants.currencyCodeKey:
-            if let currencyCode = CurrencyCode(rawValue: value) {
-                self.currencyCode = currencyCode
-            }
-        case Constants.currencyPositionKey:
-            if let currencyPosition = CurrencyPosition(rawValue: value) {
-                self.currencyPosition = currencyPosition
-            }
-        case Constants.thousandSeparatorKey:
-            self.groupingSeparator = value
-        case Constants.decimalSeparatorKey:
-            self.decimalSeparator = value
-        case Constants.numberOfDecimalsKey:
-            if let numberOfDecimals = Int(value) {
-                self.fractionDigits = numberOfDecimals
-            }
-        default:
-            break
-        }
-    }
-
-    enum Constants {
-        static let currencyCodeKey = "woocommerce_currency"
-        static let currencyPositionKey = "woocommerce_currency_pos"
-        static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
-        static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
-        static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
     }
 }

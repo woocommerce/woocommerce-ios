@@ -5,7 +5,7 @@ import protocol WooFoundation.Analytics
 
 final class AddAttributeOptionsViewController: UIViewController, GhostableViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: WooBasicTableViewCell.self))
 
@@ -294,7 +294,6 @@ private extension AddAttributeOptionsViewController {
                                                             if let text {
                                                                 self?.viewModel.addNewOption(name: text)
                                                             }
-
                                                          }, inputFormatter: nil,
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)

@@ -889,7 +889,7 @@ private extension ProductSelectorViewModel {
     /// Resetting filters from local products settings helps to show the correct products in the main product list screen.
     ///
     func resetFiltersUsingLocalProductsSettings() {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {

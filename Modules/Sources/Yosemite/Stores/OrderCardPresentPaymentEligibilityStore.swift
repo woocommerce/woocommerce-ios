@@ -26,7 +26,6 @@ public final class OrderCardPresentPaymentEligibilityStore: Store {
                                              onCompletion: onCompletion)
         }
     }
-
 }
 
 private extension OrderCardPresentPaymentEligibilityStore {

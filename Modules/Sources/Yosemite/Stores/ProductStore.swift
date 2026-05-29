@@ -9,7 +9,7 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)
@@ -407,7 +407,6 @@ private extension ProductStore {
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
-
         }
     }
 
@@ -476,7 +475,7 @@ private extension ProductStore {
     /// Delete an existing product.
     ///
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+        remote.deleteProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

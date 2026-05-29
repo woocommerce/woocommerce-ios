@@ -30,7 +30,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
     func test_doneButtonPressed_when_there_is_no_name_then_passes_placeholder() {
         // Given
         var passedName: String?
-        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { amount, name, _, _ in
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { _, name, _, _ in
             passedName = name
         })
 

@@ -1,11 +1,16 @@
 import SwiftUI
 import WooFoundation
+import Experiments
 
 struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAnalytics) private var analytics
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
+
+    @State private var isShowingOtherPaymentMethodsPopover: Bool = false
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -18,12 +23,22 @@ struct TotalsView: View {
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
 
-    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
-    /// by NavigationStack push. Success and idle are visible to TotalsView.
-    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    /// Payment state with in-progress secondary methods neutralized.
+    /// `.collectingCash` (cash), `.showingQRCode` (scan-to-pay), and `.confirming`/`.processing`
+    /// (mark-as-paid) all live in their own modal/navigation push, so we hide them from TotalsView.
+    /// Only success and idle remain visible.
     private var displayPaymentState: PointOfSalePaymentState {
-        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
-        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
+            ? .idle : paymentModel.paymentState.cash
+        let scanToPay: PointOfSaleScanToPayState = paymentModel.paymentState.scanToPay.isShowingQRCode
+            ? .idle : paymentModel.paymentState.scanToPay
+        let markAsPaid: PointOfSaleMarkAsPaidState = paymentModel.paymentState.markAsPaid == .confirming
+            || paymentModel.paymentState.markAsPaid == .processing
+            ? .idle : paymentModel.paymentState.markAsPaid
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card,
+                                       cash: cash,
+                                       scanToPay: scanToPay,
+                                       markAsPaid: markAsPaid)
     }
 
     private var shouldShowTotalsFields: Bool {
@@ -67,11 +82,26 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    CashPaymentButton(
+                    SecondaryPaymentButtons(
                         orderState: posModel.orderState,
                         paymentState: displayPaymentState,
                         cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                        startCashPaymentAction: { paymentModel.startCashPayment() }
+                        isScanToPayEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+                        isMarkOrderAsPaidEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                        isShowingOtherPaymentMethodsPopover: $isShowingOtherPaymentMethodsPopover,
+                        startCashPaymentAction: { paymentModel.startCashPayment() },
+                        startOtherPaymentMethodsAction: {
+                            analytics.track(.pointOfSaleOtherPaymentMethodsTapped)
+                            isShowingOtherPaymentMethodsPopover = true
+                        },
+                        startScanToPayAction: {
+                            Task { @MainActor in
+                                await paymentModel.startScanToPayPayment()
+                            }
+                        },
+                        startMarkOrderAsPaidAction: {
+                            paymentModel.startMarkAsPaidPayment()
+                        }
                     )
                 }
                 .scrollVerticallyIfNeeded()
@@ -150,7 +180,7 @@ private extension TotalsView {
             return true
         case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             switch displayPaymentState.activePaymentMethod {
-            case .cash:
+            case .cash, .scanToPay, .markAsPaid:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
@@ -166,7 +196,7 @@ private extension TotalsView {
         }
 
         switch displayPaymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay, .markAsPaid:
             return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: POSPadding.none,
                                      sidePadding: POSPadding.none)
@@ -245,7 +275,7 @@ private extension TotalsView {
         static let subtotalAmountFont: POSFontStyle = .posBodyLargeRegular()
         static let totalTitleFont: POSFontStyle = .posHeadingBold
         static let totalAmountFont: POSFontStyle = .posHeadingBold
-        static let separatorColor: Color = Color.posOutlineVariant
+        static let separatorColor = Color.posOutlineVariant
 
         static let shimmeringCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let shimmeringWidth: CGFloat = 342
@@ -276,6 +306,12 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
+        static let otherPaymentMethodsButtonTitle = NSLocalizedString(
+            "pos.totalsView.otherPaymentMethods.button.title",
+            value: "Other payment methods",
+            comment: "Title for the Other payment methods button in the Point of Sale checkout. " +
+            "Tapping this button opens a sheet listing alternative payment methods like Scan to Pay " +
+            "or Mark order as paid.")
     }
 }
 
@@ -463,6 +499,19 @@ private struct PaymentViewContent: View {
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
                                      paymentMethod: .cash)),
                 animation: .init(namespace: paymentMessageNamespace))
+        } else if case .paymentSuccess = paymentState.scanToPay,
+                  case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .scanToPay)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else if paymentState.markAsPaid == .paymentSuccess, case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .markAsPaid)),
+                animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,
@@ -474,27 +523,77 @@ private struct PaymentViewContent: View {
     }
 }
 
-private struct CashPaymentButton: View {
+/// Bottom-of-totals action row with the always-on Cash payment button plus a feature-flagged
+/// "Other payment methods" button rendered side-by-side. When neither secondary payment-method
+/// flag is enabled, the layout collapses to the original single Cash button — the feature flags
+/// gate the second button entirely so App Store builds see no regression vs trunk.
+///
+/// The Other-payment popover is hosted *here*, anchored to its own button, rather than at the
+/// outer view level. SwiftUI's `.popover` requires an anchor view; pinning it to the trigger
+/// gives the merchant a clear "the menu came from this button" relationship and dismisses on
+/// outside tap without the modal-stack optics of the previous bottom-sheet implementation.
+private struct SecondaryPaymentButtons: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
+    let isScanToPayEnabled: Bool
+    let isMarkOrderAsPaidEnabled: Bool
+    @Binding var isShowingOtherPaymentMethodsPopover: Bool
     let startCashPaymentAction: () -> Void
+    let startOtherPaymentMethodsAction: () -> Void
+    let startScanToPayAction: () -> Void
+    let startMarkOrderAsPaidAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
+    private var isAnySecondaryPaymentMethodEnabled: Bool {
+        isScanToPayEnabled || isMarkOrderAsPaidEnabled
+    }
+
     var body: some View {
-        Button(action: {
-            startCashPaymentAction()
-        }, label: {
-            Text(TotalsView.Localization.cashPaymentButtonTitle)
-                .font(POSFontStyle.posBodyLargeBold)
-        })
-        .layoutPriority(1)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-        .accessibilityIdentifier("pos-cash-payment-button")
+        HStack(spacing: POSSpacing.small) {
+            Button(action: {
+                startCashPaymentAction()
+            }, label: {
+                Text(TotalsView.Localization.cashPaymentButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+                    .frame(maxWidth: .infinity)
+            })
+            .layoutPriority(1)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-cash-payment-button")
+
+            Button(action: {
+                startOtherPaymentMethodsAction()
+            }, label: {
+                Text(TotalsView.Localization.otherPaymentMethodsButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
+                    .frame(maxWidth: .infinity)
+            })
+            .layoutPriority(1)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-other-payment-methods-button")
+            .popover(isPresented: $isShowingOtherPaymentMethodsPopover,
+                     attachmentAnchor: .point(.top),
+                     arrowEdge: .bottom) {
+                PointOfSaleSecondaryPaymentMethodsPopover(
+                    isScanToPayAvailable: isScanToPayEnabled,
+                    isMarkOrderAsPaidAvailable: isMarkOrderAsPaidEnabled,
+                    onScanToPay: startScanToPayAction,
+                    onMarkOrderAsPaid: startMarkOrderAsPaidAction
+                )
+            }
+            .renderedIf(isAnySecondaryPaymentMethodEnabled)
+        }
         .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
         .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
+        // Gate the whole row on the cash visibility envelope. Without this, when the cash
+        // button is hidden (e.g. during card processing) the HStack still applies its
+        // safeAreaPadding(.bottom), reserving space at the bottom of the totals view that
+        // didn't exist before this row was introduced. Other-payment visibility shares the
+        // same envelope, so this single check is enough.
         .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
             orderState: orderState,
             paymentState: paymentState,

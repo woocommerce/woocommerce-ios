@@ -38,12 +38,19 @@ final class POSPaymentModel {
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderProvider: POSPaymentOrderProviding
     private let cashPaymentHandler: POSCashPaymentHandling
+    private let scanToPayHandler: POSScanToPayHandling
+    /// Optional so non-cart flows (e.g. bookings) can opt out of polling — without a verifier
+    /// the model still works for the merchant-confirmed-via-Done path.
+    private let scanToPayVerifier: POSScanToPayVerifying?
+    private let markAsPaidHandler: POSMarkAsPaidHandling
     private let receiptSender: POSReceiptSending
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol
+    /// Cadence for scan-to-pay polling. Defaults to 3 seconds; tests override to fire instantly.
+    private let scanToPayPollInterval: TimeInterval
 
     // MARK: - Internal
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -59,26 +66,41 @@ final class POSPaymentModel {
     private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
     private var formattedOrderTotalPrice: String?
+    /// QR-encodeable URL for the active scan-to-pay payment. Populated lazily when the
+    /// merchant taps Scan to Pay (after promoting the autoDraft to `.pending`).
+    private(set) var scanToPayURL: URL?
+    /// True while `provideOrderForScanToPay()` is in flight. Lets the QR view distinguish
+    /// "still loading the URL" from "no URL available".
+    private(set) var isPreparingScanToPay: Bool = false
+    private var scanToPayPollingTask: Task<Void, Never>?
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
          cashPaymentHandler: POSCashPaymentHandling,
+         scanToPayHandler: POSScanToPayHandling,
+         scanToPayVerifier: POSScanToPayVerifying? = nil,
+         markAsPaidHandler: POSMarkAsPaidHandling,
          receiptSender: POSReceiptSending,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         scanToPayPollInterval: TimeInterval = 3,
          paymentState: PointOfSalePaymentState = .idle) {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
         self.cashPaymentHandler = cashPaymentHandler
+        self.scanToPayHandler = scanToPayHandler
+        self.scanToPayVerifier = scanToPayVerifier
+        self.markAsPaidHandler = markAsPaidHandler
         self.receiptSender = receiptSender
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.celebration = celebration
+        self.scanToPayPollInterval = scanToPayPollInterval
         self.paymentState = paymentState
 
         publishCardReaderConnectionStatus()
@@ -283,6 +305,261 @@ extension POSPaymentModel {
     }
 }
 
+// MARK: - Scan to Pay
+extension POSPaymentModel {
+    /// Stage 1: merchant tapped Scan to Pay. Flips state immediately so the navigation
+    /// destination pushes the QR screen now (the view shows a loading spinner while the
+    /// promote network call is in flight). When the call returns, `scanToPayURL` is
+    /// populated and polling begins.
+    func startScanToPayPayment() async {
+        guard paymentState.scanToPay == .idle else { return }
+        guard paymentState.allowsScanToPayPayment else { return }
+
+        DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card)")
+        analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped)
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
+        // Flip state right away so the dashboard observer pushes the QR screen.
+        scanToPayURL = nil
+        isPreparingScanToPay = true
+        paymentState.scanToPay = .showingQRCode(verification: .waiting)
+
+        cardPaymentCancelTask = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("📲 [ScanToPay] failed to cancel card payment: \(error)")
+            }
+        }
+
+        do {
+            // Promotes the autoDraft to `.pending` so the WC backend populates `payment_url`.
+            // Mirrors what the order-creation flow already does at the equivalent step.
+            let paymentOrder = try await orderProvider.provideOrderForScanToPay()
+
+            // Bail if the merchant cancelled while we were waiting for the network.
+            guard paymentState.scanToPay.isShowingQRCode else {
+                isPreparingScanToPay = false
+                return
+            }
+
+            currentOrder = paymentOrder.order
+            formattedOrderTotalPrice = paymentOrder.formattedTotal
+            scanToPayURL = paymentOrder.paymentURL
+            isPreparingScanToPay = false
+
+            // Only start polling once the order is actually pending — otherwise the verifier
+            // would always classify the autoDraft as pending and burn API calls for nothing.
+            startScanToPayPolling()
+        } catch {
+            DDLogError("📲 [ScanToPay] failed to provide order: \(error)")
+            isPreparingScanToPay = false
+            // Leave state as `.showingQRCode` so the view can render an "unable to generate"
+            // message — same UX as if the backend returned no payment URL.
+        }
+    }
+
+    /// Stage 2 (cancel): merchant tapped back. Resets state and re-arms the card flow.
+    func cancelScanToPayPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromScanToPayTapped)
+        stopScanToPayPolling()
+        paymentState.scanToPay = .idle
+        paymentState.card = .idle
+        scanToPayURL = nil
+        isPreparingScanToPay = false
+        cardPresentPaymentInlineMessage = nil
+
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
+
+        await startPayment()
+    }
+
+    /// Stage 2 (manual confirm): merchant tapped "I've received the payment". Adds an order
+    /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
+    /// the merchant verified the payment out-of-band.
+    func completeScanToPayPayment() async throws {
+        let order: Order
+        if let currentOrder {
+            order = currentOrder
+        } else {
+            let paymentOrder = try await orderProvider.provideOrder()
+            order = paymentOrder.order
+            currentOrder = order
+        }
+        try await scanToPayHandler.completeScanToPayPayment(for: order)
+        try? await postPaymentStep?()
+        scanToPayPaymentSuccess()
+    }
+
+    private func scanToPayPaymentSuccess() {
+        stopScanToPayPolling()
+        paymentState.scanToPay = .paymentSuccess
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment()
+        celebration.celebrate()
+    }
+
+    /// Polls the backend for the current order. When the gateway webhook flips it to a paid
+    /// status, the success path runs automatically — no merchant tap required. Polling stops
+    /// when the merchant cancels, the view goes away, or success fires.
+    private func startScanToPayPolling() {
+        guard scanToPayPollingTask == nil else { return }
+        guard let scanToPayVerifier else { return }
+        let interval = scanToPayPollInterval
+        scanToPayPollingTask = Task { [weak self, scanToPayVerifier] in
+            // Initial wait before first poll so we don't spam the API the moment the QR appears.
+            try? await Task.sleep(nanoseconds: UInt64(interval * Double(NSEC_PER_SEC)))
+
+            while !Task.isCancelled {
+                guard let self else { return }
+
+                // Bail if the merchant left scan-to-pay (cancelled or moved to success).
+                let stillShowing = await MainActor.run { self.paymentState.scanToPay.isShowingQRCode }
+                guard stillShowing else { return }
+
+                do {
+                    let result = try await scanToPayVerifier.checkPaymentStatus()
+
+                    // Recheck cancellation + state AFTER the network call. The merchant may
+                    // have tapped back while the request was in flight; without this guard
+                    // we'd write `.showingQRCode(.waiting)` into state and resurrect the
+                    // navigation push the dashboard observer is listening for.
+                    if Task.isCancelled { return }
+                    let stillShowingAfterCall = await MainActor.run { self.paymentState.scanToPay.isShowingQRCode }
+                    guard stillShowingAfterCall else { return }
+
+                    switch result {
+                    case .paid:
+                        await MainActor.run { self.handleScanToPayDetectedPayment() }
+                        return
+                    case .pending:
+                        await MainActor.run {
+                            // Re-check on the main actor to avoid a TOCTOU race against `stop`.
+                            guard self.paymentState.scanToPay.isShowingQRCode else { return }
+                            self.paymentState.scanToPay = .showingQRCode(verification: .waiting)
+                        }
+                    }
+                } catch {
+                    DDLogWarn("📲 [ScanToPay] verification poll failed: \(error)")
+
+                    if Task.isCancelled { return }
+                    let stillShowingAfterError = await MainActor.run { self.paymentState.scanToPay.isShowingQRCode }
+                    guard stillShowingAfterError else { return }
+
+                    await MainActor.run {
+                        guard self.paymentState.scanToPay.isShowingQRCode else { return }
+                        self.paymentState.scanToPay = .showingQRCode(verification: .error)
+                    }
+                }
+
+                try? await Task.sleep(nanoseconds: UInt64(interval * Double(NSEC_PER_SEC)))
+            }
+        }
+    }
+
+    private func stopScanToPayPolling() {
+        scanToPayPollingTask?.cancel()
+        scanToPayPollingTask = nil
+    }
+
+    /// Backend confirmed the customer paid via the gateway. Skip the manual handler (no need
+    /// to add a "merchant marked it paid" note) and transition straight to success.
+    private func handleScanToPayDetectedPayment() {
+        guard paymentState.scanToPay.isShowingQRCode else { return }
+        analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
+        paymentState.scanToPay = .showingQRCode(verification: .confirming)
+        Task { @MainActor [weak self] in
+            try? await self?.postPaymentStep?()
+            self?.scanToPayPaymentSuccess()
+        }
+    }
+}
+
+// MARK: - Mark Order as Paid
+extension POSPaymentModel {
+    /// Stage 1: merchant tapped "Mark order as paid" — show the confirmation alert.
+    /// The actual order update happens in `confirmMarkAsPaidPayment()`; this just transitions
+    /// state so the dashboard can present the alert and we can cancel any in-flight card payment.
+    func startMarkAsPaidPayment() {
+        guard paymentState.markAsPaid == .idle else { return }
+        guard paymentState.allowsMarkAsPaidPayment else { return }
+
+        DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
+        analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
+        paymentState.markAsPaid = .confirming
+
+        cardPaymentCancelTask = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("🪙 [MarkAsPaid] failed to cancel card payment: \(error)")
+            }
+        }
+    }
+
+    /// Stage 2 (cancel): merchant declined the confirmation. Re-arms the card flow so they can
+    /// fall back to a different payment method without restarting checkout.
+    func cancelMarkAsPaidPayment() async {
+        analytics.track(.pointOfSaleBackToCheckoutFromMarkAsPaidTapped)
+        paymentState.markAsPaid = .idle
+        paymentState.card = .idle
+        // Mirror `cancelCashPayment`: clear any stale "Tap, swipe, or insert card" message that
+        // was published before the merchant entered the mark-as-paid flow. The card subscription
+        // will repopulate it once the reader publishes a fresh event.
+        cardPresentPaymentInlineMessage = nil
+
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
+
+        await startPayment()
+    }
+
+    /// Stage 2 (confirm): merchant confirmed; mark the order as paid through the order
+    /// controller. On failure rolls back to the confirmation stage so the merchant can retry.
+    /// Analytics for failures fires here (not in the controller) so every failure path —
+    /// `provideOrder()` and the handler call alike — funnels through one event.
+    ///
+    /// - Parameter note: Optional merchant-supplied free-form note captured by the
+    ///   confirmation view (e.g. "Bank transfer from Maria"). Forwarded to the handler so it
+    ///   can be attached to the order as a private order note for reconciliation context.
+    func confirmMarkAsPaidPayment(note: String? = nil) async throws {
+        do {
+            let order: Order
+            if let currentOrder {
+                order = currentOrder
+            } else {
+                let paymentOrder = try await orderProvider.provideOrder()
+                order = paymentOrder.order
+                currentOrder = order
+            }
+            analytics.track(.pointOfSaleMarkAsPaidConfirmed)
+            paymentState.markAsPaid = .processing
+            try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
+            try? await postPaymentStep?()
+            markAsPaidPaymentSuccess()
+        } catch {
+            // Roll back so the merchant can try again or cancel.
+            paymentState.markAsPaid = .confirming
+            analytics.track(.pointOfSaleMarkAsPaidFailed)
+            throw error
+        }
+    }
+
+    private func markAsPaidPaymentSuccess() {
+        paymentState.markAsPaid = .paymentSuccess
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment()
+        celebration.celebrate()
+    }
+}
+
 // MARK: - Receipt
 extension POSPaymentModel {
     func sendReceipt(to emailAddress: String) async throws {
@@ -307,20 +584,26 @@ extension POSPaymentModel {
     func deactivate() {
         DDLogInfo("⏸️ [Session] deactivate called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         paymentSessionCancellables.removeAll()
+        stopScanToPayPolling()
         cancelReaderPreparation()
     }
 
     /// Reactivates this payment model when it returns to the foreground.
     /// For card payments, restarts the full payment flow (cancel + collect).
-    /// For cash payments, restores session event subscriptions without activating the reader.
+    /// For cash, scan-to-pay, and mark-as-paid, restores session event subscriptions without
+    /// activating the reader. If the QR was on screen, resumes polling.
     func activate() async {
         DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), " +
-                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), cash: \(paymentState.cash)")
+                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), " +
+                  "cash: \(paymentState.cash), scanToPay: \(paymentState.scanToPay)")
         guard !isActive else { return }
         if paymentState.activePaymentMethod == .card {
             await startPayment()
         } else {
             subscribeToPaymentSessionEvents()
+            if paymentState.scanToPay.isShowingQRCode {
+                startScanToPayPolling()
+            }
         }
     }
 }
@@ -329,11 +612,14 @@ extension POSPaymentModel {
 extension POSPaymentModel {
     func reset() {
         cancelConnectCardReaderTask()
+        stopScanToPayPolling()
         paymentSessionCancellables.removeAll()
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
         formattedOrderTotalPrice = nil
+        scanToPayURL = nil
+        isPreparingScanToPay = false
         cancelReaderPreparation()
     }
 
@@ -488,8 +774,35 @@ private extension POSPaymentModel {
                         return
                     }
                 }
+                if paymentState.scanToPay != .idle {
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("📲 [ScanToPay] committed card event \(cardPaymentState) during scan-to-pay flow " +
+                                  "- transitioning to card view")
+                        stopScanToPayPolling()
+                        paymentState.scanToPay = .idle
+                        scanToPayURL = nil
+                        isPreparingScanToPay = false
+                    } else {
+                        DDLogInfo("📲 [ScanToPay] ignoring non-committed card event \(cardPaymentState) during scan-to-pay flow")
+                        return
+                    }
+                }
+                if paymentState.markAsPaid != .idle {
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("🪙 [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
+                                  "- transitioning to card view")
+                        paymentState.markAsPaid = .idle
+                    } else {
+                        // Verbose: the merchant can sit on the confirmation alert for a while;
+                        // every reader event would otherwise be logged repeatedly.
+                        DDLogVerbose("🪙 [MarkAsPaid] ignoring non-committed card event \(cardPaymentState) during mark-as-paid flow")
+                        return
+                    }
+                }
                 DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
-                          "current cash state: \(paymentState.cash)")
+                          "current cash state: \(paymentState.cash), " +
+                          "current scanToPay state: \(paymentState.scanToPay), " +
+                          "current markAsPaid state: \(paymentState.markAsPaid)")
                 paymentState.card = cardPaymentState
             })
             .store(in: &paymentSessionCancellables)
@@ -540,6 +853,7 @@ extension POSPaymentModel {
     /// and risking a shopper paying for the wrong order.
     func tearDown() {
         cancelConnectCardReaderTask()
+        stopScanToPayPolling()
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()
         paymentSessionCancellables.removeAll()

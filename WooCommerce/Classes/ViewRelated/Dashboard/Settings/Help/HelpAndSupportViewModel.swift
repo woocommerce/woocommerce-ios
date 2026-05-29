@@ -32,7 +32,10 @@ struct HelpAndSupportViewModel {
             return [.helpCenter]
         }
 
-        var rows: [HelpAndSupportRow] = [.helpCenter, .contactSupport, .contactEmail, .applicationLog]
+        var rows: [HelpAndSupportRow] = [.helpCenter, .contactEmail, .applicationLog]
+        if !isAIChatEnabled {
+            rows.insert(.contactSupport, at: 1)
+        }
         if isAuthenticated {
             rows.append(.systemStatusReport)
         }

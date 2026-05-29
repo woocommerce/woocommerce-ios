@@ -445,7 +445,7 @@ struct ConnectivityToolViewModelTests {
         #expect(sut.isBotChatSupported == false)
     }
 
-    @Test func test_isBotChatSupported_when_authenticated_without_wpcom_then_returns_false() {
+    @Test func test_isBotChatSupported_when_authenticated_without_wpcom_then_returns_true() {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
@@ -460,7 +460,7 @@ struct ConnectivityToolViewModelTests {
         )
 
         // Then
-        #expect(sut.isBotChatSupported == false)
+        #expect(sut.isBotChatSupported)
     }
 
 }

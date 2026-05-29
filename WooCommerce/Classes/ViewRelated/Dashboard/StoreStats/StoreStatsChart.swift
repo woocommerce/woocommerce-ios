@@ -121,10 +121,9 @@ struct StoreStatsChart: View {
             return
         }
         selectedDate = viewModel.intervals
-            .sorted(by: {
+            .min(by: {
                 abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
-            })
-            .first?.date
+            })?.date
         selectedRevenue = viewModel.intervals.first(where: { $0.date == selectedDate })?.revenue
     }
 

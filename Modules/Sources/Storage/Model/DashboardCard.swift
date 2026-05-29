@@ -36,6 +36,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
         case newCardsNotice
         case shareStore
         case connectWPCom
+        case aiAssistant
     }
 
     /// Card's availability state that determines whether it can be displayed and used.

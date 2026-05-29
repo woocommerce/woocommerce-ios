@@ -136,7 +136,7 @@ extension OrdersListView {
 
         /// Empty order used as a redacted placeholder.
         ///
-        static let placeholder: Order = Order(date: "----",
+        static let placeholder = Order(date: "----",
                                               time: "----",
                                               number: "----",
                                               name: "----- -----",

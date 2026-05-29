@@ -91,7 +91,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     /// View Model for the view
     ///
-    @ObservedObject private(set) var viewModel: ViewModel
+    @Bindable private(set) var viewModel: ViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false

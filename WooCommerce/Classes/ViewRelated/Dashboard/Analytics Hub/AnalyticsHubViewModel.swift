@@ -26,15 +26,38 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// When non-nil, the hub renders a single card (e.g. when opened via a widget metric
+    /// deep link). Edit toolbar, customisation persistence, and multi-card fetches are
+    /// suppressed in this mode.
+    ///
+    private let focusedCard: AnalyticsCard.CardType?
+
+    convenience init(siteID: Int64,
+                     timeZone: TimeZone = .siteTimezone,
+                     statsTimeRange: StatsTimeRangeV4,
+                     usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storage: StorageManagerType = ServiceLocator.storageManager,
+                     analytics: Analytics = ServiceLocator.analytics) {
+        self.init(siteID: siteID,
+                  timeZone: timeZone,
+                  selectionType: AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange),
+                  focusedCard: nil,
+                  usageTracksEventEmitter: usageTracksEventEmitter,
+                  stores: stores,
+                  storage: storage,
+                  analytics: analytics)
+    }
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
-         statsTimeRange: StatsTimeRangeV4,
+         selectionType: AnalyticsHubTimeRangeSelection.SelectionType,
+         focusedCard: AnalyticsCard.CardType? = nil,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
-        let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
-        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
+        let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectionType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
@@ -42,7 +65,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.timeRangeSelectionType = selectedType
+        self.focusedCard = focusedCard
+        self.timeRangeSelectionType = selectionType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
                                                                  usageTracksEventEmitter: usageTracksEventEmitter,
@@ -50,11 +74,18 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.googleCampaignsCard = GoogleAdsCampaignReportCardViewModel(siteID: siteID,
-                                                                        timeRange: selectedType,
+                                                                        timeRange: selectionType,
                                                                         usageTracksEventEmitter: usageTracksEventEmitter)
 
         bindViewModelsWithData()
         bindCardSettingsWithData()
+    }
+
+    /// Whether the hub is rendering a single focused card. Used by the view to gate the
+    /// Edit toolbar item and skip card-settings loading.
+    ///
+    var isFocusedCardMode: Bool {
+        focusedCard != nil
     }
 
     // MARK: View Models
@@ -152,6 +183,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
+        if let focusedCard {
+            return canDisplayCard(ofType: focusedCard) ? [focusedCard] : []
+        }
         return allCardsWithSettings.compactMap { card in
             guard card.enabled, canDisplayCard(ofType: card.type) else {
                 return nil
@@ -656,6 +690,9 @@ extension AnalyticsHubViewModel {
     ///
     @MainActor
     func loadAnalyticsCardSettings() async {
+        // In focused-card mode we render a single card and don't touch persisted customisation.
+        guard focusedCard == nil else { return }
+
         let storedCards = await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
                 continuation.resume(returning: cards)

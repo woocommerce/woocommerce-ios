@@ -3,6 +3,7 @@ import Testing
 import NetworkingCore
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct JetpackAIQueryClientTests {
 
     @Test

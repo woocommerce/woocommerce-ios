@@ -14,6 +14,17 @@ import protocol WooFoundation.Analytics
 import protocol WooFoundation.ConnectivityObserver
 import UserNotifications
 
+@MainActor
+protocol SupportDiagnosticsServicing {
+    var formattedSystemStatusReport: String? { get }
+
+    func runTests(_ tests: [SupportDiagnosticsService.Test]) async -> [SupportDiagnosticsService.Result]
+    func enableAnalytics() async throws
+    func registerDevice() async throws
+    func enableOrderNotifications(settings: NotificationSettings) async throws
+    func openNotificationSettings() -> URL?
+}
+
 /// Service for running diagnostics and executing fix actions in Support Chat.
 /// This service is standalone and does not share code with ConnectivityToolViewModel.
 ///
@@ -24,9 +35,9 @@ final class SupportDiagnosticsService {
 
     /// Diagnostic tests that can be run.
     ///
-    enum Test: CaseIterable {
+    enum Test: String, CaseIterable {
         case internetConnection
-        case wpComServers
+        case wpComServers = "wpcomServers"
         case site
         case siteOrders
         case loadingProducts
@@ -165,6 +176,10 @@ final class SupportDiagnosticsService {
     ///
     private(set) var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after site test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     private var isJetpackPluginActive: Bool {
         activeSystemPlugins.contains { $0.plugin.hasPrefix("jetpack/") }
     }
@@ -267,7 +282,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ WPCom connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.wpcomConnection,
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -281,11 +296,12 @@ final class SupportDiagnosticsService {
                 case .success(let report):
                     DDLogInfo("SupportDiagnostics: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                     continuation.resume(returning: nil)
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Site connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: self.errorMessage(for: error),
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -298,7 +314,7 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Site Orders\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
@@ -309,7 +325,7 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Loading products\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
@@ -329,7 +345,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
             stores.dispatch(action)
@@ -374,7 +390,7 @@ final class SupportDiagnosticsService {
                                suggestedAction: .enableOrderNotifications(settings: settings))
             case .requestFailed(let error):
                 return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
-                               technicalDetails: String(describing: error))
+                               technicalDetails: error.formattedTechnicalDetails)
             }
         }
     }
@@ -526,6 +542,8 @@ final class SupportDiagnosticsService {
         case requestFailed(Error)
     }
 }
+
+extension SupportDiagnosticsService: SupportDiagnosticsServicing {}
 
 // MARK: - Generating Context
 

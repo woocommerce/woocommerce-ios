@@ -107,11 +107,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var lastSunsetWarningDismissedDate: Date?
 
-    /// Whether this site is eligible for the In-Person Payments country expansion (RSM-637).
+    /// Whether this site is eligible for In-Person Payments countries gated by remote flags.
     /// `nil` until the eligibility refresher has run for the first time. Cached based on
-    /// the relevant remote feature flag (`inPersonPaymentsCountryExpansion` or
-    /// `inPersonPaymentsCountryExpansionEUExtended`) for the site's country, with US/PR/CA/GB
-    /// short-circuited to `true`.
+    /// the relevant remote feature flag for the site's country, with US/PR/CA/GB
+    /// short-circuited to `true`. Australia uses its own WooPayments-only flag.
     public var isCardPresentPaymentsCountryExpansionEligible: Bool?
 
     public init(storeID: String? = nil,

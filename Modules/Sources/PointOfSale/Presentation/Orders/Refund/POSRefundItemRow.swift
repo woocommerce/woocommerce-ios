@@ -15,9 +15,15 @@ struct POSRefundItemRow: View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             POSCheckbox(isSelected: item.isSelected, onToggle: onToggle)
 
-            POSItemImageView(imageSource: item.imageSrc, imageSize: imageSize, scale: 1)
-                .frame(width: imageSize, height: imageSize)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            if item.isLumpSum {
+                CustomAmountAvatar(name: item.name)
+                    .frame(width: imageSize, height: imageSize)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            } else {
+                POSItemImageView(imageSource: item.imageSrc, imageSize: imageSize, scale: 1)
+                    .frame(width: imageSize, height: imageSize)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            }
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text(item.name)

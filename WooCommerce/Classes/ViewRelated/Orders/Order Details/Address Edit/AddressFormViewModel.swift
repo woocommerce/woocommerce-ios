@@ -9,10 +9,11 @@ import protocol WooFoundation.Analytics
 /// Parent class for AddressFormViewModelProtocol implementations. Holds shared sync/management logic.
 /// Not to be used on its own, so it doesn't conform to AddressFormViewModelProtocol.
 ///
-open class AddressFormViewModel: ObservableObject {
+@Observable
+open class AddressFormViewModel {
     /// ResultsController for stored countries.
     ///
-    private lazy var countriesResultsController: ResultsController<StorageCountry> = {
+    @ObservationIgnored private lazy var countriesResultsController: ResultsController<StorageCountry> = {
         let countriesDescriptor = NSSortDescriptor(key: "name", ascending: true)
         return ResultsController<StorageCountry>(storageManager: storageManager, sortedBy: [countriesDescriptor])
     }()
@@ -47,7 +48,16 @@ open class AddressFormViewModel: ObservableObject {
 
     /// Store for publishers subscriptions
     ///
-    private var subscriptions = Set<AnyCancellable>()
+    @ObservationIgnored private var subscriptions = Set<AnyCancellable>()
+
+    /// Backs `fieldsPublisher` so external Combine consumers continue to receive updates.
+    @ObservationIgnored private let fieldsSubject: CurrentValueSubject<AddressFormFields, Never>
+
+    /// Backs `secondaryFieldsPublisher` so external Combine consumers continue to receive updates.
+    @ObservationIgnored private let secondaryFieldsSubject: CurrentValueSubject<AddressFormFields, Never>
+
+    /// Backs `showPlaceholdersPublisher`.
+    @ObservationIgnored private let showPlaceholdersSubject = CurrentValueSubject<Bool, Never>(false)
 
     init(siteID: Int64,
          address: Address,
@@ -64,12 +74,14 @@ open class AddressFormViewModel: ObservableObject {
         var fields: AddressFormFields = .init(with: originalAddress)
         fields.phoneCountryCode = phoneCountryCode
         self.fields = fields
+        self.fieldsSubject = CurrentValueSubject(fields)
 
         self.secondaryOriginalAddress = secondaryAddress ?? .empty
-        self.secondaryFields = .init(with: secondaryOriginalAddress)
+        let secondaryFields: AddressFormFields = .init(with: secondaryOriginalAddress)
+        self.secondaryFields = secondaryFields
+        self.secondaryFieldsSubject = CurrentValueSubject(secondaryFields)
 
         self.isDoneButtonAlwaysEnabled = isDoneButtonAlwaysEnabled
-        self.navigationTrailingItem = .done(enabled: isDoneButtonAlwaysEnabled)
 
         self.storageManager = storageManager
         self.stores = stores
@@ -81,8 +93,6 @@ open class AddressFormViewModel: ObservableObject {
         onLoadTrigger.first().sink { [weak self] in
             guard let self else { return }
             self.bindSyncTrigger()
-            self.bindNavigationTrailingItemPublisher()
-            self.bindHasPendingChangesPublisher()
 
             self.fetchStoredCountriesAndTriggerSyncIfNeeded()
             self.refreshCountryAndStateObjects()
@@ -103,47 +113,89 @@ open class AddressFormViewModel: ObservableObject {
 
     /// Address form fields
     ///
-    @Published var fields: AddressFormFields
+    var fields: AddressFormFields {
+        didSet {
+            fieldsSubject.send(fields)
+        }
+    }
 
-    /// Emits changes to the AddressFormFields values
+    /// Emits changes to the AddressFormFields values for non-SwiftUI consumers.
     ///
-    var fieldsPublisher: Published<AddressFormFields>.Publisher { $fields }
+    var fieldsPublisher: AnyPublisher<AddressFormFields, Never> { fieldsSubject.eraseToAnyPublisher() }
 
     /// Secondary address form fields
     ///
-    @Published var secondaryFields: AddressFormFields = .init()
+    var secondaryFields: AddressFormFields {
+        didSet {
+            secondaryFieldsSubject.send(secondaryFields)
+        }
+    }
+
+    /// Emits changes to the secondary AddressFormFields values for non-SwiftUI consumers.
+    ///
+    var secondaryFieldsPublisher: AnyPublisher<AddressFormFields, Never> { secondaryFieldsSubject.eraseToAnyPublisher() }
 
     /// Define if address form should be expanded (show second set of fields for different address)
     ///
-    @Published var showDifferentAddressForm: Bool = false
+    var showDifferentAddressForm: Bool = false
 
     /// Trigger to perform any one time setups.
     ///
-    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+    @ObservationIgnored let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// Tracks if a network request is being performed.
     ///
-    let performingNetworkRequest: CurrentValueSubject<Bool, Never> = .init(false)
+    var performingNetworkRequest: Bool = false
 
     /// Active navigation bar trailing item.
     /// Defaults to a disabled done button.
     ///
-    @Published private(set) var navigationTrailingItem: AddressFormNavigationItem
+    var navigationTrailingItem: AddressFormNavigationItem {
+        guard !performingNetworkRequest else {
+            return .loading
+        }
+
+        guard !fields.useAsToggle else {
+            return .done(enabled: true)
+        }
+
+        guard !isDoneButtonAlwaysEnabled else {
+            return .done(enabled: true)
+        }
+
+        let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
+            originalAddress != secondaryOriginalAddress &&
+            !showDifferentAddressForm
+
+        return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
+                     originalAddress != fields.toAddress() ||
+                     secondaryOriginalAddress != secondaryFields.toAddress())
+    }
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
-    @Published private(set) var showPlaceholders: Bool = false
+    private(set) var showPlaceholders: Bool = false {
+        didSet {
+            showPlaceholdersSubject.send(showPlaceholders)
+        }
+    }
+
+    /// Emits changes to `showPlaceholders` for non-SwiftUI consumers (e.g. tests using Combine).
+    ///
+    var showPlaceholdersPublisher: AnyPublisher<Bool, Never> { showPlaceholdersSubject.eraseToAnyPublisher() }
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
     ///
-    @Published var notice: Notice?
+    var notice: Notice?
 
     /// Whether the address form has any pending (unsaved) changes.
     ///
     /// Returns `true` if there are changes pending to commit. `False` otherwise.
     ///
-    @Published private(set) var hasPendingChanges: Bool = false
+    var hasPendingChanges: Bool {
+        navigationTrailingItem == .done(enabled: true)
+    }
 
     /// Defines if the state field should be defined as a list selector.
     ///
@@ -319,45 +371,6 @@ private extension AddressFormViewModel {
         secondaryFields.refreshCountryAndStateObjects(with: allCountries)
     }
 
-    /// Calculates what navigation trailing item should be shown depending on our internal state.
-    ///
-    func bindNavigationTrailingItemPublisher() {
-        Publishers.CombineLatest4($fields, $secondaryFields, $showDifferentAddressForm, performingNetworkRequest)
-            .map { [isDoneButtonAlwaysEnabled, originalAddress, secondaryOriginalAddress]
-                fields, secondaryFields, showDifferentAddressForm, performingNetworkRequest -> AddressFormNavigationItem in
-                guard !performingNetworkRequest else {
-                    return .loading
-                }
-
-                guard !fields.useAsToggle else {
-                    return .done(enabled: true)
-                }
-
-                guard !isDoneButtonAlwaysEnabled else {
-                    return .done(enabled: true)
-                }
-
-                let addressesAreDifferentButSecondAddressSwitchIsDisabled = secondaryOriginalAddress != .empty &&
-                originalAddress != secondaryOriginalAddress &&
-                !showDifferentAddressForm
-
-                return .done(enabled: addressesAreDifferentButSecondAddressSwitchIsDisabled ||
-                             originalAddress != fields.toAddress() ||
-                             secondaryOriginalAddress != secondaryFields.toAddress())
-            }
-            .assign(to: &$navigationTrailingItem)
-    }
-
-    /// Determines whether the address form has pending changes, based on the navigation trailing item.
-    ///
-    func bindHasPendingChangesPublisher() {
-        $navigationTrailingItem
-            .map {
-                $0 == .done(enabled: true)
-            }
-            .assign(to: &$hasPendingChanges)
-    }
-
     /// Fetches countries from storage, If there are no stored countries, trigger a sync request.
     ///
     func fetchStoredCountriesAndTriggerSyncIfNeeded() {
@@ -391,17 +404,17 @@ private extension AddressFormViewModel {
 
         // Perform `syncCountries` when a sync trigger is requested.
         syncCountriesTrigger
-            .handleEvents(receiveOutput: { // Set `showPlaceholders` to `true` before initiating sync.
-                self.showPlaceholders = true // I could not find a way to assign this using combine operators. :-(
+            .handleEvents(receiveOutput: { [weak self] in // Set `showPlaceholders` to `true` before initiating sync.
+                self?.showPlaceholders = true
             })
             .map { // Sync countries
                 syncCountries
             }
             .switchToLatest()
-            .map { _ in // Set `showPlaceholders` to `false` after sync is done.
-                false
+            .sink { [weak self] _ in // Set `showPlaceholders` to `false` after sync is done.
+                self?.showPlaceholders = false
             }
-            .assign(to: &$showPlaceholders)
+            .store(in: &subscriptions)
     }
 
     /// Creates a publisher that syncs countries into our storage layer.

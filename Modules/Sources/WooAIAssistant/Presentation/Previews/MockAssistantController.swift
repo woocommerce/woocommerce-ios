@@ -75,7 +75,7 @@ enum MockAssistantController {
     static func assistantConfirmation(text: String,
                                       proposalID: UUID,
                                       tool: String,
-                                      preview: String,
+                                      preview: ConfirmationPreview,
                                       status: ConfirmationStatus) -> ChatMessage {
         let segments: [MessageSegment] = [
             .text(id: UUID(), content: text),

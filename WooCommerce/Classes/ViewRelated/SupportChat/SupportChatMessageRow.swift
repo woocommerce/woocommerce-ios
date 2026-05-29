@@ -12,6 +12,8 @@ enum SupportChatLayout {
     static let bannerSpacing: CGFloat = 8
     static let sendButtonSize: CGFloat = 20
     static let disabledOpacity: CGFloat = 0.5
+    static let failedBubbleOpacity: CGFloat = 0.6
+    static let failedIconSpacing: CGFloat = 6
 
     enum TypingIndicator {
         static let dotSize: CGFloat = 8
@@ -36,11 +38,18 @@ extension SupportChatLayout {
 struct SupportChatMessageRow: View {
     let role: SupportChatRole
     let text: String
+    /// When `true`, the bubble is rendered with reduced opacity and a red exclamation
+    /// icon next to it, signalling the message failed to send.
+    var failed: Bool = false
 
     var body: some View {
-        HStack {
+        HStack(spacing: SupportChatLayout.failedIconSpacing) {
             if role == .user {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
+
+                if failed {
+                    failedIndicator
+                }
             }
 
             messageText
@@ -48,11 +57,14 @@ struct SupportChatMessageRow: View {
                 .background(bubbleBackground)
                 .foregroundColor(bubbleForeground)
                 .cornerRadius(SupportChatLayout.bubbleCornerRadius)
+                .opacity(failed ? SupportChatLayout.failedBubbleOpacity : 1.0)
 
             if role == .bot {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     @ViewBuilder
@@ -63,6 +75,24 @@ struct SupportChatMessageRow: View {
         case .bot, .unknown:
             Text(.init(text))
         }
+    }
+
+    private var failedIndicator: some View {
+        Image(systemName: "exclamationmark.circle.fill")
+            .foregroundColor(.red)
+            .accessibilityHidden(true)
+    }
+
+    private var accessibilityLabel: String {
+        guard failed, role == .user else { return text }
+        return String.localizedStringWithFormat(
+            NSLocalizedString(
+                "supportChatMessageRow.failedAccessibilityLabel",
+                value: "Not sent. %1$@",
+                comment: "VoiceOver label for a user chat message that failed to send. %1$@ is the message text."
+            ),
+            text
+        )
     }
 
     private var bubbleBackground: Color {
@@ -124,6 +154,15 @@ struct TypingIndicatorRow: View {
     SupportChatMessageRow(
         role: .user,
         text: "How do I fix my connection issue?"
+    )
+    .padding()
+}
+
+#Preview("Failed User Message") {
+    SupportChatMessageRow(
+        role: .user,
+        text: "I cannot load products in the app",
+        failed: true
     )
     .padding()
 }

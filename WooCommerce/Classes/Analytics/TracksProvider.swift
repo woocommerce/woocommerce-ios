@@ -6,7 +6,7 @@ import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
 
 public class TracksProvider: NSObject, AnalyticsProvider {
-    private static let contextManager: TracksContextManager = TracksContextManager()
+    private static let contextManager = TracksContextManager()
 
     private static let tracksService: TracksService = {
         let tracksService = TracksService(contextManager: contextManager)!

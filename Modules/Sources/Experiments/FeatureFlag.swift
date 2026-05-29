@@ -203,6 +203,24 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
+    ///
+    case pointOfSalePhonePrototype
+
+    /// Enables Scan to Pay as a secondary payment method in Point of Sale.
+    /// When enabled, the merchant can have the customer pay by scanning a QR code that
+    /// opens the order's gateway-hosted payment page on their phone.
+    ///
+    case pointOfSaleScanToPay
+
+    /// Enables "Mark order as paid" as a secondary payment method in Point of Sale.
+    /// Used when the merchant has collected payment out-of-band (external reader, gift card,
+    /// account credit, etc.) and just needs the order marked as completed.
+    ///
+    case pointOfSaleMarkOrderAsPaid
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
@@ -235,4 +253,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
 }

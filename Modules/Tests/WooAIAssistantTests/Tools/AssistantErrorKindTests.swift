@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AssistantErrorKindTests {
     @Test
     func test_assistantErrorKind_when_decoded_from_snake_case_then_matches_enum_case() throws {

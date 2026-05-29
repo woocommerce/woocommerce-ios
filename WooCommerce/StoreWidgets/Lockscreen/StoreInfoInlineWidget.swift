@@ -63,7 +63,6 @@ private extension UnableToFetchView {
 #if DEBUG
 import class WooFoundation.CurrencySettings
 
-@available(iOSApplicationExtension 16.0, *)
 struct StoreInfoInlineWidget_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",

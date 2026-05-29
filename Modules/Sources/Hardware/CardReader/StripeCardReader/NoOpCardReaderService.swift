@@ -75,9 +75,10 @@ public struct NoOpCardReaderService: CardReaderService {
         // no-op
     }
 
-    /// Captures a payment after collecting a payment method succeeds.
-    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
-    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+    public func capturePayment(
+        _ parameters: PaymentIntentParameters,
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<PaymentIntent, Error> {
         return Future() { promise in
             promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()
@@ -102,7 +103,9 @@ public struct NoOpCardReaderService: CardReaderService {
         }.eraseToAnyPublisher()
     }
 
-    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+    public func retryActivePaymentIntent(
+        beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
+    ) -> AnyPublisher<PaymentIntent, Error> {
         return Future() { promise in
             promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
         }.eraseToAnyPublisher()

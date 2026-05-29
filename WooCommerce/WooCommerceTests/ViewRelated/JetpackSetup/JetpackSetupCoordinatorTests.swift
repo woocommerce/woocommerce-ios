@@ -26,13 +26,14 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_startSetup_when_feature_flag_disabled_then_presents_benefit_modal() {
+    func test_startSetup_when_not_eligible_then_presents_benefit_modal() {
         // Given
         let testSite = Site.fake()
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = false
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         coordinator.startSetup()
@@ -188,15 +189,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_startSetup_when_feature_flag_enabled_then_presents_email_login_directly() throws {
+    func test_startSetup_when_eligible_then_presents_email_login_directly() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):
@@ -218,15 +220,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_then_does_not_present_benefit_modal() {
+    func test_startSetup_when_eligible_then_does_not_present_benefit_modal() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):
@@ -247,15 +250,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_and_wpcom_credentials_then_presents_setup_steps_directly() {
+    func test_startSetup_when_eligible_and_wpcom_credentials_then_presents_setup_steps_directly() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         coordinator.startSetup()
@@ -267,15 +271,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue((navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
+    func test_startSetup_when_eligible_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):

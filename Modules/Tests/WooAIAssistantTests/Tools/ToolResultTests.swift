@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ToolResultTests {
     @Test
     func test_toolResult_when_success_then_carries_structured_and_optional_uiStructured() {

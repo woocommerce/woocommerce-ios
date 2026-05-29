@@ -6,6 +6,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
 
@@ -17,6 +18,8 @@ struct PointOfSaleDashboardView: View {
 
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
+    @State private var floatingControlSuppressed: Bool = false
+    @State private var phoneShowingCart: Bool = false
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -53,7 +56,8 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         )
     }
 
@@ -111,13 +115,16 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl)
+            .renderedIf(viewState.showsFloatingControl && !floatingControlSuppressed)
 
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
+        .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
+            floatingControlSuppressed = hides
+        }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)
@@ -175,7 +182,105 @@ struct PointOfSaleDashboardView: View {
         POSNavigationRouter(navigationPath: $navigationPath)
     }
 
+    @ViewBuilder
     private var contentView: some View {
+        if isPhoneLayout {
+            phoneContentView
+        } else {
+            tabletContentView
+        }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact && featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+    }
+
+    @ViewBuilder
+    private var phoneContentView: some View {
+        @Bindable var viewStateCoordinator = viewStateCoordinator
+        // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
+        //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
+        //                 break .navigationDestination resolution for pushed views.
+        // Finalizing stage: a fresh NavigationStack siblinged to (not wrapping) the items list, used
+        //                   for pushing cash payment, email receipt, etc. via navigationPath.
+        Group {
+            switch posModel.orderStage {
+            case .building:
+                VStack(spacing: POSSpacing.none) {
+                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                                 searchTerm: $viewStateCoordinator.searchTerm)
+                    if posModel.cart.isNotEmpty {
+                        phoneCartButton
+                    }
+                }
+            case .finalizing:
+                NavigationStack(path: $navigationPath) {
+                    TotalsView()
+                        .background(Color.posSurface)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    posModel.addMoreToCart()
+                                } label: {
+                                    Label(Localization.phoneBackToItems, systemImage: "chevron.backward")
+                                }
+                                .disabled(!canExitFinalizingOnPhone)
+                            }
+                        }
+                        .posNavigationDestinations()
+                }
+                .environment(\.posNavigationRouter, navigationRouter)
+            }
+        }
+        .onChange(of: posModel.paymentState.cash) { _, newValue in
+            if newValue == .collectingCash,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushCash(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.orderStage) { _, newStage in
+            // Dismiss the cart sheet automatically when checkout starts so the user lands
+            // on the totals view rather than seeing cart fading away.
+            if newStage == .finalizing {
+                phoneShowingCart = false
+            }
+        }
+        .posSheet(isPresented: $phoneShowingCart) {
+            phoneCartSheetView
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .animation(.default, value: posModel.orderStage)
+        .ignoresSafeArea()
+        .background(Color.posSurface.ignoresSafeArea())
+    }
+
+    private var canExitFinalizingOnPhone: Bool {
+        !CartViewHelper().shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState
+        )
+    }
+
+    private var phoneCartButton: some View {
+        Button {
+            phoneShowingCart = true
+        } label: {
+            Text(String(format: Localization.phoneCart, posModel.cart.totalItemCount))
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.vertical, POSPadding.medium)
+        .accessibilityIdentifier("pos-phone-cart-button")
+    }
+
+    private var phoneCartSheetView: some View {
+        // Drag indicator + swipe-down handle dismissal; an explicit close button isn't needed.
+        CartView()
+            .background(Color.posSurface)
+    }
+
+    private var tabletContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
             // Fixed widths ensure views don't resize during offset-based transitions.
@@ -195,7 +300,9 @@ struct PointOfSaleDashboardView: View {
                 NavigationStack(path: $navigationPath) {
                     HStack(spacing: POSSpacing.none) {
                         if !posModel.paymentState.card.shownFullScreen
-                            && posModel.paymentState.cash != .paymentSuccess {
+                            && posModel.paymentState.cash != .paymentSuccess
+                            && posModel.paymentState.scanToPay != .paymentSuccess
+                            && posModel.paymentState.markAsPaid != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
@@ -203,6 +310,8 @@ struct PointOfSaleDashboardView: View {
 
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
                             || posModel.paymentState.cash == .paymentSuccess
+                            || posModel.paymentState.scanToPay == .paymentSuccess
+                            || posModel.paymentState.markAsPaid == .paymentSuccess
                             ? cartWidth + checkoutWidth
                             : checkoutWidth
 
@@ -212,14 +321,7 @@ struct PointOfSaleDashboardView: View {
                             .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }
-                    .navigationDestination(for: POSNavigationDestination.self) { destination in
-                        switch destination {
-                        case .cashPayment(let orderTotal):
-                            POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
-                        case .emailReceipt:
-                            POSNavigationDestinationEmailReceiptView()
-                        }
-                    }
+                    .posNavigationDestinations()
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color.posSurface)
@@ -227,10 +329,28 @@ struct PointOfSaleDashboardView: View {
             }
             .frame(width: dashboardWidth, alignment: .leading)
             .offset(x: dashboardOffset)
+            .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+                if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+                   case .loaded(let totals) = posModel.orderState {
+                    navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+                }
+            }
             .onChange(of: posModel.paymentState.cash) { _, newValue in
                 if newValue == .collectingCash,
                    case .loaded(let totals) = posModel.orderState {
                     navigationRouter.pushCash(orderTotal: totals.orderTotal)
+                }
+            }
+            // Mark-as-paid moves through the same NavigationStack as cash and scan-to-pay
+            // rather than as a modal overlay. Push on .confirming → render the inline
+            // confirmation in the right pane → pop on .paymentSuccess so TotalsView's
+            // existing success UI takes over (matching cash/scan-to-pay's flow).
+            .onChange(of: posModel.paymentState.markAsPaid) { oldValue, newValue in
+                if newValue == .confirming, oldValue == .idle,
+                   case .loaded(let totals) = posModel.orderState {
+                    navigationRouter.pushMarkAsPaid(orderTotal: totals.orderTotal)
+                } else if newValue == .paymentSuccess {
+                    navigationRouter.popToRoot()
                 }
             }
             .animation(.default, value: posModel.orderStage)
@@ -333,6 +453,16 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
+        static let phoneCart = NSLocalizedString(
+            "pointOfSaleDashboard.phone.cart",
+            value: "Cart (%1$d)",
+            comment: "Phone-only floating button to open the cart from the items list. %1$d is the cart item count."
+        )
+        static let phoneBackToItems = NSLocalizedString(
+            "pointOfSaleDashboard.phone.backToItems",
+            value: "Items",
+            comment: "Phone-only back button title to return from totals to the items list."
+        )
     }
 }
 
@@ -347,6 +477,12 @@ private extension PointOfSaleDashboardView {
         }
     }
 }
+
+// Mark-as-paid confirmation now lives inside the right-pane NavigationStack via
+// `POSNavigationDestinationMarkAsPaidView`, not as a modal modifier on the dashboard.
+// The error-message-after-failure handling, the dismiss-vs-cancel binding rules, and the
+// "auto-dismiss after success" workaround are all gone — the navigation push gives us the
+// right semantics for free.
 
 #if DEBUG
 

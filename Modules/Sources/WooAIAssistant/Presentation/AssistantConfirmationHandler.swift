@@ -1,8 +1,6 @@
 import SwiftUI
 
-/// Injected through the SwiftUI environment so confirmation cards can reach
-/// `AssistantController` without holding a reference - keeps cards retain
-/// cycle free and renderable from previews without a live controller.
+/// Environment-injected so confirmation cards stay retain-cycle free and previewable.
 struct AssistantConfirmationHandler {
     var onConfirm: (UUID) -> Void = { _ in }
     var onCancel: (UUID) -> Void = { _ in }

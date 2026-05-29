@@ -153,7 +153,7 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerName: TestConstants.newProviderName) { error in
                                     XCTAssertNil(error)
                                     let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
-                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+                                    let updatedProvider = fileData?.first(where: { $0.siteID == TestConstants.siteID})
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()
@@ -175,7 +175,7 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
                                     let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
-                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+                                    let updatedProvider = fileData?.first(where: { $0.siteID == TestConstants.siteID})
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()

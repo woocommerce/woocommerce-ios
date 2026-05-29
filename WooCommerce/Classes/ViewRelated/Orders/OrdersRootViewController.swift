@@ -37,11 +37,11 @@ final class OrdersRootViewController: UIViewController {
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
-        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
 
-    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+    private var filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
@@ -313,7 +313,7 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
         }
 
-        let fetchedStatuses: [OrderStatus] = statusResultsController.fetchedObjects.map { $0 }
+        let fetchedStatuses = statusResultsController.fetchedObjects
         let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
             ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
             : fetchedStatuses

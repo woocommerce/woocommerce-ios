@@ -1,6 +1,7 @@
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
@@ -37,6 +38,10 @@ struct POSOrderDetailsView: View {
     }
 
     var body: some View {
+        // The `order` prop is captured at navigation time and goes stale once the controller
+        // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
+        // re-renders when refunds are loaded or the order is refetched after a refund.
+        let order = orderListModel.ordersController.selectedOrder ?? self.order
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),
@@ -54,21 +59,26 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    if !orderListModel.ordersController.displayedLineItems.isEmpty {
-                        productsSection(orderListModel.ordersController.displayedLineItems)
-                    }
-                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                    let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
+                    if shouldShowDedicatedRefundsSection && isLoadingOrderRefunds {
+                        // Render skeletons for both sections while refund details load so
+                        // the items don't get rearranged when filtering kicks in.
+                        ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
                         ghostRefundedProductsSection
-                    }
-                    let refundedItems = order.refunds.flatMap { $0.items }
-                    if shouldShowDedicatedRefundsSection
-                        && !orderListModel.ordersController.isLoadingOrderRefunds
-                        && !refundedItems.isEmpty {
-                        refundedProductsSection(refundedItems)
+                    } else {
+                        let displayedLineItems = orderListModel.ordersController.displayedLineItems
+                        let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
+                        if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
+                            itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
+                        }
+                        let refundedItems = order.refunds.flatMap { $0.items }
+                        if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                            refundedProductsSection(refundedItems)
+                        }
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
-                        subtotalLabel: Localization.productsLabel,
+                        subtotalLabel: Localization.itemsLabel,
                         subtotalAmount: order.formattedSubtotal,
                         discountAmount: order.formattedDiscountTotal,
                         taxAmount: order.formattedTotalTax,
@@ -163,18 +173,26 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 
 private extension POSOrderDetailsView {
     @ViewBuilder
-    func productsSection(_ items: [POSOrderItem]) -> some View {
+    func itemsSection(products: [POSOrderItem], customAmounts: [POSOrderCustomAmount]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.productsTitle)
+            Text(Localization.itemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(items.enumerated()), id: \.element.itemID) { index, item in
+                ForEach(Array(products.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
-                    if index < items.count - 1 {
+                    if index < products.count - 1 || !customAmounts.isEmpty {
+                        divider
+                    }
+                }
+
+                ForEach(Array(customAmounts.enumerated()), id: \.element.id) { index, customAmount in
+                    customAmountRow(customAmount: customAmount)
+
+                    if index < customAmounts.count - 1 {
                         divider
                     }
                 }
@@ -186,9 +204,59 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
+    func customAmountRow(customAmount: POSOrderCustomAmount) -> some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            CustomAmountAvatar(name: customAmount.name)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+
+            Text(customAmount.name)
+                .font(.posBodyLargeBold)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Text(customAmount.formattedTotal)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(Color.posOnSurface)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Localization.customAmountRowAccessibilityLabel(name: customAmount.name, total: customAmount.formattedTotal))
+    }
+
+    @ViewBuilder
+    func ghostItemsSection(rowCount: Int) -> some View {
+        // Pre-load we know the order's items count from `order.lineItems` + `order.customAmounts`,
+        // so render exactly that many placeholder rows. The layout doesn't shrink/grow when the
+        // refund details finish loading and the real rows replace the skeleton.
+        let count = max(1, rowCount)
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.itemsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.small) {
+                ForEach(0..<count, id: \.self) { index in
+                    ghostRefundedProductRow
+
+                    if index < count - 1 {
+                        divider
+                    }
+                }
+            }
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
     var ghostRefundedProductsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.refundedProductsTitle)
+            Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
@@ -228,7 +296,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.refundedProductsTitle)
+            Text(Localization.refundedItemsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
@@ -521,17 +589,26 @@ private enum Constants {
 // MARK: - Localization
 
 private enum Localization {
-    static let productsTitle = NSLocalizedString(
-        "pos.orderDetailsView.productsTitle",
-        value: "Products",
-        comment: "Section title for the products list"
+    static let itemsTitle = NSLocalizedString(
+        "pos.orderDetailsView.itemsTitle",
+        value: "Items",
+        comment: "Section title for the order items list (products and custom amounts) in order details"
     )
 
-    static let refundedProductsTitle = NSLocalizedString(
-        "pos.orderDetailsView.refundedProductsTitle",
-        value: "Refunded products",
-        comment: "Section title for the refunded products list in order details"
+    static let refundedItemsTitle = NSLocalizedString(
+        "pos.orderDetailsView.refundedItemsTitle",
+        value: "Refunded items",
+        comment: "Section title for the refunded items list (products and custom amounts) in order details"
     )
+
+    static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.customAmountRow.accessibilityLabel",
+            value: "%1$@, %2$@",
+            comment: "Accessibility label for a custom amount row. %1$@ is the name, %2$@ is the formatted total."
+        )
+        return String(format: format, name, total)
+    }
 
     static func refundTitle(_ number: Int) -> String {
         let format = NSLocalizedString(
@@ -557,10 +634,10 @@ private enum Localization {
         comment: "Section title for the order totals breakdown"
     )
 
-    static let productsLabel = NSLocalizedString(
-        "pos.orderDetailsView.productsLabel",
-        value: "Products",
-        comment: "Label for products subtotal in the totals section"
+    static let itemsLabel = NSLocalizedString(
+        "pos.orderDetailsView.itemsLabel",
+        value: "Items",
+        comment: "Label for items subtotal (products and custom amounts) in the totals section"
     )
 
     static func viaPaymentMethod(_ method: String) -> String {

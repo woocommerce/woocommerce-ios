@@ -30,10 +30,12 @@ extension UserDefaults {
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+        case lastWidgetSnapshot
 
         // Tooltip
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
+        case hasDismissedWooAIAssistantEarlyAccessTooltip
 
         // Store profiler answers
         case storeProfilerAnswers
@@ -86,6 +88,9 @@ extension UserDefaults {
 
         /// Whether configurable store stats widgets are enabled
         case configurableStoreStatsWidgetsEnabled
+
+        /// Sites available for selection in the configurable store stats widget picker
+        case widgetSelectableSites
     }
 }
 

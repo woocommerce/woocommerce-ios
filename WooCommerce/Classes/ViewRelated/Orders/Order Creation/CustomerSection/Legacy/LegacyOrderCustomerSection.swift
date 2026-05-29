@@ -9,7 +9,7 @@ struct LegacyOrderCustomerSection: View {
 
     /// View model for the address form.
     ///
-    @ObservedObject var addressFormViewModel: CreateOrderAddressFormViewModel
+    let addressFormViewModel: CreateOrderAddressFormViewModel
 
     @State private var showAddressForm: Bool = false
 

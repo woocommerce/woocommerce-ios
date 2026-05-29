@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AssistantEventTests {
     @Test
     func test_assistantEvent_failed_carries_error_kind() {
@@ -55,17 +56,18 @@ struct AssistantEventTests {
     func test_toolProposal_when_constructed_then_exposes_fields() {
         // Given
         let proposalID = UUID()
+        let preview = ConfirmationPreview(summary: .raw("Mark order #3551 completed"))
 
         // When
         let proposal = ToolProposal(id: proposalID,
                                     toolName: "orders_update",
                                     toolCallID: "call_1",
-                                    preview: "Mark order #3551 completed")
+                                    preview: preview)
 
         // Then
         #expect(proposal.id == proposalID)
         #expect(proposal.toolName == "orders_update")
         #expect(proposal.toolCallID == "call_1")
-        #expect(proposal.preview == "Mark order #3551 completed")
+        #expect(proposal.preview == preview)
     }
 }

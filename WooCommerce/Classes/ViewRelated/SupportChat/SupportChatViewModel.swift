@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
+import enum Networking.NetworkError
 import protocol WooFoundation.Analytics
 
 /// View model for the AI support chat interface.
@@ -12,7 +13,7 @@ final class SupportChatViewModel {
 
     /// Entry point for opening the support chat.
     ///
-    enum EntryPoint {
+    enum EntryPoint: String {
         case helpAndSupport   // Shows issue picker first
         case connectivityTool // Goes directly to chat (context already provided)
         case chatHistory      // Resuming a prior conversation from history
@@ -58,6 +59,8 @@ final class SupportChatViewModel {
         case diagnosticsSuccess
         /// A test failed - show failure with optional action
         case diagnosticsFailure(SupportDiagnosticsService.Result)
+        /// Prompts the merchant to mark the chat resolved after a helpful answer.
+        case resolvedPrompt
 
         static func == (lhs: MessageContent, rhs: MessageContent) -> Bool {
             switch (lhs, rhs) {
@@ -72,8 +75,21 @@ final class SupportChatViewModel {
                 return true
             case (.diagnosticsFailure(let l), .diagnosticsFailure(let r)):
                 return l == r
+            case (.resolvedPrompt, .resolvedPrompt):
+                return true
             default:
                 return false
+            }
+        }
+
+        var text: String? {
+            switch self {
+            case .text(let text):
+                return text
+            case .resolvedPrompt:
+                return Localization.resolvedPromptMessage
+            default:
+                return nil
             }
         }
     }
@@ -85,20 +101,54 @@ final class SupportChatViewModel {
         let role: SupportChatRole
         let content: MessageContent
         let timestamp: Date
+        /// `true` when sending this message failed. Drives the failed-bubble visual indicator.
+        let failed: Bool
+        /// Server-assigned message ID for bot messages (used for feedback submission).
+        let messageID: Int64?
+        /// Whether the bot marked the issue as resolved for this message.
+        let isResolved: Bool
+        /// `true` for messages received during the current session (not rehydrated from history).
+        /// Feedback buttons are only shown for new messages.
+        let isNewInSession: Bool
+        var shouldShowFeedbackButtons: Bool {
+            role == .bot && isNewInSession && isResolved == false && messageID != nil
+        }
 
-        init(id: UUID = UUID(), role: SupportChatRole, content: MessageContent, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             content: MessageContent,
+             timestamp: Date = Date(),
+             failed: Bool = false,
+             messageID: Int64? = nil,
+             isResolved: Bool = false,
+             isNewInSession: Bool = true) {
             self.id = id
             self.role = role
             self.content = content
             self.timestamp = timestamp
+            self.failed = failed
+            self.messageID = messageID
+            self.isResolved = isResolved
+            self.isNewInSession = isNewInSession
         }
 
         /// Convenience initializer for text messages.
-        init(id: UUID = UUID(), role: SupportChatRole, text: String, timestamp: Date = Date()) {
+        init(id: UUID = UUID(),
+             role: SupportChatRole,
+             text: String,
+             timestamp: Date = Date(),
+             failed: Bool = false,
+             messageID: Int64? = nil,
+             isResolved: Bool = false,
+             isNewInSession: Bool = true) {
             self.id = id
             self.role = role
             self.content = .text(text)
             self.timestamp = timestamp
+            self.failed = failed
+            self.messageID = messageID
+            self.isResolved = isResolved
+            self.isNewInSession = isNewInSession
         }
     }
 
@@ -131,39 +181,131 @@ final class SupportChatViewModel {
     /// header in the chat surface.
     let isResumedChat: Bool
 
+    /// `true` when a support ticket has already been created for this chat.
+    /// When true, the escalation button should be hidden.
+    private(set) var hasCreatedTicket: Bool = false
+
+    /// `true` once the merchant has typed and sent at least one message via the input field.
+    /// Distinct from `messages.contains(where: { $0.role == .user })`, which is also flipped
+    /// by issue-picker selections — we want the human-support entry to surface only after the
+    /// merchant has actually described their problem.
+    private(set) var hasSentChatMessage: Bool = false
+    private(set) var isChatResolved: Bool = false
+
+    /// Flips `hasCreatedTicket` so the chat surface (toolbar icon, inline banner) updates in real time
+    /// after the escalation coordinator successfully creates a Zendesk ticket. Storage is updated separately
+    /// by the coordinator via `SupportChatAction.markTicketCreated`.
+    func markChatTicketCreated() {
+        hasCreatedTicket = true
+    }
+
+    func markChatResolved() {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.markResolvedTapped())
+        isChatResolved = true
+
+        guard let chatID else {
+            return
+        }
+        let action = SupportChatAction.markResolved(chatID: chatID, onCompletion: {})
+        stores.dispatch(action)
+    }
+
+    /// Whether the trailing toolbar entry point to human support should be visible.
+    /// Shown once the merchant has reached the free-chat phase (past the issue picker / diagnostics)
+    /// AND has typed and sent at least one message, and only while no ticket has been created yet.
+    var canEscalateToHumanSupport: Bool {
+        guard shouldShowInputArea, !hasCreatedTicket, !isChatResolved else {
+            return false
+        }
+        return hasSentChatMessage
+    }
+
+    var shouldShowResolvedButton: Bool {
+        guard shouldPromptHumanSupport == false, isChatResolved == false else {
+            return false
+        }
+
+        let botResponses = messages.filter { $0.role == .bot && $0.messageID != nil }
+
+        guard let lastBotResponse = botResponses.last else {
+            return false
+        }
+
+        if lastBotResponse.isResolved {
+            return true
+        }
+
+        if let messageID = lastBotResponse.messageID, messageRatings[messageID] == true {
+            return true
+        }
+
+        return botResponses.count >= 2
+    }
+
+    /// Maps message IDs to their feedback rating (true = upvoted, false = downvoted).
+    private(set) var messageRatings: [Int64: Bool] = [:]
+
     var inputText: String = ""
 
     // MARK: - Private Properties
 
     private var chatID: Int64?
+    private var sessionID: String?
     private let entryPoint: EntryPoint
     private let botSlug: String
     private let stores: StoresManager
+    private let analytics: Analytics
     private var diagnosticsContext: [String: Any]?
     private let initialContext: [String: Any]?
-    private let onContactHumanSupport: (_ transcript: String) -> Void
+    private let onContactHumanSupport: (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void
+    private var latestSupportArea: SupportChatSupportArea?
+    private var userMessageCount = 0
+    private var didTrackResolutionButtonShown = false
+    private var didTrackManualEscalationButtonShown = false
+    private var didTrackBotEscalationButtonShown = false
+    private var didTrackErrorEscalationButtonShown = false
     var onStartJetpackSetup: () -> Void
-    private let diagnosticsService: SupportDiagnosticsService
+    private let diagnosticsService: SupportDiagnosticsServicing
+
+    /// Pre-fetched system status report, if available (e.g., from connectivity tool).
+    ///
+    private let prefetchedSystemStatusReport: String?
 
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          initialContext: [String: Any]? = nil,
-         diagnosticsService: SupportDiagnosticsService? = nil,
+         diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
-         onContactHumanSupport: @escaping (_ transcript: String) -> Void,
+         sessionID: String? = nil,
+         hasCreatedTicket: Bool = false,
+         isChatResolved: Bool = false,
+         systemStatusReport: String? = nil,
+         onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?, _ entryPoint: EntryPoint) -> Void,
          onStartJetpackSetup: @escaping () -> Void = {}) {
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
+        self.analytics = analytics
         self.initialContext = initialContext
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
+        self.sessionID = sessionID
         self.isResumedChat = chatID != nil
+        self.hasCreatedTicket = hasCreatedTicket
+        self.isChatResolved = isChatResolved
+        self.prefetchedSystemStatusReport = systemStatusReport
         self.onContactHumanSupport = onContactHumanSupport
         self.onStartJetpackSetup = onStartJetpackSetup
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.entryPointTapped(
+            entryPoint: entryPoint,
+            isAuthenticated: stores.isAuthenticated,
+            isResumedChat: chatID != nil
+        ))
     }
 
     // MARK: - Issue Selection & Diagnostics
@@ -172,6 +314,10 @@ final class SupportChatViewModel {
     ///
     func selectIssue(_ issue: SupportIssueType) async {
         selectedIssue = issue
+        analytics.track(event: WooAnalyticsEvent.SupportChat.issueSelected(
+            issueType: issue,
+            entryPoint: entryPoint
+        ))
 
         // Add user's selection as a message
         let userMessage = ChatMessage(role: .user, text: issue.displayName)
@@ -182,6 +328,7 @@ final class SupportChatViewModel {
             let greetingMessage = ChatMessage(role: .bot, text: Localization.greetingMessage)
             messages.append(greetingMessage)
             hasProceededToChat = true
+            trackTroubleshootingCompleted(issueType: issue, result: .skipped)
             return
         }
 
@@ -238,12 +385,16 @@ final class SupportChatViewModel {
                 role: .bot,
                 content: .diagnosticsFailure(failure)
             )
+            trackTroubleshootingCompleted(issueType: issue,
+                                          result: .failed,
+                                          failedTest: failure.test)
         } else {
             messages[progressIndex] = ChatMessage(
                 id: messages[progressIndex].id,
                 role: .bot,
                 content: .diagnosticsSuccess
             )
+            trackTroubleshootingCompleted(issueType: issue, result: .passed)
         }
     }
 
@@ -282,6 +433,7 @@ final class SupportChatViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
+            state = .error(errorMessage(for: error))
         }
     }
 
@@ -439,21 +591,14 @@ final class SupportChatViewModel {
         // Build context from diagnostic results
         var context: [String: Any] = initialContext ?? [:]
 
-        if let issue = selectedIssue {
-            context["issue_type"] = String(describing: issue)
-        }
-
         if let troubleshootingDescription = SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults) {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteId"] = site.siteID
             context["site_url"] = site.url
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         diagnosticsContext = context
 
@@ -497,7 +642,7 @@ final class SupportChatViewModel {
         guard messages.isEmpty else { return }
         state = .sending
 
-        let action = SupportChatAction.fetchChat(botSlug: botSlug, chatID: chatID) { [weak self] result in
+        let action = SupportChatAction.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID) { [weak self] result in
             self?.handleFetchChatResult(result)
         }
         stores.dispatch(action)
@@ -523,13 +668,23 @@ final class SupportChatViewModel {
 
         let wasNewChat = chatID == nil
         let firstUserMessage = trimmedText
+        let isFirstMessage = userMessageCount == 0
+        userMessageCount += 1
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.messageSent(
+            entryPoint: entryPoint,
+            isFirstMessage: isFirstMessage,
+            hasDiagnosticsContext: context != nil
+        ))
 
         let action = SupportChatAction.sendMessage(
             botSlug: botSlug,
             message: trimmedText,
             chatID: chatID,
+            sessionID: sessionID,
             context: context
         ) { [weak self] result in
+            self?.hasSentChatMessage = true
             self?.handleSendMessageResult(result,
                                           wasNewChat: wasNewChat,
                                           firstUserMessage: firstUserMessage)
@@ -538,8 +693,33 @@ final class SupportChatViewModel {
         stores.dispatch(action)
     }
 
-    func contactHumanSupport() {
-        onContactHumanSupport(generateTranscript())
+    func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.escalationTapped(
+            source: source,
+            entryPoint: entryPoint,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+
+        let transcript = generateTranscript()
+        let supportAreaInfo: SupportAreaInfo?
+        let systemStatusReport = prefetchedSystemStatusReport ?? diagnosticsService.formattedSystemStatusReport
+
+        if let supportArea = latestSupportArea {
+            let mappedArea = SupportFormViewModel.area(for: supportArea.area, systemStatusReport: systemStatusReport)
+            supportAreaInfo = SupportAreaInfo(
+                areaType: supportArea.area,
+                area: mappedArea,
+                confidence: supportArea.confidence,
+                topic: supportArea.topic,
+                transcript: transcript,
+                systemStatusReport: systemStatusReport
+            )
+        } else {
+            supportAreaInfo = nil
+        }
+
+        onContactHumanSupport(chatID, transcript, supportAreaInfo, entryPoint)
     }
 
     private func generateTranscript() -> String {
@@ -569,6 +749,8 @@ final class SupportChatViewModel {
                 contentText = "[All diagnostics passed]"
             case .diagnosticsFailure(let result):
                 contentText = "[Diagnostics failed: \(result.test.title) - \(result.errorMessage ?? "Unknown error")]"
+            case .resolvedPrompt:
+                contentText = Localization.resolvedPromptMessage
             }
 
             return "[\(timestamp)] \(roleName): \(contentText)"
@@ -587,19 +769,37 @@ final class SupportChatViewModel {
         switch result {
         case .success(let response):
             chatID = response.chatID
+            sessionID = response.sessionID
             persistChatBookmark(wasNewChat: wasNewChat,
                                 response: response,
                                 firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
-                let assistantMessage = ChatMessage(
-                    role: .bot,
-                    text: lastBotMessage.content
-                )
-                messages.append(assistantMessage)
+                /// Retrieves the last detected support area
+                latestSupportArea = lastBotMessage.context?.supportArea
+                let forwardToHumanSupport = lastBotMessage.context?.flags?.forwardToHumanSupport == true
 
-                if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
+                analytics.track(event: WooAnalyticsEvent.SupportChat.responseReceived(
+                    entryPoint: entryPoint,
+                    supportArea: latestSupportArea,
+                    forwardToHumanSupport: forwardToHumanSupport
+                ))
+
+                /// Skips displaying last bot message when human support is required. User is suggested to contact support manually.
+                if forwardToHumanSupport {
                     shouldPromptHumanSupport = true
+                } else {
+                    let assistantMessage = ChatMessage(
+                        role: .bot,
+                        text: lastBotMessage.content,
+                        messageID: lastBotMessage.messageID,
+                        isResolved: lastBotMessage.context?.isResolved ?? false
+                    )
+                    messages.append(assistantMessage)
+
+                    if assistantMessage.isResolved {
+                        appendResolvedPromptIfNeeded()
+                    }
                 }
             }
 
@@ -607,34 +807,83 @@ final class SupportChatViewModel {
 
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
-            state = .error(Localization.errorMessage)
+            markLastUserMessageAsFailed()
+            trackEscalationButtonShown(trigger: .errorDialog)
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Replaces the most recent `.user` message with a copy that has `failed = true`,
+    /// so the UI can render the failed-bubble indicator.
+    private func markLastUserMessageAsFailed() {
+        guard let index = messages.lastIndex(where: { $0.role == .user }) else { return }
+        let prev = messages[index]
+        messages[index] = ChatMessage(
+            id: prev.id,
+            role: prev.role,
+            content: prev.content,
+            timestamp: prev.timestamp,
+            failed: true
+        )
     }
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped
     /// rather than rendered as garbage; ordering from the server (ts-ascending) is preserved.
+    /// Bot messages flagged for human support are also filtered out.
     private func handleFetchChatResult(_ result: Result<SupportChatResponse, Error>) {
         switch result {
         case .success(let response):
-            let rehydrated: [ChatMessage] = response.messages.compactMap { message in
+            sessionID = response.sessionID
+            let rehydrated: [ChatMessage] = response.messages.compactMap { [weak self] message in
+                if message.role == .bot, let supportArea = message.context?.supportArea {
+                    self?.latestSupportArea = supportArea
+                }
+
+                // Filter out bot messages flagged for human support
+                if message.role == .bot,
+                   let flags = message.context?.flags,
+                   flags.forwardToHumanSupport {
+                    self?.shouldPromptHumanSupport = true
+                    return nil
+                }
+
                 switch message.role {
                 case .user:
-                    return ChatMessage(role: .user, text: message.content)
+                    return ChatMessage(role: .user, text: message.content, isNewInSession: false)
                 case .bot:
-                    return ChatMessage(role: .bot, text: message.content)
+                    return ChatMessage(role: .bot,
+                                       text: message.content,
+                                       messageID: message.messageID,
+                                       isResolved: message.context?.isResolved ?? false,
+                                       isNewInSession: false)
                 case .unknown:
                     return nil
                 }
             }
             messages = rehydrated
+
+            if latestBotResponse?.isResolved == true {
+                appendResolvedPromptIfNeeded()
+            }
+
             state = .idle
 
         case .failure(let error):
             DDLogError("⛔️ Support chat resume error: \(error)")
             // Fail soft: the merchant can still send a new message into the existing chatID;
-            // they just won't see the prior transcript. Surface as a retry-able error.
-            state = .error(Localization.resumeErrorMessage)
+            // they just won't see the prior transcript.
+            state = .error(errorMessage(for: error))
         }
+    }
+
+    /// Maps a thrown error to user-facing copy. Rate-limit responses (HTTP 429) get an
+    /// explicit "you've reached the limit" message; everything else gets a generic one.
+    /// The actual error is logged separately via `DDLogError`.
+    private func errorMessage(for error: Error) -> String {
+        if let networkError = error as? NetworkError, networkError.responseCode == 429 {
+            return Localization.rateLimitErrorMessage
+        }
+        return Localization.errorMessage
     }
 
     /// Persists a local bookmark for the chat so it appears in the chat history UI.
@@ -652,14 +901,125 @@ final class SupportChatViewModel {
                                                        siteID: siteID,
                                                        wpcomUserID: wpcomUserID,
                                                        botSlug: botSlug,
+                                                       sessionID: response.sessionID,
                                                        firstUserMessage: firstUserMessage,
                                                        onCompletion: {})
             stores.dispatch(action)
         } else {
             let action = SupportChatAction.touchChat(chatID: response.chatID,
+                                                    sessionID: response.sessionID,
                                                     onCompletion: {})
             stores.dispatch(action)
         }
+    }
+
+    private func appendResolvedPromptIfNeeded() {
+        guard isChatResolved == false else {
+            return
+        }
+
+        if messages.contains(where: { $0.content == .resolvedPrompt }) {
+            return
+        }
+
+        messages.append(ChatMessage(role: .bot, content: .resolvedPrompt))
+    }
+
+    // MARK: - Feedback
+
+    /// Submits feedback for a bot message.
+    /// Marks the message as rated immediately (optimistic UI).
+    /// API failures are logged but do not affect the UI since feedback is low-stakes.
+    func submitFeedback(messageID: Int64, upvoted: Bool) {
+        guard let chatID, let sessionID else { return }
+        guard messageRatings[messageID] == nil else { return }
+
+        messageRatings[messageID] = upvoted
+
+        if upvoted, latestBotResponse?.messageID == messageID {
+            appendResolvedPromptIfNeeded()
+        }
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.feedbackSubmitted(
+            rating: upvoted ? .up : .down,
+            entryPoint: entryPoint,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+
+        let action = SupportChatAction.submitFeedback(
+            botSlug: botSlug,
+            chatID: chatID,
+            messageID: messageID,
+            sessionID: sessionID,
+            upvoted: upvoted
+        ) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Support chat feedback error: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    private var latestBotResponse: ChatMessage? {
+        messages.last { $0.role == .bot && $0.messageID != nil }
+    }
+
+    private func trackTroubleshootingCompleted(issueType: SupportIssueType,
+                                              result: WooAnalyticsEvent.SupportChat.TroubleshootingResult,
+                                              failedTest: SupportDiagnosticsService.Test? = nil) {
+        analytics.track(event: WooAnalyticsEvent.SupportChat.troubleshootingCompleted(
+            issueType: issueType,
+            result: result,
+            failedTest: failedTest
+        ))
+    }
+
+    func trackResolutionButtonShownIfNeeded() {
+        guard didTrackResolutionButtonShown == false else {
+            return
+        }
+
+        didTrackResolutionButtonShown = true
+        analytics.track(event: WooAnalyticsEvent.SupportChat.resolutionButtonShown(
+            entryPoint: entryPoint,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
+    }
+
+    func trackManualEscalationButtonShownIfNeeded() {
+        guard didTrackManualEscalationButtonShown == false else {
+            return
+        }
+
+        didTrackManualEscalationButtonShown = true
+        trackEscalationButtonShown(trigger: .manualToolbar)
+    }
+
+    func trackBotEscalationButtonShownIfNeeded() {
+        guard didTrackBotEscalationButtonShown == false else {
+            return
+        }
+
+        didTrackBotEscalationButtonShown = true
+        trackEscalationButtonShown(trigger: .botForwardedToHumanSupport)
+    }
+
+    private func trackEscalationButtonShown(trigger: WooAnalyticsEvent.SupportChat.EscalationTrigger) {
+        if trigger == .errorDialog {
+            guard didTrackErrorEscalationButtonShown == false else {
+                return
+            }
+            didTrackErrorEscalationButtonShown = true
+        }
+
+        analytics.track(event: WooAnalyticsEvent.SupportChat.escalationButtonShown(
+            trigger: trigger,
+            entryPoint: entryPoint,
+            supportArea: latestSupportArea,
+            userMessageCount: userMessageCount
+        ))
     }
 }
 
@@ -677,15 +1037,20 @@ private extension SupportChatViewModel {
             value: "Please describe your issue in more detail so I can help.",
             comment: "Message prompting user to describe their issue after diagnostics"
         )
-        static let errorMessage = NSLocalizedString(
-            "supportChatViewModel.errorMessage",
-            value: "Something went wrong. Please try again.",
-            comment: "Error message shown when sending a support chat message fails"
+        static let resolvedPromptMessage = NSLocalizedString(
+            "supportChatViewModel.resolvedPromptMessage",
+            value: "Please mark the chat as resolved if your problem is resolved, or leave a message if you have other questions.",
+            comment: "Message shown by the bot when a support chat answer appears to have solved the merchant's issue"
         )
-        static let resumeErrorMessage = NSLocalizedString(
-            "supportChatViewModel.resumeErrorMessage",
-            value: "We couldn't load the previous conversation. You can still send a new message.",
-            comment: "Error message shown when loading a prior support chat transcript fails on resume"
+        static let errorMessage = NSLocalizedString(
+            "supportChatViewModel.aiChatConnectionErrorMessage",
+            value: "We couldn't connect to AI chat right now.",
+            comment: "Generic error message shown when an AI support chat request fails"
+        )
+        static let rateLimitErrorMessage = NSLocalizedString(
+            "supportChatViewModel.rateLimitErrorMessage",
+            value: "You've reached the chat limit. Please try again later.",
+            comment: "Error message shown when the AI support chat rate limit (HTTP 429) is hit"
         )
     }
 }

@@ -261,7 +261,7 @@ private extension CardReaderConnectionController {
     /// Returns any found reader which is also known
     ///
     func getFoundKnownReader() -> CardReader? {
-        foundReaders.filter({knownReaderID == $0.id}).first
+        foundReaders.first(where: {knownReaderID == $0.id})
     }
 
     /// A helper to return an array of found reader IDs

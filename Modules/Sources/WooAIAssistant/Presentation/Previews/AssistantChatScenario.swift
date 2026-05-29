@@ -2,7 +2,6 @@
 import Foundation
 import SwiftUI
 
-/// Single source of truth for preview/snapshot states across components.
 enum AssistantChatScenario: String, CaseIterable {
     case empty
     case singleUserMessage
@@ -14,7 +13,6 @@ enum AssistantChatScenario: String, CaseIterable {
     case pendingConfirmationBulk
     case failedMidStream
     case outcomeUnknown
-    case iterationCap
     case multiTurn
 
     var displayName: String {
@@ -29,7 +27,6 @@ enum AssistantChatScenario: String, CaseIterable {
         case .pendingConfirmationBulk: return "Pending confirmation (bulk)"
         case .failedMidStream: return "Failed mid-stream"
         case .outcomeUnknown: return "Outcome unknown"
-        case .iterationCap: return "Iteration cap"
         case .multiTurn: return "Multi-turn"
         }
     }
@@ -94,13 +91,22 @@ struct AssistantChatScenarioBuilder {
 
         case .pendingConfirmation:
             let proposalID = UUID()
+            let preview = ConfirmationPreview(
+                summary: .raw("Update order #3479"),
+                fields: [
+                    ConfirmationPreviewField(name: "status",
+                                             label: .raw("Status"),
+                                             value: .raw("completed"),
+                                             priorValue: .raw("processing"))
+                ]
+            )
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Mark order 3479 as completed"),
                 MockAssistantController.assistantConfirmation(
                     text: "I'll mark order #3479 as completed.",
                     proposalID: proposalID,
                     tool: "orders_update",
-                    preview: "Update order #3479: status processing -> completed",
+                    preview: preview,
                     status: .pending
                 )
             ]
@@ -109,13 +115,22 @@ struct AssistantChatScenarioBuilder {
 
         case .pendingConfirmationBulk:
             let proposalID = UUID()
+            let preview = ConfirmationPreview(
+                summary: .raw("Update 12 orders"),
+                fields: [
+                    ConfirmationPreviewField(name: "status",
+                                             label: .raw("Status"),
+                                             value: .raw("completed (emails customers)"))
+                ],
+                isBulk: true
+            )
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Move all 12 processing orders to completed"),
                 MockAssistantController.assistantConfirmation(
                     text: "I'll move 12 orders from processing to completed.",
                     proposalID: proposalID,
                     tool: "orders_bulk_update",
-                    preview: "Update 12 orders: status -> completed (emails customers)",
+                    preview: preview,
                     status: .pending
                 )
             ]
@@ -145,17 +160,6 @@ struct AssistantChatScenarioBuilder {
                 streaming: .outcomeUnknown("The connection dropped before we got a confirmation. Verify the price before retrying.")
             ))
 
-        case .iterationCap:
-            let messages: [ChatMessage] = [
-                MockAssistantController.userMessage("Compare every order this month"),
-                MockAssistantController.assistantText(
-                    "I've gathered most of the data but had to stop short of finishing the comparison.",
-                    streaming: false
-                )
-            ]
-            return Configuration(controller: MockAssistantController.make(messages: messages),
-                                 showIterationCapBanner: true)
-
         case .multiTurn:
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Top product yesterday?"),
@@ -175,7 +179,6 @@ struct AssistantChatScenarioBuilder {
 
     struct Configuration {
         let controller: AssistantController
-        var showIterationCapBanner: Bool = false
     }
 }
 #endif

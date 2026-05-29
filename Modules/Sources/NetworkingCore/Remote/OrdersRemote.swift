@@ -494,6 +494,21 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    public func addPOSOrderNote(siteID: Int64,
+                                orderID: Int64,
+                                isCustomerNote: Bool,
+                                note: String) async throws -> OrderNote {
+        try await withCheckedThrowingContinuation { continuation in
+            addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { orderNote, error in
+                if let orderNote {
+                    continuation.resume(returning: orderNote)
+                } else {
+                    continuation.resume(throwing: error ?? POSOrdersRemoteError.addOrderNoteFailed)
+                }
+            }
+        }
+    }
+
     public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
         let parameters: [String: Any] = [
             "billing": [

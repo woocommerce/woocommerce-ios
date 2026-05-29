@@ -218,7 +218,9 @@ extension Note {
 
     /// Known Notification Kinds
     ///
-    public enum Kind: String, GeneratedFakeable {
+    /// Keep in sync with `PushNotificationSharedConstants.knownPushNotificationTypes` —
+    /// a parity test in `NotificationServiceSuppressionTests` guards against drift.
+    public enum Kind: String, CaseIterable, GeneratedFakeable {
         case automattcher
         case comment
         case commentLike = "comment_like"

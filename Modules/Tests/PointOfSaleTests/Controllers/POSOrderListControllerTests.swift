@@ -7,6 +7,7 @@ import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderCustomAmount
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
@@ -522,6 +523,107 @@ final class POSOrderListControllerTests {
         // Then: Should only show item 2 (item 1 is fully refunded)
         #expect(sut.refundSelectableItems.count == 1)
         #expect(sut.refundSelectableItems[0].itemID == 2)
+    }
+
+    @MainActor
+    @Test func test_startRefundFlow_when_order_has_custom_amount_then_appends_lump_sum_selectable() async throws {
+        // Given
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 10, totalTax: 0)
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00")],
+            customAmounts: [customAmount]
+        )
+
+        // When
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+
+        // Then
+        #expect(sut.refundSelectableItems.count == 2)
+        let feeRow = try #require(sut.refundSelectableItems.first(where: { $0.isLumpSum }))
+        #expect(feeRow.itemID == 777)
+        #expect(feeRow.name == "Discount Fee")
+        #expect(feeRow.lineItemTotal == 10)
+        #expect(feeRow.originalQuantity == 1)
+        #expect(feeRow.isSelected == true)
+    }
+
+    @MainActor
+    @Test func test_startRefundFlow_when_custom_amount_already_refunded_then_excludes_fee() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 777, quantity: 0, name: "Discount Fee",
+                                                     formattedPrice: "", formattedTotal: "", imageSrc: nil, isLumpSum: true)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 10, totalTax: 0)
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, formattedPrice: "$10.00")],
+            customAmounts: [customAmount]
+        )
+
+        // When
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+
+        // Then
+        #expect(sut.refundSelectableItems.count == 1)
+        #expect(sut.refundSelectableItems.contains(where: { $0.isLumpSum }) == false)
+    }
+
+    @MainActor
+    @Test func test_startRefundFlow_with_only_unrefunded_custom_amount_then_returns_hasItemsToRefund() async throws {
+        // Given
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 10, totalTax: 0)
+        let order = makeOrder(lineItems: [], customAmounts: [customAmount])
+
+        // When
+        sut.selectOrder(order)
+        let availability = await sut.startRefundFlow()
+
+        // Then
+        #expect(availability == .hasItemsToRefund)
+        #expect(sut.refundSelectableItems.count == 1)
+        #expect(sut.refundSelectableItems.first?.isLumpSum == true)
+    }
+
+    @MainActor
+    @Test func test_preparePOSRefundReviewData_with_custom_amount_only_then_returns_lump_sum_total() async throws {
+        // Given - one fee of $10, no products
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 10, totalTax: 0)
+        let order = makeOrder(lineItems: [], customAmounts: [customAmount])
+
+        // When
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        let reviewData = sut.preparePOSRefundReviewData()
+
+        // Then
+        #expect(reviewData?.itemsCount == 1)
+        #expect(reviewData?.formattedItemsSubtotal == "$10.00")
+        #expect(reviewData?.formattedRefundTotal == "$10.00")
+    }
+
+    @MainActor
+    @Test func test_preparePOSRefundReviewData_with_mixed_products_and_custom_amount_then_sums_both() async throws {
+        // Given - one product ($10) and one fee ($5)
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 5, totalTax: 0)
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")],
+            customAmounts: [customAmount]
+        )
+
+        // When
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        let reviewData = sut.preparePOSRefundReviewData()
+
+        // Then
+        #expect(reviewData?.itemsCount == 2)
+        #expect(reviewData?.formattedItemsSubtotal == "$15.00")
+        #expect(reviewData?.formattedRefundTotal == "$15.00")
     }
 
     @MainActor
@@ -1333,6 +1435,110 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func test_displayedCustomAmounts_when_fee_fully_refunded_then_filters_it_out() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(
+            lineItems: [],
+            customAmounts: [customAmount],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.isEmpty)
+    }
+
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_other_fee_unrefunded_then_keeps_it() async throws {
+        // Given - one fee refunded, another not
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let order = makeOrder(
+            lineItems: [],
+            customAmounts: [
+                makePOSOrderCustomAmount(id: 777, name: "Discount Fee"),
+                makePOSOrderCustomAmount(id: 888, name: "Tip")
+            ],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+        #expect(sut.displayedCustomAmounts.first?.id == 888)
+    }
+
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_fee_lines_absent_from_refund_response_then_fee_remains_visible() async throws {
+        // Given - simulates an older WooCommerce store whose refund response omits `fee_lines`,
+        // so the loaded refund has no entry pointing back to the original fee id. The fee
+        // can't be filtered out and stays visible (documented limitation).
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(
+            lineItems: [],
+            customAmounts: [customAmount],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        // No POSRefundItem with refundedItemID = 777 is returned, mirroring an empty fee_lines
+        // server response.
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+        #expect(sut.displayedCustomAmounts.first?.id == 777)
+    }
+
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_feature_flag_disabled_then_returns_all_custom_amounts() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = false
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(lineItems: [], customAmounts: [customAmount])
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+    }
+
+    @MainActor
     @Test func test_displayedLineItems_when_feature_flag_disabled_then_returns_all_items() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = false
@@ -1363,6 +1569,7 @@ private extension POSOrderListControllerTests {
                    paymentMethodID: String = "woocommerce_payments",
                    paymentMethodTitle: String = "cod",
                    lineItems: [POSOrderItem] = [],
+                   customAmounts: [POSOrderCustomAmount] = [],
                    refunds: [POSOrderRefund] = []) -> POSOrder {
         POSOrder(
             id: id,
@@ -1375,12 +1582,29 @@ private extension POSOrderListControllerTests {
             paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
+            customAmounts: customAmounts,
             refunds: refunds,
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
             formattedNetAmount: nil,
             datePaid: status == .completed || status == .processing ? Date() : nil
+        )
+    }
+
+    func makePOSOrderCustomAmount(
+        id: Int64 = 1,
+        name: String = "Discount Fee",
+        formattedTotal: String = "$5.00",
+        total: Decimal = 5,
+        totalTax: Decimal = 0
+    ) -> POSOrderCustomAmount {
+        POSOrderCustomAmount(
+            id: id,
+            name: name,
+            formattedTotal: formattedTotal,
+            total: total,
+            totalTax: totalTax
         )
     }
 

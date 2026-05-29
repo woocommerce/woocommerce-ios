@@ -67,7 +67,7 @@ struct ThemesPreviewView: View {
 
     @ObservedObject private var viewModel: ThemesPreviewViewModel
 
-    @State private var selectedDevice: PreviewDevice = PreviewDevice.defaultDevice
+    @State private var selectedDevice = PreviewDevice.defaultDevice
     @State private var showPagesMenu: Bool = false
 
     /// Triggered when the primary CTA button for selecting the theme is tapped.

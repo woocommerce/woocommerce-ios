@@ -6,10 +6,14 @@ import Foundation
 public struct POSCart {
     public let items: [POSCartItem]
     public let coupons: [POSCoupon]
+    public let customAmounts: [POSCustomAmount]
 
-    public init(items: [POSCartItem] = [], coupons: [POSCoupon] = []) {
+    public init(items: [POSCartItem] = [],
+                coupons: [POSCoupon] = [],
+                customAmounts: [POSCustomAmount] = []) {
         self.items = items
         self.coupons = coupons
+        self.customAmounts = customAmounts
     }
 }
 
@@ -25,17 +29,21 @@ public struct POSCartItem {
 
 public extension POSCart {
     func matches(order: Order?) -> Bool {
-        return items.matches(order: order) && coupons.matches(order: order)
+        return items.matches(order: order)
+            && coupons.matches(order: order)
+            && customAmounts.matches(order: order)
     }
 
     func compareWithOrder(_ order: Order?) -> CartOrderComparison {
         let itemsComparison = items.compareWithOrder(order)
         let couponsMatch = coupons.matches(order: order)
+        let customAmountsMatch = customAmounts.matches(order: order)
 
         return CartOrderComparison(
             missingItems: itemsComparison.missingItems,
             quantityMismatches: itemsComparison.quantityMismatches,
-            couponsMatch: couponsMatch
+            couponsMatch: couponsMatch,
+            customAmountsMatch: customAmountsMatch
         )
     }
 }
@@ -48,10 +56,12 @@ public struct CartOrderComparison {
     public let quantityMismatches: [QuantityMismatch]
     /// Whether the coupons in the cart match the order
     public let couponsMatch: Bool
+    /// Whether the custom amounts in the cart match the order's active fee lines
+    public let customAmountsMatch: Bool
 
     /// Returns true if there are any discrepancies between cart and order
     public var hasDiscrepancies: Bool {
-        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch
+        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch || !customAmountsMatch
     }
 
     /// Represents an item that was expected in the cart but is missing from the order

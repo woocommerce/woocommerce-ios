@@ -143,7 +143,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Shipments in an order
     private(set) var shipments: [WooShippingShipment] = []
 
-    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
+    private var shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///
@@ -1140,19 +1140,19 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.filter({$0.status == order.status}).first
+        return currentSiteStatuses.first(where: { $0.status == order.status })
     }
 
     func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
-        return products.filter({ $0.productID == productID }).first
+        return products.first(where: { $0.productID == productID })
     }
 
     private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
-        return productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
+        return productVariations.first(where: { $0.productID == productID && $0.productVariationID == variationID })
     }
 
     func lookUpRefund(by refundID: Int64) -> Refund? {
-        return refunds.filter({ $0.refundID == refundID }).first
+        return refunds.first(where: { $0.refundID == refundID })
     }
 
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {
@@ -1469,7 +1469,7 @@ extension OrderDetailsDataSource {
             /// Shipping Address
             /// Almost always visible to allow editing.
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return items.first(where: { $0.productID == product.productID}) != nil
+                return items.contains(where: { $0.productID == product.productID})
             }.allSatisfy { $0.virtual == true }
 
 

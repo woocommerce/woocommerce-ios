@@ -8,36 +8,57 @@ struct RawJSONCard: View {
 
     @State private var isExpanded = false
 
-    private static let collapsedLines = 6
+    private static let collapsedLines = 3
 
-    var body: some View {
-        CardShell(label: toolName, trailingChevron: false) {
-            VStack(alignment: .leading, spacing: AssistantSpacing.small) {
-                Text(prettyJSON)
-                    .font(.assistantMonospaced)
-                    .foregroundStyle(Color.primary)
-                    .lineLimit(isExpanded ? nil : Self.collapsedLines)
-                    .textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+    private let prettyJSON: String
+    private let shouldOfferExpand: Bool
 
-                if shouldOfferExpand {
-                    Button {
-                        withAnimation(.smooth(duration: AssistantMotion.snap)) {
-                            isExpanded.toggle()
-                        }
-                    } label: {
-                        Text(isExpanded ? Localization.showLess : Localization.showAll)
-                            .font(.assistantCaption)
-                            .foregroundStyle(Color(.accent))
-                            .frame(minHeight: 44)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
+    init(toolName: String, payload: AnyCodableJSON) {
+        self.toolName = toolName
+        self.payload = payload
+        let formatted = Self.encodePretty(payload)
+        self.prettyJSON = formatted
+        self.shouldOfferExpand = formatted.split(separator: "\n").count > Self.collapsedLines
     }
 
-    private var prettyJSON: String {
+    var body: some View {
+        VStack(alignment: .leading, spacing: AssistantSpacing.small) {
+            Text(toolName)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Color.assistantMuted)
+
+            Text(prettyJSON)
+                .font(.assistantMonospaced)
+                .foregroundStyle(Color.primary)
+                .lineLimit(isExpanded ? nil : Self.collapsedLines)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if shouldOfferExpand {
+                Button {
+                    withAnimation(.smooth(duration: AssistantMotion.snap)) {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    Text(isExpanded ? Localization.showLess : Localization.showAll)
+                        .font(.assistantCaption)
+                        .foregroundStyle(Color(.accent))
+                        .frame(minHeight: 44)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(AssistantSpacing.large)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.assistantSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.card))
+        .overlay(
+            RoundedRectangle(cornerRadius: AssistantRadius.card)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 1)
+        )
+    }
+
+    private static func encodePretty(_ payload: AnyCodableJSON) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         do {
@@ -47,10 +68,6 @@ struct RawJSONCard: View {
             DDLogError("RawJSONCard pretty-print failed: \(error)")
             return ""
         }
-    }
-
-    private var shouldOfferExpand: Bool {
-        prettyJSON.split(separator: "\n").count > Self.collapsedLines
     }
 
     private enum Localization {

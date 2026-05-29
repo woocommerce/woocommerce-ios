@@ -1,10 +1,6 @@
 import Foundation
 @testable import WooAIAssistant
 
-/// Test double for `AIChatService`. Each call to `streamTurn` consumes
-/// the next entry from `scriptedTurns` and yields it as an async
-/// stream. Captured requests let the test inspect the message
-/// transcript the orchestrator built up.
 actor MockAIChatService: AIChatService {
     var scriptedTurns: [[ChatStreamEvent]] = []
     var streamError: Error?

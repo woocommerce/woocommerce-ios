@@ -20,7 +20,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
     private let siteID: Int64
 
     // Track loading and refresh for products and variations
-    private var loadingState: LoadingState = LoadingState()
+    private var loadingState = LoadingState()
     private var refreshState: RefreshState = .idle
 
     // Track current parent for variation state mapping

@@ -38,7 +38,14 @@ public enum OrdersGetTool {
         let id: Int
     }
 
+    private static let allowedArguments: Set<String> = ["id"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -58,12 +65,7 @@ public enum OrdersGetTool {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = OrderSummary.make(from: pruned)
-        let resolvedID = RESTResponseParsing.intField(pruned, "id").map(String.init) ?? String(args.id)
-        let card = RenderedCardPayload(family: .order,
-                                       id: resolvedID,
-                                       element: pruned)
         return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
-                              uiStructured: UIStructured(cards: [card])))
+                              structured: LLMPayloadCap.capped(summary, toolName: name)))
     }
 }

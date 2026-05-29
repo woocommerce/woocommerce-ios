@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct RESTToolRegistryTests {
     @Test
     func test_execute_when_tool_unknown_then_returns_failed_invalidToolCall() async {

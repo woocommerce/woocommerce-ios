@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import WooFoundation
 
 struct CartViewHelper {
@@ -24,15 +23,10 @@ struct CartViewHelper {
         cart.isNotEmpty && orderStage == .building
     }
 
-    func shouldShowAddCustomAmountButton(featureFlags: POSFeatureFlagProviding,
-                                         orderStage: PointOfSaleOrderStage) -> Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts) && orderStage == .building
-    }
-
     func shouldShowCheckout(orderStage: PointOfSaleOrderStage, cart: Cart) -> Bool {
         guard case .building = orderStage else { return false }
 
-        return cart.purchasableItems.isNotEmpty
+        return cart.purchasableItems.isNotEmpty || cart.customAmounts.isNotEmpty
     }
 
     func hasUnresolvedItems(cart: Cart) -> Bool {

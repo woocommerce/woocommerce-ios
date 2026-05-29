@@ -94,11 +94,11 @@ extension OrderFulfillmentStore {
 
             // Remove stale entries not present in the remote response
             storageFulfillments?.forEach({ storageFulfillment in
-                if readOnlyFulfillments.first(
+                if !readOnlyFulfillments.contains(
                     where: {
                         $0.fulfillmentID == storageFulfillment.fulfillmentID
                     }
-                ) == nil {
+                ) {
                     storage.deleteObject(storageFulfillment)
                 }
             })

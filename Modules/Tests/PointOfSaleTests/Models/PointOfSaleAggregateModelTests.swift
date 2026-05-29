@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
@@ -175,6 +176,138 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.isEmpty)
+        }
+
+        @Test func upsertCustomAmount_adds_a_new_custom_amount_to_cart() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            try #require(sut.cart.customAmounts.isEmpty)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+
+            // When
+            sut.upsertCustomAmount(customAmount, mode: .add)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first == customAmount)
+        }
+
+        @Test func upsertCustomAmount_with_add_mode_tracks_pointOfSaleCustomAmountSubmitted() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+
+            // When
+            sut.upsertCustomAmount(customAmount, mode: .add)
+
+            // Then
+            let event = try #require(analytics.events.first(where: { $0.eventName == "custom_amount_submitted" }))
+            #expect(event.properties["mode"] as? String == "add")
+            #expect(event.properties["is_taxable"] as? Bool == true)
+        }
+
+        @Test func upsertCustomAmount_with_edit_mode_tracks_pointOfSaleCustomAmountSubmitted() async throws {
+            // Given - first add, then edit
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            sut.upsertCustomAmount(original, mode: .add)
+
+            // When
+            let updated = POSCustomAmount(id: original.id, name: "Tip", amount: "12.50", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then
+            let editEvent = try #require(analytics.events.last(where: { $0.eventName == "custom_amount_submitted" }))
+            #expect(editEvent.properties["mode"] as? String == "edit")
+            #expect(editEvent.properties["is_taxable"] as? Bool == false)
+        }
+
+        @Test func upsertCustomAmount_replaces_existing_custom_amount_by_id() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let id = UUID()
+            let original = POSCustomAmount(id: id, name: "Service fee", amount: "10.00", isTaxable: true)
+            sut.upsertCustomAmount(original, mode: .add)
+            try #require(sut.cart.customAmounts.count == 1)
+
+            // When
+            let updated = POSCustomAmount(id: id, name: "Tip", amount: "12.50", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first == updated)
+        }
+
+        @Test func removeCustomAmount_removes_the_matching_custom_amount() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let first = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            let second = POSCustomAmount(name: "Delivery", amount: "5.00", isTaxable: false)
+            sut.upsertCustomAmount(first, mode: .add)
+            sut.upsertCustomAmount(second, mode: .add)
+            try #require(sut.cart.customAmounts.count == 2)
+
+            // When
+            sut.removeCustomAmount(id: first.id)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first?.id == second.id)
+        }
+
+        @Test func editingCustomAmount_starts_nil() async throws {
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+
+            #expect(sut.editingCustomAmount == nil)
+        }
+
+        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+
+            // When set to a value
+            sut.editingCustomAmount = customAmount
+
+            // Then
+            #expect(sut.editingCustomAmount == customAmount)
+
+            // When cleared
+            sut.editingCustomAmount = nil
+
+            // Then
+            #expect(sut.editingCustomAmount == nil)
+        }
+
+        @Test func upsertCustomAmount_does_not_mutate_editingCustomAmount() async throws {
+            // Given - the cart-edit modal is open on one entry
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+            sut.upsertCustomAmount(original, mode: .add)
+            sut.editingCustomAmount = original
+
+            // When the merchant submits an updated value
+            let updated = POSCustomAmount(id: original.id, name: "Service fee", amount: "12.00", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then upsert leaves editingCustomAmount alone — dismissal is the caller's responsibility
+            #expect(sut.editingCustomAmount == original)
+        }
+
+        @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            sut.addToCart(makePurchasableItem())
+            sut.upsertCustomAmount(POSCustomAmount(name: "Tip", amount: "5.00", isTaxable: false), mode: .add)
+            try #require(!sut.cart.isEmpty)
+
+            // When
+            sut.removeAllItemsFromCart()
+
+            // Then
+            #expect(sut.cart.isEmpty)
+            #expect(sut.cart.customAmounts.isEmpty)
         }
 
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
@@ -928,7 +1061,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_dismissed" }))
             let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -949,7 +1082,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
         @Test func connectCardReader_when_tapped_then_tracks_event() {
@@ -965,7 +1098,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_connection_tapped" }))
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
@@ -981,7 +1114,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_disconnect_tapped" }))
         }
 
         @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
@@ -1030,7 +1163,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "back_to_checkout_from_cash" }))
         }
 
         @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
@@ -1041,7 +1174,7 @@ struct PointOfSaleAggregateModelTests {
             sut.startCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "checkout_cash_payment_tapped" }))
         }
 
         @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {

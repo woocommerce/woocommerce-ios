@@ -164,6 +164,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case WooConstants.storeInfoWidgetKind:
             let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
+        case WooConstants.storeTrendsWidgetKind:
+            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .trends, family: widgetFamily))
         case WooConstants.appLinkWidgetKind:
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:

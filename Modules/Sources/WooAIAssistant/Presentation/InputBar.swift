@@ -9,7 +9,10 @@ struct InputBar: View {
     let onSend: () -> Void
     let onStop: () -> Void
 
-    private static let sendButtonDiameter: CGFloat = 36
+    // 30pt visible circle inside a 44pt hit target leaves a 7pt inset on every side.
+    private static let sendButtonDiameter: CGFloat = 30
+    private static let sendButtonHitTarget: CGFloat = 44
+    private static let sendButtonInternalInset: CGFloat = (sendButtonHitTarget - sendButtonDiameter) / 2
 
     var body: some View {
         VStack(alignment: .leading, spacing: AssistantSpacing.small) {
@@ -20,42 +23,44 @@ struct InputBar: View {
                     .padding(.horizontal, AssistantSpacing.medium)
             }
 
-            HStack(alignment: .center, spacing: AssistantSpacing.small) {
+            // Bottom-align so the send button stays anchored as the text grows upward.
+            HStack(alignment: .bottom, spacing: 0) {
                 TextField(Localization.placeholder, text: $draft, axis: .vertical)
                     .font(.assistantBody)
-                    .lineLimit(1...6)
-                    .padding(.horizontal, AssistantSpacing.medium)
-                    .padding(.vertical, AssistantSpacing.medium)
-                    .background(textFieldBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.large))
-                    .disabled(pendingConfirmation)
+                    .lineLimit(1...4)
+                    .padding(.leading, AssistantSpacing.large)
+                    .padding(.trailing, AssistantSpacing.xSmall)
+                    .padding(.vertical, Self.sendButtonInternalInset)
+                    .frame(minHeight: Self.sendButtonHitTarget)
 
                 Button(action: actionTapped) {
                     Image(systemName: glyph)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(buttonForeground)
                         .frame(width: Self.sendButtonDiameter,
                                height: Self.sendButtonDiameter)
                         .background(buttonBackground)
                         .clipShape(Circle())
                         .contentTransition(.symbolEffect(.replace))
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(width: Self.sendButtonHitTarget,
+                               height: Self.sendButtonHitTarget)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .disabled(buttonDisabled)
                 .accessibilityLabel(showsStop ? Localization.stop : Localization.send)
             }
+            .background(pillBackground)
+            .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.composer, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: AssistantRadius.composer, style: .continuous)
+                    .stroke(Color.assistantSurfaceBorder, lineWidth: 0.5)
+            )
+            .shadow(color: Color.black.opacity(0.06), radius: 4, x: 0, y: 1)
         }
         .padding(.horizontal, AssistantSpacing.large)
         .padding(.top, AssistantSpacing.medium)
         .padding(.bottom, AssistantSpacing.medium)
-        .background(.regularMaterial)
-        .overlay(alignment: .top) {
-            Rectangle()
-                .fill(Color.assistantSeparator.opacity(0.5))
-                .frame(height: 0.5)
-        }
     }
 
     private var showsStop: Bool {
@@ -69,7 +74,7 @@ struct InputBar: View {
     private var buttonBackground: Color {
         if showsStop { return Color(.accent) }
         if canSend && !draftIsEmpty { return Color(.accent) }
-        return textFieldBackground
+        return Color.assistantSurfaceElevated
     }
 
     private var buttonForeground: Color {
@@ -89,8 +94,11 @@ struct InputBar: View {
         draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    private var textFieldBackground: Color {
-        Color.assistantSurfaceElevated
+    private var pillBackground: Color {
+        // Dark mode steps up from the chat's true-black background so the pill stays visible.
+        Color(UIColor { traits in
+            traits.userInterfaceStyle == .dark ? .secondarySystemBackground : .systemBackground
+        })
     }
 
     private func actionTapped() {
@@ -103,8 +111,8 @@ struct InputBar: View {
 
     private enum Localization {
         static let placeholder = NSLocalizedString(
-            "assistantChat.input.placeholder",
-            value: "Ask about your store",
+            "assistantChat.input.placeholderHelp",
+            value: "What can I help with?",
             comment: "Placeholder shown in the AI Assistant chat input field"
         )
         static let send = NSLocalizedString(

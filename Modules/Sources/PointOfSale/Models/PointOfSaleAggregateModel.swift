@@ -5,9 +5,11 @@ import Observation
 
 import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSCustomAmount
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
@@ -52,6 +54,12 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var cart: Cart = .init() {
         didSet { rebuildCartProductObservation() }
     }
+
+    /// The custom amount currently being edited via the cart pencil button.
+    /// Setting this to a non-`nil` value presents the edit modal; assigning `nil` dismisses it.
+    /// Adding a new custom amount (entry row in the products list) is handled separately
+    /// by the items list view as a navigation push and doesn't go through this state.
+    var editingCustomAmount: POSCustomAmount?
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
@@ -159,6 +167,9 @@ protocol PointOfSaleAggregateModelProtocol {
             cardPresentPaymentService: cardPresentPaymentService,
             orderProvider: POSCartPaymentOrderProvider(orderController: orderController),
             cashPaymentHandler: POSCartCashPaymentHandler(orderController: orderController),
+            scanToPayHandler: POSCartScanToPayHandler(orderController: orderController),
+            scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
+            markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
@@ -192,6 +203,8 @@ extension PointOfSaleAggregateModel {
             cart.purchasableItems.removeAll { $0.id == cartItem.id }
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
+        case .customAmount:
+            cart.removeCustomAmount(id: cartItem.id)
         }
     }
 
@@ -206,8 +219,20 @@ extension PointOfSaleAggregateModel {
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()
+            case .customAmount:
+                cart.customAmounts.removeAll()
             }
         }
+    }
+
+    func upsertCustomAmount(_ customAmount: POSCustomAmount, mode: WooAnalyticsEvent.PointOfSale.CustomAmountMode) {
+        analytics.track(event: .PointOfSale.customAmountSubmitted(mode: mode, isTaxable: customAmount.isTaxable))
+        trackCustomerInteractionStarted()
+        cart.upsertCustomAmount(customAmount)
+    }
+
+    func removeCustomAmount(id: UUID) {
+        cart.removeCustomAmount(id: id)
     }
 
     @MainActor
@@ -417,6 +442,36 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
+    }
+
+    @MainActor
+    func startScanToPayPayment() async {
+        await paymentModel.startScanToPayPayment()
+    }
+
+    @MainActor
+    func cancelScanToPayPayment() async {
+        await paymentModel.cancelScanToPayPayment()
+    }
+
+    @MainActor
+    func completeScanToPayPayment() async throws {
+        try await paymentModel.completeScanToPayPayment()
+    }
+
+    @MainActor
+    func startMarkAsPaidPayment() {
+        paymentModel.startMarkAsPaidPayment()
+    }
+
+    @MainActor
+    func cancelMarkAsPaidPayment() async {
+        await paymentModel.cancelMarkAsPaidPayment()
+    }
+
+    @MainActor
+    func confirmMarkAsPaidPayment() async throws {
+        try await paymentModel.confirmMarkAsPaidPayment()
     }
 
     @MainActor

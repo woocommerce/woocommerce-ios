@@ -1,10 +1,6 @@
 import Foundation
 @testable import WooAIAssistant
 
-/// Test double for `ToolRegistry`. Tools are stubbed via
-/// `resultsByToolName` (return same result for every call to that tool)
-/// or `resultsByToolCallID` (return per-tool-call result; takes
-/// precedence over the by-name map).
 actor MockToolRegistry: ToolRegistry {
     var availableToolsList: [AITool] = []
     var availableToolsError: Error?

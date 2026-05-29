@@ -194,7 +194,6 @@ private extension RefundConfirmationViewModel {
             switch details.charge?.paymentMethodDetails {
             case .some(.cardPresent(let cardDetails)), .some(.interacPresent(let cardDetails)):
                 return PaymentDetailsRow(cardIcon: cardDetails.brand.icon,
-                                         cardIconAspectHorizontal: cardDetails.brand.iconAspectHorizontal,
                                          paymentGateway: details.order.paymentMethodTitle,
                                          paymentMethodDescription: cardDetails.brand.cardDescription(last4: cardDetails.last4),
                                          accessibilityDescription: cardDetails.brand.cardAccessibilityDescription(last4: cardDetails.last4))
@@ -268,7 +267,6 @@ extension RefundConfirmationViewModel {
     /// A row that shows an optional payment method image, a gateway name, and an description for the payment below
     struct PaymentDetailsRow: RefundConfirmationViewModelRow {
         let cardIcon: UIImage?
-        let cardIconAspectHorizontal: CGFloat
         let paymentGateway: String
         let paymentMethodDescription: String
         let accessibilityDescription: NSAttributedString
@@ -347,6 +345,8 @@ private extension WCPayCardBrand {
             return "•••• %1$@ (Diners Club)"
         case .discover:
             return "•••• %1$@ (Discover)"
+        case .eftposAu:
+            return "•••• %1$@ (eftpos)"
         case .interac:
             return "•••• %1$@ (Interac)"
         case .jcb:
@@ -357,6 +357,8 @@ private extension WCPayCardBrand {
             return "•••• %1$@ (UnionPay)"
         case .visa:
             return "•••• %1$@ (Visa)"
+        case .cartesBancaires:
+            return "•••• %1$@ (Cartes Bancaires)"
         case .unknown:
             return "•••• %1$@"
         }
@@ -370,6 +372,8 @@ private extension WCPayCardBrand {
             return "Diners Club"
         case .discover:
             return "Discover"
+        case .eftposAu:
+            return "eftpos"
         case .interac:
             return "Interac"
         case .jcb:
@@ -380,6 +384,8 @@ private extension WCPayCardBrand {
             return "UnionPay"
         case .visa:
             return "Visa"
+        case .cartesBancaires:
+            return "Cartes Bancaires"
         case .unknown:
             return ""
         }

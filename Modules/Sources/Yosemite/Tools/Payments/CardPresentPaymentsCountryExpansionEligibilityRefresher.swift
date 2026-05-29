@@ -1,10 +1,11 @@
 import Foundation
 import enum WooFoundation.CountryCode
 
-/// Refreshes the cached In-Person Payments country expansion eligibility for a site
-/// (RSM-637). Maps the site's country to the relevant remote feature flag, fetches
+/// Refreshes the cached In-Person Payments country eligibility for countries gated by
+/// remote flags. Maps the site's country to the relevant remote feature flag, fetches
 /// the latest value via the supplied provider, and writes it back through
 /// ``CardPresentPaymentsCountryExpansionEligibilityServiceProtocol``.
+/// Australia uses a separate WooPayments-only remote flag.
 ///
 /// US/PR/CA/GB short-circuit to `true` without any flag dispatch.
 public final class CardPresentPaymentsCountryExpansionEligibilityRefresher: @unchecked Sendable {
@@ -21,7 +22,7 @@ public final class CardPresentPaymentsCountryExpansionEligibilityRefresher: @unc
 
     /// Refreshes the cached eligibility for `siteID` based on `countryCode`.
     /// Existing IPP countries (US/PR/CA/GB) short-circuit to `true`.
-    /// Expansion countries dispatch the relevant remote feature flag and persist the result.
+    /// Gated countries dispatch the relevant remote feature flag and persist the result.
     public func refresh(siteID: Int64, countryCode: CountryCode) async {
         guard let flag = Self.flag(for: countryCode) else {
             // Either an existing supported country or one we don't know about — short-circuit.
@@ -45,6 +46,8 @@ public final class CardPresentPaymentsCountryExpansionEligibilityRefresher: @unc
             return .inPersonPaymentsCountryExpansion
         case .AT, .BE, .FI, .IT, .LU, .PT, .ES:
             return .inPersonPaymentsCountryExpansionEUExtended
+        case .AU:
+            return .inPersonPaymentsAustraliaWooPayments
         default:
             return nil
         }
@@ -55,13 +58,16 @@ public final class CardPresentPaymentsCountryExpansionEligibilityRefresher: @unc
 
 public extension CardPresentPaymentsCountryExpansionEligibilityRefresher {
     /// Builds a `(RemoteFeatureFlag) async -> Bool` provider that dispatches a
-    /// `FeatureFlagAction` against the supplied stores. Defaults to `false` when the
-    /// network or remote flag is unavailable.
+    /// `FeatureFlagAction` against the supplied stores. Gated countries default
+    /// to enabled, with remote flags available as off switches.
     static func makeRemoteFeatureFlagProvider(stores: StoresManager) -> @Sendable (RemoteFeatureFlag) async -> Bool {
         return { flag in
             await withCheckedContinuation { continuation in
                 Task { @MainActor in
-                    let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(flag, defaultValue: false) { isEnabled in
+                    let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                        flag,
+                        defaultValue: true
+                    ) { isEnabled in
                         continuation.resume(returning: isEnabled)
                     }
                     stores.dispatch(action)

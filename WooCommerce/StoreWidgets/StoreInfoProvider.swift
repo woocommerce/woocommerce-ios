@@ -3,93 +3,15 @@ import WooFoundation
 import KeychainAccess
 import Networking
 
-/// Type that represents the all the possible Widget states.
-///
-enum StoreInfoEntry: TimelineEntry {
-    // Represents a not logged-in state
-    case notConnected
-
-    // Represents a fetching error state
-    case error
-
-    // Represents a fetched data state
-    case data(StoreInfoData)
-
-    // Current date, needed by the `TimelineEntry` protocol.
-    var date: Date { Date() }
-}
-
-/// Type that represents the the widget state data.
-///
-/// Field shape matches trunk so the legacy `StoreInfoView` / `StatsCard` and the lock-screen
-/// widgets keep building unchanged. The metric catalog (`metrics`) is defaulted so callers
-/// that only need the legacy String fields don't have to populate it. The main provider
-/// populates both shapes; view selection is controlled by `useMetricsHomescreenWidget`.
-///
-struct StoreInfoData {
-    /// Eg: Today, Weekly, Monthly, Yearly
-    ///
-    var range: String
-
-    /// Store name
-    ///
-    var name: String
-
-    /// Revenue at the range (eg: today)
-    ///
-    var revenue: String
-
-    /// Revenue at the range (eg: today) in compact format (eg: $12k)
-    ///
-    var revenueCompact: String
-
-    /// Visitors count at the range (eg: today)
-    ///
-    var visitors: String
-
-    /// Order count at the range (eg: today)
-    ///
-    var orders: String
-
-    /// Conversion at the range (eg: today)
-    ///
-    var conversion: String
-
-    /// Time when the widget was last refreshed (eg: 10.24PM)
-    ///
-    var updatedTime: String
-
-    /// Resolved metric entries for the new metric-catalog driven path. Ordering here is
-    /// the source of truth; metric-driven views render entries in this order. Currency-typed
-    /// metrics carry their own `CurrencySettings`, so this struct doesn't need a global one.
-    ///
-    var metrics: [StoreInfoMetric] = []
-}
-
-extension StoreInfoData {
-    /// Returns the entry for the given metric type, or an `.unavailable` placeholder
-    /// if the metric isn't present in the current data set.
-    ///
-    /// A miss is treated as a wiring bug (provider didn't include an expected metric);
-    /// `assertionFailure` catches it in debug, while production falls through to the
-    /// placeholder so the widget still renders as `-` instead of crashing.
-    ///
-    func metric(of type: StoreInfoMetricType) -> StoreInfoMetric {
-        if let metric = metrics.first(where: { $0.type == type }) {
-            return metric
-        }
-        assertionFailure("StoreInfoData missing expected metric: \(type.rawValue)")
-        return StoreInfoMetric(type: type, value: .unavailable)
-    }
-}
-
 /// Type that provides data entries to the widget system.
 ///
+/// Backs both the legacy `StaticConfiguration` path (via `TimelineProvider` here) and the
+/// `AppIntentConfiguration` path (via `AppIntentTimelineProvider` conformance in
+/// `StoreInfoProvider+AppIntentTimelineProvider.swift`). Sharing one provider keeps the
+/// data-fetching logic in a single place while the configurable widget rolls out behind
+/// `FeatureFlag.configurableStoreStatsWidgets`.
+///
 final class StoreInfoProvider: TimelineProvider {
-
-    /// Holds a reference to the service while a network request is being performed.
-    ///
-    private var networkService: StoreInfoDataService?
 
     /// Desired data reload interval provided to system = 30 minutes.
     ///
@@ -98,41 +20,141 @@ final class StoreInfoProvider: TimelineProvider {
     /// Redacted entry with sample data.
     ///
     func placeholder(in context: Context) -> StoreInfoEntry {
-        let dependencies = Self.fetchDependencies()
-        return Self.placeholderEntry(for: dependencies)
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
+                requested: StoreStatsConfigurationIntent.defaultMetrics,
+                family: context.family
+            )
+        )
     }
 
-    /// Quick Snapshot. Required when previewing the widget.
-    ///
+    func placeholder(for configuration: StoreStatsConfigurationIntent, in context: Context) -> StoreInfoEntry {
+        Self.placeholderEntry(
+            for: Self.fetchDependencies(),
+            dateRange: configuration.dateRange,
+            metrics: StoreStatsConfigurationIntent.resolveMetricSelection(
+                requested: configuration.metrics,
+                family: context.family
+            ),
+            theme: configuration.theme
+        )
+    }
+
     func getSnapshot(in context: Context, completion: @escaping (StoreInfoEntry) -> Void) {
         completion(placeholder(in: context))
     }
 
-    /// Real data widget.
-    ///
     func getTimeline(in context: Context, completion: @escaping (Timeline<StoreInfoEntry>) -> Void) {
-        guard let dependencies = Self.fetchDependencies() else {
-            return completion(Timeline<StoreInfoEntry>(entries: [StoreInfoEntry.notConnected], policy: .never))
-        }
-
-        let strongService = StoreInfoDataService(credentials: dependencies.credentials)
-        networkService = strongService
         Task {
-            do {
-                let todayStats = try await strongService.fetchTodayStats(for: dependencies.storeID)
-                let entry = Self.dataEntry(for: todayStats, with: dependencies)
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
-                completion(timeline)
-            } catch {
-                // WooFoundation does not expose `DDLOG` types. Should we include them?
-                print("⛔️ Error fetching today's widget stats: \(error)")
-
-                let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
-                let timeline = Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
-                completion(timeline)
-            }
+            // Legacy `StaticConfiguration` path. Hardcoded today range + 4-cell preset, bypassing
+            // the AppIntent metric resolver on purpose — the configurable behavior belongs to
+            // the `AppIntentConfiguration` branch only.
+            let timeline = await loadTimeline(dateRange: .today, metrics: Self.legacyMetricsPreset)
+            completion(timeline)
         }
+    }
+
+    /// Shared loader for both `TimelineProvider` and `AppIntentTimelineProvider` paths.
+    /// Visible to extensions in this module so the AppIntent conformance can share logic.
+    ///
+    /// The legacy path passes `legacyMetricsPreset`; the AppIntent path passes the resolved
+    /// user selection from `resolveMetricSelection`.
+    ///
+    func loadTimeline(
+        dateRange: StoreStatsWidgetDateRange,
+        metrics: [StoreInfoMetricType],
+        selectedStoreID: StoreStatsStoreEntity.ID? = nil,
+        theme: StoreWidgetTheme = .brandPurple
+    ) async -> Timeline<StoreInfoEntry> {
+        guard let dependencies = Self.fetchDependencies(selectedStoreID: selectedStoreID) else {
+            return Timeline<StoreInfoEntry>(entries: [.notConnected], policy: .never)
+        }
+
+        let reloadDate = Date(timeIntervalSinceNow: reloadInterval)
+        let service = StoreInfoDataService(credentials: dependencies.credentials)
+        do {
+            let statsPeriod = try await service.fetchStats(
+                for: dependencies.store.storeID,
+                dateRange: dateRange.serviceDateRange(timezone: dependencies.store.storeTimeZone)
+            )
+            let entry = Self.dataEntry(
+                for: statsPeriod,
+                dateRange: dateRange,
+                with: dependencies,
+                metrics: metrics,
+                theme: theme
+            )
+            return Timeline<StoreInfoEntry>(entries: [entry], policy: .after(reloadDate))
+        } catch {
+            // WooFoundation does not expose `DDLOG` types. Should we include them?
+            print("⛔️ Error fetching today's widget stats: \(error)")
+            return Timeline<StoreInfoEntry>(entries: [.error], policy: .after(reloadDate))
+        }
+    }
+}
+
+// MARK: - Metric presets
+
+extension StoreInfoProvider {
+    /// Hardcoded preset used by the legacy `StaticConfiguration` path (`getTimeline`) and as the
+    /// fallback placeholder selection. Matches the original 4-cell shape — non-WPCom users see
+    /// `visitors` / `conversion` as `.unavailable`. Real AppIntent timelines and snapshots
+    /// derive their selection from the user's stored configuration.
+    ///
+    static let legacyMetricsPreset: [StoreInfoMetricType] = [
+        .revenue, .visitors, .orders, .conversion
+    ]
+
+    static func placeholderEntry(
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset
+    ) -> StoreInfoEntry {
+        placeholderEntry(for: fetchDependencies(), dateRange: dateRange, metrics: metrics)
+    }
+}
+
+private extension StoreInfoDataService.Stats {
+    /// Maps a catalog metric type to the corresponding resolved value off this stats snapshot.
+    /// Currency-typed metrics carry the store's `CurrencySettings`; metrics whose data the
+    /// service couldn't fetch (`visitors` / `conversion` for self-hosted, network-degraded WPCom
+    /// fall-back) fall through to `.unavailable`.
+    ///
+    func value(for metric: StoreInfoMetricType, currencySettings: CurrencySettings) -> StoreInfoMetricValue {
+        switch metric {
+        case .none:
+            return .unavailable
+        case .revenue:
+            return .currency(revenue, currencySettings)
+        case .netSales:
+            return .currency(netRevenue, currencySettings)
+        case .averageOrderValue:
+            return .currency(averageOrderValue, currencySettings)
+        case .orders:
+            return .count(totalOrders)
+        case .itemsSold:
+            return .count(totalItemsSold)
+        case .visitors:
+            return totalVisitors.map { .count($0) } ?? .unavailable
+        case .conversion:
+            return conversion.map { .percentage($0) } ?? .unavailable
+        }
+    }
+
+    /// Projects the typed series properties into the cell's presentation type.
+    func chartSeries(for metric: StoreInfoMetricType) -> [MetricChartPoint]? {
+        let points: [IntervalPoint]
+        switch metric {
+        case .none: return nil
+        case .revenue: points = revenueSeries
+        case .netSales: points = netRevenueSeries
+        case .averageOrderValue: points = averageOrderValueSeries
+        case .orders: points = ordersSeries
+        case .itemsSold: points = itemsSoldSeries
+        case .visitors, .conversion: return nil
+        }
+        guard points.count > 1 else { return nil }
+        return points.map { MetricChartPoint(date: $0.date, value: $0.value) }
     }
 }
 
@@ -142,22 +164,20 @@ private extension StoreInfoProvider {
     ///
     struct Dependencies {
         let credentials: Credentials
+        let store: StoreMetadata
+    }
+
+    struct StoreMetadata {
         let storeID: Int64
         let storeName: String
         let storeCurrencySettings: CurrencySettings
+        let storeTimeZone: TimeZone
     }
 
     /// Fetches the required dependencies from the keychain and the shared users default.
     ///
-    static func fetchDependencies() -> Dependencies? {
+    static func fetchDependencies(selectedStoreID: StoreStatsStoreEntity.ID? = nil) -> Dependencies? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
-        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
-              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
-              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
-              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
-            print("⛔️ missing store info")
-            return nil
-        }
         let credentials: Credentials? = {
             if let authToken = keychain[WooConstants.authToken] {
                 return Credentials(authToken: authToken)
@@ -176,10 +196,56 @@ private extension StoreInfoProvider {
             print("⛔️ missing credentials")
             return nil
         }
+
+        let sites = WidgetSiteListStore().sites()
+
+        guard let defaultStore = defaultStoreMetadata(sites: sites) else {
+            print("⛔️ missing store info")
+            return nil
+        }
+
+        let selectedStore = selectedStoreMetadata(defaultStore: defaultStore,
+                                                  selectedStoreID: selectedStoreID,
+                                                  sites: sites)
         return Dependencies(credentials: credentials,
-                            storeID: storeID,
-                            storeName: storeName,
-                            storeCurrencySettings: storeCurrencySettings)
+                            store: selectedStore)
+    }
+
+    static func selectedStoreMetadata(defaultStore: StoreMetadata,
+                                      selectedStoreID: StoreStatsStoreEntity.ID?,
+                                      sites: [WidgetSite]) -> StoreMetadata {
+        guard let selectedStoreID,
+              StoreStatsStoreSelection.isDefaultStoreEntityID(selectedStoreID) == false,
+              let selectedSiteID = Int64(selectedStoreID),
+              let selectedSite = sites.first(where: { $0.siteID == selectedSiteID }) else {
+            return defaultStore
+        }
+
+        let currencySettings: CurrencySettings = {
+            guard selectedSite.siteID != defaultStore.storeID else {
+                return defaultStore.storeCurrencySettings
+            }
+            return selectedSite.currencySettings ?? defaultStore.storeCurrencySettings
+        }()
+
+        return StoreMetadata(storeID: selectedSite.siteID,
+                             storeName: selectedSite.name,
+                             storeCurrencySettings: currencySettings,
+                             storeTimeZone: selectedSite.timezone)
+    }
+
+    static func defaultStoreMetadata(sites: [WidgetSite]) -> StoreMetadata? {
+        guard let storeID = UserDefaults.group?[.defaultStoreID] as? Int64,
+              let storeName = UserDefaults.group?[.defaultStoreName] as? String,
+              let storeCurrencySettingsData = UserDefaults.group?[.defaultStoreCurrencySettings] as? Data,
+              let storeCurrencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: storeCurrencySettingsData) else {
+            return nil
+        }
+
+        return StoreMetadata(storeID: storeID,
+                             storeName: storeName,
+                             storeCurrencySettings: storeCurrencySettings,
+                             storeTimeZone: sites.first(where: { $0.siteID == storeID })?.timezone ?? .current)
     }
 }
 
@@ -187,68 +253,104 @@ private extension StoreInfoProvider {
 ///
 private extension StoreInfoProvider {
 
-    /// Redacted entry with sample data. If dependencies are available - store name and currency settings will be used.
+    /// Redacted entry with sample data. If dependencies are available — store name and currency
+    /// settings will be used. Both the legacy String fields and the metric-driven slots derive
+    /// from `Stats.placeholderSample`, while the metric selection mirrors the family-specific
+    /// AppIntent defaults so the widget gallery renders a complete preview with trends and
+    /// charts.
     ///
-    static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
-        let currencySettings = dependencies?.storeCurrencySettings ?? CurrencySettings()
-        let revenueAmount: Decimal = 132.234
-        let metrics: [StoreInfoMetric] = [
-            StoreInfoMetric(type: .revenue, value: .currency(revenueAmount, currencySettings)),
-            StoreInfoMetric(type: .visitors, value: .count(67)),
-            StoreInfoMetric(type: .orders, value: .count(23)),
-            StoreInfoMetric(type: .conversion, value: .percentage(23.0 / 67.0))
-        ]
+    static func placeholderEntry(
+        for dependencies: Dependencies?,
+        dateRange: StoreStatsWidgetDateRange = .today,
+        metrics: [StoreInfoMetricType] = legacyMetricsPreset,
+        theme: StoreWidgetTheme = .brandPurple
+    ) -> StoreInfoEntry {
+        let currencySettings = dependencies?.store.storeCurrencySettings ?? CurrencySettings()
+        let sample = StoreInfoDataService.Stats.placeholderSample
+        let previousSample = StoreInfoDataService.Stats.placeholderPreviousSample
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
+
+            return .metric(StoreInfoMetric(
+                type: type,
+                value: sample.value(for: type, currencySettings: currencySettings),
+                previousValue: previousSample.value(for: type, currencySettings: currencySettings),
+                chartSeries: sample.chartSeries(for: type)
+            ))
+        }
+        let visitorsString = sample.totalVisitors.map(String.init) ?? StoreInfoFormatter.Constants.valuePlaceholderText
+        let conversionString = sample.conversion.map(StoreInfoFormatter.formattedConversionString) ?? StoreInfoFormatter.Constants.valuePlaceholderText
         return .data(.init(
-            range: Localization.today,
-            name: dependencies?.storeName ?? Localization.myShop,
-            revenue: StoreInfoFormatter.formattedAmountString(for: revenueAmount, with: currencySettings),
-            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: revenueAmount, with: currencySettings),
-            visitors: "67",
-            orders: "23",
-            conversion: StoreInfoFormatter.formattedConversionString(for: 23.0 / 67.0),
+            range: dateRange.localizedRangeLabel,
+            name: dependencies?.store.storeName ?? Localization.myShop,
+            revenue: StoreInfoFormatter.formattedAmountString(for: sample.revenue, with: currencySettings),
+            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: sample.revenue, with: currencySettings),
+            visitors: visitorsString,
+            orders: "\(sample.totalOrders)",
+            conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: metrics
+            metricSlots: metricSlots,
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 
-    /// Real data entry.
+    /// Real data entry. `metrics` is the resolved selection — already family-sliced and topped
+    /// up by `resolveMetricSelection` for the AppIntent path, or the legacy hardcoded preset for
+    /// the `StaticConfiguration` path. Ordering here is what the home-screen view renders,
+    /// including explicit `.none` entries that preserve empty slots.
     ///
-    static func dataEntry(for todayStats: StoreInfoDataService.Stats, with dependencies: Dependencies) -> StoreInfoEntry {
-        let currencySettings = dependencies.storeCurrencySettings
-        let visitorsValue: StoreInfoMetricValue = todayStats.totalVisitors.map { .count($0) } ?? .unavailable
-        let conversionValue: StoreInfoMetricValue = todayStats.conversion.map { .percentage($0) } ?? .unavailable
+    /// Each `StoreInfoMetric` carries both the current and the previous-period value so the
+    /// metric-driven home-screen view can render trend badges. The legacy String fields below
+    /// only reflect the current period.
+    ///
+    static func dataEntry(for statsPeriod: StoreInfoDataService.StatsPeriod,
+                          dateRange: StoreStatsWidgetDateRange,
+                          with dependencies: Dependencies,
+                          metrics: [StoreInfoMetricType],
+                          theme: StoreWidgetTheme = .brandPurple) -> StoreInfoEntry {
+        let currencySettings = dependencies.store.storeCurrencySettings
+        let stats = statsPeriod.current
+        let previousStats = statsPeriod.previous
+        let metricSlots: [StoreInfoMetricSlot] = metrics.map { type in
+            guard type != .none else {
+                return .empty
+            }
 
-        // Today's medium-widget preset. A later ticket will let users pick this list.
-        let metrics: [StoreInfoMetric] = [
-            .init(type: .revenue, value: .currency(todayStats.revenue, currencySettings)),
-            .init(type: .visitors, value: visitorsValue),
-            .init(type: .orders, value: .count(todayStats.totalOrders)),
-            .init(type: .conversion, value: conversionValue)
-        ]
-
+            return .metric(StoreInfoMetric(
+                type: type,
+                value: stats.value(for: type, currencySettings: currencySettings),
+                previousValue: previousStats?.value(for: type, currencySettings: currencySettings),
+                chartSeries: stats.chartSeries(for: type)
+            ))
+        }
         let visitorsString: String = {
-            if let visitors = todayStats.totalVisitors {
+            if let visitors = stats.totalVisitors {
                 return "\(visitors)"
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
         let conversionString: String = {
-            if let conversion = todayStats.conversion {
+            if let conversion = stats.conversion {
                 return StoreInfoFormatter.formattedConversionString(for: conversion)
             }
             return StoreInfoFormatter.Constants.valuePlaceholderText
         }()
 
         return .data(.init(
-            range: Localization.today,
-            name: dependencies.storeName,
-            revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: currencySettings),
-            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue, with: currencySettings),
+            range: dateRange.localizedRangeLabel,
+            name: dependencies.store.storeName,
+            revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: currencySettings),
+            revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: stats.revenue, with: currencySettings),
             visitors: visitorsString,
-            orders: "\(todayStats.totalOrders)",
+            orders: "\(stats.totalOrders)",
             conversion: conversionString,
             updatedTime: StoreInfoFormatter.currentFormattedTime(),
-            metrics: metrics
+            metricSlots: metricSlots,
+            dateRange: dateRange,
+            theme: theme
         ))
     }
 
@@ -257,11 +359,6 @@ private extension StoreInfoProvider {
             "storeWidgets.infoProvider.myShop",
             value: "My Shop",
             comment: "Generic store name for the store info widget preview"
-        )
-        static let today = AppLocalizedString(
-            "storeWidgets.infoProvider.today",
-            value: "Today",
-            comment: "Range title for the today store info widget"
         )
     }
 }

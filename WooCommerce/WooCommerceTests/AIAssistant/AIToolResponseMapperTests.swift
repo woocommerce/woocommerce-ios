@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 struct AIToolResponseMapperTests {
 
     @Test

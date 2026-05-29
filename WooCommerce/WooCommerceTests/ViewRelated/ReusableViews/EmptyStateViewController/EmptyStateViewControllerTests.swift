@@ -348,7 +348,7 @@ private extension EmptyStateViewControllerTests {
         nil
     }
 
-    let containerView: UIView = UIView()
+    let containerView = UIView()
 
     let targetTransform: CGAffineTransform = .identity
 }

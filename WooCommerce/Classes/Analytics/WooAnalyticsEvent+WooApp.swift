@@ -129,6 +129,8 @@ extension WooAnalyticsEvent {
         case orderCreation = "order_creation"
         /// Shown in the order form after adding a shipping line
         case orderFormShippingLines = "order_form_shipping_lines"
+        /// Shown in the AI Assistant beta notice.
+        case aiAssistant = "ai_assistant"
     }
 
     /// The action performed on the survey screen.
@@ -2674,6 +2676,7 @@ extension WooAnalyticsEvent {
 
         enum Name: String {
             case todayStats = "today-stats"
+            case trends = "trends"
             case appLink = "app-link"
         }
 
@@ -2687,6 +2690,29 @@ extension WooAnalyticsEvent {
                 properties = [Key.name.rawValue: name.rawValue]
             }
             return WooAnalyticsEvent(statName: .widgetTapped, properties: properties)
+        }
+
+        /// Event fired when a Store Stats widget metric cell deep link reaches the host app
+        /// and the URL's `source` parameter identifies the Store Stats widget as the producer.
+        ///
+        /// `metric` / `range` carry the raw query values straight from the URL — including
+        /// unknown values — so we can observe widget→app contract drift without losing the
+        /// tap event when one side ships a value the other hasn't learned yet.
+        ///
+        static func storeStatsWidgetMetricTapped(metric: String?, range: String?) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [:]
+            if let metric {
+                properties[StoreStatsWidgetKey.metric.rawValue] = metric
+            }
+            if let range {
+                properties[StoreStatsWidgetKey.range.rawValue] = range
+            }
+            return WooAnalyticsEvent(statName: .storeStatsWidgetMetricTapped, properties: properties)
+        }
+
+        enum StoreStatsWidgetKey: String {
+            case metric
+            case range
         }
     }
 }

@@ -62,7 +62,8 @@ struct UniversalLinkRouter {
         }
         return routes + [PaymentsRoute(deepLinkNavigator: navigator),
                          OrdersRoute(deepLinkNavigator: navigator),
-                         POSRoute(deepLinkNavigator: navigator)]
+                         POSRoute(deepLinkNavigator: navigator),
+                         ReportsRoute(deepLinkNavigator: navigator)]
     }
 
     func handle(url: URL) {

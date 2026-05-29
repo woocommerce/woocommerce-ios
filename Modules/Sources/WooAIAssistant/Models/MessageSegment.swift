@@ -34,7 +34,7 @@ public enum MessageSegment: Identifiable, Equatable, Sendable {
     case confirmation(id: UUID,
                       proposalID: UUID,
                       toolName: String,
-                      preview: String,
+                      preview: ConfirmationPreview,
                       status: ConfirmationStatus)
 
     public var id: UUID {

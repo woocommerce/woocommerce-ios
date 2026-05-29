@@ -36,10 +36,15 @@ struct WooShippingShipmentDetailsView: View {
                       let shippingService = viewModel.shippingService {
                 WooShippingSelectedPackageView(package: package,
                                                totalWeight: $viewModel.shipmentWeight,
-                                               updateSelectedPackage: viewModel.selectPackage)
+                                               lastARState: viewModel.lastARState,
+                                               parcelFittingDelegate: viewModel,
+                                               updateSelectedPackage: { viewModel.selectPackage($0) })
                 WooShippingServiceView(viewModel: shippingService)
             } else {
-                WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
+                WooShippingPackageAndRatePlaceholder(
+                    onSelectPackage: { viewModel.selectPackage($0) },
+                    arDelegate: viewModel
+                )
             }
         }
         .sheet(isPresented: $showingRefundRequest) {

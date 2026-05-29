@@ -150,7 +150,7 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self else { throw CloseAccountError.presenterDeallocated }
         return try await self.closeAccount()
@@ -447,7 +447,7 @@ private extension StorePickerViewController {
 
         // If a site address was passed in credentials, select it
         if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.filter({ $0.url == siteAddress }).first,
+           let site = sites.first(where: { $0.url == siteAddress }),
            site.isWooCommerceActive {
             currentlySelectedSite = site
             return

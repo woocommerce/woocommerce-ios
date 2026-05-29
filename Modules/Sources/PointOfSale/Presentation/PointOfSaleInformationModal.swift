@@ -22,36 +22,84 @@ struct PointOfSaleInformationModal<Content: View>: View {
         self.content = content()
     }
 
+    @ViewBuilder
     var body: some View {
+        if isCompactWidth {
+            compactBody
+        } else {
+            regularBody
+        }
+    }
+
+    private var regularBody: some View {
         VStack(spacing: POSSpacing.xxLarge) {
-            PointOfSaleModalHeader(isPresented: $isPresented, title: .constant(title))
+            header
 
             ScrollView {
-                VStack {
-                    content
-                }
-                .measureHeight { height in
-                    // Workaround for ScrollView not updating its height immediately on iOS 17
-                    withAnimation(.easeIn(duration: 0)) {
-                        contentHeight = height
+                modalContent
+                    .measureHeight { height in
+                        // Workaround for ScrollView not updating its height immediately on iOS 17
+                        withAnimation(.easeIn(duration: 0)) {
+                            contentHeight = height
+                        }
                     }
-                }
             }
             .frame(maxHeight: contentHeight)
 
-            Button(action: {
-                isPresented = false
-            }) {
-                Text(Localization.okButtonTitle)
-            }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            okButton
         }
         .padding(contentPadding)
         .background(Color.posSurfaceBright)
         .frame(width: modalFrameWidth)
-        .if(isCompactWidth) { view in
-            view.frame(maxHeight: .infinity, alignment: .top)
+    }
+
+    private var compactBody: some View {
+        VStack(spacing: POSSpacing.none) {
+            header
+
+            Spacer(minLength: POSSpacing.none)
+
+            VStack(spacing: POSSpacing.xxLarge) {
+                ScrollView {
+                    modalContent
+                        .measureHeight { height in
+                            // Workaround for ScrollView not updating its height immediately on iOS 17
+                            withAnimation(.easeIn(duration: 0)) {
+                                contentHeight = height
+                            }
+                        }
+                }
+                .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+                .frame(maxHeight: contentHeight)
+
+                okButton
+            }
+            .frame(maxHeight: compactContentMaxHeight)
+
+            Spacer(minLength: POSSpacing.none)
         }
+        .padding(contentPadding)
+        .background(Color.posSurfaceBright)
+        .frame(width: modalFrameWidth, height: parentSize.height, alignment: .top)
+    }
+
+    private var header: some View {
+        PointOfSaleModalHeader(isPresented: $isPresented, title: .constant(title))
+    }
+
+    private var modalContent: some View {
+        VStack {
+            content
+        }
+    }
+
+    private var okButton: some View {
+        Button(action: {
+            isPresented = false
+        }) {
+            Text(Localization.okButtonTitle)
+        }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
     }
 }
 
@@ -129,9 +177,14 @@ private extension PointOfSaleInformationModal {
         max(parentSize.width - (Constants.regularHorizontalMargin * 2), 0)
     }
 
+    var compactContentMaxHeight: CGFloat {
+        max(parentSize.height - (contentPadding * 2) - Constants.compactHeaderReservedHeight, 0)
+    }
+
     enum Constants {
         static var modalFrameWidth: CGFloat { 896 }
         static var regularHorizontalMargin: CGFloat { POSPadding.medium }
+        static var compactHeaderReservedHeight: CGFloat { 120 }
     }
 }
 

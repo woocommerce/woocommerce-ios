@@ -17,32 +17,27 @@ struct POSBarcodeScannerSetup: View {
     private var widthRatio: CGFloat { isCompactWidth ? 1.0 : Constants.parentWidthRatio }
     private var heightRatio: CGFloat { isCompactWidth ? 1.0 : Constants.maxParentHeightRatio }
 
+    @ViewBuilder
     var body: some View {
+        if isCompactWidth {
+            compactBody
+        } else {
+            regularBody
+        }
+    }
+
+    private var regularBody: some View {
         AnimatedTransitionContainer(
             maxWidth: parentSize.width * widthRatio,
             maxHeight: parentSize.height * heightRatio,
             id: flowManager.currentStepKey
         ) {
-            VStack(spacing: POSSpacing.xLarge) {
-                ScrollView(showsIndicators: false) {
-                    HStack {
-                        Spacer()
-                        currentContent
-                        Spacer()
-                    }
-                }
-                .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
-
-                // Bottom buttons
-                if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
-                    PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
-                }
-            }
-            .posModalCloseButton(action: {
-                isPresented = false
-            })
-            .padding(POSPadding.xLarge)
-            .background(Color.posSurfaceBright)
+            modalContent
+                .posModalCloseButton(action: {
+                    isPresented = false
+                })
+                .padding(POSPadding.xLarge)
+                .background(Color.posSurfaceBright)
         }
         .onAppear {
             analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
@@ -55,6 +50,86 @@ struct POSBarcodeScannerSetup: View {
         // `POSRootModalViewModifier` auto-detects compact width and OR's it into
         // its `isFullScreen` check, so the explicit call would be a duplicated
         // mechanism for the same outcome. See #17067 review feedback.
+    }
+
+    private var compactBody: some View {
+        VStack(spacing: POSSpacing.none) {
+            closeButton
+
+            Spacer(minLength: POSSpacing.none)
+
+            compactModalContent
+                .frame(maxHeight: compactContentMaxHeight)
+
+            Spacer(minLength: POSSpacing.none)
+        }
+        .padding(POSPadding.xLarge)
+        .background(Color.posSurfaceBright)
+        .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
+        .onAppear {
+            analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
+        }
+        .onDisappear {
+            flowManager.onDisappear()
+        }
+        .maximumScreenBrightness()
+    }
+
+    private var modalContent: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            ScrollView(showsIndicators: false) {
+                HStack {
+                    Spacer()
+                    currentContent
+                    Spacer()
+                }
+            }
+            .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
+
+            flowButtons
+        }
+    }
+
+    private var compactModalContent: some View {
+        ViewThatFits(in: .vertical) {
+            VStack(spacing: POSSpacing.xLarge) {
+                centeredCurrentContent
+
+                flowButtons
+            }
+
+            modalContent
+        }
+    }
+
+    private var centeredCurrentContent: some View {
+        HStack {
+            Spacer()
+            currentContent
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private var flowButtons: some View {
+        if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
+            PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
+        }
+    }
+
+    private var closeButton: some View {
+        HStack {
+            Spacer()
+            Button {
+                isPresented = false
+            } label: {
+                Text(Image(systemName: "xmark"))
+                    .font(.posButtonSymbolMedium)
+            }
+            .foregroundColor(Color.posOnSurface)
+            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
+            .accessibilitySortPriority(-1)
+        }
     }
 
     // MARK: - Computed Properties
@@ -92,12 +167,17 @@ struct POSBarcodeScannerSetup: View {
             )
         ]
     }
+
+    private var compactContentMaxHeight: CGFloat {
+        max(parentSize.height - (POSPadding.xLarge * 2) - Constants.compactHeaderReservedHeight, 0)
+    }
 }
 
 // MARK: - Constants
 private enum Constants {
     static var maxParentHeightRatio: CGFloat { 0.9 }
     static var parentWidthRatio: CGFloat { 0.75 }
+    static var compactHeaderReservedHeight: CGFloat { 120 }
 }
 
 // MARK: - Private Localization Extension
@@ -122,6 +202,11 @@ private extension POSBarcodeScannerSetup {
             "pos.barcodeScannerSetup.other.title",
             value: "Other",
             comment: "Title for other scanner option in barcode scanner setup"
+        )
+        static let closeButtonAccessibilityLabel = NSLocalizedString(
+            "pos.barcodeScannerSetup.closeButton.accessibilityLabel",
+            value: "Close",
+            comment: "Accessibility label for the close button in barcode scanner setup."
         )
     }
 }

@@ -98,6 +98,13 @@ private extension POSAutoLockActivityTracker {
             restartTimer()
             return
         }
+        // Catch the case where activity landed between the Timer firing and the
+        // @MainActor hop. Without this guard a touch that arrived ~microseconds
+        // before us would still see auto-lock fire on top of the user's hand.
+        if Date().timeIntervalSince(lastActivityAt) < timeout {
+            restartTimer()
+            return
+        }
         session.lock()
     }
 }

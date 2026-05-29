@@ -242,6 +242,19 @@ struct DefaultPOSAccessSessionTests {
         // Then
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 999)) == false)
     }
+
+    @Test func test_signIn_when_pin_is_valid_then_sets_hasAnyPINs_true() async throws {
+        // Given
+        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
+        #expect(sut.session.hasAnyPINs == false)
+
+        // When
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(sut.session.hasAnyPINs == true)
+    }
 }
 
 private extension DefaultPOSAccessSessionTests {

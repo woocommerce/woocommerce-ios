@@ -36,6 +36,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
             rateLimiter.reset()
             currentStaff = staff
             isLocked = false
+            // A successful sign-in proves at least one PIN exists, so update the
+            // cached flag eagerly. Without this, a still-pending refreshPINStatus
+            // could leave hasAnyPINs == false, which would later short-circuit
+            // both the tracker's timer-fire and the background-lock observer.
+            hasAnyPINs = true
             persistLockState(false)
         } catch {
             switch error {

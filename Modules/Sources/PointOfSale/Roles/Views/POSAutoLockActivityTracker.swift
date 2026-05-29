@@ -3,10 +3,9 @@ import SwiftUI
 extension View {
     /// Tracks user activity for the POS auto-lock timer. When the iPad sits idle past the
     /// timeout while no payment is in-flight, calls `session.lock()`. Activity sources:
-    /// touch (throttled), purchasable-item-count changes (to catch Bluetooth HID barcode
-    /// scanners that deliver keyboard events rather than touches), and payment-state
-    /// transitions that leave the in-flight set. Other cart mutations (coupons, custom
-    /// amounts) are interactive and already covered by the gesture observer.
+    /// touch (throttled), cart entry-count changes (purchasable items, coupons, custom
+    /// amounts - covers Bluetooth HID barcode scanners that deliver keyboard events rather
+    /// than touches), and payment-state transitions that leave the in-flight set.
     func posAutoLockActivityTracking(
         session: any POSAccessSession,
         paymentModel: POSPaymentModel,
@@ -41,7 +40,7 @@ struct POSAutoLockActivityTracker: ViewModifier {
                     controller?.noteActivity()
                 }
             }
-            .onChange(of: aggregateModel.cart.purchasableItems.count) { _, _ in
+            .onChange(of: aggregateModel.cart.totalItemCount) { _, _ in
                 controller?.noteActivity()
             }
             .onChange(of: session.isLocked) { _, isLocked in

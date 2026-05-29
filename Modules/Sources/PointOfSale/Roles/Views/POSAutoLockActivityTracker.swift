@@ -46,6 +46,10 @@ struct POSAutoLockActivityTracker: ViewModifier {
                     controller?.noteActivity()
                 }
             }
+            .background(
+                POSAutoLockWindowAttacher(controller: controller)
+                    .allowsHitTesting(false)
+            )
             .onAppear {
                 if controller == nil {
                     controller = POSAutoLockActivityController(

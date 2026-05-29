@@ -4,6 +4,8 @@ import SwiftUI
 //
 struct PointOfSaleInformationModal<Content: View>: View {
     @Binding var isPresented: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posModalParentSize) private var parentSize
     let title: AttributedString
     let content: Content
 
@@ -44,9 +46,12 @@ struct PointOfSaleInformationModal<Content: View>: View {
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xxLarge)
+        .padding(contentPadding)
         .background(Color.posSurfaceBright)
-        .frame(width: Constants.modalFrameWidth)
+        .frame(width: modalFrameWidth)
+        .if(isCompactWidth) { view in
+            view.frame(maxHeight: .infinity, alignment: .top)
+        }
     }
 }
 
@@ -105,8 +110,28 @@ private struct PointOfSaleInformationModalOutlinedParagraphStyle: ViewModifier {
 }
 
 private extension PointOfSaleInformationModal {
+    var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
+    }
+
+    var contentPadding: CGFloat {
+        isCompactWidth ? POSPadding.xLarge : POSPadding.xxLarge
+    }
+
+    var modalFrameWidth: CGFloat {
+        if isCompactWidth {
+            return parentSize.width
+        }
+        return min(Constants.modalFrameWidth, maxAvailableRegularWidth)
+    }
+
+    var maxAvailableRegularWidth: CGFloat {
+        max(parentSize.width - (Constants.regularHorizontalMargin * 2), 0)
+    }
+
     enum Constants {
         static var modalFrameWidth: CGFloat { 896 }
+        static var regularHorizontalMargin: CGFloat { POSPadding.medium }
     }
 }
 

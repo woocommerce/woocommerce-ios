@@ -28,10 +28,6 @@ struct POSAutoLockActivityTracker: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in controller?.noteActivityThrottled() }
-            )
             .onChange(of: paymentModel.paymentState) { _, newState in
                 if !newState.isAutoLockSuppressing {
                     controller?.noteActivity()

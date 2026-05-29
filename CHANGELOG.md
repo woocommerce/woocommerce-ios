@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.9
+Big news if you’re in Canada—Point of Sale is now available, and the refund flow is smoother. You can also contact support for new troubleshooting and AI help. Plus, configure your Store Stats widget, try a new Trends widget on your lock screen, and more fixes for your daily tasks.
+
 ## 24.8
 Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
 

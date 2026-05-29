@@ -1,153 +1,105 @@
 import SwiftUI
 
-/// State driving the manager override flow.
-enum POSManagerOverrideState: Equatable {
-    /// Awaiting manager PIN input.
-    case awaitingPIN
-    /// PIN was accepted, showing a brief success indicator before auto-dismiss.
-    case approved
-    /// PIN was rejected, showing an error in the PIN entry.
-    case error(message: String)
-}
-
-/// Modal overlay for manager approval of restricted actions.
-/// Embeds a PIN entry numpad; the parent drives verification and state transitions.
 struct POSManagerOverrideView: View {
-    let actionDescription: String
-    let overrideState: POSManagerOverrideState
-    let onPINEntered: (String) -> Void
-    let onCancelled: () -> Void
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var pinState: POSPINEntryState = .idle
-    @State private var isApproved: Bool = false
+    let handler: POSManagerOverrideHandler
+    let request: POSManagerOverrideRequest
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            closeButtonRow
-            contentSection
-        }
-        .padding(POSPadding.xLarge)
-        .frame(maxWidth: Constants.modalMaxWidth)
-        .background(Color.posSurfaceBright)
-        .cornerRadius(POSCornerRadiusStyle.large.value)
-        .onChange(of: overrideState) { _, newState in
-            handleOverrideStateChange(newState)
-        }
-    }
-
-    // MARK: - Close Button
-
-    private var closeButtonRow: some View {
-        HStack {
-            Spacer()
-            Button {
-                onCancelled()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .foregroundColor(.posOnSurfaceVariantLowest)
-            .accessibilityLabel(Localization.closeAccessibilityLabel)
-        }
-    }
-
-    // MARK: - Content
-
-    private var contentSection: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            iconSection
-            POSPINEntryView(
-                title: Localization.title,
-                subtitle: actionDescription,
-                state: $pinState,
-                onPINEntered: { pin in
-                    pinState = .loading
-                    onPINEntered(pin)
-                }
-            )
-        }
-    }
-
-    private var iconSection: some View {
-        Image(systemName: isApproved ? "checkmark.circle.fill" : "lock.shield")
-            .font(.system(size: Constants.iconSize, weight: .regular))
-            .foregroundColor(isApproved ? .posSuccess : .posOnSurfaceVariantLowest)
-            .contentTransition(.symbolEffect(.replace))
-            .accessibilityLabel(isApproved ? Localization.approved : Localization.title)
-    }
-
-    // MARK: - State Handling
-
-    private func handleOverrideStateChange(_ newState: POSManagerOverrideState) {
-        switch newState {
-        case .awaitingPIN:
-            pinState = .idle
-            isApproved = false
-        case .error(let message):
-            pinState = .error(message: message)
-            isApproved = false
-        case .approved:
-            pinState = .loading
-            withAnimation {
-                isApproved = true
+        Group {
+            if isCompactWidth {
+                compactContent
+            } else {
+                modalContent
             }
         }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 }
 
-// MARK: - Constants
-
 private extension POSManagerOverrideView {
-    enum Constants {
-        static let iconSize: CGFloat = 48
-        static let modalMaxWidth: CGFloat = 500
+    var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
     }
-}
 
-// MARK: - Localization
+    var modalContent: some View {
+        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
+            header(spacing: POSSpacing.medium)
 
-private extension POSManagerOverrideView {
+            pinEntry
+                .frame(height: POSPINEntryView.preferredHeight)
+        }
+        .frame(maxWidth: POSPINEntryView.contentWidth)
+        .padding(.top, Constants.modalTopInset)
+        .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    var compactContent: some View {
+        VStack(spacing: POSPINEntryView.titleToPINSpacing) {
+            header(spacing: POSSpacing.small)
+
+            pinEntry
+                .frame(height: POSPINEntryView.preferredHeight)
+        }
+        .frame(maxWidth: POSPINEntryView.contentWidth)
+        .padding(.horizontal, POSPadding.large)
+        .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
+        .padding(POSPadding.large)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    func header(spacing: CGFloat) -> some View {
+        VStack(spacing: spacing) {
+            title
+            reason
+        }
+    }
+
+    var title: some View {
+        Text(Localization.title)
+            .font(.posHeadingBold)
+            .foregroundStyle(Color.posOnSurface)
+            .multilineTextAlignment(.center)
+            .lineLimit(1)
+            .minimumScaleFactor(Constants.titleMinimumScaleFactor)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    var reason: some View {
+        Text(request.reason)
+            .font(.posBodyMediumRegular())
+            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .minimumScaleFactor(Constants.compactReasonMinimumScaleFactor)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    var pinEntry: some View {
+        POSPINEntryView(state: handler.pinEntryState) { pin in
+            await handler.submit(pin: pin)
+        }
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.managerOverride.title",
-            value: "Manager approval required",
-            comment: "Title of the manager override modal in POS"
+            "pos.managerOverride.approvalRequired.title",
+            value: "Approval required",
+            comment: "Title shown on the POS manager approval modal."
         )
-        static let approved = NSLocalizedString(
-            "pos.managerOverride.approved",
-            value: "Approved",
-            comment: "Success message shown after a manager override is approved in POS"
-        )
-        static let closeAccessibilityLabel = NSLocalizedString(
-            "pos.managerOverride.close.accessibilityLabel",
+        static let close = NSLocalizedString(
+            "pos.managerOverride.close",
             value: "Close",
-            comment: "Accessibility label for the close button on the POS manager override modal"
+            comment: "Accessibility label for dismissing the POS manager approval screen."
         )
     }
-}
 
-// MARK: - Preview
-
-#if DEBUG
-#Preview("Manager Override - PIN Entry") {
-    POSManagerOverrideView(
-        actionDescription: "Process a refund for Order #1042",
-        overrideState: .awaitingPIN,
-        onPINEntered: { _ in },
-        onCancelled: {}
-    )
-    .padding()
-    .background(Color.posSurfaceDim)
+    enum Constants {
+        static let titleMinimumScaleFactor: CGFloat = 0.75
+        static let compactReasonMinimumScaleFactor: CGFloat = 0.9
+        static let modalTopInset: CGFloat = POSPadding.large
+    }
 }
-
-#Preview("Manager Override - Approved") {
-    POSManagerOverrideView(
-        actionDescription: "Process a refund for Order #1042",
-        overrideState: .approved,
-        onPINEntered: { _ in },
-        onCancelled: {}
-    )
-    .padding()
-    .background(Color.posSurfaceDim)
-}
-#endif

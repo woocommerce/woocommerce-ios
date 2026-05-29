@@ -8,9 +8,12 @@ import SwiftUI
 struct NewStockNotificationPreferencesDetailView: View {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
+    @Bindable private var detailViewModel: NewStockNotificationPreferencesDetailViewModel
 
-    init(viewModel: PushNotificationPreferencesViewModel) {
+    init(viewModel: PushNotificationPreferencesViewModel,
+         detailViewModel: NewStockNotificationPreferencesDetailViewModel) {
         self.viewModel = viewModel
+        self.detailViewModel = detailViewModel
     }
 
     var body: some View {
@@ -28,6 +31,10 @@ struct NewStockNotificationPreferencesDetailView: View {
         // one routes through the discard handler.
         .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
+        .onAppear {
+            viewModel.detailDidAppear(notificationType: .stockAlert)
+        }
+        .task { await detailViewModel.onAppear() }
     }
 
     private var masterToggleSection: some View {
@@ -45,10 +52,7 @@ struct NewStockNotificationPreferencesDetailView: View {
 
     private var customizationSection: some View {
         Section {
-            toggleRow(title: Localization.lowStockTitle,
-                      subtitle: Localization.lowStockSubtitle,
-                      isOn: Binding(get: { viewModel.isStoreStockLowStock },
-                                    set: { viewModel.setStoreStockLowStock($0) }))
+            lowStockRow
             toggleRow(title: Localization.outOfStockTitle,
                       subtitle: Localization.outOfStockSubtitle,
                       isOn: Binding(get: { viewModel.isStoreStockOutOfStock },
@@ -64,6 +68,83 @@ struct NewStockNotificationPreferencesDetailView: View {
         .opacity(viewModel.isStoreStockEnabled ? 1.0 : Layout.disabledOpacity)
     }
 
+    private var lowStockRow: some View {
+        VStack(alignment: .leading, spacing: Layout.titleDetailSpacing) {
+            Toggle(Localization.lowStockTitle,
+                   isOn: Binding(get: { viewModel.isStoreStockLowStock },
+                                 set: { viewModel.setStoreStockLowStock($0) }))
+            Text(Localization.lowStockSubtitle)
+                .foregroundStyle(Color(.secondaryLabel))
+                .captionStyle()
+            thresholdLine
+                .padding(.top, Layout.thresholdTopSpacing)
+        }
+    }
+
+    @ViewBuilder
+    private var thresholdLine: some View {
+        switch detailViewModel.lowStockThresholdState {
+        case .loading:
+            thresholdLoadingText
+        case .value(let number?):
+            thresholdValueText(number)
+        case .value(nil):
+            thresholdUnavailableText
+        }
+    }
+
+    private func thresholdValueText(_ value: Int) -> some View {
+        let valueString = NumberFormatter.localizedString(from: NSNumber(value: value), number: .none)
+        let content = String.localizedStringWithFormat(
+            Localization.thresholdValueWithLinkFormat,
+            valueString,
+            Localization.editStoreWideThresholdLink)
+        var attributed = AttributedString.withEmbeddedLinks(
+            content: content,
+            links: [Localization.editStoreWideThresholdLink: Constants.editLinkScheme],
+            font: .caption2,
+            foregroundColor: Color(.secondaryLabel))
+        if let range = attributed.range(of: valueString) {
+            attributed[range].font = .caption2.bold()
+        }
+        return Text(attributed)
+            .environment(\.openURL, handleEditStoreWideThresholdTap)
+    }
+
+    private var thresholdLoadingText: some View {
+        // Render the value-known layout with a placeholder number so the row's
+        // vertical space stays stable, and shimmer to signal loading.
+        thresholdValueText(Constants.loadingPlaceholderValue)
+            .redacted(reason: .placeholder)
+            .shimmering()
+    }
+
+    private var thresholdUnavailableText: some View {
+        let content = String.localizedStringWithFormat(
+            Localization.thresholdUnavailableSentenceFormat,
+            Localization.viewStoreWideThresholdLink)
+        let attributed = AttributedString.withEmbeddedLinks(
+            content: content,
+            links: [Localization.viewStoreWideThresholdLink: Constants.editLinkScheme],
+            font: .caption2,
+            foregroundColor: Color(.secondaryLabel))
+        return Text(attributed)
+            .environment(\.openURL, handleEditStoreWideThresholdTap)
+    }
+
+    /// Routes the in-text "edit/view store-wide threshold" link's tap to the
+    /// hosting controller via `onTapEditStoreWideThreshold`. Defined once so
+    /// both the loaded and unavailable variants share the routing logic.
+    private var handleEditStoreWideThresholdTap: OpenURLAction {
+        OpenURLAction { [detailViewModel] url in
+            if url.absoluteString == Constants.editLinkScheme {
+                detailViewModel.onTapEditStoreWideThreshold?()
+                return .handled
+            }
+            return .systemAction
+        }
+    }
+
     private func toggleRow(title: String,
                            subtitle: String,
                            isOn: Binding<Bool>) -> some View {
@@ -77,8 +158,21 @@ struct NewStockNotificationPreferencesDetailView: View {
 }
 
 private extension NewStockNotificationPreferencesDetailView {
+    enum Constants {
+        /// Internal URL scheme used to route in-text link taps through
+        /// `OpenURLAction` — the actual wp-admin URL is constructed and
+        /// presented by the hosting controller.
+        static let editLinkScheme = "woo-internal://edit-store-wide-threshold"
+
+        /// Placeholder threshold value rendered behind the shimmer while the
+        /// real value is loading. Only its width matters; the redacted
+        /// modifier obscures the content.
+        static let loadingPlaceholderValue = 8
+    }
+
     enum Layout {
         static let titleDetailSpacing: CGFloat = 4
+        static let thresholdTopSpacing: CGFloat = 6
         static let disabledOpacity: Double = 0.5
     }
 
@@ -112,6 +206,29 @@ private extension NewStockNotificationPreferencesDetailView {
             "newStockNotificationPreferencesDetailView.lowStock.subtitle",
             value: "When a product variant reaches its low stock threshold.",
             comment: "Subtitle of the low-stock toggle row."
+        )
+        static let thresholdValueWithLinkFormat = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat",
+            value: "Products can use their own threshold or the store-wide threshold of\u{00A0}%1$@. %2$@",
+            comment: "Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; "
+                + "%2$@ is the tappable 'Edit store-wide threshold' link text. "
+                + "The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line."
+        )
+        static let thresholdUnavailableSentenceFormat = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat",
+            value: "Products can use their own threshold or the store-wide threshold. %1$@ to see the current value.",
+            comment: "Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. "
+                + "%1$@ is the tappable 'View store-wide threshold' link text."
+        )
+        static let editStoreWideThresholdLink = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink",
+            value: "Edit store-wide threshold",
+            comment: "Tappable link that opens wp-admin to edit the store-wide low stock threshold."
+        )
+        static let viewStoreWideThresholdLink = NSLocalizedString(
+            "newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink",
+            value: "View store-wide threshold",
+            comment: "Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable."
         )
         static let outOfStockTitle = NSLocalizedString(
             "newStockNotificationPreferencesDetailView.outOfStock.title",

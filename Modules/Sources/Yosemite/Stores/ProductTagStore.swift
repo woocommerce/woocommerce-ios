@@ -7,7 +7,7 @@ import Storage
 public final class ProductTagStore: Store {
     private let remote: ProductTagsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductTagsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -46,7 +46,7 @@ private extension ProductTagStore {
     func synchronizeAllProductTags(siteID: Int64, fromPageNumber: Int = 1, onCompletion: @escaping (ProductTagActionError?) -> Void) {
 
         // Start fetching the provided initial page
-        synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] (result) in
+        synchronizeProductTags(siteID: siteID, pageNumber: fromPageNumber, pageSize: Constants.defaultMaxPageSize) { [weak self] result in
             guard let self  else {
                 return
             }
@@ -72,7 +72,7 @@ private extension ProductTagStore {
     /// Synchronizes product tags associated with a given Site ID.
     ///
     func synchronizeProductTags(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
-        remote.loadAllProductTags(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (result) in
+        remote.loadAllProductTags(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
 
             switch result {
             case .success(let productTags):
@@ -91,7 +91,7 @@ private extension ProductTagStore {
         guard tags.isEmpty == false else {
             return onCompletion(.success([]))
         }
-        remote.createProductTags(for: siteID, names: tags) { [weak self] (result) in
+        remote.createProductTags(for: siteID, names: tags) { [weak self] result in
             switch result {
             case .success(let productTags):
                 self?.upsertStoredProductTagsInBackground(productTags, siteID: siteID) {
@@ -106,7 +106,7 @@ private extension ProductTagStore {
     /// Delete product tags associated with a given Site ID.
     ///
     func deleteProductTags(siteID: Int64, ids: [Int64], onCompletion: @escaping (Result<[ProductTag], Error>) -> Void) {
-        remote.deleteProductTags(for: siteID, ids: ids) { [weak self] (result) in
+        remote.deleteProductTags(for: siteID, ids: ids) { [weak self] result in
             switch result {
             case .success(let productTags):
                 self?.deleteStoredProductTags(siteID: siteID, ids: ids) {

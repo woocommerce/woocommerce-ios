@@ -86,7 +86,7 @@ open class Remote: NSObject {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func enqueue<M: Mapper>(_ request: Request, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
-        network.responseData(for: request) { [weak self] (data, networkError) in
+        network.responseData(for: request) { [weak self] data, networkError in
             guard let self else {
                 return
             }
@@ -202,7 +202,7 @@ open class Remote: NSObject {
                                                    multipartFormData: @escaping (MultipartFormData) -> Void,
                                                    completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.uploadMultipartFormData(multipartFormData: multipartFormData,
-                                        to: request) { [weak self] (data, networkError) in
+                                        to: request) { [weak self] data, networkError in
                                             guard let self else {
                                                 return
                                             }

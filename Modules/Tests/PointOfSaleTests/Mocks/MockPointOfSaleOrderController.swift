@@ -15,6 +15,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?
     var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
+    var onSyncOrderCalled: (() async -> Void)?
 
     @discardableResult
     func syncOrder(for cart: Cart,
@@ -22,6 +23,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         syncOrderWasCalled = true
         spyCartProducts = cart.purchasableItems
         spyRetryHandler = retryHandler
+        await onSyncOrderCalled?()
 
         guard let orderStateToReturn else {
             orderState = .syncing

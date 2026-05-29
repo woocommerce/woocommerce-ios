@@ -531,6 +531,7 @@ extension POSPaymentModel {
         analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewContainer.configuration.state))
         cardPresentPaymentOnboardingViewContainer = nil
         onOnboardingCancellation?()
+        cancelConnectCardReaderTask()
     }
 
     func trackCardPaymentsOnboardingShown() {
@@ -873,6 +874,8 @@ extension POSPaymentModel {
     /// payment state and order data so `activate()` can resume where we left off.
     func deactivate() {
         DDLogInfo("⏸️ [Session] deactivate called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
+        cancelConnectCardReaderTask()
+        cancelTapToPayConnectTask()
         paymentSessionCancellables.removeAll()
         stopScanToPayPolling()
         cancelReaderPreparation()
@@ -902,6 +905,7 @@ extension POSPaymentModel {
 extension POSPaymentModel {
     func reset() {
         cancelConnectCardReaderTask()
+        cancelTapToPayConnectTask()
         stopScanToPayPolling()
         paymentSessionCancellables.removeAll()
         paymentState = .idle
@@ -922,12 +926,18 @@ extension POSPaymentModel {
         connectCardReaderTask = nil
     }
 
+    private func cancelTapToPayConnectTask() {
+        tapToPayConnectTask?.cancel()
+        tapToPayConnectTask = nil
+    }
+
     private func cancelReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()
     }
 
     private func resetCardReaderObservation() {
+        startPaymentGeneration += 1
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
         cardReaderDisconnection?.cancel()
@@ -1364,6 +1374,7 @@ extension POSPaymentModel {
     /// and risking a shopper paying for the wrong order.
     func tearDown() {
         cancelConnectCardReaderTask()
+        cancelTapToPayConnectTask()
         stopScanToPayPolling()
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()

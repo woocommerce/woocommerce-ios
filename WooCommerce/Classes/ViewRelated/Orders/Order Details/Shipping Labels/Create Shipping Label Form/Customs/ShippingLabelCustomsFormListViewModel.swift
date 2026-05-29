@@ -109,7 +109,7 @@ private extension ShippingLabelCustomsFormListViewModel {
     /// Observe changes in all customs forms and save their validation states by package ID.
     ///
     func configureFormsValidation() {
-        inputViewModels.enumerated().forEach { (index, viewModel) in
+        inputViewModels.enumerated().forEach { index, viewModel in
             viewModel.$validForm
                 .sink { [weak self] isValid in
                     self?.customsFormValidation[index] = isValid

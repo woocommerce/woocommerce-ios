@@ -12,7 +12,7 @@ struct POSNotificationSchedulerTests {
     init() async throws {
         mockFeatureFlagService = MockFeatureFlagService()
         mockPushNotesManager = MockPushNotificationsManager()
-        mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
     }
 
     @Test func scheduleLocalNotificationIfEligible_when_country_is_US_then_notification_is_scheduled() async throws {
@@ -75,6 +75,44 @@ struct POSNotificationSchedulerTests {
 
         // When
         await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_stores_are_not_authenticated_then_no_notification_scheduled() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+
+        let scheduler = POSNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then
+        #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
+        #expect(mockStores.receivedActions.isEmpty)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_store_action_is_not_handled_then_uses_safe_defaults() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+
+        let scheduler = POSNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .currentMerchant)
 
         // Then
         #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)

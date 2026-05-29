@@ -5,28 +5,30 @@ struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posAccessSession) private var accessSession
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
     @Binding private var showSettings: Bool
+    private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
     @State private var exitOverrideHandler = POSManagerOverrideHandler()
     @State private var settingsOverrideHandler = POSManagerOverrideHandler()
-    @Environment(\.posPermissions) private var permissions
-    @Environment(\.dismiss) private var dismiss
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>) {
+         showSettings: Binding<Bool>,
+         onOrdersSelected: @escaping () -> Void) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
         self._showSettings = showSettings
+        self.onOrdersSelected = onOrdersSelected
     }
 
     var body: some View {
@@ -65,8 +67,12 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        .posManagerOverrideModal(handler: exitOverrideHandler, permissions: permissions)
-        .posManagerOverrideModal(handler: settingsOverrideHandler, permissions: permissions)
+        .posManagerOverrideModal(handler: exitOverrideHandler)
+        .posManagerOverrideModal(handler: settingsOverrideHandler)
+        .onAppear {
+            exitOverrideHandler.configure(session: accessSession)
+            settingsOverrideHandler.configure(session: accessSession)
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -76,9 +82,9 @@ struct POSFloatingControlView: View {
 
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
-        if let op = permissions.currentOperator {
+        if let staff = accessSession.currentStaff {
             Label {
-                Text(operatorMenuLabel(op))
+                Text(operatorMenuLabel(staff))
             } icon: {
                 Image(systemName: "person.circle")
             }
@@ -112,7 +118,7 @@ private extension POSFloatingControlView {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    showOrders = true
+                    onOrdersSelected()
                 } label: {
                     Label(
                         title: { Text(Localization.orders) },
@@ -123,7 +129,7 @@ private extension POSFloatingControlView {
 
             if isRolesEnabled {
                 Button {
-                    permissions.lock()
+                    accessSession.lock()
                 } label: {
                     Label(
                         title: { Text(Localization.lockPOS) },
@@ -135,29 +141,35 @@ private extension POSFloatingControlView {
     }
 
     func requestExitPermission() {
-        exitOverrideHandler.requestPermission(
+        guard !accessSession.allows(.editPOSSettings) else {
+            showExitPOSModal = true
+            return
+        }
+        exitOverrideHandler.requestApproval(
             for: .editPOSSettings,
-            actionDescription: Localization.exitOverrideDescription,
-            permissions: permissions,
+            reason: Localization.exitOverrideDescription,
             onApproved: { _ in showExitPOSModal = true }
         )
     }
 
     func requestSettingsPermission() {
-        settingsOverrideHandler.requestPermission(
+        guard !accessSession.allows(.viewPOSSettings) else {
+            showSettings = true
+            return
+        }
+        settingsOverrideHandler.requestApproval(
             for: .viewPOSSettings,
-            actionDescription: Localization.settingsOverrideDescription,
-            permissions: permissions,
+            reason: Localization.settingsOverrideDescription,
             onApproved: { _ in showSettings = true }
         )
     }
 
-    func operatorMenuLabel(_ op: POSOperator) -> String {
-        let roleName = roleDisplayName(for: op.role)
-        if op.displayName.caseInsensitiveCompare(roleName) == .orderedSame {
+    func operatorMenuLabel(_ staff: POSStaff) -> String {
+        let roleName = roleDisplayName(for: staff.role)
+        if staff.displayName.caseInsensitiveCompare(roleName) == .orderedSame {
             return roleName
         }
-        return "\(op.displayName) - \(roleName)"
+        return "\(staff.displayName) - \(roleName)"
     }
 
     func roleDisplayName(for role: String) -> String {
@@ -166,7 +178,7 @@ private extension POSFloatingControlView {
             return Localization.roleCashier
         case "pos_manager":
             return Localization.roleManager
-        case "administrator", "shop_manager":
+        case "administrator", "shop_manager", "pos_admin":
             return Localization.roleAdmin
         default:
             return role
@@ -174,7 +186,7 @@ private extension POSFloatingControlView {
     }
 
     private var isRolesEnabled: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleStaff) && permissions.hasAnyPINs
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles) && accessSession.pinStatus == .present
     }
 }
 
@@ -274,7 +286,8 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+                           showSettings: .constant(false),
+                           onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -288,7 +301,8 @@ private extension POSFloatingControlView {
     return POSFloatingControlView(showExitPOSModal: .constant(false),
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  showSettings: .constant(false))
+                                  showSettings: .constant(false),
+                                  onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
@@ -297,7 +311,8 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+                           showSettings: .constant(false),
+                           onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

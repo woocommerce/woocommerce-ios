@@ -52,7 +52,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
     ///
     var ghostRows: [ShippingLabelCarrierRowViewModel] {
         return Array(0..<3).map { _ in
-            ShippingLabelCarrierRowViewModel(rate: sampleGhostRate()) { (_, _, _) in }
+            ShippingLabelCarrierRowViewModel(rate: sampleGhostRate()) { _, _, _ in }
         }
     }
 
@@ -93,7 +93,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                         rate: rate,
                                                         signatureRate: signature,
                                                         adultSignatureRate: adultSignature,
-                                                        currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
+                                                        currencySettings: currencySettings) { [weak self] rate, signature, adultSignature in
                     guard let self else { return }
 
                     // update the existing selected rate for the package
@@ -149,7 +149,7 @@ private extension ShippingLabelCarriersViewModel {
                                                               orderID: order.orderID,
                                                               originAddress: originAddress,
                                                               destinationAddress: destinationAddress,
-                                                              packages: packages) { [weak self] (result) in
+                                                              packages: packages) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let response):

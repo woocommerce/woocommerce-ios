@@ -45,7 +45,7 @@ struct ShippingLabelCustomsFormInput: View {
                 ListHeaderView(text: Localization.packageContentSection.uppercased(), alignment: .left)
                     .padding(.horizontal, insets: safeAreaInsets)
 
-                ForEach(Array(viewModel.items.enumerated()), id: \.element) { (index, item) in
+                ForEach(Array(viewModel.items.enumerated()), id: \.element) { index, item in
                     viewModel.itemViewModels.first(where: { $0.productID == item.productID })
                         .map { inputModel in
                             ShippingLabelCustomsFormItemDetails(itemNumber: index + 1,

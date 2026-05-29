@@ -1,56 +1,40 @@
 import SwiftUI
 
-/// Full-screen lock screen that wraps the PIN entry with a title
-/// and a "Forgot PIN?" link.
 struct POSLockScreenView: View {
-    let onPINEntered: (String) -> Void
-    let onForgotPIN: () -> Void
+    @State private var model: POSLockScreenModel
 
-    @Binding var pinState: POSPINEntryState
+    init(session: POSAccessSession) {
+        self._model = State(initialValue: POSLockScreenModel(session: session))
+    }
 
-    init(pinState: Binding<POSPINEntryState>,
-         onPINEntered: @escaping (String) -> Void,
-         onForgotPIN: @escaping () -> Void) {
-        self._pinState = pinState
-        self.onPINEntered = onPINEntered
-        self.onForgotPIN = onForgotPIN
+    init(model: POSLockScreenModel) {
+        self._model = State(initialValue: model)
     }
 
     var body: some View {
         ZStack {
-            Color.posSurfaceDim
+            Color.posSurfaceContainerLow
                 .ignoresSafeArea()
 
-            VStack(spacing: POSSpacing.xxLarge) {
-                Spacer()
+            VStack(spacing: POSPINEntryView.titleToPINSpacing) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
 
                 POSPINEntryView(
-                    title: Localization.title,
-                    state: $pinState,
-                    onPINEntered: { pin in
-                        onPINEntered(pin)
-                    }
+                    state: model.pinEntryState,
+                    onComplete: { pin in
+                        await model.signIn(withPIN: pin)
+                    },
+                    onLockoutExpired: { model.lockoutExpired() }
                 )
-
-                Spacer()
-
-                forgotPINLink
+                .frame(height: POSPINEntryView.preferredHeight)
             }
-            .padding(POSPadding.xLarge)
+            .frame(maxWidth: POSPINEntryView.contentWidth)
+            .padding(POSPadding.xxLarge)
         }
-    }
-
-    // MARK: - Forgot PIN Link
-
-    private var forgotPINLink: some View {
-        Button {
-            onForgotPIN()
-        } label: {
-            Text(Localization.forgotPINLink)
-                .font(.posBodyLargeRegular(underline: true))
-                .foregroundColor(.posOnSurfaceVariantLowest)
-        }
-        .padding(.bottom, POSPadding.large)
     }
 }
 
@@ -59,14 +43,9 @@ struct POSLockScreenView: View {
 private extension POSLockScreenView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.lockScreen.title",
+            "pos.lockScreen.enterYourPIN.title",
             value: "Enter your PIN",
-            comment: "Title on the POS lock screen asking the user to enter their PIN"
-        )
-        static let forgotPINLink = NSLocalizedString(
-            "pos.lockScreen.forgotPINLink",
-            value: "Forgot PIN?",
-            comment: "Link at the bottom of the POS lock screen to show information about resetting a PIN"
+            comment: "Title shown on the POS lock screen."
         )
     }
 }
@@ -74,15 +53,16 @@ private extension POSLockScreenView {
 // MARK: - Preview
 
 #if DEBUG
-#Preview("Lock Screen") {
-    @Previewable @State var pinState: POSPINEntryState = .idle
+#Preview("Locked") {
+    POSLockScreenView(session: MockPOSAccessSession(isLocked: true, pinStatus: .present))
+}
 
-    POSLockScreenView(
-        pinState: $pinState,
-        onPINEntered: { _ in
-            pinState = .error(message: "Invalid PIN")
-        },
-        onForgotPIN: {}
+#Preview("Invalid PIN") {
+    let model = POSLockScreenModel(
+        session: MockPOSAccessSession(isLocked: true, pinStatus: .present,
+                                       signInResult: .failure(.invalidPIN)),
+        initialPinEntryState: .error(kind: .invalidPIN)
     )
+    return POSLockScreenView(model: model)
 }
 #endif

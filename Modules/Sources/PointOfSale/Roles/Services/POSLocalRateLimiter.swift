@@ -1,101 +1,87 @@
 import Foundation
-import enum Networking.POSAuthError
 
-/// Rate limiter for local POS PIN authentication, matching the backend's POSRateLimitService thresholds.
-///
-/// Progressive lockouts persisted in UserDefaults so killing the app doesn't reset the counter:
-/// - 5 failed attempts: 30-second lockout
-/// - 10 failed attempts: 5-minute lockout
-/// - 15 failed attempts: permanent lock (only recovery is logout)
-///
-/// A successful PIN entry resets the counter. Logout also resets it.
-public final class POSLocalRateLimiter {
-
-    public init() {}
-
-    // MARK: - Thresholds (matching backend POSRateLimitService)
-
-    private static let lockoutThresholds: [(attempts: Int, duration: TimeInterval?)] = [
-        (5, 30),
-        (10, 300),
-        (15, nil)   // nil = permanent
-    ]
-
-    // MARK: - UserDefaults Keys
+final class POSLocalRateLimiter {
+    private let siteID: Int64
+    private let userDefaults: UserDefaults
+    private let now: () -> Date
 
     private static let attemptsKey = "com.woocommerce.pos.rateLimiter.failedAttempts"
     private static let lockoutUntilKey = "com.woocommerce.pos.rateLimiter.lockoutUntil"
     private static let permanentlyLockedKey = "com.woocommerce.pos.rateLimiter.permanentlyLocked"
 
-    // MARK: - State
-
-    private var failedAttempts: Int {
-        get { UserDefaults.standard.integer(forKey: Self.attemptsKey) }
-        set { UserDefaults.standard.set(newValue, forKey: Self.attemptsKey) }
+    private struct LockoutThreshold {
+        let attempts: Int
+        let duration: TimeInterval?
     }
 
-    private var lockoutUntil: Date? {
-        get { UserDefaults.standard.object(forKey: Self.lockoutUntilKey) as? Date }
-        set { UserDefaults.standard.set(newValue, forKey: Self.lockoutUntilKey) }
+    private static let lockoutThresholds: [LockoutThreshold] = [
+        LockoutThreshold(attempts: 5, duration: 30),
+        LockoutThreshold(attempts: 10, duration: 300),
+        LockoutThreshold(attempts: 15, duration: nil)
+    ]
+
+    init(siteID: Int64, userDefaults: UserDefaults = .standard, now: @escaping () -> Date = Date.init) {
+        self.siteID = siteID
+        self.userDefaults = userDefaults
+        self.now = now
     }
 
-    public var isPermanentlyLocked: Bool {
-        get { UserDefaults.standard.bool(forKey: Self.permanentlyLockedKey) }
-        set { UserDefaults.standard.set(newValue, forKey: Self.permanentlyLockedKey) }
-    }
-
-    // MARK: - API
-
-    /// Checks if PIN entry is currently allowed.
-    /// Throws `POSAuthError.rateLimited` if in a lockout period.
-    public func checkAllowed() throws {
+    func checkAllowed() throws(POSAuthError) {
         if isPermanentlyLocked {
-            throw POSAuthError.rateLimited(retryAfter: -1)
+            throw .permanentlyLocked
         }
-        if let until = lockoutUntil {
-            let remaining = Int(until.timeIntervalSinceNow)
-            if remaining > 0 {
-                throw POSAuthError.rateLimited(retryAfter: remaining)
-            }
-            // Lockout expired, clear it
-            lockoutUntil = nil
+        if let until = lockoutUntil, until > now() {
+            throw .rateLimited(until: until)
         }
     }
 
-    /// Records a failed PIN attempt and applies lockout if a threshold is crossed.
-    public func recordFailure() {
+    func recordFailure() {
         failedAttempts += 1
         let attempts = failedAttempts
 
-        // Check thresholds in reverse (highest first)
-        for threshold in Self.lockoutThresholds.reversed() {
-            if attempts >= threshold.attempts {
-                if let duration = threshold.duration {
-                    lockoutUntil = Date().addingTimeInterval(duration)
-                } else {
-                    isPermanentlyLocked = true
-                }
-                break
+        for threshold in Self.lockoutThresholds.reversed() where attempts >= threshold.attempts {
+            if let duration = threshold.duration {
+                lockoutUntil = now().addingTimeInterval(duration)
+            } else {
+                isPermanentlyLocked = true
             }
+            break
         }
     }
 
-    /// Returns the appropriate error after a failed attempt.
-    /// If a lockout was just triggered by `recordFailure()`, returns the lockout error.
-    /// Otherwise returns the fallback error (e.g. invalidPIN).
-    public func errorForCurrentState(fallback: POSAuthError) throws -> POSAuthError {
+    func errorForCurrentState(fallback: POSAuthError) -> POSAuthError {
         do {
             try checkAllowed()
             return fallback
-        } catch let error as POSAuthError {
+        } catch {
             return error
         }
     }
 
-    /// Resets the rate limiter. Called on successful PIN entry or logout.
-    public func reset() {
+    func reset() {
         failedAttempts = 0
         lockoutUntil = nil
         isPermanentlyLocked = false
+    }
+}
+
+private extension POSLocalRateLimiter {
+    func scopedKey(_ base: String) -> String {
+        "\(base).\(siteID)"
+    }
+
+    var failedAttempts: Int {
+        get { userDefaults.integer(forKey: scopedKey(Self.attemptsKey)) }
+        set { userDefaults.set(newValue, forKey: scopedKey(Self.attemptsKey)) }
+    }
+
+    var lockoutUntil: Date? {
+        get { userDefaults.object(forKey: scopedKey(Self.lockoutUntilKey)) as? Date }
+        set { userDefaults.set(newValue, forKey: scopedKey(Self.lockoutUntilKey)) }
+    }
+
+    var isPermanentlyLocked: Bool {
+        get { userDefaults.bool(forKey: scopedKey(Self.permanentlyLockedKey)) }
+        set { userDefaults.set(newValue, forKey: scopedKey(Self.permanentlyLockedKey)) }
     }
 }

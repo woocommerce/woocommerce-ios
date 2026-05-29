@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import struct Networking.MetaData
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
@@ -101,10 +102,13 @@ struct ItemListView: View {
         )
     }
 
-    @Environment(\.posPermissions) private var permissions
+    @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
-    @State private var pendingCouponGrant: POSPermissionGrant = .allowed
+    /// Approver `POSStaff` captured when a cashier triggers coupon creation and a manager
+    /// authorizes it. Threaded into `additionalCreateMetadata` so the resulting coupon
+    /// request carries `_wc_pos_override_staff_id` / `_wc_pos_override_reason` meta.
+    @State private var pendingCouponApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -153,9 +157,7 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
-                                additionalCreateMetadata: pendingCouponGrant.couponCreationMetadata(
-                                    staffUserID: permissions.currentOperator?.userID
-                                ),
+                                additionalCreateMetadata: couponCreationMetadata(),
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -163,10 +165,28 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
-        .posManagerOverrideModal(handler: couponOverrideHandler, permissions: permissions)
+        .posManagerOverrideModal(handler: couponOverrideHandler)
+        .onAppear {
+            couponOverrideHandler.configure(session: accessSession)
+        }
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
+    }
+
+    /// Builds the `meta_data` entries to attach to a `POST /coupons` request.
+    /// Always includes `_wc_pos_staff_id` for the current operator (when signed in), and the
+    /// `_wc_pos_override_*` pair when a manager authorized the creation for a cashier.
+    private func couponCreationMetadata() -> [MetaData] {
+        var entries: [MetaData] = []
+        if let staffUserID = accessSession.currentStaff?.userID {
+            entries.append(MetaData(metadataID: 0, key: "_wc_pos_staff_id", value: String(staffUserID)))
+        }
+        if let approver = pendingCouponApprover {
+            entries.append(MetaData(metadataID: 0, key: "_wc_pos_override_staff_id", value: String(approver.userID)))
+            entries.append(MetaData(metadataID: 0, key: "_wc_pos_override_reason", value: POSCapability.publishShopCoupons.rawValue))
+        }
+        return entries
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -508,17 +528,21 @@ private extension ItemListView {
     }
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
-    /// already has `publish_shop_coupons` the handler fires immediately with `.allowed`;
-    /// otherwise it pops the PIN modal and waits for a manager. The grant is stashed on
-    /// `pendingCouponGrant` so the resulting `POST /coupons` request can attach
-    /// `_pos_override_user_id` / `_pos_override_reason` meta.
+    /// already has `publish_shop_coupons` creation proceeds immediately; otherwise the PIN
+    /// modal is presented and the approver `POSStaff` is captured on `pendingCouponApprover`
+    /// so the resulting `POST /coupons` request can attach `_wc_pos_override_staff_id` /
+    /// `_wc_pos_override_reason` meta.
     private func requestCouponCreationPermission() {
-        couponOverrideHandler.requestPermission(
-            for: .publishCoupons,
-            actionDescription: Localization.couponOverrideDescription,
-            permissions: permissions,
-            onApproved: { grant in
-                pendingCouponGrant = grant
+        guard !accessSession.allows(.publishShopCoupons) else {
+            pendingCouponApprover = nil
+            showCouponCreationModal = true
+            return
+        }
+        couponOverrideHandler.requestApproval(
+            for: .publishShopCoupons,
+            reason: Localization.couponOverrideDescription,
+            onApproved: { approver in
+                pendingCouponApprover = approver
                 showCouponCreationModal = true
             }
         )

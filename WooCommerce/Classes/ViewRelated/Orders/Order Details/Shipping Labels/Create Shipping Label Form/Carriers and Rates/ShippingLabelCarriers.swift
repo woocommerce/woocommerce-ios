@@ -142,7 +142,7 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                 originAddress: shippingAddress,
                                                 destinationAddress: shippingAddress,
                                                 packages: [])
-        ShippingLabelCarriers(viewModel: vm) { (_) in
+        ShippingLabelCarriers(viewModel: vm) { _ in
         }
     }
 }

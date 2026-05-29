@@ -127,7 +127,14 @@ public final class RefundsRemote: Remote {
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
 
-            enqueue(request, mapper: mapper, completion: completion)
+            enqueue(request, mapper: mapper) { result in
+                switch result {
+                case .success(let refund):
+                    completion(refund, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
+            }
         } catch {
             completion(nil, error)
             DDLogError("Unable to serialize data for refunds: \(error)")

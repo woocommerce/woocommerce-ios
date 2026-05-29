@@ -34,7 +34,7 @@ open class MockStorageManager: StorageManagerType {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
-        container.loadPersistentStores { (_, error) in
+        container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 fatalError("CoreData Fatal Error: \(error) [\(error.userInfo)]")
             }
@@ -73,7 +73,7 @@ open class MockStorageManager: StorageManagerType {
                 fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
             }
 
-            storeCoordinator.addPersistentStore(with: storeDescriptor) { (_, error) in
+            storeCoordinator.addPersistentStore(with: storeDescriptor) { _, error in
                 guard let error else {
                     onCompletion?()
                     return

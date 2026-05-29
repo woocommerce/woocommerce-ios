@@ -98,7 +98,7 @@ final class MainTabBarController: UITabBarController {
     /// For picking up the child view controller's status bar styling
     /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
     ///
-    public override var childForStatusBarStyle: UIViewController? {
+    override public var childForStatusBarStyle: UIViewController? {
         return nil
     }
 
@@ -134,10 +134,10 @@ final class MainTabBarController: UITabBarController {
     private var posTabCoordinator: POSTabCoordinator?
 
     /// Whether POS was locked when the app was last terminated.
-    /// Uses the same UserDefaults key as `POSPermissionProvider`.
-    private static var wasPOSLockedWhenTerminated: Bool {
-        UserDefaults.standard.bool(forKey: POSLockStateKey.isLocked)
-    }
+    /// Trunk's `POSAccessSession` owns the lock state now; without a persisted lock flag
+    /// we conservatively never auto-reopen POS on cold launch. The auto-lock-on-background
+    /// path inside `PointOfSaleEntryPointView` still locks the session at runtime.
+    private static var wasPOSLockedWhenTerminated: Bool { false }
 
     private let bookingsContainerController = TabContainerController()
 

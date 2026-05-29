@@ -203,7 +203,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.orderBy: orderBy.value,
             ParameterKey.order: order.value
-        ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
+        ].merging(filterParameters, uniquingKeysWith: { first, _ in first })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
@@ -468,7 +468,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.searchFields: searchFields.map { $0.rawValue },
             ParameterKey.exclude: stringOfExcludedProductIDs,
             ParameterKey.contextKey: Default.context
-        ].merging(filterParameters, uniquingKeysWith: { (first, _) in first })
+        ].merging(filterParameters, uniquingKeysWith: { first, _ in first })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)

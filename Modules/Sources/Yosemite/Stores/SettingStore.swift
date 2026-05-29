@@ -10,7 +10,7 @@ public class SettingStore: Store {
     private let siteAPIRemote: SiteAPIRemote
     private let methods: SettingStoreMethods
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteSettingsRemote = SiteSettingsRemote(network: network)
         self.siteAPIRemote = SiteAPIRemote(network: network)
         self.methods = SettingStoreMethods(storageManager: storageManager, network: network)

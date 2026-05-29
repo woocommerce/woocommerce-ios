@@ -9,7 +9,7 @@ public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
@@ -160,8 +160,7 @@ private extension AccountStore {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
                             let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
-                                .map {
-                                    (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
+                                .map {site, isWooCommerceActiveResult, wpSiteSettingsResult -> Site in
                                     var site = site
                                     guard case let .success(isWooCommerceActive) = isWooCommerceActiveResult,
                                           case let .success(wpSiteSettings) = wpSiteSettingsResult else {

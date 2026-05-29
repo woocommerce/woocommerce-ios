@@ -324,7 +324,7 @@ final class ProductReviewStoreTests: XCTestCase {
         let remoteProductReview = sampleProductReview()
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "reviews-single")
-        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (productReview, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { productReview, error in
             XCTAssertNil(error)
             XCTAssertNotNil(productReview)
             XCTAssertEqual(productReview, remoteProductReview)
@@ -342,7 +342,7 @@ final class ProductReviewStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single product review error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")
-        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (_, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { _, error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -356,7 +356,7 @@ final class ProductReviewStoreTests: XCTestCase {
     func test_retrieve_single_product_review_returns_error_upon_empty_response() {
         let expectation = self.expectation(description: "Retrieve single product review empty response")
 
-        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { product, error in
             XCTAssertNotNil(error)
             XCTAssertNil(product)
             expectation.fulfill()
@@ -377,7 +377,7 @@ final class ProductReviewStoreTests: XCTestCase {
         // When
         var resultMaybe: (review: Yosemite.ProductReview?, error: Error?)?
         waitForExpectation { expectation in
-            let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (review, error) in
+            let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { review, error in
                 resultMaybe = (review: review, error: error)
                 expectation.fulfill()
             }

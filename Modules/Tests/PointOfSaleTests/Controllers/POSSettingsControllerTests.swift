@@ -21,7 +21,8 @@ struct POSSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                isLocalCatalogEligible: true)
+                                                isLocalCatalogEligible: true,
+                                                receiptSettingsAdminURL: "")
 
         // When
         let cardReader = sut.connectedCardReader
@@ -41,7 +42,8 @@ struct POSSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                isLocalCatalogEligible: true)
+                                                isLocalCatalogEligible: true,
+                                                receiptSettingsAdminURL: "")
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -66,7 +68,8 @@ struct POSSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                isLocalCatalogEligible: true)
+                                                isLocalCatalogEligible: true,
+                                                receiptSettingsAdminURL: "")
 
         // When
         let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.75)
@@ -100,7 +103,8 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: MockPluginsService(),
                                                                               defaultSiteName: "Sample Store",
-                                                                              siteSettings: [])
+                                                                              siteSettings: [],
+                                                                              receiptSettingsAdminURL: "")
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     var isLocalCatalogEligible = true
 }

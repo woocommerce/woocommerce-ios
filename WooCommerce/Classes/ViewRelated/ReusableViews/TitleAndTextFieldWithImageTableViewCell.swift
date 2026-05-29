@@ -24,10 +24,10 @@ final class TitleAndTextFieldWithImageTableViewCell: UITableViewCell {
         }
     }
 
-    @IBOutlet weak private var contentStackView: UIStackView!
-    @IBOutlet weak private var label: UILabel!
-    @IBOutlet weak private var textField: UITextField!
-    @IBOutlet weak private var rightImageView: UIImageView!
+    @IBOutlet private weak var contentStackView: UIStackView!
+    @IBOutlet private weak var label: UILabel!
+    @IBOutlet private weak var textField: UITextField!
+    @IBOutlet private weak var rightImageView: UIImageView!
 
     var rightImageViewIsHidden = false {
         didSet {

@@ -8,7 +8,7 @@ public final class ProductVariationStore: Store {
     private let remote: ProductVariationsRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductVariationsRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
@@ -104,7 +104,7 @@ private extension ProductVariationStore {
                                         variationIDs: variationIDs,
                                         context: nil,
                                         pageNumber: pageNumber,
-                                        pageSize: pageSize) { [weak self] (productVariations, error) in
+                                        pageSize: pageSize) { [weak self] productVariations, error in
             guard let productVariations else {
                 onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
                 return

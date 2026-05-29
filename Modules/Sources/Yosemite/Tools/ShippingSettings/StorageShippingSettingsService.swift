@@ -31,7 +31,7 @@ public final class StorageShippingSettingsService: ShippingSettingsService {
 
 private extension StorageShippingSettingsService {
     func configureResultsController() {
-        resultsController.onDidChangeObject = { [weak self] (object, _, _, _) in
+        resultsController.onDidChangeObject = { [weak self] object, _, _, _ in
             self?.updateShippingSettings(with: object)
         }
         refreshResultsPredicate(siteID: siteID)

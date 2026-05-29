@@ -250,7 +250,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         if self.carrierPackages.isNotEmpty {
             // sort new packages so they stay in similar order
             // sort only if we already had carrier packages before
-            let sortedCarrierPackages = self.carrierPackages.sorted { (carrierA, carrierB) in
+            let sortedCarrierPackages = self.carrierPackages.sorted { carrierA, carrierB in
                 let carrierAIndex = self.carrierPackages.firstIndex(where: { $0.id == carrierA.id })
                 let carrierBIndex = self.carrierPackages.firstIndex(where: { $0.id == carrierB.id })
                 if let firstI = carrierAIndex, let secondI = carrierBIndex {

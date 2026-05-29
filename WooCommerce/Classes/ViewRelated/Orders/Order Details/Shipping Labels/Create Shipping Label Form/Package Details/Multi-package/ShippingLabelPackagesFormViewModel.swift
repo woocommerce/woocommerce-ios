@@ -390,10 +390,10 @@ private extension ShippingLabelPackagesFormViewModel {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
                                                                            storageManager: storageManager,
-           onProductReload: { [weak self] (products) in
+           onProductReload: { [weak self] products in
             guard let self else { return }
             self.products = products
-        }, onProductVariationsReload: { [weak self] (productVariations) in
+        }, onProductVariationsReload: { [weak self] productVariations in
             guard let self else { return }
             self.productVariations = productVariations
         })
@@ -407,7 +407,7 @@ private extension ShippingLabelPackagesFormViewModel {
 ///
 private extension ShippingLabelPackagesFormViewModel {
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)

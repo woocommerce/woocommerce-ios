@@ -31,8 +31,6 @@ struct PointOfSaleDashboardView: View {
         posModel.viewStateCoordinatorForView
     }
 
-    @Environment(\.posStaffSettingsMode) private var staffSettingsMode
-
     private var itemsViewState: ItemsViewState {
         switch viewStateCoordinator.selectedItemListType {
         case .products(let searching):
@@ -118,7 +116,8 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings)
+                                   showSettings: $showSettings,
+                                   onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -162,20 +161,10 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            // The staff-settings mode is supplied by the host (POSTabCoordinator) when the
-            // POS staff feature flag is on. When the flag is off, fall back to an empty mode
-            // so the settings sheet remains buildable — the Staff card itself is gated off
-            // by the same feature flag inside `POSSettingsView`.
-            POSSettingsView(
-                settingsController: posModel.settingsController,
-                staffSettingsMode: staffSettingsMode ?? POSStaffSettingsMode(
-                    loadStaff: { [] },
-                    manageURL: URL(string: "about:blank")!
-                )
-            )
+            POSSettingsView(settingsController: posModel.settingsController)
         }
-        .posFullScreenCover(isPresented: $phoneShowOrders) {
-            POSOrdersView(isPresented: $phoneShowOrders)
+        .posFullScreenCover(isPresented: $showOrders) {
+            POSOrdersView(isPresented: $showOrders)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -335,7 +324,7 @@ struct PointOfSaleDashboardView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
 
-    @State private var phoneShowOrders: Bool = false
+    @State private var showOrders: Bool = false
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
     @State private var phoneCartButtonPulse: Bool = false
 
@@ -365,7 +354,7 @@ struct PointOfSaleDashboardView: View {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    phoneShowOrders = true
+                    presentOrders()
                 } label: {
                     Label(Localization.phoneMenuOrders, systemImage: "text.document")
                 }
@@ -599,6 +588,11 @@ private extension PointOfSaleDashboardView {
             await posModel.couponsController.loadItems(base: .root)
             await posModel.popularPurchasableItemsController.loadItems(base: .root)
         }
+    }
+
+    func presentOrders() {
+        posModel.cancelInFlightCheckout()
+        showOrders = true
     }
 }
 

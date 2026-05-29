@@ -95,8 +95,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleRefundsi1:
             return true
+        case .pointOfSaleRoles:
+            return false
         case .pointOfSaleCustomAmounts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .pointOfSaleStaff:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSalePhonePrototype:
@@ -111,12 +113,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // Behind the flag while the TTP integration lands. localDeveloper-only so
             // alpha and beta keep showing only Cash + Card reader for now.
             return buildConfig == .localDeveloper
-        case .pointOfSaleLocalRoles:
-            return false
-        case .pointOfSaleRemoteRoles:
-            return true
         case .selfDrivenPushToken:
-            return false
+            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:

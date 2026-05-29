@@ -8,9 +8,15 @@ import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
+private enum POSOrderDetailsNavigationDestination: Hashable {
+    case refundSelection
+}
+
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    @Binding private var detailNavigationPath: NavigationPath
+    @Binding private var activeRefundSelectionOrderID: Int64?
     @State var autoStartNextRefundFlow: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
@@ -21,12 +27,18 @@ struct POSOrderDetailsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
-    @Environment(\.posPermissions) private var permissions
+    @Environment(\.posAccessSession) private var accessSession
     @State private var isShowingEmailReceiptView = false
+    @State private var refundSelectionState: RefundSelectionState?
     @State private var refundModalState: RefundModalState?
+    @State private var refundFlowPreparationID: UUID?
+    @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
-    @State private var pendingRefundGrant: POSPermissionGrant = .allowed
+    /// Approver `POSStaff` captured when a cashier triggered the refund and a manager
+    /// authorized it. Threaded into `processRefund(overrideUserID:overrideReason:)` so the
+    /// refund's `_wc_pos_override_staff_id` meta records who approved it.
+    @State private var pendingOverrideApprover: POSStaff?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -38,6 +50,24 @@ struct POSOrderDetailsView: View {
 
     private var dateFormatter: DateFormatter {
         DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
+    }
+
+    init(
+        order: POSOrder,
+        detailNavigationPath: Binding<NavigationPath> = .constant(NavigationPath()),
+        activeRefundSelectionOrderID: Binding<Int64?> = .constant(nil),
+        onBack: @escaping () -> Void,
+        autoStartNextRefundFlow: Bool = false,
+        onRefundSuccess: (() -> Void)? = nil,
+        onRefundFailure: ((Error) -> Void)? = nil
+    ) {
+        self.order = order
+        self.onBack = onBack
+        self._detailNavigationPath = detailNavigationPath
+        self._activeRefundSelectionOrderID = activeRefundSelectionOrderID
+        self._autoStartNextRefundFlow = State(initialValue: autoStartNextRefundFlow)
+        self.onRefundSuccess = onRefundSuccess
+        self.onRefundFailure = onRefundFailure
     }
 
     var body: some View {
@@ -112,35 +142,38 @@ struct POSOrderDetailsView: View {
                 onClose: { selectedRefundForDetail = nil }
             )
         }
-        .posModal(item: $refundModalState, onDismiss: {
-            if let step = refundModalState?.abortStep {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
+        .navigationDestination(for: POSOrderDetailsNavigationDestination.self) { destination in
+            switch destination {
+            case .refundSelection:
+                if let refundSelectionState {
+                    POSRefundSelectionFlowView(
+                        state: refundSelectionState,
+                        errorStrings: refundErrorStrings,
+                        onDismiss: { dismissRefundFlow() },
+                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryPreparation: {
+                            self.refundSelectionState = .itemSelection
+                        },
+                        onContinue: { navigateToRefundReview() }
+                    )
+                }
             }
-            orderListModel.ordersController.clearRefundSelection()
-        }) { state in
-            POSRefundModalContentView(
-                state: state,
-                modalState: $refundModalState,
-                order: order,
-                onRetryLoading: { initiateRefundFlow() },
-                onRetryPreparation: {
-                    refundModalState = .itemSelection
-                },
-                onEditRefund: { refundModalState = .itemSelection },
-                showsItemSelection: true,
-                onRefundSuccess: onRefundSuccess,
-                onRefundFailure: onRefundFailure,
-                overrideUserID: pendingRefundGrant.overrideUserID,
-                overrideReason: pendingRefundGrant.overrideReason,
-                errorStrings: .init(
-                    loadTitle: Localization.loadRefundErrorTitle,
-                    loadSubtitle: Localization.loadRefundErrorSubtitle,
-                    prepareTitle: Localization.prepareRefundErrorTitle,
-                    prepareSubtitle: Localization.prepareRefundErrorSubtitle,
-                    createTitle: Localization.createRefundErrorTitle,
-                    createSubtitle: Localization.createRefundErrorSubtitle
+        }
+        .posFullScreenCover(isPresented: isRefundModalPresented) {
+            if let state = refundModalState {
+                POSRefundModalContentView(
+                    state: state,
+                    modalState: $refundModalState,
+                    order: order,
+                    onDismiss: { dismissRefundFlow() },
+                    onReturnToSelection: { returnToRefundSelection() },
+                    initialRefundReason: currentRefundReason,
+                    onRefundReasonChanged: { currentRefundReason = $0 },
+                    onRefundSuccess: onRefundSuccess,
+                    onRefundFailure: onRefundFailure,
+                    errorStrings: refundErrorStrings
                 )
-            )
+            }
         }
         .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
@@ -148,12 +181,16 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posManagerOverrideModal(handler: refundOverrideHandler, permissions: permissions)
+        .posManagerOverrideModal(handler: refundOverrideHandler)
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
         }
+        .task {
+            await orderListModel.ordersController.preloadRefundDetails()
+        }
         .onAppear {
+            refundOverrideHandler.configure(session: accessSession)
             if autoStartNextRefundFlow {
                 autoStartNextRefundFlow = false
                 initiateRefundFlow()
@@ -563,18 +600,35 @@ private extension POSOrderDetailsView {
 // MARK: - Refund Flow Helpers
 
 private extension POSOrderDetailsView {
+    var isRefundModalPresented: Binding<Bool> {
+        Binding(
+            get: { refundModalState != nil },
+            set: { isPresented in
+                if !isPresented {
+                    if refundModalState == nil, refundSelectionState != nil {
+                        return
+                    }
+                    dismissRefundFlow()
+                }
+            }
+        )
+    }
+
     /// Gates the refund button through the manager-override flow. When the operator
-    /// already has `refund_shop_orders` the handler fires the callback immediately with
-    /// `.allowed`; otherwise it shows the PIN modal and waits for a manager to authorize.
-    /// The grant carries the approver's user id which we stash on `pendingRefundGrant`
-    /// so the refund modal can hand it to `processRefund` as `_pos_override_*` meta.
+    /// already has `refund_shop_orders` the refund proceeds immediately; otherwise the
+    /// PIN modal is presented and the approver's `POSStaff` is captured on
+    /// `pendingOverrideApprover` so the refund can carry `_wc_pos_override_staff_id` meta.
     func requestRefundPermission() {
-        refundOverrideHandler.requestPermission(
+        guard !accessSession.allows(.refundShopOrders) else {
+            pendingOverrideApprover = nil
+            initiateRefundFlow()
+            return
+        }
+        refundOverrideHandler.requestApproval(
             for: .refundShopOrders,
-            actionDescription: Localization.refundOverrideDescription(order.number),
-            permissions: permissions,
-            onApproved: { grant in
-                pendingRefundGrant = grant
+            reason: Localization.refundOverrideDescription(order.number),
+            onApproved: { approver in
+                pendingOverrideApprover = approver
                 initiateRefundFlow()
             }
         )
@@ -582,26 +636,88 @@ private extension POSOrderDetailsView {
 
     func initiateRefundFlow() {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowStarted())
-        refundModalState = .loading
+        let preparationID = UUID()
+        refundFlowPreparationID = preparationID
+        refundModalState = nil
+        refundSelectionState = .loading
+        presentRefundSelection()
         Task { @MainActor in
             let result = await orderListModel.ordersController.startRefundFlow()
+            guard refundFlowPreparationID == preparationID else {
+                return
+            }
+            refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
-                refundModalState = .itemSelection
+                refundSelectionState = .itemSelection
             case .nothingToRefund:
-                refundModalState = .nothingToRefund
+                refundSelectionState = .nothingToRefund
             case .failed:
-                refundModalState = .loadingError
+                refundSelectionState = .loadingError
             }
         }
     }
 
     func navigateToRefundReview() {
-        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundModalState = .preparationError
+        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+            refundSelectionState = .preparationError
             return
         }
+        reviewData.refundReason = currentRefundReason
         refundModalState = .review(reviewData)
+    }
+
+    func returnToRefundSelection() {
+        refundSelectionState = .itemSelection
+        refundModalState = nil
+    }
+
+    func dismissRefundFlow() {
+        let abortStep: WooAnalyticsEvent.PointOfSale.RefundStep?
+        if let refundModalState {
+            abortStep = refundModalState.abortStep
+        } else {
+            abortStep = refundSelectionState?.abortStep
+        }
+
+        if let step = abortStep {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
+        }
+        refundFlowPreparationID = nil
+        refundSelectionState = nil
+        refundModalState = nil
+        currentRefundReason = nil
+        orderListModel.ordersController.clearRefundSelection()
+        dismissRefundSelectionIfNeeded()
+    }
+
+    func presentRefundSelection() {
+        guard activeRefundSelectionOrderID != order.id else {
+            return
+        }
+        activeRefundSelectionOrderID = order.id
+        detailNavigationPath.append(POSOrderDetailsNavigationDestination.refundSelection)
+    }
+
+    func dismissRefundSelectionIfNeeded() {
+        guard activeRefundSelectionOrderID == order.id else {
+            return
+        }
+        activeRefundSelectionOrderID = nil
+        if !detailNavigationPath.isEmpty {
+            detailNavigationPath.removeLast()
+        }
+    }
+
+    var refundErrorStrings: POSRefundErrorStrings {
+        .init(
+            loadTitle: Localization.loadRefundErrorTitle,
+            loadSubtitle: Localization.loadRefundErrorSubtitle,
+            prepareTitle: Localization.prepareRefundErrorTitle,
+            prepareSubtitle: Localization.prepareRefundErrorSubtitle,
+            createTitle: Localization.createRefundErrorTitle,
+            createSubtitle: Localization.createRefundErrorSubtitle
+        )
     }
 }
 

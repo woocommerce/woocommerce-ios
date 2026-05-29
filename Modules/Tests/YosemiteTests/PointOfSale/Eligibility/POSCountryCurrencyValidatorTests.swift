@@ -39,27 +39,17 @@ struct POSCountryCurrencyValidatorTests {
         #expect(result == .eligible)
     }
 
-    // MARK: - Unsupported Countries (cached country eligibility off)
-
-    @Test("CA with USD is ineligible due to unsupported country when cached country eligibility is off")
-    func testCAWithUSDIsIneligible() {
+    @Test("CA with CAD is eligible without cached country eligibility")
+    func testCAWithCADIsEligible() {
         let result = POSCountryCurrencyValidator.validate(countryCode: .CA,
-                                                          currencyCode: .USD,
+                                                          currencyCode: .CAD,
                                                           siteID: siteID,
                                                           eligibilityService: ineligibleService)
 
-        guard case .ineligible(let reason) = result else {
-            Issue.record("Expected ineligible result")
-            return
-        }
-        guard case .unsupportedCountry(let supportedCountries) = reason else {
-            Issue.record("Expected unsupportedCountry reason")
-            return
-        }
-        #expect(supportedCountries.contains(.US))
-        #expect(supportedCountries.contains(.GB))
-        #expect(!supportedCountries.contains(.CA))
+        #expect(result == .eligible)
     }
+
+    // MARK: - Unsupported Countries (cached country eligibility off)
 
     @Test("AU with AUD is ineligible due to unsupported country when cached country eligibility is off")
     func testAUWithAUDIsIneligibleWhenCachedCountryEligibilityOff() {
@@ -166,15 +156,35 @@ struct POSCountryCurrencyValidatorTests {
         #expect(supportedCurrencies == [.GBP])
     }
 
+    @Test("CA with USD is ineligible due to unsupported currency")
+    func testCAWithUSDIsIneligible() {
+        let result = POSCountryCurrencyValidator.validate(countryCode: .CA,
+                                                          currencyCode: .USD,
+                                                          siteID: siteID,
+                                                          eligibilityService: ineligibleService)
+
+        guard case .ineligible(let reason) = result else {
+            Issue.record("Expected ineligible result")
+            return
+        }
+        guard case .unsupportedCurrency(let countryCode, let supportedCurrencies) = reason else {
+            Issue.record("Expected unsupportedCurrency reason")
+            return
+        }
+        #expect(countryCode == .CA)
+        #expect(supportedCurrencies == [.CAD])
+    }
+
     // MARK: - Supported Countries List
 
-    @Test("Supported countries list contains only US, PR, and GB when cached country eligibility is off")
+    @Test("Supported countries list contains only US, PR, GB, and CA when cached country eligibility is off")
     func testSupportedCountriesList() {
         let supportedCountries = POSCountryCurrencyValidator.supportedCountries(siteID: siteID, eligibilityService: ineligibleService)
-        #expect(supportedCountries.count == 3)
+        #expect(supportedCountries.count == 4)
         #expect(supportedCountries.contains(.US))
         #expect(supportedCountries.contains(.PR))
         #expect(supportedCountries.contains(.GB))
+        #expect(supportedCountries.contains(.CA))
     }
 
     @Test("Supported countries list includes the validator's gated-country set when the current site country is eligible")
@@ -184,6 +194,7 @@ struct POSCountryCurrencyValidatorTests {
         #expect(supportedCountries.contains(.US))
         #expect(supportedCountries.contains(.PR))
         #expect(supportedCountries.contains(.GB))
+        #expect(supportedCountries.contains(.CA))
         for country in validatorGatedCountrySet {
             #expect(supportedCountries.contains(country), "Expected \(country) to be present in the validator's gated-country set")
         }
@@ -191,14 +202,14 @@ struct POSCountryCurrencyValidatorTests {
 
     // MARK: - Supported Currencies Map
 
-    @Test("Supported currencies map only contains US, PR, and GB entries when cached country eligibility is off")
+    @Test("Supported currencies map only contains US, PR, GB, and CA entries when cached country eligibility is off")
     func testSupportedCurrenciesMap() {
         let supportedCurrencies = POSCountryCurrencyValidator.supportedCurrencies(siteID: siteID, eligibilityService: ineligibleService)
 
         #expect(supportedCurrencies[.US] == [.USD])
         #expect(supportedCurrencies[.PR] == [.USD])
         #expect(supportedCurrencies[.GB] == [.GBP])
-        #expect(supportedCurrencies[.CA] == nil)
+        #expect(supportedCurrencies[.CA] == [.CAD])
         #expect(supportedCurrencies[.AT] == nil)
         #expect(supportedCurrencies[.SG] == nil)
         #expect(supportedCurrencies[.NZ] == nil)

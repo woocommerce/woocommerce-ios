@@ -261,7 +261,8 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
-            receiptSender: POSReceiptSenderPreview())
+            receiptSender: POSReceiptSenderPreview(),
+            refundSubmissionModel: POSRefundSubmissionModel())
     }
 
     static func makePreviewOrders() -> [POSOrder] {
@@ -523,12 +524,15 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
+    var currentRefundRequiresCardPresentRefund: Bool { false }
+    var hasModifiedRefundSelection = false
 
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
+    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
@@ -537,7 +541,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     @MainActor
-    func processRefund(reason: String?, overrideUserID: Int64?, overrideReason: String?) async throws {}
+    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
 
@@ -702,7 +706,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
-    var permissions: POSPermissionProviding = EmptyPOSPermissionProvider()
 }
 
 // MARK: - Preview Catalog Services

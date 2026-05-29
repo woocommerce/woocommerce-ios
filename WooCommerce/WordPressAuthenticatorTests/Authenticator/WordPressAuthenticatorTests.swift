@@ -58,7 +58,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     // MARK: View Tests
     func testShowLoginForJustWPComPresentsCorrectVC() {
         let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { _, _ -> Bool in
             return presenterSpy.presentedVC != nil
         }), object: .none)
 
@@ -70,7 +70,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
     func testShowLoginForJustWPComSetsMetaProperties() throws {
         let presenterSpy = ModalViewControllerPresentingSpy()
-        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { (_, _) -> Bool in
+        let expectation = XCTNSPredicateExpectation(predicate: NSPredicate(block: { _, _ -> Bool in
             return presenterSpy.presentedVC != nil
         }), object: .none)
 

@@ -11,7 +11,7 @@ public protocol PaymentCaptureCelebrationProtocol {
 public final class PaymentCaptureCelebration: NSObject, PaymentCaptureCelebrationProtocol {
     private var soundID: SystemSoundID = 0
 
-    public override init() {
+    override public init() {
         super.init()
     }
 
@@ -29,7 +29,7 @@ private extension PaymentCaptureCelebration {
 
         let url = URL(fileURLWithPath: path)
         AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
-        AudioServicesAddSystemSoundCompletion(soundID, nil, nil, { (soundId, _) -> Void in
+        AudioServicesAddSystemSoundCompletion(soundID, nil, nil, { soundId, _ -> Void in
             AudioServicesDisposeSystemSoundID(soundId)
           }, nil)
 

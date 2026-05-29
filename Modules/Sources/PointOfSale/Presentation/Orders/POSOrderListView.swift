@@ -7,6 +7,7 @@ import enum Yosemite.SearchDebounceStrategy
 struct POSOrderListView: View {
     @Binding var isSearching: Bool
     @Binding var searchTerm: String
+    let onOrderSelected: (POSOrder) -> Void
     let onClose: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
@@ -16,6 +17,18 @@ struct POSOrderListView: View {
 
     private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
+    }
+
+    init(
+        isSearching: Binding<Bool>,
+        searchTerm: Binding<String>,
+        onOrderSelected: @escaping (POSOrder) -> Void = { _ in },
+        onClose: @escaping () -> Void
+    ) {
+        self._isSearching = isSearching
+        self._searchTerm = searchTerm
+        self.onOrderSelected = onOrderSelected
+        self.onClose = onClose
     }
 
     var body: some View {
@@ -140,7 +153,7 @@ struct POSOrderListView: View {
                                 orderCreatedDate: order.dateCreated,
                                 siteTimezone: siteTimezone
                             ))
-                            orderListModel.ordersController.selectOrder(order)
+                            onOrderSelected(order)
                         }) {
                             POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                         }

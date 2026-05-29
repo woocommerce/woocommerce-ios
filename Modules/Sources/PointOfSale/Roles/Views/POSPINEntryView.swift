@@ -1,254 +1,232 @@
 import SwiftUI
 
-/// External state that the parent can set to control the PIN entry view.
-enum POSPINEntryState: Equatable {
-    /// Normal input state.
-    case idle
-    /// Shows an error message and triggers a shake animation, then resets the entered digits.
-    case error(message: String)
-    /// Disables the numpad and shows a lockout countdown message.
-    case lockout(message: String)
-    /// Disables the numpad and shows a pulse animation on the PIN dots during remote verification.
-    case loading
-}
-
-/// Reusable PIN numpad component for lock screen, manager override, and exit POS.
-/// Supports 4-6 digit PINs with auto-submit, error shake animation, and lockout state.
 struct POSPINEntryView: View {
-    let title: String
-    let subtitle: String?
-    let maxDigits: Int
-    let onPINEntered: (String) -> Void
-    let onCancel: (() -> Void)?
+    private let state: POSPINEntryState
+    private let pinLength: Int
+    private let onComplete: (String) async -> Bool
+    private let onLockoutExpired: (() -> Void)?
 
-    @Binding var state: POSPINEntryState
+    @State private var enteredPIN = ""
+    @State private var shakeAmount: CGFloat = 0
 
-    @State private var helper: POSPINEntryViewHelper
-    @State private var shakeOffset: CGFloat = 0
+    private let helper = POSPINEntryViewHelper()
+    private let haptics = POSPINHapticFeedback()
 
-    init(title: String,
-         subtitle: String? = nil,
-         maxDigits: Int = 4,
-         state: Binding<POSPINEntryState>,
-         onPINEntered: @escaping (String) -> Void,
-         onCancel: (() -> Void)? = nil) {
-        self.title = title
-        self.subtitle = subtitle
-        self.maxDigits = maxDigits
-        self._state = state
-        self.onPINEntered = onPINEntered
-        self.onCancel = onCancel
-        self._helper = State(initialValue: POSPINEntryViewHelper(maxDigits: maxDigits))
+    init(state: POSPINEntryState,
+         pinLength: Int = 4,
+         onComplete: @escaping (String) async -> Bool,
+         onLockoutExpired: (() -> Void)? = nil) {
+        self.state = state
+        self.pinLength = pinLength
+        self.onComplete = onComplete
+        self.onLockoutExpired = onLockoutExpired
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.xLarge) {
-            headerSection
-            pinDotsRow
-            numpad
-            if let onCancel {
-                cancelButton(action: onCancel)
-            }
-        }
-        .frame(maxWidth: Constants.maxWidth)
+        content
+        .onAppear { handleStateChange(state) }
         .onChange(of: state) { _, newState in
             handleStateChange(newState)
         }
     }
+}
 
-    // MARK: - Header
+// MARK: - Subviews
 
-    private var headerSection: some View {
-        VStack(spacing: POSSpacing.small) {
-            Text(title)
-                .font(.posHeadingBold)
-                .foregroundColor(.posOnSurface)
-                .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.8)
-                .lineLimit(2)
+private extension POSPINEntryView {
+    var isInputEnabled: Bool {
+        helper.isInputEnabled(for: state)
+    }
 
-            if let subtitle {
-                Text(subtitle)
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .multilineTextAlignment(.center)
-            }
+    var isLoading: Bool {
+        if case .loading = state {
+            return true
+        }
+        return false
+    }
+
+    var content: some View {
+        VStack(spacing: Self.contentSpacing) {
+            statusRow
+                .frame(maxWidth: .infinity, alignment: .center)
+            numpad
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    var statusRow: some View {
+        switch state {
+        case .lockout(let until):
+            lockoutCountdown(until: until)
+        case .idle, .loading, .error:
+            dotsRow
         }
     }
 
-    // MARK: - PIN Dots
-
-    private var isLoading: Bool {
-        state == .loading
-    }
-
-    @State private var wavePhase: Bool = false
-
-    private var pinDotsRow: some View {
-        VStack(spacing: POSSpacing.medium) {
+    var dotsRow: some View {
+        TimelineView(.animation(paused: !isLoading)) { context in
             HStack(spacing: POSSpacing.medium) {
-                ForEach(0..<maxDigits, id: \.self) { index in
-                    pinDot(filled: helper.isDotFilled(at: index))
-                        .offset(y: isLoading ? waveOffset(for: index) : 0)
-                        .animation(
-                            isLoading
-                                ? .easeInOut(duration: 0.5)
-                                    .repeatForever(autoreverses: true)
-                                    .delay(Double(index) * 0.1)
-                                : .default,
-                            value: wavePhase
-                        )
+                ForEach(0..<pinLength, id: \.self) { index in
+                    dot(filled: isLoading || index < enteredPIN.count,
+                        yOffset: waveOffset(index: index, date: context.date))
                 }
             }
-            .offset(x: shakeOffset)
-            .onChange(of: isLoading) { _, loading in
-                if loading {
-                    wavePhase.toggle()
-                }
-            }
-
-            Text(displayMessage ?? " ")
-                .font(.posBodyMediumRegular())
-                .foregroundColor(messageColor)
-                .multilineTextAlignment(.center)
-                .lineLimit(3)
-                .opacity(displayMessage != nil ? 1 : 0)
-                .frame(minHeight: Constants.errorMessageHeight)
-                .fixedSize(horizontal: false, vertical: true)
+            .modifier(ShakeEffect(animatableData: shakeAmount))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Localization.dotsAccessibilityLabel)
+            .accessibilityValue(Localization.dotsAccessibilityValue(entered: enteredPIN.count, total: pinLength))
         }
-        .animation(.default, value: displayMessage)
+        .frame(height: Constants.statusRowHeight)
     }
 
-    private func waveOffset(for index: Int) -> CGFloat {
-        wavePhase ? -Constants.waveHeight : Constants.waveHeight
-    }
-
-    private var displayMessage: String? {
-        helper.displayMessage(for: state)
-    }
-
-    private var messageColor: Color {
-        helper.messageColor(for: state)
-    }
-
-    private var isInputDisabled: Bool {
-        helper.isInputDisabled(for: state)
-    }
-
-    private func pinDot(filled: Bool) -> some View {
+    func dot(filled: Bool, yOffset: CGFloat) -> some View {
         Circle()
             .fill(filled ? Color.posPrimary : Color.clear)
             .overlay(
-                Circle()
-                    .strokeBorder(filled ? Color.posPrimary : Color.posOutline,
-                                  lineWidth: Constants.dotBorderWidth)
+                Circle().strokeBorder(filled ? Color.posPrimary : Color.posOutline,
+                                      lineWidth: Constants.dotBorderWidth)
             )
             .frame(width: Constants.dotSize, height: Constants.dotSize)
+            .offset(y: yOffset)
     }
 
-    // MARK: - Numpad
+    func waveOffset(index: Int, date: Date) -> CGFloat {
+        guard isLoading else {
+            return 0
+        }
+        let time = date.timeIntervalSinceReferenceDate
+        return sin(time * Constants.waveSpeed + Double(index) * Constants.wavePhase) * Constants.waveHeight
+    }
 
-    private var numpad: some View {
-        VStack(spacing: POSSpacing.medium) {
-            ForEach(Constants.numpadRows, id: \.self) { row in
-                HStack(spacing: POSSpacing.medium) {
+    func lockoutMessage(_ text: String) -> some View {
+        Text(text)
+            .font(.posBodyMediumRegular())
+            .foregroundColor(.posError)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minHeight: Constants.statusRowHeight)
+    }
+
+    func lockoutCountdown(until date: Date) -> some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            let remaining = helper.remainingLockoutSeconds(until: date, now: context.date)
+            lockoutMessage(helper.lockoutMessage(remainingSeconds: remaining))
+                .onChange(of: remaining <= 0) { _, expired in
+                    if expired {
+                        onLockoutExpired?()
+                    }
+                }
+        }
+    }
+
+    var numpad: some View {
+        VStack(spacing: Constants.keySpacing) {
+            ForEach(Constants.rows, id: \.self) { row in
+                HStack(spacing: Constants.keySpacing) {
                     ForEach(row, id: \.self) { key in
-                        numpadButton(for: key)
+                        keyButton(for: key)
                     }
                 }
             }
         }
-        .opacity(isInputDisabled ? Constants.disabledOpacity : 1.0)
-        .animation(.default, value: isInputDisabled)
+        .opacity(isInputEnabled ? 1 : Constants.disabledOpacity)
+        .animation(.default, value: isInputEnabled)
     }
 
     @ViewBuilder
-    private func numpadButton(for key: String) -> some View {
-        if key == Constants.emptyKey {
-            Color.clear
-                .frame(width: Constants.buttonSize, height: Constants.buttonSize)
-        } else if key == Constants.deleteKey {
-            Button {
-                handleDelete()
-            } label: {
+    func keyButton(for key: String) -> some View {
+        switch key {
+        case Constants.emptyKey:
+            Color.clear.frame(width: Constants.keySize, height: Constants.keySize)
+        case Constants.deleteKey:
+            keyContainer(action: handleDelete) {
                 Image(systemName: "delete.backward")
-                    .font(.posBodyXLargeRegular)
+                    .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
-                    .frame(width: Constants.buttonSize, height: Constants.buttonSize)
             }
-            .disabled(isInputDisabled || helper.enteredPIN.isEmpty)
             .accessibilityLabel(Localization.deleteAccessibilityLabel)
-        } else {
-            Button {
-                handleDigit(key)
-            } label: {
+            .disabled(!isInputEnabled || enteredPIN.isEmpty)
+        default:
+            keyContainer(action: { handleDigit(key) }) {
                 Text(key)
                     .font(.posHeadingBold)
                     .foregroundColor(.posOnSurface)
-                    .frame(width: Constants.buttonSize, height: Constants.buttonSize)
-                    .background(Color.posSurfaceContainerLow)
-                    .cornerRadius(POSCornerRadiusStyle.medium.value)
             }
-            .disabled(isInputDisabled)
+            .disabled(!isInputEnabled)
         }
     }
 
-    // MARK: - Cancel Button
-
-    private func cancelButton(action: @escaping () -> Void) -> some View {
-        Button {
-            action()
-        } label: {
-            Text(Localization.cancel)
+    func keyContainer<Label: View>(action: @escaping () -> Void, @ViewBuilder label: () -> Label) -> some View {
+        Button(action: action) {
+            label()
+                .frame(width: Constants.keySize, height: Constants.keySize)
+                .background(Color.posSurface)
+                .cornerRadius(POSCornerRadiusStyle.medium.value)
         }
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .buttonStyle(.plain)
     }
+}
 
-    // MARK: - Input Handling
+// MARK: - Input handling
 
-    private func handleDigit(_ digit: String) {
-        let update = helper.handleDigit(digit, state: state)
-        if update.shouldResetState {
-            state = .idle
+private extension POSPINEntryView {
+    func handleDigit(_ key: String) {
+        guard isInputEnabled, let digit = key.first else {
+            return
         }
-        if let pin = update.submittedPIN {
-            onPINEntered(pin)
-        }
-    }
-
-    private func handleDelete() {
-        if helper.handleDelete(state: state) {
-            state = .idle
-        }
-    }
-
-    // MARK: - State Change Handling
-
-    private func handleStateChange(_ newState: POSPINEntryState) {
-        if helper.applyStateChange(newState) {
-            triggerShake()
-        }
-    }
-
-    private func triggerShake() {
-        withAnimation(.default) {
-            shakeOffset = Constants.shakeDistance
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.shakeStepDuration) {
-            withAnimation(.default) {
-                shakeOffset = -Constants.shakeDistance
+        let result = helper.acceptingDigit(digit, currentPIN: enteredPIN, length: pinLength)
+        enteredPIN = result.pin
+        haptics.digitEntered()
+        if result.shouldSubmit {
+            Task {
+                let succeeded = await onComplete(result.pin)
+                if !succeeded {
+                    handleFailedAttempt()
+                }
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.shakeStepDuration * 2) {
-            withAnimation(.default) {
-                shakeOffset = Constants.shakeDistance / 2
-            }
+    }
+
+    func handleDelete() {
+        guard isInputEnabled else {
+            return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.shakeStepDuration * 3) {
-            withAnimation(.default) {
-                shakeOffset = 0
-            }
+        enteredPIN = helper.removingLastDigit(from: enteredPIN)
+    }
+
+    func handleStateChange(_ newState: POSPINEntryState) {
+        if case .idle = newState {
+            enteredPIN = ""
         }
+    }
+
+    func handleFailedAttempt() {
+        enteredPIN = ""
+        haptics.attemptFailed()
+        withAnimation(.linear(duration: Constants.shakeDuration)) {
+            shakeAmount += 1
+        }
+        if case .error(let kind) = state {
+            AccessibilityNotification.Announcement(Localization.message(for: kind)).post()
+        }
+    }
+}
+
+// MARK: - Shake
+
+private struct ShakeEffect: GeometryEffect {
+    var animatableData: CGFloat
+
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        let translation = Constants.shakeTravel * sin(animatableData * .pi * Constants.shakeCount)
+        return ProjectionTransform(CGAffineTransform(translationX: translation, y: 0))
+    }
+
+    private enum Constants {
+        static let shakeTravel: CGFloat = 8
+        static let shakeCount: CGFloat = 3
     }
 }
 
@@ -256,18 +234,20 @@ struct POSPINEntryView: View {
 
 private extension POSPINEntryView {
     enum Constants {
-        static let maxWidth: CGFloat = 400
-        static let buttonSize: CGFloat = 72
-        static let dotSize: CGFloat = 16
+        static let dotSize: CGFloat = 22
+        static let statusRowHeight = dotSize
         static let dotBorderWidth: CGFloat = 2
-        static let errorMessageHeight: CGFloat = 40
-        static let shakeDistance: CGFloat = 10
-        static let shakeStepDuration: TimeInterval = 0.08
-        static let waveHeight: CGFloat = 6
+        static let keySize: CGFloat = 72
+        static let keySpacing: CGFloat = POSSpacing.medium
+        static let keypadHeight = keySize * CGFloat(rows.count) + keySpacing * CGFloat(rows.count - 1)
         static let disabledOpacity: Double = 0.4
+        static let shakeDuration: TimeInterval = 0.4
+        static let waveHeight: CGFloat = 6
+        static let waveSpeed: Double = 5.0
+        static let wavePhase: Double = 0.7
         static let emptyKey = ""
-        static let deleteKey = "DEL"
-        static let numpadRows: [[String]] = [
+        static let deleteKey = "delete"
+        static let rows: [[String]] = [
             ["1", "2", "3"],
             ["4", "5", "6"],
             ["7", "8", "9"],
@@ -280,47 +260,92 @@ private extension POSPINEntryView {
 
 private extension POSPINEntryView {
     enum Localization {
-        static let cancel = NSLocalizedString(
-            "pos.pinEntry.cancel",
-            value: "Cancel",
-            comment: "Cancel button on the POS PIN entry numpad"
-        )
         static let deleteAccessibilityLabel = NSLocalizedString(
             "pos.pinEntry.delete.accessibilityLabel",
             value: "Delete",
-            comment: "Accessibility label for the delete button on the POS PIN entry numpad"
+            comment: "Accessibility label for the delete key on the POS PIN numpad"
         )
+        static let dotsAccessibilityLabel = NSLocalizedString(
+            "pos.pinEntry.dots.accessibilityLabel",
+            value: "PIN entry",
+            comment: "Accessibility label for the PIN dots on the POS PIN numpad"
+        )
+        static let dotsAccessibilityValueFormat = NSLocalizedString(
+            "pos.pinEntry.dots.accessibilityValue",
+            value: "%1$d of %2$d digits entered",
+            comment: "Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total."
+        )
+        static func dotsAccessibilityValue(entered: Int, total: Int) -> String {
+            String.localizedStringWithFormat(dotsAccessibilityValueFormat, entered, total)
+        }
+        static let invalidPINMessage = NSLocalizedString(
+            "pos.pinEntry.error.invalidPIN",
+            value: "Incorrect PIN. Try again.",
+            comment: "VoiceOver announcement when an entered POS PIN is incorrect."
+        )
+        static let genericErrorMessage = NSLocalizedString(
+            "pos.pinEntry.error.generic",
+            value: "Something went wrong. Try again.",
+            comment: "VoiceOver announcement when validating the entered POS PIN fails unexpectedly."
+        )
+        static func message(for kind: POSPINErrorKind) -> String {
+            switch kind {
+            case .invalidPIN: invalidPINMessage
+            case .generic: genericErrorMessage
+            }
+        }
+    }
+}
+
+extension POSPINEntryView {
+    static let contentWidth: CGFloat = 420
+    static let contentSpacing: CGFloat = POSSpacing.xLarge
+    static let titleToPINSpacing: CGFloat = POSSpacing.large
+
+    static var preferredHeight: CGFloat {
+        Constants.statusRowHeight + contentSpacing + Constants.keypadHeight
     }
 }
 
 // MARK: - Preview
 
 #if DEBUG
-#Preview("PIN Entry - Default") {
-    @Previewable @State var pinState: POSPINEntryState = .idle
-
-    POSPINEntryView(
-        title: "Enter your PIN",
-        subtitle: "Enter your 4-digit PIN to continue",
-        state: $pinState,
-        onPINEntered: { pin in
-            pinState = .error(message: "Invalid PIN")
-        },
-        onCancel: {}
-    )
-    .padding()
-    .background(Color.posSurfaceDim)
+#Preview("Idle") {
+    POSPINEntryView(state: .idle, onComplete: { _ in true })
+        .padding()
+        .background(Color.posSurfaceContainerLow)
 }
 
-#Preview("PIN Entry - Lockout") {
-    @Previewable @State var pinState: POSPINEntryState = .lockout(message: "Too many attempts. Try again in 30s.")
+#Preview("Error") {
+    POSPINEntryView(state: .error(kind: .invalidPIN), onComplete: { _ in false })
+        .padding()
+        .background(Color.posSurfaceContainerLow)
+}
 
-    POSPINEntryView(
-        title: "Enter your PIN",
-        state: $pinState,
-        onPINEntered: { _ in }
-    )
+#Preview("Lockout") {
+    POSPINEntryView(state: .lockout(until: Date().addingTimeInterval(30)), onComplete: { _ in true })
+        .padding()
+        .background(Color.posSurfaceContainerLow)
+}
+
+#Preview("Loading") {
+    POSPINEntryView(state: .loading, onComplete: { _ in true })
+        .padding()
+        .background(Color.posSurfaceContainerLow)
+}
+
+#Preview("Interactive (wrong PIN)") {
+    @Previewable @State var state: POSPINEntryState = .idle
+    POSPINEntryView(state: state, onComplete: { _ in
+        state = .loading
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                state = .error(kind: .invalidPIN)
+                continuation.resume(returning: false)
+            }
+        }
+    })
     .padding()
-    .background(Color.posSurfaceDim)
+    .background(Color.posSurfaceContainerLow)
 }
 #endif

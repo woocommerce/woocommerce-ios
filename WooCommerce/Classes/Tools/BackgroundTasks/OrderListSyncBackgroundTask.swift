@@ -70,7 +70,7 @@ private struct CurrentOrderListSyncUseCase {
     @MainActor
     private func fetchFilters() async -> FilterOrderListViewModel.Filters {
         return await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { (result) in
+            let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { result in
                 switch result {
                 case .success(let settings):
                     let filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,

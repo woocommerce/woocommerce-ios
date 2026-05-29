@@ -21,9 +21,9 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - statuses: Filters the Orders by the specified Status, if any.
-    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///     - after: If given, limit response to orders published after a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
-    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
+    ///     - before: If given, limit response to resources published before a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine.
     ///     This method will convert it to UTC ISO 8601 before calling the REST API.

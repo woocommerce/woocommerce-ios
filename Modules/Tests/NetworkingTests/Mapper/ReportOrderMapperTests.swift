@@ -27,7 +27,7 @@ class ReportOrderMapperTests: XCTestCase {
         }
 
         var reportTotals = [OrderStatusEnum: Int]()
-        results.forEach({ (orderStatus) in
+        results.forEach({ orderStatus in
             let status = OrderStatusEnum(rawValue: orderStatus.slug)
             reportTotals[status] = orderStatus.total
         })

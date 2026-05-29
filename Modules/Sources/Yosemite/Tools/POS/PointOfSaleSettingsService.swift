@@ -41,12 +41,20 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
     public func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         let siteSettings = try await settingStoreMethods.retrievePointOfSaleSettings(siteID: siteID)
         return POSReceiptInformation(
-            storeName: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name"),
-            storeAddress: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address"),
-            phone: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone"),
-            email: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email"),
-            refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
+            storeName: settingValue(from: siteSettings, settingID: SettingIDs.storeName),
+            storeAddress: settingValue(from: siteSettings, settingID: SettingIDs.storeAddress),
+            phone: settingValue(from: siteSettings, settingID: SettingIDs.phone),
+            email: settingValue(from: siteSettings, settingID: SettingIDs.email),
+            refundReturnsPolicy: settingValue(from: siteSettings, settingID: SettingIDs.refundReturnsPolicy)
         )
+    }
+
+    private enum SettingIDs {
+        static let storeName = "woocommerce_pos_store_name"
+        static let storeAddress = "woocommerce_pos_store_address"
+        static let phone = "woocommerce_pos_store_phone"
+        static let email = "woocommerce_pos_store_email"
+        static let refundReturnsPolicy = "woocommerce_pos_refund_returns_policy"
     }
 
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {

@@ -9,6 +9,7 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
 private typealias Dependencies = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Dependencies
+private typealias RefundDetails = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Details
 
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -90,6 +91,43 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
+    func test_submitRefund_with_cardInserted_reader_event_shows_cardInserted_alert() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .cardInserted)
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.cardInsertedWasCalled)
+    }
+
+    func test_submitRefund_with_removeCardRequested_reader_event_shows_reader_message() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .removeCardRequested("Remove card"))
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.displayReaderMessageWasCalled)
+        XCTAssertEqual(alerts.spyDisplayReaderMessage, "Remove card")
+    }
+
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -113,6 +151,31 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertFalse(onboardingPresenter.spyShowOnboardingWasCalled)
+    }
+
+    func test_submitRefund_with_missing_server_side_refund_response_returns_failure() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .cardPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: nil)
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .missingCreatedRefund)
     }
 
     func test_submitRefund_with_interac_payment_method_calls_showOnboardingIfRequired() throws {
@@ -393,15 +456,37 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 }
 
 private extension RefundSubmissionUseCaseTests {
+    func interacRefundDetails(siteID: Int64 = Mocks.siteID) -> RefundDetails {
+        .init(order: .fake().copy(siteID: siteID, total: "2.28"),
+              charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                details: .init(brand: .visa,
+                               last4: "9969",
+                               funding: .credit,
+                               receipt: .init(accountType: .credit,
+                                              applicationPreferredName: "Stripe Credit",
+                                              dedicatedFileName: "A000000003101001")))),
+              amount: "2.28",
+              paymentGatewayAccount: createPaymentGatewayAccount(siteID: siteID))
+    }
+
     func mockServerSideRefund(result: Result<Void, Error>) {
+        let refund: Refund?
+        let error: Error?
+        switch result {
+        case .success:
+            refund = .fake()
+            error = nil
+        case .failure(let failure):
+            refund = nil
+            error = failure
+        }
+        mockServerSideRefund(refund: refund, error: error)
+    }
+
+    func mockServerSideRefund(refund: Refund?, error: Error?) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {
-                switch result {
-                case .success:
-                    completion(.fake(), nil)
-                case .failure(let error):
-                    completion(nil, error)
-                }
+                completion(refund, error)
             }
         }
     }
@@ -463,7 +548,7 @@ private extension RefundSubmissionUseCaseTests {
 
         return RefundSubmissionUseCase(
             details: details,
-            rootViewController: .init(),
+            rootViewController: NullViewControllerPresenting(),
             alerts: alerts,
             cardPresentConfiguration: Mocks.configuration,
             cardReaderConnectionAlerts: cardReaderConnectionAlerts,

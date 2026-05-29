@@ -256,6 +256,11 @@ private extension POSTabCoordinator {
                 orderService = POSOrderService(siteID: siteID, network: posNetwork)
             }
 
+            let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                       stores: storesManager,
+                                                                       storageManager: storageManager,
+                                                                       currencySettings: currencySettings)
+
             var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
             if ProcessConfiguration.shouldLoadMockedPOSProducts {
                 itemProvider = PointOfSaleItemServiceScreenshotMock()
@@ -275,11 +280,6 @@ private extension POSTabCoordinator {
                 preferredConnectionMethod = .bluetooth
             }
 
-            let staffSettingsMode = self.createStaffSettingsMode(
-                siteID: siteID,
-                stores: storesManager
-            )
-
             let posView = PointOfSaleEntryPointView(
                 siteID: siteID,
                 itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible, network: posNetwork),
@@ -294,6 +294,7 @@ private extension POSTabCoordinator {
                 ),
                 orderService: orderService,
                 refundsService: refundsService,
+                refundSubmissionProcessor: refundSubmissionProcessor,
                 onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                     self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                 },
@@ -311,12 +312,13 @@ private extension POSTabCoordinator {
                 grdbManager: grdbManager,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible,
+                receiptSettingsAdminURL: storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? "",
                 sunsetWarningChecker: sunsetWarningChecker,
                 tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                 preferredConnectionMethod: preferredConnectionMethod,
                 services: serviceAdaptor,
-                itemProvider: itemProvider,
-                staffSettingsMode: staffSettingsMode
+                staffFetcher: POSStaffAdaptor(network: posNetwork),
+                itemProvider: itemProvider
             )
 
             let hostingController = UIHostingController(rootView: posView)
@@ -326,43 +328,11 @@ private extension POSTabCoordinator {
     }
 }
 
-private extension POSTabCoordinator {
-    func createStaffSettingsMode(siteID: Int64, stores: StoresManager) -> POSStaffSettingsMode? {
-        let featureFlagService = ServiceLocator.featureFlagService
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleStaff) else {
-            return nil
-        }
-        let siteURL = stores.sessionManager.defaultSite?.url ?? ""
-        let manageURL = URL(string: "\(siteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")
-            ?? URL(string: "about:blank")!
-        return POSStaffSettingsMode(
-            loadStaff: {
-                try await withCheckedThrowingContinuation { continuation in
-                    let action = POSStaffAction.fetchStaff(siteID: siteID) { result in
-                        switch result {
-                        case .success(let members):
-                            continuation.resume(returning: members)
-                        case .failure(let error):
-                            continuation.resume(throwing: error)
-                        }
-                    }
-                    Task { @MainActor in
-                        stores.dispatch(action)
-                    }
-                }
-            },
-            manageURL: manageURL
-        )
-    }
 
+private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
         updateTrackEventPrefix(isPointOfSaleActive)
-
-        // When POS exits, clear the lock state so it doesn't auto-reopen next launch.
-        if !isPointOfSaleActive {
-            UserDefaults.standard.set(false, forKey: POSLockStateKey.isLocked)
-        }
     }
 
     /// Disables foreground in-app notifications when Point of Sale is active.

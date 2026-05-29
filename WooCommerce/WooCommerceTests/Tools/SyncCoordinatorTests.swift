@@ -73,7 +73,7 @@ class SyncCoordinatorTests: XCTestCase {
     ///
     func testEnsureNextPageIsSynchronizedEffectivelyAttemptsToSynchronizeNextPage() {
         let expectation = self.expectation(description: "Sync Callback")
-        delegate.onSync = { (page, callback) in
+        delegate.onSync = { page, callback in
             XCTAssertEqual(page, self.secondPageNumber)
             callback?(true)
 
@@ -89,7 +89,7 @@ class SyncCoordinatorTests: XCTestCase {
     ///
     func testEnsureNextPageIsSynchronizedMarksCacheAsValidOnSuccess() {
         let expectation = self.expectation(description: "Sync Callback")
-        delegate.onSync = { (_, callback) in
+        delegate.onSync = { _, callback in
             callback?(true)
 
             XCTAssertFalse(self.coordinator.isCacheInvalid(pageNumber: self.secondPageNumber))
@@ -106,7 +106,7 @@ class SyncCoordinatorTests: XCTestCase {
     ///
     func testEnsureNextPageIsSynchronizedMarksCacheAsValidOnError() {
         let expectation = self.expectation(description: "Sync Callback")
-        delegate.onSync = { (_, callback) in
+        delegate.onSync = { _, callback in
             callback?(false)
 
             XCTAssertTrue(self.coordinator.isCacheInvalid(pageNumber: self.secondPageNumber))
@@ -122,7 +122,7 @@ class SyncCoordinatorTests: XCTestCase {
     ///
     func testEnsureNextPageIsSynchronizedEffectivelyTracksPagesBeingSynced() {
         let expectation = self.expectation(description: "Sync Callback")
-        delegate.onSync = { (_, callback) in
+        delegate.onSync = { _, callback in
 
             XCTAssertTrue(self.coordinator.isPageBeingSynced(pageNumber: self.secondPageNumber))
             callback?(false)

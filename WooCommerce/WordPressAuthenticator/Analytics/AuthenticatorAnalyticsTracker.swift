@@ -9,7 +9,7 @@ public class AuthenticatorAnalyticsTracker {
     private static let defaultFlow: Flow = .prologue
     private static let defaultStep: Step = .prologue
 
-    /// The method used for analytics tracking.  Useful for overriding in automated tests.
+    /// The method used for analytics tracking. Useful for overriding in automated tests.
     ///
     typealias TrackerMethod = (_ event: AnalyticsEvent) -> Void
 
@@ -288,9 +288,9 @@ public class AuthenticatorAnalyticsTracker {
     /// State for the analytics tracker.
     ///
     public class State {
-        internal(set) public var lastFlow: Flow
-        internal(set) public var lastSource: Source
-        internal(set) public var lastStep: Step
+        public internal(set) var lastFlow: Flow
+        public internal(set) var lastSource: Source
+        public internal(set) var lastStep: Step
 
         init(lastFlow: Flow = AuthenticatorAnalyticsTracker.defaultFlow, lastSource: Source = AuthenticatorAnalyticsTracker.defaultSource, lastStep: Step = AuthenticatorAnalyticsTracker.defaultStep) {
             self.lastFlow = lastFlow
@@ -303,12 +303,12 @@ public class AuthenticatorAnalyticsTracker {
     ///
     public let state = State()
 
-    /// The backing analytics tracking method.  Can be overridden for testing purposes.
+    /// The backing analytics tracking method. Can be overridden for testing purposes.
     ///
     let track: TrackerMethod
 
-    /// Whether tracking is enabled or not.  This is just a convenience configuration to enable this tracker to be turned on and off
-    /// using a feature flag.  It should go away once we remove the legacy tracking.
+    /// Whether tracking is enabled or not. This is just a convenience configuration to enable this tracker to be turned on and off
+    /// using a feature flag. It should go away once we remove the legacy tracking.
     ///
     let enabled: Bool
 
@@ -319,7 +319,7 @@ public class AuthenticatorAnalyticsTracker {
         self.track = track
     }
 
-    /// Resets the flow and step to the defaults.  The source is left untouched, and should only be set explicitely.
+    /// Resets the flow and step to the defaults. The source is left untouched, and should only be set explicitly.
     ///
     func resetState() {
         set(flow: Self.defaultFlow)
@@ -339,7 +339,7 @@ public class AuthenticatorAnalyticsTracker {
     }
 
     /// This is a convenience method, that's useful for cases where we simply want to check if the legacy tracking should be
-    /// enabled.  It can be particularly useful in cases where we don't have a matching tracking call in the new flow.
+    /// enabled. It can be particularly useful in cases where we don't have a matching tracking call in the new flow.
     ///
     ///  - Returns: `true` if we must use legacy tracking, `false` otherwise.
     ///
@@ -425,7 +425,7 @@ public class AuthenticatorAnalyticsTracker {
 
     // MARK: - Event Construction & Context Updating
 
-    /// Creates an event for a step.  Updates the state machine.
+    /// Creates an event for a step. Updates the state machine.
     ///
     /// - Parameters:
     ///     - step: the step we're tracking.
@@ -443,7 +443,7 @@ public class AuthenticatorAnalyticsTracker {
         return event
     }
 
-    /// Creates an event for a failure.  Loads the properties from the state machine.
+    /// Creates an event for a failure. Loads the properties from the state machine.
     ///
     /// - Parameters:
     ///     - failure: the error message we want to track.
@@ -459,7 +459,7 @@ public class AuthenticatorAnalyticsTracker {
             properties: properties)
     }
 
-    /// Creates an event for a click interaction.  Loads the properties from the state machine.
+    /// Creates an event for a click interaction. Loads the properties from the state machine.
     ///
     /// - Parameters:
     ///     - click: the target of the click interaction.

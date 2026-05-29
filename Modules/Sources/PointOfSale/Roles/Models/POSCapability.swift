@@ -1,15 +1,8 @@
-import Foundation
-
-/// POS capability identifiers matching backend WooCommerce capabilities.
-/// Only capabilities that are actively gated in the iOS app are listed here.
-/// Add new cases when the app needs to check a new capability.
-public enum POSCapability: String, CaseIterable, Sendable {
-    /// View POS settings. Managers and admins.
+enum POSCapability: String, CaseIterable, Sendable {
+    // Raw values match the WordPress capability identifiers reported for a staff member.
+    case viewPOS = "view_pos"
     case viewPOSSettings = "view_pos_settings"
-    /// Modify settings, manage staff, exit POS. Admins only.
     case editPOSSettings = "edit_pos_settings"
-    /// Issue refunds.
     case refundShopOrders = "refund_shop_orders"
-    /// Create coupons.
-    case publishCoupons = "publish_shop_coupons"
+    case publishShopCoupons = "publish_shop_coupons"
 }

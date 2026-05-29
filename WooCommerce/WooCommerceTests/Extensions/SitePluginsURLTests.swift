@@ -57,4 +57,11 @@ final class Site_PluginsURLTests: XCTestCase {
         // Then
         XCTAssertEqual(site.cardPresentPluginHasPendingTasksURL(plugin: .stripe), expectedURL)
     }
+
+    func test_receiptSettingsAdminURL_then_returns_point_of_sale_settings_URL() {
+        let expectedURL = adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
+
+        // Then
+        XCTAssertEqual(site.receiptSettingsAdminURL, expectedURL)
+    }
 }

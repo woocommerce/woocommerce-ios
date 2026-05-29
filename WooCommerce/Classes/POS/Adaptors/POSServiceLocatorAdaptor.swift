@@ -14,7 +14,6 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
-import protocol PointOfSale.POSPermissionProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
@@ -42,22 +41,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
-    }
-
-    private lazy var _permissions: POSPermissionProviding = {
-        let sessionManager = ServiceLocator.stores.sessionManager
-        let userID = sessionManager.defaultAccount?.userID ?? 0
-        let displayName = sessionManager.defaultAccount?.displayName ?? ""
-        let siteID = sessionManager.defaultSite?.siteID ?? 0
-        return POSPermissionAdaptor.createProvider(
-            siteID: siteID,
-            userID: userID,
-            displayName: displayName
-        )
-    }()
-
-    var permissions: POSPermissionProviding {
-        _permissions
     }
 }
 

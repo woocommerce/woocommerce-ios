@@ -314,7 +314,7 @@ extension ShippingLabelAddressFormViewModel {
 
         state.isLoading = true
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] result in
             switch result {
             case .success:
                 ServiceLocator.analytics.track(.shippingLabelAddressValidationSucceeded)

@@ -52,6 +52,14 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return Self.isWeightValid(weightPerUnit)
     }
 
+    var isDescriptionTooLong: Bool {
+        Self.isDescriptionTooLong(description, isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired)
+    }
+
+    var isValidDescription: Bool {
+        Self.isDescriptionValid(description, isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired)
+    }
+
     @Published var requiredInformationIsEntered: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -62,6 +70,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     /// Introduced to enforce tariff validation
     /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
     @Published private(set) var isHSTariffNumberRequired: Bool = false
+    @Published private(set) var isDescriptionLengthLimitRequired: Bool = false
 
     init(itemName: String,
          itemProductID: Int64,
@@ -71,6 +80,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          currencySymbol: String,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
          isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
+         isDescriptionLengthLimitRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
@@ -91,6 +101,9 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         isHSTariffNumberRequired?
             .assign(to: &$isHSTariffNumberRequired)
+
+        isDescriptionLengthLimitRequired?
+            .assign(to: &$isDescriptionLengthLimitRequired)
 
         fetchCountries()
 
@@ -136,15 +149,15 @@ private extension WooShippingCustomsItemViewModel {
             $weightPerUnit,
             $selectedCountry
         )
-        .combineLatest($hsTariffNumber, $isHSTariffNumberRequired)
+        .combineLatest($hsTariffNumber, $isHSTariffNumberRequired, $isDescriptionLengthLimitRequired)
         .sink { [weak self] result in
             guard let self else { return }
 
-            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired) = result
+            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired, isDescriptionLengthLimitRequired) = result
 
             let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) || (isValidTariffNumber && hsTariffNumber.isNotEmpty)
 
-            requiredInformationIsEntered = description.isNotEmpty &&
+            requiredInformationIsEntered = Self.isDescriptionValid(description, isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired) &&
             valuePerUnit.isNotEmpty &&
             Self.isWeightValid(weightPerUnit) &&
             selectedCountry != nil &&
@@ -175,6 +188,18 @@ private extension WooShippingCustomsItemViewModel {
 
     static func isWeightNonZero(_ weightValue: Double) -> Bool {
         return weightValue > 0
+    }
+
+    static func isDescriptionValid(_ description: String, isDescriptionLengthLimitRequired: Bool) -> Bool {
+        return description.isNotEmpty && !isDescriptionTooLong(description, isDescriptionLengthLimitRequired: isDescriptionLengthLimitRequired)
+    }
+
+    static func isDescriptionTooLong(_ description: String, isDescriptionLengthLimitRequired: Bool) -> Bool {
+        return isDescriptionLengthLimitRequired && description.count > Constants.maximumUSPSDomesticMailDescriptionLength
+    }
+
+    enum Constants {
+        static let maximumUSPSDomesticMailDescriptionLength = 30
     }
 }
 

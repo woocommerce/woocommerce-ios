@@ -3,6 +3,8 @@ import Foundation
 import Observation
 import UIKit
 import Yosemite
+import EventHorizonSDK
+import protocol WooFoundation.Analytics
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -107,6 +109,7 @@ final class PushNotificationPreferencesViewModel {
     private let currencySettings: CurrencySettings
     private let notificationCenter: UserNotificationsCenterAdapter
     private let appStateNotificationCenter: NotificationCenter
+    private let analytics: Analytics
 
     private var appStateSubscription: AnyCancellable?
 
@@ -114,13 +117,15 @@ final class PushNotificationPreferencesViewModel {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
-         appStateNotificationCenter: NotificationCenter = .default) {
+         appStateNotificationCenter: NotificationCenter = .default,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.currencySettings = currencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.notificationCenter = notificationCenter
         self.appStateNotificationCenter = appStateNotificationCenter
+        self.analytics = analytics
         observeAppState()
     }
 
@@ -160,6 +165,7 @@ final class PushNotificationPreferencesViewModel {
         } catch {
             DDLogError("⛔️ Error loading push notification preferences for siteID=\(siteID): \(error)")
             loadState = .error
+            analytics.track(.notificationsSettingsLoadFailed)
         }
     }
 
@@ -196,9 +202,17 @@ final class PushNotificationPreferencesViewModel {
         }
     }
 
+    /// Fires `notificationsDetailView` for the given screen. Called by the
+    /// detail views from `.onAppear`.
+    func detailDidAppear(notificationType: NotificationTypeValue) {
+        analytics.track(.notificationsDetailView(notificationType: notificationType))
+    }
+
     func setStoreOrderEnabled(_ newValue: Bool) {
         displayed = displayed.with(storeOrder: .init(enabled: newValue,
                                                      minAmount: displayed.storeOrder?.minAmount))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .newOrder,
+                                                       isEnabled: newValue))
     }
 
     /// Reverts only the new-order section of `displayed` to `lastSaved`.
@@ -211,6 +225,7 @@ final class PushNotificationPreferencesViewModel {
     }
 
     func setStoreOrderMinAmount(_ newValue: Decimal?) {
+        let previous = displayed.storeOrder?.minAmount
         let normalized: Decimal? = {
             guard let value = newValue, value > 0 else { return nil }
             return value
@@ -218,11 +233,14 @@ final class PushNotificationPreferencesViewModel {
         rememberLastKnownMinAmount(from: normalized)
         displayed = displayed.with(storeOrder: .init(enabled: isStoreOrderEnabled,
                                                      minAmount: normalized))
+        trackStoreOrderMinAmountTransition(previous: previous, current: normalized)
     }
 
     func setStoreReviewEnabled(_ newValue: Bool) {
         displayed = displayed.with(storeReview: .init(enabled: newValue,
                                                       maxRating: displayed.storeReview?.maxRating))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .newReview,
+                                                       isEnabled: newValue))
     }
 
     /// Reverts only the new-review section of `displayed` to `lastSaved`.
@@ -235,6 +253,7 @@ final class PushNotificationPreferencesViewModel {
     }
 
     func setStoreReviewMaxRating(_ newValue: Int?) {
+        let previous = displayed.storeReview?.maxRating
         // Clamp any non-nil value to the server-supported `1...5` range; nil
         // stays nil ("all reviews").
         let normalized: Int? = {
@@ -244,6 +263,7 @@ final class PushNotificationPreferencesViewModel {
         rememberLastKnownMaxRating(from: normalized)
         displayed = displayed.with(storeReview: .init(enabled: isStoreReviewEnabled,
                                                       maxRating: normalized))
+        trackStoreReviewMaxRatingTransition(previous: previous, current: normalized)
     }
 
     func setStoreStockEnabled(_ newValue: Bool) {
@@ -252,6 +272,8 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsDetailPushToggle(notificationType: .stockAlert,
+                                                       isEnabled: newValue))
     }
 
     func setStoreStockLowStock(_ newValue: Bool) {
@@ -260,6 +282,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: newValue,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsStockOptionToggle(option: .lowStock, isEnabled: newValue))
     }
 
     func setStoreStockOutOfStock(_ newValue: Bool) {
@@ -268,6 +291,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: newValue,
                                                      onBackorder: existing?.onBackorder))
+        analytics.track(.notificationsStockOptionToggle(option: .outOfStock, isEnabled: newValue))
     }
 
     func setStoreStockOnBackorder(_ newValue: Bool) {
@@ -276,6 +300,7 @@ final class PushNotificationPreferencesViewModel {
                                                      lowStock: existing?.lowStock,
                                                      outOfStock: existing?.outOfStock,
                                                      onBackorder: newValue))
+        analytics.track(.notificationsStockOptionToggle(option: .onBackorder, isEnabled: newValue))
     }
 
     /// Reverts only the stock section of `displayed` to `lastSaved`. Other
@@ -320,6 +345,45 @@ private extension PushNotificationPreferencesViewModel {
     func rememberLastKnownMaxRating(from value: Int?) {
         guard let value, (1...5).contains(value) else { return }
         lastKnownStoreReviewMaxRating = value
+    }
+
+    /// Maps a transition on the new-order threshold to the analytics event
+    /// that best describes the user's intent: nil ↔ non-nil is a radio
+    /// switch between "All" and "High-value"; non-nil → non-nil is a
+    /// threshold edit. Same-value transitions and nil-to-nil are no-ops.
+    func trackStoreOrderMinAmountTransition(previous: Decimal?, current: Decimal?) {
+        switch (previous, current) {
+        case (.some, nil):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newOrder,
+                                                                    filterOption: .all))
+        case (nil, .some):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newOrder,
+                                                                    filterOption: .filtered))
+        case let (oldValue?, newValue?) where oldValue != newValue:
+            analytics.track(.notificationsDetailFilterValueChange(notificationType: .newOrder,
+                                                                   filterValue: NSDecimalNumber(decimal: newValue).floatValue))
+        default:
+            break
+        }
+    }
+
+    /// Maps a transition on the new-review max rating to the analytics
+    /// event that best describes the user's intent. Mirrors the new-order
+    /// rules; see `trackStoreOrderMinAmountTransition`.
+    func trackStoreReviewMaxRatingTransition(previous: Int?, current: Int?) {
+        switch (previous, current) {
+        case (.some, nil):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newReview,
+                                                                    filterOption: .all))
+        case (nil, .some):
+            analytics.track(.notificationsDetailFilterOptionSelect(notificationType: .newReview,
+                                                                    filterOption: .filtered))
+        case let (oldValue?, newValue?) where oldValue != newValue:
+            analytics.track(.notificationsDetailFilterValueChange(notificationType: .newReview,
+                                                                   filterValue: Float(newValue)))
+        default:
+            break
+        }
     }
 }
 

@@ -362,7 +362,7 @@ final class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNil(error)
             XCTAssertEqual(order, remoteOrder)
 
@@ -384,7 +384,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(order)
             XCTAssertNil(error)
 
@@ -416,7 +416,7 @@ final class OrderStoreTests: XCTestCase {
         let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
 
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
 
@@ -438,7 +438,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, _) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
 
@@ -591,7 +591,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
 
-    /// Verifies that `upsertStoredOrder` doesnt mark a Pre Existant order as "Search Results" (since it's been already
+    /// Verifies that `upsertStoredOrder` doesn't mark a Pre Existant order as "Search Results" (since it's been already
     /// retrieved for "Regular Scroll" display).
     ///
     func testUpsertStoredOrderDoesntMarkPreExistantOrdersAsSearchResults() {
@@ -670,7 +670,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
 
@@ -687,7 +687,7 @@ final class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
 
@@ -709,7 +709,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
         network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound())
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)

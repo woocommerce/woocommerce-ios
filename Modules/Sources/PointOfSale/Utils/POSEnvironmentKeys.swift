@@ -59,6 +59,10 @@ struct POSSearchTextFieldUnfocusedBorderColorKey: EnvironmentKey {
     static let defaultValue: Color = .posSurfaceBright
 }
 
+struct POSAccessSessionKey: EnvironmentKey {
+    static let defaultValue: POSAccessSession = UnrestrictedPOSAccessSession()
+}
+
 extension EnvironmentValues {
     var posAnalytics: POSAnalyticsProviding {
         get { self[POSAnalyticsKey.self] }
@@ -98,6 +102,11 @@ extension EnvironmentValues {
     var posSearchTextFieldUnfocusedBorderColor: Color {
         get { self[POSSearchTextFieldUnfocusedBorderColorKey.self] }
         set { self[POSSearchTextFieldUnfocusedBorderColorKey.self] = newValue }
+    }
+
+    var posAccessSession: POSAccessSession {
+        get { self[POSAccessSessionKey.self] }
+        set { self[POSAccessSessionKey.self] = newValue }
     }
 }
 

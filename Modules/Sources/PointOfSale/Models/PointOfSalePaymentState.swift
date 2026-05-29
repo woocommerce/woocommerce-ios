@@ -82,10 +82,7 @@ struct PointOfSalePaymentState: Equatable {
         return allowsSecondaryPaymentMethod
     }
 
-    /// Whether the POS auto-lock inactivity timer should be paused. True while a payment
-    /// flow is mid-flight so locking under the cashier doesn't interrupt the customer
-    /// transaction. Transient error states aren't suppressed: the cashier needs to recover
-    /// from them, and resuming the timer ensures the iPad locks if they walk away.
+    /// True while a payment is mid-flight. Errors aren't suppressed - the cashier may walk away.
     var isAutoLockSuppressing: Bool {
         switch card {
         case .validatingOrder, .preparingReader, .acceptingCard,

@@ -1,9 +1,7 @@
 import Foundation
 
-/// UserDefaults key for the per-site POS lock state.
-///
-/// Public so the app target (`POSTabCoordinator`, `MainTabBarController`) can read and clear
-/// the persisted value at app-lifecycle boundaries the POS module doesn't see.
+/// Per-site UserDefaults key for the POS lock state. Public so the app target can read it
+/// at lifecycle boundaries the POS module doesn't see.
 public enum POSLockStateKey {
     private static let baseKey = "com.woocommerce.pos.isLocked"
 

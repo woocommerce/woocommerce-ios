@@ -254,10 +254,7 @@ public struct PointOfSaleEntryPointView: View {
             await accessSession.refreshPINStatus()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-            // Background-lock is an intentional security exception: we lock even mid-payment
-            // because the operator has actively switched away from the app, not just gone
-            // idle at the counter. The "do not lock mid-payment" suppression applies only
-            // to the inactivity timer in POSAutoLockActivityTracker.
+            // Active app switch, not idle - lock even mid-payment.
             guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }

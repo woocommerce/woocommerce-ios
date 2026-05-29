@@ -75,7 +75,7 @@ struct POSAutoLockActivityControllerTests {
     }
 
     @Test func test_handleTimerFire_when_payment_succeeds_and_then_idle_past_timeout_then_locks() {
-        // Given - card payment ended, dashboard idle 5 minutes
+        // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         var paymentState = PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)
         let clock = ClockHandle()
@@ -86,8 +86,6 @@ struct POSAutoLockActivityControllerTests {
             now: clock.now
         )
         defer { sut.stop() }
-
-        // Payment ends - simulates the .onChange handler firing noteActivity().
         paymentState = .idle
         sut.noteActivity()
         clock.advance(by: 600)
@@ -100,7 +98,7 @@ struct POSAutoLockActivityControllerTests {
     }
 
     @Test func test_noteActivity_then_resets_the_idle_window() {
-        // Given - controller created at t=0, lastActivityAt = 0
+        // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff())
         let clock = ClockHandle()
         let sut = POSAutoLockActivityController(
@@ -111,14 +109,13 @@ struct POSAutoLockActivityControllerTests {
         )
         defer { sut.stop() }
 
-        // When - 250s pass with no activity, then user taps
+        // When
         clock.advance(by: 250)
         sut.noteActivity()
-        // 250s more pass (total 500s since creation but only 250s since the tap)
         clock.advance(by: 250)
-
-        // Then - the activity reset the window, so handleTimerFire should restart not lock
         sut.handleTimerFire()
+
+        // Then
         #expect(session.lockCallCount == 0)
     }
 
@@ -133,17 +130,15 @@ struct POSAutoLockActivityControllerTests {
             now: clock.now
         )
         defer { sut.stop() }
-
-        // First throttled call resets - lastActivityAt = 0
         sut.noteActivityThrottled()
 
-        // When - same second, a second throttled call should be ignored
+        // When
         clock.advance(by: 0.5)
         sut.noteActivityThrottled()
-
-        // Then - 300s after the original (not the suppressed second) call, lock should fire
         clock.advance(by: 300)
         sut.handleTimerFire()
+
+        // Then
         #expect(session.lockCallCount == 1)
     }
 
@@ -160,10 +155,9 @@ struct POSAutoLockActivityControllerTests {
         defer { sut.stop() }
         sut.noteActivityThrottled()
 
-        // When - 2s later (well past 1s throttle), another touch
+        // When
         clock.advance(by: 2)
         sut.noteActivityThrottled()
-        // Then - 290s after the second activity, no lock yet (timeout 300)
         clock.advance(by: 290)
         sut.handleTimerFire()
 
@@ -172,8 +166,7 @@ struct POSAutoLockActivityControllerTests {
     }
 
     @Test func test_handleTimerFire_when_session_unlocked_then_relocked_via_noteActivity_then_relocks_after_timeout() {
-        // Given - simulates the Codex P1 path: session locked, user signs in (calls
-        // noteActivity via the isLocked .onChange), then walks away.
+        // Given
         let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: true, hasAnyPINs: true)
         let clock = ClockHandle()
         let sut = POSAutoLockActivityController(
@@ -183,8 +176,6 @@ struct POSAutoLockActivityControllerTests {
             now: clock.now
         )
         defer { sut.stop() }
-
-        // Simulate the unlocked transition triggering noteActivity
         session.isLocked = false
         sut.noteActivity()
         clock.advance(by: 500)

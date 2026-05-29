@@ -1,12 +1,10 @@
 import Foundation
 
-/// Owns the POS auto-lock inactivity timer and decides when to call `session.lock()`.
-/// Extracted from `POSAutoLockActivityTracker` so the timer-firing decision is unit-testable
-/// without a SwiftUI hosting controller. The view modifier wires SwiftUI events into the
-/// `noteActivity*` calls below; everything else lives here.
+/// Owns the POS auto-lock timer. Decoupled from the view modifier so the timer-fire
+/// decision is unit-testable.
 @MainActor
 final class POSAutoLockActivityController {
-    static let defaultTimeout: TimeInterval = 5
+    static let defaultTimeout: TimeInterval = 300
 
     private static let activityThrottle: TimeInterval = 1
 
@@ -46,7 +44,6 @@ final class POSAutoLockActivityController {
         timer = nil
     }
 
-    /// Internal so tests can drive the timer-fire decision deterministically.
     func handleTimerFire() {
         guard session.hasAnyPINs, session.currentStaff != nil else {
             stop()
@@ -56,9 +53,7 @@ final class POSAutoLockActivityController {
             restartTimer()
             return
         }
-        // Catch the case where activity landed between the Timer firing and the
-        // @MainActor hop. Without this guard a touch that arrived ~microseconds
-        // before us would still see auto-lock fire on top of the user's hand.
+        // Activity may have landed between Timer fire and the @MainActor hop.
         if now().timeIntervalSince(lastActivityAt) < timeout {
             restartTimer()
             return

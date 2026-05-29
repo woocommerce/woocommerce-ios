@@ -1223,16 +1223,11 @@ private extension MainTabBarController {
 }
 
 private extension MainTabBarController {
-    /// If POS was locked when the app terminated, reopens POS on cold launch so the
-    /// operator returns to the same lock screen instead of the dashboard.
-    /// Gated on the `pointOfSaleRoles` feature flag so a stale persisted key from a
-    /// prior flag-on session can't trigger a flag-off auto-reopen.
+    /// Reopen POS on cold launch if the active site's persisted key says it was locked.
     func autoReopenPOSIfNeeded(siteID: Int64) {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
         guard needsPOSAutoReopenCheck else { return }
-        // The per-site key check has to come BEFORE consuming the one-shot, otherwise a
-        // launch whose first active site isn't the locked one would silently burn the
-        // flag and a later site switch to the locked site wouldn't auto-reopen.
+        // Consume the one-shot only when the active site is the locked one.
         guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
         needsPOSAutoReopenCheck = false
 

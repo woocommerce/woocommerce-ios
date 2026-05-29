@@ -1230,9 +1230,11 @@ private extension MainTabBarController {
     func autoReopenPOSIfNeeded(siteID: Int64) {
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
         guard needsPOSAutoReopenCheck else { return }
-        needsPOSAutoReopenCheck = false
-
+        // The per-site key check has to come BEFORE consuming the one-shot, otherwise a
+        // launch whose first active site isn't the locked one would silently burn the
+        // flag and a later site switch to the locked site wouldn't auto-reopen.
         guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+        needsPOSAutoReopenCheck = false
 
         DispatchQueue.main.async { [weak self] in
             self?.posTabCoordinator?.onTabSelected()

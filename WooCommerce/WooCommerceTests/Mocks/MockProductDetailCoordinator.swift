@@ -12,7 +12,8 @@ class MockProductDetailNativeCoordinator: ProductDetailNativeCoordinator {
     override func viewController(product: Product,
                         presentationStyle: ProductDetailNavigator.Presentation,
                         isReadOnly: Bool,
-                        onDelete: (() -> Void)?) -> UIViewController {
+                        onDelete: (() -> Void)?,
+                        onDuplicate: ((Product) -> Void)?) -> UIViewController {
         UIViewController()
     }
 }

@@ -207,13 +207,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
-    /// Enables POS Staff Roles & Permissions.
-    ///
-    /// Behind this flag the app fetches `GET /wc-pos/v1/staff` on POS entry,
-    /// caches the PBKDF2-hashed staff list in the Keychain, and validates PIN
-    /// entry locally. See https://peacockp2.wordpress.com/?p=34760 for the design.
-    case pointOfSaleStaff
-
     /// Enables Point of Sale on iPhone (prototype).
     /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
     /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.

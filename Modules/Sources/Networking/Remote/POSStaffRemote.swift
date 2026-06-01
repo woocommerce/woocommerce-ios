@@ -5,11 +5,11 @@ import Foundation
 public final class POSStaffRemote: Remote {
 
     /// Fetches the POS staff list for the given site. Requires the device user to hold
-    /// `manage_pos_staff` server-side.
+    /// `manage_woocommerce` server-side (admin / shop_manager).
     ///
     public func fetchStaff(siteID: Int64) async throws -> [POSStaffMember] {
         let request = JetpackRequest(
-            wooApiVersion: .pointOfSaleV1,
+            wooApiVersion: .wcPosV1,
             method: .get,
             siteID: siteID,
             path: Path.staff,

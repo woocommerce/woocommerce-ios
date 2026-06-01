@@ -8,8 +8,10 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAccessSession) private var accessSession
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @State private var isStaffRefreshing: Bool = true
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -54,6 +56,7 @@ struct PointOfSaleDashboardView: View {
         case loading(isCatalogSyncing: Bool = false)
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
+        case locked
         case content
         case unsupportedWidth
     }
@@ -62,6 +65,9 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
+            pinStatus: accessSession.pinStatus,
+            isLocked: accessSession.isLocked,
+            isStaffRefreshing: isStaffRefreshing,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         )
@@ -80,30 +86,26 @@ struct PointOfSaleDashboardView: View {
                     .ignoresSafeArea()
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
-                    try await posModel.entryPointController.refreshEligibility(reason: reason)
+                    async let staffAndItems: () = userInitiatedRefresh()
+                    do {
+                        try await posModel.entryPointController.refreshEligibility(reason: reason)
+                    } catch {
+                        await staffAndItems
+                        throw error
+                    }
+                    await staffAndItems
                 })
                 .frame(maxWidth: .infinity)
             case .error(let error):
-                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                    if error.errorType == .initialCatalogSyncError {
-                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
-                    }
-
-                    Task {
-                        switch viewStateCoordinator.selectedItemListType {
-                        case .products(search: false):
-                            await posModel.purchasableItemsController.loadItems(base: .root)
-                        case .products(search: true):
-                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                        case .coupons(search: false):
-                            await posModel.couponsSearchController.loadItems(base: .root)
-                        case .coupons(search: true):
-                            await posModel.couponsSearchController.loadItems(base: .root)
-                        }
-                    }
-                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    dismiss()
-                } : nil)
+                PointOfSaleItemListFullscreenErrorView(
+                    error: error,
+                    onAction: { errorActionHandler(for: error) },
+                    onExit: errorExitHandler(for: error)
+                )
+            case .locked:
+                POSLockScreenView(session: accessSession)
+                    .transition(.opacity)
+                    .ignoresSafeArea()
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
@@ -180,6 +182,9 @@ struct PointOfSaleDashboardView: View {
         .onAppear {
             trackTimeForInitialLoadingState()
             loadItemsWhenEligible()
+        }
+        .task {
+            await refreshStaff()
         }
         .onChange(of: viewState) { oldValue, newValue in
             if newValue == .content && oldValue != newValue {
@@ -569,6 +574,44 @@ private extension PointOfSaleDashboardView {
 }
 
 private extension PointOfSaleDashboardView {
+    func refreshStaff() async {
+        isStaffRefreshing = true
+        await accessSession.refreshPINStatus()
+        isStaffRefreshing = false
+    }
+
+    func userInitiatedRefresh() async {
+        async let staffTask: () = refreshStaff()
+        async let itemsTask: () = reloadCurrentItemList()
+        _ = await (staffTask, itemsTask)
+    }
+
+    func errorActionHandler(for error: PointOfSaleErrorState) {
+        if error.errorType == .initialCatalogSyncError {
+            analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
+        }
+        Task { await userInitiatedRefresh() }
+    }
+
+    // TODO: WOOMOB-1692 remove specialisation of errors if possible
+    func errorExitHandler(for error: PointOfSaleErrorState) -> (() -> Void)? {
+        guard error.errorType == .initialCatalogSyncError else { return nil }
+        return { dismiss() }
+    }
+
+    func reloadCurrentItemList() async {
+        switch viewStateCoordinator.selectedItemListType {
+        case .products(search: false):
+            await posModel.purchasableItemsController.loadItems(base: .root)
+        case .products(search: true):
+            await posModel.purchasableItemsSearchController.loadItems(base: .root)
+        case .coupons(search: false):
+            await posModel.couponsSearchController.loadItems(base: .root)
+        case .coupons(search: true):
+            await posModel.couponsSearchController.loadItems(base: .root)
+        }
+    }
+
     func trackTimeForInitialLoadingState() {
         waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
     }

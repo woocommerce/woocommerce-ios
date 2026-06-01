@@ -1,6 +1,6 @@
 import Foundation
 
-/// Maps the `GET /wc-pos/v1/staff` JSON response into `[POSStaffMember]`.
+/// Maps the `GET /wc/pos/v1/staff` JSON response into `[POSStaffMember]`.
 ///
 /// Handles both shapes the iOS networking layer can produce:
 /// - Direct REST: `{"staff": [...]}` (e.g. application-password requests)

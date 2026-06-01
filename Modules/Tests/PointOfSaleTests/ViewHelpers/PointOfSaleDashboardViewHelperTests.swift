@@ -18,6 +18,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -36,6 +39,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -56,6 +62,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -82,6 +91,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -102,6 +114,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -120,6 +135,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -151,6 +169,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -171,6 +192,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -189,6 +213,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -207,6 +234,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: false
         )
@@ -227,6 +257,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -245,6 +278,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -263,6 +299,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -281,6 +320,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )
@@ -304,6 +346,9 @@ struct PointOfSaleDashboardViewHelperTests {
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
+            pinStatus: .absent,
+            isLocked: false,
+            isStaffRefreshing: false,
             horizontalSizeClass: horizontalSizeClass,
             isPhonePrototypeEnabled: true
         )

@@ -13,14 +13,17 @@ struct PointOfSaleItemListFullscreenErrorView: View {
     }
 
     var body: some View {
-        PointOfSaleItemListFullscreenView(showTitle: !isInitialCatalogSyncError) {
+        PointOfSaleItemListFullscreenView(showTitle: !hidesItemListTitle) {
             POSListErrorView(error: error, onAction: onAction, onExit: onExit)
         }
     }
 
     // TODO: WOOMOB-1692 remove specialisation of errors if possible
-    private var isInitialCatalogSyncError: Bool {
-        error.errorType == .initialCatalogSyncError
+    private var hidesItemListTitle: Bool {
+        switch error.errorType {
+        case .initialCatalogSyncError, .staffLoadError: true
+        default: false
+        }
     }
 }
 

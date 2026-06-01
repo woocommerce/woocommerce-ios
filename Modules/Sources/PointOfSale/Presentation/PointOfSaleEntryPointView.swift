@@ -255,11 +255,7 @@ public struct PointOfSaleEntryPointView: View {
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
         }
-        .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
-        .task {
-            await accessSession.refreshPINStatus()
-        }
     }
 }
 

@@ -141,12 +141,12 @@ private extension POSFloatingControlView {
     }
 
     func requestExitPermission() {
-        guard !accessSession.allows(.editPOSSettings) else {
+        guard !accessSession.allows(.exitPOS) else {
             showExitPOSModal = true
             return
         }
         exitOverrideHandler.requestApproval(
-            for: .editPOSSettings,
+            for: .exitPOS,
             reason: Localization.exitOverrideDescription,
             onApproved: { _ in showExitPOSModal = true }
         )

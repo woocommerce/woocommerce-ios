@@ -13,12 +13,12 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         sut.requestApproval(
-            for: .refundShopOrders,
+            for: .issueRefunds,
             reason: "Refunding orders requires manager approval"
         )
 
         // Then
-        #expect(sut.request?.capability == .refundShopOrders)
+        #expect(sut.request?.capability == .issueRefunds)
         #expect(sut.request?.reason == "Refunding orders requires manager approval")
         #expect(sut.pinEntryState == .idle)
     }
@@ -28,7 +28,7 @@ struct POSManagerOverrideHandlerTests {
         var loadingStateObserved = false
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval")
+        sut.requestApproval(for: .createCoupons, reason: "Creating coupons requires manager approval")
         session.onManagerApproval = {
             if sut.pinEntryState == .loading {
                 loadingStateObserved = true
@@ -72,7 +72,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN))
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
+        sut.requestApproval(for: .issueRefunds, reason: "Refunding orders requires manager approval")
 
         // When
         let succeeded = await sut.submit(pin: "9999")
@@ -80,8 +80,8 @@ struct POSManagerOverrideHandlerTests {
         // Then
         #expect(succeeded == false)
         #expect(session.managerApprovalPINs == ["9999"])
-        #expect(session.managerApprovalCapabilities == [.refundShopOrders])
-        #expect(sut.request?.capability == .refundShopOrders)
+        #expect(session.managerApprovalCapabilities == [.issueRefunds])
+        #expect(sut.request?.capability == .issueRefunds)
         #expect(sut.pinEntryState == .error(kind: .invalidPIN))
     }
 
@@ -89,7 +89,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let session = MockPOSAccessSession(managerApprovalResult: .failure(.unknown))
         let sut = POSManagerOverrideHandler(session: session)
-        sut.requestApproval(for: .publishShopCoupons, reason: "Creating coupons requires manager approval")
+        sut.requestApproval(for: .createCoupons, reason: "Creating coupons requires manager approval")
 
         // When
         let succeeded = await sut.submit(pin: "1234")
@@ -97,7 +97,7 @@ struct POSManagerOverrideHandlerTests {
         // Then
         #expect(succeeded == false)
         #expect(session.managerApprovalPINs == ["1234"])
-        #expect(sut.request?.capability == .publishShopCoupons)
+        #expect(sut.request?.capability == .createCoupons)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
 
@@ -125,7 +125,7 @@ struct POSManagerOverrideHandlerTests {
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
-            for: .refundShopOrders,
+            for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
             onApproved: {
                 firstCompletionWasCalled = true
@@ -133,7 +133,7 @@ struct POSManagerOverrideHandlerTests {
         )
         session.onManagerApproval = {
             sut.requestApproval(
-                for: .publishShopCoupons,
+                for: .createCoupons,
                 reason: "Creating coupons requires manager approval",
                 onApproved: {
                     secondCompletionWasCalled = true
@@ -146,8 +146,8 @@ struct POSManagerOverrideHandlerTests {
 
         // Then
         #expect(session.managerApprovalPINs == ["1234"])
-        #expect(session.managerApprovalCapabilities == [.refundShopOrders])
-        #expect(sut.request?.capability == .publishShopCoupons)
+        #expect(session.managerApprovalCapabilities == [.issueRefunds])
+        #expect(sut.request?.capability == .createCoupons)
         #expect(sut.pinEntryState == .idle)
         #expect(firstCompletionWasCalled == false)
         #expect(secondCompletionWasCalled == false)
@@ -159,7 +159,7 @@ struct POSManagerOverrideHandlerTests {
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
-            for: .refundShopOrders,
+            for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
             onApproved: {
                 completionWasCalled = true
@@ -174,7 +174,7 @@ struct POSManagerOverrideHandlerTests {
 
         // Then
         #expect(session.managerApprovalPINs == ["1234"])
-        #expect(session.managerApprovalCapabilities == [.refundShopOrders])
+        #expect(session.managerApprovalCapabilities == [.issueRefunds])
         #expect(sut.request == nil)
         #expect(sut.pinEntryState == .idle)
         #expect(completionWasCalled == false)
@@ -187,7 +187,7 @@ struct POSManagerOverrideHandlerTests {
         let session = MockPOSAccessSession()
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
-            for: .refundShopOrders,
+            for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
             onApproved: {
                 firstCompletionWasCalled = true
@@ -197,7 +197,7 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         sut.requestApproval(
-            for: .publishShopCoupons,
+            for: .createCoupons,
             reason: "Creating coupons requires manager approval",
             onApproved: {
                 secondCompletionWasCalled = true
@@ -210,9 +210,9 @@ struct POSManagerOverrideHandlerTests {
         #expect(sut.request == nil)
         #expect(sut.pinEntryState == .idle)
         #expect(secondRequest?.id != firstRequestID)
-        #expect(secondRequest?.capability == .publishShopCoupons)
+        #expect(secondRequest?.capability == .createCoupons)
         #expect(secondRequest?.reason == "Creating coupons requires manager approval")
-        #expect(session.managerApprovalCapabilities == [.publishShopCoupons])
+        #expect(session.managerApprovalCapabilities == [.createCoupons])
         #expect(firstCompletionWasCalled == false)
         #expect(secondCompletionWasCalled)
     }
@@ -220,14 +220,14 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_submit_when_session_is_missing_then_shows_generic_error() async {
         // Given
         let sut = POSManagerOverrideHandler()
-        sut.requestApproval(for: .refundShopOrders, reason: "Refunding orders requires manager approval")
+        sut.requestApproval(for: .issueRefunds, reason: "Refunding orders requires manager approval")
 
         // When
         let succeeded = await sut.submit(pin: "1234")
 
         // Then
         #expect(succeeded == false)
-        #expect(sut.request?.capability == .refundShopOrders)
+        #expect(sut.request?.capability == .issueRefunds)
         #expect(sut.pinEntryState == .error(kind: .generic))
     }
 }

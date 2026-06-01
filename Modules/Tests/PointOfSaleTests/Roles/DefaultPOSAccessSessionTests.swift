@@ -171,7 +171,7 @@ struct DefaultPOSAccessSessionTests {
 
         // When / Then
         await #expect(throws: POSAuthError.unknown) {
-            try await sut.session.requestManagerApproval(withPIN: "1234", for: .refundShopOrders)
+            try await sut.session.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
         }
     }
 
@@ -180,13 +180,13 @@ struct DefaultPOSAccessSessionTests {
         let staff = POSStaff(
             displayName: "Maya",
             role: "shop_manager",
-            capabilities: [POSCapability.refundShopOrders.rawValue]
+            capabilities: [POSCapability.issueRefunds.rawValue]
         )
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == true)
+        #expect(sut.session.allows(.issueRefunds) == true)
     }
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
@@ -196,7 +196,7 @@ struct DefaultPOSAccessSessionTests {
         try await sut.session.signIn(withPIN: "1234")
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == false)
+        #expect(sut.session.allows(.issueRefunds) == false)
     }
 
     @Test func test_allows_when_no_currentStaff_then_returns_false() {
@@ -204,7 +204,7 @@ struct DefaultPOSAccessSessionTests {
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == false)
+        #expect(sut.session.allows(.issueRefunds) == false)
     }
 }
 

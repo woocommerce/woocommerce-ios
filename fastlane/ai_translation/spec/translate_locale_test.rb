@@ -3,6 +3,7 @@
 require 'minitest/autorun'
 require 'tmpdir'
 require 'fileutils'
+require 'json'
 require_relative '../bin/translate_locale'
 
 # Regression coverage for the two data-loss bugs fixed in the engine PR:
@@ -45,8 +46,27 @@ class TranslateLocaleTest < Minitest::Test
   end
 
   FakeTranslator = Struct.new(:mapping) do
-    def translate(locale:, items:, model:)
+    def translate(locale:, items:, model:, style: nil)
+      _ = style # accepted to match the real translator signature; intentionally ignored
       items.to_h { |i| [i[:id], mapping.fetch(i[:id], "#{i[:source]}::#{locale}::#{model}")] }
+    end
+  end
+
+  # Records the system blocks it is handed and echoes each source back as its
+  # translation (covering every id, so the Translator never splits/retries).
+  # Used to prove the style guide reaches the per-locale system prompt block.
+  class RecordingClient
+    attr_reader :captured_system_blocks
+
+    def initialize
+      @captured_system_blocks = []
+    end
+
+    def complete(model:, system_blocks:, user_content:)
+      _ = model
+      @captured_system_blocks << system_blocks
+      payload = JSON.parse(user_content.lines.last)
+      JSON.generate(payload.to_h { |item| [item['id'], item['source']] })
     end
   end
 
@@ -264,5 +284,43 @@ class TranslateLocaleTest < Minitest::Test
     reparsed = WooAiTranslation::IosResources::Parser.parse_file(output)
     assert_equal Set.new(%w[a b c]), Set.new(reparsed.units.map(&:name))
     assert_empty tmp_artifacts_in(@dir)
+  end
+
+  # --- style guides reach the prompt -----------------------------------------
+
+  def test_load_style_guide_prefers_locale_specific_file
+    # 'pl' ships a style/pl.md guide.
+    path, text = load_style_guide('pl')
+    assert_equal 'pl.md', File.basename(path)
+    refute_empty text
+  end
+
+  def test_load_style_guide_falls_back_to_default
+    # 'zz' has no style file, so the default guide is used.
+    path, text = load_style_guide('zz')
+    assert_equal 'default.md', File.basename(path)
+    refute_empty text
+  end
+
+  def test_translate_file_threads_style_guide_into_system_prompt
+    # Given an EN source and a style guide string.
+    en = write_strings(File.join(@dir, 'en.strings'), [%w[a Cancel], %w[b Save]])
+    output = File.join(@dir, 'Localizable.strings')
+    client = RecordingClient.new
+    translator = WooAiTranslation::Translator.new(client: client, batch_size: 40, logger: NOOP_LOGGER)
+    style_text = 'STYLE-GUIDE-MARKER: prefer the formal register.'
+
+    # When we translate with that style guide threaded in.
+    translate_file(
+      input_path: en, output_path: output,
+      translator: translator, locale: 'pl', model: 'm',
+      limit: nil, logger: NOOP_LOGGER, incremental: false,
+      manifest: nil, escalation_model: nil, style: style_text
+    )
+
+    # Then the guide text lands in the per-locale system block of the prompt.
+    refute_empty client.captured_system_blocks
+    joined = client.captured_system_blocks.flatten.join("\n")
+    assert_includes joined, style_text
   end
 end

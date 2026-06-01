@@ -5,6 +5,12 @@
 #
 # Adding to this list is a hard constraint: translators (human or AI) cannot
 # transliterate or localize these terms. Remove only with stakeholder review.
+#
+# The validator matches each entry on word boundaries (a standalone token), not
+# as a bare substring. Even so, do NOT add single letters or generic dictionary
+# words (e.g. "X", "Mail", "POS", "PIN"): as standalone tokens they collide with
+# ordinary copy ("5 x 3", "Mail" the verb, "PIN" the noun) and force spurious
+# verbatim retention. Prefer the unambiguous full form ("Point of Sale").
 
 # Top-level brands
 brands:
@@ -30,7 +36,6 @@ features:
   - Blaze
   - Spark
   - Point of Sale
-  - POS
 
 # Hardware / network technologies (treated as proper nouns in UI)
 tech:
@@ -47,13 +52,11 @@ apple:
   - iPad
   - iOS
   - Safari
-  - Mail
   - Apple Maps
 
 # Other third-party services that appear verbatim
 external:
   - Google
-  - X
   - Yahoo Mail
   - Microsoft Outlook
   - DHL
@@ -66,7 +69,6 @@ standards:
   - SKU
   - URL
   - URI
-  - PIN
   - QR
   - GTIN
   - UPC

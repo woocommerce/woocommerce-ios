@@ -83,6 +83,11 @@ module WooAiTranslation
     # in the source, we don't also flag Woo (which is a substring of it).
     # We sort brands by length descending and mask each found occurrence so
     # subsequent (shorter) brand checks don't double-count it.
+    #
+    # Matching is word-boundary anchored (not bare substring) so a brand only
+    # counts when it stands alone as a token: "POS" must not fire inside
+    # "POSITION", nor "PIN" inside "SHIPPING". The boundary is defined against
+    # Unicode letters/digits on either side, so it holds across scripts.
     def brand_violations(source, translation)
       src = source.to_s.dup
       tx = translation.to_s
@@ -90,16 +95,24 @@ module WooAiTranslation
 
       violations = []
       sorted.each do |brand|
-        next unless src.include?(brand)
+        pattern = brand_pattern(brand)
+        next unless src.match?(pattern)
 
         # Mask this brand in the working copy so shorter brands that are
         # substrings won't trigger.
-        src.gsub!(brand, "\u0001" * brand.length)
-        next if tx.include?(brand)
+        src.gsub!(pattern, "\u0001" * brand.length)
+        next if tx.match?(pattern)
 
         violations << { rule: :brand_safety, term: brand, expected: brand }
       end
       violations
+    end
+
+    # A case-sensitive, word-boundary match for one brand. Lookbehind/lookahead
+    # reject an adjacent letter or digit so the brand must appear as a standalone
+    # token. Regexp.escape keeps dotted brands like "WordPress.com" literal.
+    def brand_pattern(brand)
+      /(?<![\p{L}\p{N}])#{Regexp.escape(brand)}(?![\p{L}\p{N}])/
     end
 
     # The glossary rule fires only when the source EQUALS a glossary key

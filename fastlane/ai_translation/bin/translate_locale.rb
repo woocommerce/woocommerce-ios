@@ -152,7 +152,7 @@ end
 
 def translate_file(input_path:, output_path:, translator:, locale:, model:, limit:, logger:,
                    incremental: false, manifest: nil, escalation_model: nil, validator: nil,
-                   smoke_run: !limit.nil?)
+                   style: nil, smoke_run: !limit.nil?)
   doc = WooAiTranslation::IosResources::Parser.parse_file(input_path)
   all_units = doc.translatable_units
   # Build the Set via Set.new (not Array#to_set): referencing the Set constant
@@ -181,7 +181,7 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
     return [0, [], [], []]
   end
 
-  results = run_translation(translator, locale, units_to_translate, model)
+  results = run_translation(translator, locale, units_to_translate, model, style: style)
   logger.call("[#{locale}] primary pass returned #{results.size} translations (model=#{model})")
 
   # In incremental mode we preserve existing values for unchanged keys by
@@ -207,7 +207,7 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
     retry_names = Set.new((failed_validation + failed_glossary).map { |f| f[:name] })
     retry_units = units_to_translate.select { |u| retry_names.include?(u.name) }
     logger.call("[#{locale}] escalating #{retry_units.size} failed entries to #{escalation_model}")
-    retry_results = run_translation(translator, locale, retry_units, escalation_model)
+    retry_results = run_translation(translator, locale, retry_units, escalation_model, style: style)
     extra_translated, _retry_missing, still_failing_v, still_failing_g = apply_results(
       retry_units, retry_results, by_name,
       manifest: record_manifest, model: escalation_model, origin: 'ai-opus-retry', validator: validator
@@ -270,9 +270,9 @@ ensure
   File.delete(tmp_path) if tmp_path && File.exist?(tmp_path)
 end
 
-def run_translation(translator, locale, units, model)
+def run_translation(translator, locale, units, model, style: nil)
   items = units.map { |u| { id: u.name, source: u.entries.first[:source], context: u.comment } }
-  translator.translate(locale: locale, items: items, model: model)
+  translator.translate(locale: locale, items: items, model: model, style: style)
 end
 
 # Walk units_to_translate, apply each result, and report counts. Mutates
@@ -358,6 +358,23 @@ def merge_with_existing(en_units, target_path)
   en_units
 end
 
+# Load the per-locale style guide (style/<locale>.md), falling back to
+# style/default.md. The text is passed to the translator as additional
+# system-prompt context (register, numerals, locale pitfalls). Returns nil when
+# neither file exists, in which case the translator uses its built-in
+# default_style copy.
+def load_style_guide(locale)
+  base = File.expand_path('../style', __dir__)
+  path = [File.join(base, "#{locale}.md"), File.join(base, 'default.md')].find { |p| File.exist?(p) }
+  return nil unless path
+
+  # Style guides are authored in UTF-8 (accents, non-Latin examples). Read with
+  # an explicit encoding so a non-UTF-8 default external encoding (some CI
+  # locales) doesn't raise on .strip / string ops.
+  text = File.read(path, encoding: Encoding::UTF_8).strip
+  text.empty? ? nil : [path, text]
+end
+
 def main(argv)
   opts = parse_args(argv)
   locale = opts[:locale]
@@ -405,6 +422,11 @@ def main(argv)
   end
   logger.call("validator loaded: brands=#{validator&.brands&.size || 0} terms=#{validator&.terms&.size || 0}") if validator
 
+  # Load the per-locale style guide (or the default) and thread it into the
+  # translator's system prompt so register/numeral/locale guidance is applied.
+  style_path, style = load_style_guide(locale)
+  logger.call(style ? "style guide loaded from #{File.basename(style_path)} (#{style.length} chars)" : 'no style guide; using built-in default')
+
   out_dir = File.join(TARGET_BASE, "#{locale}.lproj")
 
   # A --limit run is a smoke test of the whole locale, not just the first file.
@@ -420,7 +442,7 @@ def main(argv)
     translator: translator, locale: locale, model: opts[:model],
     limit: opts[:limit], logger: logger, incremental: opts[:incremental],
     manifest: manifest, escalation_model: escalation_model,
-    validator: validator, smoke_run: smoke_run
+    validator: validator, style: style, smoke_run: smoke_run
   )
   logger.call("Localizable.strings done in #{(Time.now - t0).round(1)}s")
   total_translated = trans
@@ -439,7 +461,7 @@ def main(argv)
         translator: translator, locale: locale, model: opts[:model],
         limit: nil, logger: logger, incremental: opts[:incremental],
         manifest: manifest, escalation_model: escalation_model,
-        validator: validator, smoke_run: smoke_run
+        validator: validator, style: style, smoke_run: smoke_run
       )
       logger.call("InfoPlist.strings done in #{(Time.now - t0).round(1)}s")
       total_translated += trans

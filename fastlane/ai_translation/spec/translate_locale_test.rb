@@ -369,6 +369,22 @@ class TranslateLocaleTest < Minitest::Test
     )
   end
 
+  def test_verify_round_trip_matches_backslash_before_physical_newline
+    # Given a written locale whose key is a backslash followed by a PHYSICAL
+    # newline ("a\<LF>b" on disk, not the two-char "a\nb"). The parser treats
+    # `\<LF>` as an escaped literal newline, decoding to "a<LF>b" in memory.
+    output = File.join(@dir, 'Localizable.strings')
+    File.write(output, %("a\\\nb" = "Value";\n))
+
+    # When we verify against the post-decode unit name, the key round-trips
+    # cleanly. This pins the /m flag: without it the scanner's `\\.` cannot span
+    # the newline, the key would be missed, and verification would raise.
+    assert_nil verify_round_trip!(
+      output, [translated_unit("a\nb", 'Source', 'Value')],
+      logger: NOOP_LOGGER, locale: 'pl'
+    )
+  end
+
   # --- style guides reach the prompt -----------------------------------------
 
   def test_load_style_guide_prefers_locale_specific_file

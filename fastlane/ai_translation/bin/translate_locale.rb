@@ -230,10 +230,11 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
   # Two write paths, both guarded so a smoke run (`--limit`) never mutates the
   # tracked file or persists the manifest:
   #   - Incremental PR-time runs splice only the freshly-translated entries into
-  #     the existing target file in place, so the bot's `Translate: ...` commit
+  #     a temp copy of the existing target, so the bot's `Translate: ...` commit
   #     touches only the keys that actually changed (preserved-line writer,
-  #     woocommerce-android#15972). The full-file round-trip still runs, so a
-  #     dropped/extra key is still caught.
+  #     woocommerce-android#15972). The full-file round-trip runs on the temp
+  #     before it is atomically renamed into place, so a dropped/extra key is
+  #     caught without ever mutating the committed locale on failure.
   #   - Bootstrap (no existing target, or first locale ever) goes through the
   #     guarded atomic writer: temp render -> round-trip verify -> shrink-guard
   #     (refuse to drop source keys) -> atomic rename.

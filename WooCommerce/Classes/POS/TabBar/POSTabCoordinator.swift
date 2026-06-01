@@ -188,7 +188,7 @@ private extension POSTabCoordinator {
             // Shared network for all POS services that make mutating API calls. Every
             // request authenticates as the device admin per the M1 plan — there is no
             // per-staff Application Password override; staff identity rides as
-            // `_pos_attribution` order meta instead.
+            // `_pos_staff_user_id` order meta instead.
             guard let credentials else {
                 DDLogError("⛔️ POS cannot start without credentials")
                 return

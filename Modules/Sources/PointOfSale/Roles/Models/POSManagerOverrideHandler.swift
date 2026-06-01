@@ -6,8 +6,7 @@ import Observation
 final class POSManagerOverrideHandler {
     @ObservationIgnored private var session: POSAccessSession?
     /// Approver-aware callback. Receives the manager `POSStaff` that authorized the action
-    /// so callers can attach `_wc_pos_override_staff_id` / `_wc_pos_override_reason` meta
-    /// on the next request.
+    /// so callers can attach `_pos_override_staff_user_id` meta on the next request.
     @ObservationIgnored private var onApproved: ((POSStaff) -> Void)?
 
     private(set) var request: POSManagerOverrideRequest?
@@ -53,6 +52,11 @@ final class POSManagerOverrideHandler {
             let approver = try await session.requestManagerApproval(withPIN: pin, for: request.capability)
             guard self.request?.id == activeRequestID else { return true }
             dismiss()
+            // Yield so the override modal's dismissal flushes through the shared `POSModalManager`
+            // before the success callback (which typically presents the next modal) runs. Without
+            // this gap the two writes race in the same runloop tick and `dismiss()` can clobber
+            // the new `present(...)`, leaving the user with no modal at all.
+            await Task.yield()
             activeOnApproved?(approver)
             return true
         } catch {

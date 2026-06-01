@@ -257,7 +257,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             }
 
             var parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
-            // Caller-supplied meta (e.g. POS `_pos_staff_user_id` / `_pos_override_*`) is
+            // Caller-supplied meta (e.g. POS `_pos_staff_user_id` / `_pos_override_staff_user_id`) is
             // appended to the coupon payload. `Coupon` doesn't model `meta_data` itself, so
             // we attach it as a parallel parameter — the WC REST endpoint treats it the same.
             if !additionalMetadata.isEmpty {

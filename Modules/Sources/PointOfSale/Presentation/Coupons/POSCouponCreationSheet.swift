@@ -10,7 +10,8 @@ extension View {
     /// Presents the coupon-creation sheet.
     /// - Parameter additionalCreateMetadata: appended to the `meta_data` of the resulting
     ///   `POST /wc/v3/coupons` request — POS uses this to attach `_pos_staff_user_id` and
-    ///   (when a manager authorized a cashier-triggered create) `_pos_override_*` meta.
+    ///   (when a manager authorized a cashier-triggered create) `_pos_override_staff_user_id`
+    ///   meta.
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
         additionalCreateMetadata: [MetaData] = [],

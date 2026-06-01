@@ -19,7 +19,7 @@ final class AddEditCouponViewModel: ObservableObject {
     private let onSuccess: (Coupon) -> Void
 
     /// Extra `meta_data` entries appended to the create-coupon request. Used by POS to
-    /// attach `_pos_staff_user_id` / `_pos_override_*` attribution per the M1 plan.
+    /// attach `_pos_staff_user_id` / `_pos_override_staff_user_id` attribution per the M1 plan.
     /// Empty for non-POS coupon creation.
     private let additionalCreateMetadata: [MetaData]
 

@@ -1,5 +1,6 @@
 import Foundation
 @testable import PointOfSale
+import struct Networking.MetaData
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
@@ -111,11 +112,13 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     var processRefundCalled = false
     var spyProcessRefundReason: String?
+    var spyProcessRefundAdditionalMetadata: [MetaData]?
     var shouldThrowProcessRefundError = false
 
-    func processRefund(reason: String?) async throws {
+    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws {
         processRefundCalled = true
         spyProcessRefundReason = reason
+        spyProcessRefundAdditionalMetadata = additionalMetadata
 
         if shouldThrowProcessRefundError {
             throw TestError.updateOrderFailed

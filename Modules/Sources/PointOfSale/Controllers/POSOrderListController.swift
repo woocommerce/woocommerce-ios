@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import struct Networking.MetaData
 import enum Yosemite.POSOrderListServiceError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
@@ -40,7 +41,7 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
-    func processRefund(reason: String?) async throws
+    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws
     func loadOrderRefunds() async
 }
 
@@ -415,7 +416,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Processing
 
     @MainActor
-    func processRefund(reason: String?) async throws {
+    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws {
         guard !isProcessingRefund else {
             throw POSRefundProcessingError.refundAlreadyInProgress
         }
@@ -442,7 +443,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             for: order,
             preparation: preparation,
             selectedItems: selectedItems,
-            reason: reason
+            reason: reason,
+            additionalMetadata: additionalMetadata
         )
 
         clearRefundSelection()

@@ -7,8 +7,8 @@ protocol POSAccessSession: AnyObject {
     func allows(_ capability: POSCapability) -> Bool
     func signIn(withPIN pin: String) async throws(POSAuthError)
     /// Verifies the manager PIN and confirms the approver holds `capability`. Returns the
-    /// approver's `POSStaff` so callers can attach `_wc_pos_override_staff_id` /
-    /// `_wc_pos_override_reason` meta on the next request.
+    /// approver's `POSStaff` so callers can attach `_pos_override_staff_user_id` meta on the
+    /// next request.
     @discardableResult
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) -> POSStaff
     func lock()

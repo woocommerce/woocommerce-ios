@@ -107,7 +107,7 @@ struct ItemListView: View {
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
     /// Approver `POSStaff` captured when a cashier triggers coupon creation and a manager
     /// authorizes it. Threaded into `additionalCreateMetadata` so the resulting coupon
-    /// request carries `_wc_pos_override_staff_id` / `_wc_pos_override_reason` meta.
+    /// request carries `_pos_override_staff_user_id` meta.
     @State private var pendingCouponApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
@@ -175,16 +175,15 @@ struct ItemListView: View {
     }
 
     /// Builds the `meta_data` entries to attach to a `POST /coupons` request.
-    /// Always includes `_wc_pos_staff_id` for the current operator (when signed in), and the
-    /// `_wc_pos_override_*` pair when a manager authorized the creation for a cashier.
+    /// Always includes `_pos_staff_user_id` for the current operator (when signed in), and
+    /// `_pos_override_staff_user_id` when a manager authorized the creation for a cashier.
     private func couponCreationMetadata() -> [MetaData] {
         var entries: [MetaData] = []
         if let staffUserID = accessSession.currentStaff?.userID {
-            entries.append(MetaData(metadataID: 0, key: "_wc_pos_staff_id", value: String(staffUserID)))
+            entries.append(MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID)))
         }
         if let approver = pendingCouponApprover {
-            entries.append(MetaData(metadataID: 0, key: "_wc_pos_override_staff_id", value: String(approver.userID)))
-            entries.append(MetaData(metadataID: 0, key: "_wc_pos_override_reason", value: POSCapability.publishShopCoupons.rawValue))
+            entries.append(MetaData(metadataID: 0, key: "_pos_override_staff_user_id", value: String(approver.userID)))
         }
         return entries
     }
@@ -528,18 +527,18 @@ private extension ItemListView {
     }
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
-    /// already has `publish_shop_coupons` creation proceeds immediately; otherwise the PIN
+    /// already has `create_coupons` creation proceeds immediately; otherwise the PIN
     /// modal is presented and the approver `POSStaff` is captured on `pendingCouponApprover`
-    /// so the resulting `POST /coupons` request can attach `_wc_pos_override_staff_id` /
-    /// `_wc_pos_override_reason` meta.
+    /// so the resulting `POST /coupons` request can attach `_pos_override_staff_user_id`
+    /// meta.
     private func requestCouponCreationPermission() {
-        guard !accessSession.allows(.publishShopCoupons) else {
+        guard !accessSession.allows(.createCoupons) else {
             pendingCouponApprover = nil
             showCouponCreationModal = true
             return
         }
         couponOverrideHandler.requestApproval(
-            for: .publishShopCoupons,
+            for: .createCoupons,
             reason: Localization.couponOverrideDescription,
             onApproved: { approver in
                 pendingCouponApprover = approver

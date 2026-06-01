@@ -77,7 +77,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let analytics: POSAnalyticsProviding
     /// Provides the current staff member's user ID, threaded into order creation as
-    /// `_pos_attribution` metadata. Returns nil when no operator is signed in (e.g. tests).
+    /// `_pos_staff_user_id` metadata. Returns nil when no operator is signed in (e.g. tests).
     private let staffUserIDProvider: () -> Int64?
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Networking.MetaData
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderCustomAmount
@@ -36,8 +37,8 @@ struct POSOrderDetailsView: View {
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
     /// Approver `POSStaff` captured when a cashier triggered the refund and a manager
-    /// authorized it. Threaded into `processRefund(overrideUserID:overrideReason:)` so the
-    /// refund's `_wc_pos_override_staff_id` meta records who approved it.
+    /// authorized it. Threaded into the refund's `_pos_override_staff_user_id` meta so the
+    /// server can record who approved it.
     @State private var pendingOverrideApprover: POSStaff?
 
     private var shouldShowBackButton: Bool {
@@ -171,6 +172,7 @@ struct POSOrderDetailsView: View {
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
                     onRefundFailure: onRefundFailure,
+                    additionalMetadata: refundCreationMetadata(),
                     errorStrings: refundErrorStrings
                 )
             }
@@ -535,9 +537,9 @@ private extension POSOrderDetailsView {
             return .init(primary: email, secondary: [])
         case .completed:
             // The refund button is always visible when refunds are enabled. When the
-            // operator lacks `refund_shop_orders`, tapping it pops a manager-override
+            // operator lacks `issue_refunds`, tapping it pops a manager-override
             // modal; an approver's PIN unlocks the action and their user id is attached
-            // as `_pos_override_user_id` meta on the refund (M1 plan).
+            // as `_pos_override_staff_user_id` meta on the refund (M1 plan).
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
@@ -614,18 +616,32 @@ private extension POSOrderDetailsView {
         )
     }
 
+    /// Builds the `meta_data` entries to attach to a `POST /orders/{id}/refunds` request.
+    /// Always includes `_pos_staff_user_id` for the current operator (when signed in), and
+    /// `_pos_override_staff_user_id` when a manager authorized the refund for a cashier.
+    private func refundCreationMetadata() -> [MetaData] {
+        var entries: [MetaData] = []
+        if let staffUserID = accessSession.currentStaff?.userID {
+            entries.append(MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID)))
+        }
+        if let approver = pendingOverrideApprover {
+            entries.append(MetaData(metadataID: 0, key: "_pos_override_staff_user_id", value: String(approver.userID)))
+        }
+        return entries
+    }
+
     /// Gates the refund button through the manager-override flow. When the operator
-    /// already has `refund_shop_orders` the refund proceeds immediately; otherwise the
+    /// already has `issue_refunds` the refund proceeds immediately; otherwise the
     /// PIN modal is presented and the approver's `POSStaff` is captured on
-    /// `pendingOverrideApprover` so the refund can carry `_wc_pos_override_staff_id` meta.
+    /// `pendingOverrideApprover` so the refund can carry `_pos_override_staff_user_id` meta.
     func requestRefundPermission() {
-        guard !accessSession.allows(.refundShopOrders) else {
+        guard !accessSession.allows(.issueRefunds) else {
             pendingOverrideApprover = nil
             initiateRefundFlow()
             return
         }
         refundOverrideHandler.requestApproval(
-            for: .refundShopOrders,
+            for: .issueRefunds,
             reason: Localization.refundOverrideDescription(order.number),
             onApproved: { approver in
                 pendingOverrideApprover = approver

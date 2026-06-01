@@ -109,7 +109,7 @@ public final class RefundsRemote: Remote {
         do {
             let encodedJson = try mapper.map(refund: refund)
             var parameters = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any] ?? [:]
-            // Merge caller-supplied meta (e.g. POS `_pos_attribution`) into the refund payload.
+            // Merge caller-supplied meta (e.g. POS `_pos_staff_user_id`) into the refund payload.
             // The RefundMapper doesn't emit `meta_data` today so we attach it here directly.
             if !additionalMetadata.isEmpty {
                 let metadataDicts = try additionalMetadata.map { try $0.toDictionary() }
@@ -177,39 +177,4 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
             }
         }
     }
-
-    public func createRefund(for siteID: Int64,
-                             by orderID: Int64,
-                             refund: Refund,
-                             additionalMetadata: [MetaData]) async throws -> Refund {
-        return try await withCheckedThrowingContinuation { continuation in
-            createRefund(for: siteID,
-                         by: orderID,
-                         refund: refund,
-                         additionalMetadata: additionalMetadata) { createdRefund, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else if let createdRefund {
-                    continuation.resume(returning: createdRefund)
-                } else {
-                    continuation.resume(throwing: RefundsRemoteError.unexpectedNilRefund)
-                }
-            }
-        }
-    }
-}
-
-
-struct POSRefundsRemote {
-    let refundsRemote: RefundsRemote
-
-    func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
-        try await refundsRemote.loadRefunds(for: siteID, by: orderID, with: refundIDs)
-    }
-}
-
-// MARK: - Errors
-
-public enum RefundsRemoteError: Error {
-    case unexpectedNilRefund
 }

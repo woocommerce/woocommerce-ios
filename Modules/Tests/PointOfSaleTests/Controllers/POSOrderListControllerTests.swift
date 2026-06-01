@@ -3,6 +3,7 @@ import TestKit
 import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
+import struct Networking.MetaData
 import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
@@ -1140,11 +1141,11 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
-        #expect(refundsService.createRefundCalled == true)
-        #expect(refundsService.spyCreateRefundOrderID == 123)
+        #expect(refundSubmissionProcessor.submitRefundCalled == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundOrderID == 123)
     }
 
     @MainActor
@@ -1167,10 +1168,10 @@ final class POSOrderListControllerTests {
         sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 2)
         #expect(items.contains(where: { $0.itemID == 1 }))
         #expect(items.contains(where: { $0.itemID == 2 }))
@@ -1194,10 +1195,10 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: "Customer changed their mind")
+        try await sut.processRefund(reason: "Customer changed their mind", additionalMetadata: [])
 
         // Then
-        #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
+        #expect(refundSubmissionProcessor.spySubmitRefundReason == "Customer changed their mind")
     }
 
     @MainActor
@@ -1219,7 +1220,7 @@ final class POSOrderListControllerTests {
         try #require(sut.refundSelectableItems.count == 2)
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
         #expect(sut.refundSelectableItems.isEmpty)
@@ -1243,12 +1244,12 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         struct TestError: Error {}
-        refundsService.createRefundErrorToThrow = TestError()
+        refundSubmissionProcessor.submitRefundErrorToThrow = TestError()
 
         // When / Then
         var thrownError: Error?
         do {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, additionalMetadata: [])
         } catch {
             thrownError = error
         }
@@ -1259,7 +1260,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_no_selected_order_then_throws_missingSelectedOrder() async throws {
         await #expect(performing: {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, additionalMetadata: [])
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingSelectedOrder
         })
@@ -1274,7 +1275,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, additionalMetadata: [])
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingRefundPreparation
         })
@@ -1299,7 +1300,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, additionalMetadata: [])
         }, throws: { error in
             (error as? POSRefundProcessingError) == .emptySelection
         })
@@ -1328,13 +1329,13 @@ final class POSOrderListControllerTests {
                 fire()
             }
             firstRefundTask = Task { @MainActor in
-                try await sut.processRefund(reason: .none)
+                try await sut.processRefund(reason: .none, additionalMetadata: [])
             }
         }
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none)
+            try await sut.processRefund(reason: .none, additionalMetadata: [])
         }, throws: { error in
             (error as? POSRefundProcessingError) == .refundAlreadyInProgress
         })
@@ -1361,10 +1362,10 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 3)
 
         let firstItem = items[0]
@@ -1392,10 +1393,10 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == true)
     }
 
     @MainActor
@@ -1416,10 +1417,10 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == false)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == false)
     }
 
     @MainActor
@@ -1444,7 +1445,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none)
+        try await sut.processRefund(reason: .none, additionalMetadata: [])
 
         // Then
         #expect(orderListService.loadOrderWasCalled == true)
@@ -1933,10 +1934,20 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         )
     }
 
+    private(set) var submitRefundCalled = false
+    private(set) var spySubmitRefundOrderID: Int64?
+    private(set) var spySubmitRefundItems: [POSRefundableItem]?
+    private(set) var spySubmitRefundReason: String?
+    private(set) var spySubmitRefundIsAutomaticRefund: Bool?
+    private(set) var spySubmitRefundAdditionalMetadata: [MetaData]?
+    var submitRefundErrorToThrow: Error?
+
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws {
+                      reason: String?,
+                      additionalMetadata: [MetaData]) async throws {
+        submitRefundCalled = true
         onSubmitRefundStarted?()
         if shouldSuspendSubmitRefund {
             await withCheckedContinuation { continuation in
@@ -1954,12 +1965,15 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             )
         }
 
-        try await refundsService.createRefund(
-            orderID: order.id,
-            items: refundableItems,
-            reason: reason,
-            isAutomaticRefund: refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
-        )
+        spySubmitRefundOrderID = order.id
+        spySubmitRefundItems = refundableItems
+        spySubmitRefundReason = reason
+        spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
+        spySubmitRefundAdditionalMetadata = additionalMetadata
+
+        if let error = submitRefundErrorToThrow {
+            throw error
+        }
         stateModel.state = .completed
     }
 

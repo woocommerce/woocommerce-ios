@@ -3,8 +3,6 @@ import Combine
 import Networking
 import protocol NetworkingCore.POSRefundsRemoteProtocol
 import struct NetworkingCore.Refund
-import struct NetworkingCore.OrderItemRefund
-import struct NetworkingCore.OrderItemTaxRefund
 import class WooFoundation.CurrencySettings
 import class WooFoundationCore.CurrencyFormatter
 
@@ -130,76 +128,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         return refundCalculator.calculateRefundAmounts(for: items, numberOfDecimals: numberOfDecimals)
     }
 
-    public func createRefund(orderID: Int64,
-                             items: [POSRefundableItem],
-                             reason: String?,
-                             isAutomaticRefund: Bool,
-                             staffUserID: Int64?,
-                             overrideUserID: Int64?,
-                             overrideReason: String?) async throws {
-        let numberOfDecimals = currencySettings.fractionDigits
-        let request = refundCalculator.buildRefundRequest(
-            orderID: orderID,
-            selectedItems: items,
-            reason: reason,
-            numberOfDecimals: numberOfDecimals
-        )
-        let refund = buildRefund(from: request, createAutomated: isAutomaticRefund, numberOfDecimals: numberOfDecimals)
-        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID,
-                                                              overrideUserID: overrideUserID,
-                                                              overrideReason: overrideReason)
-        _ = try await refundsRemote.createRefund(for: siteID,
-                                                 by: orderID,
-                                                 refund: refund,
-                                                 additionalMetadata: additionalMetadata)
-    }
-
-    private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {
-        let items = request.items.map { item in
-            let refundQuantity = Decimal(item.quantity)
-            let refundTotal = formatDecimalForAPI(item.refundTotal, numberOfDecimals: numberOfDecimals)
-            let refundTaxes = buildRefundTaxes(for: item.refundTax, numberOfDecimals: numberOfDecimals)
-
-            return OrderItemRefund(
-                itemID: item.itemID,
-                quantity: refundQuantity,
-                taxes: refundTaxes,
-                total: refundTotal
-            )
-        }
-
-        return Refund(
-            refundID: 0,
-            orderID: request.orderID,
-            siteID: siteID,
-            dateCreated: Date(),
-            amount: formatDecimalForAPI(request.amount, numberOfDecimals: numberOfDecimals),
-            reason: request.reason ?? "",
-            refundedByUserID: 0,
-            isAutomated: nil,
-            createAutomated: createAutomated,
-            items: items,
-            shippingLines: nil
-        )
-    }
-
-    private func formatDecimalForAPI(_ value: Decimal, numberOfDecimals: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = numberOfDecimals
-        formatter.maximumFractionDigits = numberOfDecimals
-        formatter.groupingSeparator = ""
-        formatter.decimalSeparator = "."
-        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
-    }
-
-    private func buildRefundTaxes(for refundTax: Decimal, numberOfDecimals: Int) -> [OrderItemTaxRefund] {
-        guard refundTax > 0 else { return [] }
-        return [OrderItemTaxRefund(taxID: 0,
-                                   subtotal: "",
-                                   total: formatDecimalForAPI(refundTax, numberOfDecimals: numberOfDecimals))]
-    }
-
     /// Checks if all ordered products have been fully refunded.
     /// - Parameters:
     ///   - orderedQuantities: Aggregated quantities per product/variation ID from the order
@@ -226,27 +154,3 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     }
 }
 
-private extension POSRefundsService {
-    /// Builds the `_pos_staff_user_id` + optional `_pos_override_*` meta entries per the M1 plan
-    /// (https://peacockp2.wordpress.com/?p=34760). Override entries are only present when a
-    /// manager authorized the refund for a cashier (or an admin authorized it for a manager).
-    static func makeAttributionMetadata(staffUserID: Int64?,
-                                        overrideUserID: Int64?,
-                                        overrideReason: String?) -> [MetaData] {
-        var entries: [MetaData] = []
-        if let staffUserID {
-            entries.append(MetaData(metadataID: 0,
-                                    key: "_pos_staff_user_id",
-                                    value: String(staffUserID)))
-        }
-        if let overrideUserID, let overrideReason {
-            entries.append(MetaData(metadataID: 0,
-                                    key: "_pos_override_user_id",
-                                    value: String(overrideUserID)))
-            entries.append(MetaData(metadataID: 0,
-                                    key: "_pos_override_reason",
-                                    value: overrideReason))
-        }
-        return entries
-    }
-}

@@ -264,7 +264,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 }
 
                 // Set source type to mark the order as created from mobile, plus any
-                // POS attribution metadata (`_pos_attribution` per the M1 plan) supplied
+                // POS attribution metadata (`_pos_staff_user_id` per the M1 plan) supplied
                 // by the caller. Caller-supplied entries are appended so the source-type
                 // record always lands first in the array.
                 let baseMetadata: [MetaData] = [
@@ -380,7 +380,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 }
 
                 // Merge cash-change meta (when present) with any caller-supplied meta
-                // (e.g. POS `_pos_attribution`). WC's REST update merges by key, so callers
+                // (e.g. POS `_pos_staff_user_id`). WC's REST update merges by key, so callers
                 // can rely on existing meta with other keys being preserved server-side.
                 var metadataEntries: [MetaData] = []
                 if let cashPaymentChangeDueAmount {

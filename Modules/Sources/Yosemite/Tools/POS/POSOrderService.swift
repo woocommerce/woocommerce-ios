@@ -11,7 +11,7 @@ public protocol POSOrderServiceProtocol {
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
     ///   - currency: The store's currency code.
-    ///   - staffUserID: When non-nil, written to the order as `_pos_attribution` meta
+    ///   - staffUserID: When non-nil, written to the order as `_pos_staff_user_id` meta
     ///     (per the M1 plan) so the order timeline records which staff member processed it.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order
@@ -19,8 +19,8 @@ public protocol POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     /// Completes the order with a cash payment.
     /// - Parameter staffUserID: When non-nil, the current operator's user id is written as
-    ///   `_pos_attribution` meta so the server's timeline note attributes this update to them
-    ///   (otherwise the original `_pos_attribution` from the create call sticks).
+    ///   `_pos_staff_user_id` meta so the server's timeline note attributes this update to them
+    ///   (otherwise the original `_pos_staff_user_id` from the create call sticks).
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws
     /// Marks an order as completed when payment was collected out-of-band (external reader,
     /// gift card, account credit, etc.) and the merchant confirms it via the "Mark order as

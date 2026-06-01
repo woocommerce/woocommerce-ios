@@ -51,7 +51,7 @@ public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     /// Presents the coupon-creation form. `additionalCreateMetadata` is appended to the
     /// resulting `POST /wc/v3/coupons` request body's `meta_data`. POS uses this to attach
-    /// `_pos_staff_user_id` + `_pos_override_*` attribution per the M1 plan.
+    /// `_pos_staff_user_id` + `_pos_override_staff_user_id` attribution per the M1 plan.
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   additionalCreateMetadata: [MetaData],

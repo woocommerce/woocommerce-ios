@@ -286,6 +286,89 @@ class TranslateLocaleTest < Minitest::Test
     assert_empty tmp_artifacts_in(@dir)
   end
 
+  # --- ci-fork finding 1: incremental write is transactional ------------------
+
+  def test_write_incremental_splices_fresh_units_and_leaves_no_temp_residue
+    # Given a committed locale with two translated keys.
+    output = write_strings(File.join(@dir, 'Localizable.strings'),
+                           [%w[a Anuluj], %w[b Zapisz]])
+
+    # When we splice a re-translated value for only key 'a'.
+    write_incremental!(
+      output_path: output,
+      fresh_units: [translated_unit('a', 'Cancel', 'AnulujNEW')],
+      units_for_write: [translated_unit('a', 'Cancel', 'AnulujNEW'),
+                        translated_unit('b', 'Save', 'Zapisz')],
+      locale: 'pl', logger: NOOP_LOGGER
+    )
+
+    # Then 'a' is updated, 'b' is preserved, and no temp file is left behind.
+    reparsed = WooAiTranslation::IosResources::Parser.parse_file(output)
+    by_name = reparsed.units.to_h { |u| [u.name, u.entries.first[:source]] }
+    assert_equal 'AnulujNEW', by_name['a']
+    assert_equal 'Zapisz', by_name['b']
+    assert_empty tmp_artifacts_in(@dir)
+  end
+
+  def test_write_incremental_failure_preserves_committed_locale
+    # Given a committed locale on disk.
+    output = write_strings(File.join(@dir, 'Localizable.strings'),
+                           [%w[a Anuluj], %w[b Zapisz]])
+    original = File.read(output)
+
+    # When the round-trip verification fails (units_for_write claims a key the
+    # splice never writes), the incremental write must abort.
+    assert_raises(RuntimeError) do
+      write_incremental!(
+        output_path: output,
+        fresh_units: [translated_unit('a', 'Cancel', 'AnulujNEW')],
+        units_for_write: [translated_unit('a', 'Cancel', 'AnulujNEW'),
+                          translated_unit('b', 'Save', 'Zapisz'),
+                          translated_unit('phantom', 'Phantom', 'PHANTOM')],
+        locale: 'pl', logger: NOOP_LOGGER
+      )
+    end
+
+    # Then the committed file is byte-for-byte intact (the splice happened on a
+    # sibling temp, never in place) and the temp copy was cleaned up.
+    assert_equal original, File.read(output)
+    assert_empty tmp_artifacts_in(@dir)
+  end
+
+  # --- ci-fork finding 2/3: round-trip verifier (comments + escape parity) ----
+
+  def test_verify_round_trip_ignores_key_shaped_lines_inside_comments
+    # Given a written locale whose only live key is "real.key", but which also
+    # contains a key-shaped line inside a /* ... */ block comment.
+    output = File.join(@dir, 'Localizable.strings')
+    File.write(output, <<~STRINGS)
+      /*
+      "commented.key" = "ignored";
+      */
+      "real.key" = "Hola";
+    STRINGS
+
+    # When we verify the round trip against just the live key, the commented key
+    # must not be counted as a spurious "extra" entry.
+    assert_nil verify_round_trip!(
+      output, [translated_unit('real.key', 'Hello', 'Hola')],
+      logger: NOOP_LOGGER, locale: 'pl'
+    )
+  end
+
+  def test_verify_round_trip_decodes_escaped_keys_like_the_parser
+    # Given a written locale with an escaped key ("a\\nb" on disk -> "a<LF>b").
+    output = File.join(@dir, 'Localizable.strings')
+    File.write(output, %("a\\nb" = "Value";\n))
+
+    # When we verify against the post-decode in-memory unit name, the escaped
+    # key round-trips cleanly (no missing/extra mismatch).
+    assert_nil verify_round_trip!(
+      output, [translated_unit("a\nb", 'Source', 'Value')],
+      logger: NOOP_LOGGER, locale: 'pl'
+    )
+  end
+
   # --- style guides reach the prompt -----------------------------------------
 
   def test_load_style_guide_prefers_locale_specific_file

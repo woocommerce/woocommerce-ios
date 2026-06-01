@@ -247,8 +247,10 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
       # minimal load path (CI).
       fresh_names = Set.new(units_to_translate.map(&:name) - failed_missing)
       fresh_units = units_for_write.select { |u| fresh_names.include?(u.name) }
-      WooAiTranslation::IosResources::Writer.write_incremental(output_path, fresh_units, locale)
-      verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
+      write_incremental!(
+        output_path: output_path, fresh_units: fresh_units,
+        units_for_write: units_for_write, locale: locale, logger: logger
+      )
       wrote = true
     end
   else
@@ -300,6 +302,23 @@ def write_translations!(output_path:, units_for_write:, expected_names:, locale:
 
   File.rename(tmp_path, output_path)
   true
+ensure
+  File.delete(tmp_path) if tmp_path && File.exist?(tmp_path)
+end
+
+# Incremental sibling of #write_translations!. The preserved-line writer splices
+# `fresh_units` into the existing target IN PLACE, so we must never hand it the
+# tracked file directly: a writer/parser mismatch (or any raise during the
+# splice or round-trip) would corrupt the committed locale. Instead copy the
+# current target to a sibling temp, splice + round-trip the COPY, and only then
+# atomically rename it over the target. The temp is always cleaned up in
+# `ensure`, so a failed PR-time run leaves the checked-in locale untouched.
+def write_incremental!(output_path:, fresh_units:, units_for_write:, locale:, logger:)
+  tmp_path = "#{output_path}.tmp.#{Process.pid}"
+  File.binwrite(tmp_path, File.binread(output_path))
+  WooAiTranslation::IosResources::Writer.write_incremental(tmp_path, fresh_units, locale)
+  verify_round_trip!(tmp_path, units_for_write, logger: logger, locale: locale)
+  File.rename(tmp_path, output_path)
 ensure
   File.delete(tmp_path) if tmp_path && File.exist?(tmp_path)
 end
@@ -367,27 +386,35 @@ def verify_round_trip!(output_path, units_for_write, logger:, locale:)
   # Ruby 3.2 autoload (to_set alone does not load 'set' on a minimal load path).
   written = Set.new(units_for_write.select(&:fully_translated?).map(&:name))
   content = File.read(output_path, encoding: 'UTF-8')
-  # Match `"quoted_key" =` and `unquoted_key =`. For quoted keys we must
-  # decode backslash escapes the same way IosResources::Parser does — the
-  # in-memory `unit.name` is post-decode, so a key like `"a\nb"` on disk
-  # is `"a<LF>b"` in memory. A naive `\\(.)` → `\1` here strips the
-  # backslash and the keys mismatch on every entry containing \n / \" / \\.
-  keys = content.scan(/^(?:"((?:\\.|[^"\\])*)"|([A-Za-z0-9_.-]+))\s*=/).map do |q, u|
-    next u unless q
+  # Exclude `/* ... */` comment blocks before scanning for keys, mirroring the
+  # incremental writer (IosResources::Writer.write_incremental). The preserved
+  # writer keeps commented-out source lines verbatim, so a commented
+  # `"key" = "value";` inside a `/* ... */` block would otherwise be counted as
+  # a live entry and reported as a spurious "extra" key.
+  comment_ranges = []
+  scan_pos = 0
+  while (start = content.index('/*', scan_pos))
+    finish = content.index('*/', start + 2)
+    break unless finish
 
-    q.gsub(/\\(.)/) do
-      case Regexp.last_match(1)
-      when 'n' then "\n"
-      when 'r' then "\r"
-      when 't' then "\t"
-      when '0' then "\0"
-      else Regexp.last_match(1) # \" \\ \' or lenient passthrough
-      end
-    end
+    comment_ranges << (start..(finish + 1))
+    scan_pos = finish + 2
   end
-  # Set.new (not Array#to_set): the Set-constant reference triggers Ruby 3.2's
-  # autoload, whereas `to_set` alone raises NoMethodError on a minimal load path.
-  reread = Set.new(keys)
+  in_comment = ->(offset) { comment_ranges.any? { |r| r.include?(offset) } }
+  # Match `"quoted_key" =` and `unquoted_key =`. Decode quoted keys with the
+  # parser's own inverse (Writer.unescape) so on-disk escapes map back to the
+  # post-decode in-memory `unit.name` exactly as the parser would. The /m flag
+  # lets `\\.` match a backslash before a physical newline, which the parser
+  # treats as an escaped literal newline.
+  # Set.new + `<<` (not Array#to_set): the Set-constant reference triggers Ruby
+  # 3.2's autoload, whereas `to_set` alone raises NoMethodError on CI's minimal
+  # load path.
+  reread = Set.new
+  content.scan(/^(?:"((?:\\.|[^"\\])*)"|([A-Za-z0-9_.-]+))\s*=/m) do |q, u|
+    next if in_comment.call(Regexp.last_match.begin(0))
+
+    reread << (q ? WooAiTranslation::IosResources::Writer.unescape(q) : u)
+  end
   missing = written - reread
   extra = reread - written
   return if missing.empty? && extra.empty?

@@ -24,6 +24,10 @@ module WooAiTranslation
     DEFAULT_BASE_URL = 'https://api.anthropic.com'
     MAX_RETRIES = 5
 
+    # Plain-HTTP is only tolerated for a local proxy on the loopback interface.
+    # Anywhere else it would put the API key on the wire in clear text.
+    LOOPBACK_HOSTS = %w[localhost 127.0.0.1 ::1].freeze
+
     def self.from_env
       new(
         api_key: ENV.fetch('ANTHROPIC_API_KEY', nil),
@@ -35,6 +39,9 @@ module WooAiTranslation
       @api_key = api_key
       @base_url = base_url
       @http = http
+      # Only guard the real network path; an injected transport (tests) owns
+      # its own security posture.
+      ensure_secure_base_url!(base_url) if @http.nil?
     end
 
     def available?
@@ -57,6 +64,20 @@ module WooAiTranslation
     end
 
     private
+
+    # Refuse to construct a client that would transmit the API key over an
+    # unencrypted connection. https is always fine; plain http only to a
+    # loopback host (a local gateway/proxy). Everything else raises.
+    def ensure_secure_base_url!(base_url)
+      uri = URI.parse(base_url.to_s)
+      return if uri.scheme == 'https'
+      return if uri.scheme == 'http' && LOOPBACK_HOSTS.include?(uri.hostname.to_s.downcase)
+
+      raise Error, "Refusing to send the API key to #{base_url.inspect} over an insecure connection. " \
+                   'Use https://, or http:// only for a loopback host (localhost/127.0.0.1/::1).'
+    rescue URI::InvalidURIError => e
+      raise Error, "Invalid base URL #{base_url.inspect}: #{e.message}"
+    end
 
     def cacheable_system(blocks)
       blocks.each_with_index.map do |text, i|

@@ -6,8 +6,9 @@ the Anthropic Claude API.
 
 The 15 locales currently shipping AI translations were bootstrapped using
 this engine (see [PR #17220](https://github.com/woocommerce/woocommerce-ios/pull/17220)).
-Going forward, this engine runs incrementally on every PR that touches the
-English source.
+It is designed to run incrementally on every PR that touches the English
+source; the CI step that invokes it is wired up separately (the translation
+CI PR in this series).
 
 ## Quick start
 
@@ -51,6 +52,7 @@ fastlane/ai_translation/
 │   ├── byte_sizer.rb             # Script-aware batch sizing
 │   ├── constants.rb              # Version, model IDs, prompt version
 │   ├── ios_resources.rb          # .strings parser + writer
+│   ├── manifest.rb               # Source-only invalidation cache (per-locale JSON)
 │   └── translator.rb             # Batched JSON-in/JSON-out translator with split-retry
 ├── spec/                         # Minitest specs
 ├── scripts/                      # One-off bootstrap utilities (assemble, gap-fill)
@@ -117,12 +119,16 @@ primary pass (default model: Haiku), the engine retries that subset with
 the escalation model (default: Opus 4.7). Successful retries are written
 with `origin: ai-opus-retry`. Disable with `--no-escalation`.
 
-### Write-then-parse round-trip check
+### Safe write (temp file + round-trip + atomic install)
 
-After writing the `.strings` file, the engine re-parses it and verifies
-key parity. Any drift (lost keys, extra keys) raises immediately and
-fails the run. This is the lightweight resource gate that catches the
-class of bugs where the writer emits output the parser cannot consume.
+The engine never overwrites the target locale in place. It renders to a
+sibling temp file, re-parses it to verify key parity (any drift — lost or
+extra keys — raises and fails the run), refuses to install anything that
+would drop keys the EN source still has, then atomically renames the temp
+file into place. A `--limit` smoke run verifies the temp render and then
+discards it, leaving the committed locale untouched. Together these prevent
+a crash mid-write, a writer/parser mismatch, or a partial pass from
+clobbering a complete locale.
 
 ### `--incremental` mode
 
@@ -135,7 +141,8 @@ loads the existing target locale file, identifies the keys that are:
 
 then translates only those. Existing translations are preserved verbatim.
 
-This is what the CI step calls on every PR that touches `en.lproj`. A typical
+This is the mode the CI step is designed to call on every PR that touches
+`en.lproj` (the CI wiring lands in a separate PR in this series). A typical
 PR adds 1–10 strings, so the incremental call costs cents and finishes in
 seconds.
 
@@ -152,8 +159,9 @@ seconds.
      translate:bootstrap LOCALE=<new-code>
    ```
 
-5. Manually write `WooCommerce/Resources/<new-code>.lproj/InfoPlist.strings`
-   (only 11 keys; not yet auto-translated by this engine — see TODO below).
+5. The bootstrap also translates `WooCommerce/Resources/<new-code>.lproj/InfoPlist.strings`
+   (~11 keys) automatically, unless you pass `--skip-infoplist`. Review those
+   app-name and permission strings afterwards — they're user-facing and sensitive.
 6. Open a PR. The diff will be large (~5141 new entries); apply whatever
    size-override label your Danger config uses.
 
@@ -175,9 +183,6 @@ These are tracked for follow-up PRs:
 - **No glossary validator yet**. Brand-name and terminology rules are
   inlined in the system prompt. PR 3 will add `glossary/<locale>.yml` files
   and a hard validator.
-- **InfoPlist.strings is not auto-translated**. The 11 entries are easy
-  enough to hand-write per locale during bootstrap. A small extension to
-  the bootstrap task could cover it.
 - **No sub-agent backend**. Without an API key, the current path is to
   delegate via Claude Code chat sub-agents (slow and rate-limited). A
   `SubAgentClient` adapter could automate this, but the API path is

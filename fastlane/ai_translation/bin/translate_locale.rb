@@ -1,17 +1,19 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Minimal one-shot translator for the iOS pilot.
+# CLI translator for the iOS localization engine.
 #
 # Reads WooCommerce/Resources/en.lproj/Localizable.strings (+ InfoPlist.strings)
 # and writes WooCommerce/Resources/<locale>.lproj/* with AI-translated values.
 #
-# No Fastlane, no manifest. Skip the engine port for the pilot; reuse only
-# IosResources + Translator + AnthropicClient.
+# Supports full bootstrap and --incremental (manifest-backed, source-only
+# invalidation) modes. Run directly or via the Rake tasks in this directory.
 #
 # Usage:
 #   ANTHROPIC_API_KEY=sk-... ruby fastlane/ai_translation/bin/translate_locale.rb pl
-#   ruby fastlane/ai_translation/bin/translate_locale.rb pl --offline   # stub, no API call
+#   ruby fastlane/ai_translation/bin/translate_locale.rb pl --offline      # stub, no API call
+#   ruby fastlane/ai_translation/bin/translate_locale.rb pl --incremental  # only missing keys
+#   ruby fastlane/ai_translation/bin/translate_locale.rb pl --limit 5      # smoke test, not written
 #   ruby fastlane/ai_translation/bin/translate_locale.rb pl --batch 30
 #   ruby fastlane/ai_translation/bin/translate_locale.rb pl --skip-infoplist
 #
@@ -125,7 +127,11 @@ def filter_missing_units(en_units, target_path, logger:, manifest: nil)
       existing_unit = existing_by_name[u.name]
       next false unless existing_unit
 
-      existing_value = existing_unit.entries.first[:value].to_s
+      # The parser is file-role agnostic: it stores every parsed string in
+      # [:source] and leaves [:value] nil. A parsed *target* unit therefore
+      # carries its translation in [:source], so read that — reading [:value]
+      # here always sees "" and re-translates the entire locale.
+      existing_value = existing_unit.entries.first[:source].to_s
       !existing_value.empty? && existing_value != src
     end
   end
@@ -144,11 +150,25 @@ def placeholders_match?(source, translation)
 end
 
 def translate_file(input_path:, output_path:, translator:, locale:, model:, limit:, logger:,
-                   incremental: false, manifest: nil, escalation_model: nil)
+                   incremental: false, manifest: nil, escalation_model: nil, smoke_run: !limit.nil?)
   doc = WooAiTranslation::IosResources::Parser.parse_file(input_path)
-  units = doc.translatable_units
-  units = units.first(limit) if limit
-  logger.call("[#{locale}] parsed #{units.size} keys from #{File.basename(input_path)}")
+  all_units = doc.translatable_units
+  # Build the Set via Set.new (not Array#to_set): referencing the Set constant
+  # triggers Ruby 3.2's `autoload :Set`, whereas `to_set` alone does not — so on
+  # a minimal load path (CI) `to_set` raises NoMethodError. This is also why
+  # RuboCop treats an explicit `require 'set'` as redundant.
+  expected_names = Set.new(all_units.map(&:name))
+
+  # A smoke run never overwrites the committed locale or records the manifest; it
+  # only verifies the render round-trips, then discards the output so nothing
+  # claims keys we never wrote. It defaults to "any --limit run", but is threaded
+  # explicitly so a no-limit pass that belongs to a smoke run (e.g. the InfoPlist
+  # pass invoked with limit: nil while the overall run is --limit) is also smoke
+  # and likewise writes nothing.
+  record_manifest = smoke_run ? nil : manifest
+  units = limit ? all_units.first(limit) : all_units
+  smoke_note = smoke_run ? " (smoke run, translating #{units.size})" : ''
+  logger.call("[#{locale}] parsed #{all_units.size} keys from #{File.basename(input_path)}#{smoke_note}")
 
   units_to_translate = incremental ? filter_missing_units(units, output_path, logger: logger, manifest: manifest) : units
 
@@ -168,7 +188,7 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
   by_name = units_for_write.to_h { |u| [u.name, u] }
 
   translated, failed_missing, failed_validation = apply_results(
-    units_to_translate, results, by_name, manifest: manifest, model: model, origin: 'ai'
+    units_to_translate, results, by_name, manifest: record_manifest, model: model, origin: 'ai'
   )
 
   # Opus fallback: retry validator-failed entries with the escalation model.
@@ -178,20 +198,60 @@ def translate_file(input_path:, output_path:, translator:, locale:, model:, limi
     retry_results = run_translation(translator, locale, retry_units, escalation_model)
     extra_translated, _retry_missing, still_failing = apply_results(
       retry_units, retry_results, by_name,
-      manifest: manifest, model: escalation_model, origin: 'ai-opus-retry'
+      manifest: record_manifest, model: escalation_model, origin: 'ai-opus-retry'
     )
     translated += extra_translated
     failed_validation = still_failing
     logger.call("[#{locale}] escalation recovered #{extra_translated} entries; #{still_failing.size} still failing")
   end
 
-  WooAiTranslation::IosResources::Writer.write(output_path, units_for_write, locale)
-  verify_round_trip!(output_path, units_for_write, logger: logger, locale: locale)
-  manifest&.save!
+  wrote = write_translations!(
+    output_path: output_path, units_for_write: units_for_write,
+    expected_names: expected_names, locale: locale, logger: logger, smoke_run: smoke_run
+  )
+  manifest&.save! if wrote
 
-  logger.call("[#{locale}] wrote #{output_path} (#{translated} keys, " \
-              "#{failed_missing.size} missing, #{failed_validation.size} placeholder errors)")
+  logger.call("[#{locale}] #{wrote ? 'wrote' : 'verified (smoke, not written)'} #{output_path} " \
+              "(#{translated} keys, #{failed_missing.size} missing, #{failed_validation.size} placeholder errors)")
   [translated, failed_missing, failed_validation]
+end
+
+# Install `units_for_write` at `output_path` without ever leaving a corrupt or
+# truncated locale behind:
+#   1. Render to a sibling temp file.
+#   2. Round-trip parse it (catches writer/parser mismatches before install).
+#   3. Refuse to install anything missing keys the EN source still has
+#      (`expected_names`); this is the guardrail that stops a partial pass from
+#      clobbering a complete locale.
+#   4. Atomically rename the temp file into place.
+#
+# Smoke runs (`--limit`) translate only a subset, so they would always trip the
+# shrink guard. They verify the temp render, then discard it and return false so
+# the caller skips persisting the manifest. Returns true iff the file was
+# installed.
+def write_translations!(output_path:, units_for_write:, expected_names:, locale:, logger:, smoke_run:)
+  tmp_path = "#{output_path}.tmp.#{Process.pid}"
+  WooAiTranslation::IosResources::Writer.write(tmp_path, units_for_write, locale)
+  verify_round_trip!(tmp_path, units_for_write, logger: logger, locale: locale)
+
+  if smoke_run
+    logger.call("[#{locale}] smoke run: verified #{units_for_write.size} keys in temp output; " \
+                "leaving #{output_path} unchanged")
+    return false
+  end
+
+  missing = expected_names - Set.new(units_for_write.map(&:name))
+  unless missing.empty?
+    raise(
+      "Refusing to write #{output_path} for #{locale}: would drop #{missing.size} source keys " \
+      "(e.g. #{missing.first(5).to_a.inspect}). Aborting to avoid clobbering the locale."
+    )
+  end
+
+  File.rename(tmp_path, output_path)
+  true
+ensure
+  File.delete(tmp_path) if tmp_path && File.exist?(tmp_path)
 end
 
 def run_translation(translator, locale, units, model)
@@ -236,8 +296,10 @@ end
 # output the parser cannot consume (escape mismatches, lost terminators).
 def verify_round_trip!(output_path, units_for_write, logger:, locale:)
   reparsed = WooAiTranslation::IosResources::Parser.parse_file(output_path)
-  written = units_for_write.to_set(&:name)
-  reread = reparsed.units.to_set(&:name)
+  # Set.new rather than Array#to_set so the Set constant reference triggers the
+  # Ruby 3.2 autoload (to_set alone does not load 'set' on a minimal load path).
+  written = Set.new(units_for_write.map(&:name))
+  reread = Set.new(reparsed.units.map(&:name))
   missing = written - reread
   extra = reread - written
   return if missing.empty? && extra.empty?
@@ -261,7 +323,10 @@ def merge_with_existing(en_units, target_path)
   en_units.each do |u|
     next unless (e = existing_by_name[u.name])
 
-    existing_val = e.entries.first[:value].to_s
+    # Parsed target units keep their translation in [:source] (the parser
+    # leaves [:value] nil regardless of file role), so read [:source] — reading
+    # [:value] here would project "" onto every key and drop the locale.
+    existing_val = e.entries.first[:source].to_s
     u.entries.first[:value] = existing_val unless existing_val.empty?
   end
   en_units
@@ -309,6 +374,11 @@ def main(argv)
 
   out_dir = File.join(TARGET_BASE, "#{locale}.lproj")
 
+  # A --limit run is a smoke test of the whole locale, not just the first file.
+  # Thread it through every pass — including the no-limit InfoPlist pass below —
+  # so a smoke run writes nothing and never persists the manifest.
+  smoke_run = !opts[:limit].nil?
+
   # --- Localizable.strings (the main corpus) ----------------------------
   t0 = Time.now
   trans, missing, errors = translate_file(
@@ -316,7 +386,7 @@ def main(argv)
     output_path: File.join(out_dir, 'Localizable.strings'),
     translator: translator, locale: locale, model: opts[:model],
     limit: opts[:limit], logger: logger, incremental: opts[:incremental],
-    manifest: manifest, escalation_model: escalation_model
+    manifest: manifest, escalation_model: escalation_model, smoke_run: smoke_run
   )
   logger.call("Localizable.strings done in #{(Time.now - t0).round(1)}s")
   total_translated = trans
@@ -333,7 +403,7 @@ def main(argv)
         input_path: info_in, output_path: info_out,
         translator: translator, locale: locale, model: opts[:model],
         limit: nil, logger: logger, incremental: opts[:incremental],
-        manifest: manifest, escalation_model: escalation_model
+        manifest: manifest, escalation_model: escalation_model, smoke_run: smoke_run
       )
       logger.call("InfoPlist.strings done in #{(Time.now - t0).round(1)}s")
       total_translated += trans

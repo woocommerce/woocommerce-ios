@@ -25,6 +25,29 @@ struct SupportEscalationCoordinatorTests {
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
     }
 
+    @Test func supportForm_when_no_bot_response_then_excludes_aiSkip_tag() {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk)
+
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: nil,
+                                     entryPoint: .helpAndSupport,
+                                     hasReceivedBotResponse: false)
+
+        // When
+        let viewModel = supportFormViewModel(from: navigationController)
+        viewModel?.siteAddress = "https://example.com"
+        viewModel?.submitSupportRequest()
+
+        // Then
+        #expect(zendesk.latestInvokedTags.contains("ai_skip") == false)
+    }
+
     @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() {
         // Given
         let zendesk = MockZendeskManager()

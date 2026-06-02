@@ -94,7 +94,7 @@ class BordersView: UIView {
         }
     }
 
-    /// Overriden Frame Property!
+    /// Overridden Frame Property!
     ///
     override var frame: CGRect {
         didSet {

@@ -487,13 +487,14 @@ private extension HelpAndSupportViewController {
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
             initialContext: initialContext,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
                 guard let self else { return }
                 handleContactHumanSupport(chatID: chatID,
                                           transcript: transcript,
                                           supportAreaInfo: supportAreaInfo,
                                           entryPoint: entryPoint,
                                           siteAddress: loginSiteURL?.absoluteString,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
                                           onTicketCreated: { [weak viewModelHolder] in
                     viewModelHolder?.markChatTicketCreated()
                 })
@@ -509,6 +510,7 @@ private extension HelpAndSupportViewController {
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
                                            siteAddress: String? = nil,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)
@@ -516,7 +518,8 @@ private extension HelpAndSupportViewController {
                                                        transcript: transcript,
                                                        supportAreaInfo: supportAreaInfo,
                                                        entryPoint: entryPoint,
-                                                       siteAddress: siteAddress)
+                                                       siteAddress: siteAddress,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     /// Chat History action
@@ -544,12 +547,13 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
                 guard let self else { return }
                 handleContactHumanSupport(chatID: chatID,
                                           transcript: transcript,
                                           supportAreaInfo: supportAreaInfo,
                                           entryPoint: entryPoint,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
                                           onTicketCreated: { [weak viewModelHolder] in
                     viewModelHolder?.markChatTicketCreated()
                 })

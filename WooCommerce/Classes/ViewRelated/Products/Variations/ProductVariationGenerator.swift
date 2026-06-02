@@ -34,7 +34,7 @@ struct ProductVariationGenerator {
         return buildVariations(from: uniqueCombinations, for: product)
     }
 
-    /// Generates all posible combination for a product attributes.
+    /// Generates all possible combinations for a product attributes.
     ///
     private static func getCombinations(from product: Product) -> [Combination] {
         // Iterates through attributes while receiving the previous combinations list.

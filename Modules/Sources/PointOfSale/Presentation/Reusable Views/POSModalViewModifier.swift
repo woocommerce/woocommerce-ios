@@ -160,7 +160,7 @@ extension View {
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
-    /// - Returns: a modified view which can show the modal content specifed, when applicable.
+    /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
@@ -180,7 +180,7 @@ extension View {
     /// - Parameters:
     ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
     ///   - content: Content to show
-    /// - Returns: a modified view which can show the modal content specifed, when applicable.
+    /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,

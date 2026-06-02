@@ -325,7 +325,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .scanToPay, cardReaderType: .none)
     }
 
-    /// Perform the necesary tasks after a link is shared.
+    /// Perform the necessary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
         presentNoticeSubject.send(.created)

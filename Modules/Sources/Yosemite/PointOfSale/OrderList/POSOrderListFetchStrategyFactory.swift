@@ -1,7 +1,6 @@
 import Foundation
 import class Networking.AlamofireNetwork
 import class Networking.OrdersRemote
-import protocol Networking.Network
 import class WooFoundationCore.CurrencyFormatter
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
@@ -18,28 +17,18 @@ public final class POSOrderListFetchStrategyFactory: POSOrderListFetchStrategyFa
     private let analytics: POSOrderListFetchAnalyticsTracking
 
     public init(siteID: Int64,
-                network: Network,
-                currencyFormatter: CurrencyFormatter,
-                analytics: POSOrderListFetchAnalyticsTracking) {
-        self.siteID = siteID
-        self.ordersRemote = OrdersRemote(network: network)
-        self.currencyFormatter = currencyFormatter
-        self.analytics = analytics
-    }
-
-    public convenience init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
                 currencyFormatter: CurrencyFormatter,
                 analytics: POSOrderListFetchAnalyticsTracking) {
+        self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
-        self.init(siteID: siteID,
-                  network: network,
-                  currencyFormatter: currencyFormatter,
-                  analytics: analytics)
+        self.ordersRemote = OrdersRemote(network: network)
+        self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
     }
 
     public func defaultStrategy() -> POSOrderListFetchStrategy {

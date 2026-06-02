@@ -3,7 +3,6 @@ import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
 import class Networking.CouponsRemote
 import class Networking.AlamofireNetwork
-import protocol Networking.Network
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
@@ -20,17 +19,6 @@ public struct PointOfSaleCouponFetchStrategyFactory: PointOfSaleCouponFetchStrat
 
     public init(siteID: Int64,
                 currencySettings: CurrencySettings,
-                network: Network,
-                storage: StorageManagerType) {
-        let remote = CouponsRemote(network: network)
-        self.siteID = siteID
-        self.currencySettings = currencySettings
-        self.storage = storage
-        self.couponStoreMethods = CouponStoreMethods(storageManager: storage, remote: remote)
-    }
-
-    public init(siteID: Int64,
-                currencySettings: CurrencySettings,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
@@ -38,10 +26,11 @@ public struct PointOfSaleCouponFetchStrategyFactory: PointOfSaleCouponFetchStrat
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
-        self.init(siteID: siteID,
-                  currencySettings: currencySettings,
-                  network: network,
-                  storage: storage)
+        let remote = CouponsRemote(network: network)
+        self.siteID = siteID
+        self.currencySettings = currencySettings
+        self.storage = storage
+        self.couponStoreMethods = CouponStoreMethods(storageManager: storage, remote: remote)
     }
 
     public var defaultStrategy: PointOfSaleCouponFetchStrategy {

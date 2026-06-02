@@ -2,7 +2,6 @@ import Foundation
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
-import protocol Networking.Network
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import protocol Storage.GRDBManagerProtocol
@@ -25,22 +24,6 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let isFTSSearchEnabled: Bool
 
     public init(siteID: Int64,
-                network: Network,
-                grdbManager: GRDBManagerProtocol? = nil,
-                currencySettings: CurrencySettings,
-                itemMapper: PointOfSaleItemMapperProtocol? = nil,
-                isLocalCatalogEnabled: Bool = false,
-                isFTSSearchEnabled: Bool = false) {
-        self.siteID = siteID
-        self.productsRemote = ProductsRemote(network: network)
-        self.variationsRemote = ProductVariationsRemote(network: network)
-        self.grdbManager = grdbManager
-        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
-        self.isLocalCatalogEnabled = isLocalCatalogEnabled
-        self.isFTSSearchEnabled = isFTSSearchEnabled
-    }
-
-    public convenience init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
                 appPasswordSupportState: AnyPublisher<Bool, Never>? = nil,
@@ -49,16 +32,16 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                 itemMapper: PointOfSaleItemMapperProtocol? = nil,
                 isLocalCatalogEnabled: Bool = false,
                 isFTSSearchEnabled: Bool = false) {
+        self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
-        self.init(siteID: siteID,
-                  network: network,
-                  grdbManager: grdbManager,
-                  currencySettings: currencySettings,
-                  itemMapper: itemMapper,
-                  isLocalCatalogEnabled: isLocalCatalogEnabled,
-                  isFTSSearchEnabled: isFTSSearchEnabled)
+        self.productsRemote = ProductsRemote(network: network)
+        self.variationsRemote = ProductVariationsRemote(network: network)
+        self.grdbManager = grdbManager
+        self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
+        self.isLocalCatalogEnabled = isLocalCatalogEnabled
+        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {

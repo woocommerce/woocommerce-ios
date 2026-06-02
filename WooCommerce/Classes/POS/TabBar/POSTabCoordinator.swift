@@ -50,35 +50,68 @@ final class POSTabCoordinator {
     /// Local catalog eligibility service - created asynchronously during init
     private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
-    /// Creates item fetch strategy factory using the shared POS network.
-    private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool, network: Network) -> PointOfSaleItemFetchStrategyFactory {
+    /// Creates item fetch strategy factory with current local catalog eligibility
+    private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
-                                                   network: network,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
                                                    currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
                                                    isFTSSearchEnabled: isFTSSearchEnabled)
     }
 
-    /// Creates popular item fetch strategy factory using the shared POS network.
-    private func createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: Bool, network: Network) -> PointOfSaleFixedItemFetchStrategyFactory {
-        let itemFactory = createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEnabled, network: network)
+    /// Creates popular item fetch strategy factory with current local catalog eligibility
+    private func createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleFixedItemFetchStrategyFactory {
+        let itemFactory = createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEnabled)
         return PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: itemFactory.popularStrategy())
     }
 
-    /// Creates the appropriate barcode scan service based on local catalog availability.
+    private lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
+        PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
+                                              currencySettings: currencySettings,
+                                              credentials: credentials,
+                                              selectedSite: defaultSitePublisher,
+                                              appPasswordSupportState: isAppPasswordSupported,
+                                              storage: storageManager)
+    }()
+
+    private lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
+        return PointOfSaleCouponService(siteID: siteID,
+                                        currencySettings: currencySettings,
+                                        credentials: credentials,
+                                        selectedSite: defaultSitePublisher,
+                                        appPasswordSupportState: isAppPasswordSupported,
+                                        storage: storageManager)
+    }()
+
+    private lazy var posBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory = {
+        POSBookingListFetchStrategyFactory(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+            siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
+        )
+    }()
+
+    /// Creates the appropriate barcode scan service based on local catalog availability
     private func createBarcodeScanService(isLocalCatalogEligible: Bool,
-                                          grdbManager: GRDBManagerProtocol?,
-                                          network: Network) -> any PointOfSaleBarcodeScanServiceProtocol {
+                                          grdbManager: GRDBManagerProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
         if isLocalCatalogEligible,
            let grdbManager {
             return PointOfSaleLocalBarcodeScanService(siteID: siteID,
                                                      grdbManager: grdbManager,
                                                      currencySettings: currencySettings)
         } else {
+            // Fall back to remote barcode scanning
             return PointOfSaleBarcodeScanService(siteID: siteID,
-                                                network: network,
+                                                credentials: credentials,
+                                                selectedSite: defaultSitePublisher,
+                                                appPasswordSupportState: isAppPasswordSupported,
                                                 currencySettings: currencySettings)
         }
     }
@@ -199,7 +232,9 @@ private extension POSTabCoordinator {
 
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
-                    network: posNetwork,
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported,
                     storageManager: storageManager
                 )
             )
@@ -216,7 +251,9 @@ private extension POSTabCoordinator {
                                                                             collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
             }
             let settingsService = PointOfSaleSettingsService(siteID: siteID,
-                                                             network: posNetwork,
+                                                             credentials: credentials,
+                                                             selectedSite: defaultSitePublisher,
+                                                             appPasswordSupportState: isAppPasswordSupported,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
@@ -229,21 +266,8 @@ private extension POSTabCoordinator {
             // Will use local GRDB-based scanning if eligible and infrastructure is available,
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
-                                                              grdbManager: grdbManager,
-                                                              network: posNetwork)
+                                                              grdbManager: grdbManager)
 
-            let posCouponFetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(
-                siteID: siteID,
-                currencySettings: currencySettings,
-                network: posNetwork,
-                storage: storageManager
-            )
-            let posCouponProvider: PointOfSaleCouponServiceProtocol = PointOfSaleCouponService(
-                siteID: siteID,
-                currencySettings: currencySettings,
-                network: posNetwork,
-                storage: storageManager
-            )
             let refundsService = POSRefundsService(siteID: siteID,
                                                    network: posNetwork,
                                                    currencySettings: currencySettings)
@@ -282,13 +306,15 @@ private extension POSTabCoordinator {
 
             let posView = PointOfSaleEntryPointView(
                 siteID: siteID,
-                itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible, network: posNetwork),
-                popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible, network: posNetwork),
+                itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
                 couponProvider: posCouponProvider,
                 couponFetchStrategyFactory: posCouponFetchStrategyFactory,
                 orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
                     siteID: siteID,
-                    network: posNetwork,
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported,
                     currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                     analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                 ),

@@ -57,6 +57,7 @@ final class MockCouponStoreMethods: CouponStoreMethodsProtocol {
 
     func createCoupon(_ coupon: Yosemite.Coupon,
                       siteTimezone: TimeZone?,
+                      additionalMetadata: [Yosemite.MetaData],
                       onCompletion: @escaping (Result<Yosemite.Coupon, any Error>) -> Void) {
         createCalled = true
         onCompletion(.success(coupon))

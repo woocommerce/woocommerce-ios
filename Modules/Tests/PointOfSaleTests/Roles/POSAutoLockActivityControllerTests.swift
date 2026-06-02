@@ -7,7 +7,7 @@ import Testing
 struct POSAutoLockActivityControllerTests {
     @Test func test_handleTimerFire_when_hasAnyPINs_is_false_then_does_not_lock() {
         // Given
-        let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: false, hasAnyPINs: false)
+        let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: false, pinStatus: .absent)
         let sut = makeSUT(session: session, secondsSinceLastActivity: 600)
         defer { sut.stop() }
 
@@ -167,7 +167,7 @@ struct POSAutoLockActivityControllerTests {
 
     @Test func test_handleTimerFire_when_session_unlocked_then_relocked_via_noteActivity_then_relocks_after_timeout() {
         // Given
-        let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: true, hasAnyPINs: true)
+        let session = MockPOSAccessSession(currentStaff: makeStaff(), isLocked: true, pinStatus: .present)
         let clock = ClockHandle()
         let sut = POSAutoLockActivityController(
             session: session,
@@ -205,7 +205,7 @@ private extension POSAutoLockActivityControllerTests {
     }
 
     func makeStaff() -> POSStaff {
-        POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        POSStaff(userID: 1, userLogin: "maya", displayName: "Maya", role: "shop_manager", capabilities: [])
     }
 }
 

@@ -525,7 +525,10 @@ struct PersistedProductTests {
         try posProduct.save(to: db)
 
         let fetchedProduct = try db.read { db in
-            try PersistedProduct.filter { $0.siteID == 1 && $0.id == 123 }.fetchOne(db)
+            try PersistedProduct
+                .filter { $0.siteID == 1 }
+                .filter { $0.id == 123 }
+                .fetchOne(db)
         }
         let product = try #require(fetchedProduct)
         let loadedPOSProduct = try product.toPOSProduct(db: db)

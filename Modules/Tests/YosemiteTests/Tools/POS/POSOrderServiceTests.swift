@@ -21,7 +21,7 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD, staffUserID: nil)
 
         // Then
         #expect(mockOrdersRemote.createPOSOrderCalled == true)
@@ -32,7 +32,7 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: .init(), currency: .EUR)
+        _ = try await sut.syncOrder(cart: .init(), currency: .EUR, staffUserID: nil)
 
         // Then
         #expect(mockOrdersRemote.spyCreatePOSOrder?.currency.uppercased() == "EUR")
@@ -49,7 +49,7 @@ struct POSOrderServiceTests {
         ])
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let createdOrderItems = try #require(mockOrdersRemote.spyCreatePOSOrder?.items)
@@ -70,7 +70,7 @@ struct POSOrderServiceTests {
         )
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let createdOrderCoupons = try #require(mockOrdersRemote.spyCreatePOSOrder?.coupons)
@@ -91,7 +91,7 @@ struct POSOrderServiceTests {
         )
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let createdOrderCoupons = try #require(mockOrdersRemote.spyCreatePOSOrder?.coupons)
@@ -113,7 +113,7 @@ struct POSOrderServiceTests {
         )
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let createdOrderFees = try #require(mockOrdersRemote.spyCreatePOSOrder?.fees)
@@ -150,7 +150,7 @@ struct POSOrderServiceTests {
         mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoFees)
 
         // When / Then - returns the order without throwing despite the fee discrepancy
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
+        let result = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         #expect(result.fees.isEmpty)
     }
 
@@ -174,7 +174,7 @@ struct POSOrderServiceTests {
         mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraFee)
 
         // When / Then - returns the order without throwing despite the count mismatch
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
+        let result = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         #expect(result.fees.count == 2)
     }
 
@@ -186,7 +186,7 @@ struct POSOrderServiceTests {
         )
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
@@ -198,7 +198,7 @@ struct POSOrderServiceTests {
         // Given
 
         // When
-        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD, staffUserID: nil)
 
         // Then
         let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
@@ -214,7 +214,7 @@ struct POSOrderServiceTests {
         ])
 
         // When
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
 
         // Then
         let orderSentToRemote = try #require(mockOrdersRemote.spyCreatePOSOrder)
@@ -326,7 +326,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -358,7 +358,7 @@ struct POSOrderServiceTests {
         mockOrdersRemote.createPOSOrderResult = .success(completeOrder)
 
         // When/Then - Should not throw
-        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+        _ = try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
     }
 
     @Test func syncOrder_throws_error_when_order_missing_variation() async throws {
@@ -383,7 +383,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -437,7 +437,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 // Should only report the missing variation (variationID 501)
@@ -460,7 +460,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -505,7 +505,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -533,7 +533,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -554,7 +554,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
@@ -572,7 +572,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             // Should throw the original DotcomError, not missingProductsInOrder
             if case .unknown = error as? DotcomError {
@@ -600,7 +600,7 @@ struct POSOrderServiceTests {
 
         // When/Then
         await #expect(performing: {
-            try await sut.syncOrder(cart: cart, currency: .USD)
+            try await sut.syncOrder(cart: cart, currency: .USD, staffUserID: nil)
         }, throws: { error in
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)

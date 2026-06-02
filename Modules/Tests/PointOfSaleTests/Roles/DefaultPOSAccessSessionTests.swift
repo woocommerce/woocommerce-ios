@@ -7,11 +7,7 @@ import Testing
 struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_pin_is_valid_then_sets_currentStaff_and_unlocks_and_resets_limiter() async throws {
         // Given
-        let staff = POSStaff(
-            displayName: "Maya",
-            role: "shop_manager",
-            capabilities: Set(POSCapability.allCases.map(\.rawValue))
-        )
+        let staff = makeStaff(capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         sut.limiter.recordFailure()
 
@@ -126,7 +122,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_lock_when_called_then_sets_isLocked_true_and_keeps_currentStaff() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -138,36 +134,10 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.currentStaff == staff)
     }
 
-    @Test func test_refreshPINStatus_when_authenticator_succeeds_then_updates_hasAnyPINs() async {
+    @Test func test_requestManagerApproval_when_authenticator_fails_then_throws_unknown() async {
         // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
+        let authenticator = MockPOSPINAuthenticator(verifyResult: .failure(.unknown))
         let sut = makeSUT(authenticator: authenticator)
-
-        // When
-        await sut.session.refreshPINStatus()
-
-        // Then
-        #expect(sut.session.hasAnyPINs == true)
-        #expect(authenticator.hasAnyPINsCallCount == 1)
-    }
-
-    @Test func test_refreshPINStatus_when_authenticator_fails_then_keeps_last_value() async {
-        // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
-        let sut = makeSUT(authenticator: authenticator)
-        await sut.session.refreshPINStatus()
-
-        // When
-        authenticator.hasAnyPINsResult = .failure(.unknown)
-        await sut.session.refreshPINStatus()
-
-        // Then
-        #expect(sut.session.hasAnyPINs == true)
-    }
-
-    @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
-        // Given
-        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
 
         // When / Then
         await #expect(throws: POSAuthError.unknown) {
@@ -177,11 +147,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
-        let staff = POSStaff(
-            displayName: "Maya",
-            role: "shop_manager",
-            capabilities: [POSCapability.issueRefunds.rawValue]
-        )
+        let staff = makeStaff(capabilities: [POSCapability.issueRefunds.rawValue])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -191,7 +157,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "pos_cashier", capabilities: [])
+        let staff = makeStaff(role: "pos_cashier", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -220,7 +186,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_signIn_when_pin_is_valid_then_persists_false_to_per_site_lock_key() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         sut.session.lock()
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
@@ -243,16 +209,17 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 999)) == false)
     }
 
-    @Test func test_signIn_when_pin_is_valid_then_sets_hasAnyPINs_true() async throws {
+    @Test func test_signIn_when_pin_is_valid_then_sets_pinStatus_present() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = makeStaff()
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
-        #expect(sut.session.hasAnyPINs == false)
+        #expect(sut.session.pinStatus == .unknown)
 
         // When
         try await sut.session.signIn(withPIN: "1234")
 
         // Then
+        #expect(sut.session.pinStatus == .present)
         #expect(sut.session.hasAnyPINs == true)
     }
 }
@@ -265,6 +232,7 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeSUT(authenticator: POSPINAuthenticating,
+                 fetcher: POSStaffFetching = MockPOSStaffFetcher(),
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
@@ -272,9 +240,23 @@ private extension DefaultPOSAccessSessionTests {
             siteID: 123,
             authenticator: authenticator,
             rateLimiter: limiter,
+            cache: POSStaffCache(),
+            fetcher: fetcher,
             userDefaults: scope.defaults
         )
         return SUT(session: session, limiter: limiter, scope: scope)
+    }
+
+    func makeStaff(userID: Int64 = 1,
+                   userLogin: String = "maya",
+                   displayName: String = "Maya",
+                   role: String = "shop_manager",
+                   capabilities: Set<String> = []) -> POSStaff {
+        POSStaff(userID: userID,
+                 userLogin: userLogin,
+                 displayName: displayName,
+                 role: role,
+                 capabilities: capabilities)
     }
 }
 

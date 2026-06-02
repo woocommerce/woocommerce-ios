@@ -121,6 +121,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
+                      additionalMetadata: [MetaData],
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallCreateCoupon = true
         spyCreateCoupon = coupon

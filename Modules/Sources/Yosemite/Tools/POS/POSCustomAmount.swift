@@ -54,16 +54,25 @@ extension [POSCustomAmount] {
     /// never against the server's returned tax status. Callers (the order controller) use a
     /// divergence here to force a resync, without reintroducing the redundant resync loop
     /// that comparing against the server's tax decision would cause.
+    ///
+    /// Duplicate `id`s are unexpected (the cart upserts by `id`), but since this is public API
+    /// a collision on either side is treated as a mismatch so the caller errs toward re-syncing
+    /// rather than silently masking a change (e.g. `[A, B]` vs `[A, A]` with equal tax flags).
     public func taxableIntentMatches(_ previous: [POSCustomAmount]) -> Bool {
-        guard self.count == previous.count else {
+        guard let current = taxableFlagsByID,
+              let previous = previous.taxableFlagsByID else {
             return false
         }
+        return current == previous
+    }
 
-        let previousTaxableByID = Dictionary(previous.map { ($0.id, $0.isTaxable) },
-                                             uniquingKeysWith: { first, _ in first })
-        return self.allSatisfy { amount in
-            previousTaxableByID[amount.id] == amount.isTaxable
+    /// Maps each amount's `id` to its `isTaxable` flag, or `nil` if any `id` appears more than once.
+    private var taxableFlagsByID: [UUID: Bool]? {
+        var result = [UUID: Bool](minimumCapacity: count)
+        for amount in self where result.updateValue(amount.isTaxable, forKey: amount.id) != nil {
+            return nil
         }
+        return result
     }
 
     private struct CustomAmountSummary: Hashable, Comparable {

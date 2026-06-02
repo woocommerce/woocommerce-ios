@@ -230,4 +230,42 @@ struct POSCustomAmountTests {
         // When, Then
         #expect(sut.taxableIntentMatches(previous) == false)
     }
+
+    /// Guards against a false match when `self` carries a duplicate `id`. With ids `[A, A]`
+    /// against a previous `[A, B]`, the counts and tax flags align, but `B` has silently
+    /// disappeared. The duplicate must be treated as a mismatch so the caller re-syncs.
+    @Test func taxableIntentMatches_when_self_has_duplicate_ids_then_returns_false() async throws {
+        // Given
+        let idA = UUID()
+        let idB = UUID()
+        let previous = [
+            POSCustomAmount(id: idA, name: "Tip", amount: "5.00", isTaxable: true),
+            POSCustomAmount(id: idB, name: "Delivery", amount: "2.50", isTaxable: true)
+        ]
+        let sut = [
+            POSCustomAmount(id: idA, name: "Tip", amount: "5.00", isTaxable: true),
+            POSCustomAmount(id: idA, name: "Delivery", amount: "2.50", isTaxable: true)
+        ]
+
+        // When, Then
+        #expect(sut.taxableIntentMatches(previous) == false)
+    }
+
+    /// Mirror of the above: a duplicate `id` on the `previous` side must also be rejected.
+    @Test func taxableIntentMatches_when_previous_has_duplicate_ids_then_returns_false() async throws {
+        // Given
+        let idA = UUID()
+        let idB = UUID()
+        let previous = [
+            POSCustomAmount(id: idA, name: "Tip", amount: "5.00", isTaxable: true),
+            POSCustomAmount(id: idA, name: "Delivery", amount: "2.50", isTaxable: true)
+        ]
+        let sut = [
+            POSCustomAmount(id: idA, name: "Tip", amount: "5.00", isTaxable: true),
+            POSCustomAmount(id: idB, name: "Delivery", amount: "2.50", isTaxable: true)
+        ]
+
+        // When, Then
+        #expect(sut.taxableIntentMatches(previous) == false)
+    }
 }

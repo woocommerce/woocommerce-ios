@@ -5,7 +5,9 @@ import Foundation
 @testable import PointOfSale
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.OrderFeeLine
 import struct Yosemite.OrderCouponLine
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.SystemPlugin
 import enum Yosemite.OrderAction
 import protocol Yosemite.PluginsServiceProtocol
@@ -743,6 +745,92 @@ struct PointOfSaleOrderControllerTests {
         default:
             #expect(Bool(false), "Expected new order after failure cleared previous order, got \(subsequentResult)")
         }
+    }
+
+    // MARK: - Custom amount taxable intent
+
+    @Test func syncOrder_when_custom_amount_taxable_flag_toggled_then_calls_orderService() async throws {
+        // Given - an order whose fee matches the custom amount's name + amount, so
+        // `matches(order:)` alone would short-circuit the re-sync.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync with a taxable custom amount.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - same id, name, and amount, but "Charge taxes" toggled off.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: false)]),
+            retryHandler: {}
+        )
+
+        // Then - the taxable-intent change forces a re-sync despite name + amount being unchanged.
+        #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
+    @Test func syncOrder_when_custom_amount_unchanged_then_doesnt_call_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - identical custom amount (same id, name, amount, taxable flag).
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+
+        // Then
+        #expect(mockOrderService.syncOrderWasCalled == false)
+    }
+
+    @Test func syncOrder_when_server_tax_status_differs_from_unchanged_cart_intent_then_doesnt_resync() async throws {
+        // Given - the cart intends a taxable amount but the server returns a non-taxable fee
+        // (e.g. a tax-exempt customer or a store-level tax-class override).
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: .none, total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - the cart's intent is unchanged; only the server's returned tax status differs.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+
+        // Then - comparing against cart intent (not the server's decision) avoids a resync loop.
+        #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
     @MainActor

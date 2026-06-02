@@ -44,6 +44,28 @@ extension [POSCustomAmount] {
         return cartSummaries == orderSummaries
     }
 
+    /// Returns `true` when the taxable intent of these custom amounts matches a
+    /// previously-synced set, comparing each amount by `id`.
+    ///
+    /// `matches(order:)` deliberately ignores `isTaxable` (the server's tax decision can
+    /// legitimately differ from the cart's intent), so a merchant toggling "Charge taxes"
+    /// on an otherwise-identical amount would never re-sync. This method closes that gap by
+    /// comparing against the cart's *own* record of what it last asked the server for —
+    /// never against the server's returned tax status. Callers (the order controller) use a
+    /// divergence here to force a resync, without reintroducing the redundant resync loop
+    /// that comparing against the server's tax decision would cause.
+    public func taxableIntentMatches(_ previous: [POSCustomAmount]) -> Bool {
+        guard self.count == previous.count else {
+            return false
+        }
+
+        let previousTaxableByID = Dictionary(previous.map { ($0.id, $0.isTaxable) },
+                                             uniquingKeysWith: { first, _ in first })
+        return self.allSatisfy { amount in
+            previousTaxableByID[amount.id] == amount.isTaxable
+        }
+    }
+
     private struct CustomAmountSummary: Hashable, Comparable {
         let name: String
         let amount: String

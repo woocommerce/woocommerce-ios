@@ -31,16 +31,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            network: Network,
-                            storage: StorageManagerType) {
-        self.init(siteID: siteID,
-                  currencySettings: currencySettings,
-                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
-                  storage: storage)
-    }
-
-    public convenience init(siteID: Int64,
-                            currencySettings: CurrencySettings,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,

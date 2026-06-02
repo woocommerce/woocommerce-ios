@@ -7,8 +7,6 @@ import class WooFoundation.CurrencySettings
 import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
-import class NetworkingCore.AlamofireNetwork
-import protocol Networking.Network
 import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
 import PointOfSale
@@ -218,18 +216,6 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
-            // Shared network for all POS services that make mutating API calls. Every
-            // request authenticates as the device admin per the M1 plan — there is no
-            // per-staff Application Password override; staff identity rides as
-            // `_pos_staff_user_id` order meta instead.
-            guard let credentials else {
-                DDLogError("⛔️ POS cannot start without credentials")
-                return
-            }
-            let posNetwork = AlamofireNetwork(credentials: credentials,
-                                              selectedSite: defaultSitePublisher,
-                                              appPasswordSupportState: isAppPasswordSupported)
-
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -269,15 +255,29 @@ private extension POSTabCoordinator {
                                                               grdbManager: grdbManager)
 
             let refundsService = POSRefundsService(siteID: siteID,
-                                                   network: posNetwork,
+                                                   credentials: credentials,
+                                                   selectedSite: defaultSitePublisher,
+                                                   appPasswordSupportState: isAppPasswordSupported,
                                                    currencySettings: currencySettings)
-            let receiptService = POSReceiptService(siteID: siteID, network: posNetwork)
+
+            guard let receiptService = POSReceiptService(siteID: siteID,
+                                                         credentials: credentials,
+                                                         selectedSite: defaultSitePublisher,
+                                                         appPasswordSupportState: isAppPasswordSupported) else {
+                return
+            }
 
             let orderService: POSOrderServiceProtocol
             if ProcessConfiguration.shouldBypassPOSOrderSyncing {
                 orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+            } else if let posOrderService = POSOrderService(siteID: siteID,
+                                                            credentials: credentials,
+                                                            selectedSite: defaultSitePublisher,
+                                                            appPasswordSupportState: isAppPasswordSupported) {
+                orderService = posOrderService
             } else {
-                orderService = POSOrderService(siteID: siteID, network: posNetwork)
+                DDLogError("POSOrderService not provided")
+                return
             }
 
             let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
@@ -302,6 +302,13 @@ private extension POSTabCoordinator {
                 preferredConnectionMethod = .tapToPay
             case .unknown, .unavailable:
                 preferredConnectionMethod = .bluetooth
+            }
+
+            guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
+                                                     selectedSite: defaultSitePublisher,
+                                                     appPasswordSupportState: isAppPasswordSupported) else {
+                DDLogError("⛔️ POSStaffAdaptor not provided")
+                return
             }
 
             let posView = PointOfSaleEntryPointView(
@@ -343,7 +350,7 @@ private extension POSTabCoordinator {
                 tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                 preferredConnectionMethod: preferredConnectionMethod,
                 services: serviceAdaptor,
-                staffFetcher: POSStaffAdaptor(network: posNetwork),
+                staffFetcher: staffFetcher,
                 itemProvider: itemProvider
             )
 

@@ -1,4 +1,5 @@
 import CocoaLumberjackSwift
+import Combine
 import Foundation
 import Networking
 import NetworkingCore
@@ -25,6 +26,19 @@ final class POSStaffAdaptor: POSStaffFetching {
 
     convenience init(network: Network) {
         self.init(remote: POSStaffRemote(network: network))
+    }
+
+    convenience init?(credentials: Credentials?,
+                      selectedSite: AnyPublisher<JetpackSite?, Never>,
+                      appPasswordSupportState: AnyPublisher<Bool, Never>) {
+        guard let credentials else {
+            DDLogError("⛔️ Could not create POSStaffAdaptor due to not finding credentials")
+            return nil
+        }
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
+        self.init(network: network)
     }
 
     func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] {

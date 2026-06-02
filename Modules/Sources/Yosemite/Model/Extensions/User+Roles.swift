@@ -29,8 +29,6 @@ extension User {
         case editor
         case shopManager = "shop_manager"
         case subscriber
-        case posCashier = "pos_cashier"
-        case posManager = "pos_manager"
 
         /// Returns a user-friendly format of the role to be displayed on screen.
         ///
@@ -50,10 +48,6 @@ extension User {
                 return NSLocalizedString("Shop Manager", comment: "User's Shop Manager role.")
             case .subscriber:
                 return NSLocalizedString("Subscriber", comment: "User's Subscriber role.")
-            case .posCashier:
-                return NSLocalizedString("user.role.posCashier", value: "POS Cashier", comment: "User's POS Cashier role.")
-            case .posManager:
-                return NSLocalizedString("user.role.posManager", value: "POS Manager", comment: "User's POS Manager role.")
             }
         }
 

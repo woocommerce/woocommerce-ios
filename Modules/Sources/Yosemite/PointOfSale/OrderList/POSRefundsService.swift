@@ -15,11 +15,16 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     private let mapper: POSRefundMapper
 
     public init(siteID: Int64,
-                network: Network,
+                credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
                 currencySettings: CurrencySettings
     ) {
         self.siteID = siteID
         self.currencySettings = currencySettings
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.refundsRemote = RefundsRemote(network: network)
         self.paymentGatewayRemote = PaymentGatewayRemote(network: network)
         self.refundCalculator = POSRefundCalculator()

@@ -15,13 +15,6 @@ public struct POSRefundAmounts {
 }
 
 public protocol POSRefundCalculating {
-    func buildRefundRequest(
-        orderID: Int64,
-        selectedItems: [POSRefundableItem],
-        reason: String?,
-        numberOfDecimals: Int
-    ) -> POSRefundRequest
-
     func calculateRefundAmounts(
         for items: [POSRefundableItem],
         numberOfDecimals: Int
@@ -55,24 +48,6 @@ public final class POSRefundCalculator: POSRefundCalculating {
 
     public init() {}
 
-    public func buildRefundRequest(
-        orderID: Int64,
-        selectedItems: [POSRefundableItem],
-        reason: String?,
-        numberOfDecimals: Int
-    ) -> POSRefundRequest {
-        let groupedItems = groupItemsByID(selectedItems)
-        let refundItems = buildRefundRequestItems(from: groupedItems, numberOfDecimals: numberOfDecimals)
-        let totalAmount = calculateTotalAmount(from: selectedItems, numberOfDecimals: numberOfDecimals)
-
-        return POSRefundRequest(
-            orderID: orderID,
-            amount: totalAmount,
-            reason: reason,
-            items: refundItems
-        )
-    }
-
     public func calculateRefundAmounts(for items: [POSRefundableItem], numberOfDecimals: Int) -> POSRefundAmounts {
         let subtotal = calculateSubtotal(for: items, numberOfDecimals: numberOfDecimals)
         let tax = calculateTotalTax(for: items, numberOfDecimals: numberOfDecimals)
@@ -85,31 +60,6 @@ public final class POSRefundCalculator: POSRefundCalculating {
 private extension POSRefundCalculator {
     func groupItemsByID(_ items: [POSRefundableItem]) -> [Int64: [POSRefundableItem]] {
         Dictionary(grouping: items, by: { $0.itemID })
-    }
-
-    func buildRefundRequestItems(from groupedItems: [Int64: [POSRefundableItem]], numberOfDecimals: Int) -> [POSRefundRequestItem] {
-        groupedItems.compactMap { itemID, items -> POSRefundRequestItem? in
-            guard let firstItem = items.first else { return nil }
-
-            // Lump-sum lines (e.g. fee/custom amount) refund as a single line with quantity 0,
-            // matching the WooCommerce REST refund API expectation for non-unit items.
-            let quantityToRefund = firstItem.isLumpSum ? 0 : items.count
-            let refundTotal = calculateRefundTotal(for: items, numberOfDecimals: numberOfDecimals)
-            let refundTax = calculateRefundTax(for: items, numberOfDecimals: numberOfDecimals)
-
-            return POSRefundRequestItem(
-                itemID: itemID,
-                quantity: quantityToRefund,
-                refundTotal: refundTotal,
-                refundTax: refundTax
-            )
-        }
-    }
-
-    func calculateTotalAmount(from items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {
-        let subtotal = calculateSubtotal(for: items, numberOfDecimals: numberOfDecimals)
-        let tax = calculateTotalTax(for: items, numberOfDecimals: numberOfDecimals)
-        return roundDecimal(subtotal + tax, scale: numberOfDecimals)
     }
 
     func calculateSubtotal(for items: [POSRefundableItem], numberOfDecimals: Int) -> Decimal {

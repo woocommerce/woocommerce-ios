@@ -1143,8 +1143,8 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.createRefundCalled == true)
-        #expect(refundsService.spyCreateRefundOrderID == 123)
+        #expect(refundSubmissionProcessor.submitRefundCalled == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundOrderID == 123)
     }
 
     @MainActor
@@ -1170,7 +1170,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 2)
         #expect(items.contains(where: { $0.itemID == 1 }))
         #expect(items.contains(where: { $0.itemID == 2 }))
@@ -1197,7 +1197,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: "Customer changed their mind")
 
         // Then
-        #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
+        #expect(refundSubmissionProcessor.spySubmitRefundReason == "Customer changed their mind")
     }
 
     @MainActor
@@ -1243,7 +1243,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         struct TestError: Error {}
-        refundsService.createRefundErrorToThrow = TestError()
+        refundSubmissionProcessor.submitRefundErrorToThrow = TestError()
 
         // When / Then
         var thrownError: Error?
@@ -1364,7 +1364,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 3)
 
         let firstItem = items[0]
@@ -1395,7 +1395,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == true)
     }
 
     @MainActor
@@ -1419,7 +1419,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == false)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == false)
     }
 
     @MainActor
@@ -1858,6 +1858,13 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     var onSubmitRefundStarted: (() -> Void)?
     private var submitRefundContinuation: CheckedContinuation<Void, Never>?
 
+    private(set) var submitRefundCalled = false
+    private(set) var spySubmitRefundOrderID: Int64?
+    private(set) var spySubmitRefundItems: [POSRefundableItem]?
+    private(set) var spySubmitRefundReason: String?
+    private(set) var spySubmitRefundIsAutomaticRefund: Bool?
+    var submitRefundErrorToThrow: Error?
+
     nonisolated init(refundsService: MockPOSRefundsService,
                      currencyFormatter: CurrencyFormatter) {
         self.refundsService = refundsService
@@ -1954,12 +1961,16 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             )
         }
 
-        try await refundsService.createRefund(
-            orderID: order.id,
-            items: refundableItems,
-            reason: reason,
-            isAutomaticRefund: refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
-        )
+        submitRefundCalled = true
+        spySubmitRefundOrderID = order.id
+        spySubmitRefundItems = refundableItems
+        spySubmitRefundReason = reason
+        spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
+
+        if let error = submitRefundErrorToThrow {
+            throw error
+        }
+
         stateModel.state = .completed
     }
 

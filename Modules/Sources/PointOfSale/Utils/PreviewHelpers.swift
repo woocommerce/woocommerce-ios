@@ -609,8 +609,6 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
         return POSRefundAmounts(subtotal: subtotal, tax: tax)
     }
 
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
-
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }
 

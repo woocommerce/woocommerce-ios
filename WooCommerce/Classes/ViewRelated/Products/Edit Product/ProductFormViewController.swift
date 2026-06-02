@@ -628,6 +628,9 @@ private extension ProductFormViewController {
     /// Configure navigation bar with the title
     ///
     func configureNavigationBar(title: String = "") {
+        // In collapsed split-view replacements, the surrounding navigation controller might not receive
+        // `willShow`, so the form needs to own its large-title preference.
+        navigationItem.largeTitleDisplayMode = .never
         updateNavigationBar()
         updateBackButtonTitle()
         updateNavigationBarTitle()
@@ -1187,6 +1190,9 @@ private extension ProductFormViewController {
                     if let onDuplicateCompletion = self.onDuplicateCompletion,
                        let product = (duplicatedProduct as? EditableProductModel)?.product {
                         onDuplicateCompletion(product)
+                        ServiceLocator.noticePresenter.enqueue(
+                            notice: .init(title: ProductSavedAlertType.copied.alertTitle)
+                        )
                     } else {
                         self.presentProductConfirmationSaveAlert(type: .copied)
                     }

@@ -16,21 +16,23 @@ struct POSLockScreenView: View {
             Color.posSurfaceContainerLow
                 .ignoresSafeArea()
 
-            VStack(spacing: POSSpacing.xxLarge) {
+            VStack(spacing: POSPINEntryView.titleToPINSpacing) {
                 Text(Localization.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                POSPINEntryView(state: model.pinEntryState) { pin in
-                    Task {
+                POSPINEntryView(
+                    state: model.pinEntryState,
+                    onComplete: { pin in
                         await model.signIn(withPIN: pin)
-                    }
-                }
-                .frame(height: Constants.pinEntryHeight)
+                    },
+                    onLockoutExpired: { model.lockoutExpired() }
+                )
+                .frame(height: POSPINEntryView.preferredHeight)
             }
-            .frame(maxWidth: Constants.contentWidth)
+            .frame(maxWidth: POSPINEntryView.contentWidth)
             .padding(POSPadding.xxLarge)
         }
     }
@@ -48,15 +50,6 @@ private extension POSLockScreenView {
     }
 }
 
-// MARK: - Constants
-
-private extension POSLockScreenView {
-    enum Constants {
-        static let contentWidth: CGFloat = 420
-        static let pinEntryHeight: CGFloat = 430
-    }
-}
-
 // MARK: - Preview
 
 #if DEBUG
@@ -67,7 +60,7 @@ private extension POSLockScreenView {
 #Preview("Invalid PIN") {
     let model = POSLockScreenModel(
         session: MockPOSAccessSession(isLocked: true, signInResult: .failure(.invalidPIN)),
-        initialPinEntryState: .error(message: "Incorrect PIN. Try again.")
+        initialPinEntryState: .error(kind: .invalidPIN)
     )
     return POSLockScreenView(model: model)
 }

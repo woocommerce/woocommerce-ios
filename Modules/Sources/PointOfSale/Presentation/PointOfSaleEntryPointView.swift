@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
@@ -28,6 +29,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
+    @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -86,6 +88,10 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
+        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
+            siteID: siteID,
+            featureFlags: services.featureFlags
+        ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -181,6 +187,11 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleDashboardView()
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+                    .posAutoLockActivityTracking(
+                        session: accessSession,
+                        paymentModel: posModel.paymentModel,
+                        aggregateModel: posModel
+                    )
             } else {
                 PointOfSaleLoadingView()
             }
@@ -236,6 +247,16 @@ public struct PointOfSaleEntryPointView: View {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
+        }
+        .posLockScreenOverlay()
+        .environment(\.posAccessSession, accessSession)
+        .task {
+            await accessSession.refreshPINStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            // Active app switch, not idle - lock even mid-payment.
+            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            accessSession.lock()
         }
     }
 }

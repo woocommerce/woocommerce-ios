@@ -89,7 +89,7 @@ struct WooShippingCustomsItem: View {
                 TextField("", text: $viewModel.description)
                     .padding(Layout.extraPadding)
                     .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                   lineColor: viewModel.description.isEmpty ? warningRedColor : Color(.separator),
+                                   lineColor: viewModel.isValidDescription ? Color(.separator) : warningRedColor,
                                    lineWidth: Layout.borderLineWidth)
 
 
@@ -97,6 +97,11 @@ struct WooShippingCustomsItem: View {
                     .foregroundColor(warningRedColor)
                     .footnoteStyle()
                     .renderedIf(viewModel.description.isEmpty)
+
+                Text(Localization.descriptionLengthWarningText)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+                    .renderedIf(viewModel.isDescriptionTooLong)
 
                 Text(Localization.HSTariffNumber)
                     .foregroundColor(.primary)
@@ -303,6 +308,9 @@ extension WooShippingCustomsItem {
         static let valueRequiredWarningText = NSLocalizedString("wooShipping.customsItems.valueRequired",
                                               value: "Value required",
                                               comment: "Warning text when some required value is missing")
+        static let descriptionLengthWarningText = NSLocalizedString("wooShipping.customsItems.descriptionLengthWarning",
+                                              value: "Description must be 30 characters or fewer.",
+                                              comment: "Warning text when the customs item description is too long for USPS domestic mail shipments")
         static let tariffNumberRulesWarningText = NSLocalizedString("wooShipping.customsItems.tariffNumberRulesWarning",
                                               value: "The tariff number must be between 6 and 12 digits long",
                                               comment: "Warning text when the shipping customs tariff number is not valid")

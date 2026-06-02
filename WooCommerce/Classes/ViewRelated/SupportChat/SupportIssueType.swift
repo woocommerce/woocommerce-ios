@@ -10,7 +10,7 @@ enum SupportIssueType: String, CaseIterable {
     case other
 
     /// The diagnostic tests to run for this issue type.
-    /// Returns nil for `.other` (no diagnostics needed).
+    /// Returns nil for options that do not run diagnostics.
     ///
     var testsToRun: [SupportDiagnosticsService.Test]? {
         switch self {

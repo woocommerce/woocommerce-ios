@@ -23,7 +23,7 @@ extension ReaderDisplayMessage {
         case .cardRemovedTooEarly:
             return Localization.cardRemovedTooEarly
         @unknown default:
-            DDLogWarn("Unlocalized IPP ReaderDisplayMessage recieved")
+            DDLogWarn("Unlocalized IPP ReaderDisplayMessage received")
             return Terminal.stringFromReaderDisplayMessage(self)
         }
     }

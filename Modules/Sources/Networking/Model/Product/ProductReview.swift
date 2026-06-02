@@ -107,7 +107,7 @@ private extension ProductReview {
         /// The URL of the "96" key in the JSON.
         ///
         /// We are ignoring all avatars except the one marked as 96
-        /// to avoid adding an unecessary intermediate object
+        /// to avoid adding an unnecessary intermediate object
         let url96: String?
 
         enum CodingKeys: String, CodingKey {

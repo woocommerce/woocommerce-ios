@@ -47,18 +47,18 @@ public struct SystemStatusReport: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let activePlugins = try container.decode([SystemPlugin].self, forKey: .activePlugins)
         let inactivePlugins = try container.decode([SystemPlugin].self, forKey: .inactivePlugins)
-        let environment = try container.decodeIfPresent(Environment.self, forKey: .environment)
-        let database = try container.decodeIfPresent(Database.self, forKey: .database)
+        let environment = try? container.decodeIfPresent(Environment.self, forKey: .environment)
+        let database = try? container.decodeIfPresent(Database.self, forKey: .database)
 
         let dropinMustUsePlugins = try? container.nestedContainer(keyedBy: DropinMustUserPluginsCodingKeys.self, forKey: .dropinMustUsePlugins)
-        let dropinPlugins = try dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .dropins) ?? []
-        let mustUsePlugins = try dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .mustUsePlugins) ?? []
+        let dropinPlugins = (try? dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .dropins)) ?? []
+        let mustUsePlugins = (try? dropinMustUsePlugins?.decodeIfPresent([DropinMustUsePlugin].self, forKey: .mustUsePlugins)) ?? []
 
-        let theme = try container.decodeIfPresent(Theme.self, forKey: .theme)
-        let settings = try container.decodeIfPresent(Settings.self, forKey: .settings)
-        let pages = try container.decodeIfPresent([Page].self, forKey: .pages) ?? []
-        let postTypeCounts = try container.decodeIfPresent([PostTypeCount].self, forKey: .postTypeCounts) ?? []
-        let security = try container.decodeIfPresent(Security.self, forKey: .security)
+        let theme = try? container.decodeIfPresent(Theme.self, forKey: .theme)
+        let settings = try? container.decodeIfPresent(Settings.self, forKey: .settings)
+        let pages = (try? container.decodeIfPresent([Page].self, forKey: .pages)) ?? []
+        let postTypeCounts = (try? container.decodeIfPresent([PostTypeCount].self, forKey: .postTypeCounts)) ?? []
+        let security = try? container.decodeIfPresent(Security.self, forKey: .security)
 
         self.init(
             activePlugins: activePlugins,

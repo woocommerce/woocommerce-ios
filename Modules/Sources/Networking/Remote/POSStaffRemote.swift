@@ -15,7 +15,7 @@ public final class POSStaffRemote: Remote {
             path: Path.staff,
             availableAsRESTRequest: true
         )
-        let mapper = POSStaffMapper()
+        let mapper = ListMapper<POSStaffMember>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }

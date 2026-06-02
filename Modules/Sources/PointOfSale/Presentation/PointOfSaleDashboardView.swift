@@ -10,6 +10,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAccessSession) private var session
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -171,6 +172,16 @@ struct PointOfSaleDashboardView: View {
             Task {
                 await posModel.checkStaleSyncStatus()
             }
+        }
+        .onChange(of: session.isLocked) { _, isLocked in
+            // Locking ends the current staff context; dismiss dashboard-owned presentations
+            // so the next signed-in staff member does not inherit them.
+            guard isLocked else { return }
+            showExitPOSModal = false
+            showSupport = false
+            showDocumentation = false
+            showSettings = false
+            showOrders = false
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }

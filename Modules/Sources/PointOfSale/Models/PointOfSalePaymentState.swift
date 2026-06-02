@@ -81,6 +81,37 @@ struct PointOfSalePaymentState: Equatable {
         guard cash == .idle, scanToPay == .idle else { return false }
         return allowsSecondaryPaymentMethod
     }
+
+    /// True only while the system is actively processing a payment (reader engaged,
+    /// network call in flight, QR being scanned). Success and cash flows aren't suppressed
+    /// - the cashier can re-enter their PIN from the lock screen if they need to keep working.
+    var isAutoLockSuppressing: Bool {
+        switch card {
+        case .validatingOrder, .preparingReader, .acceptingCard,
+             .cardInserted, .processingPayment:
+            return true
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .paymentError,
+             .cardPaymentSuccessful:
+            break
+        }
+        switch cash {
+        case .idle, .collectingCash, .paymentSuccess:
+            break
+        }
+        switch scanToPay {
+        case .showingQRCode:
+            return true
+        case .idle, .paymentSuccess:
+            break
+        }
+        switch markAsPaid {
+        case .processing:
+            return true
+        case .idle, .confirming, .paymentSuccess:
+            break
+        }
+        return false
+    }
 }
 
 enum PointOfSaleCardPaymentState: Equatable {

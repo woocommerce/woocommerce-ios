@@ -42,7 +42,6 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
-    private let userDefaults: UserDefaults
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
@@ -120,8 +119,7 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?,
-         userDefaults: UserDefaults = .standard) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -139,7 +137,6 @@ final class POSTabCoordinator {
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
         self.localCatalogEligibilityService = localCatalogEligibilityService
-        self.userDefaults = userDefaults
 
         tabContainerController.wrappedController = POSTabViewController()
     }

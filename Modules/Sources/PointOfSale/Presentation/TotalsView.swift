@@ -9,6 +9,7 @@ struct TotalsView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posAccessSession) private var session
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -218,6 +219,12 @@ struct TotalsView: View {
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
+        }
+        .onChange(of: session.isLocked) { _, isLocked in
+            // POSSheet presents at the UIWindow level, so it sits above the view-level
+            // lock overlay. Dismiss on lock so the PIN screen isn't obscured.
+            guard isLocked else { return }
+            isShowingOtherPaymentMethodsSheet = false
         }
     }
 

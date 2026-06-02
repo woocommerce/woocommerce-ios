@@ -9,12 +9,19 @@ final class DefaultPOSAccessSession: POSAccessSession {
     private(set) var isLocked: Bool = true
     private(set) var hasAnyPINs: Bool = false
 
+    @ObservationIgnored private let siteID: Int64
     @ObservationIgnored private let authenticator: POSPINAuthenticating
     @ObservationIgnored private let rateLimiter: POSLocalRateLimiter
+    @ObservationIgnored private let userDefaults: UserDefaults
 
-    init(authenticator: POSPINAuthenticating, rateLimiter: POSLocalRateLimiter) {
+    init(siteID: Int64,
+         authenticator: POSPINAuthenticating,
+         rateLimiter: POSLocalRateLimiter,
+         userDefaults: UserDefaults = .standard) {
+        self.siteID = siteID
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
+        self.userDefaults = userDefaults
     }
 
     func allows(_ capability: POSCapability) -> Bool {
@@ -29,6 +36,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
             rateLimiter.reset()
             currentStaff = staff
             isLocked = false
+            // Sign-in proves a PIN exists; pre-empt refreshPINStatus.
+            hasAnyPINs = true
+            persistLockState(false)
         } catch {
             switch error {
             case .invalidPIN:
@@ -47,6 +57,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
 
     func lock() {
         isLocked = true
+        persistLockState(true)
     }
 
     func checkLockoutState() throws(POSAuthError) {
@@ -59,5 +70,11 @@ final class DefaultPOSAccessSession: POSAccessSession {
         } catch {
             DDLogError("Failed to refresh POS PIN status: \(error)")
         }
+    }
+}
+
+private extension DefaultPOSAccessSession {
+    func persistLockState(_ locked: Bool) {
+        userDefaults.set(locked, forKey: POSLockStateKey.key(for: siteID))
     }
 }

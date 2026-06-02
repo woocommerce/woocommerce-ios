@@ -30,7 +30,11 @@ struct POSOrderDetailsView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posAccessSession) private var accessSession
     @State private var isShowingEmailReceiptView = false
-    @State private var refundSelectionState: RefundSelectionState?
+    /// Current step of the in-progress refund flow. The dedicated "are we in the refund flow"
+    /// flag is `activeRefundSelectionOrderID`; this property is only consulted once we're in
+    /// the flow, so keeping it non-optional means the navigation destination can never resolve
+    /// to an empty body when the path-append and state-set race through SwiftUI's transaction.
+    @State private var refundSelectionState: RefundSelectionState = .loading
     @State private var refundModalState: RefundModalState?
     @State private var refundFlowPreparationID: UUID?
     @State private var currentRefundReason: String?
@@ -146,18 +150,16 @@ struct POSOrderDetailsView: View {
         .navigationDestination(for: POSOrderDetailsNavigationDestination.self) { destination in
             switch destination {
             case .refundSelection:
-                if let refundSelectionState {
-                    POSRefundSelectionFlowView(
-                        state: refundSelectionState,
-                        errorStrings: refundErrorStrings,
-                        onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
-                        onRetryPreparation: {
-                            self.refundSelectionState = .itemSelection
-                        },
-                        onContinue: { navigateToRefundReview() }
-                    )
-                }
+                POSRefundSelectionFlowView(
+                    state: refundSelectionState,
+                    errorStrings: refundErrorStrings,
+                    onDismiss: { dismissRefundFlow() },
+                    onRetryLoading: { initiateRefundFlow() },
+                    onRetryPreparation: {
+                        self.refundSelectionState = .itemSelection
+                    },
+                    onContinue: { navigateToRefundReview() }
+                )
             }
         }
         .posFullScreenCover(isPresented: isRefundModalPresented) {
@@ -607,7 +609,10 @@ private extension POSOrderDetailsView {
             get: { refundModalState != nil },
             set: { isPresented in
                 if !isPresented {
-                    if refundModalState == nil, refundSelectionState != nil {
+                    // Ignore cover-dismissed callbacks while we're still in the selection phase
+                    // (the cover wasn't actually presenting anything — we're on the pushed
+                    // selection screen, not in the modal review step).
+                    if refundModalState == nil, activeRefundSelectionOrderID == order.id {
                         return
                     }
                     dismissRefundFlow()
@@ -690,15 +695,16 @@ private extension POSOrderDetailsView {
         let abortStep: WooAnalyticsEvent.PointOfSale.RefundStep?
         if let refundModalState {
             abortStep = refundModalState.abortStep
+        } else if activeRefundSelectionOrderID == order.id {
+            abortStep = refundSelectionState.abortStep
         } else {
-            abortStep = refundSelectionState?.abortStep
+            abortStep = nil
         }
 
         if let step = abortStep {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
         }
         refundFlowPreparationID = nil
-        refundSelectionState = nil
         refundModalState = nil
         currentRefundReason = nil
         orderListModel.ordersController.clearRefundSelection()

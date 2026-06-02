@@ -1,0 +1,1 @@
+Mağazanızı yönetmek artık daha da kullanışlı. Yeni Yapay Zeka Asistanımızla seçilen mağazalar hemen cep telefonundan işlem yapabilir ve mağaza görevlerini yürütebilir. Ayrıca, iPad'deki müşteri formundaki sorunları düzelttik ve yeni müşteriler eklemeyi kolaylaştırdık. İşinizi büyütmeye devam ederken bu geliştirmelerin keyfini çıkarın.

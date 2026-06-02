@@ -722,9 +722,15 @@ extension PointOfSaleAggregateModel {
         isStaleSyncWarningDismissed = true
     }
 
+    @MainActor
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
-        isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+        let isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
+        let wasShowingStaleSyncWarning = showStaleSyncWarning
+
+        self.isSyncStale = isSyncStale
+
+        await trackStaleSyncWarningShownIfNeeded(wasShowing: wasShowingStaleSyncWarning)
     }
 
     /// Calculates the number of hours since the last catalog sync
@@ -732,6 +738,16 @@ extension PointOfSaleAggregateModel {
     func hoursSinceLastSync() async -> Int? {
         guard let catalogSyncCoordinator else { return nil }
         return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
+    }
+
+    private func trackStaleSyncWarningShownIfNeeded(wasShowing: Bool) async {
+        guard !wasShowing,
+              showStaleSyncWarning,
+              let hours = await hoursSinceLastSync() else {
+            return
+        }
+
+        analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
     }
 }
 
@@ -741,9 +757,25 @@ extension PointOfSaleAggregateModel {
         sunsetWarningChecker?.recordDismissal(siteID: siteID)
     }
 
+    @MainActor
     func checkSunsetWarningStatus() async {
         guard let sunsetWarningChecker else { return }
-        showSunsetWarning = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
+        let shouldShow = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
+        let wasShowingSunsetWarning = showSunsetWarning
+
+        guard shouldShow else {
+            showSunsetWarning = false
+            return
+        }
+
+        showSunsetWarning = true
+        trackSunsetWarningShownIfNeeded(wasShowing: wasShowingSunsetWarning)
+    }
+
+    private func trackSunsetWarningShownIfNeeded(wasShowing: Bool) {
+        guard !wasShowing, showSunsetWarning else { return }
+
+        analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
     }
 }
 

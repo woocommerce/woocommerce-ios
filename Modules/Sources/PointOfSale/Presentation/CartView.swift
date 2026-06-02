@@ -42,7 +42,7 @@ struct CartView: View {
                 CartHeaderView(
                     shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
                     shouldShowClearCartButton: shouldShowClearCartButton,
-                    itemCount: posModel.cart.purchasableItems.count,
+                    itemCount: posModel.cart.totalItemCount,
                     backgroundColor: backgroundColor
                 )
                 .zIndex(1)

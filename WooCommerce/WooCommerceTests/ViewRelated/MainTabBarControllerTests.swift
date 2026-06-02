@@ -495,7 +495,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertFalse(tabBarController.tabBarController(tabBarController, shouldSelect: posTabContainerController))
 
         waitUntil {
-            posTabContainerController.presentedViewController is UIHostingController<PointOfSaleEntryPointView>
+            posTabContainerController.presentedViewController is UIHostingController<POSPresentationRootView>
         }
 
         // When POS tab becomes invisible

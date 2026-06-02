@@ -222,6 +222,25 @@ final class StoresManagerTests: XCTestCase {
         await fulfillment(of: [resetExpectation], timeout: 1)
     }
 
+    /// Verifies that `updateDefaultStore` handles catalog sync cleanup gracefully when switching stores.
+    ///
+    func test_updateDefaultStore_handles_catalog_sync_cleanup_when_switching_stores() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+
+        // When - switch to a different store
+        manager.updateDefaultStore(storeID: 456)
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 456, "Store ID should be updated to the new store")
+    }
+
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {

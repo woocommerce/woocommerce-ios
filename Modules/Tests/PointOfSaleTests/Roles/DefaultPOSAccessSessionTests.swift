@@ -206,6 +206,55 @@ struct DefaultPOSAccessSessionTests {
         // When / Then
         #expect(sut.session.allows(.refundShopOrders) == false)
     }
+
+    @Test func test_lock_when_called_then_persists_true_to_per_site_lock_key() {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
+
+        // When
+        sut.session.lock()
+
+        // Then
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
+    }
+
+    @Test func test_signIn_when_pin_is_valid_then_persists_false_to_per_site_lock_key() async throws {
+        // Given
+        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
+        sut.session.lock()
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
+
+        // When
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == false)
+    }
+
+    @Test func test_lock_when_called_then_does_not_pollute_other_site_lock_keys() {
+        // Given
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
+
+        // When
+        sut.session.lock()
+
+        // Then
+        #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 999)) == false)
+    }
+
+    @Test func test_signIn_when_pin_is_valid_then_sets_hasAnyPINs_true() async throws {
+        // Given
+        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
+        #expect(sut.session.hasAnyPINs == false)
+
+        // When
+        try await sut.session.signIn(withPIN: "1234")
+
+        // Then
+        #expect(sut.session.hasAnyPINs == true)
+    }
 }
 
 private extension DefaultPOSAccessSessionTests {
@@ -219,7 +268,12 @@ private extension DefaultPOSAccessSessionTests {
                  now: @escaping () -> Date = { Date() }) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
-        let session = DefaultPOSAccessSession(authenticator: authenticator, rateLimiter: limiter)
+        let session = DefaultPOSAccessSession(
+            siteID: 123,
+            authenticator: authenticator,
+            rateLimiter: limiter,
+            userDefaults: scope.defaults
+        )
         return SUT(session: session, limiter: limiter, scope: scope)
     }
 }

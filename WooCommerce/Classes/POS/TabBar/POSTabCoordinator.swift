@@ -353,13 +353,6 @@ private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
         updateTrackEventPrefix(isPointOfSaleActive)
-        clearPersistedLockStateIfNeeded(isPointOfSaleActive)
-    }
-
-    /// Drop the persisted lock state on POS exit so cold-launch auto-reopen skips this site.
-    func clearPersistedLockStateIfNeeded(_ isPointOfSaleActive: Bool) {
-        guard !isPointOfSaleActive else { return }
-        userDefaults.set(false, forKey: POSLockStateKey.key(for: siteID))
     }
 
     /// Disables foreground in-app notifications when Point of Sale is active.

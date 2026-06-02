@@ -408,6 +408,10 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
+        static let customAmountsTotal = NSLocalizedString(
+            "pos.totalsView.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -458,6 +462,15 @@ private struct TotalsFieldsContent: View {
                 shimmeringActive: totalsLoading
             )
             Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+
+            if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
+                SubtotalFieldView(
+                    title: TotalsView.Localization.customAmountsTotal,
+                    formattedPrice: orderTotals?.customAmountsTotal,
+                    shimmeringActive: totalsLoading
+                )
+                Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+            }
 
             if viewHelper.shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(

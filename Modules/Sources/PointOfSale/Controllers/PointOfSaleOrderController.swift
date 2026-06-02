@@ -232,6 +232,8 @@ private extension PointOfSaleOrderController {
             orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
             discountTotal: formattedDiscount(totalsCalculator.discountTotal,
                                              currency: order.currency),
+            customAmountsTotal: formattedCustomAmounts(totalsCalculator.feesTotal,
+                                                       currency: order.currency),
             couponsTotals: couponsTotals(order))
     }
 
@@ -258,6 +260,17 @@ private extension PointOfSaleOrderController {
         }
 
         return formattedDiscount
+    }
+
+    /// Custom amounts are stored as order fees, so they are absent from the items subtotal
+    /// (`cartTotal`). We surface them on their own line, returning `nil` when there are none.
+    func formattedCustomAmounts(_ fees: NSDecimalNumber, currency: String) -> String? {
+        guard !fees.isZero(),
+              let formattedFees = formattedPrice(fees.stringValue, currency: currency) else {
+            return nil
+        }
+
+        return formattedFees
     }
 }
 

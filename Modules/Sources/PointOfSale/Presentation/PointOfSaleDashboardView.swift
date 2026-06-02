@@ -391,17 +391,8 @@ struct PointOfSaleDashboardView: View {
             min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
-    /// Tangible items shown in the cart count — products + custom amounts.
-    /// Coupons are tracked separately and pulse-only (see below).
     private var phoneCartItemsCount: Int {
-        posModel.cart.purchasableItems.count + posModel.cart.customAmounts.count
-    }
-
-    /// Total cart size — products + custom amounts + coupons — used to drive the cart-button
-    /// pulse so adding a coupon also gives visual feedback even though the displayed number
-    /// stays items-only.
-    private var phoneCartTotalCount: Int {
-        phoneCartItemsCount + posModel.cart.coupons.count
+        posModel.cart.totalItemCount
     }
 
     private var phoneCartButton: some View {
@@ -422,11 +413,9 @@ struct PointOfSaleDashboardView: View {
         // `.ignoresSafeArea()`, so the standard safe-area inset doesn't push the button up.
         .padding(.bottom, POSPadding.xxLarge)
         // Quick pulse to confirm an item was added — only on count increases, so removing items
-        // doesn't bounce the button distractingly. Watches the full cart count (products +
-        // custom amounts + coupons) so adding any of those pulses, even though the displayed
-        // number stays items-only (no coupons).
+        // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
-        .onChange(of: phoneCartTotalCount) { oldValue, newValue in
+        .onChange(of: phoneCartItemsCount) { oldValue, newValue in
             guard newValue > oldValue else { return }
             withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
                 phoneCartButtonPulse = true

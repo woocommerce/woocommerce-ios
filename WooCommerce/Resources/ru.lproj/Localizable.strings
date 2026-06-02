@@ -664,7 +664,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message presented when an unexpected error occurs with the store's payment gateway. */
 "An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "При обработке оплаты заказа произошла непредвиденная ошибка в платёжном шлюзе.";
 
-/* A failure reason for when the error that occured wasn't able to be determined. */
+/* A failure reason for when the error that occurred wasn't able to be determined. */
 "An unknown error occurred." = "Произошла неизвестная ошибка.";
 
 /* Analytics toggle title in the privacy screen.
@@ -2716,7 +2716,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Ошибка обновления заказа № %1$d";
 
-/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on the WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "Прибл. %1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -8488,9 +8488,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder text for address search bar. */
 "addressMapPicker.search.placeholder" = "Поиск адреса";
 
-/* Error shown when the JWT mint endpoint returns an empty token string. */
-"aiAssistant.jwt.error.invalidResponse" = "Магазин вернул пустой токен Jetpack AI.";
-
 /* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
 "aiAssistant.loadingPlaceholder.accessibilityLabel" = "Загрузка";
 
@@ -9779,7 +9776,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Товар с вариантами исполнения, например по цвету или размеру";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
+/* Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.title" = "Вариативный товар";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
@@ -12225,9 +12222,6 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Загрузка";
 
-/* Cancel button on the Point of Sale Mark as paid confirmation. */
-"pointOfSale.markAsPaid.confirmation.cancelButton" = "Отмена";
-
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Пометить как оплаченный";
 
@@ -12401,9 +12395,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Отмена";
-
-/* Phone-only back button title to return from totals to the items list. */
-"pointOfSaleDashboard.phone.backToItems" = "Элементы";
 
 /* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
 "pointOfSaleDashboard.phone.cart" = "Корзина (%1$d)";
@@ -13023,9 +13014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Не удалось загрузить заказы";
 
-/* Description for refund via a specific payment method. %@ is the payment method name */
-"pos.orderListController.refund.viaPaymentMethodFormat" = "Через %@";
-
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Обновить";
 
@@ -13113,17 +13101,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "ОК";
 
-/* Button to go back to the previous screen */
-"pos.refundConfirmationView.backButton" = "Назад";
-
-/* Accessibility label for close button on refund confirmation modal */
-"pos.refundConfirmationView.closeButton.accessibilityLabel" = "Закрыть";
-
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "Да, продолжить";
-
-/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat.1" = "Вы действительно хотите произвести возврат %1$@ посредством %2$@? Это действие нельзя отменить.";
 
 /* Message shown while the refund is being processed. */
 "pos.refundConfirmationView.processingMessage" = "Дождитесь завершения возврата средств.";
@@ -13152,9 +13131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Отмена";
 
-/* Accessibility label for close button on refund error screen */
-"pos.refundErrorView.closeButton.accessibilityLabel" = "Закрыть";
-
 /* Button to retry the refund creation */
 "pos.refundErrorView.retryButton" = "Повторить";
 
@@ -13177,9 +13153,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility state when item is not selected for refund */
 "pos.refundItemRow.unselectedState" = "Не выбрано для возврата";
 
-/* Accessibility label for close button on refund items selection modal */
-"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "Закрыть";
-
 /* Button to continue with selected items for refund */
 "pos.refundItemsSelectionView.continueButton" = "Продолжить";
 
@@ -13197,9 +13170,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown while loading refund information */
 "pos.refundLoadingView.loadingMessage" = "Загрузка сведений о возврате...";
-
-/* Accessibility label for close button on nothing to refund modal */
-"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Закрыть";
 
 /* Button to dismiss the nothing to refund screen */
 "pos.refundNothingToRefundView.doneButton" = "Готово";
@@ -13225,9 +13195,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to add a reason for the refund */
 "pos.refundReviewView.addReasonButton" = "Добавить причину";
 
-/* Accessibility label for close button on refund review modal */
-"pos.refundReviewView.closeButton.accessibilityLabel" = "Закрыть";
-
 /* Button to continue with the refund */
 "pos.refundReviewView.continueButton" = "Продолжить";
 
@@ -13236,9 +13203,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Изменить причину";
-
-/* Button to go back and edit the refund items */
-"pos.refundReviewView.editRefundButton" = "Редактировать возврат";
 
 /* Label for items subtotal row in refund review. %d is the number of items. */
 "pos.refundReviewView.itemsSubtotalFormat" = "Промежуточный итог (позиций: %d)";
@@ -13257,9 +13221,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Просмотреть возврат";
-
-/* Accessibility label for close button on refund success screen */
-"pos.refundSuccessView.closeButton.accessibilityLabel" = "Закрыть";
 
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "Готово";
@@ -13360,7 +13321,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Итоговая скидка";
 
-/* Title for the Other payment methods button in the Point of Sale checkout. Tapping this button opens a sheet listing alternative payment methods like Scan to Pay or Mark order as paid. */
+/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Другие способы оплаты";
 
 /* Title for subtotal amount field */
@@ -14276,35 +14237,22 @@ which should be translated separately and considered part of this sentence. */
 /* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
 "storeWidgets.dateRange.yesterdayCompact.yesterday" = "Вчр";
 
-/* Widget description, displayed when selecting which widget to add */
-"storeWidgets.description" = "Статистика WooCommerce за сегодня";
-
-/* Widget title, displayed when selecting which widget to add */
-"storeWidgets.displayName" = "Сегодня";
-
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Мой магазин";
 
-/* Conversion rate metric title for the store info widget.
-   Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget. */
 "storeWidgets.infoView.conversion" = "Переход";
 
-/* Orders metric title for the store info widget.
-   Orders title label for the store info widget */
+/* Orders metric title for the store info widget. */
 "storeWidgets.infoView.orders" = "Заказы";
 
-/* Revenue metric title — gross revenue including taxes and shipping.
-   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "Всего продаж";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "На %1$@";
 
-/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
-"storeWidgets.infoView.viewMore" = "Показать больше";
-
-/* Visitors metric title for the store info widget.
-   Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget. */
 "storeWidgets.infoView.visitors" = "Посетители";
 
 /* Compact title for the average order value metric, shown on the widget cell. */
@@ -14354,9 +14302,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the Trends rectangular lock-screen widget cannot fetch data. */
 "storeWidgets.trendsRectangularWidget.noData" = "Данные отсутствуют";
-
-/* Title label when the widget can't fetch data. */
-"storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "%1$@ в наличии";
@@ -14478,9 +14423,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Отметить как решённый";
-
-/* Generic error message shown when an AI support chat request fails */
-"supportChatViewModel.errorMessage" = "Не удалось подключиться к ИИ-чату.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Здравствуйте! Я ваш бот поддержки Woo Mobile. Могу ли я вам чем-нибудь помочь?";
@@ -15919,7 +15861,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "Хотите создать новый сайт?";
 
-/* Error message that describes an unknown error had occured */
+/* Error message that describes an unknown error had occurred */
 "wordpress-api.error.unknown" = "Произошла ошибка. Повторите попытку позже.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */

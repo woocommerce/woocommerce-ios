@@ -86,7 +86,7 @@ en_content.each_line { |l| en_keys.add(Regexp.last_match(1)) if l =~ KEY_RE }
 
   keys = []
   File.read(path, encoding: 'utf-8').each_line { |l| keys << Regexp.last_match(1) if l =~ KEY_RE }
-  uniq = keys.to_set
+  uniq = Set.new(keys)
   missing = en_keys - uniq
   extra = uniq - en_keys
   dups = keys.size - uniq.size

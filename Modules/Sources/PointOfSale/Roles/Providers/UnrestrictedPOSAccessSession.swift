@@ -12,7 +12,7 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) -> POSStaff {
         // No real PIN gate in this session; return a synthetic approver so callers that key
         // attribution off the result still get a valid POSStaff.
-        POSStaff(userID: 0, userLogin: "", displayName: "", role: "", capabilities: [])
+        POSStaff(userID: 0, displayName: "", role: "", capabilities: [])
     }
     func lock() {}
     func checkLockoutState() throws(POSAuthError) {}

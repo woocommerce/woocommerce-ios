@@ -248,12 +248,10 @@ private extension DefaultPOSAccessSessionTests {
     }
 
     func makeStaff(userID: Int64 = 1,
-                   userLogin: String = "maya",
                    displayName: String = "Maya",
                    role: String = "shop_manager",
                    capabilities: Set<String> = []) -> POSStaff {
         POSStaff(userID: userID,
-                 userLogin: userLogin,
                  displayName: displayName,
                  role: role,
                  capabilities: capabilities)

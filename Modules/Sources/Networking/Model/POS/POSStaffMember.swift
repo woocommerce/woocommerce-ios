@@ -5,7 +5,6 @@ import Foundation
 ///
 public struct POSStaffMember: Codable, Equatable, Sendable {
     public let userID: Int64
-    public let userLogin: String
     public let displayName: String
     public let role: String
 
@@ -15,10 +14,9 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     /// `nil` when the user has not set a PIN.
     public let pin: PINDetails?
 
-    public init(userID: Int64, userLogin: String, displayName: String,
+    public init(userID: Int64, displayName: String,
                 role: String, capabilities: [String: Bool], pin: PINDetails?) {
         self.userID = userID
-        self.userLogin = userLogin
         self.displayName = displayName
         self.role = role
         self.capabilities = capabilities
@@ -41,7 +39,6 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"
-        case userLogin = "user_login"
         case displayName = "display_name"
         case role
         case capabilities

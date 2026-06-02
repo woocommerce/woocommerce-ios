@@ -12,7 +12,6 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
     init(authenticateResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(
                 userID: 1,
-                userLogin: "maya",
                 displayName: "Maya",
                 role: "shop_manager",
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
@@ -21,7 +20,6 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
          verifyResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(
                 userID: 2,
-                userLogin: "morgan",
                 displayName: "Morgan",
                 role: "shop_manager",
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))

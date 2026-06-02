@@ -10,7 +10,7 @@ struct SupportChatView: View {
     var body: some View {
         chatView
             .background(Color(.listBackground))
-            .navigationTitle(Localization.title)
+            .navigationTitle(Localization.contactSupport)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .topBarTrailing) {
@@ -18,8 +18,8 @@ struct SupportChatView: View {
                         Button {
                             viewModel.contactHumanSupport(source: .toolbar)
                         } label: {
-                            Image(systemName: "person.fill.questionmark")
-                                .accessibilityLabel(Localization.toolbarContactSupport)
+                            Image(systemName: "headset")
+                                .accessibilityLabel(Localization.humanSupport)
                         }
                         .disabled(!viewModel.isContactHumanSupportButtonEnabled)
                         .onAppear {
@@ -60,7 +60,7 @@ struct SupportChatView: View {
                     set: { if !$0 { viewModel.dismissError() } }
                 ),
                 actions: {
-                    Button(Localization.contactSupport) {
+                    Button(Localization.humanSupport) {
                         viewModel.dismissError()
                         viewModel.contactHumanSupport(source: .errorDialog)
                     }
@@ -312,7 +312,7 @@ struct SupportChatView: View {
                 .foregroundColor(Color(.secondaryLabel))
                 .multilineTextAlignment(.center)
 
-            Button(Localization.contactSupport) {
+            Button(Localization.humanSupport) {
                 viewModel.contactHumanSupport(source: .banner)
             }
             .buttonStyle(SecondaryButtonStyle())
@@ -407,11 +407,6 @@ private extension SupportChatView {
 
 private extension SupportChatView {
     enum Localization {
-        static let title = NSLocalizedString(
-            "supportChatView.title",
-            value: "Chat with Support",
-            comment: "Navigation title for the AI support chat screen"
-        )
         static let placeholder = NSLocalizedString(
             "supportChatView.placeholder",
             value: "Type a message...",
@@ -447,9 +442,9 @@ private extension SupportChatView {
             value: "Contact Support",
             comment: "Button to contact human support from the chat"
         )
-        static let toolbarContactSupport = NSLocalizedString(
-            "supportChatView.toolbar.contactSupport",
-            value: "Contact Support",
+        static let humanSupport = NSLocalizedString(
+            "supportChatView.toolbar.humanSupport",
+            value: "Ask a happiness engineer",
             comment: "Trailing toolbar button on the AI support chat that lets the merchant escalate to human support"
         )
         static let toolbarMarkResolved = NSLocalizedString(

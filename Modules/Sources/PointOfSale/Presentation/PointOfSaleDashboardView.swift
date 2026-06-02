@@ -174,8 +174,8 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .onChange(of: session.isLocked) { _, isLocked in
-            // Lock-screen overlay lives behind dashboard-presented covers; dismiss them
-            // so the overlay is the topmost thing the user sees.
+            // Locking ends the current staff context; dismiss dashboard-owned presentations
+            // so the next signed-in staff member does not inherit them.
             guard isLocked else { return }
             showExitPOSModal = false
             showSupport = false

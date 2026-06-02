@@ -2,7 +2,7 @@ import Foundation
 
 /// `POSStaff` remote endpoints.
 ///
-public final class POSStaffRemote: Remote {
+public final class POSStaffRemote: Remote, @unchecked Sendable {
 
     /// Fetches the POS staff list for the given site. Requires the device user to hold
     /// `manage_woocommerce` server-side (admin / shop_manager).

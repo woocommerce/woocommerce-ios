@@ -91,7 +91,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
             guard cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration) else { return }
             flagDisabledServerSide = false
             applyCachedPINStatus()
-        } catch let error as POSStaffFetchError {
+        } catch {
             switch error {
             case .flagDisabledServerSide:
                 cache.clear(siteID: siteID)
@@ -106,8 +106,6 @@ final class DefaultPOSAccessSession: POSAccessSession {
                     applyCachedPINStatus()
                 }
             }
-        } catch {
-            DDLogError("POS staff refresh failed: \(error)")
         }
     }
 

@@ -1,8 +1,8 @@
 import CocoaLumberjackSwift
 import SwiftUI
-import struct Networking.MetaData
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSStaffAttribution
 
 // MARK: - Refund Modal State
 
@@ -90,10 +90,10 @@ struct POSRefundModalContentView: View {
     let onRefundSuccess: (() -> Void)?
     let onRefundFailure: ((Error) -> Void)?
 
-    /// Extra `meta_data` entries appended to the refund's create request. Built at the
-    /// `POSOrderDetailsView` layer so it can include both the operator's `_pos_staff_user_id`
-    /// and, when present, the manager-override approver's `_pos_override_staff_user_id`.
-    let additionalMetadata: [MetaData]
+    /// Operator + manager-override approver attached to the refund's create request as
+    /// `_pos_staff_user_id` / `_pos_override_staff_user_id` meta. Built at the
+    /// `POSOrderDetailsView` layer; `nil` when no operator is signed in (preview/test paths).
+    let attribution: POSStaffAttribution?
 
     let errorStrings: POSRefundErrorStrings
 
@@ -360,7 +360,7 @@ struct POSRefundModalContentView: View {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason,
-                                                                    additionalMetadata: additionalMetadata)
+                                                                    attribution: attribution)
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
             refundSubmissionModel.reset()
             modalState = .success(reviewData)

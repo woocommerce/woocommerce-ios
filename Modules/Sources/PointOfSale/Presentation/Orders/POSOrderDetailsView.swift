@@ -1,11 +1,11 @@
 import SwiftUI
-import struct Networking.MetaData
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
+import struct Yosemite.POSStaffAttribution
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -172,7 +172,7 @@ struct POSOrderDetailsView: View {
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
                     onRefundFailure: onRefundFailure,
-                    additionalMetadata: refundCreationMetadata(),
+                    attribution: refundAttribution(),
                     errorStrings: refundErrorStrings
                 )
             }
@@ -616,18 +616,16 @@ private extension POSOrderDetailsView {
         )
     }
 
-    /// Builds the `meta_data` entries to attach to a `POST /orders/{id}/refunds` request.
-    /// Always includes `_pos_staff_user_id` for the current operator (when signed in), and
-    /// `_pos_override_staff_user_id` when a manager authorized the refund for a cashier.
-    private func refundCreationMetadata() -> [MetaData] {
-        var entries: [MetaData] = []
-        if let staffUserID = accessSession.currentStaff?.userID {
-            entries.append(MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID)))
+    /// Operator + (optional) manager-override approver for the refund's create request.
+    /// Returns `nil` when no operator is signed in so the network boundary appends no
+    /// attribution meta — matching the pre-roll-out behaviour the server's
+    /// `pre_insert_shop_order_object` validator expects.
+    private func refundAttribution() -> POSStaffAttribution? {
+        guard let staffUserID = accessSession.currentStaff?.userID else {
+            return nil
         }
-        if let approver = pendingOverrideApprover {
-            entries.append(MetaData(metadataID: 0, key: "_pos_override_staff_user_id", value: String(approver.userID)))
-        }
-        return entries
+        return POSStaffAttribution(staffUserID: staffUserID,
+                                   overrideApproverUserID: pendingOverrideApprover?.userID)
     }
 
     /// Gates the refund button through the manager-override flow. When the operator

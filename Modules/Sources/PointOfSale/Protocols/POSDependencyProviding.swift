@@ -5,7 +5,7 @@ import enum Experiments.FeatureFlag
 import struct Yosemite.Coupon
 import enum Yosemite.CouponDiscountType
 import enum Yosemite.POSItem
-import struct Networking.MetaData
+import struct Yosemite.POSStaffAttribution
 
 /// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
@@ -49,12 +49,13 @@ public protocol POSExternalNavigationProviding {
 ///
 public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
-    /// Presents the coupon-creation form. `additionalCreateMetadata` is appended to the
-    /// resulting `POST /wc/v3/coupons` request body's `meta_data`. POS uses this to attach
-    /// `_pos_staff_user_id` + `_pos_override_staff_user_id` attribution per the M1 plan.
+    /// Presents the coupon-creation form. `attribution`, when non-nil, is appended to the
+    /// resulting `POST /wc/v3/coupons` request body's `meta_data` as `_pos_staff_user_id`
+    /// (plus `_pos_override_staff_user_id` when a manager authorized a cashier-triggered
+    /// create) per the M1 plan.
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
-                                  additionalCreateMetadata: [MetaData],
+                                  attribution: POSStaffAttribution?,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView

@@ -4,22 +4,21 @@ import struct Yosemite.Coupon
 import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCoupon
-import struct Networking.MetaData
+import struct Yosemite.POSStaffAttribution
 
 extension View {
     /// Presents the coupon-creation sheet.
-    /// - Parameter additionalCreateMetadata: appended to the `meta_data` of the resulting
-    ///   `POST /wc/v3/coupons` request — POS uses this to attach `_pos_staff_user_id` and
-    ///   (when a manager authorized a cashier-triggered create) `_pos_override_staff_user_id`
-    ///   meta.
+    /// - Parameter attribution: when non-nil, the resulting `POST /wc/v3/coupons` request
+    ///   body's `meta_data` carries `_pos_staff_user_id` (plus `_pos_override_staff_user_id`
+    ///   when a manager authorized a cashier-triggered create) per the M1 plan.
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
-        additionalCreateMetadata: [MetaData] = [],
+        attribution: POSStaffAttribution? = nil,
         currencySettings: CurrencySettings,
         onSuccess: @escaping (POSItem) -> Void
     ) -> some View {
         modifier(POSCouponCreationSheetModifier(isPresented: isPresented,
-                                                additionalCreateMetadata: additionalCreateMetadata,
+                                                attribution: attribution,
                                                 currencySettings: currencySettings,
                                                 onSuccess: onSuccess))
     }
@@ -27,7 +26,7 @@ extension View {
 
 private struct POSCouponCreationSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
-    let additionalCreateMetadata: [MetaData]
+    let attribution: POSStaffAttribution?
     let currencySettings: CurrencySettings
     let onSuccess: (POSItem) -> Void
 
@@ -42,7 +41,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                 externalViews.createCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
-                    additionalCreateMetadata: additionalCreateMetadata,
+                    attribution: attribution,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
                         addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))

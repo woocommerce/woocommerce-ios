@@ -1,8 +1,8 @@
 import Foundation
 import Observation
-import struct Networking.MetaData
 import struct Yosemite.CardReaderInput
 import struct Yosemite.POSOrder
+import struct Yosemite.POSStaffAttribution
 
 public struct POSRefundPreparation: Equatable {
     public let orderID: Int64
@@ -67,14 +67,14 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) -> POSRefundReviewData?
 
-    /// - Parameter additionalMetadata: appended to the `meta_data` of the resulting
-    ///   `POST /wc/v3/orders/{order_id}/refunds` request. POS uses this to attach
-    ///   `_pos_staff_user_id` / `_pos_override_staff_user_id` attribution per the M1 plan.
+    /// - Parameter attribution: when non-nil, the resulting `POST /wc/v3/orders/{order_id}/refunds`
+    ///   request body's `meta_data` carries `_pos_staff_user_id` (and
+    ///   `_pos_override_staff_user_id` when a manager approved the refund) per the M1 plan.
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
                       reason: String?,
-                      additionalMetadata: [MetaData]) async throws
+                      attribution: POSStaffAttribution?) async throws
 }
 
 public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessing {
@@ -103,7 +103,7 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
                              preparation: POSRefundPreparation,
                              selectedItems: [POSRefundSelectableItem],
                              reason: String?,
-                             additionalMetadata: [MetaData]) async throws {
+                             attribution: POSStaffAttribution?) async throws {
         stateModel.state = .completed
     }
 }

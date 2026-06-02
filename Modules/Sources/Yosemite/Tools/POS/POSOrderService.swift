@@ -74,7 +74,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addCoupons(cart.coupons)
             .addCustomAmounts(cart.customAmounts)
 
-        let additionalMetadata = Self.makeAttributionMetadata(staffUserID: staffUserID)
+        let additionalMetadata = Self.attributionMetadata(staffUserID: staffUserID)
 
         let createdOrder: Order
         do {
@@ -130,7 +130,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
                 fields: [.status],
-                additionalMetadata: Self.makeAttributionMetadata(staffUserID: staffUserID)
+                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -163,7 +163,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
                 fields: fieldsToUpdate,
-                additionalMetadata: Self.makeAttributionMetadata(staffUserID: staffUserID)
+                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -185,7 +185,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: changeDueAmount,
                 fields: fieldsToUpdate,
-                additionalMetadata: Self.makeAttributionMetadata(staffUserID: staffUserID)
+                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -236,13 +236,13 @@ public extension POSOrderService {
 }
 
 private extension POSOrderService {
-    /// Builds the `_pos_staff_user_id` meta entry per the M1 plan
-    /// (https://peacockp2.wordpress.com/?p=34760). Returns an empty array when no staff
-    /// user is signed in so the server-side `pre_insert_shop_order_object` validation
-    /// won't reject pre-roll-out clients.
-    static func makeAttributionMetadata(staffUserID: Int64?) -> [MetaData] {
+    /// Returns `_pos_staff_user_id` meta per the M1 plan, or an empty array when no staff user
+    /// is signed in (so the server's `pre_insert_shop_order_object` validation doesn't reject
+    /// pre-roll-out clients). Defers key/value construction to `POSStaffAttribution` so refunds,
+    /// orders, and coupon creation share one source of truth for the meta keys.
+    static func attributionMetadata(staffUserID: Int64?) -> [MetaData] {
         guard let staffUserID else { return [] }
-        return [MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID))]
+        return POSStaffAttribution(staffUserID: staffUserID).metadata
     }
 }
 

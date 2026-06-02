@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import struct Networking.MetaData
 import enum Yosemite.POSOrderListServiceError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
@@ -10,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSStaffAttribution
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
@@ -41,7 +41,7 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
-    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws
+    func processRefund(reason: String?, attribution: POSStaffAttribution?) async throws
     func loadOrderRefunds() async
 }
 
@@ -416,7 +416,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Processing
 
     @MainActor
-    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws {
+    func processRefund(reason: String?, attribution: POSStaffAttribution?) async throws {
         guard !isProcessingRefund else {
             throw POSRefundProcessingError.refundAlreadyInProgress
         }
@@ -444,7 +444,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             preparation: preparation,
             selectedItems: selectedItems,
             reason: reason,
-            additionalMetadata: additionalMetadata
+            attribution: attribution
         )
 
         clearRefundSelection()

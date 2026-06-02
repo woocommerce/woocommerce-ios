@@ -2,7 +2,7 @@
 
 import Foundation
 import WooFoundation
-import struct Networking.MetaData
+import struct Yosemite.POSStaffAttribution
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -542,7 +542,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     @MainActor
-    func processRefund(reason: String?, additionalMetadata: [MetaData]) async throws {}
+    func processRefund(reason: String?, attribution: POSStaffAttribution?) async throws {}
     func loadOrderRefunds() async {}
 }
 

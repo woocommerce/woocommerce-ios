@@ -112,7 +112,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
                       reason: String?,
-                      additionalMetadata: [MetaData]) async throws {
+                      attribution: POSStaffAttribution?) async throws {
         guard submissionUseCase == nil else {
             throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
         }
@@ -153,7 +153,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                            charge: context.charge,
                            amount: amount,
                            paymentGatewayAccount: context.paymentGatewayAccount,
-                           additionalMetadata: additionalMetadata),
+                           additionalMetadata: attribution?.metadata ?? []),
             rootViewController: NullViewControllerPresenting(),
             alerts: POSRefundOrderDetailsPaymentAlerts(
                 stateModel: stateModel,

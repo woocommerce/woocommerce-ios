@@ -1,7 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
-import struct Networking.MetaData
+import struct Yosemite.POSStaffAttribution
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
@@ -106,7 +106,7 @@ struct ItemListView: View {
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
     /// Approver `POSStaff` captured when a cashier triggers coupon creation and a manager
-    /// authorizes it. Threaded into `additionalCreateMetadata` so the resulting coupon
+    /// authorizes it. Threaded into the coupon-create `attribution` so the resulting
     /// request carries `_pos_override_staff_user_id` meta.
     @State private var pendingCouponApprover: POSStaff?
 
@@ -157,7 +157,7 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
-                                additionalCreateMetadata: couponCreationMetadata(),
+                                attribution: couponCreationAttribution(),
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -174,18 +174,15 @@ struct ItemListView: View {
         }
     }
 
-    /// Builds the `meta_data` entries to attach to a `POST /coupons` request.
-    /// Always includes `_pos_staff_user_id` for the current operator (when signed in), and
-    /// `_pos_override_staff_user_id` when a manager authorized the creation for a cashier.
-    private func couponCreationMetadata() -> [MetaData] {
-        var entries: [MetaData] = []
-        if let staffUserID = accessSession.currentStaff?.userID {
-            entries.append(MetaData(metadataID: 0, key: "_pos_staff_user_id", value: String(staffUserID)))
+    /// Operator + (optional) manager-override approver for the coupon's create request.
+    /// `nil` when no operator is signed in so the network boundary attaches no attribution
+    /// meta — matching the pre-roll-out behaviour the server expects.
+    private func couponCreationAttribution() -> POSStaffAttribution? {
+        guard let staffUserID = accessSession.currentStaff?.userID else {
+            return nil
         }
-        if let approver = pendingCouponApprover {
-            entries.append(MetaData(metadataID: 0, key: "_pos_override_staff_user_id", value: String(approver.userID)))
-        }
-        return entries
+        return POSStaffAttribution(staffUserID: staffUserID,
+                                   overrideApproverUserID: pendingCouponApprover?.userID)
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {

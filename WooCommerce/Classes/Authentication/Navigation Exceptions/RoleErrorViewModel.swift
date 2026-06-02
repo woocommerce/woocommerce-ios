@@ -1,13 +1,9 @@
 import Foundation
 import UIKit
-import Yosemite
 
 final class RoleErrorViewModel {
     private let siteID: Int64
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
-
-    /// Whether the error is caused by a POS-only role (pos_cashier or pos_manager).
-    private let isPOSRole: Bool
 
     /// Provides the content for title label.
     private(set) var titleText: String
@@ -28,13 +24,13 @@ final class RoleErrorViewModel {
     var onDeauthenticationRequest: (() -> Void)?
 
     /// Extended description of the error.
-    let descriptionText: String
+    let descriptionText: String = .errorMessageText
 
     /// Provides the title for an auxiliary button
     let auxiliaryButtonTitle: String = .linkButtonTitle
 
     /// Provides the title for a primary action button
-    let primaryButtonTitle: String
+    let primaryButtonTitle: String = .primaryButtonTitle
 
     /// Provides the title for a secondary action button
     let secondaryButtonTitle: String = .secondaryButtonTitle
@@ -51,39 +47,17 @@ final class RoleErrorViewModel {
 
     // MARK: Lifecycle
 
-    init(siteID: Int64,
-         title: String,
-         subtitle: String,
-         roles: [String] = [],
-         useCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
+    init(siteID: Int64, title: String, subtitle: String, useCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase()) {
         self.siteID = siteID
+        self.titleText = title
+        self.subtitleText = subtitle
         self.roleEligibilityUseCase = useCase
-
-        let hasPOSRole = roles.contains(where: { $0 == User.Role.posCashier.rawValue || $0 == User.Role.posManager.rawValue })
-        self.isPOSRole = hasPOSRole
-
-        if hasPOSRole {
-            self.titleText = Localization.posErrorTitle
-            self.subtitleText = subtitle
-            self.descriptionText = Localization.posErrorMessageText
-            self.primaryButtonTitle = .secondaryButtonTitle
-        } else {
-            self.titleText = title
-            self.subtitleText = subtitle
-            self.descriptionText = .errorMessageText
-            self.primaryButtonTitle = .primaryButtonTitle
-        }
     }
 
     /// When the primary button is tapped, the role check request will be retried.
     /// If the request is successful, the stored error info will be cleared and `onSuccess` will be called.
     /// Otherwise, the view will be refreshed and a notice will be shown.
     func didTapPrimaryButton() {
-        if isPOSRole {
-            onDeauthenticationRequest?()
-            return
-        }
-
         output?.updatePrimaryButtonState(loading: true)
         roleEligibilityUseCase.checkEligibility(for: siteID) { [weak self] result in
             guard let self else { return }
@@ -120,23 +94,6 @@ final class RoleErrorViewModel {
 }
 
 // MARK: - Localization
-
-private extension RoleErrorViewModel {
-    enum Localization {
-        static let posErrorTitle = NSLocalizedString(
-            "roleError.posRole.title",
-            value: "This account is set up for POS use only",
-            comment: "Title shown when a POS-only role (cashier or manager) tries to log in to the full app."
-        )
-
-        static let posErrorMessageText = NSLocalizedString(
-            "roleError.posRole.message",
-            value: "POS accounts can only be used at the point of sale. "
-                + "Ask your store manager to sign you in on the POS device, or log in with a different account.",
-            comment: "Message shown when a POS-only role tries to log in to the full app."
-        )
-    }
-}
 
 private extension String {
     static let errorMessageText = NSLocalizedString("This app supports only Administrator and Shop Manager user roles. "

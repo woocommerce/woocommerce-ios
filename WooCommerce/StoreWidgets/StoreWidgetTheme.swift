@@ -99,8 +99,12 @@ extension StoreWidgetTheme {
         guard usesSystemAppearance else {
             return Color(.white)
         }
+        #if os(watchOS)
         // WooCommercePurple shade 40 (rgb 135, 62, 255).
         return Color(red: 0.529, green: 0.243, blue: 1.000)
+        #else
+        return Color(.accent)
+        #endif
     }
 
     /// Color for the dashed baseline rule in `MetricChartView` (visible only when the

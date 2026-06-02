@@ -364,7 +364,7 @@ private extension AppCoordinator {
     /// Displays the role error page as the root view.
     ///
     func displayRoleErrorUI(for siteID: Int64, errorInfo: StorageEligibilityErrorInfo) {
-        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, roles: errorInfo.roles)
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
         // when the retry is successful, resume the intention to display the main tab bar.

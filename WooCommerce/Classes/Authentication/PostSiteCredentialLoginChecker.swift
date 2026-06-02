@@ -118,11 +118,7 @@ private extension PostSiteCredentialLoginChecker {
                              errorInfo: StorageEligibilityErrorInfo,
                              in navigationController: UINavigationController,
                              onSuccess: @escaping () -> Void) {
-        let errorViewModel = RoleErrorViewModel(siteID: siteID,
-                                                       title: errorInfo.name,
-                                                       subtitle: errorInfo.humanizedRoles,
-                                                       roles: errorInfo.roles,
-                                                       useCase: roleEligibilityUseCase)
+        let errorViewModel = RoleErrorViewModel(siteID: siteID, title: errorInfo.name, subtitle: errorInfo.humanizedRoles, useCase: roleEligibilityUseCase)
         let errorViewController = RoleErrorViewController(viewModel: errorViewModel)
 
         errorViewModel.onSuccess = onSuccess

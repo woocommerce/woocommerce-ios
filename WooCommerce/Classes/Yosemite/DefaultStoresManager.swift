@@ -346,6 +346,16 @@ class DefaultStoresManager: StoresManager {
     /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
+        // Stop any ongoing catalog sync tasks for the old site before switching.
+        // Without this, the in-flight sync continues polling but AlamofireNetwork's
+        // selectedSite publisher switches to the new site's credentials, causing
+        // the old task to download the wrong site's catalog and persist it under the old siteID.
+        if let oldSiteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: oldSiteID)
+            }
+        }
+
         sessionManager.defaultStoreID = storeID
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
@@ -399,7 +409,6 @@ class DefaultStoresManager: StoresManager {
         }
         return true
     }
-
 }
 
 

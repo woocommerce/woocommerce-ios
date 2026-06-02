@@ -1,6 +1,5 @@
 import Combine
 import EventHorizonSDK
-import PointOfSale
 import SwiftUI
 import UIKit
 import Yosemite
@@ -8,6 +7,7 @@ import WordPressUI
 import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSLockStateKey
 
 
@@ -994,7 +994,6 @@ private extension MainTabBarController {
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
     }
-
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
         DashboardViewHostingController(siteID: siteID)

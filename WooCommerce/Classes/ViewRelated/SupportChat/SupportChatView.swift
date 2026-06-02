@@ -21,6 +21,7 @@ struct SupportChatView: View {
                             Image(systemName: "person.fill.questionmark")
                                 .accessibilityLabel(Localization.toolbarContactSupport)
                         }
+                        .disabled(!viewModel.isContactHumanSupportButtonEnabled)
                         .onAppear {
                             viewModel.trackManualEscalationButtonShownIfNeeded()
                         }
@@ -185,7 +186,7 @@ struct SupportChatView: View {
                     }
                 }
                 .buttonStyle(SecondaryButtonStyle())
-                .disabled(viewModel.selectedIssue != nil)
+                .disabled(!viewModel.isIssuePickerEnabled)
             }
         }
         .padding(SupportChatLayout.bubblePadding)
@@ -509,7 +510,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .helpAndSupport,
-                onContactHumanSupport: { _, _, _, _ in }
+                onContactHumanSupport: { _, _, _, _, _ in }
             )
         )
     }
@@ -520,7 +521,7 @@ private extension SupportChatView {
         SupportChatView(
             viewModel: SupportChatViewModel(
                 entryPoint: .connectivityTool,
-                onContactHumanSupport: { _, _, _, _ in }
+                onContactHumanSupport: { _, _, _, _, _ in }
             )
         )
     }

@@ -258,7 +258,6 @@ class AuthenticatedState: StoresManagerState {
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
     }
-
 }
 
 

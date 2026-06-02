@@ -1231,8 +1231,12 @@ private extension MainTabBarController {
         guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
         needsPOSAutoReopenCheck = false
 
-        DispatchQueue.main.async { [weak self] in
-            self?.posTabCoordinator?.onTabSelected()
+        // Capture the just-created coordinator weakly so a site change between
+        // scheduling and execution can't redirect this auto-reopen at a different
+        // coordinator. If the active site changes mid-flight the old coordinator
+        // is released and the closure no-ops.
+        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
+            coordinator?.onTabSelected()
         }
     }
 }

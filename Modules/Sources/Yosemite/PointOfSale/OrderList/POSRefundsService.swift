@@ -9,7 +9,6 @@ import class WooFoundationCore.CurrencyFormatter
 public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
     private let paymentGatewayRemote: POSPaymentGatewayRemoteProtocol
-    private let refundCalculator: POSRefundCalculating
     private let currencySettings: CurrencySettings
     private let siteID: Int64
     private let mapper: POSRefundMapper
@@ -27,20 +26,17 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                                        appPasswordSupportState: appPasswordSupportState)
         self.refundsRemote = RefundsRemote(network: network)
         self.paymentGatewayRemote = PaymentGatewayRemote(network: network)
-        self.refundCalculator = POSRefundCalculator()
         self.mapper = POSRefundMapper()
     }
 
     init(siteID: Int64,
          refundsRemote: POSRefundsRemoteProtocol,
          paymentGatewayRemote: POSPaymentGatewayRemoteProtocol,
-         currencySettings: CurrencySettings,
-         refundCalculator: POSRefundCalculating = POSRefundCalculator()) {
+         currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.refundsRemote = refundsRemote
         self.paymentGatewayRemote = paymentGatewayRemote
-        self.refundCalculator = refundCalculator
         self.mapper = POSRefundMapper()
     }
 
@@ -126,11 +122,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         }
         // Fallback: if gateway not found, use simple check
         return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
-    }
-
-    public func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts {
-        let numberOfDecimals = currencySettings.fractionDigits
-        return refundCalculator.calculateRefundAmounts(for: items, numberOfDecimals: numberOfDecimals)
     }
 
     /// Checks if all ordered products have been fully refunded.

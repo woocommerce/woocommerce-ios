@@ -14,7 +14,6 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefundItem
 import struct Yosemite.POSOrderRefund
 @testable import struct Yosemite.POSRefundsResult
-@testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
@@ -1860,7 +1859,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
 
     private(set) var submitRefundCalled = false
     private(set) var spySubmitRefundOrderID: Int64?
-    private(set) var spySubmitRefundItems: [POSRefundableItem]?
+    private(set) var spySubmitRefundItems: [POSRefundSelectableItem]?
     private(set) var spySubmitRefundReason: String?
     private(set) var spySubmitRefundIsAutomaticRefund: Bool?
     var submitRefundErrorToThrow: Error?
@@ -1911,20 +1910,10 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) -> POSRefundReviewData? {
-        let refundableItems = selectedItems.map { item in
-            POSRefundableItem(
-                itemID: item.itemID,
-                lineItemTotal: item.lineItemTotal,
-                totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity,
-                isLumpSum: item.isLumpSum
-            )
-        }
-
-        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
+        let amounts = reviewAmounts(for: selectedItems)
         guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
               let formattedTax = currencyFormatter.formatAmount(amounts.tax),
-              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
+              let formattedTotal = currencyFormatter.formatAmount(amounts.subtotal + amounts.tax) else {
             return nil
         }
 
@@ -1951,19 +1940,9 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             }
         }
 
-        let refundableItems = selectedItems.map { item in
-            POSRefundableItem(
-                itemID: item.itemID,
-                lineItemTotal: item.lineItemTotal,
-                totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity,
-                isLumpSum: item.isLumpSum
-            )
-        }
-
         submitRefundCalled = true
         spySubmitRefundOrderID = order.id
-        spySubmitRefundItems = refundableItems
+        spySubmitRefundItems = selectedItems
         spySubmitRefundReason = reason
         spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
 
@@ -1972,6 +1951,27 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         }
 
         stateModel.state = .completed
+    }
+
+    private func reviewAmounts(for items: [POSRefundSelectableItem]) -> (subtotal: Decimal, tax: Decimal) {
+        let groupedItems = Dictionary(grouping: items, by: \.itemID)
+        return groupedItems.values.reduce((subtotal: Decimal.zero, tax: Decimal.zero)) { result, items in
+            let subtotal = calculateAmount(for: items, keyPath: \.lineItemTotal)
+            let tax = calculateAmount(for: items, keyPath: \.totalTax)
+            return (result.subtotal + subtotal, result.tax + tax)
+        }
+    }
+
+    private func calculateAmount(for items: [POSRefundSelectableItem], keyPath: KeyPath<POSRefundSelectableItem, Decimal>) -> Decimal {
+        guard let firstItem = items.first, firstItem.originalQuantity > 0 else {
+            return .zero
+        }
+
+        if firstItem.isLumpSum || Decimal(items.count) == firstItem.originalQuantity {
+            return firstItem[keyPath: keyPath]
+        }
+
+        return (firstItem[keyPath: keyPath] / firstItem.originalQuantity) * Decimal(items.count)
     }
 
     func resumeSubmitRefund() {

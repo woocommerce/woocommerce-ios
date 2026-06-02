@@ -13,15 +13,13 @@ struct POSRefundsServiceTests {
     private func makeSUT(
         siteID: Int64 = 123,
         remote: MockPOSRefundsRemote = MockPOSRefundsRemote(),
-        gateways: [PaymentGateway] = [],
-        calculator: POSRefundCalculating? = nil
+        gateways: [PaymentGateway] = []
     ) -> POSRefundsService {
         POSRefundsService(
             siteID: siteID,
             refundsRemote: remote,
             paymentGatewayRemote: MockPOSPaymentGatewayRemote(gatewaysToReturn: gateways),
-            currencySettings: currencySettings,
-            refundCalculator: calculator ?? POSRefundCalculator()
+            currencySettings: currencySettings
         )
     }
 

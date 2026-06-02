@@ -82,6 +82,7 @@ struct AddCustomAmountView: View {
                 .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                 .padding(.vertical, POSPadding.medium)
         }
+        .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
         .background(Color.posSurfaceBright.ignoresSafeArea())
     }
 

@@ -16,6 +16,7 @@ final class MockPOSAccessSession: POSAccessSession {
     var managerApprovalCapabilities: [POSCapability] = []
     var onSignIn: (() -> Void)?
     var onManagerApproval: (() -> Void)?
+    private(set) var lockCallCount: Int = 0
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
@@ -70,6 +71,7 @@ final class MockPOSAccessSession: POSAccessSession {
 
     func lock() {
         isLocked = true
+        lockCallCount += 1
     }
 
     func checkLockoutState() throws(POSAuthError) {

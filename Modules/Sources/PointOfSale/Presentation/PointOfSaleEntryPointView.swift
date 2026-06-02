@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
@@ -194,6 +195,11 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleDashboardView()
                     .environment(posModel)
                     .environment(posModel.paymentModel)
+                    .posAutoLockActivityTracking(
+                        session: accessSession,
+                        paymentModel: posModel.paymentModel,
+                        aggregateModel: posModel
+                    )
             } else {
                 PointOfSaleLoadingView()
             }

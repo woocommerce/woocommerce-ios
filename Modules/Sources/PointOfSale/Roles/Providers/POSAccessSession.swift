@@ -19,3 +19,9 @@ protocol POSAccessSession: AnyObject {
     /// so stale credentials do not survive across sessions.
     func clearStaffCache()
 }
+
+extension POSAccessSession {
+    /// Convenience derived from `pinStatus`. Used by auto-lock paths that only need a yes/no
+    /// answer for whether any PIN is on file.
+    var hasAnyPINs: Bool { pinStatus == .present }
+}

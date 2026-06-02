@@ -10,22 +10,25 @@ final class DefaultPOSAccessSession: POSAccessSession {
     private(set) var pinStatus: POSPINStatus = .unknown
     private(set) var flagDisabledServerSide: Bool = false
 
+    @ObservationIgnored private let siteID: Int64
     @ObservationIgnored private let authenticator: POSPINAuthenticating
     @ObservationIgnored private let rateLimiter: POSLocalRateLimiter
     @ObservationIgnored private let cache: POSStaffCache
     @ObservationIgnored private let fetcher: POSStaffFetching
-    @ObservationIgnored private let siteID: Int64
+    @ObservationIgnored private let userDefaults: UserDefaults
 
-    init(authenticator: POSPINAuthenticating,
+    init(siteID: Int64,
+         authenticator: POSPINAuthenticating,
          rateLimiter: POSLocalRateLimiter,
          cache: POSStaffCache,
          fetcher: POSStaffFetching,
-         siteID: Int64) {
+         userDefaults: UserDefaults = .standard) {
+        self.siteID = siteID
         self.authenticator = authenticator
         self.rateLimiter = rateLimiter
         self.cache = cache
         self.fetcher = fetcher
-        self.siteID = siteID
+        self.userDefaults = userDefaults
     }
 
     func allows(_ capability: POSCapability) -> Bool {
@@ -40,6 +43,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
             rateLimiter.reset()
             currentStaff = staff
             isLocked = false
+            // Sign-in proves a PIN exists; pre-empt refreshPINStatus.
+            pinStatus = .present
+            persistLockState(false)
         } catch {
             switch error {
             case .invalidPIN:
@@ -71,6 +77,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
 
     func lock() {
         isLocked = true
+        persistLockState(true)
     }
 
     func checkLockoutState() throws(POSAuthError) {
@@ -121,5 +128,11 @@ private extension DefaultPOSAccessSession {
             pinStatus = .absent
             isLocked = false
         }
+    }
+}
+
+private extension DefaultPOSAccessSession {
+    func persistLockState(_ locked: Bool) {
+        userDefaults.set(locked, forKey: POSLockStateKey.key(for: siteID))
     }
 }

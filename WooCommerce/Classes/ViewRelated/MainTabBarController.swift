@@ -8,6 +8,7 @@ import WordPressUI
 import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
+import enum PointOfSale.POSLockStateKey
 
 
 /// Enum representing the individual tabs
@@ -133,11 +134,10 @@ final class MainTabBarController: UITabBarController {
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
 
-    /// Whether POS was locked when the app was last terminated.
-    /// Trunk's `POSAccessSession` owns the lock state now; without a persisted lock flag
-    /// we conservatively never auto-reopen POS on cold launch. The auto-lock-on-background
-    /// path inside `PointOfSaleEntryPointView` still locks the session at runtime.
-    private static var wasPOSLockedWhenTerminated: Bool { false }
+    /// One-shot signal that the POS tab should auto-reopen at cold launch if the persisted
+    /// lock state for the active site is true. Flipped to false after the first attempt so
+    /// subsequent site switches don't keep yanking the user back into POS.
+    private var needsPOSAutoReopenCheck = true
 
     private let bookingsContainerController = TabContainerController()
 
@@ -238,9 +238,6 @@ final class MainTabBarController: UITabBarController {
         bookingsEligibilityCheckTask?.cancel()
         cardPresentExpansionRefreshTask?.cancel()
     }
-
-    /// Whether we still need to check if POS should auto-reopen after app launch.
-    private lazy var needsPOSAutoReopenCheck = MainTabBarController.wasPOSLockedWhenTerminated
 
     // MARK: - Overridden Methods
 
@@ -988,7 +985,7 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
-        autoReopenPOSIfNeeded()
+        autoReopenPOSIfNeeded(siteID: siteID)
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -998,15 +995,6 @@ private extension MainTabBarController {
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
     }
 
-    /// Auto-reopens POS if it was locked when the app was terminated.
-    /// Defers to the next runloop to ensure the view hierarchy is ready for presentation.
-    private func autoReopenPOSIfNeeded() {
-        guard needsPOSAutoReopenCheck, posTabCoordinator != nil else { return }
-        needsPOSAutoReopenCheck = false
-        DispatchQueue.main.async { [weak self] in
-            self?.posTabCoordinator?.onTabSelected()
-        }
-    }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
         DashboardViewHostingController(siteID: siteID)
@@ -1232,6 +1220,25 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
         posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
+    }
+}
+
+private extension MainTabBarController {
+    /// Reopen POS on cold launch if the active site's persisted key says it was locked.
+    func autoReopenPOSIfNeeded(siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
+        guard needsPOSAutoReopenCheck else { return }
+        // Consume the one-shot only when the active site is the locked one.
+        guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+        needsPOSAutoReopenCheck = false
+
+        // Capture the just-created coordinator weakly so a site change between
+        // scheduling and execution can't redirect this auto-reopen at a different
+        // coordinator. If the active site changes mid-flight the old coordinator
+        // is released and the closure no-ops.
+        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
+            coordinator?.onTabSelected()
+        }
     }
 }
 

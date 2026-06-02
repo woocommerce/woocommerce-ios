@@ -28,10 +28,6 @@ public struct POSCartItem {
 }
 
 public extension POSCart {
-    var totalItemCount: Int {
-        items.count + coupons.count + customAmounts.count
-    }
-
     func matches(order: Order?) -> Bool {
         return items.matches(order: order)
             && coupons.matches(order: order)

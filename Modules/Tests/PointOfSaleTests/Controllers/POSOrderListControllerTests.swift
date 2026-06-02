@@ -1123,7 +1123,7 @@ final class POSOrderListControllerTests {
     // MARK: - Process Refund Tests
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
+    @Test func processRefund_then_submits_refund_with_correct_order_id() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1148,7 +1148,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_selected_items() async throws {
+    @Test func processRefund_then_submits_refund_with_selected_items() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1177,7 +1177,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_reason() async throws {
+    @Test func processRefund_then_submits_refund_with_reason() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1226,7 +1226,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_service_throws_then_propagates_error() async throws {
+    @Test func processRefund_when_submission_throws_then_propagates_error() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1375,7 +1375,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_calls_service_with_automatic_refund_true() async throws {
+    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_submits_refund_with_automatic_refund_true() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1399,7 +1399,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_calls_service_with_automatic_refund_false() async throws {
+    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_submits_refund_with_automatic_refund_false() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(

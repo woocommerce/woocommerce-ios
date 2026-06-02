@@ -42,6 +42,7 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let userDefaults: UserDefaults
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
@@ -119,7 +120,8 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?,
+         userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -137,6 +139,7 @@ final class POSTabCoordinator {
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
         self.localCatalogEligibilityService = localCatalogEligibilityService
+        self.userDefaults = userDefaults
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -356,7 +359,7 @@ private extension POSTabCoordinator {
     /// Drop the persisted lock state on POS exit so cold-launch auto-reopen skips this site.
     func clearPersistedLockStateIfNeeded(_ isPointOfSaleActive: Bool) {
         guard !isPointOfSaleActive else { return }
-        UserDefaults.standard.set(false, forKey: POSLockStateKey.key(for: siteID))
+        userDefaults.set(false, forKey: POSLockStateKey.key(for: siteID))
     }
 
     /// Disables foreground in-app notifications when Point of Sale is active.

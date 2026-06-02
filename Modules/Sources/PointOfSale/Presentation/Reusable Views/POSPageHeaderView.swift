@@ -95,7 +95,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 leadingContent
 
-                itemsContent
+                if shouldShowItemsContent {
+                    itemsContent
+                }
 
                 if items.isNotEmpty {
                     Spacer(minLength: 0)
@@ -183,6 +185,10 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     private var shouldHaveLeadingPaddingForItems: Bool {
+        items.isNotEmpty || showsBackButton
+    }
+
+    private var shouldShowItemsContent: Bool {
         items.isNotEmpty || showsBackButton
     }
 

@@ -159,6 +159,69 @@ final class SystemStatusReportMapperTests: XCTestCase {
         XCTAssertEqual(report.pages.count, 5)
         XCTAssertEqual(report.postTypeCounts.count, 3)
     }
+
+    func test_system_status_report_fields_are_properly_parsed_when_database_table_has_null_values() throws {
+        // Given
+        let response = Data("""
+        {
+            "active_plugins": [],
+            "inactive_plugins": [],
+            "database": {
+                "wc_database_version": "10.7.0",
+                "database_prefix": "wp_",
+                "database_tables": {
+                    "woocommerce": {},
+                    "other": {
+                        "wp_wsm_uniqueVisitors": {
+                            "data": null,
+                            "index": null,
+                            "engine": null
+                        },
+                        "wp_actionscheduler_actions": {
+                            "data": "8.52",
+                            "index": "12.75",
+                            "engine": "InnoDB"
+                        }
+                    }
+                },
+                "database_size": {
+                    "data": 150.56,
+                    "index": 114.66
+                }
+            }
+        }
+        """.utf8)
+
+        // When
+        let report = try SystemStatusReportMapper(siteID: dummySiteID).map(response: response)
+
+        // Then
+        let tableWithNullValues = report.database?.databaseTables.other["wp_wsm_uniqueVisitors"]
+        XCTAssertNil(tableWithNullValues?.data)
+        XCTAssertNil(tableWithNullValues?.index)
+        XCTAssertNil(tableWithNullValues?.engine)
+
+        let tableWithStringValues = report.database?.databaseTables.other["wp_actionscheduler_actions"]
+        XCTAssertEqual(tableWithStringValues?.data, "8.52")
+        XCTAssertEqual(tableWithStringValues?.index, "12.75")
+        XCTAssertEqual(tableWithStringValues?.engine, "InnoDB")
+    }
+
+    func test_database_table_formattedString_when_values_are_nil_then_displays_null() {
+        // Given
+        let table = SystemStatusReport.DatabaseTable(data: nil, index: nil, engine: nil)
+
+        // Then
+        XCTAssertEqual(table.formattedString, "Data: null + Index: null + Engine: null")
+    }
+
+    func test_database_table_formattedString_when_values_are_present_then_displays_values_with_units() {
+        // Given
+        let table = SystemStatusReport.DatabaseTable(data: "8.52", index: "12.75", engine: "InnoDB")
+
+        // Then
+        XCTAssertEqual(table.formattedString, "Data: 8.52MB + Index: 12.75MB + Engine: InnoDB")
+    }
 }
 
 private extension SystemStatusReportMapperTests {

@@ -5,7 +5,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
     let title = Localization.title
     let imageName = PointOfSaleAssets.readerConnectionError.imageName
     let settingsAdminUrl: URL
-    // An unchanging, psuedo-random ID helps us correctly compare two copies which may have different closures.
+    // An unchanging, pseudo-random ID helps us correctly compare two copies which may have different closures.
     // This relies on the closures being immutable
     let id = UUID()
 

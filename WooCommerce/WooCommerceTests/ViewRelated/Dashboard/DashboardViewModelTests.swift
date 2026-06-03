@@ -298,6 +298,71 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_onPullToRefresh_when_scheduled_updates_and_info_not_opened_then_shows_notice() async throws {
+        // Given
+        mockReloadingData(analyticsImportUpdateModeResult: .success(.scheduled))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        await viewModel.reloadAllData()
+
+        // When
+        await viewModel.onPullToRefresh()
+
+        // Then
+        let notice = try XCTUnwrap(viewModel.notice)
+        XCTAssertEqual(notice.title, "Stats may be up to 12 hours delayed.")
+        XCTAssertEqual(notice.actionTitle, "Learn more")
+        XCTAssertNil(userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo])
+    }
+
+    @MainActor
+    func test_onPullToRefresh_when_scheduled_updates_and_info_already_opened_then_does_not_show_notice() async {
+        // Given
+        userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = true
+        mockReloadingData(analyticsImportUpdateModeResult: .success(.scheduled))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        await viewModel.reloadAllData()
+
+        // When
+        await viewModel.onPullToRefresh()
+
+        // Then
+        XCTAssertNil(viewModel.notice)
+    }
+
+    @MainActor
+    func test_onPullToRefresh_when_notice_learn_more_tapped_then_opens_sheet_and_saves_info_state() async throws {
+        // Given
+        mockReloadingData(analyticsImportUpdateModeResult: .success(.scheduled))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        await viewModel.reloadAllData()
+        await viewModel.onPullToRefresh()
+
+        // When
+        try XCTUnwrap(viewModel.notice).actionHandler?()
+        await Task.yield()
+
+        // Then
+        XCTAssertTrue(viewModel.showingAnalyticsImportUpdateModeInfo)
+        XCTAssertTrue(try XCTUnwrap(userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] as? Bool))
+        XCTAssertNil(viewModel.notice)
+    }
+
+    @MainActor
     func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() async {
         // Given
         let error = DotcomError.noRestRoute()

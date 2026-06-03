@@ -17,6 +17,20 @@ final class POSPaymentModel {
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
+
+    /// Whether card-present payments (external readers + Tap to Pay) should be exposed
+    /// in POS for this store. Re-evaluated on every read from
+    /// `CardPresentPaymentFacade.isPOSCardPaymentEnabled`, which itself reads
+    /// `CardPresentPaymentsConfiguration.isPOSCardPaymentEnabled` (see that extension
+    /// for the per-country rules — Canada is currently the only explicit override).
+    /// For expansion-flag-gated countries (Spain / FR / DE / AU / NZ / SG …) the
+    /// underlying configuration can flip from `false` to `true` once the per-country
+    /// eligibility cache is refreshed; propagation of that flip to SwiftUI consumers
+    /// is not wired yet — tracked separately. Views read this to decide between the
+    /// standard checkout layout and the cash + secondary-method promoted layout.
+    var isPOSCardPaymentEnabled: Bool {
+        cardPresentPaymentService.isPOSCardPaymentEnabled
+    }
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     var isZeroTotal: Bool {
         guard let total = currentOrder?.total, let decimal = Decimal(string: total) else { return false }
@@ -183,6 +197,18 @@ extension POSPaymentModel {
     func startPayment() async {
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
 
+        // Card-present payments aren't available in this country (e.g. JP, MX, IN, BR, …)
+        // or are explicitly disabled in POS (CA). Skip everything in this method — both
+        // the TTP pre-connect and the BT auto-collect-on-connect setup go through the
+        // Stripe card-payments stack which triggers onboarding / gateway checks that fail
+        // for these countries. The merchant will check out via Cash / Scan-to-Pay /
+        // Mark-as-Paid only; those flows live in their own handlers and don't need any
+        // payment-session event subscription on the totals view.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] startPayment skipped — POS card payments disabled for this store")
+            return
+        }
+
         subscribeToPaymentSessionEvents()
 
         if preferredConnectionMethod == .tapToPay {
@@ -227,6 +253,15 @@ extension POSPaymentModel {
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
         DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), "
                   + "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
+
+        // Defense-in-depth: mirror the `startPayment()` gate so the merchant can never
+        // route into the Stripe-card stack from a no-card store via this entry point
+        // (stray closure / SwiftUI re-render after a CTA has gone away). Hide-the-CTA
+        // is the primary defense; this is the stop-the-line check.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod skipped — POS card payments disabled for this store")
+            return
+        }
 
         // Same-method re-entry guard. Two different shapes:
         // - BT: card state moves out of `.idle` during collection, so the
@@ -456,6 +491,14 @@ extension POSPaymentModel {
     }
 
     func cancelThenCollectPayment() async {
+        // Defense-in-depth: the retry CTAs that dispatch here only render from
+        // card-payment error states, which themselves require
+        // `isPOSCardPaymentEnabled == true`. Guard anyway so the helper is safe
+        // to call from any future caller without re-asserting the gate.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] cancelThenCollectPayment skipped — POS card payments disabled for this store")
+            return
+        }
         if case .reconnecting = cardReaderConnectionStatus {
             await cardPresentPaymentService.cancelReconnection()
         }
@@ -473,6 +516,14 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
+        // Mirror the guard in `startPayment` / `startPaymentWithMethod` — the phone
+        // array-driven row's `.cardReader` case dispatches straight here, bypassing
+        // the model's own start helpers. Without this gate, a tap in a no-card
+        // store would kick `connectReader(.bluetooth)` into Stripe Terminal.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] connectCardReader skipped — POS card payments disabled for this store")
+            return
+        }
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
@@ -1143,6 +1194,16 @@ private extension POSPaymentModel {
     /// Only active during a payment session (between startPayment() and reset()/tearDown()).
     /// This prevents payment events from one flow (e.g. bookings) corrupting another (e.g. cart).
     func subscribeToPaymentSessionEvents() {
+        // Belt-and-suspenders: every caller (`startPayment`, `startPaymentWithMethod`)
+        // is itself guarded by `isPOSCardPaymentEnabled`, but spin-up of the
+        // session subscriptions is the last point at which we can stop card-
+        // payment side effects (inline messages, cancel-on-reader handler,
+        // celebration sounds) from observing the event stream in a no-card
+        // store. Keep the gate here as a stop-the-line check.
+        guard isPOSCardPaymentEnabled else {
+            DDLogInfo("🃏 [CardPayment] subscribeToPaymentSessionEvents skipped — POS card payments disabled for this store")
+            return
+        }
         guard paymentSessionCancellables.isEmpty else { return }
 
         // Payment events -> inline message (payment status in the totals view)

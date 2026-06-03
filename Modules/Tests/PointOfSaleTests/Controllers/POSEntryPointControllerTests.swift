@@ -5,7 +5,7 @@ struct POSEntryPointControllerTests {
     @Test func eligibilityState_is_set_to_ineligible_when_checker_returns_ineligible() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
-        let expectedState = POSEligibilityState.ineligible(reason: .featureSwitchDisabled)
+        let expectedState = POSEligibilityState.ineligible(reason: .wooCommercePluginNotFound)
         mockEligibilityChecker.eligibility = expectedState
 
         // When

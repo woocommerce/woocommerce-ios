@@ -19,8 +19,12 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
         Just(.none).eraseToAnyPublisher()
     }
 
-    init(connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected) {
+    let isPOSCardPaymentEnabled: Bool
+
+    init(connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
+         isPOSCardPaymentEnabled: Bool = true) {
         self.readerConnectionStatus = connectionStatus
+        self.isPOSCardPaymentEnabled = isPOSCardPaymentEnabled
     }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {

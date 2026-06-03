@@ -4,6 +4,9 @@ import Combine
 import PointOfSale
 
 final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
+    // Screenshots always show a connected reader, so card payments are enabled by default.
+    let isPOSCardPaymentEnabled: Bool = true
+
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
     let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>

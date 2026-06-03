@@ -38,6 +38,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         CardPresentConfigurationLoader().configuration
     }
 
+    var isPOSCardPaymentEnabled: Bool {
+        cardPresentPaymentsConfiguration.isPOSCardPaymentEnabled
+    }
+
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
     private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
 

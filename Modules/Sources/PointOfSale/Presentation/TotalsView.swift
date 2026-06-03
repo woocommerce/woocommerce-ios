@@ -263,6 +263,14 @@ private extension TotalsView {
             return false
         }
 
+        // No card-present payments → no card reader / TTP UI to surface in the upper region.
+        // The secondary-method buttons (Cash + Other payment methods) render directly under
+        // the totals instead; non-card success states take over via
+        // `shouldPrioritizePaymentViewOverHero`.
+        guard paymentModel.isPOSCardPaymentEnabled else {
+            return false
+        }
+
         switch paymentModel.cardReaderConnectionStatus {
         case .disconnected:
             return true
@@ -670,6 +678,21 @@ private extension TotalsView {
         ) else {
             return []
         }
+
+        guard paymentModel.isPOSCardPaymentEnabled else {
+            // No card-present payments in this country (Brazil, Japan, Mexico, …) or
+            // explicitly disabled in POS (Canada). Render Cash as the primary CTA plus an
+            // "Other payment methods" entry into the existing sheet — same shape as
+            // card-enabled phones, just without the card-reader / TTP slots. On iPad the
+            // side-by-side strip handles this case (`useCashAndOtherMethodsBottomStrip`);
+            // here we only reach the no-card phone path.
+            var methods: [POSCheckoutPaymentMethod] = [.cashPayment]
+            if hasOtherPaymentMethodsAvailable {
+                methods.append(.otherPaymentMethods)
+            }
+            return methods
+        }
+
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState
@@ -695,6 +718,8 @@ private extension TotalsView {
             paymentModel.connectCardReader()
         case .cashPayment:
             paymentModel.startCashPayment()
+        case .otherPaymentMethods:
+            handleOtherPaymentMethodsTapped()
         }
     }
 
@@ -708,6 +733,15 @@ private extension TotalsView {
     /// success / error UI immediately rather than the hero fading out + the
     /// Checkout chrome ghosting through.
     private var shouldPrioritizePaymentViewOverHero: Bool {
+        // Non-card success states must also take over the upper region. Without this,
+        // on no-card stores (`isPOSCardPaymentEnabled == false`) both `useTapToPayHeroLayout`
+        // and `isShowingPaymentView` return false, so `PaymentViewContent` never renders and
+        // the merchant lands on an empty screen after cash / scan-to-pay / mark-as-paid succeeds.
+        if displayPaymentState.cash == .paymentSuccess
+            || displayPaymentState.scanToPay == .paymentSuccess
+            || displayPaymentState.markAsPaid == .paymentSuccess {
+            return true
+        }
         switch displayPaymentState.card {
         case .processingPayment,
                 .cardPaymentSuccessful,
@@ -732,6 +766,10 @@ private extension TotalsView {
     /// processing / success / error).
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        // Defensive: TTP availability already encodes the per-country card configuration,
+        // but mirror the explicit POS card-payment gate here so the hero is never surfaced
+        // in a no-card country.
+        guard paymentModel.isPOSCardPaymentEnabled else { return false }
         // Idle-state gates — same as before. After a successful payment via
         // any non-card method the totals view renders that method's success
         // UI via `PaymentViewContent`; the hero must not show on top of it.
@@ -844,6 +882,12 @@ private extension TotalsView {
             return false
         }
 
+        guard paymentModel.isPOSCardPaymentEnabled else {
+            // No-card stores: iPad renders the side-by-side Cash + Other strip; phone falls
+            // through to `POSCheckoutPaymentButtonsRow` (`[Cash, Other payment methods]`).
+            return horizontalSizeClass == .regular && hasOtherPaymentMethodsAvailable
+        }
+
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState
@@ -872,6 +916,9 @@ private extension TotalsView {
     /// reader lives inside the Other payment methods sheet instead, so this is
     /// scoped to devices where Tap to Pay is unavailable.
     var useReaderAndOtherMethodsBottomStrip: Bool {
+        // No card-present payments → never offer a card-reader CTA. The no-card layout is
+        // handled by `useCashAndOtherMethodsBottomStrip` (iPad) / `checkoutPaymentMethods` (phone).
+        guard paymentModel.isPOSCardPaymentEnabled else { return false }
         guard posModel.tapToPayAvailabilityController?.state.isAvailable != true else { return false }
         guard hasOtherPaymentMethodsAvailable else { return false }
         guard totalsViewHelper.shouldShowCollectCashPaymentButton(
@@ -918,7 +965,8 @@ private extension TotalsView {
         // connects TTP, returning the merchant to the TTP hero. The Card
         // reader option reappears there for the next order if they want
         // Bluetooth again.
-        paymentModel.currentPaymentMethod != .bluetooth
+        guard paymentModel.isPOSCardPaymentEnabled else { return false }
+        return paymentModel.currentPaymentMethod != .bluetooth
     }
 
     func handleTapToPayTapped() {

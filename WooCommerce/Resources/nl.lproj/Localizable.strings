@@ -664,7 +664,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message presented when an unexpected error occurs with the store's payment gateway. */
 "An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "Er is een onverwachte fout opgetreden met de betaalgateway van de winkel bij het registreren van de betaling voor de bestelling";
 
-/* A failure reason for when the error that occured wasn't able to be determined. */
+/* A failure reason for when the error that occurred wasn't able to be determined. */
 "An unknown error occurred." = "Er is een onbekende fout opgetreden.";
 
 /* Analytics toggle title in the privacy screen.
@@ -2713,7 +2713,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Fout tijdens bijwerken van bestelnr.%1$d";
 
-/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on the WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "Gesch. %1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -8485,9 +8485,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder text for address search bar. */
 "addressMapPicker.search.placeholder" = "Een adres zoeken";
 
-/* Error shown when the JWT mint endpoint returns an empty token string. */
-"aiAssistant.jwt.error.invalidResponse" = "De winkel gaf een lege Jetpack AI-token terug.";
-
 /* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
 "aiAssistant.loadingPlaceholder.accessibilityLabel" = "Laden";
 
@@ -9776,7 +9773,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Een product met variaties zoals kleur of maat";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
+/* Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.title" = "Variabel product";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
@@ -12222,9 +12219,6 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Laden";
 
-/* Cancel button on the Point of Sale Mark as paid confirmation. */
-"pointOfSale.markAsPaid.confirmation.cancelButton" = "Annuleren";
-
 /* Confirmation button on the Point of Sale Mark as paid confirmation. */
 "pointOfSale.markAsPaid.confirmation.confirmButton" = "Markeren als betaald";
 
@@ -12398,9 +12392,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Annuleren";
-
-/* Phone-only back button title to return from totals to the items list. */
-"pointOfSaleDashboard.phone.backToItems" = "Artikelen";
 
 /* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
 "pointOfSaleDashboard.phone.cart" = "Winkelwagen (%1$d)";
@@ -13020,9 +13011,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Kan bestelling niet laden";
 
-/* Description for refund via a specific payment method. %@ is the payment method name */
-"pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
-
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Vernieuwen";
 
@@ -13110,17 +13098,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
-/* Button to go back to the previous screen */
-"pos.refundConfirmationView.backButton" = "Terug";
-
-/* Accessibility label for close button on refund confirmation modal */
-"pos.refundConfirmationView.closeButton.accessibilityLabel" = "Sluiten";
-
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "Ja, ga verder";
-
-/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat.1" = "Weet je zeker dat je %1$@ %2$@ wilt terugbetalen? Deze actie kan niet ongedaan worden gemaakt.";
 
 /* Message shown while the refund is being processed. */
 "pos.refundConfirmationView.processingMessage" = "Een moment geduld terwijl we de terugbetaling verwerken.";
@@ -13149,9 +13128,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Annuleren";
 
-/* Accessibility label for close button on refund error screen */
-"pos.refundErrorView.closeButton.accessibilityLabel" = "Sluiten";
-
 /* Button to retry the refund creation */
 "pos.refundErrorView.retryButton" = "Opnieuw proberen";
 
@@ -13174,9 +13150,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility state when item is not selected for refund */
 "pos.refundItemRow.unselectedState" = "Niet geselecteerd voor terugbetaling";
 
-/* Accessibility label for close button on refund items selection modal */
-"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "Sluiten";
-
 /* Button to continue with selected items for refund */
 "pos.refundItemsSelectionView.continueButton" = "Doorgaan";
 
@@ -13194,9 +13167,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown while loading refund information */
 "pos.refundLoadingView.loadingMessage" = "Details over terugbetaling aan het laden ...";
-
-/* Accessibility label for close button on nothing to refund modal */
-"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Sluiten";
 
 /* Button to dismiss the nothing to refund screen */
 "pos.refundNothingToRefundView.doneButton" = "Klaar";
@@ -13222,9 +13192,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to add a reason for the refund */
 "pos.refundReviewView.addReasonButton" = "Reden toevoegen";
 
-/* Accessibility label for close button on refund review modal */
-"pos.refundReviewView.closeButton.accessibilityLabel" = "Sluiten";
-
 /* Button to continue with the refund */
 "pos.refundReviewView.continueButton" = "Doorgaan";
 
@@ -13233,9 +13200,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Reden bewerken";
-
-/* Button to go back and edit the refund items */
-"pos.refundReviewView.editRefundButton" = "Terugbetaling bewerken";
 
 /* Label for items subtotal row in refund review. %d is the number of items. */
 "pos.refundReviewView.itemsSubtotalFormat" = "Subtotaal artikelen (%d artikelen)";
@@ -13254,9 +13218,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Terugbetaling beoordelen";
-
-/* Accessibility label for close button on refund success screen */
-"pos.refundSuccessView.closeButton.accessibilityLabel" = "Sluiten";
 
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "Klaar";
@@ -13357,7 +13318,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Totaal van kortingen";
 
-/* Title for the Other payment methods button in the Point of Sale checkout. Tapping this button opens a sheet listing alternative payment methods like Scan to Pay or Mark order as paid. */
+/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Andere betaalmethoden";
 
 /* Title for subtotal amount field */
@@ -14273,35 +14234,22 @@ which should be translated separately and considered part of this sentence. */
 /* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
 "storeWidgets.dateRange.yesterdayCompact.yesterday" = "G";
 
-/* Widget description, displayed when selecting which widget to add */
-"storeWidgets.description" = "WooCommerce-statistieken van vandaag";
-
-/* Widget title, displayed when selecting which widget to add */
-"storeWidgets.displayName" = "Vandaag";
-
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Mijn winkel";
 
-/* Conversion rate metric title for the store info widget.
-   Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget. */
 "storeWidgets.infoView.conversion" = "Conversie";
 
-/* Orders metric title for the store info widget.
-   Orders title label for the store info widget */
+/* Orders metric title for the store info widget. */
 "storeWidgets.infoView.orders" = "Bestellingen";
 
-/* Revenue metric title — gross revenue including taxes and shipping.
-   Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+/* Revenue metric title — gross revenue including taxes and shipping. */
 "storeWidgets.infoView.totalSales" = "Totale verkopen";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Vanaf %1$@";
 
-/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
-"storeWidgets.infoView.viewMore" = "Meer weergeven";
-
-/* Visitors metric title for the store info widget.
-   Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget. */
 "storeWidgets.infoView.visitors" = "Bezoekers";
 
 /* Compact title for the average order value metric, shown on the widget cell. */
@@ -14351,9 +14299,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the Trends rectangular lock-screen widget cannot fetch data. */
 "storeWidgets.trendsRectangularWidget.noData" = "Geen data";
-
-/* Title label when the widget can't fetch data. */
-"storeWidgets.unableToFetchView.unableToFetch" = "Kan de statistieken van vandaag niet ophalen";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "%1$@ op voorraad";
@@ -14475,9 +14420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Markeren als opgelost";
-
-/* Generic error message shown when an AI support chat request fails */
-"supportChatViewModel.errorMessage" = "We konden momenteel geen verbinding maken met de AI-chat.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ik ben je Woo Mobile Support-bot. Is er iets waar ik je vandaag mee kan helpen?";
@@ -15910,7 +15852,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "Een nieuwe site starten?";
 
-/* Error message that describes an unknown error had occured */
+/* Error message that describes an unknown error had occurred */
 "wordpress-api.error.unknown" = "Er ging iets fout, probeer het later nog eens.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */

@@ -14,6 +14,5 @@ public struct POSRefundsResult {
 
 public protocol POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult
-    func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts
     func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund]
 }

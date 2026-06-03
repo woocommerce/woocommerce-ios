@@ -188,12 +188,22 @@ private extension POSTabCoordinator {
     }
 
     func presentPOSView(siteID: Int64) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+        let hostingController = UIHostingController(
+            rootView: POSPresentationRootView(posView: nil)
+        )
+        hostingController.modalPresentationStyle = .fullScreen
+        viewControllerToPresent.present(hostingController, animated: true, completion: nil)
+
+        Task { @MainActor [weak self, weak hostingController] in
+            guard let self, let hostingController else { return }
 
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
+                // Resolve POS eligibility before deciding the fetch strategy
+                let posState = await eligibilityChecker.checkEligibility()
+                try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
+
                 // Retry transient failures before using the value
                 let state = try await service.catalogEligibility(for: siteID)
                 if case .ineligible(reason: .catalogSizeCheckFailed) = state {
@@ -263,6 +273,7 @@ private extension POSTabCoordinator {
                     orderService = posOrderService
                 } else {
                     DDLogError("POSOrderService not provided")
+                    await hostingController.dismiss(animated: true)
                     return
                 }
 
@@ -345,10 +356,26 @@ private extension POSTabCoordinator {
                     itemProvider: itemProvider
                 )
 
-                let hostingController = UIHostingController(rootView: posView)
-                hostingController.modalPresentationStyle = .fullScreen
-                viewControllerToPresent.present(hostingController, animated: true)
+                guard hostingController.presentingViewController != nil else {
+                    return
+                }
+                hostingController.rootView = POSPresentationRootView(posView: posView)
+            } else {
+                await hostingController.dismiss(animated: true)
             }
+        }
+    }
+}
+
+
+struct POSPresentationRootView: View {
+    let posView: PointOfSaleEntryPointView?
+
+    var body: some View {
+        if let posView {
+            posView
+        } else {
+            PointOfSaleLoadingEntryPointView()
         }
     }
 }

@@ -309,9 +309,6 @@ struct ItemListView: View {
                 Text(Localization.sunsetWarningDescription)
                     .font(POSFontStyle.posBodyMediumRegular())
             })
-            .task {
-                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
-            }
     }
 
     @ViewBuilder
@@ -328,12 +325,6 @@ struct ItemListView: View {
                 Text(Localization.staleSyncWarningDescription(days: posModel.staleSyncThresholdDays))
                     .font(POSFontStyle.posBodyMediumRegular())
             })
-            .task {
-                // Track stale warning shown with hours since last sync
-                if let hours = await posModel.hoursSinceLastSync() {
-                    analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
-                }
-            }
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {

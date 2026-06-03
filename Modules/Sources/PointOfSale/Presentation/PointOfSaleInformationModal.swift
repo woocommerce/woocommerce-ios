@@ -74,7 +74,6 @@ struct PointOfSaleInformationModal<Content: View>: View {
 
                 okButton
             }
-            .frame(maxHeight: compactContentMaxHeight)
 
             Spacer(minLength: POSSpacing.none)
         }
@@ -177,14 +176,9 @@ private extension PointOfSaleInformationModal {
         max(parentSize.width - (Constants.regularHorizontalMargin * 2), 0)
     }
 
-    var compactContentMaxHeight: CGFloat {
-        max(parentSize.height - (contentPadding * 2) - Constants.compactHeaderReservedHeight, 0)
-    }
-
     enum Constants {
         static var modalFrameWidth: CGFloat { 896 }
         static var regularHorizontalMargin: CGFloat { POSPadding.medium }
-        static var compactHeaderReservedHeight: CGFloat { 120 }
     }
 }
 

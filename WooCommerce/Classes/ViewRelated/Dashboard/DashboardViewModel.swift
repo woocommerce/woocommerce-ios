@@ -80,6 +80,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var dismissedWPComConnectionSuggestion = false
 
+    @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
@@ -89,6 +90,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var isEligibleForStoreSetup = false
 
     @Published var showingCustomization = false
+
+    @Published var showingAnalyticsImportUpdateModeInfo = false
 
     @Published private(set) var showNewCardsNotice = false
 
@@ -221,6 +224,7 @@ final class DashboardViewModel: ObservableObject {
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         configureTapToPayAwarnessMomentPresentation()
+        seedAnalyticsImportUpdateModeFromCache()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -415,6 +419,19 @@ final class DashboardViewModel: ObservableObject {
             await reloadAllData(forceCardsRefresh: true)
         }
     }
+
+    func showAnalyticsImportUpdateModeInfo() {
+        showingAnalyticsImportUpdateModeInfo = true
+    }
+
+    func makeAnalyticsUpdateModeBottomSheetViewModel() -> AnalyticsUpdateModeBottomSheetViewModel {
+        AnalyticsUpdateModeBottomSheetViewModel(siteID: siteID,
+                                                selectedMode: analyticsImportUpdateMode,
+                                                stores: stores,
+                                                onModeUpdated: { [weak self] mode in
+            self?.applyAnalyticsImportUpdateMode(mode)
+        })
+    }
 }
 
 // MARK: Dashboard card persistence
@@ -476,9 +493,12 @@ private extension DashboardViewModel {
         }
 
         // Phase 2: Card availability checks and announcements.
-        // These toggle card visibility and load banners — not needed for initial render.
+        // These toggle card visibility, load banners, and sync analytics card settings - not needed for initial render.
         // Deferred to reduce the concurrent request count in the initial burst.
         await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                await self?.loadAnalyticsImportUpdateMode()
+            }
             group.addTask { [weak self] in
                 guard let self else { return }
                 await self.syncAnnouncements(for: self.siteID)
@@ -872,6 +892,34 @@ private extension DashboardViewModel {
         productStockCardViewModel.onDismiss = showCustomizationScreen
         lastOrdersCardViewModel.onDismiss = showCustomizationScreen
         googleAdsDashboardCardViewModel.onDismiss = showCustomizationScreen
+    }
+
+    func seedAnalyticsImportUpdateModeFromCache() {
+        guard let cached = AnalyticsImportUpdateMode.cachedValue(siteID: siteID, storageManager: storageManager) else {
+            return
+        }
+        applyAnalyticsImportUpdateMode(cached)
+    }
+
+    @MainActor
+    func loadAnalyticsImportUpdateMode() async {
+        do {
+            let mode: AnalyticsImportUpdateMode = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            applyAnalyticsImportUpdateMode(mode)
+        } catch {
+            DDLogWarn("Could not fetch analytics import update mode: \(error)")
+        }
+    }
+
+    func applyAnalyticsImportUpdateMode(_ mode: AnalyticsImportUpdateMode) {
+        analyticsImportUpdateMode = mode
+        storePerformanceViewModel.setAnalyticsImportUpdateMode(mode)
+        topPerformersViewModel.setAnalyticsImportUpdateMode(mode)
     }
 
     func generateDefaultCards(canShowOnboarding: Bool,

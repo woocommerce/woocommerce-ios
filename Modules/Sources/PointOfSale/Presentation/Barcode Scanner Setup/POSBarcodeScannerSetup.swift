@@ -17,8 +17,19 @@ struct POSBarcodeScannerSetup: View {
     private var widthRatio: CGFloat { isCompactWidth ? 1.0 : Constants.parentWidthRatio }
     private var heightRatio: CGFloat { isCompactWidth ? 1.0 : Constants.maxParentHeightRatio }
 
-    @ViewBuilder
     var body: some View {
+        modalBody
+            .onAppear {
+                analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
+            }
+            .onDisappear {
+                flowManager.onDisappear()
+            }
+            .maximumScreenBrightness()
+    }
+
+    @ViewBuilder
+    private var modalBody: some View {
         if isCompactWidth {
             compactBody
         } else {
@@ -39,13 +50,6 @@ struct POSBarcodeScannerSetup: View {
                 .padding(POSPadding.xLarge)
                 .background(Color.posSurfaceBright)
         }
-        .onAppear {
-            analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
-        }
-        .onDisappear {
-            flowManager.onDisappear()
-        }
-        .maximumScreenBrightness()
         // `.posModalFullScreen(isCompactWidth)` is intentionally not called here —
         // `POSRootModalViewModifier` auto-detects compact width and OR's it into
         // its `isFullScreen` check, so the explicit call would be a duplicated
@@ -66,13 +70,6 @@ struct POSBarcodeScannerSetup: View {
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
         .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
-        .onAppear {
-            analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
-        }
-        .onDisappear {
-            flowManager.onDisappear()
-        }
-        .maximumScreenBrightness()
     }
 
     private var modalContent: some View {

@@ -548,6 +548,39 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
+    func test_currentShipment_when_selected_index_points_past_reloaded_shipments_then_does_not_crash() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        setupInitialDataLoadingMocks(for: stores)
+
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID)
+        let shipments = [
+            WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "0", items: [WooShippingShipmentItem.fake()]),
+            WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "1", items: [WooShippingShipmentItem.fake()])
+        ]
+        insert(shipments: shipments, order: order)
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        waitUntil {
+            viewModel.shipments.count == 2
+        }
+        viewModel.selectedShipmentIndex = 1
+
+        let storedShipmentToDelete = try XCTUnwrap(storage.allObjects(ofType: StorageWooShippingShipment.self,
+                                                                      matching: NSPredicate(format: "index == %@", "1"),
+                                                                      sortedBy: nil).first)
+
+        // When
+        storage.deleteObject(storedShipmentToDelete)
+        storage.saveIfNeeded()
+        _ = viewModel.currentShipment
+
+        // Then
+        XCTAssertTrue(true)
+    }
+
     func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
         // Given
         let labelDestinationAddress = ShippingLabelAddress.fake().copy(phone: "", country: "US")

@@ -2,6 +2,8 @@ import Foundation
 import GRDB
 import enum NetworkingCore.NetworkError
 import enum NetworkingCore.DotcomError
+import enum NetworkingCore.POSCatalogFileError
+import enum Networking.BackgroundDownloadError
 import enum Alamofire.AFError
 
 /// Classifies errors from catalog sync operations for analytics tracking.
@@ -27,6 +29,14 @@ enum POSCatalogSyncErrorClassifier {
         // Check for network errors
         if let networkError = error as? NetworkError {
             return classifyNetworkError(networkError)
+        }
+
+        if let catalogFileError = error as? POSCatalogFileError {
+            return classifyCatalogFileError(catalogFileError)
+        }
+
+        if let backgroundDownloadError = error as? BackgroundDownloadError {
+            return classifyBackgroundDownloadError(backgroundDownloadError)
         }
 
         // Check for URLError
@@ -139,6 +149,24 @@ enum POSCatalogSyncErrorClassifier {
             return "network_timeout"
         default:
             return "network_error"
+        }
+    }
+
+    private static func classifyCatalogFileError(_ error: POSCatalogFileError) -> String {
+        switch error {
+        case .downloadFailed:
+            return "catalog_file_download_failed"
+        case .invalidResponse:
+            return "catalog_file_invalid_response"
+        }
+    }
+
+    private static func classifyBackgroundDownloadError(_ error: BackgroundDownloadError) -> String {
+        switch error {
+        case .cancelled:
+            return "request_cancelled"
+        case .unacceptableStatusCode, .downloadFailed, .fileNotFound, .invalidURL, .sessionCreationFailed:
+            return "catalog_file_download_failed"
         }
     }
 

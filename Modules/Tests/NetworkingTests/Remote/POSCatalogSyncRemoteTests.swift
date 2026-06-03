@@ -818,12 +818,12 @@ struct POSCatalogSyncRemoteTests {
         }
     }
 
-    @Test func downloadCatalog_relays_download_error() async throws {
+    @Test func downloadCatalog_when_download_fails_then_throws_catalog_file_download_error() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
 
-        let expectedError = BackgroundDownloadError.downloadFailed(NetworkError.notFound())
+        let expectedError = BackgroundDownloadError.unacceptableStatusCode(statusCode: 403, contentType: "text/html; charset=UTF-8")
         mockBackgroundDownloader.mockFailedDownload(error: expectedError)
 
         // When/Then
@@ -831,11 +831,34 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            #expect(error is BackgroundDownloadError)
-            if case let BackgroundDownloadError.downloadFailed(innerError) = error {
-                #expect(innerError is NetworkError)
+            if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
+                #expect(statusCode == 403)
+                #expect(contentType == "text/html; charset=UTF-8")
+                #expect(underlyingError is BackgroundDownloadError)
             } else {
-                Issue.record("Expected BackgroundDownloadError.downloadFailed")
+                Issue.record("Expected POSCatalogFileError.downloadFailed")
+            }
+        }
+    }
+
+    @Test func downloadCatalog_when_downloaded_body_is_not_catalog_json_then_throws_invalid_response_error() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "<html><body>Forbidden</body></html>")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL, statusCode: 200, contentType: "text/html")
+
+        // When/Then
+        do {
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            if case let POSCatalogFileError.invalidResponse(statusCode, contentType, underlyingError) = error {
+                #expect(statusCode == 200)
+                #expect(contentType == "text/html")
+                #expect(underlyingError is DecodingError)
+            } else {
+                Issue.record("Expected POSCatalogFileError.invalidResponse")
             }
         }
     }

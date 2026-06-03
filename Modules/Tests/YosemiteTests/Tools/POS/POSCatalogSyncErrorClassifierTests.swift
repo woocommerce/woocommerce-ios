@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import GRDB
 import Alamofire
+import NetworkingCore
 @testable import Yosemite
 
 struct POSCatalogSyncErrorClassifierTests {
@@ -101,6 +102,32 @@ struct POSCatalogSyncErrorClassifierTests {
 
         // Then
         #expect(result == "catalog_integrity")
+    }
+
+    @Test func classify_catalog_file_download_error_returns_catalog_file_download_failed() {
+        // Given
+        let error = POSCatalogFileError.downloadFailed(statusCode: 403,
+                                                       contentType: "text/html",
+                                                       underlyingError: NSError(domain: "Test", code: 403))
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(error)
+
+        // Then
+        #expect(result == "catalog_file_download_failed")
+    }
+
+    @Test func classify_catalog_file_invalid_response_error_returns_catalog_file_invalid_response() {
+        // Given
+        let error = POSCatalogFileError.invalidResponse(statusCode: 200,
+                                                        contentType: "text/html",
+                                                        underlyingError: NSError(domain: "Test", code: 0))
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(error)
+
+        // Then
+        #expect(result == "catalog_file_invalid_response")
     }
 
     @Test func classify_authentication_error_returns_authentication_error() {

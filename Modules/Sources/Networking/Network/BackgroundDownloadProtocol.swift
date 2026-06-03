@@ -8,8 +8,8 @@ public protocol BackgroundDownloadProtocol {
     ///   - url: The URL to download from.
     ///   - sessionIdentifier: Unique identifier for the background session.
     ///   - allowCellular: Whether cellular data should be allowed for this download.
-    /// - Returns: Local file URL where the downloaded content is stored.
-    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL
+    /// - Returns: Local file URL where the downloaded content is stored, plus response metadata.
+    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> BackgroundDownloadResult
 
     /// Sets up background app suspension handling.
     /// - Parameter completionHandler: Handler to call when background download completes.
@@ -44,10 +44,32 @@ public struct BackgroundDownloadProgress {
     }
 }
 
+/// Result of a completed background download.
+public struct BackgroundDownloadResult {
+    public let fileURL: URL
+    public let statusCode: Int?
+    public let contentType: String?
+    public let bytesDownloaded: Int64
+    public let totalBytesExpected: Int64
+
+    public init(fileURL: URL,
+                statusCode: Int?,
+                contentType: String?,
+                bytesDownloaded: Int64,
+                totalBytesExpected: Int64) {
+        self.fileURL = fileURL
+        self.statusCode = statusCode
+        self.contentType = contentType
+        self.bytesDownloaded = bytesDownloaded
+        self.totalBytesExpected = totalBytesExpected
+    }
+}
+
 /// Errors that can occur during background downloads.
 public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
     case invalidURL
     case sessionCreationFailed
+    case unacceptableStatusCode(statusCode: Int, contentType: String?)
     case downloadFailed(Error)
     case fileNotFound
     case cancelled
@@ -58,6 +80,8 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return "The provided URL is invalid"
         case .sessionCreationFailed:
             return "Failed to create background download session"
+        case .unacceptableStatusCode(let statusCode, _):
+            return "Download failed with HTTP status \(statusCode)"
         case .downloadFailed(let error):
             return "Download failed: \(error.localizedDescription)"
         case .fileNotFound:
@@ -73,6 +97,8 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return true
         case (.sessionCreationFailed, .sessionCreationFailed):
             return true
+        case (.unacceptableStatusCode(let lhsStatusCode, let lhsContentType), .unacceptableStatusCode(let rhsStatusCode, let rhsContentType)):
+            return lhsStatusCode == rhsStatusCode && lhsContentType == rhsContentType
         case (.downloadFailed(let lhsError), .downloadFailed(let rhsError)):
             return lhsError.localizedDescription == rhsError.localizedDescription
         case (.fileNotFound, .fileNotFound):
@@ -81,6 +107,26 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return true
         default:
             return false
+        }
+    }
+}
+
+extension BackgroundDownloadError {
+    var statusCode: Int? {
+        switch self {
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode
+        default:
+            return nil
+        }
+    }
+
+    var contentType: String? {
+        switch self {
+        case .unacceptableStatusCode(_, let contentType):
+            return contentType
+        default:
+            return nil
         }
     }
 }

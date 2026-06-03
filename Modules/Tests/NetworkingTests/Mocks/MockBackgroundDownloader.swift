@@ -4,7 +4,7 @@ import Networking
 /// Mock implementation of BackgroundDownloadProtocol for unit testing.
 final class MockBackgroundDownloader: BackgroundDownloadProtocol {
     // MARK: - Mock State
-    var downloadResult: Result<URL, Error> = .failure(BackgroundDownloadError.fileNotFound)
+    var downloadResult: Result<BackgroundDownloadResult, Error> = .failure(BackgroundDownloadError.fileNotFound)
     var downloadCallCount = 0
     var lastDownloadURL: URL?
     var lastSessionIdentifier: String?
@@ -25,7 +25,7 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
 
     // MARK: - BackgroundDownloadProtocol
 
-    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL {
+    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> BackgroundDownloadResult {
         downloadCallCount += 1
         lastDownloadURL = url
         lastSessionIdentifier = sessionIdentifier
@@ -66,7 +66,20 @@ final class MockBackgroundDownloader: BackgroundDownloadProtocol {
 extension MockBackgroundDownloader {
     /// Configure the mock to return a successful download with the given file URL
     func mockSuccessfulDownload(fileURL: URL) {
-        downloadResult = .success(fileURL)
+        downloadResult = .success(.init(fileURL: fileURL,
+                                        statusCode: 200,
+                                        contentType: "application/json",
+                                        bytesDownloaded: 0,
+                                        totalBytesExpected: 0))
+    }
+
+    /// Configure the mock to return a successful download with response metadata.
+    func mockSuccessfulDownload(fileURL: URL, statusCode: Int?, contentType: String?) {
+        downloadResult = .success(.init(fileURL: fileURL,
+                                        statusCode: statusCode,
+                                        contentType: contentType,
+                                        bytesDownloaded: 0,
+                                        totalBytesExpected: 0))
     }
 
     /// Configure the mock to return a failed download with the given error

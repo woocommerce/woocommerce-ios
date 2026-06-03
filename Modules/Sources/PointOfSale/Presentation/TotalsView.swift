@@ -784,8 +784,14 @@ private extension TotalsView {
             .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-other-payment-methods-button")
         }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.bottom, POSPadding.xxLarge)
+        .if(horizontalSizeClass == .compact) {
+            $0.posPhoneBottomButtonPadding()
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.xxLarge)
+        }
     }
 
     /// True whenever the bottom of the totals view should render the

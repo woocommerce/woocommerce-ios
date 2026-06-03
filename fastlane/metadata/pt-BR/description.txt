@@ -1,0 +1,29 @@
+Gerencie seu negócio de onde você estiver, com o aplicativo móvel WooCommerce. Adicione produtos, crie pedidos, receba pagamentos rapidamente e fique de olho em novas vendas e estatísticas importantes em tempo real.
+
+Adicione e edite produtos com apenas um toque
+Comece em poucos segundos! Crie, agrupe e publique produtos diretamente do seu iPad ou iPhone. Aproveite sua criatividade quando ela entrar em ação: transforme suas ideias em produtos imediatamente ou as salve como rascunho para mais tarde.
+
+Crie pedidos na hora
+Depois de criar alguns produtos, é simples. Escolha itens do seu catálogo, adicione envio e preencha os dados do cliente para criar rapidamente um pedido que sincronize com seu inventário.
+
+Aceite pagamentos presenciais
+Receba pagamentos físicos usando o WooCommerce In-Person Payments e um leitor de cartão na Austrália, Áustria, Bélgica, Canadá, Finlândia, França, Alemanha, Irlanda, Itália, Luxemburgo, Holanda, Nova Zelândia, Portugal, Singapura, Espanha, Reino Unido e EUA. O Tap to Pay on iPhone está disponível no Reino Unido e nos EUA. Comece um novo pedido ou encontre um existente com pagamento pendente e aceite o pagamento sem dificuldades.
+
+Passe de cliques para blocos
+Transforme qualquer tablet em um poderoso ponto de venda com o WooCommerce POS. Pesquise produtos, escaneie códigos de barra, aplique cupons e envie recibos por e-mail, com todas as suas vendas físicas e online sincronizadas em tempo real. Disponível nos EUA e no Reino Unido.
+
+Receba notificações de todas as vendas
+Agora que você está ativo nas vendas, nunca perca um pedido ou uma avaliação. Fique por dentro do que está acontecendo. Ative os alertas em tempo real e ouça o som de notificações para cada nova venda!
+
+Monitore as vendas e os produtos mais vendidos
+Veja quais produtos são mais populares, em um piscar de olhos. Acompanhe sua receita geral, contagem de pedidos e dados semanais, mensais e anuais dos visitantes. Conhecimento é poder.
+
+O WooCommerce é a plataforma de comércio eletrônico open source mais personalizável do mundo. Não importa se você está abrindo um negócio, trocando o varejo físico pelo online ou criando sites para clientes: use o WooCommerce para ter uma loja que combina conteúdo e vendas de forma avançada.
+
+Requisitos: WooCommerce versão 3.5 ou superior.
+
+Veja os Termos de serviço em https://wordpress.com/tos/
+
+Veja as Políticas de privacidade em https://automattic.com/privacy/
+
+Veja o Aviso de privacidade para usuários residentes da Califórnia em https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

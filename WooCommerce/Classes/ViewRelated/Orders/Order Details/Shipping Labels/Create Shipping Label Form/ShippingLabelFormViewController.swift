@@ -423,7 +423,7 @@ private extension ShippingLabelFormViewController {
 
 // MARK: - Actions
 //
-private extension ShippingLabelFormViewController {
+extension ShippingLabelFormViewController {
     func displayEditAddressFormVC(address: ShippingLabelAddress?, email: String?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
         guard viewModel.countries.isNotEmpty else {
             let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {

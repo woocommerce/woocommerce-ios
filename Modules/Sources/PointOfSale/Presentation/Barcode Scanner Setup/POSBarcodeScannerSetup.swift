@@ -63,7 +63,6 @@ struct POSBarcodeScannerSetup: View {
             Spacer(minLength: POSSpacing.none)
 
             compactModalContent
-                .frame(maxHeight: compactContentMaxHeight)
 
             Spacer(minLength: POSSpacing.none)
         }
@@ -165,16 +164,12 @@ struct POSBarcodeScannerSetup: View {
         ]
     }
 
-    private var compactContentMaxHeight: CGFloat {
-        max(parentSize.height - (POSPadding.xLarge * 2) - Constants.compactHeaderReservedHeight, 0)
-    }
 }
 
 // MARK: - Constants
 private enum Constants {
     static var maxParentHeightRatio: CGFloat { 0.9 }
     static var parentWidthRatio: CGFloat { 0.75 }
-    static var compactHeaderReservedHeight: CGFloat { 120 }
 }
 
 // MARK: - Private Localization Extension

@@ -633,7 +633,14 @@ private extension PointOfSaleDashboardView {
     }
 
     func presentOrders() {
-        posModel.cancelInFlightCheckout()
+        // Post-success, cart + orderController.order still reference the completed order until
+        // "New order" is tapped — leaving via Orders without resetting would let the next
+        // checkout mutate that completed order.
+        if posModel.paymentState.isSuccess {
+            posModel.startNewCart()
+        } else {
+            posModel.cancelInFlightCheckout()
+        }
         showOrders = true
     }
 }

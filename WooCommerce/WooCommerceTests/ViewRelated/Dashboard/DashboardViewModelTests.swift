@@ -270,7 +270,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_analytics_import_update_mode_sheet_view_model_when_save_succeeds_then_updates_dashboard_and_analytics_cards() async {
+    func test_analytics_import_update_mode_sheet_view_model_when_save_succeeds_then_updates_dashboard_and_analytics_cards() async throws {
         // Given
         var updatedMode: AnalyticsImportUpdateMode?
         mockReloadingData(analyticsImportUpdateModeResult: .success(.immediate),
@@ -286,7 +286,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // When
         let sheetViewModel = viewModel.makeAnalyticsUpdateModeBottomSheetViewModel()
-        let shouldDismiss = await sheetViewModel.handleSelection(.scheduled)
+        let shouldDismiss = try await sheetViewModel.handleSelection(.scheduled)
 
         // Then
         XCTAssertTrue(shouldDismiss)
@@ -295,7 +295,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.analyticsImportUpdateMode, .scheduled)
         XCTAssertEqual(viewModel.storePerformanceViewModel.analyticsImportUpdateMode, .scheduled)
         XCTAssertEqual(viewModel.topPerformersViewModel.analyticsImportUpdateMode, .scheduled)
-        XCTAssertNil(sheetViewModel.updateError)
     }
 
     @MainActor

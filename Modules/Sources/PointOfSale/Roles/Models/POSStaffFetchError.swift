@@ -8,8 +8,9 @@ public enum POSStaffFetchError: Error, Equatable {
     /// The session should clear its cache and degrade to no-PIN-gating mode.
     case flagDisabledServerSide
 
-    /// HTTP 401/403. The device admin lacks `manage_pos_staff`. Diagnostic state; downstream
-    /// PRs surface this as a generic "Reach out to your administrator" message.
+    /// HTTP 401/403. The device admin lacks the server-side capability required to read the
+    /// staff endpoint (currently `manage_woocommerce`). Diagnostic state; downstream PRs surface
+    /// this as a generic "Reach out to your administrator" message.
     case adminMissingCapability
 
     /// 5xx / network timeout / connectivity. Transient. Caller falls back to the existing cache.

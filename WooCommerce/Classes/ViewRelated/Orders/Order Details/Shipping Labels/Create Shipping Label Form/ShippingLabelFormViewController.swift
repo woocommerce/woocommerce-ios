@@ -501,7 +501,12 @@ extension ShippingLabelFormViewController {
     func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
         guard let countryCode = viewModel.destinationAddress?.country,
               let country = viewModel.countries.first(where: { $0.code == countryCode }) else {
-            fatalError("⛔️ Destination country is not found")
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            noticePresenter.enqueue(notice: notice)
+            return
         }
         let hostingVC = ShippingCustomsFormListHostingController(order: viewModel.order,
                                                                  customsForms: viewModel.customsForms,

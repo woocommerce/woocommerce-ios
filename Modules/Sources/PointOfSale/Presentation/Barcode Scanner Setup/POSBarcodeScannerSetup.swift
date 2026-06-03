@@ -163,7 +163,6 @@ struct POSBarcodeScannerSetup: View {
             )
         ]
     }
-
 }
 
 // MARK: - Constants

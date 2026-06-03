@@ -566,7 +566,7 @@ extension WooShippingCreateLabelsViewModel {
 }
 
 // MARK: Utils
-extension WooShippingCreateLabelsViewModel {
+private extension WooShippingCreateLabelsViewModel {
 
     func boundedSelectedShipmentIndex(for count: Int) -> Int {
         boundedShipmentIndex(selectedShipmentIndex, count: count)

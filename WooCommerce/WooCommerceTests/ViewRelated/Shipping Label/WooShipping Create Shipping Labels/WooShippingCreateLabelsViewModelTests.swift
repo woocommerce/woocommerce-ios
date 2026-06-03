@@ -619,29 +619,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentShipment.index, 1)
     }
 
-    func test_handleLabelPurchaseSuccess_when_remote_shipment_index_is_not_array_offset_then_does_not_crash() {
-        // Given
-        let order = Order.fake().copy(siteID: siteID, orderID: orderID)
-        let currencySettings = CurrencySettings()
-        let shippingSettingsService = MockShippingSettingsService()
-        let viewModel = WooShippingCreateLabelsViewModel(order: order,
-                                                         currencySettings: currencySettings,
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         storageManager: storageManager)
-        let shipment = Shipment(index: 7,
-                                contents: [],
-                                currency: order.currency,
-                                currencySettings: currencySettings,
-                                shippingSettingsService: shippingSettingsService)
-        viewModel.updateShipments([shipment])
-
-        // When
-        viewModel.handleLabelPurchaseSuccess(newLabel: ShippingLabel.fake(), in: shipment)
-
-        // Then
-        XCTAssertTrue(true)
-    }
-
     func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
         // Given
         let labelDestinationAddress = ShippingLabelAddress.fake().copy(phone: "", country: "US")

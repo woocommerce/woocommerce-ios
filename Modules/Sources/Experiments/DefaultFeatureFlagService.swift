@@ -128,7 +128,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .arParcelFitting:
             return true
         case .smarterNotifications:
-            return !buildConfig.isProduction
+            return true
         default:
             return true
         }

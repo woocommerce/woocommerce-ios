@@ -668,8 +668,9 @@ private extension TotalsView {
     ///   connect flow the in-pane "Connect your reader" CTA used to drive.
     /// - `.cashPayment` — always last, always present when the row is visible.
     ///
-    /// `.tapToPay`'s action is intentionally a no-op at this stage — wiring it to
-    /// the actual collection flow happens in a later, focused commit.
+    /// On no-card stores (`isPOSCardPaymentEnabled == false`) the row collapses to
+    /// `.cashPayment` plus an optional `.otherPaymentMethods` entry — no `.tapToPay`
+    /// or `.cardReader` slot.
     var checkoutPaymentMethods: [POSCheckoutPaymentMethod] {
         guard totalsViewHelper.shouldShowCollectCashPaymentButton(
             orderState: posModel.orderState,
@@ -798,17 +799,18 @@ private extension TotalsView {
         return true
     }
 
-    /// Cash + Other payment methods stacked outlined buttons rendered below the
-    /// totals. Used in two scenarios:
+    /// Cash + "Other payment methods" stacked buttons rendered below the totals.
+    /// Used in three scenarios:
     ///
     /// - **TTP hero layout**: TTP is the primary CTA at the top, the strip
-    ///   carries Cash and the "Other payment methods" sheet (Card reader,
-    ///   Scan to Pay, Mark as Paid). Mirrors samiuelson #15825.
+    ///   carries Cash (outlined) and the "Other payment methods" sheet (Card
+    ///   reader, Scan to Pay, Mark as Paid). Mirrors samiuelson #15825.
     /// - **TTP-available + BT reader connected**: the BT reader is the active
-    ///   path showing "Ready for payment" up top, and the strip lets the
-    ///   merchant either take cash or step out via the sheet (which now
-    ///   includes Tap to Pay on iPhone since reader-is-connected means the
-    ///   sheet's Card reader row is hidden).
+    ///   path showing "Ready for payment" up top; the strip lets the merchant
+    ///   take cash or step out via the sheet. The sheet's Card reader row is
+    ///   hidden while a reader is connected, leaving Scan to Pay and Mark as Paid.
+    /// - **No-card store** (`isPOSCardPaymentEnabled == false`): nothing owns the
+    ///   primary slot above, so Cash renders filled (purple) as the primary CTA.
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {

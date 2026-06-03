@@ -40,20 +40,9 @@ struct AnalyticsUpdateModeBottomSheet: View {
                 .font(.title3.weight(.semibold))
                 .padding(.top, Layout.titleTopPadding)
 
-            Text(
-                AttributedString.withEmbeddedLink(
-                    mainContent: Localization.description,
-                    linkText: Localization.learnMore,
-                    link: Constants.learnMoreURL,
-                    font: .body,
-                    foregroundColor: Color(uiColor: .textSubtle)
-                )
-            )
-            .padding(.top, Layout.titleToDescriptionSpacing)
-            .environment(\.openURL, OpenURLAction { _ in
-                showingLearnMoreWebView = true
-                return .handled
-            })
+            Text(Localization.description)
+                .bodyStyle()
+                .padding(.top, Layout.titleToDescriptionSpacing)
         }
     }
 
@@ -74,10 +63,20 @@ struct AnalyticsUpdateModeBottomSheet: View {
     }
 
     private var footer: some View {
-        Text(Localization.footer)
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .padding(.top, Layout.optionsToFooterSpacing)
+        Text(
+            AttributedString.withEmbeddedLink(
+                mainContent: Localization.footer,
+                linkText: Localization.learnMore,
+                link: Constants.learnMoreURL,
+                font: .footnote,
+                foregroundColor: Color(.secondaryLabel)
+            )
+        )
+        .environment(\.openURL, OpenURLAction { _ in
+            showingLearnMoreWebView = true
+            return .handled
+        })
+        .padding(.top, Layout.optionsToFooterSpacing)
     }
 
     private func handleSelection(of mode: AnalyticsImportUpdateMode) {
@@ -172,14 +171,15 @@ private enum Localization {
         comment: "Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data."
     )
     static let description = NSLocalizedString(
-        "analyticsUpdateModeBottomSheet.descriptionWithLearnMoreLink",
-        value: "Choose how WooCommerce processes analytics data updates. %1$@",
+        "analyticsUpdateModeBottomSheet.description",
+        value: "Choose when analytics data is updated.",
         comment: "Description shown below the title of the analytics updates bottom sheet on the dashboard."
     )
     static let footer = NSLocalizedString(
-        "analyticsUpdateModeBottomSheet.footerWithoutLearnMoreLink",
-        value: "This is a store-wide setting, which also controls the \"Updates\" option in WooCommerce admin analytics settings.",
-        comment: "Clarification text shown below the analytics update options on the dashboard bottom sheet."
+        "analyticsUpdateModeBottomSheet.footerWithLearnMoreLink",
+        value: "This is a store-wide setting, which also controls the \"Updates\" option in WooCommerce admin analytics settings. %1$@.",
+        comment: "Clarification text shown below the analytics update options on the dashboard bottom sheet. " +
+        "The placeholder is a link for Learn more, please ensure to keep the trailing period."
     )
     static let learnMore = NSLocalizedString(
         "analyticsUpdateModeBottomSheet.learnMore",
@@ -203,7 +203,7 @@ private enum Localization {
     )
     static let scheduledDescription = NSLocalizedString(
         "analyticsUpdateModeBottomSheet.scheduledDescription",
-        value: "Automatically updates analytics data every 12 hours.\nRecommended for high order volume stores.",
+        value: "Updates automatically every 12 hours.\nRecommended for high order volume stores.",
         comment: "Description of the Scheduled analytics update option."
     )
     static let immediateTitle = NSLocalizedString(
@@ -213,7 +213,7 @@ private enum Localization {
     )
     static let immediateDescription = NSLocalizedString(
         "analyticsUpdateModeBottomSheet.immediateDescription",
-        value: "Updates analytics data as soon as new data becomes available.",
+        value: "Updates as soon as new data is available.",
         comment: "Description of the Immediately analytics update option."
     )
 }

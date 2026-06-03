@@ -644,27 +644,33 @@ extension WooShippingCreateLabelsViewModel {
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
-        let index = shipment.index
-        shipments[index] = Shipment(index: index,
-                                    contents: shipment.contents,
-                                    purchasedLabel: newLabel,
-                                    currency: order.currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didPurchaseLabel(for: index, label: newLabel)
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipment.index }) else {
+            return
+        }
+
+        shipments[shipmentArrayIndex] = Shipment(index: shipment.index,
+                                                 contents: shipment.contents,
+                                                 purchasedLabel: newLabel,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didPurchaseLabel(for: shipment.index, label: newLabel)
         onLabelPurchase?(markOrderComplete)
     }
 
     func handleLabelRefundRequested(labelID: Int64,
                                     in shipment: Shipment) {
-        let shipmentIndex = shipment.index
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: shipment.contents,
-                                            purchasedLabel: nil,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didRequestRefund(for: shipmentIndex)
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipment.index }) else {
+            return
+        }
+
+        shipments[shipmentArrayIndex] = Shipment(index: shipment.index,
+                                                 contents: shipment.contents,
+                                                 purchasedLabel: nil,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didRequestRefund(for: shipment.index)
         refundNotice = Notice(message: Localization.refundNotice)
     }
 

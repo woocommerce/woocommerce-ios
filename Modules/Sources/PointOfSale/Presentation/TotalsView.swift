@@ -104,7 +104,9 @@ struct TotalsView: View {
 
                     Spacer()
 
-                    if useCashAndOtherMethodsBottomStrip {
+                    if useReaderAndOtherMethodsBottomStrip {
+                        readerAndOtherMethodsBottomStrip
+                    } else if useCashAndOtherMethodsBottomStrip {
                         cashAndOtherMethodsBottomStrip
                     } else if !checkoutPaymentMethods.isEmpty {
                         POSCheckoutPaymentButtonsRow(
@@ -117,6 +119,7 @@ struct TotalsView: View {
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: useCashAndOtherMethodsBottomStrip)
+                .animation(.default, value: useReaderAndOtherMethodsBottomStrip)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -181,7 +184,9 @@ struct TotalsView: View {
                 isStartingPayment = false
             }
         }
-        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
+        // Phone-only: on iPad the picker is an anchored popover hosted on the
+        // "Other payment methods" button (see `otherPaymentMethodsButton`).
+        .posSheet(isPresented: isShowingOtherPaymentMethodsBottomSheet) {
             POSOtherPaymentMethodsSheet(
                 // Hide the Card reader row when a reader is already connected — its
                 // "Connect a Bluetooth reader…" subtitle would contradict the BT
@@ -196,26 +201,9 @@ struct TotalsView: View {
                     }
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
-                onScanToPay: {
-                    // Same double-tap guard the other sheet callbacks use. Without
-                    // this, a quick double-tap in the brief window between the merchant
-                    // tapping Scan to Pay and `paymentState.scanToPay` transitioning
-                    // out of `.idle` could fire `startScanToPayPayment()` twice.
-                    guard !isStartingPayment else { return }
-                    isStartingPayment = true
-                    Task { @MainActor in
-                        await paymentModel.startScanToPayPayment()
-                    }
-                },
+                onScanToPay: handleScanToPaySelected,
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
-                onMarkOrderAsPaid: {
-                    // Same double-tap guard as the other sheet callbacks. Mark as Paid
-                    // dispatches into a push that the merchant could otherwise re-trigger
-                    // by tapping the row a second time during the same render frame.
-                    guard !isStartingPayment else { return }
-                    isStartingPayment = true
-                    paymentModel.startMarkAsPaidPayment()
-                }
+                onMarkOrderAsPaid: handleMarkAsPaidSelected
             )
             .presentationDetents([.medium])
             .presentationDragIndicator(.visible)
@@ -412,6 +400,11 @@ private extension TotalsView {
             "pos.totalsView.customAmountsTotal",
             value: "Custom amounts",
             comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
+        static let cardReaderButtonTitle = NSLocalizedString(
+            "pos.totalsView.cardReader.button.title",
+            value: "Card reader",
+            comment: "Title for the card reader button on the Point of Sale checkout. "
+                + "Tapping it starts the connect-reader flow when no reader is connected.")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -789,13 +782,42 @@ private extension TotalsView {
             .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-cash-payment-button")
 
-            Button(action: handleOtherPaymentMethodsTapped) {
-                Text(Localization.otherPaymentMethodsButtonTitle)
+            otherPaymentMethodsButton
+        }
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.bottom, POSPadding.xxLarge)
+    }
+
+    /// "Reader not connected" layout for devices where Tap to Pay is unavailable
+    /// (e.g. iPad). The reader connect button is the primary (filled) CTA on its
+    /// own row, with Cash and "Other payment methods" sharing the row below.
+    /// Without a TTP hero the reader is the main card path, so it stays a
+    /// first-class button rather than being demoted into the sheet.
+    @ViewBuilder
+    var readerAndOtherMethodsBottomStrip: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Button {
+                handlePaymentMethodSelection(.cardReader)
+            } label: {
+                Text(Localization.cardReaderButtonTitle)
                     .font(POSFontStyle.posBodyLargeBold)
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
             .disabled(isStartingPayment)
-            .accessibilityIdentifier("pos-other-payment-methods-button")
+            .accessibilityIdentifier("pos-card-reader-button")
+
+            HStack(spacing: POSSpacing.medium) {
+                Button(action: handleCashPaymentTapped) {
+                    Text(Localization.cashPaymentButtonTitle)
+                        .font(POSFontStyle.posBodyLargeBold)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .frame(maxWidth: .infinity)
+                .disabled(isStartingPayment)
+                .accessibilityIdentifier("pos-cash-payment-button")
+
+                otherPaymentMethodsButton
+            }
         }
         .padding(.horizontal, POSPadding.medium)
         .padding(.bottom, POSPadding.xxLarge)
@@ -811,21 +833,67 @@ private extension TotalsView {
     /// shape used by the hero.
     var useCashAndOtherMethodsBottomStrip: Bool {
         if useTapToPayHeroLayout { return true }
-        // Reader-connected case: only fold into the strip when TTP would
-        // otherwise have crowded the row as a redundant primary CTA. If TTP
-        // isn't available we don't need the sheet at all — the row already
-        // does the right thing (just Cash).
-        guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+
+        // The strip is a Cash + "Other payment methods" pair, so it only makes
+        // sense when the Cash button would otherwise be visible.
+        guard totalsViewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: displayPaymentState,
+            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        ) else {
+            return false
+        }
+
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
             paymentState: displayPaymentState
         )
-        guard !isReaderDisconnected else { return false }
-        return totalsViewHelper.shouldShowCollectCashPaymentButton(
+
+        if posModel.tapToPayAvailabilityController?.state.isAvailable == true {
+            // Reader-connected case: fold into the strip only when TTP would
+            // otherwise have crowded the row as a redundant primary CTA. When
+            // the reader is disconnected the row keeps TTP as the primary CTA,
+            // so don't collapse into the strip.
+            return !isReaderDisconnected
+        }
+
+        // TTP unavailable (e.g. iPad, where Tap to Pay is never supported): the
+        // row can't surface Scan to Pay / Mark as Paid, so fall back to a strip
+        // whenever one of those "Other payment methods" entries is on. The
+        // disconnected case uses the dedicated reader-on-top strip
+        // (`useReaderAndOtherMethodsBottomStrip`); here we only cover the
+        // reader-connected case, where the card path is already active up top.
+        return hasOtherPaymentMethodsAvailable && !isReaderDisconnected
+    }
+
+    /// True for the iPad / unsupported-TTP "reader not connected" screen: the
+    /// reader gets the primary (filled) CTA on its own row, with Cash and "Other
+    /// payment methods" side by side below it. When TTP can be the hero the
+    /// reader lives inside the Other payment methods sheet instead, so this is
+    /// scoped to devices where Tap to Pay is unavailable.
+    var useReaderAndOtherMethodsBottomStrip: Bool {
+        guard posModel.tapToPayAvailabilityController?.state.isAvailable != true else { return false }
+        guard hasOtherPaymentMethodsAvailable else { return false }
+        guard totalsViewHelper.shouldShowCollectCashPaymentButton(
             orderState: posModel.orderState,
             paymentState: displayPaymentState,
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+        ) else {
+            return false
+        }
+        return viewHelper.shouldShowDisconnectedMessage(
+            readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+            paymentState: displayPaymentState
         )
+    }
+
+    /// True when at least one "Other payment methods" sheet entry — Scan to Pay
+    /// or Mark as Paid — is enabled. Drives whether the bottom strip (and its
+    /// "Other payment methods" button) replaces `POSCheckoutPaymentButtonsRow`
+    /// when Tap to Pay isn't the primary CTA, e.g. on iPad.
+    var hasOtherPaymentMethodsAvailable: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay) ||
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid)
     }
 
     /// True when the Card reader row should appear inside the Other Payment
@@ -869,6 +937,69 @@ private extension TotalsView {
 
     func handleOtherPaymentMethodsTapped() {
         isShowingOtherPaymentMethodsSheet = true
+    }
+
+    func handleScanToPaySelected() {
+        // Same double-tap guard the bottom sheet uses: a quick double-tap in the
+        // window between the merchant tapping Scan to Pay and `paymentState.scanToPay`
+        // leaving `.idle` could otherwise fire `startScanToPayPayment()` twice.
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        Task { @MainActor in
+            await paymentModel.startScanToPayPayment()
+        }
+    }
+
+    func handleMarkAsPaidSelected() {
+        // Mark as Paid dispatches into a navigation push the merchant could otherwise
+        // re-trigger by tapping the row a second time during the same render frame.
+        guard !isStartingPayment else { return }
+        isStartingPayment = true
+        paymentModel.startMarkAsPaidPayment()
+    }
+
+    /// The "Other payment methods" outlined button shared by both bottom strips.
+    ///
+    /// On iPad the picker is a popover anchored to this button (native, with an
+    /// arrow pointing at it); on phone the body-level `posSheet` hosts the bottom
+    /// sheet instead. The two presentations are split by size class via
+    /// `isShowingOtherPaymentMethodsPopover` / `isShowingOtherPaymentMethodsBottomSheet`
+    /// so only one fires. The popover only ever lists Scan to Pay / Mark as Paid —
+    /// on iPad the Card reader is a first-class strip button, never an "other" method.
+    @ViewBuilder
+    var otherPaymentMethodsButton: some View {
+        Button(action: handleOtherPaymentMethodsTapped) {
+            Text(Localization.otherPaymentMethodsButtonTitle)
+                .font(POSFontStyle.posBodyLargeBold)
+        }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .frame(maxWidth: .infinity)
+        .disabled(isStartingPayment)
+        .accessibilityIdentifier("pos-other-payment-methods-button")
+        .popover(isPresented: isShowingOtherPaymentMethodsPopover,
+                 attachmentAnchor: .point(.top),
+                 arrowEdge: .bottom) {
+            PointOfSaleSecondaryPaymentMethodsPopover(
+                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
+                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
+                onScanToPay: handleScanToPaySelected,
+                onMarkOrderAsPaid: handleMarkAsPaidSelected
+            )
+        }
+    }
+
+    /// iPad presentation of the Other payment methods picker — an anchored popover.
+    /// Derived from the shared trigger so it only fires in regular width.
+    var isShowingOtherPaymentMethodsPopover: Binding<Bool> {
+        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass != .compact },
+                set: { isShowingOtherPaymentMethodsSheet = $0 })
+    }
+
+    /// Phone presentation of the Other payment methods picker — the bottom sheet.
+    /// Derived from the shared trigger so it only fires in compact width.
+    var isShowingOtherPaymentMethodsBottomSheet: Binding<Bool> {
+        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass == .compact },
+                set: { isShowingOtherPaymentMethodsSheet = $0 })
     }
 }
 

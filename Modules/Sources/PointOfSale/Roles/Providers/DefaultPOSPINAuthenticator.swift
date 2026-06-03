@@ -117,7 +117,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         return POSStaff(
             userID: member.userID,
             displayName: member.displayName,
-            role: member.role,
+            preset: member.preset,
             capabilities: posCaps
         )
     }

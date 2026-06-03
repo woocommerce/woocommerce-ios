@@ -6,19 +6,26 @@ import Foundation
 public struct POSStaffMember: Codable, Equatable, Sendable {
     public let userID: Int64
     public let displayName: String
-    public let role: String
 
-    /// Server returns the full `$user->allcaps` map. Clients filter to POS-specific cap names.
+    /// Server-side preset name (formerly the WordPress role). Examples: `pos_cashier`,
+    /// `pos_manager`, `administrator`. Carried as an opaque string — the client only uses
+    /// it for display labelling, not for permission checks.
+    public let preset: String
+
+    /// POS-specific capabilities the staff member holds, keyed by the `pos_*` capability
+    /// identifier with a boolean value. The server emits only granted entries (all values
+    /// are `true` in the current preset bundles), so this is effectively a subset of
+    /// `POSCapability.allCases`.
     public let capabilities: [String: Bool]
 
     /// `nil` when the user has not set a PIN.
     public let pin: PINDetails?
 
     public init(userID: Int64, displayName: String,
-                role: String, capabilities: [String: Bool], pin: PINDetails?) {
+                preset: String, capabilities: [String: Bool], pin: PINDetails?) {
         self.userID = userID
         self.displayName = displayName
-        self.role = role
+        self.preset = preset
         self.capabilities = capabilities
         self.pin = pin
     }
@@ -40,7 +47,7 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     enum CodingKeys: String, CodingKey {
         case userID = "user_id"
         case displayName = "display_name"
-        case role
+        case preset
         case capabilities
         case pin
     }

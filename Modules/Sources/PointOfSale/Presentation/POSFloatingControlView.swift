@@ -165,15 +165,15 @@ private extension POSFloatingControlView {
     }
 
     func operatorMenuLabel(_ staff: POSStaff) -> String {
-        let roleName = roleDisplayName(for: staff.role)
-        if staff.displayName.caseInsensitiveCompare(roleName) == .orderedSame {
-            return roleName
+        let presetName = presetDisplayName(for: staff.preset)
+        if staff.displayName.caseInsensitiveCompare(presetName) == .orderedSame {
+            return presetName
         }
-        return "\(staff.displayName) - \(roleName)"
+        return "\(staff.displayName) - \(presetName)"
     }
 
-    func roleDisplayName(for role: String) -> String {
-        switch role {
+    func presetDisplayName(for preset: String) -> String {
+        switch preset {
         case "pos_cashier":
             return Localization.roleCashier
         case "pos_manager":
@@ -181,7 +181,7 @@ private extension POSFloatingControlView {
         case "administrator", "shop_manager", "pos_admin":
             return Localization.roleAdmin
         default:
-            return role
+            return preset
         }
     }
 

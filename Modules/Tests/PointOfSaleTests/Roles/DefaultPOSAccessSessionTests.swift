@@ -157,7 +157,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = makeStaff(role: "pos_cashier", capabilities: [])
+        let staff = makeStaff(preset: "pos_cashier", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -249,11 +249,11 @@ private extension DefaultPOSAccessSessionTests {
 
     func makeStaff(userID: Int64 = 1,
                    displayName: String = "Maya",
-                   role: String = "shop_manager",
+                   preset: String = "pos_manager",
                    capabilities: Set<String> = []) -> POSStaff {
         POSStaff(userID: userID,
                  displayName: displayName,
-                 role: role,
+                 preset: preset,
                  capabilities: capabilities)
     }
 }

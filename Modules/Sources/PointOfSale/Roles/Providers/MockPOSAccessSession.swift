@@ -23,11 +23,11 @@ final class MockPOSAccessSession: POSAccessSession {
          pinStatus: POSPINStatus = .present,
          signInResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(userID: 1, displayName: "Maya",
-                     role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          managerApprovalResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(userID: 2, displayName: "Morgan",
-                     role: "Manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff

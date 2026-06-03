@@ -145,9 +145,11 @@ extension AnalyticsImportUpdateMode {
 extension AnalyticsUpdateModeBottomSheet {
     enum Constants {
         static let learnMoreURL = "https://woocommerce.com/document/woocommerce-analytics/#section-24"
-        static let learnMoreWebViewModel = WebViewSheetViewModel(url: URL(string: learnMoreURL)!,
-                                                                 navigationTitle: Localization.learnMoreNavigationTitle,
-                                                                 authenticated: false)
+        static let learnMoreWebViewModel = WebViewSheetViewModel(
+            url: URL(string: learnMoreURL)!,
+            navigationTitle: Localization.learnMoreNavigationTitle,
+            authenticated: false
+        )
     }
 
     enum Layout {

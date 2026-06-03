@@ -130,6 +130,11 @@ private extension ProductsSplitViewCoordinator {
             },
             onDelete: { [weak self] in
                 self?.onSecondaryProductFormDeletion()
+            },
+            onDuplicate: { [weak self] duplicate in
+                // Opens the duplicate by replacing the secondary stack (not pushing), keeping the single-product-form
+                // invariant and matching Android, where the copy opens and Back returns to the product list.
+                self?.showProductForm(product: duplicate)
             })
 
         showSecondaryView(contentType: .productForm(product: product),

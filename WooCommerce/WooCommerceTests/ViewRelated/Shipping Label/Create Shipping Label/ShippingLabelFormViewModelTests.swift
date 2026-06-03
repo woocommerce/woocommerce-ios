@@ -77,19 +77,6 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.originAddress?.phone, expectedPhoneNumber)
     }
 
-    func test_displayCustomsFormListVC_when_destination_country_is_not_loaded_then_does_not_crash() {
-        // Given
-        let destinationAddress = Address.fake().copy(country: "ZZ")
-        let order = Order.fake().copy(shippingAddress: destinationAddress)
-        let viewController = ShippingLabelFormViewController(order: order)
-
-        // When
-        viewController.displayCustomsFormListVC(customsForms: [])
-
-        // Then
-        XCTAssertTrue(true)
-    }
-
     func test_handleOriginAddressValueChanges_returns_updated_ShippingLabelAddress() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

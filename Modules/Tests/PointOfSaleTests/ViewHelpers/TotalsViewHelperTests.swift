@@ -267,4 +267,60 @@ struct TotalsViewHelperTests {
                                                                           paymentState: PointOfSalePaymentState(card: cardPaymentState, cash: .idle),
                                                                           cardReaderConnectionStatus: .reconnecting(.init(name: "", batteryLevel: nil))) == false)
     }
+
+    // MARK: - noCardCheckoutPaymentMethods tests
+
+    @Test
+    func test_noCardCheckoutPaymentMethods_when_other_methods_available_then_returns_cash_and_other() {
+        #expect(TotalsViewHelper().noCardCheckoutPaymentMethods(hasOtherPaymentMethodsAvailable: true)
+                == [.cashPayment, .otherPaymentMethods])
+    }
+
+    @Test
+    func test_noCardCheckoutPaymentMethods_when_no_other_methods_available_then_returns_cash_only() {
+        #expect(TotalsViewHelper().noCardCheckoutPaymentMethods(hasOtherPaymentMethodsAvailable: false)
+                == [.cashPayment])
+    }
+
+    // MARK: - useNoCardCashAndOtherMethodsStrip tests
+
+    @Test
+    func test_useNoCardCashAndOtherMethodsStrip_when_regular_width_and_other_methods_then_true() {
+        #expect(TotalsViewHelper().useNoCardCashAndOtherMethodsStrip(isRegularWidth: true,
+                                                                     hasOtherPaymentMethodsAvailable: true))
+    }
+
+    @Test
+    func test_useNoCardCashAndOtherMethodsStrip_when_compact_width_then_false() {
+        #expect(TotalsViewHelper().useNoCardCashAndOtherMethodsStrip(isRegularWidth: false,
+                                                                     hasOtherPaymentMethodsAvailable: true) == false)
+    }
+
+    @Test
+    func test_useNoCardCashAndOtherMethodsStrip_when_no_other_methods_then_false() {
+        #expect(TotalsViewHelper().useNoCardCashAndOtherMethodsStrip(isRegularWidth: true,
+                                                                     hasOtherPaymentMethodsAvailable: false) == false)
+    }
+
+    // MARK: - hasNonCardPaymentSucceeded tests
+
+    @Test(arguments: [
+        PointOfSalePaymentState(card: .idle, cash: .paymentSuccess),
+        PointOfSalePaymentState(card: .idle, cash: .idle, scanToPay: .paymentSuccess),
+        PointOfSalePaymentState(card: .idle, cash: .idle, markAsPaid: .paymentSuccess)
+    ])
+    func test_hasNonCardPaymentSucceeded_when_non_card_method_succeeds_then_true(paymentState: PointOfSalePaymentState) {
+        #expect(TotalsViewHelper().hasNonCardPaymentSucceeded(paymentState: paymentState))
+    }
+
+    @Test
+    func test_hasNonCardPaymentSucceeded_when_all_idle_then_false() {
+        #expect(TotalsViewHelper().hasNonCardPaymentSucceeded(paymentState: .idle) == false)
+    }
+
+    @Test
+    func test_hasNonCardPaymentSucceeded_when_only_card_payment_succeeds_then_false() {
+        #expect(TotalsViewHelper().hasNonCardPaymentSucceeded(
+            paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle)) == false)
+    }
 }

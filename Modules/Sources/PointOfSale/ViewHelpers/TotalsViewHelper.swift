@@ -54,6 +54,34 @@ struct TotalsViewHelper {
                                                              isZeroTotal: isZeroTotal)
     }
 
+    /// Checkout payment methods for a store where card-present payments are disabled
+    /// (unsupported country, or Canada pending Interac). Cash is the primary CTA; the
+    /// "Other payment methods" entry is appended only when at least one such method exists.
+    func noCardCheckoutPaymentMethods(hasOtherPaymentMethodsAvailable: Bool) -> [POSCheckoutPaymentMethod] {
+        var methods: [POSCheckoutPaymentMethod] = [.cashPayment]
+        if hasOtherPaymentMethodsAvailable {
+            methods.append(.otherPaymentMethods)
+        }
+        return methods
+    }
+
+    /// On a no-card store the iPad side panel renders the Cash + "Other payment methods"
+    /// strip, while the phone uses the stacked button row instead. So the strip applies
+    /// only at regular width, and only when there's an Other-methods entry to pair with Cash.
+    func useNoCardCashAndOtherMethodsStrip(isRegularWidth: Bool, hasOtherPaymentMethodsAvailable: Bool) -> Bool {
+        isRegularWidth && hasOtherPaymentMethodsAvailable
+    }
+
+    /// Whether a non-card payment (cash / scan-to-pay / mark-as-paid) has succeeded.
+    /// On no-card stores neither the Tap to Pay hero nor the card payment view renders,
+    /// so the success view must take over the upper region off this signal — otherwise
+    /// the merchant lands on an empty screen after a successful non-card payment.
+    func hasNonCardPaymentSucceeded(paymentState: PointOfSalePaymentState) -> Bool {
+        paymentState.cash == .paymentSuccess
+            || paymentState.scanToPay == .paymentSuccess
+            || paymentState.markAsPaid == .paymentSuccess
+    }
+
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
         let hasCoupons = cart.coupons.isNotEmpty
         let orderIsLoading = orderTotals == nil

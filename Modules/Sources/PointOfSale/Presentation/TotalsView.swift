@@ -687,11 +687,9 @@ private extension TotalsView {
             // card-enabled phones, just without the card-reader / TTP slots. On iPad the
             // side-by-side strip handles this case (`useCashAndOtherMethodsBottomStrip`);
             // here we only reach the no-card phone path.
-            var methods: [POSCheckoutPaymentMethod] = [.cashPayment]
-            if hasOtherPaymentMethodsAvailable {
-                methods.append(.otherPaymentMethods)
-            }
-            return methods
+            return totalsViewHelper.noCardCheckoutPaymentMethods(
+                hasOtherPaymentMethodsAvailable: hasOtherPaymentMethodsAvailable
+            )
         }
 
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
@@ -738,9 +736,7 @@ private extension TotalsView {
         // on no-card stores (`isPOSCardPaymentEnabled == false`) both `useTapToPayHeroLayout`
         // and `isShowingPaymentView` return false, so `PaymentViewContent` never renders and
         // the merchant lands on an empty screen after cash / scan-to-pay / mark-as-paid succeeds.
-        if displayPaymentState.cash == .paymentSuccess
-            || displayPaymentState.scanToPay == .paymentSuccess
-            || displayPaymentState.markAsPaid == .paymentSuccess {
+        if totalsViewHelper.hasNonCardPaymentSucceeded(paymentState: displayPaymentState) {
             return true
         }
         switch displayPaymentState.card {
@@ -895,7 +891,10 @@ private extension TotalsView {
         guard paymentModel.isPOSCardPaymentEnabled else {
             // No-card stores: iPad renders the side-by-side Cash + Other strip; phone falls
             // through to `POSCheckoutPaymentButtonsRow` (`[Cash, Other payment methods]`).
-            return horizontalSizeClass == .regular && hasOtherPaymentMethodsAvailable
+            return totalsViewHelper.useNoCardCashAndOtherMethodsStrip(
+                isRegularWidth: horizontalSizeClass == .regular,
+                hasOtherPaymentMethodsAvailable: hasOtherPaymentMethodsAvailable
+            )
         }
 
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(

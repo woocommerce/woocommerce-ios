@@ -259,6 +259,24 @@ struct PointOfSaleDashboardView: View {
                 navigationRouter.pushCash(orderTotal: totals.orderTotal)
             }
         }
+        // Scan-to-pay and mark-as-paid push through the same NavigationStack as cash.
+        // These mirror `tabletContentView`; without them the phone starts the payment
+        // (state leaves `.idle`) but never pushes the QR / confirmation view, leaving
+        // the merchant on the totals view with nothing happening.
+        .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+            if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.paymentState.markAsPaid) { oldValue, newValue in
+            if newValue == .confirming, oldValue == .idle,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushMarkAsPaid(orderTotal: totals.orderTotal)
+            } else if newValue == .paymentSuccess {
+                navigationRouter.popToRoot()
+            }
+        }
         .onChange(of: posModel.orderStage) { _, newStage in
             // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.

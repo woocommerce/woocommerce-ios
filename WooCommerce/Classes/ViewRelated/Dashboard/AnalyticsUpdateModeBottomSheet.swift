@@ -7,6 +7,7 @@ struct AnalyticsUpdateModeBottomSheet: View {
     @State private var viewModel: AnalyticsUpdateModeBottomSheetViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingLearnMoreWebView = false
+    @State private var notice: Notice?
 
     init(viewModel: AnalyticsUpdateModeBottomSheetViewModel) {
         _viewModel = State(initialValue: viewModel)
@@ -25,6 +26,7 @@ struct AnalyticsUpdateModeBottomSheet: View {
         }
         .presentationDetents([.fraction(Layout.preferredDetentFraction), .large])
         .presentationDragIndicator(.visible)
+        .notice($notice)
         .sheet(isPresented: $showingLearnMoreWebView) {
             WebViewSheet(viewModel: Constants.learnMoreWebViewModel) {
                 showingLearnMoreWebView = false
@@ -71,18 +73,7 @@ struct AnalyticsUpdateModeBottomSheet: View {
         .padding(.top, Layout.descriptionToOptionsSpacing)
     }
 
-    @ViewBuilder
     private var footer: some View {
-        if viewModel.updateError != nil {
-            HStack(spacing: Layout.errorSpacing) {
-                Image(systemName: "exclamationmark.triangle")
-                    .foregroundStyle(Color(.error))
-                Text(Localization.updateError)
-                    .footnoteStyle(isError: true)
-            }
-            .padding(.top, Layout.errorTopSpacing)
-        }
-
         Text(Localization.footer)
             .font(.footnote)
             .foregroundStyle(.secondary)
@@ -91,8 +82,12 @@ struct AnalyticsUpdateModeBottomSheet: View {
 
     private func handleSelection(of mode: AnalyticsImportUpdateMode) {
         Task { @MainActor in
-            if await viewModel.handleSelection(mode) {
-                dismiss()
+            do {
+                if try await viewModel.handleSelection(mode) {
+                    dismiss()
+                }
+            } catch {
+                notice = Notice(title: Localization.updateErrorNotice, feedbackType: .error)
             }
         }
     }
@@ -166,8 +161,6 @@ extension AnalyticsUpdateModeBottomSheet {
         static let rowSpacing: CGFloat = 20
         static let rowTitleSubtitleSpacing: CGFloat = 3
         static let rowCheckmarkSpacing: CGFloat = 12
-        static let errorSpacing: CGFloat = 8
-        static let errorTopSpacing: CGFloat = 16
         static let preferredDetentFraction: CGFloat = 0.62
     }
 }
@@ -198,10 +191,10 @@ private enum Localization {
         value: "WooCommerce Analytics",
         comment: "Navigation title for the WooCommerce Analytics documentation web view."
     )
-    static let updateError = NSLocalizedString(
-        "analyticsUpdateModeBottomSheet.updateError",
-        value: "Couldn't update analytics updates. Please try again.",
-        comment: "Inline error shown when saving the analytics update mode setting fails."
+    static let updateErrorNotice = NSLocalizedString(
+        "analyticsUpdateModeBottomSheet.updateErrorNotice",
+        value: "Couldn't update the setting. Please try again.",
+        comment: "Notice shown when saving the analytics update mode setting fails."
     )
     static let scheduledTitle = NSLocalizedString(
         "analyticsUpdateModeBottomSheet.scheduledTitle",

@@ -7,7 +7,6 @@ import Yosemite
 final class AnalyticsUpdateModeBottomSheetViewModel {
     private(set) var selectedMode: AnalyticsImportUpdateMode?
     private(set) var updatingMode: AnalyticsImportUpdateMode?
-    private(set) var updateError: Error?
 
     var isUpdating: Bool {
         updatingMode != nil
@@ -27,7 +26,7 @@ final class AnalyticsUpdateModeBottomSheetViewModel {
         self.onModeUpdated = onModeUpdated
     }
 
-    func handleSelection(_ mode: AnalyticsImportUpdateMode) async -> Bool {
+    func handleSelection(_ mode: AnalyticsImportUpdateMode) async throws -> Bool {
         if selectedMode == mode {
             return true
         }
@@ -35,7 +34,6 @@ final class AnalyticsUpdateModeBottomSheetViewModel {
         guard updatingMode == nil else { return false }
 
         updatingMode = mode
-        updateError = nil
         defer { updatingMode = nil }
 
         do {
@@ -45,8 +43,7 @@ final class AnalyticsUpdateModeBottomSheetViewModel {
             return true
         } catch {
             DDLogError("Error updating analytics import update mode: \(error)")
-            updateError = error
-            return false
+            throw error
         }
     }
 }

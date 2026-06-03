@@ -539,7 +539,7 @@ private extension POSOrderDetailsView {
             return .init(primary: email, secondary: [])
         case .completed:
             // The refund button is always visible when refunds are enabled. When the
-            // operator lacks `issue_refunds`, tapping it pops a manager-override
+            // operator lacks `pos_issue_refunds`, tapping it pops a manager-override
             // modal; an approver's PIN unlocks the action and their user id is attached
             // as `_pos_override_staff_user_id` meta on the refund (M1 plan).
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
@@ -634,7 +634,7 @@ private extension POSOrderDetailsView {
     }
 
     /// Gates the refund button through the manager-override flow. When the operator
-    /// already has `issue_refunds` the refund proceeds immediately; otherwise the
+    /// already has `pos_issue_refunds` the refund proceeds immediately; otherwise the
     /// PIN modal is presented and the approver's `POSStaff` is captured on
     /// `pendingOverrideApprover` so the refund can carry `_pos_override_staff_user_id` meta.
     func requestRefundPermission() {

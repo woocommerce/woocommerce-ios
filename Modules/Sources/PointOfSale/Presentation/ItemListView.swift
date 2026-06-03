@@ -515,7 +515,7 @@ private extension ItemListView {
     }
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
-    /// already has `create_coupons` creation proceeds immediately; otherwise the PIN
+    /// already has `pos_create_coupons` creation proceeds immediately; otherwise the PIN
     /// modal is presented and the approver `POSStaff` is captured on `pendingCouponApprover`
     /// so the resulting `POST /coupons` request can attach `_pos_override_staff_user_id`
     /// meta.

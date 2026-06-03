@@ -581,6 +581,44 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
+    func test_currentShipment_when_earlier_shipment_is_removed_then_preserves_selected_shipment() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        setupInitialDataLoadingMocks(for: stores)
+
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID)
+        let shipments = [
+            WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "0", items: [WooShippingShipmentItem.fake()]),
+            WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "1", items: [WooShippingShipmentItem.fake()]),
+            WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "2", items: [WooShippingShipmentItem.fake()])
+        ]
+        insert(shipments: shipments, order: order)
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        waitUntil {
+            viewModel.shipments.count == 3
+        }
+        viewModel.selectedShipmentIndex = 1
+        XCTAssertEqual(viewModel.currentShipment.index, 1)
+
+        let storedShipmentToDelete = try XCTUnwrap(storage.allObjects(ofType: StorageWooShippingShipment.self,
+                                                                      matching: NSPredicate(format: "index == %@", "0"),
+                                                                      sortedBy: nil).first)
+
+        // When
+        storage.deleteObject(storedShipmentToDelete)
+        storage.saveIfNeeded()
+
+        // Then
+        waitUntil {
+            viewModel.shipments.count == 2
+        }
+        XCTAssertEqual(viewModel.selectedShipmentIndex, 0)
+        XCTAssertEqual(viewModel.currentShipment.index, 1)
+    }
+
     func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
         // Given
         let labelDestinationAddress = ShippingLabelAddress.fake().copy(phone: "", country: "US")

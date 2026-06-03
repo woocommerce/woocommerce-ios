@@ -51,6 +51,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published private(set) var shipments: [Shipment] {
         didSet {
+            updateSelectedShipmentIndex(previousShipments: oldValue)
             updateShipmentDetailsViewModels()
         }
     }
@@ -65,7 +66,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     var currentShipment: Shipment {
-        shipments[selectedShipmentIndex]
+        shipments[boundedSelectedShipmentIndex(for: shipments.count)]
     }
 
     var hasUnfulfilledShipments: Bool {
@@ -84,7 +85,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
 
     var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
-        shipmentDetailViewModels[selectedShipmentIndex]
+        shipmentDetailViewModels[boundedSelectedShipmentIndex(for: shipmentDetailViewModels.count)]
     }
 
     /// View model for a list of origin addresses to ship from.
@@ -313,7 +314,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             // Otherwise, compare the purchased labels with the initial selected label.
             switch preselection {
             case .shipment(let index):
-                self.selectedShipmentIndex = index
+                self.selectedShipmentIndex = self.boundedShipmentIndex(index, count: shipments.count)
             case .shippingLabel(let label):
                 if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == label.shippingLabelID }) {
                     self.selectedShipmentIndex = matchingIndex
@@ -567,6 +568,37 @@ extension WooShippingCreateLabelsViewModel {
 // MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
 
+    func boundedSelectedShipmentIndex(for count: Int) -> Int {
+        boundedShipmentIndex(selectedShipmentIndex, count: count)
+    }
+
+    func boundedShipmentIndex(_ index: Int, count: Int) -> Int {
+        min(max(index, 0), max(count - 1, 0))
+    }
+
+    func ensureValidSelectedShipmentIndex() {
+        let boundedIndex = boundedSelectedShipmentIndex(for: shipments.count)
+        if selectedShipmentIndex != boundedIndex {
+            selectedShipmentIndex = boundedIndex
+        }
+    }
+
+    func updateSelectedShipmentIndex(previousShipments: [Shipment]) {
+        guard let previouslySelectedShipment = previousShipments[safe: selectedShipmentIndex] else {
+            ensureValidSelectedShipmentIndex()
+            return
+        }
+
+        if let updatedIndex = shipments.firstIndex(where: { $0.index == previouslySelectedShipment.index }) {
+            guard selectedShipmentIndex != updatedIndex else {
+                return
+            }
+            selectedShipmentIndex = updatedIndex
+        } else {
+            ensureValidSelectedShipmentIndex()
+        }
+    }
+
     func observeHAZMATNotices() {
         currentShipmentDetailsViewModel.$hazmatNotice
             .assign(to: &$hazmatNotice)
@@ -707,7 +739,7 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
             .combineLatest($shipments, $selectedShipmentIndex)
             .map { _, shipments, selectedIndex in
-                shipments[selectedIndex].isPurchased == false
+                shipments[safe: selectedIndex]?.isPurchased == false
             }
             .assign(to: &$shouldShowNotices)
     }
@@ -727,7 +759,7 @@ private extension WooShippingCreateLabelsViewModel {
         $paymentMethod
             .combineLatest($shipments, $selectedShipmentIndex)
             .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
-                if shipments[selectedIndex].isPurchased {
+                if shipments[safe: selectedIndex]?.isPurchased == true {
                     return nil
                 }
 

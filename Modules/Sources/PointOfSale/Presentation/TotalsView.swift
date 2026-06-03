@@ -816,7 +816,15 @@ private extension TotalsView {
                 Text(Localization.cashPaymentButtonTitle)
                     .font(POSFontStyle.posBodyLargeBold)
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            // On no-card stores nothing owns the primary slot above this strip, so Cash
+            // is the primary (filled) CTA. When card payments are enabled a TTP hero or
+            // connected-reader view is the primary up top, so Cash stays secondary (outlined).
+            .if(paymentModel.isPOSCardPaymentEnabled) {
+                $0.buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            }
+            .if(!paymentModel.isPOSCardPaymentEnabled) {
+                $0.buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
             .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-cash-payment-button")
 

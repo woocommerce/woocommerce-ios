@@ -175,7 +175,8 @@ final class IssueRefundViewModel {
                                                               refundsFees: self.state.shouldRefundCustomAmounts,
                                                               items: self.state.refundQuantityStore.refundableItems(),
                                                               paymentGateway: self.paymentGateway,
-                                                              paymentGatewayAccount: paymentGatewayAccount)
+                                                              paymentGatewayAccount: paymentGatewayAccount,
+                                                              shippingLines: self.shippingLinesToRefund())
 
             onCompletion(RefundConfirmationViewModel(details: details, currencySettings: self.state.currencySettings))
         }
@@ -396,15 +397,17 @@ extension IssueRefundViewModel {
     ///
     private func createShippingSection() -> Section? {
         // If there is no shipping cost to refund or shipping has already been refunded, then hide the section.
-        guard let shippingLine = state.order.shippingLines.first,
-                hasShippingBeenRefunded() == false else {
+        guard let shippingLines = refundableShippingLines(),
+              shippingLines.isNotEmpty else {
             return nil
         }
 
         // If there is no amount to refund (EG: free shipping), hide the refund shipping section
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let shippingValues = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
-        guard shippingValues.calculateRefundValue() > 0 else {
+        let shippingValue = shippingLines.reduce(Decimal.zero) { partialResult, shippingLine in
+            partialResult + RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
+        }
+        guard shippingValue > 0 else {
             return nil
         }
 
@@ -414,8 +417,10 @@ extension IssueRefundViewModel {
             return Section(rows: [switchRow])
         }
 
-        let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
-        return Section(rows: [switchRow, detailsRow])
+        let detailsRows: [IssueRefundRow] = shippingLines.map { shippingLine in
+            RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
+        }
+        return Section(rows: [switchRow as IssueRefundRow] + detailsRows)
     }
 
     private func createCustomAmountsSection() -> Section? {
@@ -453,8 +458,10 @@ extension IssueRefundViewModel {
         var refundsTotal = productsTotalUseCase.calculateRefundValues().total
 
         // If shipping is enabled, sum the refund value to the total
-        if let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping {
-            refundsTotal += RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
+        if state.shouldRefundShipping {
+            refundsTotal += shippingLinesToRefund().reduce(Decimal.zero) { partialResult, shippingLine in
+                partialResult + RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter).calculateRefundValue()
+            }
         }
 
         // If customAmounts are enabled, sum the refund value to the total
@@ -501,24 +508,31 @@ extension IssueRefundViewModel {
         state.itemsToRefund.isNotEmpty
     }
 
-    /// Returns `true` if a shipping refund is found.
-    /// Returns `false`if a shipping refund is not found.
+    /// Returns shipping lines that can still be refunded.
     /// Returns `nil` if we don't have shipping refund information.
-    /// - Discussion: Since we don't support partial refunds, we assume that any refund is a full refund for shipping costs.
     ///
-    private func hasShippingBeenRefunded() -> Bool? {
-        // Return false if there are no refunds.
+    private func refundableShippingLines() -> [ShippingLine]? {
+        // Return all order shipping lines if there are no refunds.
         guard state.refunds.isNotEmpty else {
-            return false
+            return state.order.shippingLines
         }
 
         // Return nil if we can't get shipping line refunds information
-        guard state.refunds.first?.shippingLines != nil else {
+        guard state.refunds.allSatisfy({ $0.shippingLines != nil }) else {
             return nil
         }
 
-        // Return true if there is any non-empty shipping refund
-        return state.refunds.contains { $0.shippingLines?.isNotEmpty ?? false }
+        let refundedShippingLineIDs = Set(state.refunds.flatMap { refund in
+            refund.shippingLines?.map { $0.shippingID } ?? []
+        })
+        return state.order.shippingLines.filter { refundedShippingLineIDs.contains($0.shippingID) == false }
+    }
+
+    private func shippingLinesToRefund() -> [ShippingLine] {
+        guard state.shouldRefundShipping else {
+            return []
+        }
+        return refundableShippingLines() ?? []
     }
 
     private func isAnyCustomAmountAvailableForRefund() -> Bool {

@@ -92,50 +92,65 @@ struct POSOrderMapperTests {
     // MARK: - Product Line Items
 
     @Test
-    func lineItems_treat_invalid_total_tax_as_zero() throws {
+    func lineItems_throw_invalid_tax_error_when_total_tax_is_invalid() throws {
         // Given
-        let item = makeOrderItem(totalTax: "")
-        let order = makeOrder(items: [item])
+        let item = makeOrderItem(itemID: 11, totalTax: "")
+        let order = makeOrder(orderID: 42, items: [item])
 
         // When
-        let result = try sut.map(order: order)
-
-        // Then
-        let mappedItem = try #require(result.lineItems.first)
-        #expect(mappedItem.totalTax == .zero)
-        #expect(mappedItem.formattedPrice == "$10.00")
-        #expect(mappedItem.formattedTotal == "$10.00")
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected invalid tax error")
+        } catch POSOrderItemMappingError.invalidTaxValue(let orderID, let itemID, let value) {
+            // Then
+            #expect(orderID == 42)
+            #expect(itemID == 11)
+            #expect(value == "")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
     @Test
-    func lineItems_treat_invalid_total_as_price_times_quantity() throws {
+    func lineItems_throw_total_formatting_error_when_total_is_invalid() throws {
         // Given
-        let item = makeOrderItem(quantity: 2, total: "invalid")
-        let order = makeOrder(items: [item])
+        let item = makeOrderItem(itemID: 12, total: "invalid")
+        let order = makeOrder(orderID: 43, items: [item])
 
         // When
-        let result = try sut.map(order: order)
-
-        // Then
-        let mappedItem = try #require(result.lineItems.first)
-        #expect(mappedItem.total == Decimal(20))
-        #expect(mappedItem.formattedTotal == "$20.00")
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected total formatting error")
+        } catch POSOrderItemMappingError.totalFormattingFailed(let orderID, let itemID, let total, let currency) {
+            // Then
+            #expect(orderID == 43)
+            #expect(itemID == 12)
+            #expect(total == "invalid")
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
     @Test
-    func lineItems_treat_invalid_price_as_zero() throws {
+    func lineItems_throw_price_formatting_error_when_price_is_invalid() throws {
         // Given
-        let item = makeOrderItem(price: NSDecimalNumber.notANumber)
-        let order = makeOrder(items: [item])
+        let item = makeOrderItem(itemID: 13, price: NSDecimalNumber.notANumber)
+        let order = makeOrder(orderID: 44, items: [item])
 
         // When
-        let result = try sut.map(order: order)
-
-        // Then
-        let mappedItem = try #require(result.lineItems.first)
-        #expect(mappedItem.price == .zero)
-        #expect(mappedItem.formattedPrice == "")
-        #expect(mappedItem.formattedTotal == "$10.00")
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected price formatting error")
+        } catch POSOrderItemMappingError.priceFormattingFailed(let orderID, let itemID, let price, let currency) {
+            // Then
+            #expect(orderID == 44)
+            #expect(itemID == 13)
+            #expect(price == NSDecimalNumber.notANumber)
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
     // MARK: - formattedNetAmount Logic Tests

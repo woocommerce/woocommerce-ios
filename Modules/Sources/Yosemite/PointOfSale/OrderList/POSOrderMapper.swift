@@ -6,6 +6,12 @@ import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
 
+enum POSOrderItemMappingError: Error {
+    case invalidTaxValue(orderID: Int64, itemID: Int64, value: String)
+    case priceFormattingFailed(orderID: Int64, itemID: Int64, price: NSDecimalNumber, currency: String)
+    case totalFormattingFailed(orderID: Int64, itemID: Int64, total: String, currency: String)
+}
+
 struct POSOrderMapper {
     private let currencyFormatter: CurrencyFormatter
 
@@ -16,7 +22,7 @@ struct POSOrderMapper {
     func map(order: NetworkingCore.Order) throws -> POSOrder {
         let customerEmail = order.billingAddress?.email
 
-        let posLineItems = order.items.map { map(orderItem: $0, currency: order.currency) }
+        let posLineItems = try order.items.map { try map(orderItem: $0, orderID: order.orderID, currency: order.currency) }
 
         let posCustomAmounts = order.fees
             .filter { !$0.isDeleted }
@@ -67,18 +73,25 @@ struct POSOrderMapper {
         )
     }
 
-    private func map(orderItem: NetworkingCore.OrderItem, currency: String) -> POSOrderItem {
-        let price = decimal(from: orderItem.price) ?? .zero
-        let total = Decimal(string: orderItem.total) ?? price * orderItem.quantity
-        let totalTax = Decimal(string: orderItem.totalTax) ?? .zero
-        let formattedPrice = decimal(from: orderItem.price).flatMap { currencyFormatter.formatAmount($0, with: currency) } ?? ""
-        let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) ?? currencyFormatter.formatAmount(total, with: currency) ?? ""
+    private func map(orderItem: NetworkingCore.OrderItem, orderID: Int64, currency: String) throws -> POSOrderItem {
+        guard let totalTax = Decimal(string: orderItem.totalTax) else {
+            throw POSOrderItemMappingError.invalidTaxValue(orderID: orderID, itemID: orderItem.itemID, value: orderItem.totalTax)
+        }
+        guard orderItem.price != NSDecimalNumber.notANumber,
+              let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
+            throw POSOrderItemMappingError.priceFormattingFailed(orderID: orderID, itemID: orderItem.itemID, price: orderItem.price, currency: currency)
+        }
+        guard let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) else {
+            throw POSOrderItemMappingError.totalFormattingFailed(orderID: orderID, itemID: orderItem.itemID, total: orderItem.total, currency: currency)
+        }
+
+        let total = Decimal(string: orderItem.total) ?? (orderItem.price as Decimal) * orderItem.quantity
 
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
-            price: price,
+            price: orderItem.price as Decimal,
             total: total,
             totalTax: totalTax,
             formattedPrice: formattedPrice,
@@ -112,13 +125,6 @@ struct POSOrderMapper {
             formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
             reason: orderRefund.reason
         )
-    }
-
-    private func decimal(from amount: NSDecimalNumber) -> Decimal? {
-        guard amount != NSDecimalNumber.notANumber else {
-            return nil
-        }
-        return amount as Decimal
     }
 }
 

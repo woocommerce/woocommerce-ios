@@ -89,6 +89,55 @@ struct POSOrderMapperTests {
         #expect(result.formattedPaymentTotal == "$25.99")
     }
 
+    // MARK: - Product Line Items
+
+    @Test
+    func lineItems_treat_invalid_total_tax_as_zero() throws {
+        // Given
+        let item = makeOrderItem(totalTax: "")
+        let order = makeOrder(items: [item])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        let mappedItem = try #require(result.lineItems.first)
+        #expect(mappedItem.totalTax == .zero)
+        #expect(mappedItem.formattedPrice == "$10.00")
+        #expect(mappedItem.formattedTotal == "$10.00")
+    }
+
+    @Test
+    func lineItems_treat_invalid_total_as_price_times_quantity() throws {
+        // Given
+        let item = makeOrderItem(quantity: 2, total: "invalid")
+        let order = makeOrder(items: [item])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        let mappedItem = try #require(result.lineItems.first)
+        #expect(mappedItem.total == Decimal(20))
+        #expect(mappedItem.formattedTotal == "$20.00")
+    }
+
+    @Test
+    func lineItems_treat_invalid_price_as_zero() throws {
+        // Given
+        let item = makeOrderItem(price: NSDecimalNumber.notANumber)
+        let order = makeOrder(items: [item])
+
+        // When
+        let result = try sut.map(order: order)
+
+        // Then
+        let mappedItem = try #require(result.lineItems.first)
+        #expect(mappedItem.price == .zero)
+        #expect(mappedItem.formattedPrice == "")
+        #expect(mappedItem.formattedTotal == "$10.00")
+    }
+
     // MARK: - formattedNetAmount Logic Tests
 
     @Test

@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
+import struct NetworkingCore.OrderItem
 import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
@@ -78,6 +79,28 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(pagedOrders.items.first?.id, 1001)
     }
 
+    func test_providePointOfSaleOrders_when_one_order_item_has_invalid_total_tax_then_returns_page() async throws {
+        let malformedOrder = makeOrder(
+            orderID: 1001,
+            number: "1001",
+            items: [makeOrderItem(totalTax: "")]
+        )
+        let validOrder = makeOrder(
+            orderID: 1002,
+            number: "1002",
+            items: [makeOrderItem(itemID: 2)]
+        )
+        mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [malformedOrder, validOrder],
+                                                                     hasMorePages: false,
+                                                                     totalItems: 2))
+
+        let pagedOrders = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
+
+        XCTAssertEqual(pagedOrders.items.map(\.id), [1001, 1002])
+        XCTAssertEqual(pagedOrders.totalItems, 2)
+        XCTAssertEqual(pagedOrders.items.first?.lineItems.first?.totalTax, .zero)
+    }
+
     func test_PointOfSaleOrderServiceProtocol_returns_correct_pagination_when_more_pages_available() async throws {
         let mockOrders = [
             Order.fake().copy(orderID: 1001, number: "1001", status: .completed, total: "25.99"),
@@ -147,5 +170,42 @@ final class POSOrderListServiceTests: XCTestCase {
 private extension POSOrderListServiceTests {
     enum TestError: Error {
         case expectedError
+    }
+
+    func makeOrder(
+        orderID: Int64,
+        number: String,
+        items: [OrderItem]
+    ) -> Order {
+        Order.fake().copy(
+            orderID: orderID,
+            number: number,
+            status: .completed,
+            currency: "USD",
+            discountTotal: "0.00",
+            total: "25.99",
+            totalTax: "2.50",
+            items: items,
+            refunds: [],
+            fees: []
+        )
+    }
+
+    func makeOrderItem(
+        itemID: Int64 = 1,
+        totalTax: String = "0.00"
+    ) -> OrderItem {
+        OrderItem.fake().copy(
+            itemID: itemID,
+            name: "Test Item",
+            productID: 101,
+            variationID: 0,
+            quantity: 1.0,
+            price: NSDecimalNumber(string: "10.00"),
+            subtotal: "10.00",
+            total: "10.00",
+            totalTax: totalTax,
+            image: nil
+        )
     }
 }

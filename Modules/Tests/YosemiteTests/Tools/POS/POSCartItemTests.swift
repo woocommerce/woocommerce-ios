@@ -20,6 +20,14 @@ struct POSCartItemTests {
         #expect([POSCartItem]().matches(order: order) == true)
     }
 
+    @Test func empty_cart_does_not_match_order_with_items() async throws {
+        // Given
+        let order = Order.fake().copy(items: [OrderItem.fake().copy(productID: 3, quantity: 1)])
+
+        // When, Then
+        #expect([POSCartItem]().matches(order: order) == false)
+    }
+
     @Test func cart_with_item_does_not_match_nil_order() async throws {
         // Given
         let sut = [makeCartItem(quantity: 1, matching: [])]
@@ -90,7 +98,7 @@ struct POSCartItemTests {
         #expect(sut.matches(order: order) == true)
     }
 
-    @Test func cart_with_item_matching_order_item_does_not_match_order_with_additional_non_matching_item() async throws {
+    @Test func cart_with_item_matching_order_item_matches_order_with_additional_non_matching_item() async throws {
         // Given
         let orderItem = OrderItem.fake().copy(productID: 3, quantity: 2)
         let orderItem2 = OrderItem.fake().copy(productID: 6, quantity: 1)
@@ -98,7 +106,7 @@ struct POSCartItemTests {
         let sut = [makeCartItem(quantity: 2, matcher: { $0.productID == 3 })]
 
         // When, Then
-        #expect(sut.matches(order: order) == false)
+        #expect(sut.matches(order: order) == true)
     }
 
     private func makeCartItem(

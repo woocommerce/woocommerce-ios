@@ -1,8 +1,24 @@
 import SwiftUI
 
 struct PointOfSaleOrderSyncErrorMessageView: View {
+    let title: String
     let message: String
-    let retryHandler: () -> Void
+    let actionTitle: String
+    let action: () -> Void
+
+    init(message: String, retryHandler: @escaping () -> Void) {
+        self.title = Localization.title
+        self.message = message
+        self.actionTitle = Localization.actionTitle
+        self.action = retryHandler
+    }
+
+    init(title: String, message: String, actionTitle: String, action: @escaping () -> Void) {
+        self.title = title
+        self.message = message
+        self.actionTitle = actionTitle
+        self.action = action
+    }
 
     var body: some View {
         HStack(alignment: .center) {
@@ -12,7 +28,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                 POSErrorExclamationMark(size: .large)
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(Localization.title)
+                    Text(title)
                         .foregroundStyle(Color.posOnSurface)
                         .font(.posHeadingBold)
 
@@ -22,7 +38,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
                         .padding([.leading, .trailing])
                 }
                 Spacer().frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
-                Button(Localization.actionTitle, action: retryHandler)
+                Button(actionTitle, action: action)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
                     .padding([.leading, .trailing], Constants.buttonSidePadding)
                     .padding([.bottom], Constants.buttonBottomPadding)

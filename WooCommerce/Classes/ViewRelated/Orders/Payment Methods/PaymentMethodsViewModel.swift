@@ -494,7 +494,8 @@ private extension PaymentMethodsViewModel {
     }
 
     private func updatePaymentGateway() {
-        CardPresentPaymentAction.loadActivePaymentGatewayExtension { paymentGateway in
+        // Preserve the existing no-op behavior while silencing the unused-result warning.
+        _ = CardPresentPaymentAction.loadActivePaymentGatewayExtension { paymentGateway in
             self.cardPaymentGateway = paymentGateway
         }
     }

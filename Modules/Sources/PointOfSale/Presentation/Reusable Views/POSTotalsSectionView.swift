@@ -46,7 +46,7 @@ struct POSTotalsSectionView: View {
                 titleFont: .posBodyLargeBold
             )
 
-            if let paidAmount {
+            if paidAmount != nil {
                 sectionDivider
                 paidAmountRow
 

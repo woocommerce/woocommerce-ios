@@ -391,7 +391,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .combineLatest($selectedPackage, $shippingService)
             .combineLatest($customsForm, $hazmatCategory)
             .sink { [weak self] input in
-                let ((weight, selectedPackage, shippingService), customsForm, hazmatCategory) = input
+                let ((weight, selectedPackage, shippingService), _, hazmatCategory) = input
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,

@@ -633,8 +633,9 @@ extension ProductFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let data):
-                self.resetProduct(data.product)
-                self.resetPassword(data.password)
+                // Do not reset this form's baseline to the duplicate. This form still represents the original
+                // product; rebinding `originalProduct`/`originalPassword` to the duplicate corrupts change
+                // tracking and can leak the duplicate's images into the original via the shared image action handler.
                 onCompletion(.success(data.product))
             }
         }

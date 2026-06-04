@@ -147,9 +147,7 @@ struct POSOrderServiceTests {
         // When / Then
         await #expect(performing: {
             try await sut.syncOrder(cart: cart, currency: .USD)
-        }, throws: { _ in
-            true
-        })
+        }, throws: isOrderMismatchError)
     }
 
     @Test
@@ -174,9 +172,7 @@ struct POSOrderServiceTests {
         // When / Then
         await #expect(performing: {
             try await sut.syncOrder(cart: cart, currency: .USD)
-        }, throws: { _ in
-            true
-        })
+        }, throws: isOrderMismatchError)
     }
 
     @Test
@@ -194,9 +190,7 @@ struct POSOrderServiceTests {
         // When / Then
         await #expect(performing: {
             try await sut.syncOrder(cart: cart, currency: .USD)
-        }, throws: { _ in
-            true
-        })
+        }, throws: isOrderMismatchError)
     }
 
     @Test
@@ -218,9 +212,7 @@ struct POSOrderServiceTests {
         // When / Then
         await #expect(performing: {
             try await sut.syncOrder(cart: cart, currency: .USD)
-        }, throws: { _ in
-            true
-        })
+        }, throws: isOrderMismatchError)
     }
 
     @Test
@@ -674,3 +666,10 @@ private func makePOSCartItem(
             quantity: quantity
         )
     }
+
+private func isOrderMismatchError(_ error: Error) -> Bool {
+    if case .orderDoesNotMatchCart = error as? POSOrderService.POSOrderServiceError {
+        return true
+    }
+    return false
+}

@@ -63,11 +63,10 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
 
             // Calculate how many times an item has been refunded. This number is negative.
             let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
-
-                // Only keep accumulating if the refunded item product and the original item product match
-                guard refundedItem.productOrVariationID == item.productOrVariationID else {
+                guard refundedItemMatches(refundedItem, item: item) else {
                     return timesRefunded
                 }
+
                 return timesRefunded + refundedItem.quantity
             }
 
@@ -86,5 +85,13 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
         let thereIsOnlyCustomAmountsToRefund = order.items.isEmpty && order.fees.isNotEmpty
 
         return thereIsOnlyCustomAmountsToRefund
+    }
+
+    private func refundedItemMatches(_ refundedItem: OrderItemRefund, item: OrderItem) -> Bool {
+        if let refundedItemID = refundedItem.refundedItemID, let originalOrderItemID = Int64(refundedItemID) {
+            return originalOrderItemID == item.itemID
+        }
+
+        return refundedItem.productOrVariationID == item.productOrVariationID
     }
 }

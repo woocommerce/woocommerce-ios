@@ -57,4 +57,5 @@ struct PointOfSaleErrorStateTests {
     }
 }
 
-private let catalogFileResponseErrorSubtitle = "The catalog file could not be downloaded from your store. This may be caused by server permissions blocking access to files in the uploads folder."
+private let catalogFileResponseErrorSubtitle = "The catalog file could not be downloaded from your store due blocked server permissions. " +
+"Please contact your hosting provider."

@@ -66,7 +66,6 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
                 guard refundedItemMatches(refundedItem, item: item) else {
                     return timesRefunded
                 }
-
                 return timesRefunded + refundedItem.quantity
             }
 
@@ -88,10 +87,10 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
     }
 
     private func refundedItemMatches(_ refundedItem: OrderItemRefund, item: OrderItem) -> Bool {
-        if let refundedItemID = refundedItem.refundedItemID, let originalOrderItemID = Int64(refundedItemID) {
-            return originalOrderItemID == item.itemID
+        guard let refundedItemID = refundedItem.refundedItemID, let originalOrderItemID = Int64(refundedItemID) else {
+            return refundedItem.productOrVariationID == item.productOrVariationID
         }
 
-        return refundedItem.productOrVariationID == item.productOrVariationID
+        return originalOrderItemID == item.itemID
     }
 }

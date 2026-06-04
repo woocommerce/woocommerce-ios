@@ -593,6 +593,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         waitUntil {
             viewModel.state != .loading
         }
+        let previousState = viewModel.state
 
         // When
         viewModel.updateShipments([])
@@ -605,7 +606,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canViewLabel)
         XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
         XCTAssertNil(viewModel.totalCost)
-        XCTAssertEqual(viewModel.state, .missingRequiredData)
+        XCTAssertEqual(viewModel.state, previousState)
     }
 
     func test_currentShipment_when_earlier_shipment_is_removed_then_preserves_selected_shipment() throws {

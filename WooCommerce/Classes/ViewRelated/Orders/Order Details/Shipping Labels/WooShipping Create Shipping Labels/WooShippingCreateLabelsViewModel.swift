@@ -53,9 +53,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         didSet {
             updateSelectedShipmentIndex(previousShipments: oldValue)
             updateShipmentDetailsViewModels()
-            if shipments.isEmpty {
-                state = .missingRequiredData
-            }
         }
     }
 

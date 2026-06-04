@@ -92,7 +92,9 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
 
         downloadTasks.removeValue(forKey: sessionIdentifier)
 
-        if let error {
+        if let error = error as? BackgroundDownloadError {
+            continuation.resume(throwing: error)
+        } else if let error {
             continuation.resume(throwing: BackgroundDownloadError.downloadFailed(error))
         } else if let result {
             continuation.resume(returning: result)

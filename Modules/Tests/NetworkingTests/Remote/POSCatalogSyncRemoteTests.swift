@@ -841,6 +841,31 @@ struct POSCatalogSyncRemoteTests {
         }
     }
 
+    @Test func downloadCatalog_when_download_fails_with_wrapped_status_code_then_preserves_catalog_file_download_metadata() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let expectedError = BackgroundDownloadError.downloadFailed(
+            BackgroundDownloadError.unacceptableStatusCode(statusCode: 403, contentType: "text/html; charset=UTF-8")
+        )
+        mockBackgroundDownloader.mockFailedDownload(error: expectedError)
+
+        // When/Then
+        do {
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
+                #expect(statusCode == 403)
+                #expect(contentType == "text/html; charset=UTF-8")
+                #expect(underlyingError is BackgroundDownloadError)
+            } else {
+                Issue.record("Expected POSCatalogFileError.downloadFailed")
+            }
+        }
+    }
+
     @Test func downloadCatalog_when_downloaded_body_is_not_catalog_json_then_throws_invalid_response_error() async throws {
         // Given
         let remote = createRemote()

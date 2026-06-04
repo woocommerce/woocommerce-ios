@@ -116,6 +116,8 @@ extension BackgroundDownloadError {
         switch self {
         case .unacceptableStatusCode(let statusCode, _):
             return statusCode
+        case .downloadFailed(let error as BackgroundDownloadError):
+            return error.statusCode
         default:
             return nil
         }
@@ -125,6 +127,8 @@ extension BackgroundDownloadError {
         switch self {
         case .unacceptableStatusCode(_, let contentType):
             return contentType
+        case .downloadFailed(let error as BackgroundDownloadError):
+            return error.contentType
         default:
             return nil
         }

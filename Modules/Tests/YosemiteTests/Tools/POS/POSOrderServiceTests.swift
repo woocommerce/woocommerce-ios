@@ -128,13 +128,8 @@ struct POSOrderServiceTests {
         #expect(delivery.taxStatus == .none)
     }
 
-    /// Locks in the documented behaviour for cart↔server fee mismatches: unlike a
-    /// missing line item (which throws), a custom amount discrepancy is recorded as
-    /// `customAmountsMatch == false` and only logged. The merchant-facing UX would
-    /// otherwise force a redundant resync each time the server's tax decision diverges
-    /// from the cart's intent (covered by `cart_matches_order_regardless_of_tax_status`).
     @Test
-    func syncOrder_when_returned_order_fees_dont_match_cart_then_does_not_throw() async throws {
+    func syncOrder_when_returned_order_fees_dont_match_cart_then_throws() async throws {
         // Given - cart has one fee, server returns the same order shape but with no fees
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
@@ -149,13 +144,16 @@ struct POSOrderServiceTests {
             )
         mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoFees)
 
-        // When / Then - returns the order without throwing despite the fee discrepancy
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
-        #expect(result.fees.isEmpty)
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { _ in
+            true
+        })
     }
 
     @Test
-    func syncOrder_when_returned_order_has_more_fees_than_cart_then_does_not_throw() async throws {
+    func syncOrder_when_returned_order_has_more_fees_than_cart_then_throws() async throws {
         // Given - cart has one fee, server echoes back two
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
@@ -173,9 +171,56 @@ struct POSOrderServiceTests {
             )
         mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraFee)
 
-        // When / Then - returns the order without throwing despite the count mismatch
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
-        #expect(result.fees.count == 2)
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { _ in
+            true
+        })
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_lower_product_quantity_than_cart_then_throws() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 2)])
+        let orderWithLowerProductQuantity = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithLowerProductQuantity)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { _ in
+            true
+        })
+    }
+
+    @Test
+    func syncOrder_when_returned_order_omits_cart_coupon_then_throws() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
+        )
+        let orderWithMatchingItemsButNoCoupons = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                coupons: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoCoupons)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: { _ in
+            true
+        })
     }
 
     @Test

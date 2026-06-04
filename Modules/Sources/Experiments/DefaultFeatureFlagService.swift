@@ -100,9 +100,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleCustomAmounts:
             return false
         case .pointOfSalePhonePrototype:
-            // Behind the flag for now — gates and UI follow in stacked PRs. Default to
-            // localDeveloper only so alpha builds aren't affected until we're ready.
-            return buildConfig == .localDeveloper
+            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleMarkOrderAsPaid:

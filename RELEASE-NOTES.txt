@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.0
 -----
+- [*] POS: Prevent checkout when the server-created order does not match the cart. [https://github.com/woocommerce/woocommerce-ios/pull/17314]
 - [*] Fixed duplicating a product overwriting the original product's images; the duplicate now opens after copying. [https://github.com/woocommerce/woocommerce-ios/pull/17291]
 
 24.9

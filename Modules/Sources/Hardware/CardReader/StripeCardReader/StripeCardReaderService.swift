@@ -438,7 +438,7 @@ extension StripeCardReaderService: CardReaderService {
             self.cancellationStartedInApp = true
 
             let cancelPaymentIntent = { [weak self] in
-                Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
+                Terminal.shared.cancelPaymentIntent(activePaymentIntent) { intent, error in
                     if let error {
                         let underlyingError = Self.logAndDecodeError(error)
                         promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
@@ -568,7 +568,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] reader, error in
                 guard let self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -609,7 +609,7 @@ extension StripeCardReaderService: CardReaderService {
                 return
             }
 
-            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
+            Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] reader, error in
                 guard let self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
@@ -719,7 +719,7 @@ private extension StripeCardReaderService {
                 return
             }
 
-            Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
+            Terminal.shared.createPaymentIntent(parameters) { intent, error in
                 if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
@@ -743,7 +743,7 @@ private extension StripeCardReaderService {
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel
-            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, collectConfig: collectConfiguration) { (intent, error) in
+            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, collectConfig: collectConfiguration) { intent, error in
                 if let error {
                     var underlyingError = Self.logAndDecodeError(error)
                     /// the completion block for collectPaymentMethod will be called
@@ -813,7 +813,7 @@ private extension StripeCardReaderService {
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
-            Terminal.shared.confirmPaymentIntent(intent) { (intent, error) in
+            Terminal.shared.confirmPaymentIntent(intent) { intent, error in
                 guard let self else { return }
                 if let error {
                     let underlyingError = Self.logAndDecodeError(error)

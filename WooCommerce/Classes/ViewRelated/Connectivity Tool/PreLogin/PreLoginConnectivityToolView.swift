@@ -30,7 +30,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -43,12 +43,13 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private func showSupportChat() {
         var viewModelHolder: SupportChatViewModel?
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
                                             transcript: transcript,
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
+                                            hasReceivedBotResponse: hasReceivedBotResponse,
                                             onTicketCreated: { [weak viewModelHolder] in
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
@@ -63,6 +64,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
@@ -75,7 +77,8 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
                                                        transcript: transcript,
                                                        supportAreaInfo: supportAreaInfo,
                                                        entryPoint: entryPoint,
-                                                       siteAddress: viewModel.siteURL.absoluteString)
+                                                       siteAddress: viewModel.siteURL.absoluteString,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
@@ -100,7 +103,7 @@ struct PreLoginConnectivityToolView: View {
     /// Closure invoked when the "Contact Support" button is tapped.
     var onContactSupportTapped: (() -> Void)?
 
-    /// Closure invoked when the "Chat with AI Support" button is tapped.
+    /// Closure invoked when the AI-backed "Contact Support" button is tapped.
     var onChatWithSupportTapped: (() -> Void)?
 
     var body: some View {
@@ -122,7 +125,7 @@ struct PreLoginConnectivityToolView: View {
             }
 
             if viewModel.showChatButton {
-                Button(Localization.chatWithSupport) {
+                Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -246,11 +249,6 @@ private extension PreLoginConnectivityToolView {
             "preLoginConnectivityToolView.contactSupport",
             value: "Contact Support",
             comment: "Contact support button in the pre-login connectivity tool"
-        )
-        static let chatWithSupport = NSLocalizedString(
-            "preLoginConnectivityToolView.chatWithSupport",
-            value: "Chat with Support",
-            comment: "Chat with AI support button in the pre-login connectivity tool"
         )
     }
 }

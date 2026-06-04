@@ -251,7 +251,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
@@ -633,8 +633,9 @@ extension ProductFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let data):
-                self.resetProduct(data.product)
-                self.resetPassword(data.password)
+                // Do not reset this form's baseline to the duplicate. This form still represents the original
+                // product; rebinding `originalProduct`/`originalPassword` to the duplicate corrupts change
+                // tracking and can leak the duplicate's images into the original via the shared image action handler.
                 onCompletion(.success(data.product))
             }
         }

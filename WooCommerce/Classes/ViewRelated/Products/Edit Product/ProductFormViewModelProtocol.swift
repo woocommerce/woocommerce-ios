@@ -30,7 +30,7 @@ enum SaveMessageType {
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
 protocol ProductFormViewModelProtocol {
-    associatedtype ProductModel: ProductFormDataModel & TaxClassRequestable
+    associatedtype ProductModel: ProductFormDataModel, TaxClassRequestable
 
     /// Emits product on change, except when the product name is the only change (`productName` is emitted for this case).
     var observableProduct: AnyPublisher<ProductModel, Never> { get }

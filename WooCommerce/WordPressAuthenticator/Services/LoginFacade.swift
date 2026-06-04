@@ -42,7 +42,7 @@ public extension LoginFacade {
                 if self.tracker.shouldUseLegacyTracker() {
                     WordPressAuthenticator.track(.twoFactorSentSMS)
                 }
-        }) { (_, newNonce) in
+        }) { _, newNonce in
             if let newNonce {
                 loginFields.nonceInfo?.nonceSMS = newNonce
             }

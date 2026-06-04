@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 /// Encapsulates the logic necessary to render a list of shipment tracking providers
-/// The list of providers has to be ordered alphabetically (ascending), wiht two exceptions:
+/// The list of providers has to be ordered alphabetically (ascending), with two exceptions:
 /// - A section to add Custom Providers
 /// - The providers corresponding to the store country should be shown first
 final class ShippingProvidersViewModel {

@@ -49,7 +49,7 @@ private extension AztecLinkFormatBarCommand {
                                         openInNewWindow: target != nil,
                                         isNewLink: isInsertingNewLink)
         let linkController = LinkSettingsViewController(linkSettings: linkSettings,
-                                                        callback: { (action, settings) in
+                                                        callback: { action, settings in
             self.presenter?.dismiss(animated: true) {
                 richTextView.becomeFirstResponder()
                 switch action {

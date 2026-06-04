@@ -47,7 +47,7 @@ public final class WordPressOrgNetwork: Network {
 
             self.alamofireSession.request(request)
                 .validate()
-                .responseData(completionHandler: { (response) in
+                .responseData(completionHandler: { response in
                 switch response.result {
                 case .success(let responseObject):
                     continuation.resume(returning: responseObject)

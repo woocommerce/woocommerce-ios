@@ -216,7 +216,7 @@ private extension DashboardView {
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(items.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:

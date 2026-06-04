@@ -120,7 +120,7 @@ public class CurrencyFormatter {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
 
-        // Remove all occurences of the minus sign from the string amount.
+        // Remove all occurrences of the minus sign from the string amount.
         // We want to position the minus sign manually.
         let amount = amount.replacingOccurrences(of: "-", with: "")
 

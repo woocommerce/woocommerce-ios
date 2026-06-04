@@ -95,8 +95,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleRefundsi1:
             return true
+        case .pointOfSaleRoles:
+            return false
         case .pointOfSaleCustomAmounts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .pointOfSalePhonePrototype:
             // Behind the flag for now — gates and UI follow in stacked PRs. Default to
             // localDeveloper only so alpha builds aren't affected until we're ready.
@@ -110,7 +112,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // alpha and beta keep showing only Cash + Card reader for now.
             return buildConfig == .localDeveloper
         case .selfDrivenPushToken:
-            return false
+            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
@@ -126,7 +128,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .arParcelFitting:
             return true
         case .smarterNotifications:
-            return !buildConfig.isProduction
+            return true
         default:
             return true
         }

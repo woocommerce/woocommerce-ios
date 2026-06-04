@@ -312,7 +312,7 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// Builds the necesary properties for the `application_opened` event.
+    /// Builds the necessary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
         guard let installedWidgets = try? configurationResult.get() else {

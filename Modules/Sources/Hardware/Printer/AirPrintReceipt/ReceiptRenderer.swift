@@ -194,7 +194,7 @@ private extension ReceiptRenderer {
     }
 
     private func cardIconCSS() -> String {
-        CardBrand.allCases.map { (cardBrand) in
+        CardBrand.allCases.map { cardBrand in
             ".\(cardBrand.iconName)-icon { background-image: url(\"data:image/svg+xml;base64,\(cardBrand.iconData.base64EncodedString())\") }"
         }.joined(separator: "\n\n")
     }

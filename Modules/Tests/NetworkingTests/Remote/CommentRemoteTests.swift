@@ -33,7 +33,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as spam")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-spam")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .spam) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .spam) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .spam)
@@ -51,7 +51,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as unspam")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .unspam) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .unspam) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .approved)
@@ -69,7 +69,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as approved")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .approved) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .approved) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .approved)
@@ -87,7 +87,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as unapproved")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-unapproved")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .unapproved) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .unapproved) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .unapproved)
@@ -105,7 +105,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as trash")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-trash")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .trash) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .trash) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .trash)
@@ -123,7 +123,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as untrash")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertNotNil(updatedStatus)
             XCTAssertEqual(updatedStatus, .approved)
@@ -141,7 +141,7 @@ class CommentRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Error Handling")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
-        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { (updatedStatus, error) in
+        remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { updatedStatus, error in
             guard let error = error as? DotcomError else {
                 XCTFail()
                 return

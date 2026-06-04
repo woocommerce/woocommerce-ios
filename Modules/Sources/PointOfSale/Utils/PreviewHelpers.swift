@@ -52,8 +52,6 @@ import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
-import struct Yosemite.POSRefundableItem
-import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSItemIdentifier
 
 // MARK: - PreviewProvider helpers
@@ -261,7 +259,8 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
-            receiptSender: POSReceiptSenderPreview())
+            receiptSender: POSReceiptSenderPreview(),
+            refundSubmissionModel: POSRefundSubmissionModel())
     }
 
     static func makePreviewOrders() -> [POSOrder] {
@@ -523,12 +522,15 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
+    var currentRefundRequiresCardPresentRefund: Bool { false }
+    var hasModifiedRefundSelection = false
 
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
+    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
@@ -598,14 +600,6 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     }
-
-    func calculateRefundAmounts(for items: [Yosemite.POSRefundableItem]) -> Yosemite.POSRefundAmounts {
-        let subtotal = items.reduce(Decimal.zero) { $0 + $1.lineItemTotal }
-        let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
-        return POSRefundAmounts(subtotal: subtotal, tax: tax)
-    }
-
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }

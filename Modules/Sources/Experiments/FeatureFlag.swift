@@ -199,6 +199,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
+    /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
+    ///
+    case pointOfSaleRoles
+
     /// Enables adding custom amounts to the cart in Point of Sale
     ///
     case pointOfSaleCustomAmounts

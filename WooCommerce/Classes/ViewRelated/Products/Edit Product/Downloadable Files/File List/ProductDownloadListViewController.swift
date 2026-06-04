@@ -85,7 +85,7 @@ final class ProductDownloadListViewController: UIViewController {
         onWPLibraryPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
-        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] _, result in
             switch result {
             case let .success(productImage):
                 ServiceLocator.analytics.track(.productDownloadableFileUploadingSuccess)
@@ -229,7 +229,7 @@ private extension ProductDownloadListViewController {
     func openDownloadableFile(productDownload: ProductDownload?, indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
         let viewController = ProductDownloadFileViewController(productDownload: productDownload,
                                                                downloadFileIndex: indexPath?.row,
-                                                               formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
+                                                               formType: formType) { [weak self] fileName, fileURL, fileID, hasUnsavedChanges in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
                                                       fileURL: fileURL,
                                                       fileID: fileID,
@@ -287,7 +287,7 @@ private extension ProductDownloadListViewController {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
-        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (action) in
+        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] _ in
             self?.showDownloadableFilesSettings()
         }
         menuAlert.addAction(downloadSettingsAction)
@@ -302,8 +302,7 @@ private extension ProductDownloadListViewController {
     }
 
     func showDownloadableFilesSettings() {
-        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
-            (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]downloadLimit, downloadExpiry, hasUnsavedChanges in
             self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,
                                                downloadExpiry: downloadExpiry,
                                                hasUnsavedChanges: hasUnsavedChanges)

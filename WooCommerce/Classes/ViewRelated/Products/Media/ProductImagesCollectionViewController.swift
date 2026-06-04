@@ -220,7 +220,7 @@ extension ProductImagesCollectionViewController {
         let productImagesGalleryViewController = ProductImagesGalleryViewController(images: productImageStatuses.images,
                                                                                     selectedIndex: selectedImageIndex,
                                                                                     isDeletionEnabled: isDeletionEnabled,
-                                                                                    productUIImageLoader: productUIImageLoader) { [weak self] (productImage) in
+                                                                                    productUIImageLoader: productUIImageLoader) { [weak self] productImage in
                                                                                         self?.onDeletion(productImage)
         }
         navigationController?.show(productImagesGalleryViewController, sender: self)

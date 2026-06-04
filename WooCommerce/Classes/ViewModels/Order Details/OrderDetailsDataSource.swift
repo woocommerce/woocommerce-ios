@@ -1467,7 +1467,7 @@ extension OrderDetailsDataSource {
 
             /// Shipping Address
             /// Almost always visible to allow editing.
-            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
+            let orderContainsOnlyVirtualProducts = self.products.filter { product -> Bool in
                 return items.contains(where: { $0.productID == product.productID})
             }.allSatisfy { $0.virtual == true }
 
@@ -1668,7 +1668,7 @@ extension OrderDetailsDataSource {
         var sections: [NoteSection] = []
 
         for order in orderNotes {
-            if sections.contains(where: { (section) -> Bool in
+            if sections.contains(where: { section -> Bool in
                 return Calendar.current.isDate(section.date, inSameDayAs: order.dateCreated) && section.row == .orderNoteHeader
             }) {
                 let orderToAppend = NoteSection(row: .orderNote, date: order.dateCreated, orderNote: order)

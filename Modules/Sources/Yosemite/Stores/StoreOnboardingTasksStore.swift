@@ -12,7 +12,7 @@ public final class StoreOnboardingTasksStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         self.init(dispatcher: dispatcher,

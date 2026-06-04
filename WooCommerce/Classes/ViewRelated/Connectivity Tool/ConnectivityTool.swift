@@ -88,7 +88,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -140,12 +140,13 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     private func showSupportChat() {
         var viewModelHolder: SupportChatViewModel?
-        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
             self?.navigationController?.popViewController(animated: true)
             self?.handleContactHumanSupport(chatID: chatID,
                                             transcript: transcript,
                                             supportAreaInfo: supportAreaInfo,
                                             entryPoint: entryPoint,
+                                            hasReceivedBotResponse: hasReceivedBotResponse,
                                             onTicketCreated: { [weak viewModelHolder] in
                                                 viewModelHolder?.markChatTicketCreated()
                                             })
@@ -160,6 +161,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
@@ -172,7 +174,8 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
                                                        transcript: transcript,
                                                        supportAreaInfo: supportAreaInfo,
                                                        entryPoint: entryPoint,
-                                                       siteAddress: viewModel.siteURL)
+                                                       siteAddress: viewModel.siteURL,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
@@ -219,7 +222,7 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
-    /// Closure to be invoked when the "Chat with Support" button is tapped.
+    /// Closure to be invoked when the AI-backed "Contact Support" button is tapped.
     ///
     var onChatWithSupportTapped: (() -> ())?
 
@@ -260,7 +263,7 @@ struct ConnectivityTool: View {
             Divider().ignoresSafeArea()
 
             if showChatButton {
-                Button(Localization.chatWithSupport) {
+                Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -285,11 +288,6 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
-        static let chatWithSupport = NSLocalizedString(
-            "connectivityTool.chatWithSupport",
-            value: "Chat with Support",
-            comment: "Button to open AI chat support in the connectivity tool screen"
-        )
         static let title = NSLocalizedString(
             "connectivityTool.title",
             value: "Troubleshoot Connection",

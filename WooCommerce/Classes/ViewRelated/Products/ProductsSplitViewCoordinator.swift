@@ -130,6 +130,11 @@ private extension ProductsSplitViewCoordinator {
             },
             onDelete: { [weak self] in
                 self?.onSecondaryProductFormDeletion()
+            },
+            onDuplicate: { [weak self] duplicate in
+                // Opens the duplicate by replacing the secondary stack (not pushing), keeping the single-product-form
+                // invariant and matching Android, where the copy opens and Back returns to the product list.
+                self?.showProductForm(product: duplicate)
             })
 
         showSecondaryView(contentType: .productForm(product: product),
@@ -233,7 +238,7 @@ private extension ProductsSplitViewCoordinator {
 
     func autoSelectProductOnInitialDataLoad() {
         Publishers.CombineLatest(selectedProduct, productsViewController.onDataReloaded)
-            .first(where: { [weak self] selectedProduct, onDataReloaded in
+            .first(where: { [weak self] selectedProduct, _ in
                 guard let self else {
                     return false
                 }
@@ -241,7 +246,7 @@ private extension ProductsSplitViewCoordinator {
                     !splitViewController.isCollapsed &&
                     splitViewController.traitCollection.horizontalSizeClass == .regular
             })
-            .sink { [weak self] selectedProduct, onDataReloaded in
+            .sink { [weak self] _, _ in
                 self?.productsViewController.selectFirstProductIfAvailable()
             }
             .store(in: &subscriptions)

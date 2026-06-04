@@ -271,7 +271,7 @@ private extension StoreStatsPeriodViewModel {
            !orderStats.intervals.isEmpty,
            let items = siteStats?.items,
            items.count > orderStats.intervals.count {
-            let sortedItems = items.sorted(by: { (lhs, rhs) -> Bool in
+            let sortedItems = items.sorted(by: { lhs, rhs -> Bool in
                 return lhs.period < rhs.period
             })
             let matchingItems = Array(sortedItems.suffix(orderStats.intervals.count))

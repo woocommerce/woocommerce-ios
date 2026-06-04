@@ -2,6 +2,7 @@ import Codegen
 import Combine
 import XCTest
 import Networking
+import Storage
 @testable import WooCommerce
 import Yosemite
 
@@ -179,6 +180,65 @@ final class StoresManagerTests: XCTestCase {
         // Assert - verify deauthentication completed successfully
         XCTAssertFalse(manager.isAuthenticated, "Manager should be deauthenticated")
         XCTAssertNil(sessionManager.defaultStoreID, "Default store ID should be cleared after deauthentication")
+    }
+
+    @MainActor
+    func test_deauthenticate_does_not_reset_grdb_manager_when_it_was_not_initialized() {
+        // Arrange
+        let sessionManager = SessionManager.testingInstance
+        let grdbManagerProvider = MockGRDBManagerProvider(grdbManager: nil)
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance,
+                                           grdbManagerProvider: grdbManagerProvider)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        // Action
+        manager.deauthenticate()
+
+        // Assert
+        XCTAssertEqual(grdbManagerProvider.initializedGRDBManagerReadCount, 1)
+    }
+
+    @MainActor
+    func test_deauthenticate_resets_existing_grdb_manager() async {
+        // Arrange
+        let sessionManager = SessionManager.testingInstance
+        let resetExpectation = expectation(description: "GRDB reset is called")
+        let grdbManager = MockGRDBManager {
+            resetExpectation.fulfill()
+        }
+        let grdbManagerProvider = MockGRDBManagerProvider(grdbManager: grdbManager)
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance,
+                                           grdbManagerProvider: grdbManagerProvider)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        // Action
+        manager.deauthenticate()
+
+        // Assert
+        await fulfillment(of: [resetExpectation], timeout: 1)
+    }
+
+    /// Verifies that `updateDefaultStore` handles catalog sync cleanup gracefully when switching stores.
+    ///
+    func test_updateDefaultStore_handles_catalog_sync_cleanup_when_switching_stores() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: 123)
+
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+
+        // When - switch to a different store
+        manager.updateDefaultStore(storeID: 456)
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 456, "Store ID should be updated to the new store")
     }
 
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
@@ -512,6 +572,36 @@ final class MockAuthenticationManager: AuthenticationManager {
     override func authenticationUI() -> UIViewController {
         authenticationUIInvoked = true
         return UIViewController()
+    }
+}
+
+private final class MockGRDBManagerProvider: GRDBManagerProviding {
+    private let grdbManager: GRDBManagerProtocol?
+    private(set) var initializedGRDBManagerReadCount = 0
+
+    init(grdbManager: GRDBManagerProtocol?) {
+        self.grdbManager = grdbManager
+    }
+
+    var initializedGRDBManager: GRDBManagerProtocol? {
+        initializedGRDBManagerReadCount += 1
+        return grdbManager
+    }
+}
+
+private final class MockGRDBManager: GRDBManagerProtocol {
+    private let onReset: () -> Void
+
+    var databaseConnection: GRDBDatabaseConnection {
+        fatalError("MockGRDBManager.databaseConnection should not be accessed by these tests.")
+    }
+
+    init(onReset: @escaping () -> Void) {
+        self.onReset = onReset
+    }
+
+    func reset() throws {
+        onReset()
     }
 }
 

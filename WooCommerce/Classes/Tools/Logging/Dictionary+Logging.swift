@@ -7,12 +7,11 @@ extension Dictionary where Key == String {
             return self
         }
 
-        return reduce([:]) { (properties, entry) -> [String: Any] in
+        return reduce(into: [:]) { formattedProperties, entry in
             let (key, value) = entry
-            var formattedProperties: [String: Any] = properties
             guard JSONSerialization.isValidJSONObject([key: value]) == false else {
                 formattedProperties[key] = value
-                return formattedProperties
+                return
             }
 
             if let nsError = value as? NSError {
@@ -22,11 +21,10 @@ extension Dictionary where Key == String {
                     "Description": nsError.localizedDescription,
                     "User Info": nsError.userInfo.description
                 ] as [String: Any]
-                return formattedProperties
+                return
             }
 
             formattedProperties[key] = "\(value)"
-            return formattedProperties
         }
     }
 }

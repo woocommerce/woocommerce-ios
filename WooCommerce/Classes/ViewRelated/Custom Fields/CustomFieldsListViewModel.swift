@@ -220,7 +220,7 @@ private extension CustomFieldsListViewModel {
     func observePendingChanges() {
         $pendingChanges
             .combineLatest($originalCustomFields)
-            .map { (pendingChanges, originalFields) in
+            .map { pendingChanges, originalFields in
                 return originalFields
                     .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.fieldID }) }
                     .map { field in pendingChanges.editedFields.first(where: { $0.fieldID == field.fieldID }) ?? field }

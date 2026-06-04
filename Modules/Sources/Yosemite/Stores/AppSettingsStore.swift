@@ -503,7 +503,7 @@ private extension AppSettingsStore {
 
     /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
     /// NOTE: We now only persist one card reader maximum.
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
@@ -578,7 +578,7 @@ private extension AppSettingsStore {
     func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
-            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { (current, _) in
+            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { current, _ in
                 // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
                 return current
             }

@@ -181,7 +181,7 @@ final class WooShippingRemoteTests: XCTestCase {
                                   orderID: self.sampleOrderID,
                                   originAddress: WooShippingAddress.fake(),
                                   destinationAddress: WooShippingAddress.fake(),
-                                  packages: [expectedPackage]) { (result) in
+                                  packages: [expectedPackage]) { result in
                 promise(result)
             }
         }

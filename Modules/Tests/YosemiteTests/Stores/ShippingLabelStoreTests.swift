@@ -551,7 +551,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
                                                                   destinationAddress: ShippingLabelAddress.fake(),
-                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -574,7 +574,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                   orderID: self.sampleOrderID,
                                                                   originAddress: ShippingLabelAddress.fake(),
                                                                   destinationAddress: ShippingLabelAddress.fake(),
-                                                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -985,10 +985,10 @@ private extension ShippingLabelStoreTests {
                                                                   title: "Small Flat Rate Box",
                                                                   isLetter: false,
                                                                   dimensions: "21.91 x 13.65 x 4.13"),
-                                  ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
-                                                                 title: "Medium Flat Rate Box 1, Top Loading",
-                                                                 isLetter: false,
-                                                                 dimensions: "28.57 x 22.22 x 15.24")]
+                                   ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
+                                                                  title: "Medium Flat Rate Box 1, Top Loading",
+                                                                  isLetter: false,
+                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
                                                               providerID: "usps",
                                                               predefinedPackages: predefinedPackages1)

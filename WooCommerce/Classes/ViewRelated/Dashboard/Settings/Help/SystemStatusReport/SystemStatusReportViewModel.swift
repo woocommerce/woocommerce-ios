@@ -94,11 +94,11 @@ extension SystemStatusReportViewModel {
             ])
 
             for (tableName, content) in database.databaseTables.woocommerce {
-                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+                lines.append("\(tableName): \(content.formattedString)")
             }
 
             for (tableName, content) in database.databaseTables.other {
-                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+                lines.append("\(tableName): \(content.formattedString)")
             }
         }
 

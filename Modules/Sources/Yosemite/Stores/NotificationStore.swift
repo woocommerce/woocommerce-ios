@@ -14,7 +14,7 @@ public class NotificationStore: Store {
     ///
     private static var privateStorage: StorageType!
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = NotificationsRemote(network: network)
         self.devicesRemote = DevicesRemote(network: network)
         self.pushNotificationPreferencesRemote = PushNotificationPreferencesRemote(network: network)
@@ -185,7 +185,7 @@ private extension NotificationStore {
     /// Retrieves the latest notifications (if any!).
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
-        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
+        remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] hashes, error in
             guard let hashes else {
                 onCompletion(error)
                 return
@@ -242,7 +242,7 @@ private extension NotificationStore {
     /// Updates the last seen notification
     ///
     func updateLastSeen(timestamp: String, onCompletion: @escaping (Error?) -> Void) {
-        remote.updateLastSeen(timestamp) { (error) in
+        remote.updateLastSeen(timestamp) { error in
             onCompletion(error)
         }
     }

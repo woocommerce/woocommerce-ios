@@ -93,7 +93,7 @@ class WordPressComRestApiTests: XCTestCase {
             wordPressMediaRoutePath,
             parameters: HTTPRequestBuilderTests.nestedParameters as [String: AnyObject],
             success: { _, _ in expect.fulfill() },
-            failure: { (_, _) in expect.fulfill() }
+            failure: { _, _ in expect.fulfill() }
         )
         wait(for: [expect], timeout: 0.3)
 
@@ -124,7 +124,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.GET(wordPressMediaRoutePath, parameters: nil, success: { (responseObject: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTAssert(responseObject is [String: AnyObject], "The response should be a dictionary")
-            }, failure: { (_, _) in
+            }, failure: { _, _ in
                 expect.fulfill()
                 XCTFail("This call should be successfull")
             }
@@ -181,7 +181,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.GET(wordPressMediaRoutePath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 expect.fulfill()
                 XCTAssert(error.domain == "WordPressKit.WordPressComRestApiError", "The error should a WordPressComRestApiError")
                 XCTAssert(error.code == Int(WordPressComRestApiErrorCode.invalidToken.rawValue), "The error code should be invalid token")
@@ -201,7 +201,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.GET(wordPressMediaRoutePath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 expect.fulfill()
                 XCTAssert(error.domain == WordPressComRestApiErrorDomain, "The error domain should be WordPressComRestApiErrorDomain")
                 XCTAssert(error.code == Int(WordPressComRestApiErrorCode.responseSerializationFailed.rawValue), "The code should be invalid response serialization")
@@ -221,7 +221,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.POST(wordPressMediaNewEndpointPath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 expect.fulfill()
                 XCTAssert(error.domain == "WordPressKit.WordPressComRestApiError", "The error domain should be WordPressComRestApiError")
                 XCTAssert(error.code == Int(WordPressComRestApiErrorCode.invalidInput.rawValue), "The error code should be invalid input")
@@ -241,7 +241,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.POST(wordPressMediaNewEndpointPath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 expect.fulfill()
                 XCTAssert(error.domain == "WordPressKit.WordPressComRestApiError", "The error domain should be WordPressComRestApiError")
                 XCTAssert(error.code == Int(WordPressComRestApiErrorCode.authorizationRequired.rawValue), "The error code should be AuthorizationRequired")
@@ -259,7 +259,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.POST(wordPressMediaNewEndpointPath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 expect.fulfill()
                 XCTAssert(error.domain == "WordPressKit.WordPressComRestApiError", "The error domain should be WordPressComRestApiError")
                 XCTAssert(error.code == Int(WordPressComRestApiErrorCode.uploadFailed.rawValue), "The error code should be AuthorizationRequired")
@@ -279,7 +279,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [], success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-        }, failure: { (error, _) in
+        }, failure: { error, _ in
             expect.fulfill()
             XCTAssert(error.domain == "WordPressKit.WordPressComRestApiError", "The error domain should be WordPressComRestApiError")
             XCTAssert(error.code == Int(WordPressComRestApiErrorCode.uploadFailed.rawValue), "The error code should be AuthorizationRequired")
@@ -299,7 +299,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-            }, failure: { (_, _) in
+            }, failure: { _, _ in
                 expect.fulfill()
             }
         )
@@ -322,7 +322,7 @@ class WordPressComRestApiTests: XCTestCase {
         let filePart = FilePart(parameterName: "media[]", url: mediaURL as URL, fileName: "test-image.jpg", mimeType: "image/jpeg")
         let progress1 = api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
                 XCTFail("This call should fail")
-            }, failure: { (error, _) in
+            }, failure: { error, _ in
                 XCTAssert(error.domain == NSURLErrorDomain, "The error domain should be NSURLErrorDomain")
                 XCTAssert(error.code == NSURLErrorCancelled, "The error code should be NSURLErrorCancelled")
             }
@@ -330,9 +330,9 @@ class WordPressComRestApiTests: XCTestCase {
         progress1?.cancel()
         api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
-            }, failure: { (_, _) in
+            }, failure: { _, _ in
                 expect.fulfill()
-                XCTFail("This call should succesful")
+                XCTFail("This call should succeed")
             }
         )
         self.waitForExpectations(timeout: 5, handler: nil)
@@ -347,7 +347,7 @@ class WordPressComRestApiTests: XCTestCase {
         api.POST(wordPressMediaNewEndpointPath, parameters: nil, success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
-        }, failure: { (error, _) in
+        }, failure: { error, _ in
             expect.fulfill()
             XCTAssertEqual(error.domain, NSURLErrorDomain, "The error domain should be NSURLErrorDomain")
             XCTAssertEqual(error.code, NSURLErrorCancelled, "The error code should be NSURLErrorCancelled")
@@ -514,7 +514,7 @@ class WordPressComRestApiTests: XCTestCase {
                 complete.fulfill()
                 XCTFail("The API call should complete with a failure")
             },
-            failure: { error, _ in
+            failure: { _, _ in
                 complete.fulfill()
             }
         )

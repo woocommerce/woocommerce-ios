@@ -11,7 +11,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private var cancellables: Set<AnyCancellable> = []
 
     /// These are separate from other cancellables (if we add any) because they get cancelled whenever
-    /// we recieve an onboarding state, other than `.loading`.
+    /// we receive an onboarding state, other than `.loading`.
     /// This is unlikely to be what we want for other subscriptions.
     private var onboardingStateObservations: Set<AnyCancellable> = []
 

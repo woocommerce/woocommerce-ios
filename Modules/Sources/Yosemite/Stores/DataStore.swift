@@ -8,7 +8,7 @@ import Storage
 public final class DataStore: Store {
     private let remote: DataRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = DataRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -43,7 +43,7 @@ private extension DataStore {
 
     func synchronizeCountries(siteID: Int64,
                               completion: @escaping (Result<[Country], Error>) -> Void) {
-        remote.loadCountries(siteID: siteID) { [weak self] (result) in
+        remote.loadCountries(siteID: siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {

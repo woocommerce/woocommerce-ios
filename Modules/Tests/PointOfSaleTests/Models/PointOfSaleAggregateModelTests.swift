@@ -13,6 +13,7 @@ import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSItemType
+import enum WooFoundationCore.WooAnalyticsStat
 import Combine
 
 @MainActor
@@ -420,6 +421,45 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
+        }
+
+        @Test func cancelInFlightCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
+            // Given
+            let cardPresentPaymentService = MockCardPresentPaymentService()
+            let orderController = MockPointOfSaleOrderController()
+            let itemsController = MockPointOfSaleItemsController()
+            var releaseSyncOrder: (() -> Void)?
+            var checkoutTask: Task<Void, Never>?
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+
+            // When
+            await fireOnce { fire in
+                orderController.onSyncOrderCalled = {
+                    await withCheckedContinuation { continuation in
+                        releaseSyncOrder = {
+                            continuation.resume()
+                        }
+                        fire()
+                    }
+                }
+                checkoutTask = Task { @MainActor in
+                    await sut.checkOut()
+                }
+            }
+
+            sut.cancelInFlightCheckout()
+            releaseSyncOrder?()
+            await checkoutTask?.value
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
         }
 
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {
@@ -1259,6 +1299,51 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
+    @MainActor struct StaleSyncWarningTests {
+        @Test func checkStaleSyncStatus_when_called_concurrently_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When - both tab views drive this check concurrently; it must only track once
+            async let firstCheck: Void = sut.checkStaleSyncStatus()
+            async let secondCheck: Void = sut.checkStaleSyncStatus()
+            _ = await (firstCheck, secondCheck)
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkStaleSyncStatus_when_warning_is_dismissed_then_does_not_track_shown_event() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            sut.dismissStaleSyncWarning()
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
+        }
+    }
+
     @MainActor struct SunsetWarningTests {
         @Test func showSunsetWarning_defaults_to_false() {
             // Given
@@ -1282,14 +1367,19 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
             // Given
+            let analytics = MockPOSAnalytics()
             let checker = MockPOSSunsetWarningChecker(shouldShow: false)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
 
             // When
             await sut.checkSunsetWarningStatus()
 
             // Then
             #expect(sut.showSunsetWarning == false)
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
         }
 
         @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
@@ -1305,6 +1395,59 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.showSunsetWarning == false)
             #expect(checker.recordDismissalCalled == true)
+        }
+
+        @Test func checkSunsetWarningStatus_when_called_twice_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - both tab views drive this check; it must only track once
+            await sut.checkSunsetWarningStatus()
+            await sut.checkSunsetWarningStatus()
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkSunsetWarningStatus_when_called_concurrently_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - both tab views drive this check concurrently; it must only track once
+            async let firstCheck: Void = sut.checkSunsetWarningStatus()
+            async let secondCheck: Void = sut.checkSunsetWarningStatus()
+            _ = await (firstCheck, secondCheck)
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkSunsetWarningStatus_when_dismissed_and_reshown_then_tracks_again() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - shown, dismissed, then shown again
+            await sut.checkSunsetWarningStatus()
+            sut.dismissSunsetWarning()
+            await sut.checkSunsetWarningStatus()
+
+            // Then - each transition into shown tracks once
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 2)
         }
     }
 }
@@ -1356,6 +1499,7 @@ private func makePointOfSaleAggregateModel(
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+    isLocalCatalogEligible: Bool = false,
     sunsetWarningChecker: POSSunsetWarningChecking? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
@@ -1377,6 +1521,7 @@ private func makePointOfSaleAggregateModel(
         paymentState: paymentState,
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
+        isLocalCatalogEligible: isLocalCatalogEligible,
         sunsetWarningChecker: sunsetWarningChecker
     )
 }

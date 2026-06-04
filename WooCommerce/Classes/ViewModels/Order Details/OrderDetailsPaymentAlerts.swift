@@ -64,6 +64,15 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
+    func cardInserted(title: String,
+                      amount: String,
+                      onCancel: @escaping () -> Void) {
+        let viewModel = alertsProvider.cardInserted(title: title,
+                                                    amount: amount,
+                                                    onCancel: onCancel)
+        presentViewModel(viewModel: viewModel)
+    }
+
     func displayReaderMessage(message: String) {
         let viewModel = alertsProvider.displayReaderMessage(message: message)
         presentViewModel(viewModel: viewModel)

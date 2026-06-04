@@ -20,7 +20,8 @@ struct PushNotificationPreferencesViewModelTests {
 
     private func makeSUT(stores: MockStoresManager,
                          currencySettings: CurrencySettings = Self.testCurrencySettings,
-                         notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter())
+                         notificationCenter: UserNotificationsCenterAdapter = MockUserNotificationsCenterAdapter(),
+                         analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
     -> PushNotificationPreferencesViewModel {
         // Use a fresh `NotificationCenter` so simulator-posted system
         // notifications don't queue work on the main actor and add contention
@@ -29,7 +30,8 @@ struct PushNotificationPreferencesViewModelTests {
                                              stores: stores,
                                              currencySettings: currencySettings,
                                              notificationCenter: notificationCenter,
-                                             appStateNotificationCenter: NotificationCenter())
+                                             appStateNotificationCenter: NotificationCenter(),
+                                             analytics: WooAnalytics(analyticsProvider: analyticsProvider))
     }
 
     private func makeStores() -> MockStoresManager {
@@ -80,6 +82,43 @@ struct PushNotificationPreferencesViewModelTests {
 
         // Then
         #expect(sut.loadState == .error)
+    }
+
+    @Test func test_load_when_remote_fails_then_notifications_settings_load_failed_is_tracked() async {
+        // Given
+        struct AnyError: Error {}
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.failure(AnyError()))
+            }
+        }
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: stores, analyticsProvider: analyticsProvider)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
+    }
+
+    @Test func test_load_when_remote_succeeds_then_notifications_settings_load_failed_is_not_tracked() async {
+        // Given
+        let stores = makeStores()
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences()))
+            }
+        }
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: stores, analyticsProvider: analyticsProvider)
+
+        // When
+        await sut.load()
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
     }
 
     @Test func test_load_when_unsaved_edits_exist_then_response_does_not_stomp_displayed_state() async {
@@ -292,9 +331,11 @@ struct PushNotificationPreferencesViewModelTests {
         // Given
         let stores = makeStores()
         let saveContinuation = SaveContinuationBox()
+        let (dispatched, dispatchedSignal) = AsyncStream<Void>.makeStream()
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
                 saveContinuation.deliver = { onCompletion(.success(changes)) }
+                dispatchedSignal.yield()
             }
         }
         let sut = makeSUT(stores: stores)
@@ -302,8 +343,13 @@ struct PushNotificationPreferencesViewModelTests {
 
         // When
         async let saveResult = sut.save()
-        // Yield until `save()` reaches its first await so `isSaving` has flipped.
-        await Task.yield()
+        // Wait deterministically until `save()` has dispatched: the mock
+        // closure runs synchronously inside the `withCheckedThrowingContinuation`
+        // body, so once we see the signal, `isSaving == true` is guaranteed.
+        // A bare `Task.yield()` is not enough — one cooperative slice can be
+        // too short to reach the continuation under load.
+        var iterator = dispatched.makeAsyncIterator()
+        _ = await iterator.next()
 
         // Then
         #expect(sut.isSaving == true)
@@ -321,16 +367,21 @@ struct PushNotificationPreferencesViewModelTests {
         let stores = makeStores()
         let saveContinuation = SaveContinuationBox()
         let dispatched = DispatchedChanges()
+        let (dispatchedStream, dispatchedSignal) = AsyncStream<Void>.makeStream()
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case let .updatePushNotificationPreferences(_, changes, onCompletion) = action {
                 dispatched.append(changes)
                 saveContinuation.deliver = { onCompletion(.success(changes)) }
+                dispatchedSignal.yield()
             }
         }
         let sut = makeSUT(stores: stores)
         sut.setStoreOrderEnabled(true)
         async let firstSave = sut.save()
-        await Task.yield()
+        // Wait deterministically for the first save to dispatch — see the
+        // sibling test for the rationale.
+        var iterator = dispatchedStream.makeAsyncIterator()
+        _ = await iterator.next()
         #expect(sut.isSaving == true)
 
         // When
@@ -1094,6 +1145,299 @@ struct PushNotificationPreferencesViewModelTests {
 
         // Then
         #expect(sut.notificationsEnabled == false)
+    }
+
+    // MARK: - New-order detail analytics
+
+    @Test func test_detailDidAppear_with_newOrder_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .newOrder)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "new_order"]))
+    }
+
+    @Test func test_setStoreOrderEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_order",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreOrderEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_order",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_nil_to_value_then_tracks_filter_option_filtered() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreOrderMinAmount(100)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_option": "filtered"]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_value_to_nil_then_tracks_filter_option_all() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(nil)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_option": "all"]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_from_value_to_different_value_then_tracks_filter_value_change() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(250)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_value_change",
+                                            with: ["notification_type": "new_order",
+                                                   "filter_value": Float(250)]))
+    }
+
+    @Test func test_setStoreOrderMinAmount_with_same_value_then_does_not_track_filter_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreOrderMinAmount(100)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreOrderMinAmount(100)
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
+    }
+
+    // MARK: - New-review detail analytics
+
+    @Test func test_detailDidAppear_with_newReview_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .newReview)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "new_review"]))
+    }
+
+    @Test func test_setStoreReviewEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_review",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreReviewEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "new_review",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_nil_to_value_then_tracks_filter_option_filtered() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreReviewMaxRating(2)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_option": "filtered"]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_value_to_nil_then_tracks_filter_option_all() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(nil)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_option_select",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_option": "all"]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_from_value_to_different_value_then_tracks_filter_value_change() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(4)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_filter_value_change",
+                                            with: ["notification_type": "new_review",
+                                                   "filter_value": Float(4)]))
+    }
+
+    @Test func test_setStoreReviewMaxRating_with_same_value_then_does_not_track_filter_event() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+        sut.setStoreReviewMaxRating(2)
+        analyticsProvider.clearEvents()
+
+        // When
+        sut.setStoreReviewMaxRating(2)
+
+        // Then
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_value_change"))
+        #expect(!analyticsProvider.receivedEvents.contains("notifications_detail_filter_option_select"))
+    }
+
+    // MARK: - Stock detail analytics
+
+    @Test func test_detailDidAppear_with_stockAlert_then_tracks_notifications_detail_view() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.detailDidAppear(notificationType: .stockAlert)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_view",
+                                            with: ["notification_type": "stock_alert"]))
+    }
+
+    @Test func test_setStoreStockEnabled_when_true_then_tracks_push_toggle_with_isEnabled_true() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockEnabled(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "stock_alert",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockEnabled_when_false_then_tracks_push_toggle_with_isEnabled_false() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockEnabled(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_detail_push_toggle",
+                                            with: ["notification_type": "stock_alert",
+                                                   "is_enabled": false]))
+    }
+
+    @Test func test_setStoreStockLowStock_then_tracks_stock_option_toggle_with_lowStock() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockLowStock(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "low_stock",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockOutOfStock_then_tracks_stock_option_toggle_with_outOfStock() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockOutOfStock(true)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "out_of_stock",
+                                                   "is_enabled": true]))
+    }
+
+    @Test func test_setStoreStockOnBackorder_then_tracks_stock_option_toggle_with_onBackorder() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = makeSUT(stores: makeStores(), analyticsProvider: analyticsProvider)
+
+        // When
+        sut.setStoreStockOnBackorder(false)
+
+        // Then
+        #expect(analyticsProvider.received(event: "notifications_stock_option_toggle",
+                                            with: ["option": "on_backorder",
+                                                   "is_enabled": false]))
     }
 }
 

@@ -10,6 +10,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAccessSession) private var session
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -116,7 +117,8 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings)
+                                   showSettings: $showSettings,
+                                   onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -162,14 +164,24 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
-        .posFullScreenCover(isPresented: $phoneShowOrders) {
-            POSOrdersView(isPresented: $phoneShowOrders)
+        .posFullScreenCover(isPresented: $showOrders) {
+            POSOrdersView(isPresented: $showOrders)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
                 await posModel.checkStaleSyncStatus()
             }
+        }
+        .onChange(of: session.isLocked) { _, isLocked in
+            // Locking ends the current staff context; dismiss dashboard-owned presentations
+            // so the next signed-in staff member does not inherit them.
+            guard isLocked else { return }
+            showExitPOSModal = false
+            showSupport = false
+            showDocumentation = false
+            showSettings = false
+            showOrders = false
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -323,7 +335,7 @@ struct PointOfSaleDashboardView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
 
-    @State private var phoneShowOrders: Bool = false
+    @State private var showOrders: Bool = false
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
     @State private var phoneCartButtonPulse: Bool = false
 
@@ -353,7 +365,7 @@ struct PointOfSaleDashboardView: View {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    phoneShowOrders = true
+                    presentOrders()
                 } label: {
                     Label(Localization.phoneMenuOrders, systemImage: "text.document")
                 }
@@ -379,17 +391,8 @@ struct PointOfSaleDashboardView: View {
             min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
-    /// Tangible items shown in the cart count — products + custom amounts.
-    /// Coupons are tracked separately and pulse-only (see below).
     private var phoneCartItemsCount: Int {
-        posModel.cart.purchasableItems.count + posModel.cart.customAmounts.count
-    }
-
-    /// Total cart size — products + custom amounts + coupons — used to drive the cart-button
-    /// pulse so adding a coupon also gives visual feedback even though the displayed number
-    /// stays items-only.
-    private var phoneCartTotalCount: Int {
-        phoneCartItemsCount + posModel.cart.coupons.count
+        posModel.cart.totalItemCount
     }
 
     private var phoneCartButton: some View {
@@ -404,17 +407,11 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.top, POSPadding.medium)
-        // Bottom padding clears the home indicator: the parent `phoneContentView` applies
-        // `.ignoresSafeArea()`, so the standard safe-area inset doesn't push the button up.
-        .padding(.bottom, POSPadding.xxLarge)
+        .posPhoneBottomButtonPadding()
         // Quick pulse to confirm an item was added — only on count increases, so removing items
-        // doesn't bounce the button distractingly. Watches the full cart count (products +
-        // custom amounts + coupons) so adding any of those pulses, even though the displayed
-        // number stays items-only (no coupons).
+        // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
-        .onChange(of: phoneCartTotalCount) { oldValue, newValue in
+        .onChange(of: phoneCartItemsCount) { oldValue, newValue in
             guard newValue > oldValue else { return }
             withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
                 phoneCartButtonPulse = true
@@ -587,6 +584,11 @@ private extension PointOfSaleDashboardView {
             await posModel.couponsController.loadItems(base: .root)
             await posModel.popularPurchasableItemsController.loadItems(base: .root)
         }
+    }
+
+    func presentOrders() {
+        posModel.cancelInFlightCheckout()
+        showOrders = true
     }
 }
 

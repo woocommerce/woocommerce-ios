@@ -67,7 +67,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     private var feesTotal: Decimal {
-        let subtotal = order.fees.reduce(Constants.decimalZero) { (output, fee) in
+        let subtotal = order.fees.reduce(Constants.decimalZero) { output, fee in
             let feeSubtotal = Decimal(string: fee.total) ?? Constants.decimalZero
             return output + feeSubtotal
         }
@@ -214,9 +214,9 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        let output = couponLines.reduce("") { (output, line) in
+        let output = couponLines.reduce(into: "") { output, line in
             let prefix = output.isEmpty ? "" : ","
-            return output + prefix + line.code
+            output += prefix + line.code
         }
 
         guard !output.isEmpty else {

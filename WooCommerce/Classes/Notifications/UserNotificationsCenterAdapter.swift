@@ -51,7 +51,7 @@ extension UNUserNotificationCenter: UserNotificationsCenterAdapter {
     ///
     func requestAuthorization(queue: DispatchQueue = .main, includesProvisionalAuth: Bool, completion: @escaping (Bool) -> Void) {
         let options: UNAuthorizationOptions = includesProvisionalAuth ? [.badge, .sound, .alert, .provisional]: [.badge, .sound, .alert]
-        requestAuthorization(options: options) { (allowed, _)  in
+        requestAuthorization(options: options) { allowed, _ in
             queue.async {
                 completion(allowed)
             }

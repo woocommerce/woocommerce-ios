@@ -3,8 +3,21 @@ import SwiftUI
 /// Displays the WooPayments onboarding UI based on the state.
 struct PointOfSaleCardPresentPaymentOnboardingView: View {
     @ObservedObject var viewModel: PointOfSaleCardPresentPaymentOnboardingViewModel
+    @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.posModalParentSize) private var parentSize
 
     var body: some View {
+        if isPOSPhoneLayout {
+            content
+                .padding(PointOfSaleReaderConnectionModalLayout.contentPadding)
+                .frame(width: parentSize.width, height: parentSize.height)
+        } else {
+            content
+                .posModalSizing()
+        }
+    }
+
+    private var content: some View {
         VStack(spacing: Constants.verticalSpacing) {
             AnyView(viewModel.onboardingViewContainer.view)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
@@ -13,7 +26,10 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
         .posModalCloseButton(action: viewModel.cancelOnboarding,
                              accessibilityLabel: Localization.cancelOnboarding)
         .safariSheet(url: $viewModel.onboardingURL)
-        .posModalSizing()
+    }
+
+    private var isPOSPhoneLayout: Bool {
+        layoutScale == .phone && UIDevice.current.userInterfaceIdiom == .phone
     }
 }
 

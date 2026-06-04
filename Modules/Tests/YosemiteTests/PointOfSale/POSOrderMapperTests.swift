@@ -105,7 +105,7 @@ struct POSOrderMapperTests {
             // Then
             #expect(orderID == 42)
             #expect(itemID == 11)
-            #expect(value == "")
+            #expect(value.isEmpty)
         } catch {
             Issue.record("Unexpected error: \(error)")
         }

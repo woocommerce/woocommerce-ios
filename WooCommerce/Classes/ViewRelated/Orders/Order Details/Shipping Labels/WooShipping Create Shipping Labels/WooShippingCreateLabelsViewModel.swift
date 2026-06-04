@@ -42,17 +42,20 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var orderItems: WooShippingItemsViewModel
 
     var canViewLabel: Bool {
-        currentShipmentDetailsViewModel.canViewLabel
+        currentShipmentDetailsViewModel?.canViewLabel ?? false
     }
 
     var postPurchase: WooShippingPostPurchaseViewModel? {
-        currentShipmentDetailsViewModel.postPurchase
+        currentShipmentDetailsViewModel?.postPurchase
     }
 
     @Published private(set) var shipments: [Shipment] {
         didSet {
             updateSelectedShipmentIndex(previousShipments: oldValue)
             updateShipmentDetailsViewModels()
+            if shipments.isEmpty {
+                state = .missingRequiredData
+            }
         }
     }
 
@@ -65,8 +68,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
     }
 
-    var currentShipment: Shipment {
-        shipments[boundedSelectedShipmentIndex(for: shipments.count)]
+    var currentShipment: Shipment? {
+        shipments[safe: boundedSelectedShipmentIndex(for: shipments.count)]
     }
 
     var hasUnfulfilledShipments: Bool {
@@ -84,8 +87,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
 
-    var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
-        shipmentDetailViewModels[boundedSelectedShipmentIndex(for: shipmentDetailViewModels.count)]
+    var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel? {
+        shipmentDetailViewModels[safe: boundedSelectedShipmentIndex(for: shipmentDetailViewModels.count)]
     }
 
     /// View model for a list of origin addresses to ship from.
@@ -107,7 +110,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
     var originAddressLines: [String]? {
-        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+        if let shippingLabel = currentShipmentDetailsViewModel?.shippingLabel {
             shippingLabel.originAddress.formattedPostalAddress?.components(separatedBy: "\n")
         } else {
             originAddress.components(separatedBy: ", ")
@@ -119,7 +122,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
-        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+        if let shippingLabel = currentShipmentDetailsViewModel?.shippingLabel {
             shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
         } else {
             (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
@@ -154,7 +157,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Total cost of the shipping label, formatted for display.
     var totalCost: String? {
-        currentShipmentDetailsViewModel.totalCost
+        currentShipmentDetailsViewModel?.totalCost
     }
 
     private var isMissingStoreSettings: Bool {
@@ -166,7 +169,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// If the purchase button should be enabled.
     var isPurchaseButtonEnabled: Bool {
-        currentShipmentDetailsViewModel.isPurchaseButtonEnabled
+        currentShipmentDetailsViewModel?.isPurchaseButtonEnabled ?? false
     }
 
     /// If the label purchase is in progress.
@@ -350,7 +353,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
         }
 
-        if isMissingStoreSettings ||
+        if shipments.isEmpty ||
+            isMissingStoreSettings ||
             (originAddress.isEmpty && hasUnfulfilledShipments) {
             state = .missingRequiredData
         } else {
@@ -373,6 +377,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
+        guard let currentShipmentDetailsViewModel else {
+            return
+        }
+
         guard paymentMethod != nil else {
             showingPaymentMethods = true
             return
@@ -600,21 +608,37 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func observeHAZMATNotices() {
+        guard let currentShipmentDetailsViewModel else {
+            hazmatNotice = nil
+            return
+        }
         currentShipmentDetailsViewModel.$hazmatNotice
             .assign(to: &$hazmatNotice)
     }
 
     func observeSelectedPackage() {
+        guard let currentShipmentDetailsViewModel else {
+            selectedPackage = nil
+            return
+        }
         currentShipmentDetailsViewModel.$selectedPackage
             .assign(to: &$selectedPackage)
     }
 
     func observeSelectedRates() {
+        guard let currentShipmentDetailsViewModel else {
+            selectedRate = nil
+            return
+        }
         currentShipmentDetailsViewModel.$selectedRate
             .assign(to: &$selectedRate)
     }
 
     func observeShippingRates() {
+        guard let currentShipmentDetailsViewModel else {
+            shippingRates = []
+            return
+        }
         currentShipmentDetailsViewModel.$shippingRates
             .assign(to: &$shippingRates)
     }

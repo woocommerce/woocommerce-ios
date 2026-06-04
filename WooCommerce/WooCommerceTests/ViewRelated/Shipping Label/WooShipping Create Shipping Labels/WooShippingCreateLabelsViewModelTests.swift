@@ -534,13 +534,14 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
-    func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() {
+    func test_hazmatNotice_is_updated_after_setting_new_hazmat_category() throws {
         // Given
         let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake())
         XCTAssertNil(viewModel.hazmatNotice)
+        let currentShipmentDetailsViewModel = try XCTUnwrap(viewModel.currentShipmentDetailsViewModel)
 
         // When
-        viewModel.currentShipmentDetailsViewModel.hazmatCategory = .class1
+        currentShipmentDetailsViewModel.hazmatCategory = .class1
 
         // Then
         waitUntil {
@@ -581,6 +582,32 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
+    func test_currentShipment_when_shipments_are_empty_then_does_not_crash() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        setupInitialDataLoadingMocks(for: stores)
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        waitUntil {
+            viewModel.state != .loading
+        }
+
+        // When
+        viewModel.updateShipments([])
+        _ = viewModel.currentShipment
+        _ = viewModel.currentShipmentDetailsViewModel
+
+        // Then
+        XCTAssertNil(viewModel.currentShipment)
+        XCTAssertNil(viewModel.currentShipmentDetailsViewModel)
+        XCTAssertFalse(viewModel.canViewLabel)
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
+        XCTAssertNil(viewModel.totalCost)
+        XCTAssertEqual(viewModel.state, .missingRequiredData)
+    }
+
     func test_currentShipment_when_earlier_shipment_is_removed_then_preserves_selected_shipment() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -601,7 +628,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.shipments.count == 3
         }
         viewModel.selectedShipmentIndex = 1
-        XCTAssertEqual(viewModel.currentShipment.index, 1)
+        XCTAssertEqual(viewModel.currentShipment?.index, 1)
 
         let storedShipmentToDelete = try XCTUnwrap(storage.allObjects(ofType: StorageWooShippingShipment.self,
                                                                       matching: NSPredicate(format: "index == %@", "0"),
@@ -616,7 +643,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.shipments.count == 2
         }
         XCTAssertEqual(viewModel.selectedShipmentIndex, 0)
-        XCTAssertEqual(viewModel.currentShipment.index, 1)
+        XCTAssertEqual(viewModel.currentShipment?.index, 1)
     }
 
     func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
@@ -739,7 +766,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             viewModel.state == .ready
         }
         await until {
-            viewModel.currentShipmentDetailsViewModel.shippingService != nil
+            viewModel.currentShipmentDetailsViewModel?.shippingService != nil
         }
         viewModel.didUpdateAccountSettings(accountSettings)
 
@@ -771,8 +798,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             saturdayDeliveryRate: nil,
             additionalHandlingRate: nil
         )
-        viewModel.currentShipmentDetailsViewModel.selectPackage(package)
-        viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
+        guard let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel else {
+            XCTFail("Expected a current shipment details view model")
+            return
+        }
+        currentShipmentDetailsViewModel.selectPackage(package)
+        currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
 
         // When
         await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
@@ -888,14 +919,15 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment?.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.originAddressLines?.first, labelOriginAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
+        XCTAssertEqual(viewModel.currentShipment?.index, 1)
+        XCTAssertNil(viewModel.currentShipment?.purchasedLabel)
         XCTAssertEqual(viewModel.originAddressLines?.first, originAddress.address1)
     }
 
@@ -936,14 +968,15 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment?.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, labelDestinationAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
+        XCTAssertEqual(viewModel.currentShipment?.index, 1)
+        XCTAssertNil(viewModel.currentShipment?.purchasedLabel)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
     }
 
@@ -1947,7 +1980,7 @@ private extension WooShippingCreateLabelsViewModelTests {
 
         let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
         await until { viewModel.state == .ready }
-        await until { viewModel.currentShipmentDetailsViewModel.shippingService != nil }
+        await until { viewModel.currentShipmentDetailsViewModel?.shippingService != nil }
         viewModel.didUpdateAccountSettings(accountSettings)
 
         let package = WooShippingPackageData(id: "box", name: "Box", length: "10", width: "10", height: "5",
@@ -1958,8 +1991,12 @@ private extension WooShippingCreateLabelsViewModelTests {
             signatureRate: nil, adultSignatureRate: nil, carbonNeutralRate: nil,
             saturdayDeliveryRate: nil, additionalHandlingRate: nil
         )
-        viewModel.currentShipmentDetailsViewModel.selectPackage(package)
-        viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
+        guard let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel else {
+            XCTFail("Expected a current shipment details view model")
+            return viewModel
+        }
+        currentShipmentDetailsViewModel.selectPackage(package)
+        currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
 
         return viewModel
     }

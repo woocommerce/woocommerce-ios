@@ -20,34 +20,26 @@ struct POSOrderListMapper: Mapper {
             .siteID: siteID
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(POSOrderListEnvelope.self, from: response).orders
-        } else {
-            return try decoder.decode(LossyPOSOrderList.self, from: response).orders
-        }
+        return try decoder.decode(POSOrderListResponse.self, from: response).orders
     }
 }
 
-private struct POSOrderListEnvelope: Decodable {
+private struct POSOrderListResponse: Decodable {
     let orders: [Order]
 
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        orders = try container.decode(LossyPOSOrderList.self, forKey: .orders).orders
+        if let keyedContainer = try? decoder.container(keyedBy: CodingKeys.self),
+           keyedContainer.contains(.data) {
+            orders = try keyedContainer.decode([LossyPOSOrder].self, forKey: .data).compactMap(\.order)
+            return
+        }
+
+        let container = try decoder.singleValueContainer()
+        orders = try container.decode([LossyPOSOrder].self).compactMap(\.order)
     }
 
     private enum CodingKeys: String, CodingKey {
-        case orders = "data"
-    }
-}
-
-private struct LossyPOSOrderList: Decodable {
-    let orders: [Order]
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let wrappers = try container.decode([LossyPOSOrder].self)
-        orders = wrappers.compactMap(\.order)
+        case data
     }
 }
 

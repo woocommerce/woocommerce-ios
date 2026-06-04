@@ -67,12 +67,12 @@ public struct CartOrderComparison {
 
     /// Returns true if there are any discrepancies between cart and order
     public var hasDiscrepancies: Bool {
-        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch || !customAmountsMatch
+        return !missingItems.isEmpty || !quantityMismatches.isEmpty || extraItemsCount > 0 || !couponsMatch || !customAmountsMatch
     }
 
-    /// Returns true when the order has remote-added lines that are not present in the cart.
+    /// Returns true when the order has allowed remote-added fee lines that are not present in the cart.
     public var hasRemoteAdditions: Bool {
-        return extraItemsCount > 0 || extraCustomAmountsCount > 0
+        return extraCustomAmountsCount > 0
     }
 
     /// Represents an item that was expected in the cart but is missing from the order
@@ -134,6 +134,15 @@ extension [POSCartItem] {
                 return false
             }
         }
+
+        for orderItem in consolidatedOrderItems {
+            guard consolidatedCartItems.contains(where: { cartItem in
+                cartItem.item.matches(orderItem: orderItem) && cartItem.quantity == orderItem.quantity
+            }) else {
+                return false
+            }
+        }
+
         return true
     }
 

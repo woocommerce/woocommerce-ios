@@ -110,8 +110,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
         if comparison.hasRemoteAdditions {
             DDLogInfo("""
-                ℹ️ POS order contains remote-added lines. \
-                Extra product groups: \(comparison.extraItemsCount), \
+                ℹ️ POS order contains remote-added fee lines. \
                 Extra fee lines: \(comparison.extraCustomAmountsCount)
                 """)
         }

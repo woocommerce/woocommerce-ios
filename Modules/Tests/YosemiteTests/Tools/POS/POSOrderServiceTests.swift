@@ -195,7 +195,7 @@ struct POSOrderServiceTests {
     }
 
     @Test
-    func syncOrder_when_returned_order_has_extra_product_not_in_cart_then_succeeds() async throws {
+    func syncOrder_when_returned_order_has_extra_product_not_in_cart_then_throws() async throws {
         // Given
         let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
         let orderWithExtraProduct = OrderFactory.newOrder(currency: .USD)
@@ -209,11 +209,14 @@ struct POSOrderServiceTests {
             )
         mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraProduct)
 
-        // When
-        let syncedOrder = try await sut.syncOrder(cart: cart, currency: .USD)
+        let comparison = cart.compareWithOrder(orderWithExtraProduct)
+        #expect(comparison.extraItemsCount == 1)
+        #expect(comparison.hasDiscrepancies == true)
 
-        // Then
-        #expect(syncedOrder.items.count == 2)
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
     }
 
     @Test

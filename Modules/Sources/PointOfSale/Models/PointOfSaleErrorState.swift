@@ -99,7 +99,7 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersLoadError,
             title: Constants.failedToLoadOrdersTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnLoadingOrdersNextPage(error: Error? = nil) -> Self {
@@ -107,7 +107,7 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersNextPageError,
             title: Constants.failedToLoadOrdersNextPageTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnInitalCatalogSync(error: Error? = nil) -> Self {
@@ -228,6 +228,11 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to load more orders",
             comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
             "the first. Shown inline with the previously loaded orders above."
+        )
+        static let ordersTryAgainButtonTitle = NSLocalizedString(
+            "pos.orderList.tryAgainButtonTitle",
+            value: "Try again",
+            comment: "Button text to retry loading orders in Point of Sale."
         )
     }
 }

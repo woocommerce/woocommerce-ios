@@ -3,7 +3,6 @@ import XCTest
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
 import struct NetworkingCore.OrderItem
-import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
 final class POSOrderListServiceTests: XCTestCase {
@@ -60,11 +59,10 @@ final class POSOrderListServiceTests: XCTestCase {
     }
 
     func test_PointOfSaleOrderServiceProtocol_provides_orders_when_store_has_orders() async throws {
-        let mockOrder = Order.fake().copy(
+        let mockOrder = makeOrder(
             orderID: 1001,
             number: "1001",
-            status: .completed,
-            total: "25.99"
+            items: [makeOrderItem()]
         )
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [mockOrder],
                                                                      hasMorePages: false,
@@ -126,6 +124,30 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(mockOrdersRemote.spySearchTerm, "100")
     }
 
+    func test_providePointOfSaleOrders_when_one_order_has_invalid_total_then_skips_malformed_order_and_returns_page() async throws {
+        let malformedOrder = makeOrder(
+            orderID: 1001,
+            number: "1001",
+            total: "invalid",
+            items: [makeOrderItem()]
+        )
+        let validOrder = makeOrder(
+            orderID: 1002,
+            number: "1002",
+            items: [makeOrderItem(itemID: 2)]
+        )
+        mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [malformedOrder, validOrder],
+                                                                     hasMorePages: true,
+                                                                     totalItems: 2))
+
+        let pagedOrders = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
+
+        XCTAssertEqual(pagedOrders.items.map(\.id), [1002])
+        XCTAssertTrue(pagedOrders.hasMorePages)
+        XCTAssertEqual(pagedOrders.totalItems, 2)
+        XCTAssertEqual(pagedOrders.items.first?.formattedTotal, "$25.99")
+    }
+
     func test_loadOrder_when_order_item_has_invalid_total_tax_then_throws_requestFailed() async {
         let malformedOrder = makeOrder(
             orderID: 1001,
@@ -147,8 +169,8 @@ final class POSOrderListServiceTests: XCTestCase {
 
     func test_PointOfSaleOrderServiceProtocol_returns_correct_pagination_when_more_pages_available() async throws {
         let mockOrders = [
-            Order.fake().copy(orderID: 1001, number: "1001", status: .completed, total: "25.99"),
-            Order.fake().copy(orderID: 1002, number: "1002", status: .completed, total: "15.50")
+            makeOrder(orderID: 1001, number: "1001", total: "25.99", items: [makeOrderItem()]),
+            makeOrder(orderID: 1002, number: "1002", total: "15.50", items: [makeOrderItem(itemID: 2)])
         ]
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: mockOrders,
                                                                      hasMorePages: true,
@@ -219,6 +241,8 @@ private extension POSOrderListServiceTests {
     func makeOrder(
         orderID: Int64,
         number: String,
+        total: String = "25.99",
+        totalTax: String = "2.50",
         items: [OrderItem]
     ) -> Order {
         Order.fake().copy(
@@ -227,8 +251,8 @@ private extension POSOrderListServiceTests {
             status: .completed,
             currency: "USD",
             discountTotal: "0.00",
-            total: "25.99",
-            totalTax: "2.50",
+            total: total,
+            totalTax: totalTax,
             items: items,
             refunds: [],
             fees: []

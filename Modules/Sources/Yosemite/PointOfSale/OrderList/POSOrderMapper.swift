@@ -12,6 +12,11 @@ enum POSOrderItemMappingError: Error {
     case totalFormattingFailed(orderID: Int64, itemID: Int64, total: String, currency: String)
 }
 
+enum POSOrderMappingError: Error {
+    case totalFormattingFailed(orderID: Int64, total: String, currency: String)
+    case totalTaxFormattingFailed(orderID: Int64, totalTax: String, currency: String)
+}
+
 struct POSOrderMapper {
     private let currencyFormatter: CurrencyFormatter
 
@@ -29,6 +34,10 @@ struct POSOrderMapper {
             .map { map(fee: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
+
+        let formattedTotal = try mapFormattedTotal(order: order)
+        let formattedTotalTax = try mapFormattedTotalTax(order: order)
+        let formattedPaymentTotal = mapFormattedPaymentTotal(order: order, formattedTotal: formattedTotal)
 
         let formattedDiscountTotal: String? = {
             guard let discountTotalValue = Double(order.discountTotal), discountTotalValue > 0 else {
@@ -55,7 +64,7 @@ struct POSOrderMapper {
             number: order.number,
             dateCreated: order.dateCreated,
             status: order.status,
-            formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
+            formattedTotal: formattedTotal,
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
             customerEmail: customerEmail,
             paymentMethodID: order.paymentMethodID,
@@ -64,13 +73,34 @@ struct POSOrderMapper {
             customAmounts: posCustomAmounts,
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
-            formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
-            formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
+            formattedTotalTax: formattedTotalTax,
+            formattedPaymentTotal: formattedPaymentTotal,
             formattedNetAmount: formattedNetAmount,
             datePaid: order.datePaid,
             paymentStatusMetadata: order.paymentStatusMetadata,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
+    }
+
+    private func mapFormattedTotal(order: NetworkingCore.Order) throws -> String {
+        guard let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) else {
+            throw POSOrderMappingError.totalFormattingFailed(orderID: order.orderID, total: order.total, currency: order.currency)
+        }
+        return formattedTotal
+    }
+
+    private func mapFormattedTotalTax(order: NetworkingCore.Order) throws -> String {
+        guard let formattedTotalTax = currencyFormatter.formatAmount(order.totalTax, with: order.currency) else {
+            throw POSOrderMappingError.totalTaxFormattingFailed(orderID: order.orderID, totalTax: order.totalTax, currency: order.currency)
+        }
+        return formattedTotalTax
+    }
+
+    private func mapFormattedPaymentTotal(order: NetworkingCore.Order, formattedTotal: String) -> String {
+        guard order.datePaid != nil else {
+            return currencyFormatter.formatAmount("0.00", with: order.currency) ?? ""
+        }
+        return formattedTotal
     }
 
     private func map(orderItem: NetworkingCore.OrderItem, orderID: Int64, currency: String) throws -> POSOrderItem {

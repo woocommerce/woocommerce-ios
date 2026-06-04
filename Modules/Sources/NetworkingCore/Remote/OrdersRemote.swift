@@ -544,7 +544,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
+        let mapper = POSOrderListMapper(siteID: siteID)
         let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
@@ -566,7 +566,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
+        let mapper = POSOrderListMapper(siteID: siteID)
         let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
@@ -690,7 +690,7 @@ public extension OrdersRemote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
+        let mapper = POSOrderListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }

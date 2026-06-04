@@ -160,30 +160,38 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func didPurchaseLabel(for shipmentIndex: Int, label: ShippingLabel) {
-        let currentShipment = shipments[shipmentIndex]
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
+            return
+        }
+
+        let currentShipment = shipments[shipmentArrayIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: updatedContents,
-                                            purchasedLabel: label,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
+        shipments[shipmentArrayIndex] = Shipment(index: currentShipment.index,
+                                                 contents: updatedContents,
+                                                 purchasedLabel: label,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
         shipmentsSavedInRemote = shipments
     }
 
     func didRequestRefund(for shipmentIndex: Int) {
-        let currentShipment = shipments[shipmentIndex]
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
+            return
+        }
+
+        let currentShipment = shipments[shipmentArrayIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: updatedContents,
-                                            purchasedLabel: nil,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
+        shipments[shipmentArrayIndex] = Shipment(index: currentShipment.index,
+                                                 contents: updatedContents,
+                                                 purchasedLabel: nil,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
         shipmentsSavedInRemote = shipments
     }
 

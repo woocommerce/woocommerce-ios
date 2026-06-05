@@ -9,14 +9,14 @@ struct QRLoginErrorView: View {
     let onEnterSiteURLTapped: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer(minLength: 24)
+        VStack(spacing: Constants.zeroSpacing) {
+            Spacer(minLength: Constants.standardPadding)
 
-            VStack(spacing: 20) {
+            VStack(spacing: Constants.contentSpacing) {
                 Image(systemName: errorIconName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 88, height: 88)
+                    .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .foregroundColor(Color(uiColor: .systemRed))
                     .accessibilityHidden(true)
 
@@ -30,20 +30,20 @@ struct QRLoginErrorView: View {
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
+                    .padding(.horizontal, Constants.largePadding)
             }
 
-            Spacer(minLength: 24)
+            Spacer(minLength: Constants.standardPadding)
 
-            VStack(spacing: 12) {
+            VStack(spacing: Constants.buttonSpacing) {
                 Button(primaryCTA, action: onPrimaryTapped)
                     .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.enterSiteURL, action: onEnterSiteURLTapped)
                     .buttonStyle(SecondaryButtonStyle())
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 24)
+            .padding(.horizontal, Constants.standardPadding)
+            .padding(.bottom, Constants.standardPadding)
         }
     }
 }
@@ -118,6 +118,15 @@ private extension QRLoginErrorView {
 // MARK: - Localization
 
 private extension QRLoginErrorView {
+    enum Constants {
+        static let zeroSpacing: CGFloat = 0
+        static let buttonSpacing: CGFloat = 12
+        static let contentSpacing: CGFloat = 20
+        static let standardPadding: CGFloat = 24
+        static let largePadding: CGFloat = 32
+        static let iconSize: CGFloat = 88
+    }
+
     enum Localization {
         // Titles
         static let invalidPayloadTitle = NSLocalizedString(

@@ -364,6 +364,27 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(properties?["type"], "performance")
     }
 
+    @MainActor
+    func test_shouldShowAnalyticsImportUpdateModeInfoButton_when_setting_has_not_loaded_then_returns_false() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowAnalyticsImportUpdateModeInfoButton)
+    }
+
+    @MainActor
+    func test_shouldShowAnalyticsImportUpdateModeInfoButton_when_setting_has_loaded_then_returns_true() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // When
+        viewModel.setAnalyticsImportUpdateMode(.immediate)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowAnalyticsImportUpdateModeInfoButton)
+    }
+
     // MARK: - Order type bottom sheet
 
     @MainActor

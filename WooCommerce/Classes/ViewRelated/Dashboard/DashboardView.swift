@@ -202,6 +202,11 @@ struct DashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
+        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
+            AnalyticsUpdateModeBottomSheet(
+                viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel()
+            )
+        }
         .onAppear {
             Task {
                 await viewModel.onViewAppear()
@@ -238,11 +243,15 @@ private extension DashboardView {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .topPerformers:
                         TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel) {

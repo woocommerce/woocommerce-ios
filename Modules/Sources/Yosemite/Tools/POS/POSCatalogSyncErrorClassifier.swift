@@ -165,7 +165,7 @@ enum POSCatalogSyncErrorClassifier {
         switch error {
         case .cancelled:
             return "request_cancelled"
-        case .unacceptableStatusCode, .downloadFailed, .fileNotFound, .invalidURL, .sessionCreationFailed:
+        case .downloadFailed, .fileNotFound, .invalidURL, .sessionCreationFailed:
             return "catalog_file_download_failed"
         }
     }

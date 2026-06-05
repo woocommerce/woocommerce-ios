@@ -63,7 +63,6 @@ public struct BackgroundDownloadResult {
 public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
     case invalidURL
     case sessionCreationFailed
-    case unacceptableStatusCode(statusCode: Int, contentType: String?)
     case downloadFailed(Error)
     case fileNotFound
     case cancelled
@@ -74,8 +73,6 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return "The provided URL is invalid"
         case .sessionCreationFailed:
             return "Failed to create background download session"
-        case .unacceptableStatusCode(let statusCode, _):
-            return "Download failed with HTTP status \(statusCode)"
         case .downloadFailed(let error):
             return "Download failed: \(error.localizedDescription)"
         case .fileNotFound:
@@ -91,8 +88,6 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return true
         case (.sessionCreationFailed, .sessionCreationFailed):
             return true
-        case (.unacceptableStatusCode(let lhsStatusCode, let lhsContentType), .unacceptableStatusCode(let rhsStatusCode, let rhsContentType)):
-            return lhsStatusCode == rhsStatusCode && lhsContentType == rhsContentType
         case (.downloadFailed(let lhsError), .downloadFailed(let rhsError)):
             return lhsError.localizedDescription == rhsError.localizedDescription
         case (.fileNotFound, .fileNotFound):
@@ -101,30 +96,6 @@ public enum BackgroundDownloadError: Error, LocalizedError, Equatable {
             return true
         default:
             return false
-        }
-    }
-}
-
-extension BackgroundDownloadError {
-    var statusCode: Int? {
-        switch self {
-        case .unacceptableStatusCode(let statusCode, _):
-            return statusCode
-        case .downloadFailed(let error as BackgroundDownloadError):
-            return error.statusCode
-        default:
-            return nil
-        }
-    }
-
-    var contentType: String? {
-        switch self {
-        case .unacceptableStatusCode(_, let contentType):
-            return contentType
-        case .downloadFailed(let error as BackgroundDownloadError):
-            return error.contentType
-        default:
-            return nil
         }
     }
 }

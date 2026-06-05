@@ -92,9 +92,7 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
 
         downloadTasks.removeValue(forKey: sessionIdentifier)
 
-        if let error = error as? BackgroundDownloadError {
-            continuation.resume(throwing: error)
-        } else if let error {
+        if let error {
             continuation.resume(throwing: BackgroundDownloadError.downloadFailed(error))
         } else if let result {
             continuation.resume(returning: result)
@@ -118,15 +116,6 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
         }
 
         let httpResponse = downloadTask.response as? HTTPURLResponse
-        if let statusCode = httpResponse?.statusCode, !(200..<300).contains(statusCode) {
-            handleDownloadCompletion(for: sessionIdentifier,
-                                     result: nil,
-                                     error: BackgroundDownloadError.unacceptableStatusCode(
-                                        statusCode: statusCode,
-                                        contentType: httpResponse?.value(forHTTPHeaderField: "Content-Type")
-                                     ))
-            return
-        }
 
         do {
             // Move downloaded file to temporary directory to prevent iOS from cleaning it up

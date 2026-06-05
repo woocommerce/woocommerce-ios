@@ -818,13 +818,12 @@ struct POSCatalogSyncRemoteTests {
         }
     }
 
-    @Test func downloadCatalog_when_download_fails_then_throws_catalog_file_download_error() async throws {
+    @Test func downloadCatalog_when_download_returns_non_2xx_then_throws_catalog_file_download_error() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-
-        let expectedError = BackgroundDownloadError.unacceptableStatusCode(statusCode: 403, contentType: "text/html; charset=UTF-8")
-        mockBackgroundDownloader.mockFailedDownload(error: expectedError)
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "<html><body>Forbidden</body></html>")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL, statusCode: 403, contentType: "text/html; charset=UTF-8")
 
         // When/Then
         do {
@@ -834,21 +833,18 @@ struct POSCatalogSyncRemoteTests {
             if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
                 #expect(statusCode == 403)
                 #expect(contentType == "text/html; charset=UTF-8")
-                #expect(underlyingError is BackgroundDownloadError)
+                #expect((underlyingError as NSError).code == 403)
             } else {
                 Issue.record("Expected POSCatalogFileError.downloadFailed")
             }
         }
     }
 
-    @Test func downloadCatalog_when_download_fails_with_wrapped_status_code_then_preserves_catalog_file_download_metadata() async throws {
+    @Test func downloadCatalog_when_download_transport_fails_then_throws_catalog_file_download_error_without_response_metadata() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-
-        let expectedError = BackgroundDownloadError.downloadFailed(
-            BackgroundDownloadError.unacceptableStatusCode(statusCode: 403, contentType: "text/html; charset=UTF-8")
-        )
+        let expectedError = URLError(.notConnectedToInternet)
         mockBackgroundDownloader.mockFailedDownload(error: expectedError)
 
         // When/Then
@@ -857,9 +853,9 @@ struct POSCatalogSyncRemoteTests {
             Issue.record("Expected error to be thrown")
         } catch {
             if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
-                #expect(statusCode == 403)
-                #expect(contentType == "text/html; charset=UTF-8")
-                #expect(underlyingError is BackgroundDownloadError)
+                #expect(statusCode == nil)
+                #expect(contentType == nil)
+                #expect((underlyingError as? URLError)?.code == expectedError.code)
             } else {
                 Issue.record("Expected POSCatalogFileError.downloadFailed")
             }

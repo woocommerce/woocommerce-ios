@@ -249,14 +249,16 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                                                                          allowCellular: allowCellular)
         } catch BackgroundDownloadError.cancelled {
             throw BackgroundDownloadError.cancelled
-        } catch let error as BackgroundDownloadError {
-            throw POSCatalogFileError.downloadFailed(statusCode: error.statusCode,
-                                                     contentType: error.contentType,
-                                                     underlyingError: error)
         } catch {
             throw POSCatalogFileError.downloadFailed(statusCode: nil,
                                                      contentType: nil,
                                                      underlyingError: error)
+        }
+
+        if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
+            throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
+                                                     contentType: downloadResult.contentType,
+                                                     underlyingError: NSError(domain: "POSCatalogSyncRemote", code: statusCode))
         }
 
         // Download completed - parse the file

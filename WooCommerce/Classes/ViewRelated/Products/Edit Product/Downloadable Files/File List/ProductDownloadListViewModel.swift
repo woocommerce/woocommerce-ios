@@ -77,7 +77,8 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     }
 
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int) {
-        downloadableFiles.insert(newElement, at: index)
+        let insertionIndex = min(max(index, 0), downloadableFiles.count)
+        downloadableFiles.insert(newElement, at: insertionIndex)
     }
 
     func append(_ newElement: ProductDownloadDragAndDrop) {

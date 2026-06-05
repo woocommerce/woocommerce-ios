@@ -124,6 +124,21 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func test_insert_when_reinserting_removed_file_at_original_end_index_then_does_not_crash() throws {
+        // Given
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductDownloadListViewModel(product: model)
+        let originalEndIndex = viewModel.count()
+        let removedFile = try XCTUnwrap(viewModel.remove(at: 0))
+
+        // When
+        viewModel.insert(removedFile, at: originalEndIndex)
+
+        // Then
+        XCTAssertTrue(true)
+    }
+
     func test_viewModel_has_unsaved_changes_after_updating_with_the_original_values() {
         // Arrange
         let product = Fakes.ProductFactory.productWithDownloadableFiles()

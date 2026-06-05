@@ -1,0 +1,15 @@
+{
+    "data": {
+        "id": "woocommerce_analytics_scheduled_import",
+        "label": "Updates",
+        "description": "Choose how analytics imports are processed.",
+        "type": "select",
+        "default": "yes",
+        "options": {
+            "yes": "Scheduled",
+            "no": "Immediately"
+        },
+        "value": null,
+        "group_id": "wc_admin"
+    }
+}

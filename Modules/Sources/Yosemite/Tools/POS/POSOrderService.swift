@@ -238,6 +238,7 @@ public extension POSOrderService {
     enum POSOrderServiceError: Error, LocalizedError {
         case updateOrderFailed
         case missingProductsInOrder([CartOrderComparison.MissingCartItem])
+        /// The localized description is shown in POS checkout when the created order does not match the cart contents.
         case orderDoesNotMatchCart
 
         public var errorDescription: String? {

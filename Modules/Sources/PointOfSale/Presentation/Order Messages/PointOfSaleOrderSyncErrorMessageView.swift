@@ -9,7 +9,7 @@ struct PointOfSaleOrderSyncErrorMessageView: View {
     init(message: String, retryHandler: @escaping () -> Void) {
         self.title = Localization.title
         self.message = message
-        self.actionTitle = Localization.actionTitle
+        self.actionTitle = Localization.retryActionTitle
         self.action = retryHandler
     }
 
@@ -65,7 +65,7 @@ private extension PointOfSaleOrderSyncErrorMessageView {
             comment: "Title of the error when failing to synchronize order and calculate order totals"
         )
 
-        static let actionTitle = NSLocalizedString(
+        static let retryActionTitle = NSLocalizedString(
             "pointOfSale.orderSync.error.tryAgain",
             value: "Try again",
             comment: "Button title to retry synchronizing order and calculating order totals"

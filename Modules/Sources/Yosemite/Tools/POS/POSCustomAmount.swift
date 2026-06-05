@@ -38,7 +38,7 @@ extension [POSCustomAmount] {
         return comparison(with: order).extraFeesCount
     }
 
-    private func comparison(with order: Order?) -> (matches: Bool, extraFeesCount: Int) {
+    func comparison(with order: Order?) -> (matches: Bool, extraFeesCount: Int) {
         let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
         let cartSummaries = self
             .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }

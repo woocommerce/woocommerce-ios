@@ -37,15 +37,15 @@ public extension POSCart {
     func compareWithOrder(_ order: Order?) -> CartOrderComparison {
         let itemsComparison = items.compareWithOrder(order)
         let couponsMatch = coupons.matches(order: order)
-        let customAmountsMatch = customAmounts.matches(order: order)
+        let customAmountComparison = customAmounts.comparison(with: order)
 
         return CartOrderComparison(
             missingItems: itemsComparison.missingItems,
             quantityMismatches: itemsComparison.quantityMismatches,
             extraItemsCount: itemsComparison.extraItemsCount,
             couponsMatch: couponsMatch,
-            customAmountsMatch: customAmountsMatch,
-            extraCustomAmountsCount: customAmounts.extraActiveFeesCount(order: order)
+            customAmountsMatch: customAmountComparison.matches,
+            extraCustomAmountsCount: customAmountComparison.extraFeesCount
         )
     }
 }
@@ -62,7 +62,10 @@ public struct CartOrderComparison {
     public let couponsMatch: Bool
     /// Whether the custom amounts in the cart match the order's active fee lines
     public let customAmountsMatch: Bool
-    /// Number of active fee lines found in the order but not in the cart
+    /// Number of active fee lines found in the order but not in the cart.
+    ///
+    /// Remote-added fee lines are allowed so stores can add charges from snippets or plugins. They are tracked for logging,
+    /// but do not count as cart-order discrepancies.
     public let extraCustomAmountsCount: Int
 
     /// Returns true if there are any discrepancies between cart and order

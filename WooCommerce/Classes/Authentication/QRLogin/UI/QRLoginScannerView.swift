@@ -22,9 +22,9 @@ struct QRLoginScannerView: View {
                     Button(action: onCancel) {
                         Image(systemName: "xmark")
                             .imageScale(.large)
-                            .padding(12)
+                            .padding(Constants.standardPadding)
                             .background(
-                                Circle().fill(Color.black.opacity(0.4))
+                                Circle().fill(Color.black.opacity(Constants.cancelButtonBackgroundOpacity))
                             )
                             .foregroundColor(.white)
                             .accessibilityLabel(Localization.cancelAccessibility)
@@ -32,19 +32,20 @@ struct QRLoginScannerView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.top, 8)
+                .padding(.top, Constants.smallPadding)
 
                 Spacer()
 
                 Text(Localization.urlPill)
                     .font(.headline)
                     .foregroundColor(.white)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, Constants.urlPillHorizontalPadding)
+                    .padding(.vertical, Constants.urlPillVerticalPadding)
                     .background(
-                        RoundedRectangle(cornerRadius: 18).fill(Color.black.opacity(0.5))
+                        RoundedRectangle(cornerRadius: Constants.urlPillCornerRadius)
+                            .fill(Color.black.opacity(Constants.urlPillBackgroundOpacity))
                     )
-                    .padding(.bottom, 32)
+                    .padding(.bottom, Constants.largePadding)
             }
         }
         .background(Color.black.ignoresSafeArea())
@@ -97,6 +98,19 @@ private struct QRLoginScannerRepresentable: UIViewControllerRepresentable {
 }
 
 // MARK: - Localization
+
+private extension QRLoginScannerView {
+    enum Constants {
+        static let smallPadding: CGFloat = 8
+        static let standardPadding: CGFloat = 12
+        static let largePadding: CGFloat = 32
+        static let cancelButtonBackgroundOpacity = 0.4
+        static let urlPillHorizontalPadding: CGFloat = 18
+        static let urlPillVerticalPadding: CGFloat = 10
+        static let urlPillCornerRadius: CGFloat = 18
+        static let urlPillBackgroundOpacity = 0.5
+    }
+}
 
 extension QRLoginScannerView {
     enum Localization {

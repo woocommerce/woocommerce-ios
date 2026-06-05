@@ -4,7 +4,7 @@ import SwiftUI
 /// authenticating phases (scan, exchange, complete).
 struct QRLoginAuthenticatingView: View {
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: Constants.standardSpacing) {
             ProgressView()
                 .controlSize(.large)
                 .tint(Color(uiColor: .accent))
@@ -20,6 +20,10 @@ struct QRLoginAuthenticatingView: View {
 }
 
 private extension QRLoginAuthenticatingView {
+    enum Constants {
+        static let standardSpacing: CGFloat = 24
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "qrLogin.authenticating.title",

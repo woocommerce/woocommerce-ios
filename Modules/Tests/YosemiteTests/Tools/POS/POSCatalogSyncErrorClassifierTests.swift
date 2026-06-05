@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import GRDB
 import Alamofire
+import enum Networking.BackgroundDownloadError
 import NetworkingCore
 @testable import Yosemite
 
@@ -159,6 +160,17 @@ struct POSCatalogSyncErrorClassifierTests {
 
         // When
         let result = POSCatalogSyncErrorClassifier.classify(afError)
+
+        // Then
+        #expect(result == "network_error")
+    }
+
+    @Test func classify_background_download_error_wrapping_url_error_returns_network_error() {
+        // Given
+        let error = BackgroundDownloadError.downloadFailed(URLError(.notConnectedToInternet))
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(error)
 
         // Then
         #expect(result == "network_error")

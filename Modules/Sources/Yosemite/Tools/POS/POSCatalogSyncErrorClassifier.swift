@@ -165,7 +165,9 @@ enum POSCatalogSyncErrorClassifier {
         switch error {
         case .cancelled:
             return "request_cancelled"
-        case .downloadFailed, .fileNotFound, .invalidURL, .sessionCreationFailed:
+        case .downloadFailed(let underlyingError):
+            return classify(underlyingError)
+        case .fileNotFound, .invalidURL, .sessionCreationFailed:
             return "catalog_file_download_failed"
         }
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:57:58+0000 */
+/* Translation-Revision-Date: 2026-06-03 09:58:23+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -11298,13 +11298,16 @@ which should be translated separately and considered part of this sentence. */
 "newOrderNotificationPreferencesDetailView.enable.title" = "Aktivera aviseringar";
 
 /* Subtitle of the radio row that filters notifications to orders above a threshold. */
-"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Filtrera till beställningar över din tröskel.";
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Filtrera till beställningar över ditt tröskelvärde.";
 
 /* Title of the radio row that filters notifications to orders above a threshold. */
 "newOrderNotificationPreferencesDetailView.highValue.title" = "Endast beställningar med högt värde";
 
 /* Section header for new-order notification customization options. */
 "newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "Avisera mig för";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "Lägsta värde (%1$@)";
 
 /* Placeholder for the order-total threshold text field. */
 "newOrderNotificationPreferencesDetailView.threshold.placeholder" = "Belopp";
@@ -11349,7 +11352,7 @@ which should be translated separately and considered part of this sentence. */
 "newStockNotificationPreferencesDetailView.enable.title" = "Aktivera lageraviseringar";
 
 /* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
-"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Tröskelvärde för hela butiken ()";
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Redigera tröskelvärde för hela butiken";
 
 /* Subtitle of the low-stock toggle row. */
 "newStockNotificationPreferencesDetailView.lowStock.subtitle" = "När en produktvariant når sin låga lagertröskel.";
@@ -11358,13 +11361,13 @@ which should be translated separately and considered part of this sentence. */
 "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Produkter kan använda sitt eget tröskelvärde eller tröskelvärdet för hela butiken. %1$@ för att se det aktuella värdet.";
 
 /* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
-"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Produkter kan använda sitt eget tröskelvärde eller tröskelvärdet för hela butiken på{00A0}u%1$@. %2$@";
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Produkter kan använda sitt eget tröskelvärde eller tröskelvärdet för hela butiken för{00A0}u%1$@. %2$@";
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "Lågt lager";
 
 /* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
-"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Tröskelvärde för hela butiken ()";
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Visa tröskelvärde för hela butiken";
 
 /* Section header for stock notification customization options. */
 "newStockNotificationPreferencesDetailView.notifyMeFor.header" = "Avisera mig för";
@@ -13234,7 +13237,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.otherPaymentMethods.markAsPaid.title" = "Markera beställning som betald";
 
 /* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
-"pos.otherPaymentMethods.scanToPay.subtitle" = "Visa en QR-kod som kunden kan betala från sin telefon.";
+"pos.otherPaymentMethods.scanToPay.subtitle" = "Visa en QR-kod så att kunden kan betala via sin mobil.";
 
 /* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
 "pos.otherPaymentMethods.scanToPay.title" = "Skanna för att betala";
@@ -13312,7 +13315,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refund.processing.error.alreadyInProgress" = "En återbetalning pågår redan. Vänta tills den är klar.";
 
 /* Error shown when POS tries to process a refund without selected refund items. */
-"pos.refund.processing.error.emptySelection" = "Välj minst en artikel att återbetala.";
+"pos.refund.processing.error.emptySelection" = "Välj minst en artikel för återbetalning.";
 
 /* Error shown when POS tries to process a refund without prepared order refund data. */
 "pos.refund.processing.error.missingPreparation" = "Återbetalningen kunde inte förberedas. Försök igen.";
@@ -13345,7 +13348,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.pleaseWait.message" = "Vänta";
 
 /* Message shown in POS while preparing a card reader for a refund. */
-"pos.refundCardPresent.preparingReader.message" = "Förbereder läsaren för betalning";
+"pos.refundCardPresent.preparingReader.message" = "Förbereder läsaren för återbetalning";
 
 /* Instruction shown in POS when a card should be presented for a refund. */
 "pos.refundCardPresent.presentCard.message" = "Ange kort för att återbetala";
@@ -13366,7 +13369,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.tapInsert.message" = "Tryck på eller sätt i kort för att återbetala";
 
 /* Instruction shown in POS when a card should be presented for a refund. */
-"pos.refundCardPresent.tapSwipeInsert.message" = "Tryck på eller sätt i kort för att återbetala";
+"pos.refundCardPresent.tapSwipeInsert.message" = "Tryck på, svep eller sätt i kort för att återbetala";
 
 /* Button shown in POS to retry a failed card reader refund. */
 "pos.refundCardPresent.tryRefundAgain.button.title" = "Försök att återbetala igen";
@@ -14258,7 +14261,7 @@ which should be translated separately and considered part of this sentence. */
 "pushNotificationPreferencesView.error.message" = "Kontrollera din anslutning och försök igen.";
 
 /* Title shown when the push notification preferences fail to load. */
-"pushNotificationPreferencesView.error.title" = "Det gick inte att läsa in aviseringsinställningar";
+"pushNotificationPreferencesView.error.title" = "Det gick inte att läsa in aviseringsinställningarna";
 
 /* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
 "pushNotificationPreferencesView.newOrders.accessibilityHint" = "Anpassa nya beställningsaviseringar";
@@ -14905,7 +14908,7 @@ which should be translated separately and considered part of this sentence. */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Aktivera beställningsaviseringar";
 
 /* Action button to open the store push notification preferences screen */
-"supportDiagnosticsService.action.openPushNotificationPreferences" = "Meddelandeinställningar";
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "Aviseringsinställningar";
 
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Öppna inställningar";
@@ -14956,7 +14959,7 @@ which should be translated separately and considered part of this sentence. */
 "supportDiagnosticsService.error.orderNotificationsDisabled" = "Beställningsaviseringar är inte aktiverade för denna butik.\n\nAktivera dem för att få aviseringar när nya beställningar kommer in.";
 
 /* Message when some store push notification preferences are disabled */
-"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "Vissa inställningar för pushnotiser är inaktiverade för den här butiken.\n\nÖppna alternativen för att välja vilka aviseringar du vill få.";
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "Vissa inställningar för pushnotiser är inaktiverade för den här butiken.\n\nÖppna inställningarna för att välja vilka aviseringar du vill få.";
 
 /* Message when there is a timeout error */
 "supportDiagnosticsService.error.timeout" = "Det tar för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";

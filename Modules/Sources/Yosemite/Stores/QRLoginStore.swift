@@ -35,11 +35,11 @@ public final class QRLoginStore: DeauthenticatedStore {
                                                   clientSecret: wpComClientSecret))
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: QRLoginAction.self)
     }
 
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? QRLoginAction else {
             assertionFailure("QRLoginStore received an unsupported action: \(action)")
             return

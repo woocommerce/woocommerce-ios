@@ -19,10 +19,11 @@ import WordPressAuthenticator
 /// Retry semantics:
 ///   - error during scan   → retry runs scan again.
 ///   - error during poll   → retry resumes polling (same session_id + token_hash).
-///   - error during exchange → retry runs exchange again with the retained grant.
+///   - error during exchange → retry runs exchange again with the retained grant
+///     only if `/exchange` itself failed before an AP was minted.
 ///   - non-retryable error → primary CTA is "Scan a new code" — surfaced via
-///     `error.primaryAction == .scanAgain`. The coordinator handles that case
-///     by sending the user back to the scanner; the view model just reports it.
+///     `error.primaryAction == .scanAgain`. If `retry()` is invoked for one of
+///     those errors, it starts a fresh scan rather than reusing retained state.
 @MainActor
 @Observable
 final class QRLoginViewModel {
@@ -92,6 +93,12 @@ final class QRLoginViewModel {
     /// Re-runs the failed phase.
     func retry() async {
         guard case .error(let error) = state else { return }
+
+        guard error.primaryAction == .retryFailedPhase else {
+            await runScan()
+            return
+        }
+
         analytics.trackClick(.qrRetry)
 
         switch error.phase {
@@ -103,12 +110,14 @@ final class QRLoginViewModel {
                 return
             }
             await runPolling(scan: lastScan)
-        case .exchange, .postExchange:
+        case .exchange:
             guard let lastGrant else {
                 await runScan()
                 return
             }
             await runExchange(grant: lastGrant)
+        case .postExchange:
+            await runScan()
         }
     }
 

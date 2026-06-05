@@ -17,9 +17,17 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         }
     }
 
+    @Test("flag(for:) returns nil for fiscalization countries removed from support")
+    func test_flag_for_removed_fiscalization_countries() {
+        for country in [CountryCode.AT, .BE, .FR, .DE, .IT, .PT, .ES] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country) == nil,
+                    "Expected \(country) to require no expansion flag after support removal")
+        }
+    }
+
     @Test("flag(for:) returns inPersonPaymentsCountryExpansion for the primary group")
     func test_flag_for_primary_expansion_group() {
-        for country in [CountryCode.FR, .DE, .IE, .NL, .SG, .NZ] {
+        for country in [CountryCode.IE, .NL, .SG, .NZ] {
             #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
                     == .inPersonPaymentsCountryExpansion,
                     "Expected \(country) to map to inPersonPaymentsCountryExpansion")
@@ -28,7 +36,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
 
     @Test("flag(for:) returns inPersonPaymentsCountryExpansionEUExtended for the EU extended group")
     func test_flag_for_eu_extended_expansion_group() {
-        for country in [CountryCode.AT, .BE, .FI, .IT, .LU, .PT, .ES] {
+        for country in [CountryCode.FI, .LU] {
             #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
                     == .inPersonPaymentsCountryExpansionEUExtended,
                     "Expected \(country) to map to inPersonPaymentsCountryExpansionEUExtended")
@@ -76,7 +84,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         )
 
         // When
-        await refresher.refresh(siteID: siteID, countryCode: .FR)
+        await refresher.refresh(siteID: siteID, countryCode: .NL)
 
         // Then
         #expect(service.cachedValues == [siteID: true])
@@ -112,7 +120,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         )
 
         // When
-        await refresher.refresh(siteID: siteID, countryCode: .ES)
+        await refresher.refresh(siteID: siteID, countryCode: .FI)
 
         // Then
         #expect(await dispatchedFlags.values == [.inPersonPaymentsCountryExpansionEUExtended])
@@ -150,8 +158,8 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         )
 
         // When
-        await refresher.refresh(siteID: 1, countryCode: .DE)
-        await refresher.refresh(siteID: 2, countryCode: .ES)
+        await refresher.refresh(siteID: 1, countryCode: .NL)
+        await refresher.refresh(siteID: 2, countryCode: .FI)
         await refresher.refresh(siteID: 3, countryCode: .US)
 
         // Then

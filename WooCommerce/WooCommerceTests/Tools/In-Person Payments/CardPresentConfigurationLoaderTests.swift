@@ -72,9 +72,9 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertTrue(loader.configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Spain_is_unsupported_when_expansion_ineligible() {
+    func test_configuration_for_Netherlands_is_unsupported_when_expansion_ineligible() {
         // Given
-        setupCountry(country: .es)
+        setupCountry(country: .nl)
 
         // When
         let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
@@ -83,9 +83,9 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         XCTAssertFalse(loader.configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Spain_is_supported_when_expansion_eligible() {
+    func test_configuration_for_Netherlands_is_supported_when_expansion_eligible() {
         // Given
-        setupCountry(country: .es)
+        setupCountry(country: .nl)
 
         // When
         let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
@@ -93,6 +93,17 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
         XCTAssertEqual(loader.configuration.currencies, [.EUR])
+    }
+
+    func test_configuration_for_Spain_is_unsupported_when_expansion_eligible() {
+        // Given
+        setupCountry(country: .es)
+
+        // When
+        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+
+        // Then
+        XCTAssertFalse(loader.configuration.isSupportedCountry)
     }
 
     func test_configuration_for_Singapore_is_supported_when_expansion_eligible() {
@@ -160,6 +171,7 @@ private extension CardPresentConfigurationLoaderTests {
         case us = "US:CA"
         case ca = "CA:NS"
         case es = "ES"
+        case nl = "NL"
         case gb = "GB"
         case sg = "SG"
         case nz = "NZ"

@@ -124,6 +124,32 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func test_move_when_moving_first_file_to_end_then_reorders_without_duplicates() {
+        // Arrange
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductDownloadListViewModel(product: model)
+
+        // Act
+        viewModel.move(from: 0, to: 2)
+
+        // Assert
+        XCTAssertEqual(viewModel.downloadableFiles.map { $0.downloadableFile.name }, ["Song #2", "Song #3", "Song #1"])
+    }
+
+    func test_move_when_moving_last_file_to_start_then_reorders_without_duplicates() {
+        // Arrange
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductDownloadListViewModel(product: model)
+
+        // Act
+        viewModel.move(from: 2, to: 0)
+
+        // Assert
+        XCTAssertEqual(viewModel.downloadableFiles.map { $0.downloadableFile.name }, ["Song #3", "Song #1", "Song #2"])
+    }
+
     func test_insert_when_reinserting_removed_file_at_original_end_index_then_does_not_crash() throws {
         // Given
         let product = Fakes.ProductFactory.productWithDownloadableFiles()

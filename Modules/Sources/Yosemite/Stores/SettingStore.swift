@@ -84,6 +84,24 @@ public class SettingStore: Store {
                     onCompletion(.failure(error))
                 }
             }
+        case let .retrieveAnalyticsImportUpdateMode(siteID, onCompletion):
+            Task { @MainActor in
+                do {
+                    let mode = try await methods.retrieveAnalyticsImportUpdateMode(siteID: siteID)
+                    onCompletion(.success(mode))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        case let .updateAnalyticsImportUpdateMode(siteID, value, onCompletion):
+            Task { @MainActor in
+                do {
+                    try await methods.updateAnalyticsImportUpdateMode(siteID: siteID, value: value)
+                    onCompletion(.success(()))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         }
     }
 }

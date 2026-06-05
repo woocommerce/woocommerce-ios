@@ -42,15 +42,16 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     private(set) var orderItems: WooShippingItemsViewModel
 
     var canViewLabel: Bool {
-        currentShipmentDetailsViewModel.canViewLabel
+        currentShipmentDetailsViewModel?.canViewLabel ?? false
     }
 
     var postPurchase: WooShippingPostPurchaseViewModel? {
-        currentShipmentDetailsViewModel.postPurchase
+        currentShipmentDetailsViewModel?.postPurchase
     }
 
     @Published private(set) var shipments: [Shipment] {
         didSet {
+            updateSelectedShipmentIndex(previousShipments: oldValue)
             updateShipmentDetailsViewModels()
         }
     }
@@ -64,8 +65,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
     }
 
-    var currentShipment: Shipment {
-        shipments[selectedShipmentIndex]
+    var currentShipment: Shipment? {
+        shipments[safe: boundedSelectedShipmentIndex(for: shipments.count)]
     }
 
     var hasUnfulfilledShipments: Bool {
@@ -83,8 +84,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
 
-    var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
-        shipmentDetailViewModels[selectedShipmentIndex]
+    var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel? {
+        shipmentDetailViewModels[safe: boundedSelectedShipmentIndex(for: shipmentDetailViewModels.count)]
     }
 
     /// View model for a list of origin addresses to ship from.
@@ -106,7 +107,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
     var originAddressLines: [String]? {
-        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+        if let shippingLabel = currentShipmentDetailsViewModel?.shippingLabel {
             shippingLabel.originAddress.formattedPostalAddress?.components(separatedBy: "\n")
         } else {
             originAddress.components(separatedBy: ", ")
@@ -118,7 +119,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
-        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+        if let shippingLabel = currentShipmentDetailsViewModel?.shippingLabel {
             shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
         } else {
             (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
@@ -153,7 +154,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Total cost of the shipping label, formatted for display.
     var totalCost: String? {
-        currentShipmentDetailsViewModel.totalCost
+        currentShipmentDetailsViewModel?.totalCost
     }
 
     private var isMissingStoreSettings: Bool {
@@ -165,7 +166,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// If the purchase button should be enabled.
     var isPurchaseButtonEnabled: Bool {
-        currentShipmentDetailsViewModel.isPurchaseButtonEnabled
+        currentShipmentDetailsViewModel?.isPurchaseButtonEnabled ?? false
     }
 
     /// If the label purchase is in progress.
@@ -313,7 +314,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             // Otherwise, compare the purchased labels with the initial selected label.
             switch preselection {
             case .shipment(let index):
-                self.selectedShipmentIndex = index
+                self.selectedShipmentIndex = self.boundedShipmentIndex(index, count: shipments.count)
             case .shippingLabel(let label):
                 if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == label.shippingLabelID }) {
                     self.selectedShipmentIndex = matchingIndex
@@ -349,7 +350,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
         }
 
-        if isMissingStoreSettings ||
+        if shipments.isEmpty ||
+            isMissingStoreSettings ||
             (originAddress.isEmpty && hasUnfulfilledShipments) {
             state = .missingRequiredData
         } else {
@@ -372,6 +374,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
+        guard let currentShipmentDetailsViewModel else {
+            return
+        }
+
         guard paymentMethod != nil else {
             showingPaymentMethods = true
             return
@@ -567,22 +573,69 @@ extension WooShippingCreateLabelsViewModel {
 // MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
 
+    func boundedSelectedShipmentIndex(for count: Int) -> Int {
+        boundedShipmentIndex(selectedShipmentIndex, count: count)
+    }
+
+    func boundedShipmentIndex(_ index: Int, count: Int) -> Int {
+        min(max(index, 0), max(count - 1, 0))
+    }
+
+    func ensureValidSelectedShipmentIndex() {
+        let boundedIndex = boundedSelectedShipmentIndex(for: shipments.count)
+        if selectedShipmentIndex != boundedIndex {
+            selectedShipmentIndex = boundedIndex
+        }
+    }
+
+    func updateSelectedShipmentIndex(previousShipments: [Shipment]) {
+        guard let previouslySelectedShipment = previousShipments[safe: selectedShipmentIndex] else {
+            ensureValidSelectedShipmentIndex()
+            return
+        }
+
+        if let updatedIndex = shipments.firstIndex(where: { $0.index == previouslySelectedShipment.index }) {
+            guard selectedShipmentIndex != updatedIndex else {
+                return
+            }
+            selectedShipmentIndex = updatedIndex
+        } else {
+            ensureValidSelectedShipmentIndex()
+        }
+    }
+
     func observeHAZMATNotices() {
+        guard let currentShipmentDetailsViewModel else {
+            hazmatNotice = nil
+            return
+        }
         currentShipmentDetailsViewModel.$hazmatNotice
             .assign(to: &$hazmatNotice)
     }
 
     func observeSelectedPackage() {
+        guard let currentShipmentDetailsViewModel else {
+            selectedPackage = nil
+            return
+        }
         currentShipmentDetailsViewModel.$selectedPackage
             .assign(to: &$selectedPackage)
     }
 
     func observeSelectedRates() {
+        guard let currentShipmentDetailsViewModel else {
+            selectedRate = nil
+            return
+        }
         currentShipmentDetailsViewModel.$selectedRate
             .assign(to: &$selectedRate)
     }
 
     func observeShippingRates() {
+        guard let currentShipmentDetailsViewModel else {
+            shippingRates = []
+            return
+        }
         currentShipmentDetailsViewModel.$shippingRates
             .assign(to: &$shippingRates)
     }
@@ -612,27 +665,33 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
-        let index = shipment.index
-        shipments[index] = Shipment(index: index,
-                                    contents: shipment.contents,
-                                    purchasedLabel: newLabel,
-                                    currency: order.currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didPurchaseLabel(for: index, label: newLabel)
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipment.index }) else {
+            return
+        }
+
+        shipments[shipmentArrayIndex] = Shipment(index: shipment.index,
+                                                 contents: shipment.contents,
+                                                 purchasedLabel: newLabel,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didPurchaseLabel(for: shipment.index, label: newLabel)
         onLabelPurchase?(markOrderComplete)
     }
 
     func handleLabelRefundRequested(labelID: Int64,
                                     in shipment: Shipment) {
-        let shipmentIndex = shipment.index
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: shipment.contents,
-                                            purchasedLabel: nil,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didRequestRefund(for: shipmentIndex)
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipment.index }) else {
+            return
+        }
+
+        shipments[shipmentArrayIndex] = Shipment(index: shipment.index,
+                                                 contents: shipment.contents,
+                                                 purchasedLabel: nil,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didRequestRefund(for: shipment.index)
         refundNotice = Notice(message: Localization.refundNotice)
     }
 
@@ -707,7 +766,7 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
             .combineLatest($shipments, $selectedShipmentIndex)
             .map { _, shipments, selectedIndex in
-                shipments[selectedIndex].isPurchased == false
+                shipments[safe: selectedIndex]?.isPurchased == false
             }
             .assign(to: &$shouldShowNotices)
     }
@@ -727,7 +786,7 @@ private extension WooShippingCreateLabelsViewModel {
         $paymentMethod
             .combineLatest($shipments, $selectedShipmentIndex)
             .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
-                if shipments[selectedIndex].isPurchased {
+                if shipments[safe: selectedIndex]?.isPurchased == true {
                     return nil
                 }
 

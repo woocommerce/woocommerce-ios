@@ -103,6 +103,33 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(sampleItem2.visitors, 144)
         XCTAssertEqual(sampleItem2.views, 288)
     }
+
+    func test_map_when_data_row_has_fewer_values_than_fields_then_does_not_crash() throws {
+        // Given
+        let response = """
+        {
+            "date": "2018-08-06",
+            "unit": "day",
+            "fields": [
+                "period",
+                "views",
+                "visitors"
+            ],
+            "data": [
+                [
+                    "2018-08-06",
+                    4
+                ]
+            ]
+        }
+        """.data(using: .utf8)!
+
+        // When
+        _ = try SiteVisitStatsMapper(siteID: sampleSiteID).map(response: response)
+
+        // Then
+        XCTAssertTrue(true)
+    }
 }
 
 

@@ -79,7 +79,7 @@ public enum POSCountryCurrencyValidator {
     }
 
     private static let eeaEuroCountries: [CountryCode] = [
-        .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES
+        .FI, .IE, .LU, .NL
     ]
 
     /// Countries whose POS eligibility is still controlled by remote rollout

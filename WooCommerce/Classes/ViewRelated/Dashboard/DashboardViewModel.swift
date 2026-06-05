@@ -89,6 +89,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isEligibleForStoreSetup = false
 
+    @Published var notice: Notice?
+
     @Published var showingCustomization = false
 
     @Published var showingAnalyticsImportUpdateModeInfo = false
@@ -407,20 +409,21 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards = cards
     }
 
-    func onPullToRefresh() {
+    func onPullToRefresh() async {
         /// Track `used_analytics` if stat cards are enabled.
         let hasStatsCards = availableCards.contains(where: { $0.type == .performance || $0.type == .topPerformers })
         if hasStatsCards {
             usageTracksEventEmitter.interacted()
         }
 
-        Task { @MainActor in
-            analytics.track(.dashboardPulledToRefresh)
-            await reloadAllData(forceCardsRefresh: true)
-        }
+        analytics.track(.dashboardPulledToRefresh)
+        await reloadAllData(forceCardsRefresh: true)
+        showAnalyticsImportUpdateModeNoticeIfNeeded()
     }
 
     func showAnalyticsImportUpdateModeInfo() {
+        userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = true
+        notice = nil
         showingAnalyticsImportUpdateModeInfo = true
     }
 
@@ -922,6 +925,26 @@ private extension DashboardViewModel {
         topPerformersViewModel.setAnalyticsImportUpdateMode(mode)
     }
 
+    func showAnalyticsImportUpdateModeNoticeIfNeeded() {
+        let hasVisibleStatsCard = showOnDashboardCards.contains { $0.type == .performance || $0.type == .topPerformers }
+        guard analyticsImportUpdateMode == .scheduled,
+              hasVisibleStatsCard,
+              userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] as? Bool != true else {
+            return
+        }
+
+        notice = Notice(
+            message: Localization.analyticsImportUpdateModeNoticeTitle,
+            feedbackType: .warning,
+            actionTitle: Localization.learnMore,
+            actionHandler: { [weak self] in
+                Task { @MainActor in
+                    self?.showAnalyticsImportUpdateModeInfo()
+                }
+            }
+        )
+    }
+
     func generateDefaultCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
@@ -1188,6 +1211,19 @@ private extension DashboardViewModel {
         static let orderPageSize = 1
 
         static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
+    }
+
+    enum Localization {
+        static let analyticsImportUpdateModeNoticeTitle = NSLocalizedString(
+            "dashboardViewModel.analyticsImportUpdateModeNotice.title",
+            value: "Stats may be up to 12 hours delayed.",
+            comment: "Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours."
+        )
+        static let learnMore = NSLocalizedString(
+            "dashboardViewModel.analyticsImportUpdateModeNotice.learnMore",
+            value: "Learn more",
+            comment: "Action title on the dashboard notice about scheduled analytics updates."
+        )
     }
 }
 

@@ -163,8 +163,9 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            viewModel.onPullToRefresh()
+            await viewModel.onPullToRefresh()
         }
+        .notice($viewModel.notice)
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)

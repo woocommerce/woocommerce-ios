@@ -443,6 +443,27 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.hideWPComConnectionOnDashboard])
     }
 
+    /// Verifies that dashboard analytics update mode explanation state is cleared upon reset
+    ///
+    func test_hasOpenedDashboardAnalyticsUpdateModeInfo_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo])
+    }
+
     func test_pendingMagicLinkFlow_is_cleared_upon_reset() throws {
         // Given
         let uuid = UUID().uuidString

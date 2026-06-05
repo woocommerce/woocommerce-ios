@@ -2,13 +2,11 @@ import AVFoundation
 import Foundation
 import Yosemite
 
-/// Synchronously gates the QR-login entry points.
+/// Gates the QR-login entry points.
 ///
-/// The `qrCodeLogin` remote feature flag is read straight from the feature-flag
-/// store: the app fetches remote flags at launch, and dispatching
-/// `FeatureFlagAction.isRemoteFeatureFlagEnabled` runs its completion
-/// synchronously on a cache hit (and for a debug override). A cold cache reads
-/// as `false` ("a not-yet-loaded remote value is treated as off").
+/// The `qrCodeLogin` remote feature flag is resolved through `FeatureFlagStore`.
+/// The store returns a cached value when possible and otherwise loads remote
+/// flags asynchronously, defaulting to `false` on failure.
 ///
 /// Both gates are `@MainActor` because the Flux dispatcher must be called on
 /// the main thread. (The requirements are isolated individually rather than
@@ -17,11 +15,11 @@ import Yosemite
 protocol QRLoginAvailabilityProvider {
     /// Prologue gate: remote flag on, install in the enabled
     /// rollout bucket, and a camera present on the device.
-    @MainActor func isAvailableForPrologue() -> Bool
+    @MainActor func isAvailableForPrologue() async -> Bool
 
     /// Deep-link gate: remote flag on. The rollout bucket and the
     /// camera are bypassed — the merchant opted in by opening a `qr-login` URL.
-    @MainActor func isAvailableForDeepLink() -> Bool
+    @MainActor func isAvailableForDeepLink() async -> Bool
 }
 
 struct QRLoginAvailability: QRLoginAvailabilityProvider {
@@ -42,17 +40,23 @@ struct QRLoginAvailability: QRLoginAvailabilityProvider {
     }
 
     @MainActor
-    func isAvailableForPrologue() -> Bool {
+    func isAvailableForPrologue() async -> Bool {
         // A debug override decides everything, bypassing the flag and bucket.
         if let override = debugOverride {
             return override
         }
-        return isCameraAvailable() && isRemoteFlagEnabled() && rolloutBucket.isEnabled
+        guard isCameraAvailable(), rolloutBucket.isEnabled else {
+            return false
+        }
+        return await isRemoteFlagEnabled()
     }
 
     @MainActor
-    func isAvailableForDeepLink() -> Bool {
-        debugOverride ?? isRemoteFlagEnabled()
+    func isAvailableForDeepLink() async -> Bool {
+        if let override = debugOverride {
+            return override
+        }
+        return await isRemoteFlagEnabled()
     }
 }
 
@@ -64,17 +68,15 @@ private extension QRLoginAvailability {
         overrideStore?.overrideValue(for: .qrCodeLogin)
     }
 
-    /// Reads the `qrCodeLogin` remote flag from the feature-flag store. The
-    /// completion runs synchronously on a cache hit; a cold cache leaves the
-    /// result `false`.
+    /// Reads the `qrCodeLogin` remote flag from the feature-flag store.
     @MainActor
-    func isRemoteFlagEnabled() -> Bool {
-        var isEnabled = false
-        let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.qrCodeLogin, defaultValue: false) { value in
-            isEnabled = value
+    func isRemoteFlagEnabled() async -> Bool {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.qrCodeLogin, defaultValue: false) { value in
+                continuation.resume(returning: value)
+            }
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
-        return isEnabled
     }
 
     static func defaultCameraAvailability() -> Bool {

@@ -342,12 +342,16 @@ final class WooShippingAddPackageViewModel: ObservableObject {
                     starredCarriersPackages.insert(carrierID)
                 }
                 // second: undo removing from custom saved
-                if let customPackagesIndex {
-                    customSavedPackages.insert(packageToRemove, at: customPackagesIndex)
+                if let customPackagesIndex,
+                   customSavedPackages.contains(where: { $0.id == packageToRemove.id }) == false {
+                    let insertionIndex = min(customPackagesIndex, customSavedPackages.count)
+                    customSavedPackages.insert(packageToRemove, at: insertionIndex)
                 }
                 // third: undo removing from predefined saved
-                if let predefinedPackagesIndex {
-                    predefinedSavedPackages.insert(packageToRemove, at: predefinedPackagesIndex)
+                if let predefinedPackagesIndex,
+                   predefinedSavedPackages.contains(where: { $0.id == packageToRemove.id }) == false {
+                    let insertionIndex = min(predefinedPackagesIndex, predefinedSavedPackages.count)
+                    predefinedSavedPackages.insert(packageToRemove, at: insertionIndex)
                 }
 
                 notice = Notice(title: Localization.removingPackageFailure,

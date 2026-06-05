@@ -305,6 +305,44 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
+    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() throws {
+        // Given
+        let siteID: Int64 = 1
+        let customPackages: [WooShippingCustomPackage] = [
+            .fake().copy(id: "Custom1"),
+            .fake().copy(id: "Custom2")
+        ]
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: customPackages,
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        var deleteCompletions: [String: (Result<WooShippingCreatePackageResponse, Error>) -> Void] = [:]
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .deletePackage(_, packageID, _, completion):
+                deleteCompletions[packageID] = completion
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, stores: mockStores, storage: storageManager)
+        let firstPackage = try XCTUnwrap(viewModel.customSavedPackages.first)
+        let secondPackage = try XCTUnwrap(viewModel.customSavedPackages[safe: 1])
+
+        // When
+        viewModel.removeSavedPackage(secondPackage)
+        viewModel.removeSavedPackage(firstPackage)
+        try XCTUnwrap(deleteCompletions[secondPackage.id])(.failure(NSError(domain: "Test", code: 400)))
+
+        // Then
+        XCTAssertTrue(true)
+    }
+
     func test_it_fetches_and_transforms_packages_from_storage() throws {
         // Given
         let siteID: Int64 = 1

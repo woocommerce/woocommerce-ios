@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-05-25 10:57:40+0000 */
+/* Translation-Revision-Date: 2026-06-02 17:57:30+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -8491,6 +8491,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
 "aiAssistant.loadingPlaceholder.accessibilityLabel" = "Загрузка";
 
+/* Error shown when the chat client needs a WPCOM token but the merchant signed in with an application password or wp-org credentials. */
+"aiAssistant.token.error.missingWPCOMCredentials" = "Помощнику на базе ИИ требуются учётные данные WPCOM.";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Непринуждённый";
 
@@ -11282,6 +11285,111 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Отправить примечание клиенту по электронной почте Вкл.";
 
+/* Subtitle of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Уведомлять о каждом заказе, независимо от стоимости.";
+
+/* Title of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "Все новые заказы";
+
+/* Subtitle of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.subtitle" = "Получать уведомления о размещении заказов в магазине.";
+
+/* Title of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.title" = "Включить уведомления";
+
+/* Subtitle of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Фильтровать по заказам выше заданного порога.";
+
+/* Title of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.title" = "Только заказы с высокой стоимостью";
+
+/* Section header for new-order notification customization options. */
+"newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "Уведомить меня";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "Минимальное значение (%1$@)";
+
+/* Placeholder for the order-total threshold text field. */
+"newOrderNotificationPreferencesDetailView.threshold.placeholder" = "Сумма";
+
+/* Title of the new-order push notification preferences detail screen. */
+"newOrderNotificationPreferencesDetailView.title" = "Новые заказы";
+
+/* Subtitle of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "Уведомлять о каждом отзыве.";
+
+/* Title of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "Все новые отзывы";
+
+/* Subtitle of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "Получать уведомления о новых отзывах о магазине.";
+
+/* Title of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.title" = "Включить уведомления";
+
+/* Subtitle of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "Фильтрация отзывов по выбранной оценке или ниже её значения.";
+
+/* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "Только отзывы с низкой оценкой";
+
+/* Section header for new-review notification customization options. */
+"newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "Уведомить меня";
+
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "Звёзд: %1$@";
+
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "Звёзд: %1$@";
+
+/* Title of the new-review push notification preferences detail screen. */
+"newReviewNotificationPreferencesDetailView.title" = "Новые отзывы";
+
+/* Subtitle of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.subtitle" = "Получать уведомления о том, что запас товара на исходе.";
+
+/* Title of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.title" = "Включить уведомления о том, что запас на исходе";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Редактировать общемагазинный порог";
+
+/* Subtitle of the low-stock toggle row. */
+"newStockNotificationPreferencesDetailView.lowStock.subtitle" = "Когда запас варианта товара достигает нижнего порога.";
+
+/* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "К товарам может применяться собственный или общемагазинный порог. %1$@, чтобы просмотреть текущее значение.";
+
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "К товарам может применяться собственный или общемагазинный порог {00A0}%1$@. %2$@";
+
+/* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.title" = "Товар заканчивается";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Просмотр нижнего порога в магазине";
+
+/* Section header for stock notification customization options. */
+"newStockNotificationPreferencesDetailView.notifyMeFor.header" = "Уведомить меня";
+
+/* Subtitle of the on-backorder toggle row. */
+"newStockNotificationPreferencesDetailView.onBackorder.subtitle" = "Когда клиент заказывает товар, которого нет в наличии.";
+
+/* Title of the toggle row that enables notifications when a product is backordered. */
+"newStockNotificationPreferencesDetailView.onBackorder.title" = "Предзаказ";
+
+/* Subtitle of the out-of-stock toggle row. */
+"newStockNotificationPreferencesDetailView.outOfStock.subtitle" = "Когда вариант товара заканчивается.";
+
+/* Title of the toggle row that enables notifications when a product reaches the no-stock amount. */
+"newStockNotificationPreferencesDetailView.outOfStock.title" = "Нет в наличии";
+
+/* Title of the stock push notification preferences detail screen. */
+"newStockNotificationPreferencesDetailView.title" = "В наличии";
+
+/* Title of the authenticated webview shown when the merchant taps 'Edit store-wide threshold' under the Low stock toggle. */
+"newStockNotificationPreferencesHostingController.editThreshold.webTitle" = "Нижний порог запаса";
+
 /* Cancel button title for the tax rate selector */
 "newTaxRateSelectorView.cancelButton" = "Отмена";
 
@@ -11314,6 +11422,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
+
+/* VoiceOver label for the back button on a push notification preferences detail screen. */
+"notificationDetailHostingController.back" = "Назад";
+
+/* Title of the Save bar button on a push notification preferences detail screen. */
+"notificationDetailHostingController.save" = "Сохранить";
 
 /* Button to cancel saving site settings on the notification settings view */
 "notificationSettingsView.cancel" = "Отмена";
@@ -12228,6 +12342,9 @@ which should be translated separately and considered part of this sentence. */
 /* Body of the Point of Sale confirmation for manually marking an order as paid. %1$@ is the formatted order total, e.g. $24.99. */
 "pointOfSale.markAsPaid.confirmation.message" = "Заказ %1$@ будет помечен как выполненный. Используйте, только если вы уже получили платёж другим способом.";
 
+/* Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.noteKeyboardDone" = "Готово";
+
 /* Label above the optional note text field on the Point of Sale Mark as paid confirmation, where the merchant can record reconciliation context for the order. */
 "pointOfSale.markAsPaid.confirmation.noteLabel" = "Добавить примечание (не обязательно)";
 
@@ -12345,6 +12462,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Платёж выполнен";
 
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "с помощью %1$@";
+
 /* Error message shown when confirming a scan-to-pay payment fails in Point of Sale. */
 "pointOfSale.scanToPay.failedToConfirmPayment.errorMessage" = "Ошибка подтверждения платежа Повторите попытку.";
 
@@ -12398,6 +12518,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
 "pointOfSaleDashboard.phone.cart" = "Корзина (%1$d)";
+
+/* Phone-only header title shown above the totals view during checkout. */
+"pointOfSaleDashboard.phone.checkoutTitle" = "Оформление заказа";
+
+/* VoiceOver label for the phone-only Point of Sale overflow menu button. */
+"pointOfSaleDashboard.phone.menu.accessibilityLabel" = "Дополнительные параметры";
+
+/* Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab. */
+"pointOfSaleDashboard.phone.menu.createCoupon" = "Создать купон";
+
+/* Phone-only overflow menu item to exit Point of Sale. */
+"pointOfSaleDashboard.phone.menu.exit" = "Выйти из режима POS";
+
+/* Phone-only overflow menu item to open the historical orders view. */
+"pointOfSaleDashboard.phone.menu.orders" = "Заказы";
+
+/* Phone-only overflow menu item to open Point of Sale settings. */
+"pointOfSaleDashboard.phone.menu.settings" = "Настройки";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Отмена";
@@ -12503,6 +12641,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for address field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.address" = "Адрес";
+
+/* Navigation title for the web view used to edit POS receipt information. */
+"pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle" = "Настройки чека";
 
 /* Label for email field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.email" = "Адрес эл. почты";
@@ -12783,6 +12924,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an unselected checkbox */
 "pos.checkbox.unselected.accessibilityLabel" = "Не выбрано";
 
+/* Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected. */
+"pos.checkout.paymentMethod.cardReader" = "Платёжный терминал";
+
+/* Title for the cash-payment button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.cashPayment" = "Оплата наличными";
+
+/* Title for the Tap to Pay button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.tapToPay" = "Tap to Pay (Оплата касанием)";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Отсутствует подключение к Интернету";
 
@@ -12924,6 +13074,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button text to exit Point of Sale when there's a critical error */
 "pos.listError.exitButton" = "Закрыть POS";
 
+/* Title shown on the POS lock screen. */
+"pos.lockScreen.enterYourPIN.title" = "Введите PIN-код";
+
+/* Title shown on the POS manager approval modal. */
+"pos.managerOverride.approvalRequired.title" = "Требуется утверждение";
+
+/* Accessibility label for dismissing the POS manager approval screen. */
+"pos.managerOverride.close" = "Закрыть";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Закрыть";
 
@@ -13053,8 +13212,59 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback label shown for a fee on a Point of Sale order whose name is missing or blank. */
 "pos.orderMapper.defaultFeeName" = "Индивидуальная сумма";
 
+/* Button to cancel the current POS refund selection and select another order. */
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "Отмена возврата средств";
+
+/* Button to keep editing the current POS refund selection instead of selecting another order. */
+"pos.ordersView.cancelRefundAlert.keepEditing.button" = "Продолжить редактирование";
+
+/* Message for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.message" = "Выбранный способ возврата средств будет отменён.";
+
+/* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.title" = "Отменить возврат средств?";
+
+/* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.subtitle" = "Подключите платёжный терминал через Bluetooth, чтобы принимать платежи по карте.";
+
+/* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.title" = "Платёжный терминал";
+
+/* Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.subtitle" = "Записывать полученный платёж, исключая данное устройство.";
+
+/* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.title" = "Отметить заказ как оплаченный";
+
+/* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.subtitle" = "Показывать клиенту QR-код для оплаты телефоном.";
+
+/* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.title" = "Сканировать для оплаты";
+
+/* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
+"pos.otherPaymentMethods.sheet.title" = "Другие способы оплаты";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Доступные опции";
+
+/* Accessibility label for the delete key on the POS PIN numpad */
+"pos.pinEntry.delete.accessibilityLabel" = "Удалить";
+
+/* Accessibility label for the PIN dots on the POS PIN numpad */
+"pos.pinEntry.dots.accessibilityLabel" = "Ввод PIN-кода";
+
+/* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
+"pos.pinEntry.dots.accessibilityValue" = "Введено %1$d цифр из %2$d";
+
+/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+"pos.pinEntry.error.generic" = "Что-то пошло не так. Повторите попытку.";
+
+/* VoiceOver announcement when an entered POS PIN is incorrect. */
+"pos.pinEntry.error.invalidPIN" = "Неверный PIN-код. Повторите попытку.";
+
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
+"pos.pinEntry.lockout.countdown" = "Слишком много попыток. Повторите попытку через %1$@.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Не удалось найти купоны с таким названием. Попробуйте уточнить поисковый запрос.";
@@ -13101,14 +13311,101 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "ОК";
 
+/* Error shown when POS tries to process a second refund while another refund is in progress. */
+"pos.refund.processing.error.alreadyInProgress" = "Возврат средств уже выполняется. Дождитесь завершения.";
+
+/* Error shown when POS tries to process a refund without selected refund items. */
+"pos.refund.processing.error.emptySelection" = "Выберите хотя бы одну позицию, чтобы вернуть средства.";
+
+/* Error shown when POS tries to process a refund without prepared order refund data. */
+"pos.refund.processing.error.missingPreparation" = "Не удалось подготовить возврат средств. Повторите попытку.";
+
+/* Button shown in POS to return to refund review after a card reader refund is canceled. */
+"pos.refundCardPresent.backToRefund.button.title" = "Вернуться к возврату средств";
+
+/* Button shown in POS to cancel a failed card reader refund. */
+"pos.refundCardPresent.cancelRefund.button.title" = "Отмена возврата средств";
+
+/* Title shown in POS when a refund is canceled on the card reader. */
+"pos.refundCardPresent.cancelledOnReader.title" = "Возврат средств отменён на платёжном терминале";
+
+/* Message shown in POS when a card has been inserted for a refund. */
+"pos.refundCardPresent.cardInserted.message" = "Карта вставлена";
+
+/* Message shown in POS while validating a refund before using a card reader. */
+"pos.refundCardPresent.checkingRefund.message" = "Проверка возврата средств";
+
+/* Button shown in POS to dismiss a card reader refund message. */
+"pos.refundCardPresent.close.button.title" = "Закрыть";
+
+/* Title shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.gettingReady.title" = "Подготовка";
+
+/* Instruction shown in POS when a card should be inserted for a refund. */
+"pos.refundCardPresent.insert.message" = "Вставьте карту, чтобы вернуть средства";
+
+/* Message shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.pleaseWait.message" = "Подождите немного";
+
+/* Message shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.preparingReader.message" = "Подготовка платёжного терминала к возврату средств";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.presentCard.message" = "Предъявите карту, чтобы вернуть средства";
+
+/* Title shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.processingRefund.title" = "Обработка возврата";
+
+/* Title shown in POS when the card reader is ready to process a refund. */
+"pos.refundCardPresent.readyForRefund.title" = "Возврат средств подготовлен";
+
+/* Title shown in POS when a card reader refund fails. */
+"pos.refundCardPresent.refundFailed.title" = "Возврат средств не выполнен";
+
+/* Instruction shown in POS when a card should be tapped for a refund. */
+"pos.refundCardPresent.tap.message" = "Нажмите на карту, чтобы вернуть средства";
+
+/* Instruction shown in POS when a card should be tapped or inserted for a refund. */
+"pos.refundCardPresent.tapInsert.message" = "Нажмите или вставьте карту, чтобы вернуть средства";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.tapSwipeInsert.message" = "Нажмите, проведите пальцем или вставьте карту, чтобы вернуть средства";
+
+/* Button shown in POS to retry a failed card reader refund. */
+"pos.refundCardPresent.tryRefundAgain.button.title" = "Повторить попытку возврата";
+
+/* Warning shown on the refund confirmation screen. */
+"pos.refundConfirmationView.actionCannotBeUndone" = "Это действие нельзя отменить.";
+
+/* Accessibility label for the back button on the refund confirmation screen */
+"pos.refundConfirmationView.backButton.accessibilityLabel" = "Назад";
+
+/* Button to cancel and dismiss the refund confirmation screen */
+"pos.refundConfirmationView.cancelButton" = "Отмена";
+
+/* Error shown when POS cannot confirm whether a card reader refund succeeded. */
+"pos.refundConfirmationView.cardPresent.unableToConfirmRefund" = "Не удалось подтвердить выполнение возврата. Проверьте заказ, прежде чем повторить попытку.";
+
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "Да, продолжить";
+
+/* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationQuestionFormat" = "Вы действительно хотите вернуть %1$@ с помощью %2$@?";
+
+/* Message shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderMessage" = "Подготовка платёжного терминала к возврату средств";
+
+/* Title shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderTitle" = "Подготовка платёжного терминала";
 
 /* Message shown while the refund is being processed. */
 "pos.refundConfirmationView.processingMessage" = "Дождитесь завершения возврата средств.";
 
 /* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.processingTitleFormat" = "Возврат %@";
+
+/* Title shown when an in-person refund fails. */
+"pos.refundConfirmationView.readerErrorTitle" = "Возврат средств не выполнен";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Возврат средств в сумме %@";
@@ -13127,6 +13424,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for tax row in refund detail */
 "pos.refundDetailView.taxLabel" = "Налог";
+
+/* Accessibility label for the back button on the refund error screen */
+"pos.refundErrorView.backButton.accessibilityLabel" = "Назад";
 
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Отмена";
@@ -13153,6 +13453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility state when item is not selected for refund */
 "pos.refundItemRow.unselectedState" = "Не выбрано для возврата";
 
+/* Accessibility label for the back button on the refund items selection screen */
+"pos.refundItemsSelectionView.backButton.accessibilityLabel" = "Назад";
+
 /* Button to continue with selected items for refund */
 "pos.refundItemsSelectionView.continueButton" = "Продолжить";
 
@@ -13168,8 +13471,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Выберите товары для возврата средств";
 
+/* Accessibility label for the back button on the refund loading screen */
+"pos.refundLoadingView.backButton.accessibilityLabel" = "Назад";
+
 /* Message shown while loading refund information */
 "pos.refundLoadingView.loadingMessage" = "Загрузка сведений о возврате...";
+
+/* Title shown while loading refund information */
+"pos.refundLoadingView.loadingTitle" = "Подготовка возврата средств";
+
+/* Button to leave the card-present refund error screen and return to the order. */
+"pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "Вернуться к заказу";
+
+/* Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.subtitle" = "Вернитесь и проверьте заказ, прежде чем повторить попытку.";
+
+/* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.title" = "Не удалось подтвердить возврат средств";
+
+/* Accessibility label for the back button on the nothing to refund screen */
+"pos.refundNothingToRefundView.backButton.accessibilityLabel" = "Назад";
 
 /* Button to dismiss the nothing to refund screen */
 "pos.refundNothingToRefundView.doneButton" = "Готово";
@@ -13179,6 +13500,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when there are no items available to refund */
 "pos.refundNothingToRefundView.title" = "Нет позиций на возврат средств";
+
+/* Accessibility label for the back button shown before connecting a card reader for a refund. */
+"pos.refundReaderDisconnectedView.backButton.accessibilityLabel" = "Назад";
+
+/* Button to cancel a refund when no card reader is connected. */
+"pos.refundReaderDisconnectedView.cancelButton.title" = "Отмена";
+
+/* Button to connect to a card reader before processing an in-person refund. */
+"pos.refundReaderDisconnectedView.connectButton.title" = "Подключите платёжный терминал";
+
+/* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.instruction" = "Подключите платёжный терминал, чтобы провести возврат средств.";
+
+/* Title shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.title" = "Платёжный терминал не подключён";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Добавить";
@@ -13194,6 +13530,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to add a reason for the refund */
 "pos.refundReviewView.addReasonButton" = "Добавить причину";
+
+/* Button to go back from the refund review screen to refund item selection */
+"pos.refundReviewView.backButton" = "Назад";
+
+/* Accessibility label for the back button on the refund review screen */
+"pos.refundReviewView.backButton.accessibilityLabel" = "Назад";
 
 /* Button to continue with the refund */
 "pos.refundReviewView.continueButton" = "Продолжить";
@@ -13221,6 +13563,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Просмотреть возврат";
+
+/* Fallback name for a custom amount fee line in POS refunds. */
+"pos.refundSubmissionAdaptor.defaultFeeName" = "Индивидуальная сумма";
+
+/* Error shown when POS tries to submit a refund without prepared refund data. */
+"pos.refundSubmissionAdaptor.error.missingPreparedRefund" = "Не удалось подготовить возврат средств. Повторите попытку.";
+
+/* Error shown when POS tries to submit a second refund while another refund is in progress. */
+"pos.refundSubmissionAdaptor.error.refundAlreadyInProgress" = "Возврат средств уже выполняется. Дождитесь завершения.";
+
+/* Fallback payment method description for POS refunds when no payment method title is available. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "платёж вручную";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "с помощью %1$@ картой %2$@";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "с помощью %1$@";
 
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "Готово";
@@ -13272,6 +13632,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
+
+/* Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. The full product name \"Tap to Pay on iPhone\" appears in the hero title above, so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines permit this once the full name has been shown on the same screen. */
+"pos.tapToPay.hero.payButton.v2" = "Оплатить с помощью Tap to Pay";
+
+/* Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout. */
+"pos.tapToPay.hero.subtitle" = "Принимать бесконтактную оплату картами на этом устройстве";
+
+/* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
+"pos.tapToPay.hero.title.v2" = "Tap to Pay на iPhone";
 
 /* Label for discount in the totals breakdown. */
 "pos.totalsSectionView.discountLabel.v2" = "Скидка";
@@ -13885,6 +14254,90 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "Добавить товары";
 
+/* Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications. */
+"pushNotificationPreferencesView.enableNotificationsCTA" = "Включить уведомления";
+
+/* Message shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.message" = "Проверьте подключение и повторите попытку.";
+
+/* Title shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.title" = "Не удалось загрузить настройки уведомлений";
+
+/* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newOrders.accessibilityHint" = "Настроить уведомления о новых заказах";
+
+/* Title of the row that toggles new-order push notifications. */
+"pushNotificationPreferencesView.newOrders.title" = "Новые заказы";
+
+/* VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newReviews.accessibilityHint" = "Настроить уведомления о новых отзывах";
+
+/* Title of the row that toggles new-review push notifications. */
+"pushNotificationPreferencesView.newReviews.title" = "Новые отзывы";
+
+/* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
+"pushNotificationPreferencesView.notificationsDisabled" = "Уведомления в Woo отключены";
+
+/* Label indicating notifications are enabled, shown at the top of the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsEnabled" = "Уведомления включены";
+
+/* Footer of the notifications-enabled section on the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsFooter" = "Включая напоминания и дистанционные всплывающие уведомления.";
+
+/* Detail text shown on a notification row when notifications are disabled. */
+"pushNotificationPreferencesView.off" = "Выкл.";
+
+/* Button on the error state to retry loading push notification preferences. */
+"pushNotificationPreferencesView.retry" = "Повторить";
+
+/* Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app. */
+"pushNotificationPreferencesView.settingsAppCTA" = "Изменить";
+
+/* VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.stock.accessibilityHint" = "Настроить уведомления о наличии товара";
+
+/* Title of the row that toggles stock push notifications. */
+"pushNotificationPreferencesView.stock.title" = "В наличии";
+
+/* Title of the push notification preferences screen. */
+"pushNotificationPreferencesView.title" = "Push-уведомления";
+
+/* Message of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeMessage" = "Повторите попытку.";
+
+/* Title of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeTitle" = "Не удалось обновить настройки уведомлений";
+
+/* Detail text for the New orders row when notifications fire for every order. */
+"pushNotificationPreferencesViewModel.storeOrder.allOrders" = "Все заказы";
+
+/* Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500. */
+"pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "Заказы дороже %1$@";
+
+/* Detail text for the New reviews row when notifications fire for every review. */
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "Все отзывы";
+
+/* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "Звёзд: %1$@ и менее";
+
+/* Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular" = "Звёзд: %1$@ и менее";
+
+/* Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.all" = "Все оповещения о запасах";
+
+/* Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.lowStock" = "Товар заканчивается";
+
+/* Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.none" = "Нет оповещений";
+
+/* Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.onBackorder" = "Предзаказ";
+
+/* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Нет в наличии";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "Готово";
 
@@ -13989,6 +14442,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the Notification Settings screen */
 "settingsViewController.notificationSettings" = "Настройки уведомлений";
+
+/* Navigates to the Push Notifications preferences screen */
+"settingsViewController.pushNotifications" = "Push-уведомления";
 
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Темы";
@@ -14282,6 +14738,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Войдите, чтобы посмотреть статистику за сегодня.";
 
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.stats.description" = "Статистика магазина WooCommerce";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.stats.displayName" = "Статистика";
+
 /* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
 "storeWidgets.storeInfoInlineWidget.noData" = "Доход: ⚠ данные отсутствуют";
 
@@ -14302,6 +14764,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the Trends rectangular lock-screen widget cannot fetch data. */
 "storeWidgets.trendsRectangularWidget.noData" = "Данные отсутствуют";
+
+/* Title label when the home-screen stats widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetchStats" = "Не удалось получить статистику";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "%1$@ в наличии";
@@ -14364,6 +14829,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the AI support chat screen */
 "supportChatHostingController.title" = "Чат со службой поддержки";
 
+/* Title of the web view to update WooCommerce plugin from support chat */
+"supportChatHostingController.updateWooCommerce" = "Обновить WooCommerce";
+
 /* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
 "supportChatMessageRow.failedAccessibilityLabel" = "Не отправлено. %1$@";
 
@@ -14424,6 +14892,9 @@ which should be translated separately and considered part of this sentence. */
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Отметить как решённый";
 
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.aiChatConnectionErrorMessage" = "Не удалось подключиться к ИИ-чату.";
+
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Здравствуйте! Я ваш бот поддержки Woo Mobile. Могу ли я вам чем-нибудь помочь?";
 
@@ -14442,6 +14913,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to enable order notifications */
 "supportDiagnosticsService.action.enableOrderNotifications" = "Включить уведомления о заказах";
 
+/* Action button to open the store push notification preferences screen */
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "Настройки уведомлений";
+
 /* Action button to open device notification settings */
 "supportDiagnosticsService.action.openSettings" = "Открыть настройки";
 
@@ -14453,6 +14927,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to start the Jetpack setup flow */
 "supportDiagnosticsService.action.setupJetpack" = "Настройка Jetpack";
+
+/* Action button to update the WooCommerce plugin */
+"supportDiagnosticsService.action.updateWooCommercePlugin" = "Обновить WooCommerce";
 
 /* Message when the analytics setting check fails */
 "supportDiagnosticsService.error.analyticsCheckFailed" = "Не удалось проверить параметры аналитики.";
@@ -14487,8 +14964,14 @@ which should be translated separately and considered part of this sentence. */
 /* Message when order notifications are disabled */
 "supportDiagnosticsService.error.orderNotificationsDisabled" = "Уведомления о заказах не включены в этом магазине.\n\nВключите возможность получать оповещения при поступлении новых заказов.";
 
+/* Message when some store push notification preferences are disabled */
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "Некоторые настройки push-уведомлений в этом магазине отключены.\n\nПерейдите в раздел настроек и укажите, какие уведомления вы хотите получать.";
+
 /* Message when there is a timeout error */
 "supportDiagnosticsService.error.timeout" = "Ваш сайт отвечает слишком долго.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "Необходимо обновить плагин WooCommerce, чтобы включить push-уведомления.\n\nОбновите WooCommerce до версии %1$@ или более поздней, а затем попробуйте зарегистрироваться ещё раз.";
 
 /* Message when we can't reach WPCom */
 "supportDiagnosticsService.error.wpcomConnection" = "Не удалось подключиться к WordPress.com.\n\nПопробуйте ещё раз через пару минут.";
@@ -14514,17 +14997,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers diagnostic test */
 "supportDiagnosticsService.test.wpComServers" = "Подключение к серверам WordPress.com";
 
+/* Button on the transcript consent alert that dismisses without taking action */
+"supportEscalationCoordinator.cancel" = "Отмена";
+
+/* Button on the transcript consent alert that opens the support contact form */
+"supportEscalationCoordinator.contactForm" = "Форма обратной связи";
+
 /* Loading message shown while creating a support ticket */
 "supportEscalationCoordinator.creatingTicket" = "Создание запроса в службу поддержки...";
 
 /* Button on the ticket created alert */
 "supportEscalationCoordinator.gotIt" = "Понятно";
 
+/* Button on the transcript consent alert that sends the chat transcript as a support request */
+"supportEscalationCoordinator.sendTicket" = "Отправить запрос";
+
 /* Alert message shown after support ticket is created successfully */
 "supportEscalationCoordinator.ticketCreatedMessage" = "Ваш запрос в службу поддержки успешно доставлен. Мы постараемся ответить вам письмом как можно быстрее.";
 
 /* Alert title shown after support ticket is created successfully */
 "supportEscalationCoordinator.ticketCreatedTitle" = "Запрос отправлен.";
+
+/* Message for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentMessage" = "Мы можем создать запрос в службу поддержки на основе расшифровки этого чата, а ещё вы можете открыть форму обратной связи и ввести нужные сведения самостоятельно.";
+
+/* Title for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentTitle" = "Отправить этот чат в службу поддержки?";
 
 /* Header text before the chat transcript in support ticket description */
 "supportEscalationCoordinator.transcriptHeader" = "Ниже приведена расшифровка сеанса ИИ-чата поддержки в приложении:";
@@ -15542,6 +16040,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Описание";
+
+/* Warning text when the customs item description is too long for USPS domestic mail shipments */
+"wooShipping.customsItems.descriptionLengthWarning" = "Описание должно содержать не более 30 символов.";
 
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "Тарифный код HS";

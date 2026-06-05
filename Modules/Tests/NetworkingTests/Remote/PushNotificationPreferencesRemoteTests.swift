@@ -139,6 +139,28 @@ struct PushNotificationPreferencesRemoteTests {
         #expect(preferences.storeStock?.onBackorder == false)
     }
 
+    @Test func loadPreferences_when_response_has_data_envelope_then_decodes_preferences() async throws {
+        // Given
+        let remote = PushNotificationPreferencesRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences-data-envelope")
+
+        // When
+        let preferences = try await remote.loadPreferences(siteID: sampleSiteID)
+
+        // Then
+        #expect(preferences.storeOrder?.enabled == true)
+        #expect(preferences.storeOrder?.minAmount == nil)
+
+        #expect(preferences.storeReview?.enabled == true)
+        #expect(preferences.storeReview?.maxRating == nil)
+
+        #expect(preferences.storeStock?.enabled == true)
+        #expect(preferences.storeStock?.lowStock == true)
+        #expect(preferences.storeStock?.outOfStock == true)
+        #expect(preferences.storeStock?.onBackorder == true)
+    }
+
     @Test func loadPreferences_when_unknown_top_level_key_present_then_known_fields_still_decode() async throws {
         // Given
         let remote = PushNotificationPreferencesRemote(network: network)
@@ -193,5 +215,24 @@ struct PushNotificationPreferencesRemoteTests {
         #expect(preferences.storeOrder?.enabled == true)
         #expect(preferences.storeReview?.maxRating == 5)
         #expect(preferences.storeStock?.onBackorder == false)
+    }
+
+    @Test func updatePreferences_when_response_has_data_envelope_then_returns_decoded_preferences() async throws {
+        // Given
+        let remote = PushNotificationPreferencesRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences-data-envelope")
+        let changes = PushNotificationPreferences(storeStock: .init(onBackorder: true))
+
+        // When
+        let preferences = try await remote.updatePreferences(siteID: sampleSiteID, changes: changes)
+
+        // Then
+        #expect(preferences.storeOrder?.enabled == true)
+        #expect(preferences.storeOrder?.minAmount == nil)
+        #expect(preferences.storeReview?.enabled == true)
+        #expect(preferences.storeReview?.maxRating == nil)
+        #expect(preferences.storeStock?.enabled == true)
+        #expect(preferences.storeStock?.onBackorder == true)
     }
 }

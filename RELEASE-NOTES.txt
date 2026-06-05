@@ -4,6 +4,8 @@
 -----
 - [*] Fixed duplicating a product overwriting the original product's images; the duplicate now opens after copying. [https://github.com/woocommerce/woocommerce-ios/pull/17291]
 - [*] Improvements to POS by downloading product catalog to the device [https://github.com/woocommerce/woocommerce-ios/pull/16958]
+- [*] Dashboard: Added option to update analytic update setting [https://github.com/woocommerce/woocommerce-ios/pull/17304]
+- [*] Fixed several crash-risk code paths in Shipping Labels, Stats, and Downloadable files [https://github.com/woocommerce/woocommerce-ios/pull/17307]
 
 24.9
 -----

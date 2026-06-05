@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:55:22+0000 */
+/* Translation-Revision-Date: 2026-06-03 09:56:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -11283,7 +11283,7 @@ which should be translated separately and considered part of this sentence. */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email catatan ke pelanggan Aktif";
 
 /* Subtitle of the radio row that enables notifications for every new order. */
-"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Ping untuk semua pesanan, berapa pun nilainya.";
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Ping untuk setiap pesanan, berapa pun nilainya.";
 
 /* Title of the radio row that enables notifications for every new order. */
 "newOrderNotificationPreferencesDetailView.allOrders.title" = "Semua pesanan baru";
@@ -11295,7 +11295,7 @@ which should be translated separately and considered part of this sentence. */
 "newOrderNotificationPreferencesDetailView.enable.title" = "Aktifkan pemberitahuan";
 
 /* Subtitle of the radio row that filters notifications to orders above a threshold. */
-"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Filter ke pesanan di atas ambang batas Anda.";
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Filter pesanan yang melebihi ambang batas Anda.";
 
 /* Title of the radio row that filters notifications to orders above a threshold. */
 "newOrderNotificationPreferencesDetailView.highValue.title" = "Hanya pesanan bernilai tinggi";
@@ -11319,7 +11319,7 @@ which should be translated separately and considered part of this sentence. */
 "newReviewNotificationPreferencesDetailView.allReviews.title" = "Semua ulasan baru";
 
 /* Subtitle of the master toggle for new-review push notifications. */
-"newReviewNotificationPreferencesDetailView.enable.subtitle" = "Dapatkan pemberitahuan saat tersisa ulasan untuk toko Anda.";
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "Dapatkan pemberitahuan saat ulasan diberikan untuk toko Anda.";
 
 /* Title of the master toggle for new-review push notifications. */
 "newReviewNotificationPreferencesDetailView.enable.title" = "Aktifkan pemberitahuan";
@@ -11340,7 +11340,7 @@ which should be translated separately and considered part of this sentence. */
 "newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "Bintang %1$@";
 
 /* Title of the new-review push notification preferences detail screen. */
-"newReviewNotificationPreferencesDetailView.title" = "Tinjauan baru";
+"newReviewNotificationPreferencesDetailView.title" = "Ulasan baru";
 
 /* Subtitle of the master toggle for stock push notifications. */
 "newStockNotificationPreferencesDetailView.enable.subtitle" = "Dapatkan pemberitahuan saat ada perubahan stok produk yang perlu Anda perhatikan.";
@@ -13222,7 +13222,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.ordersView.cancelRefundAlert.title" = "Batalkan pengembalian dana ini?";
 
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
-"pos.otherPaymentMethods.cardReader.subtitle" = "Hubungkan pembaca kartu Bluetooth agar dapat memproses pembayaran kartu.";
+"pos.otherPaymentMethods.cardReader.subtitle" = "Hubungkan perangkat pembaca kartu Bluetooth agar dapat memproses pembayaran kartu.";
 
 /* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.title" = "Pembaca kartu";
@@ -13324,7 +13324,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.cancelRefund.button.title" = "Batalkan pengembalian dana";
 
 /* Title shown in POS when a refund is canceled on the card reader. */
-"pos.refundCardPresent.cancelledOnReader.title" = "Pengembalian dana dibatalkan pada pembaca kartu";
+"pos.refundCardPresent.cancelledOnReader.title" = "Pengembalian dana dibatalkan pada perangkat pembaca kartu";
 
 /* Message shown in POS when a card has been inserted for a refund. */
 "pos.refundCardPresent.cardInserted.message" = "Kartu dimasukkan";
@@ -14270,7 +14270,7 @@ which should be translated separately and considered part of this sentence. */
 "pushNotificationPreferencesView.newReviews.accessibilityHint" = "Atur pemberitahuan ulasan baru";
 
 /* Title of the row that toggles new-review push notifications. */
-"pushNotificationPreferencesView.newReviews.title" = "Tinjauan baru";
+"pushNotificationPreferencesView.newReviews.title" = "Ulasan baru";
 
 /* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
 "pushNotificationPreferencesView.notificationsDisabled" = "Pemberitahuan dinonaktifkan untuk Woo";
@@ -14312,7 +14312,7 @@ which should be translated separately and considered part of this sentence. */
 "pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "Pesanan melebihi %1$@";
 
 /* Detail text for the New reviews row when notifications fire for every review. */
-"pushNotificationPreferencesViewModel.storeReview.allReviews" = "Semua tinjauan";
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "Semua ulasan";
 
 /* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
 "pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "Bintang %1$@ dan di bawahnya";
@@ -14890,7 +14890,7 @@ which should be translated separately and considered part of this sentence. */
 "supportChatView.toolbar.markResolved" = "Tandai Selesai";
 
 /* Generic error message shown when an AI support chat request fails */
-"supportChatViewModel.aiChatConnectionErrorMessage" = "Kami tidak bisa terhubung ke obrolan AI sekarang.";
+"supportChatViewModel.aiChatConnectionErrorMessage" = "Saat ini kami tidak dapat terhubung ke obrolan AI.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Halo! Saya adalah Bot Dukungan Seluler Woo. Ada yang bisa kami bantu hari ini?";

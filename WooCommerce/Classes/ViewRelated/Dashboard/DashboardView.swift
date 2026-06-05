@@ -163,8 +163,9 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            viewModel.onPullToRefresh()
+            await viewModel.onPullToRefresh()
         }
+        .notice($viewModel.notice)
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
@@ -202,6 +203,11 @@ struct DashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
+        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
+            AnalyticsUpdateModeBottomSheet(
+                viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel()
+            )
+        }
         .onAppear {
             Task {
                 await viewModel.onViewAppear()
@@ -238,11 +244,15 @@ private extension DashboardView {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .topPerformers:
                         TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel) {

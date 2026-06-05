@@ -164,18 +164,4 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
             }
         }
     }
-
-    public func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund {
-        return try await withCheckedThrowingContinuation { continuation in
-            createRefund(for: siteID, by: orderID, refund: refund) { refund, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else if let refund {
-                    continuation.resume(returning: refund)
-                } else {
-                    continuation.resume(throwing: NetworkError.notFound())
-                }
-            }
-        }
-    }
 }

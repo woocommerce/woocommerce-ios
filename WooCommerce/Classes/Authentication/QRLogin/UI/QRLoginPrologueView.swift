@@ -25,11 +25,11 @@ struct QRLoginPrologueView: View {
     @State private var didCopyURL = false
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: Constants.zeroSpacing) {
             topBar
 
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: Constants.standardSpacing) {
                     qrIcon
 
                     Text(Localization.title)
@@ -41,19 +41,19 @@ struct QRLoginPrologueView: View {
 
                     Text(Localization.subtitle)
                         .font(.body)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.white.opacity(Constants.secondaryTextOpacity))
                         .multilineTextAlignment(.center)
 
                     urlPill
 
                     Text(Localization.stepHint)
                         .font(.body)
-                        .foregroundColor(.white.opacity(0.7))
+                        .foregroundColor(.white.opacity(Constants.secondaryTextOpacity))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
-                .padding(.horizontal, 32)
-                .padding(.vertical, 24)
+                .padding(.horizontal, Constants.largePadding)
+                .padding(.vertical, Constants.standardPadding)
             }
 
             buttons
@@ -66,12 +66,12 @@ struct QRLoginPrologueView: View {
     /// insets line up with the standard navigation-bar items on the other
     /// QR-login screens.
     private var topBar: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: Constants.zeroSpacing) {
             Button(action: onBackTapped) {
                 Image(systemName: "chevron.backward")
                     .font(.body.weight(.semibold))
                     .foregroundColor(.white)
-                    .frame(width: 44, height: 44)
+                    .frame(width: Constants.topBarControlSize, height: Constants.topBarControlSize)
             }
             .accessibilityLabel(Localization.back)
 
@@ -81,8 +81,8 @@ struct QRLoginPrologueView: View {
                 Text(Localization.help)
                     .font(.body)
                     .foregroundColor(.white)
-                    .frame(height: 44)
-                    .padding(.horizontal, 16)
+                    .frame(height: Constants.topBarControlSize)
+                    .padding(.horizontal, Constants.mediumPadding)
             }
         }
     }
@@ -91,11 +91,11 @@ struct QRLoginPrologueView: View {
         Image(systemName: "qrcode.viewfinder")
             .resizable()
             .scaledToFit()
-            .frame(width: 48, height: 48)
+            .frame(width: Constants.qrIconSize, height: Constants.qrIconSize)
             .foregroundColor(.white)
-            .padding(22)
-            .background(Circle().fill(Color.white.opacity(0.12)))
-            .padding(.top, 32)
+            .padding(Constants.qrIconPadding)
+            .background(Circle().fill(Color.white.opacity(Constants.translucentControlOpacity)))
+            .padding(.top, Constants.largePadding)
             .accessibilityHidden(true)
     }
 
@@ -104,7 +104,7 @@ struct QRLoginPrologueView: View {
     /// briefly confirms with a "copied" state.
     private var urlPill: some View {
         Button(action: copyURL) {
-            HStack(spacing: 8) {
+            HStack(spacing: Constants.smallSpacing) {
                 Image(systemName: didCopyURL ? "checkmark.circle.fill" : "desktopcomputer")
                 Group {
                     if didCopyURL {
@@ -117,10 +117,10 @@ struct QRLoginPrologueView: View {
             }
             .font(.title3)
             .foregroundColor(.white)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 14)
+            .padding(.horizontal, Constants.standardPadding)
+            .padding(.vertical, Constants.urlPillVerticalPadding)
             .background(
-                Capsule().fill(Color.white.opacity(0.12))
+                Capsule().fill(Color.white.opacity(Constants.translucentControlOpacity))
             )
         }
         .buttonStyle(.plain)
@@ -130,13 +130,13 @@ struct QRLoginPrologueView: View {
     private func copyURL() {
         onURLTapped()
         withAnimation { didCopyURL = true }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.copyConfirmationDelay) {
             withAnimation { didCopyURL = false }
         }
     }
 
     private var buttons: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Constants.mediumSpacing) {
             // White primary CTA — the accent purple would blend into the
             // purple background, so this mirrors the standard prologue's
             // white "Log In" button.
@@ -145,24 +145,24 @@ struct QRLoginPrologueView: View {
                     .font(.body.weight(.semibold))
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 50)
+                    .frame(height: Constants.primaryButtonHeight)
                     .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipShape(RoundedRectangle(cornerRadius: Constants.buttonCornerRadius))
             }
             .buttonStyle(.plain)
 
             Button(action: onSiteAddressTapped) {
                 Text(Localization.fallbackCTA)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, Constants.smallSpacing)
             }
             .buttonStyle(.borderless)
             .controlSize(.large)
             .tint(.white)
         }
-        .padding(.horizontal, 24)
-        .padding(.top, 12)
-        .padding(.bottom, 24)
+        .padding(.horizontal, Constants.standardPadding)
+        .padding(.top, Constants.mediumSpacing)
+        .padding(.bottom, Constants.standardPadding)
     }
 
     /// The standard login prologue's dark background — a tinted "bubbles" image
@@ -193,6 +193,25 @@ private struct PrologueBubblesBackground: UIViewRepresentable {
 // MARK: - Localization
 
 private extension QRLoginPrologueView {
+    enum Constants {
+        static let zeroSpacing: CGFloat = 0
+        static let smallSpacing: CGFloat = 8
+        static let mediumSpacing: CGFloat = 12
+        static let standardSpacing: CGFloat = 24
+        static let mediumPadding: CGFloat = 16
+        static let standardPadding: CGFloat = 24
+        static let largePadding: CGFloat = 32
+        static let secondaryTextOpacity = 0.7
+        static let translucentControlOpacity = 0.12
+        static let topBarControlSize: CGFloat = 44
+        static let qrIconSize: CGFloat = 48
+        static let qrIconPadding: CGFloat = 22
+        static let urlPillVerticalPadding: CGFloat = 14
+        static let copyConfirmationDelay: DispatchTimeInterval = .seconds(2)
+        static let primaryButtonHeight: CGFloat = 50
+        static let buttonCornerRadius: CGFloat = 8
+    }
+
     enum Localization {
         static let back = NSLocalizedString(
             "qrLogin.prologue.back",

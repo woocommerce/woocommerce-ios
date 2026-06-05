@@ -11,10 +11,10 @@ struct QRLoginNumberMatchView: View {
     let onCancel: () -> Void
 
     @State private var now = Date()
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: Constants.countdownTimerInterval, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: Constants.standardSpacing) {
             Spacer()
 
             Text(Localization.title)
@@ -23,7 +23,7 @@ struct QRLoginNumberMatchView: View {
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: 8) {
+            VStack(spacing: Constants.smallSpacing) {
                 Text(subtitleLabel)
                     .font(.body)
                     .foregroundColor(.secondary)
@@ -31,10 +31,10 @@ struct QRLoginNumberMatchView: View {
 
                 Text(verbatim: subtitleValue)
                     .font(.headline)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, Constants.mediumPadding)
+                    .padding(.vertical, Constants.smallSpacing)
                     .background(
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: Constants.subtitleCornerRadius)
                             .fill(Color(uiColor: .systemGray6))
                     )
             }
@@ -45,11 +45,11 @@ struct QRLoginNumberMatchView: View {
                 .multilineTextAlignment(.center)
 
             Text(verbatim: realNumber)
-                .font(.system(size: 56, weight: .semibold, design: .monospaced))
-                .padding(.horizontal, 32)
-                .padding(.vertical, 16)
+                .font(.system(size: Constants.numberFontSize, weight: .semibold, design: .monospaced))
+                .padding(.horizontal, Constants.largePadding)
+                .padding(.vertical, Constants.mediumPadding)
                 .background(
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: Constants.numberCornerRadius)
                         .fill(Color(uiColor: .systemGray6))
                 )
                 .accessibilityLabel(realNumber)
@@ -62,14 +62,14 @@ struct QRLoginNumberMatchView: View {
                 .font(.footnote)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
+                .padding(.horizontal, Constants.largePadding)
 
             Spacer()
 
             Button(Localization.cancel, action: onCancel)
                 .buttonStyle(SecondaryButtonStyle())
-                .padding(.horizontal, 24)
-                .padding(.bottom, 24)
+                .padding(.horizontal, Constants.standardPadding)
+                .padding(.bottom, Constants.standardPadding)
         }
         .onReceive(timer) { now = $0 }
     }
@@ -89,7 +89,7 @@ struct QRLoginNumberMatchView: View {
     }
 
     private var countdownText: String {
-        let remainingSeconds = max(0, Int(expiresAt.timeIntervalSince(now)))
+        let remainingSeconds = max(Constants.minimumRemainingSeconds, Int(expiresAt.timeIntervalSince(now)))
         return String(format: Localization.countdown, remainingSeconds)
     }
 }
@@ -97,6 +97,19 @@ struct QRLoginNumberMatchView: View {
 // MARK: - Localization
 
 private extension QRLoginNumberMatchView {
+    enum Constants {
+        static let countdownTimerInterval: TimeInterval = 1
+        static let minimumRemainingSeconds = 0
+        static let smallSpacing: CGFloat = 8
+        static let standardSpacing: CGFloat = 24
+        static let mediumPadding: CGFloat = 16
+        static let standardPadding: CGFloat = 24
+        static let largePadding: CGFloat = 32
+        static let subtitleCornerRadius: CGFloat = 12
+        static let numberCornerRadius: CGFloat = 16
+        static let numberFontSize: CGFloat = 56
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "qrLogin.numberMatch.title",

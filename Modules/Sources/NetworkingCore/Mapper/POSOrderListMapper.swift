@@ -1,49 +1,6 @@
-import Foundation
-
-/// Mapper: POS OrderList
-///
 /// POS order history can show a partial page when a single order payload is malformed.
 /// The regular `OrderListMapper` stays strict for the rest of the app.
-struct POSOrderListMapper: Mapper {
-    /// Site Identifier associated to the orders that will be parsed.
-    ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
-    ///
-    let siteID: Int64
-
-    /// Attempts to convert a dictionary into `[Order]`, skipping individual malformed orders.
-    ///
-    func map(response: Data) throws -> [Order] {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        return try decoder.decode(POSOrderListResponse.self, from: response).orders
-    }
-}
-
-private struct POSOrderListResponse: Decodable {
-    let orders: [Order]
-
-    init(from decoder: Decoder) throws {
-        if let keyedContainer = try? decoder.container(keyedBy: CodingKeys.self),
-           keyedContainer.contains(.data) {
-            orders = try keyedContainer.decode([LossyPOSOrder].self, forKey: .data).compactMap(\.order)
-            return
-        }
-
-        let container = try decoder.singleValueContainer()
-        orders = try container.decode([LossyPOSOrder].self).compactMap(\.order)
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case data
-    }
-}
-
-private struct LossyPOSOrder: Decodable {
+struct LossyPOSOrder: Decodable {
     let order: Order?
 
     init(from decoder: Decoder) throws {

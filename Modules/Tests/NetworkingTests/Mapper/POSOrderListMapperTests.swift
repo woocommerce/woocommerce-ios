@@ -10,7 +10,7 @@ final class POSOrderListMapperTests: XCTestCase {
             malformedOrder.removeValue(forKey: "total")
         }
 
-        let orders = try POSOrderListMapper(siteID: dummySiteID).map(response: response)
+        let orders = try mapPOSOrders(response: response)
 
         XCTAssertEqual(orders.map(\.orderID), [964])
     }
@@ -31,7 +31,7 @@ final class POSOrderListMapperTests: XCTestCase {
             malformedOrder["line_items"] = lineItems
         }
 
-        let orders = try POSOrderListMapper(siteID: dummySiteID).map(response: response)
+        let orders = try mapPOSOrders(response: response)
 
         XCTAssertEqual(orders.map(\.orderID), [964])
     }
@@ -41,7 +41,7 @@ final class POSOrderListMapperTests: XCTestCase {
             malformedOrder.removeValue(forKey: "total")
         }
 
-        let orders = try POSOrderListMapper(siteID: dummySiteID).map(response: response)
+        let orders = try mapPOSOrders(response: response)
 
         XCTAssertEqual(orders.map(\.orderID), [964])
     }
@@ -74,5 +74,11 @@ private extension POSOrderListMapperTests {
         let orders = [malformedOrder, validOrder]
         let payload: Any = hasDataEnvelope ? ["data": orders] : orders
         return try JSONSerialization.data(withJSONObject: payload)
+    }
+
+    func mapPOSOrders(response: Data) throws -> [Order] {
+        return try ListMapper<LossyPOSOrder>(siteID: dummySiteID)
+            .map(response: response)
+            .compactMap(\.order)
     }
 }

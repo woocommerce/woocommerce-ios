@@ -544,8 +544,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = POSOrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
@@ -566,8 +567,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = POSOrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 }
@@ -690,8 +692,9 @@ public extension OrdersRemote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = POSOrderListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let lossyOrders = try await enqueue(request, mapper: mapper)
+        return lossyOrders.compactMap(\.order)
     }
 }
 

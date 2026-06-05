@@ -121,6 +121,35 @@ struct QRLoginViewModelTests {
         #expect(strategy.exchangeCalls == ["grant-x", "grant-x"]) // exchange re-run with same grant
     }
 
+    @Test func retry_when_post_exchange_failed_then_starts_fresh_scan_instead_of_reusing_grant() async {
+        // Given — /exchange succeeded, but post-exchange cleanup failed and
+        // revoked the minted AP. The retained grant is spent at this point.
+        let strategy = MockQRLoginStrategy()
+        strategy.scanResult = .success(makeScanResult())
+        strategy.pollResults = [.success(.approved(exchangeGrant: "spent-grant"))]
+        strategy.exchangeResult = .failure(.init(kind: .siteAuthFailure, phase: .postExchange, primaryAction: .scanAgain))
+        let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
+        await viewModel.start()
+
+        // Sanity
+        guard case .error = viewModel.state else {
+            Issue.record("Expected .error after post-exchange failure, got \(viewModel.state)")
+            return
+        }
+        #expect(strategy.scanCount == 1)
+        #expect(strategy.exchangeCalls == ["spent-grant"])
+
+        // When — the recovery path starts over with a fresh scan. Keep the
+        // second scan failing so the test can prove retry did not immediately
+        // reuse the spent exchange grant.
+        strategy.scanResult = .failure(.init(kind: .network, phase: .scan, primaryAction: .retryFailedPhase))
+        await viewModel.retry()
+
+        // Then
+        #expect(strategy.scanCount == 2)
+        #expect(strategy.exchangeCalls == ["spent-grant"])
+    }
+
     @Test func retry_when_poll_transient_storm_then_resumes_polling_without_rerunning_scan() async {
         // Given — 4 transient failures trips the threshold, then we retry and
         // the poll succeeds. "Poll retry resumes polling with the

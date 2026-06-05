@@ -35,7 +35,8 @@ public final class PushNotificationPreferencesRemote: Remote, PushNotificationPr
                                      siteID: siteID,
                                      path: Paths.preferences,
                                      availableAsRESTRequest: true)
-        return try await enqueue(request)
+        let mapper = SingleItemMapper<PushNotificationPreferences>(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     public func updatePreferences(siteID: Int64,
@@ -47,7 +48,8 @@ public final class PushNotificationPreferencesRemote: Remote, PushNotificationPr
                                      path: Paths.preferences,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        return try await enqueue(request)
+        let mapper = SingleItemMapper<PushNotificationPreferences>(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

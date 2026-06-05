@@ -464,9 +464,7 @@ struct POSTabEligibilityCheckerTests {
     // MARK: - IPP Country Expansion Gate Tests
 
     @Test(arguments: [
-        (country: Country.de, currency: CurrencyCode.EUR),
-        (country: Country.es, currency: CurrencyCode.EUR),
-        (country: Country.fr, currency: CurrencyCode.EUR),
+        (country: Country.nl, currency: CurrencyCode.EUR),
         (country: Country.sg, currency: CurrencyCode.SGD),
         (country: Country.nz, currency: CurrencyCode.NZD),
         (country: Country.au, currency: CurrencyCode.AUD)
@@ -488,8 +486,7 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test(arguments: [
-        Country.de,
-        Country.es,
+        Country.nl,
         Country.sg,
         Country.nz,
         Country.au
@@ -511,9 +508,34 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
     }
 
+    @Test(arguments: [
+        Country.at,
+        Country.be,
+        Country.de,
+        Country.es,
+        Country.fr,
+        Country.it,
+        Country.pt
+    ])
+    fileprivate func fiscalization_country_is_ineligible_when_expansion_eligibility_is_enabled(country: Country) async throws {
+        // Given
+        setupCountry(country: country, currency: .EUR)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               expansionEligibilityService: eligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
+        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+
     @Test func expansion_country_with_mismatched_currency_is_ineligible_when_expansion_eligibility_is_enabled() async throws {
-        // Given - DE store with USD currency (mismatch)
-        setupCountry(country: .de, currency: .USD)
+        // Given - NL store with USD currency (mismatch)
+        setupCountry(country: .nl, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -524,7 +546,7 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
+        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .NL, supportedCurrencies: [.EUR])))
     }
 
 }
@@ -576,11 +598,16 @@ private extension POSTabEligibilityCheckerTests {
     enum Country: String {
         case us = "US:CA"
         case pr = "PR"
+        case at = "AT"
+        case be = "BE"
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
         case de = "DE"
         case fr = "FR"
+        case it = "IT"
+        case nl = "NL"
+        case pt = "PT"
         case sg = "SG"
         case nz = "NZ"
         case au = "AU"
@@ -591,6 +618,10 @@ private extension POSTabEligibilityCheckerTests {
                 return .US
             case .pr:
                 return .PR
+            case .at:
+                return .AT
+            case .be:
+                return .BE
             case .ca:
                 return .CA
             case .gb:
@@ -601,6 +632,12 @@ private extension POSTabEligibilityCheckerTests {
                 return .DE
             case .fr:
                 return .FR
+            case .it:
+                return .IT
+            case .nl:
+                return .NL
+            case .pt:
+                return .PT
             case .sg:
                 return .SG
             case .nz:

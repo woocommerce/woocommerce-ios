@@ -10,19 +10,19 @@ struct QRLoginSessionReplaceView: View {
     let onCancel: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: Constants.zeroSpacing) {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: Constants.contentSpacing) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 44, height: 44)
+                        .frame(width: Constants.iconSize, height: Constants.iconSize)
                         .foregroundColor(Color(uiColor: .warning))
-                        .padding(22)
+                        .padding(Constants.iconPadding)
                         .background(
-                            Circle().fill(Color(uiColor: .warning).opacity(0.15))
+                            Circle().fill(Color(uiColor: .warning).opacity(Constants.warningBackgroundOpacity))
                         )
-                        .padding(.top, 48)
+                        .padding(.top, Constants.topPadding)
                         .accessibilityHidden(true)
 
                     Text(Localization.title)
@@ -35,19 +35,19 @@ struct QRLoginSessionReplaceView: View {
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, Constants.largePadding)
                 }
             }
 
-            VStack(spacing: 12) {
+            VStack(spacing: Constants.buttonSpacing) {
                 Button(Localization.confirm, action: onConfirm)
                     .buttonStyle(PrimaryButtonStyle())
 
                 Button(Localization.cancel, action: onCancel)
                     .buttonStyle(SecondaryButtonStyle())
             }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 24)
+            .padding(.horizontal, Constants.standardPadding)
+            .padding(.bottom, Constants.standardPadding)
         }
         .background(Color(uiColor: .systemBackground))
     }
@@ -56,6 +56,18 @@ struct QRLoginSessionReplaceView: View {
 // MARK: - Localization
 
 private extension QRLoginSessionReplaceView {
+    enum Constants {
+        static let zeroSpacing: CGFloat = 0
+        static let buttonSpacing: CGFloat = 12
+        static let contentSpacing: CGFloat = 20
+        static let standardPadding: CGFloat = 24
+        static let largePadding: CGFloat = 32
+        static let iconSize: CGFloat = 44
+        static let iconPadding: CGFloat = 22
+        static let topPadding: CGFloat = 48
+        static let warningBackgroundOpacity = 0.15
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "qrLogin.sessionReplace.title",

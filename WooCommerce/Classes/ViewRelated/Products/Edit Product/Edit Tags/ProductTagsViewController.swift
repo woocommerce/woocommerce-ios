@@ -256,7 +256,7 @@ private extension ProductTagsViewController {
     func createNewTagsRemotely() {
         configureRightBarButtonItemAsSpinner()
 
-        let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
+        let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] result in
             guard let self else {
                 return
             }
@@ -271,7 +271,6 @@ private extension ProductTagsViewController {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
 }
 
 // MARK: Error handling
@@ -348,7 +347,7 @@ private extension ProductTagsViewController {
         var fetchedTags = fetchedTags
         return tags.compactMap { tagName -> ProductTag? in
             let first = fetchedTags.first(where: { $0.name.lowercased() == tagName.lowercased() })
-            fetchedTags.removeAll(where: { (productTag) -> Bool in
+            fetchedTags.removeAll(where: { productTag -> Bool in
                 first?.name.lowercased() == productTag.name.lowercased()
             })
             return first

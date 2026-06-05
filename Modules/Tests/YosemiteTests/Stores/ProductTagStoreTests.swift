@@ -67,7 +67,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -89,7 +89,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -111,7 +111,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -136,7 +136,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -163,7 +163,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -182,7 +182,7 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeAllProductTags` action
         var errorResponse: ProductTagActionError?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductTagAction.synchronizeAllProductTags(siteID: sampleSiteID) { error in
                 errorResponse = error
                 exp.fulfill()
@@ -201,8 +201,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `addProductTags` action
         var result: Result<[Yosemite.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -226,8 +226,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `addProductTags` action
         var result: Result<[Networking.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -242,8 +242,8 @@ final class ProductTagStoreTests: XCTestCase {
     func test_addProductTags_returns_success_for_empty_tag_list() throws {
         // When
         var result: Result<[Networking.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: []) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: []) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -264,8 +264,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `addProductTags` action
         var result: Result<[Networking.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -286,8 +286,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `deleteProductTags` action
         var result: Result<[Yosemite.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -307,8 +307,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `deleteProductTags` action
         var result: Result<[Yosemite.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -327,8 +327,8 @@ final class ProductTagStoreTests: XCTestCase {
 
         // When dispatching a `deleteProductTags` action
         var result: Result<[Yosemite.ProductTag], Error>?
-        waitForExpectation { (exp) in
-            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { (aResult) in
+        waitForExpectation { exp in
+            let action = ProductTagAction.deleteProductTags(siteID: sampleSiteID, ids: [35]) { aResult in
                 result = aResult
                 exp.fulfill()
             }

@@ -15,5 +15,4 @@ extension ProductImage {
     @NSManaged public var name: String?
     @NSManaged public var alt: String?
     @NSManaged public var product: Product?
-
 }

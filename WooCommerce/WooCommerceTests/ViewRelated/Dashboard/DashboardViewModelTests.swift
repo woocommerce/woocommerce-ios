@@ -1008,7 +1008,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_registered_and_wpcom_login() async {
+    func test_isSelfDrivenPushNotificationRegistered_returns_true_when_site_is_registered_and_wpcom_login() async {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1027,7 +1027,7 @@ final class DashboardViewModelTests: XCTestCase {
         await viewModel.reloadAllData()
 
         // Then
-        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegistered)
     }
 
     @MainActor
@@ -1364,7 +1364,6 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(setCardsCallCount, 0)
     }
-
 }
 
 private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {

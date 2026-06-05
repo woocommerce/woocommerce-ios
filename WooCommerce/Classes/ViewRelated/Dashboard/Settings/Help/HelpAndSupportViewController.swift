@@ -238,8 +238,6 @@ private extension HelpAndSupportViewController {
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
             configureFeatureFlags(cell: cell)
-        case let cell as ValueOneTableViewCell where row == .aiSupportChat:
-            configureAISupportChat(cell: cell)
         case let cell as ValueOneTableViewCell where row == .chatHistory:
             configureChatHistory(cell: cell)
         default:
@@ -263,7 +261,8 @@ private extension HelpAndSupportViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
         cell.detailTextLabel?.text = NSLocalizedString(
-            "Reach our happiness engineers who can help answer tough questions",
+            "helpAndSupport.contactSupport.subtitle",
+            value: "Get help with app or store issues",
             comment: "Subtitle for Contact Support"
         )
     }
@@ -327,23 +326,6 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = "Toggle local feature flags"
     }
 
-    /// AI Support Chat cell
-    ///
-    func configureAISupportChat(cell: ValueOneTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString(
-            "helpAndSupport.aiSupportChat.title",
-            value: "Chat with Support",
-            comment: "Title for the AI support chat row on the Help screen"
-        )
-        cell.detailTextLabel?.text = NSLocalizedString(
-            "helpAndSupport.aiSupportChat.subtitle",
-            value: "Get help from our AI assistant",
-            comment: "Subtitle for the AI support chat row on the Help screen"
-        )
-    }
-
     /// Chat History cell
     ///
     func configureChatHistory(cell: ValueOneTableViewCell) {
@@ -402,6 +384,11 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
+        guard !viewModel.shouldOpenAIChatFromContactSupport else {
+            aiSupportChatWasPressed()
+            return
+        }
+
         let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
         viewController.show(from: self)
     }
@@ -413,7 +400,7 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
+        ZendeskProvider.shared.showSupportEmailPrompt(from: navController) { [weak self] success, _ in
             guard success else {
                 return
             }
@@ -480,17 +467,24 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
+        let initialContext: [String: Any]? = loginSiteURL.map {
+            ["site_url": $0.absoluteString]
+        }
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(
             entryPoint: entryPoint,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            initialContext: initialContext,
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          siteAddress: loginSiteURL?.absoluteString,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = viewModel
@@ -502,10 +496,17 @@ private extension HelpAndSupportViewController {
                                            transcript: String,
                                            supportAreaInfo: SupportAreaInfo?,
                                            entryPoint: SupportChatViewModel.EntryPoint,
+                                           siteAddress: String? = nil,
+                                           hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     onTicketCreated: onTicketCreated)
-        supportEscalationCoordinator?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: siteAddress,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
     }
 
     /// Chat History action
@@ -533,14 +534,16 @@ private extension HelpAndSupportViewController {
             sessionID: summary.sessionID,
             hasCreatedTicket: summary.hasCreatedTicket,
             isChatResolved: summary.isResolved,
-            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint in
-                self?.handleContactHumanSupport(chatID: chatID,
-                                                transcript: transcript,
-                                                supportAreaInfo: supportAreaInfo,
-                                                entryPoint: entryPoint,
-                                                onTicketCreated: { [weak viewModelHolder] in
-                                                    viewModelHolder?.markChatTicketCreated()
-                                                })
+            onContactHumanSupport: { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+                guard let self else { return }
+                handleContactHumanSupport(chatID: chatID,
+                                          transcript: transcript,
+                                          supportAreaInfo: supportAreaInfo,
+                                          entryPoint: entryPoint,
+                                          hasReceivedBotResponse: hasReceivedBotResponse,
+                                          onTicketCreated: { [weak viewModelHolder] in
+                    viewModelHolder?.markChatTicketCreated()
+                })
             }
         )
         viewModelHolder = chatViewModel
@@ -604,8 +607,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             siteCompatibilityWasPressed()
         case .featureFlags:
             featureFlagsWasPressed()
-        case .aiSupportChat:
-            aiSupportChatWasPressed()
         case .chatHistory:
             chatHistoryWasPressed()
         }
@@ -629,7 +630,6 @@ private struct Section {
 enum HelpAndSupportRow: CaseIterable {
     case helpCenter
     case contactSupport
-    case aiSupportChat
     case contactEmail
     case applicationLog
     case systemStatusReport
@@ -639,7 +639,7 @@ enum HelpAndSupportRow: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .aiSupportChat, .contactEmail, .applicationLog,
+        case .helpCenter, .contactSupport, .contactEmail, .applicationLog,
              .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }

@@ -96,7 +96,7 @@ private extension POSSendReceiptView {
 
 #if DEBUG
 #Preview {
-    POSSendReceiptView(isShowingSendReceiptView: .constant(true)) { email in
+    POSSendReceiptView(isShowingSendReceiptView: .constant(true)) { _ in
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
     }
 }

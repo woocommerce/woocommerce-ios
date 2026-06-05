@@ -12,7 +12,6 @@ final class WordPressPageMapperTests: XCTestCase {
             .init(id: 6, title: "Blog", link: "https://example.com/blog/")
         ])
     }
-
 }
 
 private extension WordPressPageMapperTests {

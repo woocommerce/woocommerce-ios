@@ -54,7 +54,7 @@ struct POSNavigationDestinationScanToPayView: View {
 
     var body: some View {
         PointOfSaleScanToPayView(orderTotal: orderTotal)
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
             // while the merchant is on the QR-based payment screen.
             .posHidesFloatingControl()
@@ -101,7 +101,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
                 }
             }
         )
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
         // rather than a card landing on top.
         .frame(maxWidth: .infinity, maxHeight: .infinity)

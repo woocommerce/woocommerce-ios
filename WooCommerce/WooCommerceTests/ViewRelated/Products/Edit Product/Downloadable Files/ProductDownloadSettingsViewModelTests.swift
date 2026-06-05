@@ -167,7 +167,6 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-
     }
 
     func test_viewModel_has_unsaved_changes_with_default_value_after_updating_invalid_downloadLimit() {
@@ -196,7 +195,6 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-
     }
 
     func test_viewModel_has_unsaved_changes_with_default_value_after_updating_invalid_downloadExpiry() {

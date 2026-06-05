@@ -6,7 +6,7 @@ final class BetaFeaturesTests: XCTestCase {
     var appSettings: GeneralAppSettingsStorage!
 
     override func setUpWithError() throws {
-        appSettings = GeneralAppSettingsStorage.init(fileStorage: MockInMemoryStorage())
+        appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
     }
 
     override func tearDownWithError() throws {

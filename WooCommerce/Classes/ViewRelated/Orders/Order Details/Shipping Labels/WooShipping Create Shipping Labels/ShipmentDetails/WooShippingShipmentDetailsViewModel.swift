@@ -70,12 +70,17 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
 
     @Published private var customsForm: ShippingLabelCustomsForm?
 
-    lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
+    private var customsFormIfRequired: ShippingLabelCustomsForm? {
+        customsFormRequired ? customsForm : nil
+    }
+
+    private(set) lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
         return WooShippingCustomsFormViewModel(
             order: order,
             shipment: shipment,
             originCountryCode: originCountryCodePublisher(),
             isHSTariffNumberRequired: isHSTariffNumberRequiredPublisher(),
+            isDescriptionLengthLimitRequired: isUSPSDomesticMailShipmentPublisher(),
             storageManager: storageManager
         ) { [weak self] form in
             self?.customsForm = form
@@ -126,7 +131,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                     weight: Double(shipmentWeight) ?? 0,
                                     shipmentID: shipment.index.description,
                                     hazmatCategory: hazmatCategory,
-                                    customsForm: customsForm)
+                                    customsForm: customsFormIfRequired)
     }
 
     var refundViewModel: WooShippingRefundViewModel? {
@@ -196,7 +201,6 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
             starredPackageIDs: starredPackageIDs,
             dimensionUnit: dimensionUnit
         )
-        analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
     func parcelFittingDidCancel() {}
@@ -242,7 +246,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
                                                 weight: Double(shipmentWeight) ?? 0,
                                                 shipmentID: shipment.index.description,
                                                 hazmatCategory: hazmatCategory,
-                                                customsForm: customsForm)
+                                                customsForm: customsFormIfRequired)
 
         guard let shippingService else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
@@ -354,7 +358,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .assign(to: &$shippingService)
 
         $originAddress.combineLatest($destinationAddress)
-            .map { (originAddress, destinationAddress) -> Bool in
+            .map { originAddress, destinationAddress -> Bool in
                 guard let originAddress, let destinationAddress else {
                     return false
                 }
@@ -393,7 +397,7 @@ private extension WooShippingShipmentDetailsViewModel {
                                                    weight: Double(weight) ?? 0,
                                                    shipmentID: shipment.index.description,
                                                    hazmatCategory: hazmatCategory,
-                                                   customsForm: customsForm)
+                                                   customsForm: customsFormIfRequired)
                 shippingService.loadLabelRates(for: package)
             }
             .store(in: &subscriptions)
@@ -407,7 +411,7 @@ private extension WooShippingShipmentDetailsViewModel {
                                  newValue: ShippingLabelHazmatCategory?) in
                 return (current: newValue, previous: previous.current)
             }
-            .map { [weak self] (newValue, oldValue) in
+            .map { [weak self] newValue, oldValue in
                 let noticeTitle = newValue != nil ? Localization.hazmatSet : Localization.hazmatRemoved
                 return Notice(title: noticeTitle, actionTitle: Localization.undo, actionHandler: {
                     self?.hazmatCategory = oldValue
@@ -418,7 +422,7 @@ private extension WooShippingShipmentDetailsViewModel {
 
     func observeCustomsForm() {
         customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
-            .map { (isMissingITN, customsFormRequired) -> String? in
+            .map { isMissingITN, customsFormRequired -> String? in
                 if customsFormRequired, isMissingITN {
                     return Localization.itnMissing
                 }
@@ -427,7 +431,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .assign(to: &$itnMissingNoticeLabel)
 
         customsFormViewModel.$requiredInformationIsEntered.combineLatest($customsFormRequired)
-            .map { (requiredInfoIsEntered, customsFormRequired) -> Bool in
+            .map { requiredInfoIsEntered, customsFormRequired -> Bool in
                 requiredInfoIsEntered && customsFormRequired
             }
             .assign(to: &$customsInformationIsCompleted)
@@ -563,6 +567,21 @@ private extension WooShippingShipmentDetailsViewModel {
                 }
 
                 return Country.countriesFollowingEUCustoms.contains(address.country)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func isUSPSDomesticMailShipmentPublisher() -> AnyPublisher<Bool, Never> {
+        $originAddress.combineLatest($destinationAddress)
+            .map { originAddress, destinationAddress in
+                guard let originAddress, let destinationAddress else {
+                    return false
+                }
+
+                return WooShippingCustomsRequirements.isUSPSDomesticMailShipment(originCountry: originAddress.country,
+                                                                                 originState: originAddress.state,
+                                                                                 destinationCountry: destinationAddress.country,
+                                                                                 destinationState: destinationAddress.state)
             }
             .eraseToAnyPublisher()
     }

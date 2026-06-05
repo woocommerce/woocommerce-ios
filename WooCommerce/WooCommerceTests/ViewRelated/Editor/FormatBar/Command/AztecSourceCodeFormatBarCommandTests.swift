@@ -38,5 +38,4 @@ final class AztecSourceCodeFormatBarCommandTests: XCTestCase {
         XCTAssertEqual(editorView.editingMode, .richText)
         XCTAssertTrue(formatBar.enabled)
     }
-
 }

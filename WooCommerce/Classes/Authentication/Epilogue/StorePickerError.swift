@@ -36,7 +36,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         view.backgroundColor = modalPresentationStyle == .custom ? .clear : view.backgroundColor
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

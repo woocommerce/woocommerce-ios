@@ -107,7 +107,6 @@ private extension ProductStockDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color(.secondaryLabel))
             }
-
         }
     }
 

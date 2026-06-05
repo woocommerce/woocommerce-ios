@@ -13,9 +13,7 @@ extension WCPayCardPresentPaymentDetails {
     @NSManaged public var funding: String
     @NSManaged public var receipt: WCPayCardPresentReceiptDetails?
     @NSManaged public var charge: WCPayCharge?
-
 }
 
 extension WCPayCardPresentPaymentDetails: Identifiable {
-
 }

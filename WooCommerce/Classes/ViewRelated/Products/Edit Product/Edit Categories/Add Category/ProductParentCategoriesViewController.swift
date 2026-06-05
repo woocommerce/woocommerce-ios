@@ -61,7 +61,6 @@ final class ProductParentCategoriesViewController: UIViewController {
             selectedCategories: [selectedCategory].compactMap { $0 }
         )
     }
-
 }
 
 // MARK: - View Configuration

@@ -277,9 +277,7 @@ struct POSCardPaymentContentView: View {
             }
         } else if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation) {
-                connectCardReaderAction()
-            }
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation)
         } else if let spinnerMessage = activeSpinnerMessage {
             POSPaymentLoadingView(title: spinnerMessage.title,
                                   message: spinnerMessage.message,

@@ -5,5 +5,4 @@ import WordPressUI
 /// appearance as part of the sign in flow.
 ///
 @objc open class NUXNavigationController: RotationAwareNavigationViewController {
-
 }

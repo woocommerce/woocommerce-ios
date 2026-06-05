@@ -11,18 +11,20 @@ struct POSFloatingControlView: View {
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
     @Binding private var showSettings: Bool
+    private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
-    @State private var showOrders: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>) {
+         showSettings: Binding<Bool>,
+         onOrdersSelected: @escaping () -> Void) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
         self._showSettings = showSettings
+        self.onOrdersSelected = onOrdersSelected
     }
 
     var body: some View {
@@ -58,9 +60,6 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showBarcodeScanningModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
-        .posFullScreenCover(isPresented: $showOrders) {
-            POSOrdersView(isPresented: $showOrders)
-        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -80,7 +79,7 @@ private extension POSFloatingControlView {
             )
         }
         .accessibilityIdentifier("pos-exit-menu-item")
-        if horizontalSizeClass == .regular {
+        if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
@@ -94,7 +93,7 @@ private extension POSFloatingControlView {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    showOrders = true
+                    onOrdersSelected()
                 } label: {
                     Label(
                         title: { Text(Localization.orders) },
@@ -166,7 +165,8 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+                           showSettings: .constant(false),
+                           onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -180,7 +180,8 @@ private extension POSFloatingControlView {
     return POSFloatingControlView(showExitPOSModal: .constant(false),
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  showSettings: .constant(false))
+                                  showSettings: .constant(false),
+                                  onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
@@ -189,7 +190,8 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+                           showSettings: .constant(false),
+                           onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

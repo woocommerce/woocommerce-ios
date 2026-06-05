@@ -113,7 +113,7 @@ final class UniversalLinkRouterTests: XCTestCase {
         // Given
         let subPath = "/test/path"
 
-        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, parameters in
+        let route = MockRoute(handledSubpaths: [subPath], performAction: { _, _ in
             return true
         })
 

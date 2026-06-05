@@ -108,6 +108,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private var isSelfDrivenPNEligible = false
+    private var isSmarterNotificationsEnabled = false
     private var subscriptions: Set<AnyCancellable> = []
 
     /// Reference to the Zendesk shared instance
@@ -175,7 +176,28 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private func checkPushNotificationEligibility() {
         Task { @MainActor in
             isSelfDrivenPNEligible = await pushNotificationEligibilityChecker.checkEligibility()
+            isSmarterNotificationsEnabled = await checkSmarterNotificationsEligibility()
             reloadSettings()
+        }
+    }
+
+    /// Resolves whether smarter (AI-powered) push notifications are enabled, letting the remote
+    /// feature flag override the local default.
+    @MainActor
+    private func checkSmarterNotificationsEligibility() async -> Bool {
+        let localDefault = featureFlagService.isFeatureFlagEnabled(.smarterNotifications)
+        guard stores.isAuthenticated else {
+            return localDefault
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .smarterNotifications,
+                defaultValue: localDefault,
+                useCache: true,
+                completion: { value in
+                    continuation.resume(returning: value)
+                })
+            )
         }
     }
 
@@ -322,7 +344,17 @@ private extension SettingsViewModel {
                 return isSelfDrivenPNEligible &&
                 pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
-            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
+            let isRegisteredForWooDrivenPushes: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            let showPushNotificationPreferences = isRegisteredForWooDrivenPushes
+                && isSmarterNotificationsEnabled
+            if showPushNotificationPreferences {
+                rows = [.pushNotificationPreferences, .privacy]
+            } else if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]

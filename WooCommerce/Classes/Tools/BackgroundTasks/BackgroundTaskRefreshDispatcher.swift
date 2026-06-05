@@ -148,7 +148,6 @@ final class BackgroundTaskRefreshDispatcher {
                 UserDefaults.standard[.lastBackgroundRefreshCompletionTime] = Date.now
 
                 backgroundTask.setTaskCompleted(success: true)
-
             } catch {
                 ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncError(error))
                 backgroundTask.setTaskCompleted(success: false)

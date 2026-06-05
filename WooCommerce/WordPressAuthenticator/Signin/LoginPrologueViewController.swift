@@ -31,7 +31,7 @@ class LoginPrologueViewController: LoginViewController {
     })
 
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
-    /// because for the root view in an App, it's always `false`.  We're relying this variiable
+    /// because for the root view in an App, it's always `false`. We're relying on this variable
     /// instead, since the `.prologue` step only needs to be tracked once.
     ///
     private var prologueFlowTracked = false
@@ -86,7 +86,7 @@ class LoginPrologueViewController: LoginViewController {
         super.viewDidAppear(animated)
 
         // We've found some instances where the iCloud Keychain login flow was being started
-        // when the device was idle and the app was logged out and in the background.  I couldn't
+        // when the device was idle and the app was logged out and in the background. I couldn't
         // find precise reproduction steps for this issue but my guess is that some background
         // operation is triggering a call to this method while the app is in the background.
         // The proposed solution is based off this StackOverflow reply:
@@ -631,7 +631,6 @@ extension LoginPrologueViewController {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-
 }
 
 // MARK: - AppleAuthenticatorDelegate
@@ -657,7 +656,6 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
-
 }
 
 // MARK: - GoogleAuthenticatorLoginDelegate
@@ -709,7 +707,6 @@ extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
         socialErrorVC.modalPresentationStyle = .fullScreen
         present(socialErrorNav, animated: true)
     }
-
 }
 
 // MARK: - Button View Sizing
@@ -746,5 +743,4 @@ private extension LoginPrologueViewController {
         static let ipadPortrait: CGFloat = 0.1667
         static let ipadLandscape: CGFloat = 0.25
     }
-
 }

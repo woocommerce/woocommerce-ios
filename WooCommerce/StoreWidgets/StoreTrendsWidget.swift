@@ -5,13 +5,6 @@ import WidgetKit
 /// Configurable Store Stats widget for compact trend-focused lock-screen surfaces.
 ///
 struct StoreTrendsWidget: Widget {
-    private var supportedFamilies: [WidgetFamily] {
-        guard UserDefaults.group?.configurableStoreStatsWidgetsEnabled == true else {
-            return []
-        }
-        return [.accessoryRectangular]
-    }
-
     var body: some WidgetConfiguration {
         AppIntentConfiguration(
             kind: WooConstants.storeTrendsWidgetKind,
@@ -22,7 +15,7 @@ struct StoreTrendsWidget: Widget {
         }
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
-        .supportedFamilies(supportedFamilies)
+        .supportedFamilies([.accessoryRectangular])
     }
 }
 

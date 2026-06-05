@@ -635,7 +635,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
-
     }
 
     func test_productRow_when_subscription_free_trialLength_is_more_than_one_then_subscriptionConditionsFreeTrialLabel_is_plural() {
@@ -650,7 +649,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
-
     }
 }
 

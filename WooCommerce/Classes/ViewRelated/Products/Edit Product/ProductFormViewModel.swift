@@ -251,7 +251,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
@@ -661,7 +661,6 @@ private extension ProductFormViewModel {
         let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
-
     }
 
     func replaceProductID(productIDBeforeSave: Int64) {
@@ -842,7 +841,6 @@ private extension ProductFormViewModel {
     func configureResultsController() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
             self?.updateBlazeCampaignResult()
-
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
             self?.updateBlazeCampaignResult()

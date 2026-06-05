@@ -37,6 +37,7 @@ struct WooShippingShipmentDetailsView: View {
                 WooShippingSelectedPackageView(package: package,
                                                totalWeight: $viewModel.shipmentWeight,
                                                lastARState: viewModel.lastARState,
+                                               arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                                parcelFittingDelegate: viewModel,
                                                updateSelectedPackage: { viewModel.selectPackage($0) })
                 WooShippingServiceView(viewModel: shippingService)

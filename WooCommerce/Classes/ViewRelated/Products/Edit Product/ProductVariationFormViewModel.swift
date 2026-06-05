@@ -131,7 +131,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.productImagesUploader = productImagesUploader
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }

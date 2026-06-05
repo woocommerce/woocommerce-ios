@@ -118,7 +118,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         // Action
         let result: Result<Int64, Error> = waitFor { promise in
-            manager.performAndSave({ storage -> Int64 in
+            manager.performAndSave({ _ -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 throw CoreDataManagerTestsError.unexpectedFailure
             }, completion: { result in

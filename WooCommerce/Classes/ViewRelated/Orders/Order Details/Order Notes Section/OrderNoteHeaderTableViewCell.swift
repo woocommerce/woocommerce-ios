@@ -28,7 +28,6 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
     }
-
 }
 
 // MARK: - Private Methods

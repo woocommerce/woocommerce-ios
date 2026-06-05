@@ -127,7 +127,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
 
     func loadData(with options: WPMediaLoadOptions, success successBlock: WPMediaSuccessBlock?, failure failureBlock: WPMediaFailureBlock? = nil) {
         syncingCoordinator.resetInternalState()
-        retrieveMedia(pageNumber: syncingCoordinator.pageFirstIndex, pageSize: Constants.numberOfItemsPerPage) { [weak self] (mediaItems, error) in
+        retrieveMedia(pageNumber: syncingCoordinator.pageFirstIndex, pageSize: Constants.numberOfItemsPerPage) { [weak self] mediaItems, error in
             guard let self else {
                 return
             }
@@ -162,7 +162,7 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
 
 extension WordPressMediaLibraryPickerDataSource: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
-        retrieveMedia(pageNumber: pageNumber, pageSize: pageSize) { [weak self] (mediaItems, error) in
+        retrieveMedia(pageNumber: pageNumber, pageSize: pageSize) { [weak self] mediaItems, error in
             guard let self else {
                 return
             }

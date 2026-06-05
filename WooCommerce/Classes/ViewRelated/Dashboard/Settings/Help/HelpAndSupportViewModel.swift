@@ -9,6 +9,10 @@ struct HelpAndSupportViewModel {
     private let developerFFPanelEnabled: Bool
     private let isAIChatEnabled: Bool
 
+    var shouldOpenAIChatFromContactSupport: Bool {
+        isAIChatEnabled
+    }
+
     init(isAuthenticated: Bool,
          isZendeskEnabled: Bool,
          isMacCatalyst: Bool,
@@ -32,18 +36,12 @@ struct HelpAndSupportViewModel {
             return [.helpCenter]
         }
 
-        var rows: [HelpAndSupportRow] = [.helpCenter, .contactEmail, .applicationLog]
-        if !isAIChatEnabled {
-            rows.insert(.contactSupport, at: 1)
-        }
+        var rows: [HelpAndSupportRow] = [.helpCenter, .contactSupport, .contactEmail, .applicationLog]
         if isAuthenticated {
             rows.append(.systemStatusReport)
         }
         if !isAuthenticated && hasLoginSiteURL {
             rows.append(.siteCompatibility)
-        }
-        if isAIChatEnabled {
-            rows.append(.aiSupportChat)
         }
         if isAuthenticated && isAIChatEnabled {
             rows.append(.chatHistory)

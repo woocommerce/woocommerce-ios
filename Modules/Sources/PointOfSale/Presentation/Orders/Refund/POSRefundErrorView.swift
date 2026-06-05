@@ -3,27 +3,39 @@ import SwiftUI
 struct POSRefundErrorView: View {
     let title: String
     let subtitle: String
-    let onRetry: () -> Void
+    let onRetry: (() -> Void)?
+    let cancelButtonTitle: String?
     let onCancel: () -> Void
     let onClose: () -> Void
 
     @Environment(\.posModalParentSize) private var parentSize
-    @State private var isViewLoaded: Bool = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    init(title: String,
+         subtitle: String,
+         onRetry: (() -> Void)?,
+         cancelButtonTitle: String? = nil,
+         onCancel: @escaping () -> Void,
+         onClose: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.onRetry = onRetry
+        self.cancelButtonTitle = cancelButtonTitle
+        self.onCancel = onCancel
+        self.onClose = onClose
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
+            Spacer(minLength: POSSpacing.large)
             contentView
+            Spacer(minLength: POSSpacing.large)
             buttonsSection
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
-        .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isViewLoaded = true
-            }
-        }
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -31,65 +43,43 @@ struct POSRefundErrorView: View {
 
 private extension POSRefundErrorView {
     var headerView: some View {
-        HStack {
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        POSRefundNavigationHeader(backAction: onClose,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var contentView: some View {
         VStack(spacing: POSSpacing.xLarge) {
             POSErrorXMark()
-                .scaleEffect(isViewLoaded ? 1 : 0)
-                .opacity(isViewLoaded ? 1 : 0)
 
             VStack(spacing: POSSpacing.small) {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
 
                 Text(subtitle)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
-                    .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
-                    .opacity(isViewLoaded ? 1 : 0)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .multilineTextAlignment(.center)
         }
         .padding(.horizontal, POSPadding.xLarge)
-        .padding(.bottom, POSSpacing.xLarge)
+        .frame(maxWidth: POSRefundModalLayout.fullScreenContentMaxWidth)
     }
 
     var buttonsSection: some View {
         VStack(spacing: POSSpacing.medium) {
-            Button(Localization.retryButton, action: onRetry)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+            if let onRetry {
+                Button(Localization.retryButton, action: onRetry)
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+            }
 
-            Button(Localization.cancelButton, action: onCancel)
+            Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(POSPadding.xLarge)
-        .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-        .opacity(isViewLoaded ? 1 : 0)
-    }
-}
-
-// MARK: - Constants
-
-private extension POSRefundErrorView {
-    enum Constants {
-        static let animationOffset: CGFloat = 100
+        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -97,10 +87,10 @@ private extension POSRefundErrorView {
 
 private extension POSRefundErrorView {
     enum Localization {
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundErrorView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund error screen"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundErrorView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund error screen"
         )
 
         static let retryButton = NSLocalizedString(

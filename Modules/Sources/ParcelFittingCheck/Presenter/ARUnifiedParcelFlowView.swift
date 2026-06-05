@@ -1,9 +1,11 @@
 import SwiftUI
+import EventHorizonSDK
 
 struct ARUnifiedParcelFlowView: View {
     let unit: UnitLength
     let carriers: [ParcelPresetCarrier]
     let starredPackageIDs: Set<String>
+    let analytics: ParcelFittingAnalyticsTracking
     let delegate: ParcelFittingDelegate
     let dismiss: () -> Void
 
@@ -13,6 +15,8 @@ struct ARUnifiedParcelFlowView: View {
         NavigationStack(path: $path) {
             ARParcelSizingView(
                 unit: unit,
+                analytics: analytics,
+                isSessionActive: path.isEmpty,
                 onCancel: {
                     dismiss()
                     delegate.parcelFittingDidCancel()
@@ -26,7 +30,8 @@ struct ARUnifiedParcelFlowView: View {
                     viewModel: ARParcelFittingResultsViewModel(
                         measuredDimensions: dims,
                         unit: unit,
-                        carriers: carriers
+                        carriers: carriers,
+                        analytics: analytics
                     ),
                     starredPackageIDs: starredPackageIDs,
                     delegate: delegate,
@@ -38,6 +43,11 @@ struct ARUnifiedParcelFlowView: View {
                                                          dimensionUnit: unit)
                     }
                 )
+            }
+        }
+        .onChange(of: path) { oldPath, newPath in
+            if !oldPath.isEmpty && newPath.isEmpty {
+                analytics.track(Event.arfittingResultsBackTapped)
             }
         }
     }

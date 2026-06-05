@@ -19,7 +19,6 @@ extension InboxNote {
     @NSManaged public var type: String?
     @NSManaged public var dateCreated: Date?
     @NSManaged public var actions: Set<InboxAction>?
-
 }
 
 // MARK: Generated accessors for actions
@@ -36,9 +35,7 @@ extension InboxNote {
 
     @objc(removeActions:)
     @NSManaged public func removeFromActions(_ values: NSSet)
-
 }
 
 extension InboxNote: Identifiable {
-
 }

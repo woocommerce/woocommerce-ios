@@ -16,9 +16,7 @@ extension ProductCompositeComponent {
     @NSManaged public var componentDescription: String?
     @NSManaged public var defaultOptionID: String?
     @NSManaged public var product: Product?
-
 }
 
 extension ProductCompositeComponent: Identifiable {
-
 }

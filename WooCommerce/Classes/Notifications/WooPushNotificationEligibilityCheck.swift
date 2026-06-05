@@ -21,6 +21,8 @@ final class WooPushNotificationEligibilityCheck: WooPushNotificationEligibilityC
 
     @MainActor
     func checkEligibility() async -> Bool {
+        guard stores.isAuthenticated else { return false }
+
         let defaultM1Value = featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
 
         return await withCheckedContinuation { continuation in

@@ -41,7 +41,7 @@ extension WooShippingPackagesResponse: Decodable {
         let savedPackagesData = try packagesData.nestedContainer(keyedBy: SavedPackagesKeys.self, forKey: .saved)
         let customPackages = try savedPackagesData.decodeIfPresent([WooShippingCustomPackage].self, forKey: .custom) ?? []
         let rawSavedPredefinedOptions: [String: [String]] = savedPackagesData.failsafeDecodeIfPresent([String: [String]].self, forKey: .predefined) ?? [:]
-        let savedPredefinedOptions = rawSavedPredefinedOptions.map { (carrier, packageIDs) in
+        let savedPredefinedOptions = rawSavedPredefinedOptions.map { carrier, packageIDs in
             WooShippingPredefinedSavedOption(id: carrier, predefinedPackageIDs: packageIDs)
         }
 
@@ -49,11 +49,11 @@ extension WooShippingPackagesResponse: Decodable {
         var allPredefinedOptions: [WooShippingCarrierPredefinedOptions] = []
         var allSavedPredefinedPackages: [WooShippingSavedPredefinedPackage] = []
 
-        allPredefinedPackagesData.forEach { (key, value) in
+        allPredefinedPackagesData.forEach { key, value in
             // key is a carrier id, for example "usps"
             if let provider: [String: Any]? = try? value.toDictionary() {
                 var providerOptions: [WooShippingPredefinedOption] = []
-                provider?.forEach({ (providerKey, providerValue) in
+                provider?.forEach({ _, providerValue in
                     // providerKey is package group id, for example "pri_flat_boxes"
                     let providerValueDict = providerValue as? [String: Any]
                     let title: String = providerValueDict?["title"] as? String ?? ""

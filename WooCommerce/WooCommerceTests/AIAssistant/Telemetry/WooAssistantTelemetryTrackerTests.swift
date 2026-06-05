@@ -36,14 +36,14 @@ struct WooAssistantTelemetryTrackerTests {
         // When
         sut.track(.turnStarted(context: context,
                                isRetry: false,
-                               completionStack: "jetpack_ai_query",
+                               completionStack: "woo_mobile_ai",
                                promptVersion: "p1",
                                toolCatalogVersion: "t1"))
 
         // Then
         #expect(analyticsProvider.receivedEvents == ["ai_assistant_turn_started"])
         #expect(analyticsProvider.receivedProperties.last?["is_retry"] as? Bool == false)
-        #expect(analyticsProvider.receivedProperties.last?["completion_stack"] as? String == "jetpack_ai_query")
+        #expect(analyticsProvider.receivedProperties.last?["completion_stack"] as? String == "woo_mobile_ai")
         #expect(analyticsProvider.receivedProperties.last?["prompt_version"] as? String == "p1")
         #expect(analyticsProvider.receivedProperties.last?["tool_catalog_version"] as? String == "t1")
     }
@@ -141,7 +141,7 @@ struct WooAssistantTelemetryTrackerTests {
                                  durationMs: 999,
                                  errorKind: .network,
                                  isRetry: false,
-                                 completionStack: "jetpack_ai_query",
+                                 completionStack: "woo_mobile_ai",
                                  promptVersion: "p1",
                                  toolCatalogVersion: "t1"))
 

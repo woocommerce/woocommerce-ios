@@ -36,7 +36,7 @@ public class SitePostsRemote: Remote {
         do {
             var parameters = try post.toDictionary()
             let parametersFields = ["fields": "site_ID,password"]
-            parameters.merge(parametersFields) { (current, _) in current }
+            parameters.merge(parametersFields) { current, _ in current }
             let path = String(format: "sites/%d/posts/%d", siteID, postID)
             let request = DotcomRequest(wordpressApiVersion: .mark1_2, method: .post, path: path, parameters: parameters)
             let mapper = PostMapper()

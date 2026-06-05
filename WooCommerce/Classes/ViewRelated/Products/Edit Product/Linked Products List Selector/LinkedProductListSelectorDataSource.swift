@@ -7,7 +7,7 @@ import Yosemite
 final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
-    lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
+    lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] lhs, rhs in
         guard let self else {
             return true
         }

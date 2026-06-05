@@ -10,16 +10,16 @@ import enum WooFoundation.CurrencyCode
 /// are temporary, the cache is a coarse per-site Boolean: the refresher decides
 /// which remote flag controls the current store country, then this validator
 /// applies the cached result to the set of countries that are still gated.
-/// US/PR/GB are always supported.
+/// US/PR/GB/CA are always supported.
 public enum POSCountryCurrencyValidator {
     /// Supported countries for POS feature.
-    /// Always includes US, PR, and GB. Gated countries are added when the supplied
+    /// Always includes US, PR, GB, and CA. Gated countries are added when the supplied
     /// eligibility service reports the current site country as eligible.
     public static func supportedCountries(
         siteID: Int64,
         eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     ) -> [CountryCode] {
-        var countries: [CountryCode] = [.US, .PR, .GB]
+        var countries: [CountryCode] = [.US, .PR, .GB, .CA]
         if eligibilityService.isEligible(siteID: siteID) {
             countries.append(contentsOf: remoteFlagGatedCountries)
         }
@@ -27,7 +27,7 @@ public enum POSCountryCurrencyValidator {
     }
 
     /// Supported currencies per country for POS feature.
-    /// Always includes US/USD, PR/USD, and GB/GBP. Gated entries are added when the supplied
+    /// Always includes US/USD, PR/USD, GB/GBP, and CA/CAD. Gated entries are added when the supplied
     /// eligibility service reports the current site country as eligible.
     public static func supportedCurrencies(
         siteID: Int64,
@@ -36,7 +36,8 @@ public enum POSCountryCurrencyValidator {
         var map: [CountryCode: [CurrencyCode]] = [
             .US: [.USD],
             .PR: [.USD],
-            .GB: [.GBP]
+            .GB: [.GBP],
+            .CA: [.CAD]
         ]
         if eligibilityService.isEligible(siteID: siteID) {
             for country in eeaEuroCountries {

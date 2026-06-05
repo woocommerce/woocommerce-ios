@@ -38,7 +38,7 @@ final class TopProductsFromCachedOrdersProvider: ProductSelectorTopProductsProvi
 
 private extension TopProductsFromCachedOrdersProvider {
     func retrievePopularProductsIds(from siteID: Int64) -> [Int64] {
-        // Get product ids sorted by occurence
+        // Get product ids sorted by occurrence
         let completedOrdersItems = retrieveCompletedOrders(from: siteID).flatMap { $0.items }
         let productIDCountDictionary = completedOrdersItems.reduce(into: [:]) { counts, orderItem in counts[orderItem.productID, default: 0] += 1 }
 
@@ -50,7 +50,6 @@ private extension TopProductsFromCachedOrdersProvider {
                 }
 
                 return $0.value > $1.value
-
             }
             .map { $0.key }
             .uniqued()

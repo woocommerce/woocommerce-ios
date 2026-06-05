@@ -366,7 +366,6 @@ public extension ProductVariationsRemote {
         case ascending = "asc"
         case descending = "desc"
     }
-
 }
 
 private extension ProductVariationsRemote {

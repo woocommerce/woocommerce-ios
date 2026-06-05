@@ -23,7 +23,7 @@ extension ProductCategoryListViewModel {
             /// Returns a dictionary  where each key holds a category `parentID` each value an array of subcategories.
             ///
             private static func nodesFromCategories(_ productCategories: [ProductCategory]) -> [Int64: [ProductCategory]] {
-                return productCategories.reduce(into: [Int64: [ProductCategory]]()) { (result, category) in
+                return productCategories.reduce(into: [Int64: [ProductCategory]]()) { result, category in
                     var children = result[category.parentID] ?? []
                     children.append(category)
                     result[category.parentID] = children

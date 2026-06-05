@@ -94,7 +94,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_given_a_non_default_currency_when_updateOrder_then_order_is_updated_with_correct_values() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings.init(currencyCode: .AED,
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings(currencyCode: .AED,
                                                                                           currencyPosition: .right,
                                                                                           thousandSeparator: ",",
                                                                                           decimalSeparator: ".",

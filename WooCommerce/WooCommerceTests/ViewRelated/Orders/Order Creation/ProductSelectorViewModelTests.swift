@@ -1454,7 +1454,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
-
     }
 
     @MainActor

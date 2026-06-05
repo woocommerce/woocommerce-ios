@@ -249,7 +249,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(updatedProduct)
-
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
@@ -625,7 +624,7 @@ private extension ProductDetailPreviewViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductCategoryAction.synchronizeProductCategories(siteID: siteID,
                                                                                fromPageNumber: Default.firstPageNumber,
-                                                                               onCompletion: { result in
+                                                                               onCompletion: { _ in
                 continuation.resume()
             }))
         }
@@ -654,7 +653,7 @@ private extension ProductDetailPreviewViewModel {
     func synchronizeAllTags() async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductTagAction.synchronizeAllProductTags(siteID: siteID,
-                                                                       onCompletion: { result in
+                                                                       onCompletion: { _ in
                 continuation.resume()
             }))
         }

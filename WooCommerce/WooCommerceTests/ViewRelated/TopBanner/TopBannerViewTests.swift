@@ -34,7 +34,7 @@ final class TopBannerViewTests: XCTestCase {
     func test_it_forwards_actionButtons_actions_correctly() throws {
         // Given
         var actionInvoked = false
-        let actionButton = TopBannerViewModel.ActionButton(title: "Button", action: { sourceView in
+        let actionButton = TopBannerViewModel.ActionButton(title: "Button", action: { _ in
             actionInvoked = true
         })
         let viewModel = createViewModel(with: [actionButton])

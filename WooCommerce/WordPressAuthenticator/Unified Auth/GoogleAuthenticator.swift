@@ -159,7 +159,6 @@ class GoogleAuthenticator: NSObject {
 
         createWordPressComUser(token: token, email: loginFields.emailAddress)
     }
-
 }
 
 // MARK: - Private Extension
@@ -242,7 +241,6 @@ private extension GoogleAuthenticator {
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
     }
-
 }
 
 // MARK: - SDK-less flow
@@ -285,7 +283,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         SVProgressHUD.dismiss()
 
-        // This stat is part of a funnel that provides critical information.  Please
+        // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         track(.signedIn)
 
@@ -356,7 +354,6 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
         delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)
     }
-
 }
 
 // MARK: - Sign Up Methods
@@ -392,7 +389,6 @@ private extension GoogleAuthenticator {
                 // Notify delegate
                 self?.logInInstead(credentials: credentials)
             }
-
             }, failure: { [weak self] error in
                 SVProgressHUD.dismiss()
                 // Notify delegate
@@ -401,11 +397,11 @@ private extension GoogleAuthenticator {
     }
 
     func accountCreated(credentials: AuthenticatorCredentials) {
-        // This stat is part of a funnel that provides critical information.  Before
+        // This stat is part of a funnel that provides critical information. Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
 
-        // This stat is part of a funnel that provides critical information.  Please
+        // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         track(.signedIn)
 
@@ -420,7 +416,7 @@ private extension GoogleAuthenticator {
     func logInInstead(credentials: AuthenticatorCredentials) {
         tracker.set(flow: .loginWithGoogle)
 
-        // This stat is part of a funnel that provides critical information.  Please
+        // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         track(.signedIn)
 
@@ -441,5 +437,4 @@ private extension GoogleAuthenticator {
         signupDelegate?.googleSignupFailed(error: error, loginFields: loginFields)
         delegate?.googleSignupFailed(error: error, loginFields: loginFields)
     }
-
 }

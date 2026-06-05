@@ -1052,7 +1052,7 @@ private extension DashboardViewModel {
 
     func updateSelfDrivenPushRegistrationStatus() async {
         let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
-        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID)
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
 
         let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
@@ -1062,7 +1062,6 @@ private extension DashboardViewModel {
             !dismissedWPComConnectionSuggestion &&
             isEligibleForSelfDrivenPN
     }
-
 }
 
 // MARK: InAppFeedback card

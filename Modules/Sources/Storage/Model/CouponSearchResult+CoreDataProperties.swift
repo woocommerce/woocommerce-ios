@@ -9,7 +9,6 @@ extension CouponSearchResult {
 
     @NSManaged public var keyword: String?
     @NSManaged public var coupons: NSSet?
-
 }
 
 // MARK: Generated accessors for coupons
@@ -26,5 +25,4 @@ extension CouponSearchResult {
 
     @objc(removeCoupons:)
     @NSManaged public func removeFromCoupons(_ values: NSSet)
-
 }

@@ -11,7 +11,6 @@ extension ProductSearchResults {
     @NSManaged public var filterKey: String?
     @NSManaged public var keyword: String?
     @NSManaged public var products: Set<Product>?
-
 }
 
 // MARK: Generated accessors for products
@@ -28,9 +27,7 @@ extension ProductSearchResults {
 
     @objc(removeProducts:)
     @NSManaged public func removeFromProducts(_ values: NSSet)
-
 }
 
 extension ProductSearchResults: Identifiable {
-
 }

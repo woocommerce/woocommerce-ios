@@ -102,7 +102,8 @@ struct POSTabEligibilityCheckerTests {
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
         (country: Country.pr, currency: CurrencyCode.USD),
-        (country: Country.gb, currency: CurrencyCode.GBP)
+        (country: Country.gb, currency: CurrencyCode.GBP),
+        (country: Country.ca, currency: CurrencyCode.CAD)
     ])
     fileprivate func is_eligible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -120,7 +121,6 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test(arguments: [
-        (country: Country.ca, currency: CurrencyCode.CAD),
         (country: Country.es, currency: CurrencyCode.EUR)
     ])
     fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
@@ -143,7 +143,8 @@ struct POSTabEligibilityCheckerTests {
         (country: Country.us, currency: CurrencyCode.GBP, expectedSupportedCurrencies: [CurrencyCode.USD]),
         (country: Country.us, currency: CurrencyCode.CAD, expectedSupportedCurrencies: [CurrencyCode.USD]),
         (country: Country.gb, currency: CurrencyCode.EUR, expectedSupportedCurrencies: [CurrencyCode.GBP]),
-        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP])
+        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP]),
+        (country: Country.ca, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.CAD])
     ])
     fileprivate func is_ineligible_when_currency_is_not_supported(country: Country,
                                                                   currency: CurrencyCode,
@@ -548,7 +549,6 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .NL, supportedCurrencies: [.EUR])))
     }
-
 }
 
 // MARK: - Test Helper

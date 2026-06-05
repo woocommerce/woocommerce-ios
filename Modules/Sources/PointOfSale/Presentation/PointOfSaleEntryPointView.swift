@@ -1,5 +1,4 @@
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
@@ -29,6 +28,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
+    @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -37,6 +37,7 @@ public struct PointOfSaleEntryPointView: View {
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
+    private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let orderController: PointOfSaleOrderControllerProtocol
     private let settingsController: POSSettingsControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
@@ -51,6 +52,8 @@ public struct PointOfSaleEntryPointView: View {
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
     private let sunsetWarningChecker: POSSunsetWarningChecking?
+    private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
+    private let preferredConnectionMethod: CardReaderConnectionMethod
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -61,6 +64,7 @@ public struct PointOfSaleEntryPointView: View {
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
+         refundSubmissionProcessor: POSRefundSubmissionProcessing,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          receiptService: POSReceiptServiceProtocol,
@@ -76,10 +80,17 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
+         receiptSettingsAdminURL: String,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+         tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
+        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
+            siteID: siteID,
+            featureFlags: services.featureFlags
+        ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -113,6 +124,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                     fetchStrategyFactory: couponFetchStrategyFactory,
                                                                     analyticsProvider: services.analytics)
         self.cardPresentPaymentService = cardPresentPaymentService
+        self.refundSubmissionProcessor = refundSubmissionProcessor
         let receiptSender = POSReceiptSender(siteID: siteID,
                                              orderService: orderService,
                                              receiptService: receiptService,
@@ -130,7 +142,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
-                                                                isLocalCatalogEligible: isLocalCatalogEligible)
+                                                                isLocalCatalogEligible: isLocalCatalogEligible,
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -143,10 +156,11 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      featureFlags: services.featureFlags,
-                                                      currencySettingsProvider: services.currency,
-                                                      currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
-        self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor,
+                                                      featureFlags: services.featureFlags)
+        self.orderListModel = POSOrderListModel(ordersController: ordersController,
+                                                receiptSender: receiptSender,
+                                                refundSubmissionModel: refundSubmissionProcessor.stateModel)
         if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(
                 siteID: siteID,
@@ -162,6 +176,8 @@ public struct PointOfSaleEntryPointView: View {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
+        self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
+        self.preferredConnectionMethod = preferredConnectionMethod
     }
 
     public var body: some View {
@@ -197,7 +213,12 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker)
+                sunsetWarningChecker: sunsetWarningChecker,
+                tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
+                    POSTapToPayAvailabilityController(availabilityChecker: checker,
+                                                      analytics: services.analytics)
+                },
+                preferredConnectionMethod: preferredConnectionMethod)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -209,7 +230,9 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
+        .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -218,6 +241,11 @@ public struct PointOfSaleEntryPointView: View {
             onPointOfSaleModeActiveStateChange(false)
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
+        }
+        .posLockScreenOverlay()
+        .environment(\.posAccessSession, accessSession)
+        .task {
+            await accessSession.refreshPINStatus()
         }
     }
 }
@@ -233,6 +261,7 @@ public struct PointOfSaleEntryPointView: View {
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),
+        refundSubmissionProcessor: POSNoOpRefundSubmissionProcessor(),
         onPointOfSaleModeActiveStateChange: { _ in },
         cardPresentPaymentService: CardPresentPaymentPreviewService(),
         receiptService: POSReceiptServicePreview(),
@@ -247,6 +276,7 @@ public struct PointOfSaleEntryPointView: View {
         grdbManager: nil,
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
+        receiptSettingsAdminURL: "",
         services: POSPreviewServices()
     )
 }

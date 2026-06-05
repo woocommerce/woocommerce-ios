@@ -47,7 +47,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -249,7 +249,6 @@ struct JetpackSetupView: View {
                         }
                         .buttonStyle(.plain)
                         .foregroundColor(Color(uiColor: .withColorStudio(.blue, shade: .shade50)))
-
                     }
                     .renderedIf(viewModel.setupFailed)
                 }

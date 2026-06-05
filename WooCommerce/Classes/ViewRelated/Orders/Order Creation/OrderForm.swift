@@ -34,7 +34,7 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -340,7 +340,6 @@ struct OrderForm: View {
                                 case .taxSelector:
                                     shouldShowNewTaxRateSelector = true
                                 }
-
                             }
                             .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                 NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -409,7 +408,6 @@ struct OrderForm: View {
                             Text(viewModel.orderTotal)
                                 .redacted(reason: isLoading ? .placeholder : [])
                                 .shimmering(active: isLoading)
-
                         }
                         .font(.headline)
                         .padding([.bottom, .horizontal])
@@ -711,7 +709,7 @@ private struct ProductsSection: View {
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
                             openSettingsAction()
                          }),
-                         .cancel()
+                        .cancel()
                      ]
                  )
             })

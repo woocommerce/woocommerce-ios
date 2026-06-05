@@ -230,7 +230,7 @@ private extension CardPresentPaymentStore {
     func cancelCardReaderDiscovery(completion: @escaping (Result<Void, Error>) -> Void) {
         cardReaderService.cancelDiscovery()
             .subscribe(Subscribers.Sink(
-                receiveCompletion: { (result) in
+                receiveCompletion: { result in
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
@@ -249,13 +249,13 @@ private extension CardPresentPaymentStore {
         // https://github.com/woocommerce/woocommerce-ios/issues/3734
         // https://github.com/woocommerce/woocommerce-ios/issues/3741
         cardReaderService.connect(reader, options: options)
-            .subscribe(Subscribers.Sink(receiveCompletion: { (completion) in
+            .subscribe(Subscribers.Sink(receiveCompletion: { completion in
                 if case let .failure(underlyingError) = completion {
                     onCompletion(.failure(underlyingError))
                 }
                 // We don't want to propagate successful completion since we already did that by
                 // calling onCompletion when a value was received.
-            }, receiveValue: { (reader) in
+            }, receiveValue: { reader in
                 onCompletion(.success(reader))
             }))
     }
@@ -703,7 +703,6 @@ private extension CardPresentPaymentStore {
 
             let storageAccount = storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
             storageAccount.update(with: readonlyAccount)
-
         }, completion: onCompletion, on: .main)
     }
 

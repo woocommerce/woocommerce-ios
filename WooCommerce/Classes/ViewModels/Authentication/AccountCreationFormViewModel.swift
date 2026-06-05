@@ -93,7 +93,6 @@ final class AccountCreationFormViewModel: ObservableObject {
 
             await handleSuccess(data: data)
             completionHandler()
-
         } catch let error as CreateAccountError {
             /// Skip tracking if the password field is yet to be presented.
             let shouldSkipTrackingError: Bool = {

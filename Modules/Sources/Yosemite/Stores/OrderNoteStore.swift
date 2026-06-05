@@ -7,7 +7,7 @@ import Storage
 public class OrderNoteStore: Store {
     private let remote: OrdersRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -43,7 +43,7 @@ private extension OrderNoteStore {
     /// Retrieves the order notes associated with the provided Site ID & Order ID (if any!).
     ///
     func retrieveOrderNotes(siteID: Int64, orderID: Int64, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
-        remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] (orderNotes, error) in
+        remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] orderNotes, error in
             guard let orderNotes else {
                 onCompletion(nil, error)
                 return
@@ -58,7 +58,7 @@ private extension OrderNoteStore {
     /// Adds a single order note and associates it with the provided siteID and orderID.
     ///
     func addOrderNote(siteID: Int64, orderID: Int64, isCustomerNote: Bool, note: String, onCompletion: @escaping (OrderNote?, Error?) -> Void) {
-        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] (orderNote, error) in
+        remote.addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { [weak self] orderNote, error in
             guard let note = orderNote else {
                 onCompletion(nil, error)
                 return

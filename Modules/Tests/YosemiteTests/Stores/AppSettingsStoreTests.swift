@@ -158,7 +158,6 @@ final class AppSettingsStoreTests: XCTestCase {
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()
                                     }
-
         }
 
         subject?.onAction(action)
@@ -180,7 +179,6 @@ final class AppSettingsStoreTests: XCTestCase {
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()
                                     }
-
         }
 
         subject?.onAction(action)

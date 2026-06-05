@@ -161,7 +161,6 @@ final class ReviewOrderViewModel {
 
                                                                     ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
-
         }
 
         stores.dispatch(deleteTrackingAction)
@@ -277,7 +276,7 @@ private extension ReviewOrderViewModel {
 
         let addressRow: Row? = {
             let orderContainsOnlyVirtualProducts = products
-                .filter { (product) -> Bool in
+                .filter { product -> Bool in
                     order.items.contains(where: { $0.productID == product.productID})
                 }
                 .allSatisfy { $0.virtual == true }
@@ -304,7 +303,6 @@ private extension ReviewOrderViewModel {
             guard !orderTracking.isEmpty else { return [] }
 
             return Array(repeating: .tracking, count: orderTracking.count)
-
         }()
 
         let trackingAddRow: Row? = {

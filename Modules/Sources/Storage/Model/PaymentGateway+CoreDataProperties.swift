@@ -17,5 +17,4 @@ extension PaymentGateway {
 }
 
 extension PaymentGateway: Identifiable {
-
 }

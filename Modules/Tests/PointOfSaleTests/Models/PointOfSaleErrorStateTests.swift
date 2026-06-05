@@ -8,8 +8,7 @@ struct PointOfSaleErrorStateTests {
         // Given
         let error = POSCatalogFileError.downloadFailed(
             statusCode: 403,
-            contentType: "text/html; charset=UTF-8",
-            underlyingError: NSError(domain: "Test", code: 403)
+            contentType: "text/html; charset=UTF-8"
         )
 
         // When

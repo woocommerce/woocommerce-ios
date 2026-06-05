@@ -830,17 +830,16 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
+            if case let POSCatalogFileError.downloadFailed(statusCode, contentType) = error {
                 #expect(statusCode == 403)
                 #expect(contentType == "text/html; charset=UTF-8")
-                #expect((underlyingError as NSError).code == 403)
             } else {
                 Issue.record("Expected POSCatalogFileError.downloadFailed")
             }
         }
     }
 
-    @Test func downloadCatalog_when_download_transport_fails_then_throws_catalog_file_download_error_without_response_metadata() async throws {
+    @Test func downloadCatalog_when_download_transport_fails_then_propagates_error() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
@@ -852,13 +851,7 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            if case let POSCatalogFileError.downloadFailed(statusCode, contentType, underlyingError) = error {
-                #expect(statusCode == nil)
-                #expect(contentType == nil)
-                #expect((underlyingError as? URLError)?.code == expectedError.code)
-            } else {
-                Issue.record("Expected POSCatalogFileError.downloadFailed")
-            }
+            #expect((error as? URLError)?.code == expectedError.code)
         }
     }
 

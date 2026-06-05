@@ -107,8 +107,7 @@ struct POSCatalogSyncErrorClassifierTests {
     @Test func classify_catalog_file_download_error_returns_catalog_file_download_failed() {
         // Given
         let error = POSCatalogFileError.downloadFailed(statusCode: 403,
-                                                       contentType: "text/html",
-                                                       underlyingError: NSError(domain: "Test", code: 403))
+                                                       contentType: "text/html")
 
         // When
         let result = POSCatalogSyncErrorClassifier.classify(error)

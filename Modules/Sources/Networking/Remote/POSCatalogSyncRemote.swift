@@ -242,23 +242,13 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         )
         backgroundDownloadStateStore.save(downloadState)
 
-        let downloadResult: BackgroundDownloadResult
-        do {
-            downloadResult = try await backgroundDownloader.downloadFile(from: url,
+        let downloadResult = try await backgroundDownloader.downloadFile(from: url,
                                                                          sessionIdentifier: sessionIdentifier,
                                                                          allowCellular: allowCellular)
-        } catch BackgroundDownloadError.cancelled {
-            throw BackgroundDownloadError.cancelled
-        } catch {
-            throw POSCatalogFileError.downloadFailed(statusCode: nil,
-                                                     contentType: nil,
-                                                     underlyingError: error)
-        }
 
         if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
             throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
-                                                     contentType: downloadResult.contentType,
-                                                     underlyingError: NSError(domain: "POSCatalogSyncRemote", code: statusCode))
+                                                     contentType: downloadResult.contentType)
         }
 
         // Download completed - parse the file

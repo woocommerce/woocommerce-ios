@@ -18,6 +18,7 @@ protocol ProductDownloadListViewModelOutput {
     func insert(_ newElement: ProductDownloadDragAndDrop, at index: Int)
     func append(_ newElement: ProductDownloadDragAndDrop)
     func update(at index: Int, element: ProductDownloadDragAndDrop)
+    func move(from sourceIndex: Int, to destinationIndex: Int)
     func count() -> Int
 }
 
@@ -87,6 +88,14 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
 
     func update(at index: Int, element: ProductDownloadDragAndDrop) {
         downloadableFiles[index] = element
+    }
+
+    func move(from sourceIndex: Int, to destinationIndex: Int) {
+        guard let item = remove(at: sourceIndex) else {
+            return
+        }
+
+        insert(item, at: destinationIndex)
     }
 
     func count() -> Int {

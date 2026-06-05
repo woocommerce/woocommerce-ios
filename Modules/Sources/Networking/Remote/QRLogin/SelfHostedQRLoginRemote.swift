@@ -2,7 +2,7 @@ import Foundation
 import NetworkingCore
 
 /// Talks to the self-hosted QR-login endpoints exposed by the merchant's
-/// WooCommerce plugin under `{siteUrl}/wp-json/wc-admin/mobile-app/qr-login-*`.
+/// WooCommerce plugin under the site's discovered WordPress REST API root.
 ///
 /// These endpoints are unauthenticated — possession of the single-use token
 /// (and the matching grant nonce on `/exchange`) is the authorisation — so this
@@ -28,9 +28,23 @@ public protocol SelfHostedQRLoginRemoteProtocol {
 public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
 
     private let session: URLSessionProtocol
+    private let apiRootCache: RESTAPIRootCaching
+    private let discoverRESTAPIRoot: (_ siteURL: String) async -> String?
 
-    public init(session: URLSessionProtocol = URLSession.shared) {
+    public init(session: URLSessionProtocol = URLSession.shared,
+                apiRootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                discoverRESTAPIRoot: ((_ siteURL: String) async -> String?)? = nil) {
         self.session = session
+        self.apiRootCache = apiRootCache
+
+        if let discoverRESTAPIRoot {
+            self.discoverRESTAPIRoot = discoverRESTAPIRoot
+        } else {
+            let discovery = WordPressAPIDiscovery(session: session)
+            self.discoverRESTAPIRoot = {
+                await discovery.discoverRESTAPIRootURL(for: $0)
+            }
+        }
     }
 
     public func scan(siteURL: URL,
@@ -38,7 +52,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
                      device: QRLoginScanDevice) async throws -> SelfHostedQRLoginScanResponse {
         let request = try makeJSONRequest(
             method: "POST",
-            url: endpoint(siteURL: siteURL, path: Paths.scan),
+            url: try await endpoint(siteURL: siteURL, path: Paths.scan),
             body: [
                 "token": token,
                 "supports_number_matching": true,
@@ -55,14 +69,14 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
     public func pollSessionStatus(siteURL: URL,
                                   sessionID: String,
                                   tokenHash: String) async throws -> SelfHostedQRLoginSessionStatus {
-        var components = endpointComponents(siteURL: siteURL, path: Paths.sessionStatus)
-        components.queryItems = [
-            URLQueryItem(name: "session_id", value: sessionID),
-            URLQueryItem(name: "token_hash", value: tokenHash)
-        ]
-        guard let url = components.url else {
-            throw QRLoginNetworkError.malformed
-        }
+        let url = try await endpoint(
+            siteURL: siteURL,
+            path: Paths.sessionStatus,
+            queryItems: [
+                URLQueryItem(name: "session_id", value: sessionID),
+                URLQueryItem(name: "token_hash", value: tokenHash)
+            ]
+        )
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("no-cache, no-store", forHTTPHeaderField: "Cache-Control")
@@ -80,7 +94,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
                          exchangeGrant: String) async throws -> SelfHostedQRLoginExchangeResponse {
         let request = try makeJSONRequest(
             method: "POST",
-            url: endpoint(siteURL: siteURL, path: Paths.exchange),
+            url: try await endpoint(siteURL: siteURL, path: Paths.exchange),
             body: [
                 "token": token,
                 "exchange_grant": exchangeGrant
@@ -98,18 +112,46 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
 
 private extension SelfHostedQRLoginRemote {
 
-    func endpoint(siteURL: URL, path: String) -> URL {
-        endpointComponents(siteURL: siteURL, path: path).url
-            ?? siteURL.appendingPathComponent(Paths.restRoot + path)
+    func endpoint(siteURL: URL, path: String, queryItems: [URLQueryItem] = []) async throws -> URL {
+        let site = siteURL.absoluteString.trimSlashes()
+        let root: String = await {
+            if let cachedRoot = apiRootCache.root(for: site) {
+                return cachedRoot
+            } else if let discoveredRoot = await discoverRESTAPIRoot(site) {
+                return discoveredRoot
+            } else {
+                return site + Paths.restRouteRoot
+            }
+        }()
+
+        let urlString = [
+            root,
+            Paths.namespace,
+            path
+        ]
+            .map { $0.trimSlashes() }
+            .filter { $0.isEmpty == false }
+            .joined(separator: "/")
+
+        guard let url = URL(string: urlString) else {
+            throw QRLoginNetworkError.malformed
+        }
+
+        return try appendingQueryItems(queryItems, to: url)
     }
 
-    func endpointComponents(siteURL: URL, path: String) -> URLComponents {
-        var components = URLComponents()
-        components.scheme = siteURL.scheme
-        components.host = siteURL.host
-        components.port = siteURL.port
-        components.path = siteURL.path + Paths.restRoot + path
-        return components
+    func appendingQueryItems(_ queryItems: [URLQueryItem], to url: URL) throws -> URL {
+        guard queryItems.isEmpty == false else {
+            return url
+        }
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            throw QRLoginNetworkError.malformed
+        }
+        components.queryItems = (components.queryItems ?? []) + queryItems
+        guard let url = components.url else {
+            throw QRLoginNetworkError.malformed
+        }
+        return url
     }
 
     func makeJSONRequest(method: String, url: URL, body: [String: Any]) throws -> URLRequest {
@@ -140,9 +182,10 @@ private extension SelfHostedQRLoginRemote {
     }
 
     enum Paths {
-        static let restRoot = "/wp-json/wc-admin/mobile-app"
-        static let scan = "/qr-login-scan"
-        static let sessionStatus = "/qr-login-session-status"
-        static let exchange = "/qr-login-exchange"
+        static let restRouteRoot = "/?rest_route=/"
+        static let namespace = "wc-admin/mobile-app"
+        static let scan = "qr-login-scan"
+        static let sessionStatus = "qr-login-session-status"
+        static let exchange = "qr-login-exchange"
     }
 }

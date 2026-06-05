@@ -29,7 +29,7 @@ struct SelfHostedQRLoginRemoteTests {
             "real_number": "428",
             "expires_in": 90
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         let response = try await remote.scan(siteURL: siteURL, token: token, device: device)
@@ -47,7 +47,7 @@ struct SelfHostedQRLoginRemoteTests {
         session.simulateResponse(for: url.absoluteString, data: json([
             "session_id": "x", "real_number": "001", "expires_in": 90
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
@@ -97,7 +97,7 @@ struct SelfHostedQRLoginRemoteTests {
         session.simulateResponse(for: url.absoluteString, data: json([
             "session_id": "abc", "expires_in": 90
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.malformed) {
@@ -110,7 +110,7 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-scan")
         let session = MockURLSession()
         session.simulateError(for: url.absoluteString, error: URLError(.notConnectedToInternet))
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.network) {
@@ -125,7 +125,7 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: json(["state": "scanned"]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
@@ -144,7 +144,7 @@ struct SelfHostedQRLoginRemoteTests {
             "state": "approved",
             "exchange_grant": "grant-abc"
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
@@ -158,7 +158,7 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: json(["state": "spinning"]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
@@ -172,7 +172,7 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: Data(), statusCode: 404)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.notFound) {
@@ -185,7 +185,7 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-session-status", query: "session_id=session-1&token_hash=hash-1")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: Data(), statusCode: 429)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.rateLimited) {
@@ -204,7 +204,7 @@ struct SelfHostedQRLoginRemoteTests {
             "site_url": "https://shop.example",
             "application_password": "ap-1234"
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         let response = try await remote.exchange(siteURL: siteURL, token: token, exchangeGrant: grant)
@@ -223,7 +223,7 @@ struct SelfHostedQRLoginRemoteTests {
         session.simulateResponse(for: url.absoluteString, data: json([
             "user_login": "a", "site_url": "https://shop.example", "application_password": "p"
         ]), statusCode: 200)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When
         _ = try await remote.exchange(siteURL: siteURL, token: token, exchangeGrant: grant)
@@ -245,7 +245,7 @@ struct SelfHostedQRLoginRemoteTests {
             "code": "qr_login_not_approved",
             "message": "Not approved yet"
         ]), statusCode: 412)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.preconditionFailed(code: "qr_login_not_approved")) {
@@ -260,7 +260,7 @@ struct SelfHostedQRLoginRemoteTests {
         session.simulateResponse(for: url.absoluteString, data: json([
             "code": "invalid_exchange_grant"
         ]), statusCode: 412)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.preconditionFailed(code: "invalid_exchange_grant")) {
@@ -273,18 +273,64 @@ struct SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-exchange")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: Data("not json".utf8), statusCode: 412)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: QRLoginNetworkError.preconditionFailed(code: nil)) {
             _ = try await remote.exchange(siteURL: siteURL, token: token, exchangeGrant: grant)
         }
     }
+
+    // MARK: - Endpoint resolution
+
+    @Test func scan_when_discovery_returns_api_root_then_uses_discovered_root() async throws {
+        // Given
+        let url = makeURL(root: "https://shop.example/custom-json/", path: "qr-login-scan")
+        let session = MockURLSession()
+        session.simulateResponse(for: url.absoluteString, data: json([
+            "session_id": "abc",
+            "real_number": "428",
+            "expires_in": 90
+        ]), statusCode: 200)
+        let remote = makeRemote(session: session, cachedRoot: nil) { _ in
+            "https://shop.example/custom-json/"
+        }
+
+        // When
+        _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+
+        // Then
+        #expect(session.lastRequest?.url?.absoluteString == url.absoluteString)
+    }
+
+    @Test func pollSessionStatus_when_api_root_missing_then_uses_rest_route_fallback() async throws {
+        // Given
+        let url = URL(string: "https://shop.example/?rest_route=/wc-admin/mobile-app/qr-login-session-status&session_id=session-1&token_hash=hash-1")!
+        let session = MockURLSession()
+        session.simulateResponse(for: url.absoluteString, data: json(["state": "scanned"]), statusCode: 200)
+        let remote = makeRemote(session: session, cachedRoot: nil) { _ in nil }
+
+        // When
+        let status = try await remote.pollSessionStatus(siteURL: siteURL, sessionID: "session-1", tokenHash: "hash-1")
+
+        // Then
+        #expect(status == SelfHostedQRLoginSessionStatus(state: .scanned, exchangeGrant: nil))
+        #expect(session.lastRequest?.url?.absoluteString == url.absoluteString)
+        #expect(session.requestCount == 1)
+    }
 }
 
 // MARK: - Helpers
 
 private extension SelfHostedQRLoginRemoteTests {
+
+    func makeRemote(session: MockURLSession,
+                    cachedRoot: String? = "https://shop.example/wp-json/",
+                    discoverRESTAPIRoot: @escaping (_ siteURL: String) async -> String? = { _ in nil }) -> SelfHostedQRLoginRemote {
+        SelfHostedQRLoginRemote(session: session,
+                                apiRootCache: MockRESTAPIRootCache(stubbedRoot: cachedRoot),
+                                discoverRESTAPIRoot: discoverRESTAPIRoot)
+    }
 
     func makeURL(path: String, query: String? = nil) -> URL {
         var components = URLComponents()
@@ -293,6 +339,18 @@ private extension SelfHostedQRLoginRemoteTests {
         components.path = "/wp-json/wc-admin/mobile-app" + path
         components.query = query
         return components.url!
+    }
+
+    func makeURL(root: String, path: String) -> URL {
+        let urlString = [
+            root,
+            "wc-admin/mobile-app",
+            path
+        ]
+            .map { $0.trimSlashes() }
+            .filter { $0.isEmpty == false }
+            .joined(separator: "/")
+        return URL(string: urlString)!
     }
 
     func json(_ object: [String: Any]) -> Data {
@@ -312,7 +370,7 @@ private extension SelfHostedQRLoginRemoteTests {
         let url = makeURL(path: "/qr-login-scan")
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: body, statusCode: statusCode)
-        let remote = SelfHostedQRLoginRemote(session: session)
+        let remote = makeRemote(session: session)
 
         // When / Then
         await #expect(throws: expected) {

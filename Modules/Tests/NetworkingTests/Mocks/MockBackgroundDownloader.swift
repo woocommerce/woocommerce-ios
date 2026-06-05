@@ -68,18 +68,14 @@ extension MockBackgroundDownloader {
     func mockSuccessfulDownload(fileURL: URL) {
         downloadResult = .success(.init(fileURL: fileURL,
                                         statusCode: 200,
-                                        contentType: "application/json",
-                                        bytesDownloaded: 0,
-                                        totalBytesExpected: 0))
+                                        contentType: "application/json"))
     }
 
     /// Configure the mock to return a successful download with response metadata.
     func mockSuccessfulDownload(fileURL: URL, statusCode: Int?, contentType: String?) {
         downloadResult = .success(.init(fileURL: fileURL,
                                         statusCode: statusCode,
-                                        contentType: contentType,
-                                        bytesDownloaded: 0,
-                                        totalBytesExpected: 0))
+                                        contentType: contentType))
     }
 
     /// Configure the mock to return a failed download with the given error

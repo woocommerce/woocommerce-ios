@@ -49,19 +49,13 @@ public struct BackgroundDownloadResult {
     public let fileURL: URL
     public let statusCode: Int?
     public let contentType: String?
-    public let bytesDownloaded: Int64
-    public let totalBytesExpected: Int64
 
     public init(fileURL: URL,
                 statusCode: Int?,
-                contentType: String?,
-                bytesDownloaded: Int64,
-                totalBytesExpected: Int64) {
+                contentType: String?) {
         self.fileURL = fileURL
         self.statusCode = statusCode
         self.contentType = contentType
-        self.bytesDownloaded = bytesDownloaded
-        self.totalBytesExpected = totalBytesExpected
     }
 }
 

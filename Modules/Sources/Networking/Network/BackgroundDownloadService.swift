@@ -150,9 +150,7 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
             let result = BackgroundDownloadResult(
                 fileURL: persistentTempURL,
                 statusCode: httpResponse?.statusCode,
-                contentType: httpResponse?.value(forHTTPHeaderField: "Content-Type"),
-                bytesDownloaded: downloadTask.countOfBytesReceived,
-                totalBytesExpected: downloadTask.countOfBytesExpectedToReceive
+                contentType: httpResponse?.value(forHTTPHeaderField: "Content-Type")
             )
 
             handleDownloadCompletion(for: sessionIdentifier,

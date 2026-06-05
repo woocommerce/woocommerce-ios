@@ -24,8 +24,15 @@ class DeauthenticatedState: StoresManagerState {
                                  dotcomClientSecret: ApiCredentials.dotcomSecret,
                                  network: network,
                                  dispatcher: dispatcher),
+            FeatureFlagStore(dispatcher: dispatcher,
+                             storageManager: storageManager,
+                             network: network,
+                             overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore),
             WordPressSiteStore(network: network, dispatcher: dispatcher),
-            SupportChatStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            SupportChatStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            QRLoginStore(dispatcher: dispatcher,
+                         wpComClientID: ApiCredentials.dotcomAppId,
+                         wpComClientSecret: ApiCredentials.dotcomSecret)
         ]
     }
 

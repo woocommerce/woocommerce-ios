@@ -1,0 +1,137 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [
+            { "matches": ".*path=/wc/v3/orders/631%26_method%3Dpost.*" },
+            { "contains": "status%22%3A%22completed" }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "id": 631,
+                "parent_id": 0,
+                "status": "completed",
+                "currency": "USD",
+                "version": "9.6.0",
+                "prices_include_tax": false,
+                "date_created": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",
+                "date_modified": "{{now format=customformat}}",
+                "discount_total": "0.00",
+                "discount_tax": "0.00",
+                "shipping_total": "0.00",
+                "shipping_tax": "0.00",
+                "cart_tax": "0.00",
+                "total": "250.00",
+                "total_tax": "0.00",
+                "customer_id": 0,
+                "order_key": "wc_order_pos_two_items",
+                "billing": {
+                    "first_name": "",
+                    "last_name": "",
+                    "company": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "",
+                    "email": "",
+                    "phone": ""
+                },
+                "shipping": {
+                    "first_name": "",
+                    "last_name": "",
+                    "company": "",
+                    "address_1": "",
+                    "address_2": "",
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "",
+                    "phone": ""
+                },
+                "payment_method": "cod",
+                "payment_method_title": "Pay in Person",
+                "transaction_id": "",
+                "customer_ip_address": "",
+                "customer_user_agent": "",
+                "created_via": "rest-api",
+                "customer_note": "",
+                "date_completed": "{{now format=customformat}}",
+                "date_paid": "{{now format=customformat}}",
+                "cart_hash": "",
+                "number": "631",
+                "meta_data": [],
+                "line_items": [
+                    {
+                        "id": 1,
+                        "name": "Black Coral shades",
+                        "product_id": 2130,
+                        "variation_id": 0,
+                        "quantity": 1,
+                        "tax_class": "",
+                        "subtotal": "150.00",
+                        "subtotal_tax": "0.00",
+                        "total": "150.00",
+                        "total_tax": "0.00",
+                        "taxes": [],
+                        "meta_data": [],
+                        "sku": "",
+                        "price": 150
+                    },
+                    {
+                        "id": 2,
+                        "name": "Colorado shades",
+                        "product_id": 2131,
+                        "variation_id": 0,
+                        "quantity": 1,
+                        "tax_class": "",
+                        "subtotal": "100.00",
+                        "subtotal_tax": "0.00",
+                        "total": "100.00",
+                        "total_tax": "0.00",
+                        "taxes": [],
+                        "meta_data": [],
+                        "sku": "",
+                        "price": 100
+                    }
+                ],
+                "tax_lines": [],
+                "shipping_lines": [],
+                "fee_lines": [],
+                "coupon_lines": [],
+                "refunds": [],
+                "payment_url": "https://automatticwidgets.wpcomstaging.com/checkout/order-pay/631/?pay_for_order=true&key=wc_order_pos_two_items",
+                "is_editable": false,
+                "needs_payment": false,
+                "needs_processing": false,
+                "date_created_gmt": "{{now format=customformat}}",
+                "date_modified_gmt": "{{now format=customformat}}",
+                "date_completed_gmt": "{{now format=customformat}}",
+                "date_paid_gmt": "{{now format=customformat}}",
+                "gift_cards": [],
+                "currency_symbol": "$",
+                "_links": {
+                    "self": [
+                        {
+                            "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/orders/631"
+                        }
+                    ],
+                    "collection": [
+                        {
+                            "href": "https://automatticwidgets.wpcomstaging.com/wp-json/wc/v3/orders"
+                        }
+                    ]
+                }
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

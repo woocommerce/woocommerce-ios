@@ -56,15 +56,12 @@ struct PointOfSaleDashboardView: View {
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
         case content
-        case unsupportedWidth
     }
 
     private var viewState: ViewState {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
-            itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+            itemsContainerState: itemsViewState.containerState
         )
     }
 
@@ -108,10 +105,6 @@ struct PointOfSaleDashboardView: View {
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
-            case .unsupportedWidth:
-                PointOfSaleUnsupportedWidthView()
-                    .transition(.opacity)
-                    .ignoresSafeArea()
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,

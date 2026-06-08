@@ -87,7 +87,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Given
         let currencySettings = CurrencySettings()
         let order = MockOrders().makeOrder(shippingLines: MockOrders.sampleShippingLines())
-        let refund = MockRefunds.sampleRefund(shippingLines: [MockRefunds.sampleShippingLine()])
+        let refund = MockRefunds.sampleRefund(shippingLines: order.shippingLines)
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
@@ -132,6 +132,44 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         let shippingDetailsRow = try XCTUnwrap(viewModel.sections[safe: 1]?.rows[safe: 1])
         XCTAssertTrue(shippingDetailsRow is RefundShippingDetailsViewModel)
+    }
+
+    func test_viewModel_inserts_shipping_details_for_all_shipping_lines_after_toggling_switch() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let shippingLines = [
+            ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5.00", totalTax: "0.50", taxes: []),
+            ShippingLine(shippingID: 2, methodTitle: "Local delivery", methodID: "local_delivery", total: "3.00", totalTax: "0.30", taxes: [])
+        ]
+        let order = MockOrders().makeOrder(shippingLines: shippingLines)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // When
+        viewModel.toggleRefundShipping()
+
+        // Then
+        let shippingDetailsRows = viewModel.sections.flatMap { $0.rows }.compactMap { $0 as? RefundShippingDetailsViewModel }
+        XCTAssertEqual(shippingDetailsRows.map { $0.carrierRate }, ["Standard", "Local delivery"])
+    }
+
+    func test_viewModel_keeps_unrefunded_shipping_line_available_when_another_shipping_line_was_refunded() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let shippingLines = [
+            ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "5.00", totalTax: "0.50", taxes: []),
+            ShippingLine(shippingID: 2, methodTitle: "Local delivery", methodID: "local_delivery", total: "3.00", totalTax: "0.30", taxes: [])
+        ]
+        let order = MockOrders().makeOrder(shippingLines: shippingLines)
+        let refund = MockRefunds.sampleRefund(shippingLines: [shippingLines[0]])
+        let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
+
+        // When
+        viewModel.toggleRefundShipping()
+
+        // Then
+        let shippingDetailsRows = viewModel.sections.flatMap { $0.rows }.compactMap { $0 as? RefundShippingDetailsViewModel }
+        XCTAssertEqual(shippingDetailsRows.map { $0.carrierRate }, ["Local delivery"])
+        XCTAssertEqual(viewModel.title, "$3.30")
     }
 
     func test_viewModel_returns_correct_quantity_available_for_refund() {
@@ -302,6 +340,31 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         // 23.00(current products) + 7.52 (shipping) = 30.62
         XCTAssertEqual(viewModel.title, "$30.62")
+    }
+
+    func test_viewModel_correctly_adds_multiple_shipping_lines_to_title() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: 3, price: 11.50)
+        ]
+        let shippingLines = [
+            ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "7.00", totalTax: "0.62", taxes: []),
+            ShippingLine(shippingID: 2, methodTitle: "Local delivery", methodID: "local_delivery", total: "3.00", totalTax: "0.30", taxes: [])
+        ]
+        let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // 11.50 (item 1) x 2 (quantity) = 23.0
+        viewModel.updateRefundQuantity(quantity: 2, forItemAtIndex: 0)
+        XCTAssertEqual(viewModel.title, "$23.00")
+
+        // When
+        viewModel.toggleRefundShipping()
+
+        // Then
+        // 23.00(current products) + 7.62 (first shipping) + 3.30 (second shipping) = 33.92
+        XCTAssertEqual(viewModel.title, "$33.92")
     }
 
     func test_viewModel_starts_with_zero_count_label() {

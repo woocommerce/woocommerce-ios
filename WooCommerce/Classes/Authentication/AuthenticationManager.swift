@@ -109,7 +109,7 @@ class AuthenticationManager: Authentication {
             guard let self else { return false }
             // Resets Apple ID at the beginning of the authentication.
             self.appleUserID = nil
-            guard self.qrLoginAvailability.isAvailableForPrologue(),
+            guard await self.qrLoginAvailability.isAvailableForPrologue(),
                   let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
                 self.analytics.track(.loginPrologueContinueTapped)
                 return false
@@ -161,14 +161,14 @@ class AuthenticationManager: Authentication {
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
     @MainActor
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
         }
 
         if isQRLoginUrl(url),
-           let handled = handleQRLoginUrl(url) {
+           let handled = await handleQRLoginUrl(url) {
             return handled
         }
 
@@ -257,12 +257,12 @@ class AuthenticationManager: Authentication {
     /// launch state is the OS / scene-delegate's job; this method makes a
     /// best-effort to not retain the payload anywhere persistent.
     @MainActor
-    private func handleQRLoginUrl(_ url: URL) -> Bool? {
+    private func handleQRLoginUrl(_ url: URL) async -> Bool? {
         // The merchant chose this path by opening the link, so we just need
         // the remote flag (or debug override) on — bucket and camera are
         // bypassed. `false` (flag off, or not loaded yet) falls through to
         // the standard handlers.
-        guard qrLoginAvailability.isAvailableForDeepLink() else {
+        guard await qrLoginAvailability.isAvailableForDeepLink() else {
             return nil
         }
 
@@ -294,11 +294,11 @@ class AuthenticationManager: Authentication {
     /// current session. Returns `true` when the URL was a QR-login deep link
     /// this method took over, `false` otherwise (the caller then drops it).
     @MainActor
-    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool {
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) async -> Bool {
         guard isQRLoginUrl(url) else {
             return false
         }
-        guard qrLoginAvailability.isAvailableForDeepLink() else {
+        guard await qrLoginAvailability.isAvailableForDeepLink() else {
             return false
         }
         presentSessionReplaceWarning(for: url, from: rootViewController)
@@ -338,7 +338,7 @@ class AuthenticationManager: Authentication {
     private func signOutAndResumeQRLogin(url: URL) {
         ServiceLocator.stores.deauthenticate()
         Task { @MainActor [weak self] in
-            _ = self?.handleQRLoginUrl(url)
+            _ = await self?.handleQRLoginUrl(url)
         }
     }
 

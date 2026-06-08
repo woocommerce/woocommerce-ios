@@ -347,7 +347,7 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
-    func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() throws {
+    func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() async throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
@@ -360,7 +360,8 @@ final class AppCoordinatorTests: XCTestCase {
 
         // When
         let rootViewController = try XCTUnwrap(window.rootViewController)
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: rootViewController))
+        let result = await authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: rootViewController)
+        XCTAssertTrue(result)
 
         // Then
         waitUntil {
@@ -371,7 +372,7 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
-    func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() throws {
+    func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() async throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
@@ -386,7 +387,8 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(loginNavigationController.viewControllers.count, 1)
 
         // When
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController))
+        let result = await authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController)
+        XCTAssertTrue(result)
 
         // Then
         XCTAssertEqual(window.rootViewController, loginNavigationController)
@@ -394,7 +396,7 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
-    func test_authenticationManager_handleAuthenticationUrl_with_login_url_dismisses_modal_and_pushes_view_controller_when_modal_is_shown() throws {
+    func test_authenticationManager_handleAuthenticationUrl_with_login_url_dismisses_modal_and_pushes_view_controller_when_modal_is_shown() async throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
@@ -414,7 +416,8 @@ final class AppCoordinatorTests: XCTestCase {
         waitUntil {
             loginNavigationController.presentedViewController != nil
         }
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController))
+        let result = await authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController)
+        XCTAssertTrue(result)
 
         // Then
         XCTAssertEqual(window.rootViewController, loginNavigationController)

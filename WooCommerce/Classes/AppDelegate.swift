@@ -444,7 +444,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 // MARK: - Magic link
 extension AppDelegate {
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         if ServiceLocator.stores.isAuthenticated {
             let pendingAuthFlowStorage = PendingAuthFlowStorage()
             let flow = pendingAuthFlowStorage.current
@@ -456,14 +456,14 @@ extension AppDelegate {
             case .none:
                 // A woocommerce://qr-login deep link can arrive while signed in —
                 // offer to sign out and start the QR sign-in.
-                let handled = ServiceLocator.authenticationManager.handleSignedInQRLoginDeepLink(url, rootViewController: rootViewController)
+                let handled = await ServiceLocator.authenticationManager.handleSignedInQRLoginDeepLink(url, rootViewController: rootViewController)
                 if handled == false {
                     DDLogWarn("⚠️ Authentication URL received while signed in was not handled: \(url.scheme ?? "")://\(url.host ?? "")")
                 }
                 return handled
             }
         } else {
-            return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+            return await ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
     }
 

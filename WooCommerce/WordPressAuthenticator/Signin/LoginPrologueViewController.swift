@@ -25,7 +25,7 @@ class LoginPrologueViewController: LoginViewController {
     /// WooCommerce addition. Called when the primary login CTA on the prologue is tapped. Return
     /// `true` when the host app has taken over navigation, so the prologue skips its default login
     /// action (used to route into the QR-login flow).
-    var onPrimaryLoginCTA: (@MainActor () -> Bool)?
+    var onPrimaryLoginCTA: (@MainActor () async -> Bool)?
 
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
@@ -185,11 +185,13 @@ class LoginPrologueViewController: LoginViewController {
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
-            guard self?.onPrimaryLoginCTA?() != true else {
-                return
+            Task { @MainActor [weak self] in
+                guard await self?.onPrimaryLoginCTA?() != true else {
+                    return
+                }
+                self?.onLoginButtonTapped?()
+                self?.loginTapped()
             }
-            self?.onLoginButtonTapped?()
-            self?.loginTapped()
         }
 
         if configuration.enableSignUp {
@@ -356,10 +358,12 @@ class LoginPrologueViewController: LoginViewController {
     /// `defaultAction` (e.g. routing to QR login).
     private func primaryLoginCallback(default defaultAction: @escaping NUXButtonViewController.CallBackType) -> NUXButtonViewController.CallBackType {
         return { [weak self] in
-            guard self?.onPrimaryLoginCTA?() != true else {
-                return
+            Task { @MainActor [weak self] in
+                guard await self?.onPrimaryLoginCTA?() != true else {
+                    return
+                }
+                defaultAction()
             }
-            defaultAction()
         }
     }
 

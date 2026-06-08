@@ -150,7 +150,7 @@ import WordPressUI
     /// - Returns: The root view controller for the login flow.
     public class func loginUI(showCancel: Bool = false,
                               restrictToWPCom: Bool = false,
-                              onPrimaryLoginCTA: @escaping @MainActor () -> Bool) -> UIViewController? {
+                              onPrimaryLoginCTA: @escaping @MainActor () async -> Bool) -> UIViewController? {
         let storyboard = Storyboard.login.instance
         guard let controller = storyboard.instantiateInitialViewController() else {
             assertionFailure("Cannot instantiate initial login controller from Login.storyboard")

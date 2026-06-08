@@ -24,14 +24,14 @@ protocol Authentication {
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
     @MainActor
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool
 
     /// Handles a `woocommerce://qr-login` deep link that arrived while the merchant is
     /// already signed in. Returns *true* when the URL was a QR-login deep link this
     /// method took over, *false* otherwise.
     ///
     @MainActor
-    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) -> Bool
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) async -> Bool
 
     /// Returns authentication UI for display by the caller.
     ///

@@ -1,17 +1,21 @@
 import Foundation
 
-/// ListMapper: Maps generic WooCommerce REST API Lists
+/// ListMapper: Maps generic WooCommerce REST API lists.
 ///
-struct ListMapper<Output: Decodable>: Mapper {
+public struct ListMapper<Output: Decodable>: Mapper {
     /// Site Identifier associated to the items that will be parsed.
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned by our endpoints.
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into [Output].
+    public init(siteID: Int64) {
+        self.siteID = siteID
+    }
+
+    /// Attempts to convert a dictionary into `[Output]`.
     ///
-    func map(response: Data) throws -> [Output] {
+    public func map(response: Data) throws -> [Output] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
@@ -28,7 +32,7 @@ struct ListMapper<Output: Decodable>: Mapper {
 
 /// ListEnvelope Disposable Entity:
 /// Our list endpoints return the items in the `data` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
+/// This entity allows us to parse all the things with JSONDecoder.
 ///
 private struct ListEnvelope<Output: Decodable>: Decodable {
     let items: [Output]

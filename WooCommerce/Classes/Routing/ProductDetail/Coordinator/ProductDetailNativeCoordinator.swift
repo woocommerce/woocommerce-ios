@@ -9,10 +9,12 @@ class ProductDetailNativeCoordinator {
         product: Product,
         presentationStyle: ProductDetailNavigator.Presentation,
         isReadOnly: Bool,
-        onDelete: (() -> Void)? = nil) -> UIViewController {
+        onDelete: (() -> Void)? = nil,
+        onDuplicate: ((Product) -> Void)? = nil) -> UIViewController {
             return ProductDetailsFactory.productDetails(product: product,
                                                         presentationStyle: presentationStyle.asProductFormPresentationStyle,
                                                         forceReadOnly: isReadOnly,
-                                                        onDeleteCompletion: onDelete ?? {})
+                                                        onDeleteCompletion: onDelete ?? {},
+                                                        onDuplicateCompletion: onDuplicate)
         }
 }

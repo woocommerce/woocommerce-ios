@@ -222,7 +222,7 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
-    /// Closure to be invoked when the "Chat with Support" button is tapped.
+    /// Closure to be invoked when the AI-backed "Contact Support" button is tapped.
     ///
     var onChatWithSupportTapped: (() -> ())?
 
@@ -263,7 +263,7 @@ struct ConnectivityTool: View {
             Divider().ignoresSafeArea()
 
             if showChatButton {
-                Button(Localization.chatWithSupport) {
+                Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -288,11 +288,6 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
-        static let chatWithSupport = NSLocalizedString(
-            "connectivityTool.chatWithSupport",
-            value: "Chat with Support",
-            comment: "Button to open AI chat support in the connectivity tool screen"
-        )
         static let title = NSLocalizedString(
             "connectivityTool.title",
             value: "Troubleshoot Connection",

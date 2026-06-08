@@ -80,6 +80,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var dismissedWPComConnectionSuggestion = false
 
+    @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
@@ -88,7 +89,11 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isEligibleForStoreSetup = false
 
+    @Published var notice: Notice?
+
     @Published var showingCustomization = false
+
+    @Published var showingAnalyticsImportUpdateModeInfo = false
 
     @Published private(set) var showNewCardsNotice = false
 
@@ -221,6 +226,7 @@ final class DashboardViewModel: ObservableObject {
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         configureTapToPayAwarnessMomentPresentation()
+        seedAnalyticsImportUpdateModeFromCache()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -403,17 +409,31 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards = cards
     }
 
-    func onPullToRefresh() {
+    func onPullToRefresh() async {
         /// Track `used_analytics` if stat cards are enabled.
         let hasStatsCards = availableCards.contains(where: { $0.type == .performance || $0.type == .topPerformers })
         if hasStatsCards {
             usageTracksEventEmitter.interacted()
         }
 
-        Task { @MainActor in
-            analytics.track(.dashboardPulledToRefresh)
-            await reloadAllData(forceCardsRefresh: true)
-        }
+        analytics.track(.dashboardPulledToRefresh)
+        await reloadAllData(forceCardsRefresh: true)
+        showAnalyticsImportUpdateModeNoticeIfNeeded()
+    }
+
+    func showAnalyticsImportUpdateModeInfo() {
+        userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = true
+        notice = nil
+        showingAnalyticsImportUpdateModeInfo = true
+    }
+
+    func makeAnalyticsUpdateModeBottomSheetViewModel() -> AnalyticsUpdateModeBottomSheetViewModel {
+        AnalyticsUpdateModeBottomSheetViewModel(siteID: siteID,
+                                                selectedMode: analyticsImportUpdateMode,
+                                                stores: stores,
+                                                onModeUpdated: { [weak self] mode in
+            self?.applyAnalyticsImportUpdateMode(mode)
+        })
     }
 }
 
@@ -476,9 +496,12 @@ private extension DashboardViewModel {
         }
 
         // Phase 2: Card availability checks and announcements.
-        // These toggle card visibility and load banners — not needed for initial render.
+        // These toggle card visibility, load banners, and sync analytics card settings - not needed for initial render.
         // Deferred to reduce the concurrent request count in the initial burst.
         await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                await self?.loadAnalyticsImportUpdateMode()
+            }
             group.addTask { [weak self] in
                 guard let self else { return }
                 await self.syncAnnouncements(for: self.siteID)
@@ -874,6 +897,54 @@ private extension DashboardViewModel {
         googleAdsDashboardCardViewModel.onDismiss = showCustomizationScreen
     }
 
+    func seedAnalyticsImportUpdateModeFromCache() {
+        guard let cached = AnalyticsImportUpdateMode.cachedValue(siteID: siteID, storageManager: storageManager) else {
+            return
+        }
+        applyAnalyticsImportUpdateMode(cached)
+    }
+
+    @MainActor
+    func loadAnalyticsImportUpdateMode() async {
+        do {
+            let mode: AnalyticsImportUpdateMode = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            applyAnalyticsImportUpdateMode(mode)
+        } catch {
+            DDLogWarn("Could not fetch analytics import update mode: \(error)")
+        }
+    }
+
+    func applyAnalyticsImportUpdateMode(_ mode: AnalyticsImportUpdateMode) {
+        analyticsImportUpdateMode = mode
+        storePerformanceViewModel.setAnalyticsImportUpdateMode(mode)
+        topPerformersViewModel.setAnalyticsImportUpdateMode(mode)
+    }
+
+    func showAnalyticsImportUpdateModeNoticeIfNeeded() {
+        let hasVisibleStatsCard = showOnDashboardCards.contains { $0.type == .performance || $0.type == .topPerformers }
+        guard analyticsImportUpdateMode == .scheduled,
+              hasVisibleStatsCard,
+              userDefaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] as? Bool != true else {
+            return
+        }
+
+        notice = Notice(
+            message: Localization.analyticsImportUpdateModeNoticeTitle,
+            feedbackType: .warning,
+            actionTitle: Localization.learnMore,
+            actionHandler: { [weak self] in
+                Task { @MainActor in
+                    self?.showAnalyticsImportUpdateModeInfo()
+                }
+            }
+        )
+    }
+
     func generateDefaultCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
@@ -1052,7 +1123,7 @@ private extension DashboardViewModel {
 
     func updateSelfDrivenPushRegistrationStatus() async {
         let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
-        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID)
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
 
         let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
@@ -1140,6 +1211,19 @@ private extension DashboardViewModel {
         static let orderPageSize = 1
 
         static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
+    }
+
+    enum Localization {
+        static let analyticsImportUpdateModeNoticeTitle = NSLocalizedString(
+            "dashboardViewModel.analyticsImportUpdateModeNotice.title",
+            value: "Stats may be up to 12 hours delayed.",
+            comment: "Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours."
+        )
+        static let learnMore = NSLocalizedString(
+            "dashboardViewModel.analyticsImportUpdateModeNotice.learnMore",
+            value: "Learn more",
+            comment: "Action title on the dashboard notice about scheduled analytics updates."
+        )
     }
 }
 

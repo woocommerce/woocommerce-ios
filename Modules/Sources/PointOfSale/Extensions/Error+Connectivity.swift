@@ -1,8 +1,18 @@
 import Foundation
 import enum Alamofire.AFError
+import enum Networking.BackgroundDownloadError
 
 extension Error {
     var isConnectivityError: Bool {
+        if let backgroundDownloadError = self as? BackgroundDownloadError {
+            switch backgroundDownloadError {
+            case .downloadFailed(let error):
+                return error.isConnectivityError
+            default:
+                return false
+            }
+        }
+
         if let afError = self as? AFError {
             if let underlyingError = afError.underlyingError {
                 return underlyingError.isConnectivityError

@@ -882,6 +882,26 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.shipments[1].purchasedLabel)
     }
 
+    func test_didPurchaseLabel_when_remote_shipment_index_is_not_array_offset_then_does_not_crash() throws {
+        // Given index 7 with only one shipment
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2)]
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "7", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])])
+        ]
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           remoteShipments: remoteShipments,
+                                                           items: items,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+        let shipmentIndex = try XCTUnwrap(viewModel.shipments.first?.index)
+
+        // When
+        viewModel.didPurchaseLabel(for: shipmentIndex, label: .fake())
+
+        // Then
+        XCTAssertTrue(true)
+    }
+
     // MARK: - `enableDoneButton`
 
     @MainActor

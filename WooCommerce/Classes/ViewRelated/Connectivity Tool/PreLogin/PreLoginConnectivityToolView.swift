@@ -103,7 +103,7 @@ struct PreLoginConnectivityToolView: View {
     /// Closure invoked when the "Contact Support" button is tapped.
     var onContactSupportTapped: (() -> Void)?
 
-    /// Closure invoked when the "Chat with AI Support" button is tapped.
+    /// Closure invoked when the AI-backed "Contact Support" button is tapped.
     var onChatWithSupportTapped: (() -> Void)?
 
     var body: some View {
@@ -125,7 +125,7 @@ struct PreLoginConnectivityToolView: View {
             }
 
             if viewModel.showChatButton {
-                Button(Localization.chatWithSupport) {
+                Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
                 }
                 .buttonStyle(SecondaryButtonStyle())
@@ -249,11 +249,6 @@ private extension PreLoginConnectivityToolView {
             "preLoginConnectivityToolView.contactSupport",
             value: "Contact Support",
             comment: "Contact support button in the pre-login connectivity tool"
-        )
-        static let chatWithSupport = NSLocalizedString(
-            "preLoginConnectivityToolView.chatWithSupport",
-            value: "Chat with Support",
-            comment: "Chat with AI support button in the pre-login connectivity tool"
         )
     }
 }

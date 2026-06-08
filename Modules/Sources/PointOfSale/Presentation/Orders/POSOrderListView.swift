@@ -99,11 +99,11 @@ struct POSOrderListView: View {
                     }
                 }
             case (.error(let errorState), true):
-                POSListErrorView(error: errorState) {
+                POSListErrorView(error: errorState, onAction: {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
-                }
+                })
             default:
                 listView
             }

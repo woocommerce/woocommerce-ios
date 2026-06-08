@@ -12,6 +12,11 @@ final class MockSiteSettingsRemote: SiteSettingsRemoteProtocol {
     var updateAnalyticsOrderDateTypeResult: Result<SiteSetting, Error> = .success(SiteSetting.fake())
     var spyUpdateAnalyticsOrderDateTypeSiteID: Int64?
     var spyUpdateAnalyticsOrderDateTypeValue: String?
+    var loadAnalyticsScheduledImportResult: Result<SiteSetting, Error> = .success(SiteSetting.fake())
+    var spyLoadAnalyticsScheduledImportSiteID: Int64?
+    var updateAnalyticsScheduledImportResult: Result<SiteSetting, Error> = .success(SiteSetting.fake())
+    var spyUpdateAnalyticsScheduledImportSiteID: Int64?
+    var spyUpdateAnalyticsScheduledImportValue: String?
 
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         setFeatureCalled = true
@@ -41,6 +46,27 @@ final class MockSiteSettingsRemote: SiteSettingsRemoteProtocol {
         spyUpdateAnalyticsOrderDateTypeSiteID = siteID
         spyUpdateAnalyticsOrderDateTypeValue = value
         switch updateAnalyticsOrderDateTypeResult {
+        case .success(let setting):
+            return setting
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func loadAnalyticsScheduledImport(for siteID: Int64) async throws -> SiteSetting {
+        spyLoadAnalyticsScheduledImportSiteID = siteID
+        switch loadAnalyticsScheduledImportResult {
+        case .success(let setting):
+            return setting
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func updateAnalyticsScheduledImport(for siteID: Int64, value: String) async throws -> SiteSetting {
+        spyUpdateAnalyticsScheduledImportSiteID = siteID
+        spyUpdateAnalyticsScheduledImportValue = value
+        switch updateAnalyticsScheduledImportResult {
         case .success(let setting):
             return setting
         case .failure(let error):

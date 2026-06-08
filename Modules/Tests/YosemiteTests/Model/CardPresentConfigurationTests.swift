@@ -53,11 +53,11 @@ class CardPresentConfigurationTests: XCTestCase {
 
     // MARK: - Country Expansion (RSM-637)
     //
-    // The model knows about all 13 expansion countries unconditionally; per-site exposure
+    // The model knows about expansion countries unconditionally; per-site exposure
     // is gated upstream by `CardPresentConfigurationLoader` + the eligibility cache.
 
-    func test_configuration_for_each_EEA_Euro_expansion_country() {
-        let eeaCountries: [CountryCode] = [.AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES]
+    func test_configuration_for_each_supported_EEA_Euro_expansion_country() {
+        let eeaCountries: [CountryCode] = [.FI, .IE, .LU, .NL]
         for country in eeaCountries {
             let configuration = CardPresentPaymentsConfiguration(country: country)
             XCTAssertTrue(configuration.isSupportedCountry, "Expected \(country) to be supported by the model")
@@ -73,6 +73,18 @@ class CardPresentConfigurationTests: XCTestCase {
             // €50 — Stripe Terminal contactless CVM limit for EEA-Euro countries.
             XCTAssertEqual(configuration.contactlessLimitAmount, 5000)
             XCTAssertEqual(configuration.stripeSmallestCurrencyUnitMultiplier, 100)
+        }
+    }
+
+    func test_configuration_for_fiscalization_countries_is_unsupported() {
+        let fiscalizationCountries: [CountryCode] = [.AT, .BE, .FR, .DE, .IT, .PT, .ES]
+        for country in fiscalizationCountries {
+            let configuration = CardPresentPaymentsConfiguration(country: country)
+            XCTAssertFalse(configuration.isSupportedCountry, "Expected \(country) to be unsupported by the model")
+            XCTAssertEqual(configuration.currencies, [])
+            XCTAssertEqual(configuration.paymentMethods, [])
+            XCTAssertEqual(configuration.paymentGateways, [])
+            XCTAssertEqual(configuration.supportedReaders, [])
         }
     }
 

@@ -54,7 +54,10 @@ struct AddCustomAmountView: View {
                 title: viewModel.isEditing ? Localization.editTitle : Localization.title,
                 backButtonConfiguration: .init(
                     state: .enabled,
-                    action: { onDismiss() },
+                    action: {
+                        clearFocus()
+                        onDismiss()
+                    },
                     buttonIcon: backButtonStyle.iconName
                 )
             )
@@ -185,8 +188,16 @@ struct AddCustomAmountView: View {
 
     private func submit() {
         guard let customAmount = viewModel.resolvedCustomAmount() else { return }
+        clearFocus()
         onSubmit(customAmount)
         onDismiss()
+    }
+
+    /// Clears focus so the keyboard dismisses as the form goes away, rather than lingering over the
+    /// next screen (e.g. proceeding to checkout while the Name field is focused).
+    private func clearFocus() {
+        isAmountFocused = false
+        isNameFocused = false
     }
 
     /// Scrolls the focused field into view when it gains focus, deferred one runloop tick so the

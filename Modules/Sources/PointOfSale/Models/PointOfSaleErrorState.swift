@@ -128,7 +128,7 @@ struct PointOfSaleErrorState: Equatable {
     }
 
     private static func subtitle(for error: Error?) -> String {
-        if let error, error.isPOSCatalogFileResponseError {
+        if let error, error.isPOSCatalogFileDownloadError {
             return Constants.catalogFileResponseErrorSubtitle
         }
 
@@ -227,7 +227,7 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.catalogFileResponseErrorSubtitle",
             value: "The catalog file could not be downloaded from your store due to blocked server permissions. " +
             "Please contact your hosting provider.",
-            comment: "Subtitle appearing on POS local catalog sync error screens when the generated catalog file cannot be downloaded or parsed."
+            comment: "Subtitle appearing on POS local catalog sync error screens when the generated catalog file cannot be downloaded."
         )
         static let failedToLoadOrdersTitle = NSLocalizedString(
             "pos.orderList.failedToLoadOrdersTitle",

@@ -40,7 +40,7 @@ struct PointOfSaleErrorStateTests {
         #expect(errorState.subtitle == catalogFileResponseErrorSubtitle)
     }
 
-    @Test func errorOnRefreshingCatalog_when_catalog_file_response_is_invalid_then_shows_server_permissions_subtitle() {
+    @Test func errorOnRefreshingCatalog_when_catalog_file_response_is_invalid_then_shows_generic_subtitle() {
         // Given
         let error = POSCatalogFileError.invalidResponse(
             statusCode: 200,
@@ -52,7 +52,7 @@ struct PointOfSaleErrorStateTests {
         let errorState = PointOfSaleErrorState.errorOnRefreshingCatalog(error: error)
 
         // Then
-        #expect(errorState.subtitle == catalogFileResponseErrorSubtitle)
+        #expect(errorState.subtitle == "Please try again.")
     }
 
     @Test func errorOnRefreshingCatalog_when_connectivity_error_then_shows_connectivity_subtitle() {

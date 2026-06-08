@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import Testing
-import UIKit
 import enum WooFoundationCore.CurrencyCode
 import Yosemite
 @testable import PointOfSale
@@ -20,8 +19,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -39,8 +37,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -60,8 +57,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -87,8 +83,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -108,8 +103,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -127,8 +121,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -159,8 +152,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -180,8 +172,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -199,8 +190,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -218,8 +208,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: false,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: false
         )
 
         // Then
@@ -228,7 +217,7 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Phone Prototype Flag Tests
 
-    @Test func determineViewState_when_phonePrototype_flag_enabled_on_phone_and_compact_returns_content() async throws {
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_compact_returns_content() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .content
@@ -239,15 +228,14 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .phone
+            isPhonePrototypeEnabled: true
         )
 
         // Then
         #expect(result == .content)
     }
 
-    @Test func determineViewState_when_phonePrototype_flag_enabled_on_phone_and_nil_sizeClass_returns_content() async throws {
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_nil_sizeClass_returns_content() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .content
@@ -258,15 +246,14 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .phone
+            isPhonePrototypeEnabled: true
         )
 
         // Then
         #expect(result == .content)
     }
 
-    @Test func determineViewState_when_phonePrototype_flag_enabled_on_ipad_and_compact_returns_unsupportedWidth() async throws {
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_compact_on_ipad_returns_content() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .content
@@ -277,15 +264,14 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .pad
+            isPhonePrototypeEnabled: true
         )
 
         // Then
-        #expect(result == .unsupportedWidth)
+        #expect(result == .content)
     }
 
-    @Test func determineViewState_when_phonePrototype_flag_enabled_on_phone_and_ineligible_returns_ineligible() async throws {
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_compact_ineligible_returns_ineligible() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
         let itemsContainerState: ItemsContainerState = .content
@@ -296,15 +282,14 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .phone
+            isPhonePrototypeEnabled: true
         )
 
         // Then
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
     }
 
-    @Test func determineViewState_when_phonePrototype_flag_enabled_on_phone_and_nil_eligibility_returns_loading() async throws {
+    @Test func determineViewState_when_phonePrototype_flag_enabled_and_compact_nil_eligibility_returns_loading() async throws {
         // Given
         let eligibilityState: POSEligibilityState? = nil
         let itemsContainerState: ItemsContainerState = .content
@@ -315,8 +300,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .phone
+            isPhonePrototypeEnabled: true
         )
 
         // Then
@@ -328,7 +312,7 @@ struct PointOfSaleDashboardViewHelperTests {
         PointOfSaleErrorState.errorOnLoadingVariations(),
         PointOfSaleErrorState.errorOnLoadingCoupons()
     ])
-    func determineViewState_when_phonePrototype_flag_enabled_on_phone_and_error_returns_error(errorState: PointOfSaleErrorState) async throws {
+    func determineViewState_when_phonePrototype_flag_enabled_and_compact_error_returns_error(errorState: PointOfSaleErrorState) async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .error(errorState)
@@ -339,8 +323,7 @@ struct PointOfSaleDashboardViewHelperTests {
             eligibilityState: eligibilityState,
             itemsContainerState: itemsContainerState,
             horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: true,
-            userInterfaceIdiom: .phone
+            isPhonePrototypeEnabled: true
         )
 
         // Then

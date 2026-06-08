@@ -21,12 +21,12 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
-    @State private var phoneShowingCart: Bool = false
+    @State private var compactShowingCart: Bool = false
 
-    /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
+    /// Tracks Dynamic Type scaling for the compact overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
     /// clamp around `POSHeaderLayoutConstants.minHeight` as `POSPageHeaderActionButton`.
-    @ScaledMetric private var phoneOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
+    @ScaledMetric private var compactOverflowMenuScaledSize: CGFloat = POSHeaderLayoutConstants.minHeight
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
         posModel.viewStateCoordinatorForView
@@ -116,7 +116,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+            .renderedIf(viewState.showsFloatingControl && !usesCompactLayout && !floatingControlSuppressed)
 
             POSConnectivityView()
         }
@@ -198,20 +198,20 @@ struct PointOfSaleDashboardView: View {
 
     @ViewBuilder
     private var contentView: some View {
-        if isPhoneLayout {
-            phoneContentView
+        if usesCompactLayout {
+            compactContentView
         } else {
-            tabletContentView
+            regularContentView
         }
     }
 
-    private var isPhoneLayout: Bool {
+    private var usesCompactLayout: Bool {
         horizontalSizeClass == .compact &&
         featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 
     @ViewBuilder
-    private var phoneContentView: some View {
+    private var compactContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         // Building stage: ItemListView (which carries its own NavigationStack for product drill-down)
         //                 + bottom Cart button — NO outer NavigationStack here, otherwise nested stacks
@@ -225,8 +225,8 @@ struct PointOfSaleDashboardView: View {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
                         searchTerm: $viewStateCoordinator.searchTerm,
-                        phoneHeaderAccessoryBuilder: { context in
-                            AnyView(phoneOverflowMenu(
+                        compactHeaderAccessoryBuilder: { context in
+                            AnyView(compactOverflowMenu(
                                 canCreateCoupon: context.canCreateCoupon,
                                 onCreateCoupon: context.onCreateCoupon
                             ))
@@ -236,12 +236,12 @@ struct PointOfSaleDashboardView: View {
                     // and the merchant has a consistent landmark at the bottom of the screen.
                     // Suppressed when a pushed view (e.g. the custom amount form) signals via
                     // POSHidesFloatingControlPreferenceKey that overlays should hide.
-                    phoneCartButton
+                    compactCartButton
                         .renderedIf(!floatingControlSuppressed)
                 }
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
-                    phoneTotalsContainer
+                    compactTotalsContainer
                         .posNavigationDestinations()
                 }
                 .environment(\.posNavigationRouter, navigationRouter)
@@ -257,23 +257,23 @@ struct PointOfSaleDashboardView: View {
             // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.
             if newStage == .finalizing {
-                phoneShowingCart = false
+                compactShowingCart = false
             }
         }
-        .posSheet(isPresented: $phoneShowingCart) {
-            phoneCartSheetView
+        .posSheet(isPresented: $compactShowingCart) {
+            compactCartSheetView
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
-        // Phone-only covers presented at the dashboard level:
+        // Compact-only covers presented at the dashboard level:
         //  - Barcode scanner setup, triggered from the cart sheet.
         //  - Edit-custom-amount, hosted here so it sits above the cart sheet (CartView's
-        //    edit cover is gated to iPad, and POSSheet dismissal can tear down covers
+        //    edit cover is gated to regular layout, and POSSheet dismissal can tear down covers
         //    that live inside the sheet's content).
-        .if(isPhoneLayout) { view in
+        .if(usesCompactLayout) { view in
             view
-                .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
-                    POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+                .posFullScreenCover(isPresented: $compactShowingBarcodeScannerSetup) {
+                    POSBarcodeScannerSetup(isPresented: $compactShowingBarcodeScannerSetup, analytics: analytics)
                 }
                 .posFullScreenCover(item: Binding(
                     get: { posModel.editingCustomAmount },
@@ -295,17 +295,17 @@ struct PointOfSaleDashboardView: View {
         .background(Color.posSurface.ignoresSafeArea())
     }
 
-    private var canExitFinalizingOnPhone: Bool {
+    private var canExitFinalizingInCompactLayout: Bool {
         !CartViewHelper().shouldPreventCartEditing(
             orderState: posModel.orderState,
             paymentState: posModel.paymentState
         )
     }
 
-    /// Wraps `TotalsView` with an in-screen `POSPageHeaderView` back button so the phone totals
+    /// Wraps `TotalsView` with an in-screen `POSPageHeaderView` back button so the compact totals
     /// view follows the same pattern as cash payment, settings, and orders — instead of a
     /// system nav bar back button.
-    private var phoneTotalsContainer: some View {
+    private var compactTotalsContainer: some View {
         VStack(spacing: 0) {
             if !posModel.paymentState.shownFullScreen {
                 // Hide the Checkout header on the in-pane states that take
@@ -316,9 +316,9 @@ struct PointOfSaleDashboardView: View {
                 // back-to-cart arrow is already disabled (the cart can't be
                 // edited mid-flow or post-success) — the header is noise.
                 POSPageHeaderView(
-                    title: Localization.phoneCheckoutTitle,
+                    title: Localization.compactCheckoutTitle,
                     backButtonConfiguration: .init(
-                        state: canExitFinalizingOnPhone ? .enabled : .disabled,
+                        state: canExitFinalizingInCompactLayout ? .enabled : .disabled,
                         action: { posModel.addMoreToCart() }
                     )
                 )
@@ -330,38 +330,38 @@ struct PointOfSaleDashboardView: View {
     }
 
     @State private var showOrders: Bool = false
-    @State private var phoneShowingBarcodeScannerSetup: Bool = false
-    @State private var phoneCartButtonPulse: Bool = false
+    @State private var compactShowingBarcodeScannerSetup: Bool = false
+    @State private var compactCartButtonPulse: Bool = false
 
     @ViewBuilder
-    private func phoneOverflowMenu(canCreateCoupon: Bool,
+    private func compactOverflowMenu(canCreateCoupon: Bool,
                                    onCreateCoupon: @escaping () -> Void) -> some View {
         Menu {
             // Top of the menu when on the Coupons tab, so the create-coupon entry
             // sits at the natural "primary action" slot for that tab.
             if canCreateCoupon {
                 Button(action: onCreateCoupon) {
-                    Label(Localization.phoneMenuCreateCoupon, systemImage: "plus")
+                    Label(Localization.compactMenuCreateCoupon, systemImage: "plus")
                 }
             }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
                 showExitPOSModal = true
             } label: {
-                Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
+                Label(Localization.compactMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
-                Label(Localization.phoneMenuSettings, systemImage: "gearshape")
+                Label(Localization.compactMenuSettings, systemImage: "gearshape")
             }
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                     presentOrders()
                 } label: {
-                    Label(Localization.phoneMenuOrders, systemImage: "text.document")
+                    Label(Localization.compactMenuOrders, systemImage: "text.document")
                 }
             }
         } label: {
@@ -373,71 +373,71 @@ struct PointOfSaleDashboardView: View {
                         .foregroundColor(.posOnSurface)
                         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 }
-                .frame(width: phoneOverflowMenuConstrainedSize, height: phoneOverflowMenuConstrainedSize)
+                .frame(width: compactOverflowMenuConstrainedSize, height: compactOverflowMenuConstrainedSize)
                 .fixedSize()
         }
-        .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
-        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .accessibilityLabel(Localization.compactMenuAccessibilityLabel)
+        .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 
-    private var phoneOverflowMenuConstrainedSize: CGFloat {
+    private var compactOverflowMenuConstrainedSize: CGFloat {
         max(POSHeaderLayoutConstants.minHeight,
-            min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
+            min(compactOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
-    private var phoneCartItemsCount: Int {
+    private var compactCartItemsCount: Int {
         posModel.cart.totalItemCount
     }
 
-    private var phoneCartButton: some View {
+    private var compactCartButton: some View {
         Button {
-            phoneShowingCart = true
+            compactShowingCart = true
         } label: {
-            Text(String(format: Localization.phoneCart, phoneCartItemsCount))
+            Text(String(format: Localization.compactCart, compactCartItemsCount))
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
                 // Number flips smoothly between values instead of snapping.
                 .contentTransition(.numericText())
-                .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
+                .animation(.snappy(duration: 0.25), value: compactCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding()
+        .posCompactBottomButtonPadding()
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
-        .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
-        .onChange(of: phoneCartItemsCount) { oldValue, newValue in
+        .scaleEffect(compactCartButtonPulse ? 1.04 : 1.0)
+        .onChange(of: compactCartItemsCount) { oldValue, newValue in
             guard newValue > oldValue else { return }
             withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
-                phoneCartButtonPulse = true
+                compactCartButtonPulse = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    phoneCartButtonPulse = false
+                    compactCartButtonPulse = false
                 }
             }
         }
-        .accessibilityIdentifier("pos-phone-cart-button")
+        .accessibilityIdentifier("pos-compact-cart-button")
     }
 
-    private var phoneCartSheetView: some View {
+    private var compactCartSheetView: some View {
         // Drag indicator + swipe-down handle dismissal; an explicit close button isn't needed.
         // The barcode-scanner trigger is lifted to the dashboard level (via the closure here)
         // so it presents above the cart sheet rather than being torn down by POSSheet's
         // coverManager interaction.
         var cart = CartView()
         cart.onPresentBarcodeScannerSetup = {
-            phoneShowingCart = false
+            compactShowingCart = false
             // Tiny delay so the cart sheet finishes dismissing before the cover presents,
             // otherwise iOS rejects the simultaneous transitions and nothing shows.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                phoneShowingBarcodeScannerSetup = true
+                compactShowingBarcodeScannerSetup = true
             }
         }
         return cart
             .background(Color.posSurface)
     }
 
-    private var tabletContentView: some View {
+    private var regularContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
             // Fixed widths ensure views don't resize during offset-based transitions.
@@ -615,40 +615,40 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
-        static let phoneCart = NSLocalizedString(
+        static let compactCart = NSLocalizedString(
             "pointOfSaleDashboard.phone.cart",
             value: "Cart (%1$d)",
-            comment: "Phone-only floating button to open the cart from the items list. %1$d is the cart item count."
+            comment: "Compact-layout floating button to open the cart from the items list. %1$d is the cart item count."
         )
-        static let phoneCheckoutTitle = NSLocalizedString(
+        static let compactCheckoutTitle = NSLocalizedString(
             "pointOfSaleDashboard.phone.checkoutTitle",
             value: "Checkout",
-            comment: "Phone-only header title shown above the totals view during checkout."
+            comment: "Compact-layout header title shown above the totals view during checkout."
         )
-        static let phoneMenuExit = NSLocalizedString(
+        static let compactMenuExit = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.exit",
             value: "Exit POS",
-            comment: "Phone-only overflow menu item to exit Point of Sale."
+            comment: "Compact-layout overflow menu item to exit Point of Sale."
         )
-        static let phoneMenuSettings = NSLocalizedString(
+        static let compactMenuSettings = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
-            comment: "Phone-only overflow menu item to open Point of Sale settings."
+            comment: "Compact-layout overflow menu item to open Point of Sale settings."
         )
-        static let phoneMenuOrders = NSLocalizedString(
+        static let compactMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",
             value: "Orders",
-            comment: "Phone-only overflow menu item to open the historical orders view."
+            comment: "Compact-layout overflow menu item to open the historical orders view."
         )
-        static let phoneMenuAccessibilityLabel = NSLocalizedString(
+        static let compactMenuAccessibilityLabel = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.accessibilityLabel",
             value: "More options",
-            comment: "VoiceOver label for the phone-only Point of Sale overflow menu button."
+            comment: "VoiceOver label for the compact-layout Point of Sale overflow menu button."
         )
-        static let phoneMenuCreateCoupon = NSLocalizedString(
+        static let compactMenuCreateCoupon = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.createCoupon",
             value: "Create coupon",
-            comment: "Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab."
+            comment: "Compact-layout overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab."
         )
     }
 }

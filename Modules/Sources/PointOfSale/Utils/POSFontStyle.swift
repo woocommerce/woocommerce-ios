@@ -86,7 +86,7 @@ private extension POSFontStyle {
         static let caption: CGFloat = 14
     }
 
-    enum PhoneFontSize {
+    enum CompactFontSize {
         static let heading: CGFloat = 24
         static let bodyXLarge: CGFloat = 22
         static let bodyLarge: CGFloat = 18
@@ -113,10 +113,10 @@ extension POSFontStyle {
     // these helpers directly without going through the SwiftUI View modifier path.
     func baseSize(for scale: POSLayoutScale) -> CGFloat {
         switch scale {
-        case .tablet:
-            return tabletBaseSize
-        case .phone:
-            return phoneBaseSize
+        case .regular:
+            return regularBaseSize
+        case .compact:
+            return compactBaseSize
         }
     }
 
@@ -135,7 +135,7 @@ extension POSFontStyle {
         return max(scaledSize, minimumFloor)
     }
 
-    private var tabletBaseSize: CGFloat {
+    private var regularBaseSize: CGFloat {
         switch self {
         case .posHeadingBold, .posHeadingRegular: return FontSize.heading
         case .posBodyXLargeRegular, .posBodyXLargeBold: return FontSize.bodyXLarge
@@ -150,14 +150,14 @@ extension POSFontStyle {
         }
     }
 
-    private var phoneBaseSize: CGFloat {
+    private var compactBaseSize: CGFloat {
         switch self {
-        case .posHeadingBold, .posHeadingRegular: return PhoneFontSize.heading
-        case .posBodyXLargeRegular, .posBodyXLargeBold: return PhoneFontSize.bodyXLarge
-        case .posBodyLargeBold, .posBodyLargeRegular: return PhoneFontSize.bodyLarge
-        case .posBodyMediumBold, .posBodyMediumRegular: return PhoneFontSize.bodyMedium
-        case .posBodySmallBold, .posBodySmallRegular: return PhoneFontSize.bodySmall
-        case .posCaptionBold, .posCaptionRegular: return PhoneFontSize.caption
+        case .posHeadingBold, .posHeadingRegular: return CompactFontSize.heading
+        case .posBodyXLargeRegular, .posBodyXLargeBold: return CompactFontSize.bodyXLarge
+        case .posBodyLargeBold, .posBodyLargeRegular: return CompactFontSize.bodyLarge
+        case .posBodyMediumBold, .posBodyMediumRegular: return CompactFontSize.bodyMedium
+        case .posBodySmallBold, .posBodySmallRegular: return CompactFontSize.bodySmall
+        case .posCaptionBold, .posCaptionRegular: return CompactFontSize.caption
         case .posButtonSymbolXSmall: return 14
         case .posButtonSymbolSmall: return 16
         case .posButtonSymbolMedium: return 20

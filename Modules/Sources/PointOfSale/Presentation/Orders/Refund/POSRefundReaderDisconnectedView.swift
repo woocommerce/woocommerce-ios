@@ -60,7 +60,7 @@ private extension POSRefundReaderDisconnectedView {
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .frame(maxWidth: .infinity)
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+        .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

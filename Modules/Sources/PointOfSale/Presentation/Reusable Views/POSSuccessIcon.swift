@@ -9,11 +9,10 @@ struct POSSuccessIcon: View {
                 .frame(width: iconSize, height: iconSize)
                 .foregroundColor(.posSuccess)
 
-            // Phone uses the SF Symbol checkmark to match the rest of the
-            // phone-prototype iconography. iPad keeps the brand asset (its
-            // glyph weight + proportions are what the design ships) — gating
-            // the swap on `.phone` so this PR stays scoped to phone polish.
-            if layoutScale == .phone {
+            // Compact uses the SF Symbol checkmark to match the rest of the
+            // compact prototype iconography. Regular keeps the brand asset with
+            // its original glyph weight and proportions.
+            if layoutScale == .compact {
                 Image(systemName: "checkmark")
                     .font(.system(size: checkmarkSize, weight: .bold))
                     .foregroundColor(.posOnSuccess)
@@ -29,22 +28,22 @@ struct POSSuccessIcon: View {
     }
 
     private var iconSize: CGFloat {
-        layoutScale == .phone ? Constants.phoneIconSize : Constants.tabletIconSize
+        layoutScale == .compact ? Constants.compactIconSize : Constants.regularIconSize
     }
 
     private var checkmarkSize: CGFloat {
-        // Phone keeps the SF-Symbol-sized 28pt; iPad restores the design's
+        // Compact keeps the SF-Symbol-sized 28pt; regular restores the design's
         // 52pt brand-asset width that #17092's drift had bumped to 64pt.
-        layoutScale == .phone ? Constants.phoneCheckmarkSize : Constants.tabletCheckmarkSize
+        layoutScale == .compact ? Constants.compactCheckmarkSize : Constants.regularCheckmarkSize
     }
 }
 
 private extension POSSuccessIcon {
     enum Constants {
-        static let tabletIconSize: CGFloat = 165
-        static let tabletCheckmarkSize: CGFloat = 52
-        static let phoneIconSize: CGFloat = 72
-        static let phoneCheckmarkSize: CGFloat = 28
+        static let regularIconSize: CGFloat = 165
+        static let regularCheckmarkSize: CGFloat = 52
+        static let compactIconSize: CGFloat = 72
+        static let compactCheckmarkSize: CGFloat = 28
     }
 }
 

@@ -238,7 +238,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
+        .environment(\.posLayoutScale, usesCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -260,7 +260,7 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var isPhoneLayout: Bool {
+    private var usesCompactLayout: Bool {
         horizontalSizeClass == .compact &&
         services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }

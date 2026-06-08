@@ -17,20 +17,20 @@ struct ItemListView: View {
     /// Optional builder rendered in the trailing slot of the items list header when not searching.
     /// The dashboard uses this to fold the "create coupon" entry into its overflow menu when the
     /// merchant is on the Coupons tab, without leaking ItemListView's internal state.
-    private let phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)?
+    private let compactHeaderAccessoryBuilder: ((CompactHeaderAccessoryContext) -> AnyView)?
 
     init(selectedItemListType: Binding<ItemListType>,
          searchTerm: Binding<String>,
-         phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)? = nil) {
+         compactHeaderAccessoryBuilder: ((CompactHeaderAccessoryContext) -> AnyView)? = nil) {
         self._selectedItemListType = selectedItemListType
         self._searchTerm = searchTerm
-        self.phoneHeaderAccessoryBuilder = phoneHeaderAccessoryBuilder
+        self.compactHeaderAccessoryBuilder = compactHeaderAccessoryBuilder
     }
 
-    /// Context handed to the dashboard so the phone overflow menu can fold the
+    /// Context handed to the dashboard so the compact overflow menu can fold the
     /// "create coupon" entry in when the merchant is on the Coupons tab. Avoids
     /// leaking ItemListView's internal state up to the dashboard.
-    struct PhoneHeaderAccessoryContext {
+    struct CompactHeaderAccessoryContext {
         let canCreateCoupon: Bool
         let onCreateCoupon: () -> Void
     }
@@ -416,10 +416,10 @@ private extension ItemListView {
                         )
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
-                        // Tablet keeps the inline + button. On phone (when a header
+                        // Regular layout keeps the inline + button. In compact layout (when a header
                         // accessory builder is provided) the + folds into the overflow
                         // menu so the menu chip is always visible.
-                        if phoneHeaderAccessoryBuilder == nil {
+                        if compactHeaderAccessoryBuilder == nil {
                             createCouponButton
                         }
 
@@ -429,9 +429,9 @@ private extension ItemListView {
                         }
                         .transition(.opacity.combined(with: .scale))
 
-                        if let phoneHeaderAccessoryBuilder {
-                            phoneHeaderAccessoryBuilder(
-                                PhoneHeaderAccessoryContext(
+                        if let compactHeaderAccessoryBuilder {
+                            compactHeaderAccessoryBuilder(
+                                CompactHeaderAccessoryContext(
                                     canCreateCoupon: isAddingCouponAllowed,
                                     onCreateCoupon: {
                                         analytics.track(.pointOfSaleCouponsCreateTapped)

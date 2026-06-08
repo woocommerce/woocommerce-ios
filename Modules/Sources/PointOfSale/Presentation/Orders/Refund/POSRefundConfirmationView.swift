@@ -271,7 +271,7 @@ private extension POSRefundConfirmationView {
             Button(Localization.cancelButton, action: onClose)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+        .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
                                          maxWidth: .infinity)
     }
 }

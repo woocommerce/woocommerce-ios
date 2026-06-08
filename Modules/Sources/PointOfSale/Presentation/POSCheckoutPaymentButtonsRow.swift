@@ -23,7 +23,7 @@ struct POSCheckoutPaymentButtonsRow: View {
             }
         }
         .if(horizontalSizeClass == .compact) {
-            $0.posPhoneBottomButtonPadding()
+            $0.posCompactBottomButtonPadding()
         }
         .if(horizontalSizeClass != .compact) {
             $0

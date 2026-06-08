@@ -44,7 +44,7 @@ struct POSRefundItemsSelectionView: View {
             .frame(maxHeight: .infinity)
 
             continueButton
-                .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+                .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
                                                  maxWidth: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

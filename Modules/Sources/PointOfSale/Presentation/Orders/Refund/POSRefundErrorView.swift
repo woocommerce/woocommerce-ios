@@ -79,7 +79,7 @@ private extension POSRefundErrorView {
             Button(cancelButtonTitle ?? Localization.cancelButton, action: onCancel)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+        .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

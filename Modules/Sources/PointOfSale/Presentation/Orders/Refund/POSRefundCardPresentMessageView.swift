@@ -172,7 +172,7 @@ private struct POSRefundCardPresentActionContent: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
-            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+            .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
         }
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

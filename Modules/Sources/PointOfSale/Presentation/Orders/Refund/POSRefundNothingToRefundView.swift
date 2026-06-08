@@ -47,7 +47,7 @@ private extension POSRefundNothingToRefundView {
     var buttonsSection: some View {
         Button(Localization.doneButton, action: onClose)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
+            .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass)
     }
 }
 

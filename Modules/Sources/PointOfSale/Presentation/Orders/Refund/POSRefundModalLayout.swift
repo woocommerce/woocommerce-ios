@@ -10,15 +10,15 @@ enum POSRefundModalLayout {
     static let fullScreenActionMaxWidth: CGFloat = 520
     static let fullScreenCompletionActionMaxWidth: CGFloat = 420
 
-    /// Phone uses 0 horizontal padding so the modal can fill the narrow screen instead of
-    /// shrinking the content to a thin strip with the iPad-tuned 148pt insets.
+    /// Compact layout uses 0 horizontal padding so the modal can fill the narrow screen instead of
+    /// shrinking the content to a thin strip with the regular-layout 148pt insets.
     static func horizontalPadding(for sizeClass: UserInterfaceSizeClass?) -> CGFloat {
         sizeClass == .compact ? 0 : horizontalPadding
     }
 
-    /// Phone presents the modal full-screen via `posModalFullScreen`, so the inner card
+    /// Compact layout presents the modal full-screen via `posModalFullScreen`, so the inner card
     /// should not be rounded (otherwise an inner-rounded card sits inside a square
-    /// full-screen modal). On iPad the iPad-tuned corner radius is applied.
+    /// full-screen modal). In regular layout the regular corner radius is applied.
     static func cornerRadius(for sizeClass: UserInterfaceSizeClass?) -> CGFloat {
         sizeClass == .compact ? 0 : cornerRadius
     }
@@ -78,8 +78,8 @@ extension EnvironmentValues {
     }
 }
 
-/// Sizes a refund-flow modal: a centered, rounded card on iPad; an edge-to-edge full
-/// screen take-over on phone. Matches the rest of the phone-prototype UI where modal
+/// Sizes a refund-flow modal: a centered, rounded card in regular layout; an edge-to-edge full
+/// screen take-over in compact layout. Matches the rest of the compact UI where modal
 /// flows occupy the entire screen rather than appearing as a partial sheet.
 struct POSRefundModalFrameModifier: ViewModifier {
     let parentSize: CGSize
@@ -107,10 +107,10 @@ extension View {
     }
 }
 
-/// Standardizes the bottom-anchored action buttons across the phone POS so refund / totals /
-/// cart all share the same horizontal insets and home-indicator clearance as the phone cart
-/// button. iPad keeps the existing in-card padding so the centered modal still breathes.
-struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
+/// Standardizes the bottom-anchored action buttons across compact POS so refund / totals /
+/// cart all share the same horizontal insets and home-indicator clearance as the compact cart
+/// button. Regular layout keeps the existing in-card padding so the centered modal still breathes.
+struct POSCompactFullScreenButtonPaddingModifier: ViewModifier {
     let horizontalSizeClass: UserInterfaceSizeClass?
     let maxWidth: CGFloat
     @Environment(\.posRefundPresentationStyle) private var presentationStyle
@@ -121,7 +121,7 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
                 .frame(maxWidth: .infinity)
                 .frame(maxWidth: maxWidth)
                 .if(horizontalSizeClass == .compact) {
-                    $0.posPhoneBottomButtonPadding()
+                    $0.posCompactBottomButtonPadding()
                 }
                 .if(horizontalSizeClass != .compact) {
                     $0
@@ -132,7 +132,7 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
                 .frame(maxWidth: .infinity)
         } else if horizontalSizeClass == .compact {
             content
-                .posPhoneBottomButtonPadding()
+                .posCompactBottomButtonPadding()
         } else {
             content
                 .padding(POSPadding.xLarge)
@@ -141,9 +141,9 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
 }
 
 extension View {
-    func posPhoneFullScreenButtonPadding(horizontalSizeClass: UserInterfaceSizeClass?,
+    func posCompactFullScreenButtonPadding(horizontalSizeClass: UserInterfaceSizeClass?,
                                          maxWidth: CGFloat = POSRefundModalLayout.fullScreenActionMaxWidth) -> some View {
-        modifier(POSPhoneFullScreenButtonPaddingModifier(horizontalSizeClass: horizontalSizeClass,
+        modifier(POSCompactFullScreenButtonPaddingModifier(horizontalSizeClass: horizontalSizeClass,
                                                          maxWidth: maxWidth))
     }
 }

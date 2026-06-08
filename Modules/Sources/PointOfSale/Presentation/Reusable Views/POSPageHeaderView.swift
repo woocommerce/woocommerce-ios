@@ -129,13 +129,13 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                     items[index].action?()
                                 }) {
                                     Group {
-                                        // Phone: items live inside a horizontal ScrollView, so
+                                        // Compact layout: items live inside a horizontal ScrollView, so
                                         // `.fixedSize` lets long titles take their natural width
-                                        // and swipe rather than squeeze. iPad: items render
+                                        // and swipe rather than squeeze. In regular layout, items render
                                         // inline (no ScrollView), so we keep the pre-#17092
                                         // `.minimumScaleFactor(0.5)` shrinking behaviour to
                                         // avoid overflowing in narrow split-view.
-                                        if layoutScale == .phone {
+                                        if layoutScale == .compact {
                                             Text(items[index].title)
                                                 .fixedSize(horizontal: true, vertical: false)
                                         } else {
@@ -175,7 +175,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             }
         }
 
-        if layoutScale == .phone {
+        if layoutScale == .compact {
             ScrollView(.horizontal, showsIndicators: false) {
                 itemsRow
             }

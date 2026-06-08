@@ -79,7 +79,7 @@ private extension POSFloatingControlView {
             )
         }
         .accessibilityIdentifier("pos-exit-menu-item")
-        if horizontalSizeClass == .regular || isPhoneLayout {
+        if horizontalSizeClass == .regular || usesCompactLayout {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
@@ -104,7 +104,7 @@ private extension POSFloatingControlView {
         }
     }
 
-    private var isPhoneLayout: Bool {
+    private var usesCompactLayout: Bool {
         horizontalSizeClass == .compact &&
         featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }

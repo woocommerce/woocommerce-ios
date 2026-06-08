@@ -112,7 +112,7 @@ private extension POSRefundReviewView {
             Button(Localization.backButton, action: onClose)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+        .posCompactFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
                                          maxWidth: .infinity)
     }
 

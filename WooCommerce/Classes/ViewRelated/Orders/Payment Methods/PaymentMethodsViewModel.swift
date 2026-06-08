@@ -493,13 +493,6 @@ private extension PaymentMethodsViewModel {
         stores.dispatch(action)
     }
 
-    private func updatePaymentGateway() {
-        // Preserve the existing no-op behavior while silencing the unused-result warning.
-        _ = CardPresentPaymentAction.loadActivePaymentGatewayExtension { paymentGateway in
-            self.cardPaymentGateway = paymentGateway
-        }
-    }
-
     func updateOrderAsynchronously() {
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { _, _  in }
         stores.dispatch(action)

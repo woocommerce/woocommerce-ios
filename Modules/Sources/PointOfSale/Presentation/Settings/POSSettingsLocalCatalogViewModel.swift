@@ -89,6 +89,11 @@ final class POSSettingsLocalCatalogViewModel {
             try await catalogSyncCoordinator.performFullSync(for: siteID, regenerateCatalog: true)
             isRefreshingCatalog = false
             await loadCatalogData()
+        } catch POSCatalogSyncError.syncAlreadyInProgress {
+            DDLogInfo("POSSettingsLocalCatalog: Refresh requested while catalog sync is already in progress")
+        } catch POSCatalogSyncError.requestCancelled {
+            DDLogInfo("POSSettingsLocalCatalog: Catalog refresh cancelled")
+            isRefreshingCatalog = false
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
             isRefreshingCatalog = false

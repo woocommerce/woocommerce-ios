@@ -29,19 +29,30 @@ extension [POSCustomAmount] {
     /// intent (e.g. a tax-exempt customer or store-level tax-class override). Treating
     /// a divergence on `isTaxable` as a mismatch would force a redundant resync every
     /// time the merchant places a taxable custom amount on a non-taxable order.
+    /// Remote-added fees are allowed so server plugins can add their own charges.
     func matches(order: Order?) -> Bool {
-        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
-        guard self.count == activeOrderFees.count else {
-            return false
-        }
+        return comparison(with: order).matches
+    }
 
+    func extraActiveFeesCount(order: Order?) -> Int {
+        return comparison(with: order).extraFeesCount
+    }
+
+    func comparison(with order: Order?) -> (matches: Bool, extraFeesCount: Int) {
+        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
         let cartSummaries = self
             .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }
-            .sorted()
-        let orderSummaries = activeOrderFees
+        var unmatchedOrderSummaries = activeOrderFees
             .map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) }
-            .sorted()
-        return cartSummaries == orderSummaries
+
+        for cartSummary in cartSummaries {
+            guard let matchingIndex = unmatchedOrderSummaries.firstIndex(of: cartSummary) else {
+                return (matches: false, extraFeesCount: unmatchedOrderSummaries.count)
+            }
+            unmatchedOrderSummaries.remove(at: matchingIndex)
+        }
+
+        return (matches: true, extraFeesCount: unmatchedOrderSummaries.count)
     }
 
     /// Returns `true` when the taxable intent of these custom amounts matches a
@@ -75,12 +86,8 @@ extension [POSCustomAmount] {
         return result
     }
 
-    private struct CustomAmountSummary: Hashable, Comparable {
+    private struct CustomAmountSummary: Hashable {
         let name: String
         let amount: String
-
-        static func < (lhs: Self, rhs: Self) -> Bool {
-            (lhs.name, lhs.amount) < (rhs.name, rhs.amount)
-        }
     }
 }

@@ -78,13 +78,13 @@ final class RefundConfirmationViewModel {
                 showInProgressUI: @escaping (() -> Void),
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Creates refund object.
-        let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
+        let shippingLines = details.refundsShipping ? details.shippingLines : []
         let fees = details.refundsFees ? details.order.fees : []
         let useCase = RefundCreationUseCase(amount: details.amount,
                                             reason: reasonForRefundCellViewModel.value,
                                             automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
                                             items: details.items,
-                                            shippingLine: shippingLine,
+                                            shippingLines: shippingLines,
                                             fees: fees,
                                             currencyFormatter: currencyFormatter)
         let refund = useCase.createRefund()
@@ -158,6 +158,10 @@ extension RefundConfirmationViewModel {
         ///
         let refundsShipping: Bool
 
+        /// Shipping lines to refund
+        ///
+        let shippingLines: [ShippingLine]
+
         /// Indicates if fees will be refunded
         ///
         let refundsFees: Bool
@@ -173,6 +177,26 @@ extension RefundConfirmationViewModel {
         /// Payment gateway account of the site (e.g. WCPay or Stripe extension)
         ///
         let paymentGatewayAccount: PaymentGatewayAccount?
+
+        init(order: Order,
+             charge: WCPayCharge?,
+             amount: String,
+             refundsShipping: Bool,
+             refundsFees: Bool,
+             items: [RefundableOrderItem],
+             paymentGateway: PaymentGateway?,
+             paymentGatewayAccount: PaymentGatewayAccount?,
+             shippingLines: [ShippingLine]? = nil) {
+            self.order = order
+            self.charge = charge
+            self.amount = amount
+            self.refundsShipping = refundsShipping
+            self.shippingLines = shippingLines ?? order.shippingLines
+            self.refundsFees = refundsFees
+            self.items = items
+            self.paymentGateway = paymentGateway
+            self.paymentGatewayAccount = paymentGatewayAccount
+        }
     }
 }
 

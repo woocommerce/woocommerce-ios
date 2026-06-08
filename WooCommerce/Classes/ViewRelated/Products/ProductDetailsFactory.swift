@@ -10,18 +10,21 @@ struct ProductDetailsFactory {
     ///   - currencySettings: site currency settings.
     ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onDeleteCompletion: called when the product deletion completes in the product form.
+    ///   - onDuplicateCompletion: called with the new duplicate when a product duplication completes in the product form.
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                                forceReadOnly: Bool,
                                productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
-                               onDeleteCompletion: @escaping () -> Void = {}) -> UIViewController {
+                               onDeleteCompletion: @escaping () -> Void = {},
+                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
         let vc = productDetails(product: product,
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
                                 isEditProductsEnabled: forceReadOnly ? false: true,
                                 productImageUploader: productImageUploader,
-                                onDeleteCompletion: onDeleteCompletion)
+                                onDeleteCompletion: onDeleteCompletion,
+                                onDuplicateCompletion: onDuplicateCompletion)
         return vc
     }
 }
@@ -32,7 +35,8 @@ private extension ProductDetailsFactory {
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
                                productImageUploader: ProductImageUploaderProtocol,
-                               onDeleteCompletion: @escaping () -> Void) -> UIViewController {
+                               onDeleteCompletion: @escaping () -> Void,
+                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = productImageUploader
@@ -48,7 +52,8 @@ private extension ProductDetailsFactory {
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
                                        presentationStyle: presentationStyle,
-                                       onDeleteCompletion: onDeleteCompletion)
+                                       onDeleteCompletion: onDeleteCompletion,
+                                       onDuplicateCompletion: onDuplicateCompletion)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

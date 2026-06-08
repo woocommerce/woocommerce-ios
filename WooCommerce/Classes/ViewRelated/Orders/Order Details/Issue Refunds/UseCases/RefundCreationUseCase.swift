@@ -22,9 +22,9 @@ struct RefundCreationUseCase {
     ///
     let items: [RefundableOrderItem]
 
-    /// Shipping line to be refunded, `nil` if shipping will not be refunded.
+    /// Shipping lines to be refunded, `empty` if shipping will not be refunded.
     ///
-    let shippingLine: ShippingLine?
+    let shippingLines: [ShippingLine]
 
     /// Fees to be refunded, `empty` if fees will not be refunded.
     ///
@@ -60,8 +60,8 @@ struct RefundCreationUseCase {
                             total: calculateTotal(of: refundable))
         }
 
-        if let shippingLine {
-            refundItems.append(createShippingItem(from: shippingLine))
+        if shippingLines.isNotEmpty {
+            refundItems += createShippingItems(from: shippingLines)
         }
 
         if fees.isNotEmpty {
@@ -71,13 +71,15 @@ struct RefundCreationUseCase {
         return refundItems
     }
 
-    /// Returns an `OrderItemRefund` based on the provided `ShippingLine`
+    /// Returns an `[OrderItemRefund]` based on the provided `[ShippingLine]`
     ///
-    private func createShippingItem(from shippingLine: ShippingLine) -> OrderItemRefund {
-        OrderItemRefund(itemID: shippingLine.shippingID,
-                        quantity: .zero,
-                        taxes: createTaxes(from: shippingLine),
-                        total: shippingLine.total)
+    private func createShippingItems(from shippingLines: [ShippingLine]) -> [OrderItemRefund] {
+        shippingLines.map { shippingLine -> OrderItemRefund in
+            OrderItemRefund(itemID: shippingLine.shippingID,
+                            quantity: .zero,
+                            taxes: createTaxes(from: shippingLine),
+                            total: shippingLine.total)
+        }
     }
 
     /// Returns an `[OrderItemRefund]` based on the provided `[OrderFeeLine]`

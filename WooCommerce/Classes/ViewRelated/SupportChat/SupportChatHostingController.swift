@@ -17,7 +17,6 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         super.init(rootView: view)
 
         self.hidesBottomBarWhenPushed = true
-        self.title = Localization.title
 
         viewModel.onStartJetpackSetup = { [weak self] in
             self?.startJetpackSetup()
@@ -120,11 +119,6 @@ extension SupportChatHostingController {
 //
 private extension SupportChatHostingController {
     enum Localization {
-        static let title = NSLocalizedString(
-            "supportChatHostingController.title",
-            value: "Chat with Support",
-            comment: "Navigation title for the AI support chat screen"
-        )
         static let updateWooCommerce = NSLocalizedString(
             "supportChatHostingController.updateWooCommerce",
             value: "Update WooCommerce",

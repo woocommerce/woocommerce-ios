@@ -10,6 +10,7 @@ import struct Yosemite.OrderCouponLine
 import struct Yosemite.POSCustomAmount
 import struct Yosemite.SystemPlugin
 import enum Yosemite.OrderAction
+import class Yosemite.POSOrderService
 import protocol Yosemite.PluginsServiceProtocol
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
@@ -194,6 +195,44 @@ struct PointOfSaleOrderControllerTests {
             .idle,
             .syncing,
             .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
+        ])
+    }
+
+    @Test func syncOrder_when_order_does_not_match_cart_then_sets_orderDoesNotMatchCart_error() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
+
+        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
+        var orderStateAppendTask: Task<Void, Never>? = nil
+        await confirmation(expectedCount: 2) { confirmation in
+            @Sendable func observeOrderState() {
+                withObservationTracking {
+                    _ = sut.orderState
+                } onChange: {
+                    orderStateAppendTask = Task { @MainActor in
+                        orderStates.append(sut.orderState)
+                    }
+                    confirmation()
+                    observeOrderState()
+                }
+            }
+            observeOrderState()
+
+            // When
+            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        }
+
+        await orderStateAppendTask?.value
+
+        // Then
+        #expect(orderStates == [
+            .idle,
+            .syncing,
+            .error(.orderDoesNotMatchCart, {})
         ])
     }
 

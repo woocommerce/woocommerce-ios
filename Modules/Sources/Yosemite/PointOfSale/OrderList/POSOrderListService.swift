@@ -32,8 +32,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            // Convert Order objects to POSOrder objects
-            let posOrders = try pagedOrders.items.map { try mapper.map(order: $0) }
+            let posOrders = mapOrdersSkippingFailures(pagedOrders.items)
 
             return .init(items: posOrders,
                         hasMorePages: pagedOrders.hasMorePages,
@@ -58,8 +57,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            // Convert Order objects to POSOrder objects
-            let posOrders = try pagedOrders.items.map { try mapper.map(order: $0) }
+            let posOrders = mapOrdersSkippingFailures(pagedOrders.items)
 
             return .init(items: posOrders,
                         hasMorePages: pagedOrders.hasMorePages,
@@ -74,11 +72,33 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
     public func loadOrder(orderID: Int64) async throws -> POSOrder {
         do {
             let order = try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
-            return try mapper.map(order: order)
+            do {
+                return try mapper.map(order: order)
+            } catch {
+                logMappingFailure(order: order, error: error)
+                throw error
+            }
         } catch AFError.explicitlyCancelled {
             throw POSOrderListServiceError.requestCancelled
         } catch {
             throw POSOrderListServiceError.requestFailed
         }
+    }
+}
+
+private extension POSOrderListService {
+    func mapOrdersSkippingFailures(_ orders: [Order]) -> [POSOrder] {
+        orders.compactMap { order in
+            do {
+                return try mapper.map(order: order)
+            } catch {
+                logMappingFailure(order: order, error: error)
+                return nil
+            }
+        }
+    }
+
+    func logMappingFailure(order: Order, error: Error) {
+        DDLogError("⛔️ POSOrderListService: Failed to map POS order for siteID \(siteID), orderID \(order.orderID): \(error)")
     }
 }

@@ -12,6 +12,7 @@ enum PointOfSaleOrderState: Equatable {
         case other(String)
         case invalidCoupon(String)
         case missingProducts([MissingProductInfo])
+        case orderDoesNotMatchCart
 
         struct MissingProductInfo: Equatable {
             let productID: Int64
@@ -27,6 +28,8 @@ enum PointOfSaleOrderState: Equatable {
                 return lhsCoupon == rhsCoupon
             case (.missingProducts(let lhsProducts), .missingProducts(let rhsProducts)):
                 return lhsProducts == rhsProducts
+            case (.orderDoesNotMatchCart, .orderDoesNotMatchCart):
+                return true
             default:
                 return false
             }

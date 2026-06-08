@@ -22,14 +22,13 @@ struct POSCheckoutPaymentButtonsRow: View {
                 button(for: method, isPrimary: index == 0)
             }
         }
-        .padding(.horizontal, POSPadding.medium)
-        // Match the cart button's bottom inset on phone so the row clears the home
-        // indicator. iPad uses safeAreaPadding so the row hugs the side panel's bottom.
         .if(horizontalSizeClass == .compact) {
-            $0.padding(.bottom, POSPadding.xxLarge)
+            $0.posPhoneBottomButtonPadding()
         }
         .if(horizontalSizeClass != .compact) {
-            $0.safeAreaPadding(.bottom, POSPadding.medium)
+            $0
+                .padding(.horizontal, POSPadding.medium)
+                .safeAreaPadding(.bottom, POSPadding.medium)
         }
     }
 

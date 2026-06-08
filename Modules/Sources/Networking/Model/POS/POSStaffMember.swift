@@ -29,16 +29,23 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     }
 
     public struct PINDetails: Codable, Equatable, Sendable {
-        public let algo: String
+        public let algorithm: String
         public let iterations: Int
-        public let salt: String  // base64
-        public let hash: String  // base64
+        public let salt: String
+        public let hash: String
 
-        public init(algo: String, iterations: Int, salt: String, hash: String) {
-            self.algo = algo
+        public init(algorithm: String, iterations: Int, salt: String, hash: String) {
+            self.algorithm = algorithm
             self.iterations = iterations
             self.salt = salt
             self.hash = hash
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case algorithm = "algo"
+            case iterations
+            case salt
+            case hash
         }
     }
 

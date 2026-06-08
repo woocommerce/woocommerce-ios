@@ -48,7 +48,7 @@ struct POSStaffRemoteTests {
         #expect(manager.capabilities["pos_manage_staff"] == true)
 
         let pin = try #require(manager.pin)
-        #expect(pin.algo == "pbkdf2-sha256")
+        #expect(pin.algorithm == "pbkdf2-sha256")
         #expect(pin.iterations == 100000)
         #expect(pin.salt == "RkFLRS1URVNULVNBTFQtbm90LWEtcmVhbC1waW4tbWFuYWdlcg==")
         #expect(pin.hash == "RkFLRS1URVNULUhBU0gtbm90LWEtcmVhbC1waW4tbWFuYWdlcg==")

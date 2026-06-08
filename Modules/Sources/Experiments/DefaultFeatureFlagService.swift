@@ -116,7 +116,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
-            return false
+            return true
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:

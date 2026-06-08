@@ -24,9 +24,6 @@ struct CustomAmountRowView: View {
 
     var body: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
-            // No corner radius here: the icon sits flush at the card's leading edge, and the card's
-            // own `posItemCardBorderStyles()` clip rounds the outer corners. This matches the square
-            // product image in `ItemRowView`, so product and custom-amount cart rows look consistent.
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: dimension, height: dimension)
 

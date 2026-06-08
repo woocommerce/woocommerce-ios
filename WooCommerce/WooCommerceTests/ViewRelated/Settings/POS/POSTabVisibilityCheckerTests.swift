@@ -119,8 +119,30 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test func is_visible_for_expansion_country_when_expansion_flag_enabled_even_with_empty_cache() async throws {
-        // Given - ES (an expansion country) with an empty expansion-eligibility cache,
+        // Given - NL (an expansion country) with an empty expansion-eligibility cache,
         // and the country-expansion remote feature flag enabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .nl, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
+        let expansionEligibilityService = MockCardPresentPaymentsCountryExpansionEligibilityService()
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              expansionEligibilityService: expansionEligibilityService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then - checkVisibility refreshes the expansion eligibility cache before validating,
+        // so NL is reported as visible without requiring a prior pre-warm.
+        #expect(result == true)
+        #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+    }
+
+    @Test func is_invisible_for_spain_when_expansion_flag_enabled_even_with_empty_cache() async throws {
+        // Given - ES is a removed fiscalization country, even when the expansion flag is enabled.
         let featureFlagService = MockFeatureFlagService()
         setupCountry(country: .es, currency: .EUR)
         accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
@@ -135,10 +157,8 @@ struct POSTabVisibilityCheckerTests {
         // When
         let result = await checker.checkVisibility()
 
-        // Then - checkVisibility refreshes the expansion eligibility cache before validating,
-        // so ES is reported as visible without requiring a prior pre-warm.
-        #expect(result == true)
-        #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+        // Then
+        #expect(result == false)
     }
 
     @Test func is_visible_for_australia_when_au_feature_flag_enabled_even_with_empty_cache() async throws {
@@ -181,9 +201,9 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test func is_invisible_for_expansion_country_when_expansion_flag_disabled() async throws {
-        // Given - ES (an expansion country) with the country-expansion remote feature flag disabled.
+        // Given - NL (an expansion country) with the country-expansion remote feature flag disabled.
         let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .es, currency: .EUR)
+        setupCountry(country: .nl, currency: .EUR)
         accountWhitelistedInBackend(true, expansionFlagsEnabled: false)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .pad,
@@ -405,6 +425,7 @@ private extension POSTabVisibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+        case nl = "NL"
         case au = "AU"
 
         var countryCode: CountryCode {
@@ -419,6 +440,8 @@ private extension POSTabVisibilityCheckerTests {
                 return .GB
             case .es:
                 return .ES
+            case .nl:
+                return .NL
             case .au:
                 return .AU
             }

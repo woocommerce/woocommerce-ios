@@ -37,14 +37,14 @@ public final class CardPresentPaymentsCountryExpansionEligibilityRefresher: @unc
     }
 
     /// Returns the remote feature flag that gates IPP for the given country, if any.
-    /// Returns `nil` for the existing supported countries (US/PR/CA/GB), which need no flag.
+    /// Returns `nil` for existing supported countries that need no flag, and countries without active IPP support.
     public static func flag(for country: CountryCode) -> RemoteFeatureFlag? {
         switch country {
         case .US, .PR, .CA, .GB:
             return nil
-        case .FR, .DE, .IE, .NL, .SG, .NZ:
+        case .IE, .NL, .SG, .NZ:
             return .inPersonPaymentsCountryExpansion
-        case .AT, .BE, .FI, .IT, .LU, .PT, .ES:
+        case .FI, .LU:
             return .inPersonPaymentsCountryExpansionEUExtended
         case .AU:
             return .inPersonPaymentsAustraliaWooPayments

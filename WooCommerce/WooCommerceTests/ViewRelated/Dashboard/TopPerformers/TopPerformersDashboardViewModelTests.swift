@@ -147,6 +147,27 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["type"], "top_performers")
     }
+
+    @MainActor
+    func test_shouldShowAnalyticsImportUpdateModeInfoButton_when_setting_has_not_loaded_then_returns_false() {
+        // Given
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowAnalyticsImportUpdateModeInfoButton)
+    }
+
+    @MainActor
+    func test_shouldShowAnalyticsImportUpdateModeInfoButton_when_setting_has_loaded_then_returns_true() {
+        // Given
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // When
+        viewModel.setAnalyticsImportUpdateMode(.immediate)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowAnalyticsImportUpdateModeInfoButton)
+    }
 }
 
 private extension TopPerformersDashboardViewModelTests {

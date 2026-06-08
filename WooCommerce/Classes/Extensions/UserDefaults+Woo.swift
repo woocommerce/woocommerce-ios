@@ -80,6 +80,9 @@ extension UserDefaults {
         /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
         case hideWPComConnectionOnDashboard
 
+        /// Whether the dashboard analytics update mode explanation has been opened.
+        case hasOpenedDashboardAnalyticsUpdateModeInfo
+
         /// Pending flow for magic link: notification setup or Jetpack setup
         case pendingMagicLinkFlow
 

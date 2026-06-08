@@ -1270,6 +1270,36 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncFailed?.properties?["error_type"] as? String == "network_error")
     }
 
+    @Test func performFullSyncIfApplicable_when_catalog_file_download_fails_tracks_file_failure_details() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            usesCatalogAPI: true
+        )
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
+            statusCode: 403,
+            contentType: "text/html; charset=UTF-8"
+        ))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed != nil)
+        #expect(syncFailed?.properties?["sync_strategy"] as? String == "local_catalog_file")
+        #expect(syncFailed?.properties?["error_type"] as? String == "catalog_file_download_failed")
+        #expect(syncFailed?.properties?["failure_stage"] as? String == "catalog_file_download")
+        #expect(syncFailed?.properties?["http_status_code"] as? String == "403")
+        #expect(syncFailed?.properties?["response_content_type"] as? String == "text_html")
+    }
+
     @Test func performFullSyncIfApplicable_tracks_database_error_type() async throws {
         // Given
         let mockAnalytics = MockAnalytics()

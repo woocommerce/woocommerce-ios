@@ -56,6 +56,10 @@ final class StorePerformanceViewModel: ObservableObject {
     /// merchant initiates a new selection.
     @Published var orderTypeUpdateError: Error?
 
+    /// Currently applied analytics import update mode. `nil` until the value is loaded or seeded
+    /// from cache, so the scheduled-update info affordance only appears after a known `yes` value.
+    @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
+
     /// Tracks whether the merchant has manually picked an order type during this session.
     /// Prevents a late-arriving initial `loadOrderType` from clobbering a user selection.
     private var hasUserSelectedOrderType = false
@@ -287,6 +291,10 @@ final class StorePerformanceViewModel: ObservableObject {
         analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
     }
 
+    func trackAnalyticsImportUpdateModeInfoTapped() {
+        trackInteraction()
+    }
+
     /// Switches the displayed revenue metric and persists the choice for next launch. No-op if the
     /// metric matches the current selection. Switching invalidates the highlighted chart point so the
     /// merchant sees the totals for the new metric in the header instead of a stale data point.
@@ -352,6 +360,10 @@ final class StorePerformanceViewModel: ObservableObject {
             analytics.track(event: .Dashboard.performanceCardOrderDateTypeUpdateFailed(error: error))
         }
     }
+
+    func setAnalyticsImportUpdateMode(_ mode: AnalyticsImportUpdateMode) {
+        analyticsImportUpdateMode = mode
+    }
 }
 
 // MARK: - Data for `StorePerformanceView`
@@ -405,6 +417,14 @@ extension StorePerformanceViewModel {
             return false
         }
         return chartViewModel.hasRevenue
+    }
+
+    var shouldShowScheduledAnalyticsImportInfo: Bool {
+        analyticsImportUpdateMode == .scheduled
+    }
+
+    var shouldShowAnalyticsImportUpdateModeInfoButton: Bool {
+        analyticsImportUpdateMode != nil
     }
 }
 

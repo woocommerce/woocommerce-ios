@@ -189,11 +189,10 @@ struct AddCustomAmountView: View {
         onDismiss()
     }
 
-    /// Scrolls the focused field into view after the keyboard has finished animating in. The scroll is
-    /// deferred so it runs against the reduced (keyboard-avoided) visible area; scrolling immediately
-    /// would re-center the field in the full height, where the keyboard then covers it again.
+    /// Scrolls the focused field into view when it gains focus, deferred one runloop tick so the
+    /// focus and layout changes are applied before the scroll runs.
     private func scrollToField(_ field: Field, using proxy: ScrollViewProxy) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.keyboardSettleDelay) {
+        DispatchQueue.main.async {
             withAnimation {
                 proxy.scrollTo(field, anchor: .center)
             }
@@ -206,12 +205,6 @@ private extension AddCustomAmountView {
     enum Field {
         case amount
         case name
-    }
-
-    enum Constants {
-        /// Roughly matches the system keyboard show animation, so the scroll runs after the
-        /// keyboard-avoided visible area has settled.
-        static let keyboardSettleDelay: TimeInterval = 0.35
     }
 
     enum Localization {

@@ -13,20 +13,20 @@ struct QRLoginErrorView: View {
             Spacer(minLength: Constants.standardPadding)
 
             VStack(spacing: Constants.contentSpacing) {
-                Image(systemName: errorIconName)
+                Image(systemName: errorContent.iconName)
                     .resizable()
                     .scaledToFit()
                     .frame(width: Constants.iconSize, height: Constants.iconSize)
                     .foregroundColor(Color(uiColor: .systemRed))
                     .accessibilityHidden(true)
 
-                Text(title)
+                Text(errorContent.title)
                     .font(.title)
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                Text(bodyText)
+                Text(errorContent.body)
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -48,58 +48,77 @@ struct QRLoginErrorView: View {
     }
 }
 
-// MARK: - Copy
+// MARK: - Content
 
 private extension QRLoginErrorView {
 
-    var errorIconName: String {
-        switch error.kind {
-        case .invalidPayload, .installQR, .scannerFailure: return "qrcode.viewfinder"
-        case .network: return "wifi.slash"
-        case .rateLimited: return "clock.badge.exclamationmark"
-        default: return "exclamationmark.triangle"
+    struct Content {
+        let iconName: String
+        let title: String
+        let body: String
+
+        init(iconName: String = "exclamationmark.triangle", title: String, body: String) {
+            self.iconName = iconName
+            self.title = title
+            self.body = body
         }
     }
 
-    var title: String {
+    var errorContent: Content {
         switch error.kind {
-        case .invalidPayload: return Localization.invalidPayloadTitle
-        case .installQR: return Localization.installQRTitle
-        case .scannerFailure: return Localization.scannerFailureTitle
-        case .codeExpired: return Localization.codeExpiredTitle
-        case .storeUnsupported: return Localization.storeUnsupportedTitle
-        case .rateLimited: return Localization.rateLimitedTitle
-        case .network: return Localization.networkTitle
-        case .unexpected: return Localization.unexpectedTitle
-        case .codeAlreadyUsed: return Localization.codeAlreadyUsedTitle
-        case .signInDenied: return Localization.signInDeniedTitle
-        case .signInTimedOut: return Localization.signInTimedOutTitle
-        case .signInInterrupted: return Localization.signInInterruptedTitle
-        case .alreadySignedInElsewhere: return Localization.alreadySignedInElsewhereTitle
-        case .siteAuthFailure: return Localization.siteAuthFailureTitle
-        case .notAWooSite: return Localization.notAWooSiteTitle
-        case .userNotEligible: return Localization.userNotEligibleTitle
-        }
-    }
-
-    var bodyText: String {
-        switch error.kind {
-        case .invalidPayload: return Localization.invalidPayloadBody
-        case .installQR: return Localization.installQRBody
-        case .scannerFailure: return Localization.scannerFailureBody
-        case .codeExpired: return Localization.codeExpiredBody
-        case .storeUnsupported: return Localization.storeUnsupportedBody
-        case .rateLimited: return Localization.rateLimitedBody
-        case .network: return Localization.networkBody
-        case .unexpected: return Localization.unexpectedBody
-        case .codeAlreadyUsed: return Localization.codeAlreadyUsedBody
-        case .signInDenied: return Localization.signInDeniedBody
-        case .signInTimedOut: return Localization.signInTimedOutBody
-        case .signInInterrupted: return Localization.signInInterruptedBody
-        case .alreadySignedInElsewhere: return Localization.alreadySignedInElsewhereBody
-        case .siteAuthFailure: return Localization.siteAuthFailureBody
-        case .notAWooSite: return Localization.notAWooSiteBody
-        case .userNotEligible: return Localization.userNotEligibleBody
+        case .invalidPayload:
+            Content(iconName: "qrcode.viewfinder",
+                    title: Localization.invalidPayloadTitle,
+                    body: Localization.invalidPayloadBody)
+        case .installQR:
+            Content(iconName: "qrcode.viewfinder",
+                    title: Localization.installQRTitle,
+                    body: Localization.installQRBody)
+        case .scannerFailure:
+            Content(iconName: "qrcode.viewfinder",
+                    title: Localization.scannerFailureTitle,
+                    body: Localization.scannerFailureBody)
+        case .network:
+            Content(iconName: "wifi.slash",
+                    title: Localization.networkTitle,
+                    body: Localization.networkBody)
+        case .rateLimited:
+            Content(iconName: "clock.badge.exclamationmark",
+                    title: Localization.rateLimitedTitle,
+                    body: Localization.rateLimitedBody)
+        case .codeExpired:
+            Content(title: Localization.codeExpiredTitle,
+                    body: Localization.codeExpiredBody)
+        case .storeUnsupported:
+            Content(title: Localization.storeUnsupportedTitle,
+                    body: Localization.storeUnsupportedBody)
+        case .unexpected:
+            Content(title: Localization.unexpectedTitle,
+                    body: Localization.unexpectedBody)
+        case .codeAlreadyUsed:
+            Content(title: Localization.codeAlreadyUsedTitle,
+                    body: Localization.codeAlreadyUsedBody)
+        case .signInDenied:
+            Content(title: Localization.signInDeniedTitle,
+                    body: Localization.signInDeniedBody)
+        case .signInTimedOut:
+            Content(title: Localization.signInTimedOutTitle,
+                    body: Localization.signInTimedOutBody)
+        case .signInInterrupted:
+            Content(title: Localization.signInInterruptedTitle,
+                    body: Localization.signInInterruptedBody)
+        case .alreadySignedInElsewhere:
+            Content(title: Localization.alreadySignedInElsewhereTitle,
+                    body: Localization.alreadySignedInElsewhereBody)
+        case .siteAuthFailure:
+            Content(title: Localization.siteAuthFailureTitle,
+                    body: Localization.siteAuthFailureBody)
+        case .notAWooSite:
+            Content(title: Localization.notAWooSiteTitle,
+                    body: Localization.notAWooSiteBody)
+        case .userNotEligible:
+            Content(title: Localization.userNotEligibleTitle,
+                    body: Localization.userNotEligibleBody)
         }
     }
 

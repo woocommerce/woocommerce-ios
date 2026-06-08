@@ -59,6 +59,27 @@ struct POSCustomAmountTests {
         #expect(sut.matches(order: order) == false)
     }
 
+    @Test func cart_with_custom_amount_matches_order_when_amount_uses_store_decimal_separator() async throws {
+        // Given the cart stores the amount with a comma decimal separator (store locale),
+        // while the synced order's fee total comes back canonical with a period
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "5,00", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
+    @Test func cart_with_custom_amount_matches_order_when_amount_omits_fraction_digits() async throws {
+        // Given the cart stores an unpadded amount, while the synced order's fee total is padded
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "5", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
     @Test func cart_with_custom_amount_does_not_match_order_with_different_name() async throws {
         // Given
         let fee = OrderFeeLine.fake().copy(name: "Service fee", total: "5.00")

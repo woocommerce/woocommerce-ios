@@ -88,6 +88,19 @@ extension [POSCustomAmount] {
 
     private struct CustomAmountSummary: Hashable {
         let name: String
-        let amount: String
+        let amount: Decimal
+
+        init(name: String, amount: String) {
+            self.name = name
+            // Compare amounts numerically. The cart stores the merchant's input in the store's
+            // decimal separator with no fraction padding (e.g. "15" or "15,00"), while the synced
+            // order's fee total comes back canonical ("15.00"); a raw string compare treats those
+            // as different. Custom-amount values carry a single separator and no grouping, so
+            // mapping any comma to a period yields a locale-independent value to parse.
+            let normalized = amount.replacingOccurrences(of: ",", with: ".")
+            self.amount = Decimal(string: normalized, locale: Self.posixLocale) ?? .zero
+        }
+
+        private static let posixLocale = Locale(identifier: "en_US_POSIX")
     }
 }

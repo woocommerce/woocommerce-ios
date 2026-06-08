@@ -59,24 +59,39 @@ struct AddCustomAmountView: View {
                 )
             )
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
-                    amountSection
-                        .padding(.top, POSSpacing.xLarge)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                        amountSection
+                            .id(Field.amount)
+                            .padding(.top, POSSpacing.xLarge)
 
-                    Divider()
+                        Divider()
 
-                    taxesRow
+                        taxesRow
 
-                    Divider()
+                        Divider()
 
-                    nameSection
+                        nameSection
+                            .id(Field.name)
 
-                    Spacer(minLength: POSSpacing.xxLarge)
+                        Spacer(minLength: POSSpacing.xxLarge)
+                    }
+                    .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .scrollDismissesKeyboard(.interactively)
+                // The submit button is pinned below the scroll view, so a focused field (especially the
+                // lower Name field) can end up hidden behind the keyboard. Scroll the focused field into
+                // the keyboard-avoided area once the keyboard has settled.
+                .onChange(of: isAmountFocused) { _, focused in
+                    guard focused else { return }
+                    scrollToField(.amount, using: proxy)
+                }
+                .onChange(of: isNameFocused) { _, focused in
+                    guard focused else { return }
+                    scrollToField(.name, using: proxy)
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
 
             submitButton
                 .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
@@ -173,9 +188,32 @@ struct AddCustomAmountView: View {
         onSubmit(customAmount)
         onDismiss()
     }
+
+    /// Scrolls the focused field into view after the keyboard has finished animating in. The scroll is
+    /// deferred so it runs against the reduced (keyboard-avoided) visible area; scrolling immediately
+    /// would re-center the field in the full height, where the keyboard then covers it again.
+    private func scrollToField(_ field: Field, using proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.keyboardSettleDelay) {
+            withAnimation {
+                proxy.scrollTo(field, anchor: .center)
+            }
+        }
+    }
 }
 
 private extension AddCustomAmountView {
+    /// Scroll-target identifiers for the form's focusable fields.
+    enum Field {
+        case amount
+        case name
+    }
+
+    enum Constants {
+        /// Roughly matches the system keyboard show animation, so the scroll runs after the
+        /// keyboard-avoided visible area has settled.
+        static let keyboardSettleDelay: TimeInterval = 0.35
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.addCustomAmount.title",

@@ -127,7 +127,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                                            reason: reason,
                                            automaticallyRefundsPayment: refundMapping.gatewaySupportsAutomaticRefunds(context: context),
                                            items: components.items,
-                                           shippingLine: nil,
+                                           shippingLines: [],
                                            fees: components.fees,
                                            currencyFormatter: currencyFormatter)
             .createRefund()

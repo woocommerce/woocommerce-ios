@@ -160,6 +160,14 @@ struct ItemListView: View {
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
+        // The add-custom-amount form is pushed onto this pane's own NavigationStack. On iPad the pane
+        // doesn't dismiss when checkout starts — the dashboard just slides it off-screen — so a form
+        // left pushed would still be there when the merchant returns to the product list. Pop it as the
+        // order leaves the building stage so returning always lands on the product list.
+        .onChange(of: posModel.orderStage) { _, stage in
+            guard stage != .building else { return }
+            isAddingCustomAmount = false
+        }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {

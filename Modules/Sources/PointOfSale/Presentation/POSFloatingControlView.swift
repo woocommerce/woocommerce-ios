@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 import struct WooFoundation.WooAnalyticsEvent
 
 struct POSFloatingControlView: View {
@@ -107,7 +106,6 @@ private extension POSFloatingControlView {
 
     private var isPhoneLayout: Bool {
         horizontalSizeClass == .compact &&
-        UIDevice.current.userInterfaceIdiom == .phone &&
         featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }

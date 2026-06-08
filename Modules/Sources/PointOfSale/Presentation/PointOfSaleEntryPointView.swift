@@ -262,7 +262,6 @@ public struct PointOfSaleEntryPointView: View {
 
     private var isPhoneLayout: Bool {
         horizontalSizeClass == .compact &&
-        UIDevice.current.userInterfaceIdiom == .phone &&
         services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }

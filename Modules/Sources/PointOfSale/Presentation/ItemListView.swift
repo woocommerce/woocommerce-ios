@@ -111,6 +111,17 @@ struct ItemListView: View {
     @State private var isAddingCustomAmount: Bool = false
 
     var body: some View {
+        navigationContainer
+            // The phone cart button and the iPad floating control are suppressed while the
+            // add-custom-amount form is pushed. Emit that request from this always-present view,
+            // keyed on the push flag, so it reverts the instant the form is popped: a preference
+            // set inside the pushed navigationDestination can stay stuck at its hidden value after
+            // dismissal, leaving the phone cart button hidden until an unrelated re-render.
+            .posHidesFloatingControl(isAddingCustomAmount)
+    }
+
+    @ViewBuilder
+    private var navigationContainer: some View {
         if #available(iOS 18.0, *) {
             NavigationStack {
                 content
@@ -368,9 +379,6 @@ struct ItemListView: View {
         // (matches how `ChildItemList` handles the variations push).
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
-        // Suppress the dashboard's floating control overlay so it doesn't sit on top
-        // of the form's submit button while the form is pushed.
-        .posHidesFloatingControl()
     }
 }
 

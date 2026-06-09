@@ -102,6 +102,198 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func syncOrder_adds_cart_custom_amounts_to_new_order() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [
+                POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true),
+                POSCustomAmount(name: "Delivery", amount: "5.50", isTaxable: false)
+            ]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let createdOrderFees = try #require(mockOrdersRemote.spyCreatePOSOrder?.fees)
+        #expect(createdOrderFees.count == 2)
+
+        let serviceFee = try #require(createdOrderFees.first(where: { $0.name == "Service fee" }))
+        #expect(serviceFee.total == "10.00")
+        #expect(serviceFee.taxStatus == .taxable)
+
+        let delivery = try #require(createdOrderFees.first(where: { $0.name == "Delivery" }))
+        #expect(delivery.total == "5.50")
+        #expect(delivery.taxStatus == .none)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_fees_dont_match_cart_then_throws() async throws {
+        // Given - cart has one fee, server returns the same order shape but with no fees
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)]
+        )
+        let orderWithMatchingItemsButNoFees = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                fees: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoFees)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_more_fees_than_cart_then_succeeds() async throws {
+        // Given - cart has one fee, server echoes back that fee plus a remote-added fee
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)]
+        )
+        let orderWithExtraFee = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                fees: [
+                    OrderFeeLine.fake().copy(name: "Service fee", total: "10.00"),
+                    OrderFeeLine.fake().copy(name: "Surprise fee", total: "2.00")
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraFee)
+
+        // When
+        let syncedOrder = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        #expect(syncedOrder.fees.count == 2)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_lower_product_quantity_than_cart_then_throws() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 2)])
+        let orderWithLowerProductQuantity = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithLowerProductQuantity)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_extra_product_not_in_cart_then_throws() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let orderWithExtraProduct = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1),
+                    OrderItem.fake().copy(productID: 200, quantity: 1)
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraProduct)
+
+        let comparison = cart.compareWithOrder(orderWithExtraProduct)
+        #expect(comparison.extraItemsCount == 1)
+        #expect(comparison.hasDiscrepancies == true)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_omits_cart_coupon_then_throws() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
+        )
+        let orderWithMatchingItemsButNoCoupons = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                coupons: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoCoupons)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_extra_product_and_omits_cart_coupon_then_throws() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
+        )
+        let orderWithExtraProductButNoCoupons = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1),
+                    OrderItem.fake().copy(productID: 200, quantity: 1)
+                ],
+                coupons: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraProductButNoCoupons)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_includes_feeLines_in_request_fields_when_cart_has_custom_amounts() async throws {
+        // Given
+        let cart = POSCart(
+            customAmounts: [POSCustomAmount(name: "Tip", amount: "3.00", isTaxable: false)]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
+    func syncOrder_always_includes_feeLines_in_request_fields_even_for_empty_cart() async throws {
+        // Given
+
+        // When
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD)
+
+        // Then
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
     func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
         // Given
         let cart = POSCart(items: [
@@ -525,3 +717,10 @@ private func makePOSCartItem(
             quantity: quantity
         )
     }
+
+private func isOrderMismatchError(_ error: Error) -> Bool {
+    if case .orderDoesNotMatchCart = error as? POSOrderService.POSOrderServiceError {
+        return true
+    }
+    return false
+}

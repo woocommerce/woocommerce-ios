@@ -12,5 +12,4 @@ extension ProductAddOnOption {
     @NSManaged public var imageID: String?
     @NSManaged public var priceType: String?
     @NSManaged public var addOn: ProductAddOn?
-
 }

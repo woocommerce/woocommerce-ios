@@ -47,20 +47,19 @@ public final class WordPressOrgNetwork: Network {
 
             self.alamofireSession.request(request)
                 .validate()
-                .responseData(completionHandler: { (response) in
+                .responseData(completionHandler: { response in
                 switch response.result {
                 case .success(let responseObject):
                     continuation.resume(returning: responseObject)
                 case .failure(let error):
                     DDLogWarn("⚠️ Error requesting \(request.urlRequest?.url?.absoluteString ?? ""): \(error.localizedDescription)")
                     do {
-                        try self.validateResponse(response.data)
+                        try Self.validateResponse(response.data)
                         continuation.resume(throwing: error)
                     } catch {
                         continuation.resume(throwing: error)
                     }
                 }
-
             })
         }
     }
@@ -80,7 +79,7 @@ public final class WordPressOrgNetwork: Network {
             .validate()
             .responseData { response in
                 do {
-                    try self.validateResponse(response.data)
+                    try Self.validateResponse(response.data)
                     completion(response.value, response.networkingError)
                 } catch {
                     completion(nil, error)
@@ -103,7 +102,7 @@ public final class WordPressOrgNetwork: Network {
             .validate()
             .responseData { response in
                 do {
-                    try self.validateResponse(response.data)
+                    try Self.validateResponse(response.data)
                     completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
@@ -116,7 +115,7 @@ public final class WordPressOrgNetwork: Network {
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response
         do {
-            try validateResponse(response.data)
+            try Self.validateResponse(response.data)
             switch response.result {
                 case .success(let data):
                     return (data, response.response?.headers.dictionary)
@@ -142,7 +141,7 @@ public final class WordPressOrgNetwork: Network {
             guard let self else { return }
             self.alamofireSession.request(request).validate().responseData { response in
                 do {
-                    try self.validateResponse(response.data)
+                    try Self.validateResponse(response.data)
                     let result: Result<Data, Error> = response.result.mapError { $0 }
                     promise(Swift.Result.success(result))
                 } catch {
@@ -160,7 +159,7 @@ public final class WordPressOrgNetwork: Network {
             .upload(multipartFormData: multipartFormData, with: request)
             .responseData() { response in
                 do {
-                    try self.validateResponse(response.data)
+                    try Self.validateResponse(response.data)
                     completion(response.value, response.error)
                 } catch {
                     completion(nil, error)
@@ -191,7 +190,7 @@ private extension WordPressOrgNetwork {
 
     /// Validates whether the REST API request failed with an invalid cookie nonce.
     ///
-    func validateResponse(_ data: Data?) throws {
+    static func validateResponse(_ data: Data?) throws {
         if let data,
            let error = try? JSONDecoder().decode(ErrorResponse.self, from: data),
            error.code == "rest_cookie_invalid_nonce" {

@@ -72,6 +72,12 @@ public final class SupportFormViewModel: ObservableObject {
 
     private let attachments: [ZendeskAttachment]
 
+    /// Called when a ticket is successfully created.
+    private let onTicketCreated: (() -> Void)?
+
+    /// Called when ticket creation fails.
+    private let onTicketCreationFailed: ((Error) -> Void)?
+
     /// Defines when the submit button should be enabled or not.
     ///
     var submitButtonDisabled: Bool {
@@ -106,7 +112,13 @@ public final class SupportFormViewModel: ObservableObject {
          analyticsProvider: Analytics = ServiceLocator.analytics,
          applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
-         attachments: [ZendeskAttachment] = []) {
+         attachments: [ZendeskAttachment] = [],
+         preselectedArea: Area? = nil,
+         prefilledSubject: String? = nil,
+         prefilledSiteAddress: String? = nil,
+         prefilledDescription: String? = nil,
+         onTicketCreated: (() -> Void)? = nil,
+         onTicketCreationFailed: ((Error) -> Void)? = nil) {
         self.areas = areas
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
@@ -115,6 +127,19 @@ public final class SupportFormViewModel: ObservableObject {
         self.applicationLogsProvider = applicationLogsProvider
         self.defaultSite = defaultSite
         self.attachments = attachments
+        self.area = preselectedArea
+        self.onTicketCreated = onTicketCreated
+        self.onTicketCreationFailed = onTicketCreationFailed
+
+        if let prefilledSubject {
+            self.subject = prefilledSubject
+        }
+        if let prefilledSiteAddress {
+            self.siteAddress = prefilledSiteAddress
+        }
+        if let prefilledDescription {
+            self.description = prefilledDescription
+        }
     }
 
     /// Tracks when the support form is viewed.
@@ -124,7 +149,9 @@ public final class SupportFormViewModel: ObservableObject {
         requestZendeskIdentityIfNeeded()
 
         // Populates the site address field if there is any.
-        self.siteAddress = defaultSite?.url ?? ""
+        if siteAddress.isEmpty {
+            self.siteAddress = defaultSite?.url ?? ""
+        }
     }
 
     /// Selects an area.
@@ -160,9 +187,11 @@ public final class SupportFormViewModel: ObservableObject {
             switch result {
             case .success:
                 self.analyticsProvider.track(.supportNewRequestCreated)
+                self.onTicketCreated?()
                 self.shouldShowSuccessAlert = true
             case .failure(let error):
                 self.analyticsProvider.track(.supportNewRequestFailed)
+                self.onTicketCreationFailed?(error)
                 self.error = error
                 self.shouldShowErrorAlert = true
             }
@@ -244,11 +273,11 @@ private extension SupportFormViewModel {
 }
 
 // MARK: Constants
-private extension SupportFormViewModel {
+extension SupportFormViewModel {
 
     /// Default Woo Support Areas
     ///
-    static func wooSupportAreas() -> [Area] {
+    private static func wooSupportAreas() -> [Area] {
         let metadataProvider = SupportFormMetadataProvider()
         return [
             .init(title: Localization.mobileApp, datasource: MobileAppSupportDataSource(metadataProvider: metadataProvider)),

@@ -20,7 +20,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let coordinator = AppCoordinator(window: window)
         self.appCoordinator = coordinator
         coordinator.start()
-        StoreWidgetsFeatureFlagSynchronizer.sync()
 
         // Scene-scoped initializations that need UI
         setupNoticePresenter()
@@ -78,7 +77,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
         AppDelegate.shared.refreshCardPresentPaymentsOnboardingIfNeeded()
-        StoreWidgetsFeatureFlagSynchronizer.sync()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -164,6 +162,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case WooConstants.storeInfoWidgetKind:
             let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .todayStats, family: widgetFamily))
+        case WooConstants.storeTrendsWidgetKind:
+            let widgetFamily = userActivity.userInfo?[WidgetCenter.UserInfoKey.family] as? String
+            ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .trends, family: widgetFamily))
         case WooConstants.appLinkWidgetKind:
             ServiceLocator.analytics.track(event: .Widgets.widgetTapped(name: .appLink))
         default:

@@ -12,5 +12,4 @@ extension BookingResource {
     @NSManaged public var imageID: Int64
     @NSManaged public var imageURL: String?
     @NSManaged public var descriptionText: String?
-
 }

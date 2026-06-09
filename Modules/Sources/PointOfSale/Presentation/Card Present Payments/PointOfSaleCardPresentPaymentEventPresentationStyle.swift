@@ -143,7 +143,6 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                                 cancelUpdate?()
                                 dependencies.dismissReaderConnectionModal()
                             })))
-
             }
 
         case .updateFailed(let tryAgain, let cancelUpdate):

@@ -1,14 +1,20 @@
 import Foundation
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.Order
+import struct NetworkingCore.OrderFeeLine
 import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
 
 enum POSOrderItemMappingError: Error {
-    case invalidTaxValue(itemID: Int64, value: String)
-    case priceFormattingFailed(itemID: Int64, price: NSDecimalNumber, currency: String)
-    case totalFormattingFailed(itemID: Int64, total: String, currency: String)
+    case invalidTaxValue(orderID: Int64, itemID: Int64, value: String)
+    case priceFormattingFailed(orderID: Int64, itemID: Int64, price: NSDecimalNumber, currency: String)
+    case totalFormattingFailed(orderID: Int64, itemID: Int64, total: String, currency: String)
+}
+
+enum POSOrderMappingError: Error {
+    case totalFormattingFailed(orderID: Int64, total: String, currency: String)
+    case totalTaxFormattingFailed(orderID: Int64, totalTax: String, currency: String)
 }
 
 struct POSOrderMapper {
@@ -21,9 +27,17 @@ struct POSOrderMapper {
     func map(order: NetworkingCore.Order) throws -> POSOrder {
         let customerEmail = order.billingAddress?.email
 
-        let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
+        let posLineItems = try order.items.map { try map(orderItem: $0, orderID: order.orderID, currency: order.currency) }
+
+        let posCustomAmounts = order.fees
+            .filter { !$0.isDeleted }
+            .map { map(fee: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
+
+        let formattedTotal = try mapFormattedTotal(order: order)
+        let formattedTotalTax = try mapFormattedTotalTax(order: order)
+        let formattedPaymentTotal = mapFormattedPaymentTotal(order: order, formattedTotal: formattedTotal)
 
         let formattedDiscountTotal: String? = {
             guard let discountTotalValue = Double(order.discountTotal), discountTotalValue > 0 else {
@@ -50,16 +64,17 @@ struct POSOrderMapper {
             number: order.number,
             dateCreated: order.dateCreated,
             status: order.status,
-            formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
+            formattedTotal: formattedTotal,
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
             customerEmail: customerEmail,
             paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
+            customAmounts: posCustomAmounts,
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
-            formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
-            formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
+            formattedTotalTax: formattedTotalTax,
+            formattedPaymentTotal: formattedPaymentTotal,
             formattedNetAmount: formattedNetAmount,
             datePaid: order.datePaid,
             paymentStatusMetadata: order.paymentStatusMetadata,
@@ -67,15 +82,37 @@ struct POSOrderMapper {
         )
     }
 
-    private func map(orderItem: NetworkingCore.OrderItem, currency: String) throws -> POSOrderItem {
-        guard let totalTax = Decimal(string: orderItem.totalTax) else {
-            throw POSOrderItemMappingError.invalidTaxValue(itemID: orderItem.itemID, value: orderItem.totalTax)
+    private func mapFormattedTotal(order: NetworkingCore.Order) throws -> String {
+        guard let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) else {
+            throw POSOrderMappingError.totalFormattingFailed(orderID: order.orderID, total: order.total, currency: order.currency)
         }
-        guard let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
-            throw POSOrderItemMappingError.priceFormattingFailed(itemID: orderItem.itemID, price: orderItem.price, currency: currency)
+        return formattedTotal
+    }
+
+    private func mapFormattedTotalTax(order: NetworkingCore.Order) throws -> String {
+        guard let formattedTotalTax = currencyFormatter.formatAmount(order.totalTax, with: order.currency) else {
+            throw POSOrderMappingError.totalTaxFormattingFailed(orderID: order.orderID, totalTax: order.totalTax, currency: order.currency)
+        }
+        return formattedTotalTax
+    }
+
+    private func mapFormattedPaymentTotal(order: NetworkingCore.Order, formattedTotal: String) -> String {
+        guard order.datePaid != nil else {
+            return currencyFormatter.formatAmount("0.00", with: order.currency) ?? ""
+        }
+        return formattedTotal
+    }
+
+    private func map(orderItem: NetworkingCore.OrderItem, orderID: Int64, currency: String) throws -> POSOrderItem {
+        guard let totalTax = Decimal(string: orderItem.totalTax) else {
+            throw POSOrderItemMappingError.invalidTaxValue(orderID: orderID, itemID: orderItem.itemID, value: orderItem.totalTax)
+        }
+        guard orderItem.price != NSDecimalNumber.notANumber,
+              let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
+            throw POSOrderItemMappingError.priceFormattingFailed(orderID: orderID, itemID: orderItem.itemID, price: orderItem.price, currency: currency)
         }
         guard let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) else {
-            throw POSOrderItemMappingError.totalFormattingFailed(itemID: orderItem.itemID, total: orderItem.total, currency: currency)
+            throw POSOrderItemMappingError.totalFormattingFailed(orderID: orderID, itemID: orderItem.itemID, total: orderItem.total, currency: currency)
         }
 
         let total = Decimal(string: orderItem.total) ?? (orderItem.price as Decimal) * orderItem.quantity
@@ -94,11 +131,39 @@ struct POSOrderMapper {
         )
     }
 
+    private func map(fee: OrderFeeLine, currency: String) -> POSOrderCustomAmount {
+        // `fee.name` is `String?` for decoder safety; in practice the WC API always
+        // sets a name for live fee lines. Fall back to a localized placeholder so a
+        // nil/blank value (e.g. malformed payload, fees created via another client)
+        // doesn't render as a row with no left-side text.
+        let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedName = trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName
+        let total = Decimal(string: fee.total) ?? .zero
+        let totalTax = fee.taxes.reduce(Decimal.zero) { $0 + (Decimal(string: $1.total) ?? .zero) }
+        return POSOrderCustomAmount(
+            id: fee.feeID,
+            name: resolvedName,
+            formattedTotal: currencyFormatter.formatAmount(fee.total, with: currency) ?? "",
+            total: total,
+            totalTax: totalTax
+        )
+    }
+
     private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefund {
         return POSOrderRefund(
             refundID: orderRefund.refundID,
             formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
             reason: orderRefund.reason
+        )
+    }
+}
+
+private extension POSOrderMapper {
+    enum Localization {
+        static let defaultFeeName = NSLocalizedString(
+            "pos.orderMapper.defaultFeeName",
+            value: "Custom amount",
+            comment: "Fallback label shown for a fee on a Point of Sale order whose name is missing or blank."
         )
     }
 }

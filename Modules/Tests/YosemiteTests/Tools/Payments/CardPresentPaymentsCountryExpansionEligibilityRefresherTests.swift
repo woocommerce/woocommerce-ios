@@ -1,0 +1,194 @@
+import Foundation
+import Testing
+import enum WooFoundation.CountryCode
+@testable import Yosemite
+
+@Suite("CardPresentPaymentsCountryExpansionEligibilityRefresher Tests")
+struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
+    private let siteID: Int64 = 99
+
+    // MARK: - Country → flag mapping
+
+    @Test("flag(for:) returns nil for existing supported countries")
+    func test_flag_for_existing_supported_countries() {
+        for country in [CountryCode.US, .PR, .CA, .GB] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country) == nil,
+                    "Expected \(country) to require no expansion flag")
+        }
+    }
+
+    @Test("flag(for:) returns nil for fiscalization countries removed from support")
+    func test_flag_for_removed_fiscalization_countries() {
+        for country in [CountryCode.AT, .BE, .FR, .DE, .IT, .PT, .ES] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country) == nil,
+                    "Expected \(country) to require no expansion flag after support removal")
+        }
+    }
+
+    @Test("flag(for:) returns inPersonPaymentsCountryExpansion for the primary group")
+    func test_flag_for_primary_expansion_group() {
+        for country in [CountryCode.IE, .NL, .SG, .NZ] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
+                    == .inPersonPaymentsCountryExpansion,
+                    "Expected \(country) to map to inPersonPaymentsCountryExpansion")
+        }
+    }
+
+    @Test("flag(for:) returns inPersonPaymentsCountryExpansionEUExtended for the EU extended group")
+    func test_flag_for_eu_extended_expansion_group() {
+        for country in [CountryCode.FI, .LU] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
+                    == .inPersonPaymentsCountryExpansionEUExtended,
+                    "Expected \(country) to map to inPersonPaymentsCountryExpansionEUExtended")
+        }
+    }
+
+    @Test("flag(for:) returns inPersonPaymentsAustraliaWooPayments for AU")
+    func test_flag_for_australia() {
+        #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: .AU) == .inPersonPaymentsAustraliaWooPayments)
+    }
+
+    // MARK: - Refresh behaviour
+
+    @Test("refresh short-circuits to true for existing supported countries without dispatching a flag")
+    func test_refresh_short_circuits_for_existing_country() async {
+        // Given
+        let service = SpyEligibilityService()
+        let providerInvocations = FlagRecorder()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                await providerInvocations.append(flag)
+                return false
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .US)
+
+        // Then
+        #expect(await providerInvocations.values.isEmpty, "Existing supported country must not dispatch a flag check")
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh persists the provider's true value for primary-group countries")
+    func test_refresh_persists_true_for_primary_group_when_flag_on() async {
+        // Given
+        let service = SpyEligibilityService()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                #expect(flag == .inPersonPaymentsCountryExpansion)
+                return true
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .NL)
+
+        // Then
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh persists the provider's false value for primary-group countries")
+    func test_refresh_persists_false_for_primary_group_when_flag_off() async {
+        // Given
+        let service = SpyEligibilityService()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { _ in false }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .NZ)
+
+        // Then
+        #expect(service.cachedValues == [siteID: false])
+    }
+
+    @Test("refresh dispatches inPersonPaymentsCountryExpansionEUExtended for EU extended countries")
+    func test_refresh_dispatches_eu_extended_flag() async {
+        // Given
+        let service = SpyEligibilityService()
+        let dispatchedFlags = FlagRecorder()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                await dispatchedFlags.append(flag)
+                return true
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .FI)
+
+        // Then
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsCountryExpansionEUExtended])
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh dispatches inPersonPaymentsAustraliaWooPayments for AU")
+    func test_refresh_dispatches_australia_flag() async {
+        // Given
+        let service = SpyEligibilityService()
+        let dispatchedFlags = FlagRecorder()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                await dispatchedFlags.append(flag)
+                return true
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .AU)
+
+        // Then
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsAustraliaWooPayments])
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh persists per site")
+    func test_refresh_persists_per_site() async {
+        // Given
+        let service = SpyEligibilityService()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { _ in true }
+        )
+
+        // When
+        await refresher.refresh(siteID: 1, countryCode: .NL)
+        await refresher.refresh(siteID: 2, countryCode: .FI)
+        await refresher.refresh(siteID: 3, countryCode: .US)
+
+        // Then
+        #expect(service.cachedValues == [1: true, 2: true, 3: true])
+    }
+}
+
+// MARK: - Test Helpers
+
+private final class SpyEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
+    private(set) var cachedValues: [Int64: Bool] = [:]
+
+    func isEligible(siteID: Int64) -> Bool {
+        cachedValues[siteID] ?? false
+    }
+
+    func cacheEligibility(siteID: Int64, isEligible: Bool) {
+        cachedValues[siteID] = isEligible
+    }
+}
+
+private actor FlagRecorder {
+    private var flags: [RemoteFeatureFlag] = []
+
+    var values: [RemoteFeatureFlag] {
+        flags
+    }
+
+    func append(_ flag: RemoteFeatureFlag) {
+        flags.append(flag)
+    }
+}

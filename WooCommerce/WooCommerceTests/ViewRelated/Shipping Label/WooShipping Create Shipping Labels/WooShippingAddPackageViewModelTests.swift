@@ -305,6 +305,44 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
+    func test_remove_saved_package_when_later_failure_reinserts_after_another_deletion_then_does_not_crash() throws {
+        // Given
+        let siteID: Int64 = 1
+        let customPackages: [WooShippingCustomPackage] = [
+            .fake().copy(id: "Custom1"),
+            .fake().copy(id: "Custom2")
+        ]
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: customPackages,
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        var deleteCompletions: [String: (Result<WooShippingCreatePackageResponse, Error>) -> Void] = [:]
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .deletePackage(_, packageID, _, completion):
+                deleteCompletions[packageID] = completion
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, stores: mockStores, storage: storageManager)
+        let firstPackage = try XCTUnwrap(viewModel.customSavedPackages.first)
+        let secondPackage = try XCTUnwrap(viewModel.customSavedPackages[safe: 1])
+
+        // When
+        viewModel.removeSavedPackage(secondPackage)
+        viewModel.removeSavedPackage(firstPackage)
+        try XCTUnwrap(deleteCompletions[secondPackage.id])(.failure(NSError(domain: "Test", code: 400)))
+
+        // Then
+        XCTAssertTrue(true)
+    }
+
     func test_it_fetches_and_transforms_packages_from_storage() throws {
         // Given
         let siteID: Int64 = 1
@@ -426,6 +464,46 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedPackageType, .saved)
         XCTAssertNotNil(viewModel.selectedSavedPackage)
+    }
+
+    func test_selectCarrierPackage_when_ID_exists_then_sets_correct_tab_index_and_package_ID() {
+        // Given
+        let siteID: Int64 = 1
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: [],
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [sampleCarrierPredefinedOptions()])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, storage: storageManager)
+
+        // When
+        viewModel.selectCarrierPackage(withID: "small_flat_box")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCarriersPackageId, "small_flat_box")
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, 0)
+    }
+
+    func test_selectCarrierPackage_when_ID_not_found_then_state_is_unchanged() {
+        // Given
+        let siteID: Int64 = 1
+        let packages = WooShippingPackagesResponse(siteID: siteID,
+                                                   customPackages: [],
+                                                   savedPredefinedPackages: [],
+                                                   allPredefinedOptions: [sampleCarrierPredefinedOptions()])
+        let storageManager = MockStorageManager()
+        storageManager.insertSamplePackages(readOnlyPackages: packages)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID, storage: storageManager)
+        let initialTabIndex = viewModel.selectedCarriersTabIndex
+        let initialPackageID = viewModel.selectedCarriersPackageId
+
+        // When
+        viewModel.selectCarrierPackage(withID: "non_existent_package")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, initialTabIndex)
+        XCTAssertEqual(viewModel.selectedCarriersPackageId, initialPackageID)
     }
 
     @MainActor

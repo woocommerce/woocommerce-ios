@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-06 22:56:37+0000 */
+/* Translation-Revision-Date: 2026-06-02 17:59:16+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -664,7 +664,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message presented when an unexpected error occurs with the store's payment gateway. */
 "An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "Ocorreu um erro inesperado com o gateway de pagamento da loja ao capturar o pagamento do pedido";
 
-/* A failure reason for when the error that occured wasn't able to be determined. */
+/* A failure reason for when the error that occurred wasn't able to be determined. */
 "An unknown error occurred." = "Ocorreu um erro desconhecido.";
 
 /* Analytics toggle title in the privacy screen.
@@ -1072,6 +1072,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "Não foi possível ligar para este número.";
+
+/* 'Reschedule' button title in appointment details section in booking details view. */
+"BookingDetailsView.rescheduleBookingButton.title" = "Reagendar reserva";
 
 /* Retry Action */
 "BookingDetailsView.retry.action" = "Tentar novamente";
@@ -2713,7 +2716,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Erro ao atualizar o pedido nº %1$d";
 
-/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on the WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "Estimada para %1$@";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -4886,9 +4889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carregue o leitor";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Verifique se o seu telefone atende a estes requisitos: iPhone XS ou mais recente com iOS 16.7 ou superior. Entre em contato com o suporte se esse erro aparecer em um dispositivo compatível.";
-
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Verifique o saldo restante do vale-presente.";
 
@@ -5595,6 +5595,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obrigatório";
+
+/* Navigation bar title for the reschedule booking screen. */
+"RescheduleBookingView.title" = "Reagendar reserva";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Excluir log de atividades";
@@ -8485,6 +8488,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder text for address search bar. */
 "addressMapPicker.search.placeholder" = "Pesquisar um endereço";
 
+/* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
+"aiAssistant.loadingPlaceholder.accessibilityLabel" = "Carregando";
+
+/* Error shown when the chat client needs a WPCOM token but the merchant signed in with an application password or wp-org credentials. */
+"aiAssistant.token.error.missingWPCOMCredentials" = "O assistente de IA requer credenciais WPCOM.";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Casual";
 
@@ -8652,6 +8661,60 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when a video file failed to export from the local library. */
 "assetExportError.failedToExportVideo.message" = "Falha ao exportar a mídia selecionada.";
+
+/* Placeholder shown on the assistant customer row when the customer has no email. */
+"assistant.externalViews.customer.noEmailPlaceholder" = "Nenhum e-mail salvo";
+
+/* Plural orders-count badge on the assistant customer row. %1$@ is the count. */
+"assistant.externalViews.customer.orderCount.plural" = "%1$@ pedidos";
+
+/* Singular orders-count badge on the assistant customer row. */
+"assistant.externalViews.customer.orderCount.singular" = "1 pedido";
+
+/* Customer name shown on the assistant order card when the order has no registered customer. */
+"assistant.externalViews.order.guestCustomer" = "Visitante";
+
+/* Fallback shown on the assistant order card when a registered customer has no billing name and no email on file. %@ is the customer id. */
+"assistant.externalViews.order.registeredCustomerWithID" = "Cliente #%@";
+
+/* Subtitle on the assistant product row inlining the stock count. %1$@ is the count. */
+"assistant.externalViews.product.stock.countFormat" = "%1$@ em estoque";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.inStock" = "Em estoque";
+
+/* Accessory on the assistant product row when stock quantity is known. %1$@ is the count. */
+"assistant.externalViews.product.stock.left" = "%1$@ restante(s)";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.onBackorder" = "Sob encomenda";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.outOfStock" = "Sem estoque";
+
+/* Variations badge on the assistant product row for variable products. %1$@ is the count. */
+"assistant.externalViews.product.variations.plural" = "%1$@ variações";
+
+/* Variations badge on the assistant product row when the product has exactly one variation. */
+"assistant.externalViews.product.variations.singular" = "1 variação";
+
+/* Trailing column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.avgOrderValue" = "Valor médio por pedido";
+
+/* Placeholder shown on the assistant analytics card when a metric is missing from the tool result. */
+"assistant.externalViews.stats.metricUnavailable" = "-";
+
+/* Trailing column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.netSales" = "Vendas líquidas";
+
+/* Shell title shared by the assistant revenue and orders analytics cards. */
+"assistant.externalViews.stats.shellTitle" = "Dados analíticos";
+
+/* Leading column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.totalOrders" = "Total de pedidos";
+
+/* Leading column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.totalSales" = "Total de vendas";
 
 /* Label displayed on audio media items. */
 "audio" = "áudio";
@@ -9716,7 +9779,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "Um produto com variações, como cor ou tamanho";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
+/* Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.title" = "Produto variável";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
@@ -9815,6 +9878,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.saveReceiptAndContinue" = "Salvar recibo e continuar";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"cardReader.error.unsupportedMobileDeviceConfiguration.message" = "Verifique se o seu telefone atende a estes requisitos: iPhone XS ou mais recente com iOS 18.0.1 ou superior. Entre em contato com o suporte se este erro aparece em um dispositivo compatível.";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt */
+"cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2" = "Cancelar reconexão";
+
+/* Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress */
+"cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle" = "Cancelando…";
+
+/* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
+"cardReaderSettingsConnectedViewController.reconnectingText" = "Reconectando leitor de cartão…";
+
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "Cancelar";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "Confirmar e continuar";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "Ocorreu um erro inesperado ao confirmar sua aceitação. Tente novamente.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "Erro ao confirmar aceitação";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "Tentar novamente";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "Origem do envio";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "Registrar os dados da transação nas anotações do pedido";
@@ -9966,6 +10059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Nunca perca um novo pedido";
 
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "Conversar por chat com o suporte";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Solucionar problema de conexão";
 
@@ -10027,7 +10123,7 @@ which should be translated separately and considered part of this sentence. */
 "connectivityToolViewModel.errorMessage.default" = "Há um problema no seu site.\n\nEntre em contato com o provedor de hospedagem para obter mais ajuda.";
 
 /* Message when the device is not registered for push notifications in the connectivity tool */
-"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "Seu dispositivo não parece estar registrado para receber notificações por push.\n\nTente sair e entrar novamente para se registrar mais uma vez.";
+"connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN" = "Seu dispositivo não parece estar registrado para notificações por push.";
 
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Há um problema na sua conexão com o Jetpack.\n\nSaiba mais ou fale com a nossa equipe de suporte. Estamos à disposição para ajudar.";
@@ -10311,6 +10407,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "Clientes";
 
+/* Accessibility label for the AI Assistant entry card on the dashboard. */
+"dashboardCard.aiAssistant.accessibilityLabel" = "Abra a assistente de IA";
+
+/* Placeholder text on the AI Assistant entry card on the dashboard, styled like a chat input. */
+"dashboardCard.aiAssistant.placeholder" = "Faça uma pergunta sobre sua loja…";
+
+/* Name for the AI Assistant dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.aiAssistant" = "Assistente de IA";
+
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Campanhas no Blaze";
 
@@ -10570,6 +10675,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "Ocultar este conteúdo";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "Eu concordo com os %1$@.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "Para comprar etiquetas de envio da FedEx, você precisa concordar com os seguintes termos:";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "Termos de serviço da FedEx";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "Termos de serviço da FedEx";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Aplicar";
 
@@ -10803,6 +10920,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "O leitor que a descoberta retornou não tem um endereço de IP e não pode ser conectado.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "Obtenha ajuda da nossa assistente de IA";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "Conversar por chat com o suporte";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "Rever conversas de suporte anteriores";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "Histórico do chat";
+
+/* Subtitle for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.subtitle" = "Teste se seu site funciona com o aplicativo";
+
+/* Title for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.title" = "Verificar compatibilidade do site";
 
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "Reservas";
@@ -11150,6 +11285,111 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Envio de observação por e-mail ao cliente ativado";
 
+/* Subtitle of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Receba um ping para cada pedido, independentemente do valor.";
+
+/* Title of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "Todos os novos pedidos";
+
+/* Subtitle of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.subtitle" = "Receba notificações quando um pedido for feito em sua loja.";
+
+/* Title of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.title" = "Ativar notificações";
+
+/* Subtitle of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Filtrar para exibir pedidos acima do limite.";
+
+/* Title of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.title" = "Apenas pedidos de alto valor";
+
+/* Section header for new-order notification customization options. */
+"newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "Avise-me sobre";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "Valor mínimo (%1$@)";
+
+/* Placeholder for the order-total threshold text field. */
+"newOrderNotificationPreferencesDetailView.threshold.placeholder" = "Quantidade";
+
+/* Title of the new-order push notification preferences detail screen. */
+"newOrderNotificationPreferencesDetailView.title" = "Novos pedidos";
+
+/* Subtitle of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "Receba um ping para cada avaliação.";
+
+/* Title of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "Todas as avaliações novas";
+
+/* Subtitle of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "Receba uma notificação quando uma avaliação for feita para sua loja.";
+
+/* Title of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.title" = "Ativar notificações";
+
+/* Subtitle of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "Filtrar para ver avaliações na classificação escolhida ou abaixo dela.";
+
+/* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "Apenas avaliações com baixa classificação";
+
+/* Section header for new-review notification customization options. */
+"newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "Avise-me sobre";
+
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "%1$@ estrelas";
+
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@ estrela";
+
+/* Title of the new-review push notification preferences detail screen. */
+"newReviewNotificationPreferencesDetailView.title" = "Novas avaliações";
+
+/* Subtitle of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.subtitle" = "Receba notificações quando as mudanças no estoque do produto precisarem da sua atenção.";
+
+/* Title of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.title" = "Ativar notificações de estoque";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Editar limite em toda a loja";
+
+/* Subtitle of the low-stock toggle row. */
+"newStockNotificationPreferencesDetailView.lowStock.subtitle" = "Quando uma variante de produto atinge o limite de estoque baixo.";
+
+/* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Os produtos podem usar seu próprio limite ou o de toda a loja. %1$@ para ver o valor atual.";
+
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Os produtos podem usar seu próprio limite ou o limite de %1$@{00A0}em toda a loja. %2$@";
+
+/* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.title" = "Estoque baixo";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Visualizar limite em toda a loja";
+
+/* Section header for stock notification customization options. */
+"newStockNotificationPreferencesDetailView.notifyMeFor.header" = "Avise-me sobre";
+
+/* Subtitle of the on-backorder toggle row. */
+"newStockNotificationPreferencesDetailView.onBackorder.subtitle" = "Quando um cliente pede um item que está atualmente fora de estoque.";
+
+/* Title of the toggle row that enables notifications when a product is backordered. */
+"newStockNotificationPreferencesDetailView.onBackorder.title" = "Sob encomenda";
+
+/* Subtitle of the out-of-stock toggle row. */
+"newStockNotificationPreferencesDetailView.outOfStock.subtitle" = "Quando uma variante de produto atinge zero.";
+
+/* Title of the toggle row that enables notifications when a product reaches the no-stock amount. */
+"newStockNotificationPreferencesDetailView.outOfStock.title" = "Sem estoque";
+
+/* Title of the stock push notification preferences detail screen. */
+"newStockNotificationPreferencesDetailView.title" = "Estoque";
+
+/* Title of the authenticated webview shown when the merchant taps 'Edit store-wide threshold' under the Low stock toggle. */
+"newStockNotificationPreferencesHostingController.editThreshold.webTitle" = "Limite de estoque baixo";
+
 /* Cancel button title for the tax rate selector */
 "newTaxRateSelectorView.cancelButton" = "Cancelar";
 
@@ -11182,6 +11422,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "nenhum período anterior";
+
+/* VoiceOver label for the back button on a push notification preferences detail screen. */
+"notificationDetailHostingController.back" = "Voltar";
+
+/* Title of the Save bar button on a push notification preferences detail screen. */
+"notificationDetailHostingController.save" = "Salvar";
 
 /* Button to cancel saving site settings on the notification settings view */
 "notificationSettingsView.cancel" = "Cancelar";
@@ -11484,6 +11730,15 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Envio";
 
+/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
+"orderFulfillmentStatus.badge.fulfilled" = "Atendido";
+
+/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
+"orderFulfillmentStatus.badge.fulfilledWithDate" = "Atendido em %1$@";
+
+/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
+"orderFulfillmentStatus.badge.unfulfilled" = "Não atendido";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Cupom";
 
@@ -11562,9 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Pagamento presencial";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "Aceite pagamentos presenciais por apenas 2,70%% + US$ 0,10 por transação. Faça upgrade para o Pro para acessar o pagamento por aproximação no seu telefone e nosso sistema de ponto de venda completo com sincronização de pedidos e inventário em tempo real. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "O pedido foi pago em dinheiro. O cliente pagou %1$@. O troco foi de %2$@.";
 
@@ -11616,6 +11868,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Editar";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "Conte os pedidos na data em que foram marcados como concluídos.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "Pedidos concluídos";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "Escolha quais pedidos serão incluídos nas suas métricas de desempenho para o intervalo selecionado.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "Esta é uma configuração para toda a loja e controla a opção \"Tipo de data\" nas configurações de análise na administração do WooCommerce.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "Conte os pedidos na data em que foram pagos.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "Pedidos pagos";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "Conte os pedidos na data em que foram feitos ou criados.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "Pedidos feitos";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "Tipo de data do pedido";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "Não foi possível atualizar o tipo de pedido. Tente novamente.";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "Atualizar %1$@";
 
@@ -11654,6 +11936,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Desconhecido";
+
+/* Button to cancel card reader reconnection, shown on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelReconnection.button.title" = "Cancelar reconexão";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.canceledOnReader.title" = "Pagamento cancelado no leitor";
@@ -11756,6 +12041,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
 "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "Para processar esse pagamento, conecte seu leitor ou escolha pagamento em dinheiro.";
+
+/* Title shown on the Point of Sale Checkout when the card reader is reconnecting */
+"pointOfSale.cardPresent.reconnecting.title" = "Reconectando leitor…";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "Verificando pedido";
@@ -12006,14 +12294,17 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Cupom não aplicado";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Reservas";
+/* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
+"pointOfSale.floatingButtons.cancelReconnection.button.title" = "Cancelar reconexão";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Aguarde";
 
+/* The title of the floating button to indicate that the reader reconnection is being cancelled. */
+"pointOfSale.floatingButtons.cancellingReconnection.title" = "Cancelando…";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "Desconectar leitor";
+"pointOfSale.floatingButtons.disconnectCardReader.button.title.2" = "Leitor desconectado";
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "Sair do PDV";
@@ -12030,14 +12321,41 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Desconectando";
 
+/* The title of the floating button to indicate that the reader is attempting to reconnect. */
+"pointOfSale.floatingButtons.readerReconnecting.title" = "Reconectando…";
+
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "Configurações";
+
+/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.edit.button.accessibilityLabel" = "Editar";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Remover";
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Carregando";
+
+/* Confirmation button on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.confirmButton" = "Marcar como pago";
+
+/* Body of the Point of Sale confirmation for manually marking an order as paid. %1$@ is the formatted order total, e.g. $24.99. */
+"pointOfSale.markAsPaid.confirmation.message" = "Isso marcará o pedido de %1$@ como concluído. Use apenas se você já tiver recebido o pagamento de outra forma.";
+
+/* Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.noteKeyboardDone" = "Concluir";
+
+/* Label above the optional note text field on the Point of Sale Mark as paid confirmation, where the merchant can record reconciliation context for the order. */
+"pointOfSale.markAsPaid.confirmation.noteLabel" = "Adicione uma observação (opcional)";
+
+/* Placeholder shown inside the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.notePlaceholder" = "Por exemplo, transferência bancária de Maria, ref 4827";
+
+/* Title of the Point of Sale confirmation for manually marking an order as paid. */
+"pointOfSale.markAsPaid.confirmation.title" = "Marcar pedido como pago?";
+
+/* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
+"pointOfSale.markAsPaid.failureMessage" = "Não foi possível marcar este pedido como pago. Tente novamente.";
 
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "Um ou mais produtos";
@@ -12087,6 +12405,18 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "Um ou mais produtos";
 
+/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "Use quando o pagamento já tiver sido recebido de outra forma.";
+
+/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "Marcar pedido como pago";
+
+/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "Mostre um código QR para o cliente pagar pelo telefone.";
+
+/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.title" = "Pagamento por código QR";
+
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "Carregando pedido";
 
@@ -12108,12 +12438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "Nenhum pedido carregado ainda. Inicie um pagamento antes de enviar um recibo.";
 
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Voltar para a reserva";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Concluído";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Editar pedido";
 
@@ -12126,11 +12450,53 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "Um pagamento de %1$@ em dinheiro foi feito com sucesso.";
 
+/* Message shown to users when an order is marked as paid manually. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.markAsPaid.1" = "Um pagamento de %1$@ foi marcado como recebido.";
+
+/* Message shown to users when a scan-to-pay payment is confirmed. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.scanToPay.1" = "Um pagamento de %1$@ por código QR foi feito com sucesso.";
+
 /* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
 "pointOfSale.paymentSuccessful.receiptSent" = "Um recibo foi enviado para %1$@.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Pagamento bem-sucedido";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "com %1$@";
+
+/* Error message shown when confirming a scan-to-pay payment fails in Point of Sale. */
+"pointOfSale.scanToPay.failedToConfirmPayment.errorMessage" = "Erro ao confirmar pagamento. Tente novamente.";
+
+/* Button to confirm a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.markpaymentcompleted.button.title" = "Marcar pagamento como concluído";
+
+/* Subtitle showing the order total on the Point of Sale scan-to-pay screen. Reads as 'Total: $1.23' */
+"pointOfSale.scanToPay.navigation.subtitle" = "Total: %1$@";
+
+/* Title for the Point of Sale scan-to-pay screen */
+"pointOfSale.scanToPay.navigation.title" = "Pagamento por código QR";
+
+/* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.orderNote" = "Cliente pagou por código QR";
+
+/* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
+"pointOfSale.scanToPay.preparing.message" = "Gerando código QR…";
+
+/* Message shown when no payment URL is available to render a QR code in Point of Sale scan-to-pay. */
+"pointOfSale.scanToPay.qrUnavailable.message" = "Não foi possível gerar um código QR para este pedido. Tente uma forma de pagamento diferente.";
+
+/* Instruction text shown above the QR code in the Point of Sale scan-to-pay screen. */
+"pointOfSale.scanToPay.scan.instruction" = "Peça ao cliente para ler o código QR com o telefone para concluir o pagamento.";
+
+/* Status text shown after the backend confirms a scan-to-pay payment, while the app finalizes success. */
+"pointOfSale.scanToPay.status.confirming" = "Pagamento recebido. Confirmando…";
+
+/* Status text shown when polling for scan-to-pay payment fails (network etc.). Polling will retry. */
+"pointOfSale.scanToPay.status.error" = "Não foi possível verificar o status do pagamento. Tentando novamente…";
+
+/* Status text shown under the scan-to-pay QR code while polling for payment. */
+"pointOfSale.scanToPay.status.waiting" = "Aguardando pagamento…";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "Enviar";
@@ -12150,17 +12516,47 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
 
+/* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
+"pointOfSaleDashboard.phone.cart" = "Carrinho (%1$d)";
+
+/* Phone-only header title shown above the totals view during checkout. */
+"pointOfSaleDashboard.phone.checkoutTitle" = "Finalizar compra";
+
+/* VoiceOver label for the phone-only Point of Sale overflow menu button. */
+"pointOfSaleDashboard.phone.menu.accessibilityLabel" = "Mais opções";
+
+/* Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab. */
+"pointOfSaleDashboard.phone.menu.createCoupon" = "Criar cupom";
+
+/* Phone-only overflow menu item to exit Point of Sale. */
+"pointOfSaleDashboard.phone.menu.exit" = "Sair do PDV";
+
+/* Phone-only overflow menu item to open the historical orders view. */
+"pointOfSaleDashboard.phone.menu.orders" = "Pedidos";
+
+/* Phone-only overflow menu item to open Point of Sale settings. */
+"pointOfSaleDashboard.phone.menu.settings" = "Configurações";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Cancelar";
 
 /* Title for the payment method used when collecting cash payment in Point of Sale. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pagamento presencial";
 
+/* Title for the payment method used when manually marking an order as paid in Point of Sale. */
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Outro";
+
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
 
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "Desconhecido";
+
+/* Menu option to cancel card reader reconnection in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle" = "Cancelar reconexão";
+
+/* Button title shown when card reader reconnection is being cancelled in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle" = "Cancelando…";
 
 /* Subtitle for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "Conecte seu leitor de cartão e comece a aceitar pagamentos";
@@ -12213,6 +12609,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "Nome do dispositivo";
 
+/* Button title shown when card reader is reconnecting in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle" = "Reconectando…";
+
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Saiba mais sobre a leitura de código de barras nos pontos de venda";
 
@@ -12242,6 +12641,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for address field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.address" = "Endereço";
+
+/* Navigation title for the web view used to edit POS receipt information. */
+"pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle" = "Configurações de recibo";
 
 /* Label for email field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.email" = "E-mail";
@@ -12299,6 +12701,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Loja";
+
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "Adicionar valor personalizado";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "Quantidade";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "Cobrar impostos";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "Valor personalizado";
+
+/* Title of the full-screen Point of Sale form when editing an existing custom amount on the order. */
+"pos.addCustomAmount.editTitle" = "Editar valor personalizado";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "Nome";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "Valor personalizado";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "Valor personalizado";
+
+/* Primary button in the Point of Sale custom amount form when editing, that saves the changes to the order. */
+"pos.addCustomAmount.updateButton" = "Atualizar valor personalizado";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Escaneamento de código de barras";
@@ -12468,207 +12897,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Teste seu leitor";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d h";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d h %2$d min";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d min";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "Participou";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "Não participou";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "Próximo dia";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "Dia anterior";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, toque para abrir o calendário";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "Adicionar observação";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "Status de presença";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "Registre a presença para manter seus relatórios precisos e identificar tendências de reserva.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "Falha na atualização da presença. Tente novamente.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "Participou";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "Reserva nº %lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "Observação da reserva";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "Esta é uma observação particular. Ela não será compartilhado com o cliente.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "Cancelar reserva";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "Receber pagamento";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "Copiar endereço de e-mail";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Copiar número de telefone";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "Cliente";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "Duração";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "Editar observação";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "E-mail: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "Visitante";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "Emitir reembolso";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "Localização";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "Mais ações";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "Observação";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "Telefone: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "Membro da equipe";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "Não participou";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "Visualizar pedido";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "Toque em uma reserva para ver os detalhes";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "Reservado";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "Cancelado";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "Concluído";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Não é possível carregar mais reservas";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "Não é possível carregar as reservas";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "Reservas";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "Não encontramos nenhuma reserva que corresponda à sua pesquisa. Tente ajustar o termo da pesquisa.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "Nenhuma reserva encontrada";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "As reservas agendadas para esta data aparecerão aqui.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "Nenhuma reserva para este dia";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "Pesquisar reservas";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "Pesquisar reservas";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "Adicionar";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "Adicionar observação";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "Editar observação";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "Digite a observação";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "Salvar";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "Falha ao salvar observação. Tente novamente.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "Autorização anulada";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "Autorizado";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "Com falha";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "Pago";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "Reembolsado";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "Não pago";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "Reserva cancelada com sucesso.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "A reserva nº %1$@ de %2$@ em %3$@ será cancelada.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "A reserva nº %1$@ de %2$@ em %3$@ para %4$@ será cancelada.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Fechar";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "Sim, cancelar reserva";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "O cliente será notificado por e-mail.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "Não foi possível cancelar a reserva. Tente novamente.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "Não, manter";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "Cancelar esta reserva?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "Configurações do WooCommerce";
 
@@ -12696,6 +12924,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an unselected checkbox */
 "pos.checkbox.unselected.accessibilityLabel" = "Não selecionado";
 
+/* Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected. */
+"pos.checkout.paymentMethod.cardReader" = "Leitor de cartão";
+
+/* Title for the cash-payment button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.cashPayment" = "Pagamento em dinheiro";
+
+/* Title for the Tap to Pay button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Sem conexão com a internet";
 
@@ -12714,23 +12951,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Sair do modo de ponto de venda?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "Aceite pagamentos presenciais por apenas 2,70% + US$ 0,10 por transação.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Faça upgrade para o Pro para acessar o pagamento por aproximação no seu telefone e nosso sistema de ponto de venda completo com sincronização de pedidos e inventário em tempo real.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Sair do PDV";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Ativar funcionalidade PDV";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Saiba mais";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "É necessário ter o plano Pro";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Tentar novamente";
@@ -12756,11 +12981,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Não foi possível carregar";
 
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Fazer upgrade do plano";
-
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Verifique sua conexão com a Internet e tente novamente.";
+
+/* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.subtitle" = "Adicione uma cobrança única.";
+
+/* Title for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.title" = "Valor personalizado";
 
 /* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
 "pos.itemList.enablingCouponsErrorTitle.2" = "Não foi possível ativar os cupons";
@@ -12825,7 +13053,13 @@ which should be translated separately and considered part of this sentence. */
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Atualizar catálogo";
 
-/* Title at the top of the Point of Sale product selector screen. */
+/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.description" = "A partir de 1º de agosto, os pontos de venda exigirão o WooCommerce 10.5.0 ou versões posteriores. Atualize para garantir acesso ininterrupto.";
+
+/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.title" = "Atualização do WooCommerce em breve";
+
+/* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Produtos";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
@@ -12840,6 +13074,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button text to exit Point of Sale when there's a critical error */
 "pos.listError.exitButton" = "Sair do PDV";
 
+/* Title shown on the POS lock screen. */
+"pos.lockScreen.enterYourPIN.title" = "Insira seu PIN";
+
+/* Title shown on the POS manager approval modal. */
+"pos.managerOverride.approvalRequired.title" = "Aprovação obrigatória";
+
+/* Accessibility label for dismissing the POS manager approval screen. */
+"pos.managerOverride.close" = "Fechar";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "Ignorar";
 
@@ -12852,8 +13095,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Pedido";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "Produtos";
+/* Section title for the items list (products and custom amounts) shown in the loading skeleton */
+"pos.orderDetailsLoadingView.itemsTitle" = "Itens";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totais";
@@ -12863,6 +13106,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "Falha ao criar reembolso";
+
+/* Accessibility label for a custom amount row. %1$@ is the name, %2$@ is the formatted total. */
+"pos.orderDetailsView.customAmountRow.accessibilityLabel" = "%1$@, %2$@";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Toque para enviar o recibo do pedido por e-mail";
@@ -12882,6 +13128,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Emitir reembolso";
 
+/* Label for items subtotal (products and custom amounts) in the totals section */
+"pos.orderDetailsView.itemsLabel" = "Itens";
+
+/* Section title for the order items list (products and custom amounts) in order details */
+"pos.orderDetailsView.itemsTitle" = "Itens";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "Tente novamente.";
 
@@ -12900,20 +13152,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Quantidade: %1$@ a %2$@ cada, total %3$@";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "Produtos";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "Produtos";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Reembolso %1$d";
 
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "Produtos reembolsados";
+/* Section title for the refunded items list (products and custom amounts) in order details */
+"pos.orderDetailsView.refundedItemsTitle" = "Itens reembolsados";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totais";
@@ -12927,11 +13173,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Não foi possível carregar os pedidos";
 
-/* Description for refund via a specific payment method. %@ is the payment method name */
-"pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
-
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "Saiba mais";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "Atualizar";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "Não encontramos nenhum pedido com esse nome. Tente ajustar o termo da pesquisa.";
@@ -12940,7 +13183,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Nenhum pedido encontrado";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "Veja como aumentar as vendas da sua loja.";
+"pos.orderListView.emptyOrdersSubtitle.3" = "Os pedidos aparecerão aqui assim que você começar a processar vendas no POS.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "Não há pedidos";
@@ -12966,8 +13209,62 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "Pesquisar pedidos";
 
+/* Fallback label shown for a fee on a Point of Sale order whose name is missing or blank. */
+"pos.orderMapper.defaultFeeName" = "Valor personalizado";
+
+/* Button to cancel the current POS refund selection and select another order. */
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "Cancelar reembolso";
+
+/* Button to keep editing the current POS refund selection instead of selecting another order. */
+"pos.ordersView.cancelRefundAlert.keepEditing.button" = "Continuar editando";
+
+/* Message for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.message" = "Sua seleção de reembolso atual será descartada.";
+
+/* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.title" = "Cancelar este reembolso?";
+
+/* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.subtitle" = "Conecte um leitor Bluetooth para aceitar pagamentos com cartão.";
+
+/* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.title" = "Leitor de cartão";
+
+/* Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.subtitle" = "Registre o pagamento recebido fora deste dispositivo.";
+
+/* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.title" = "Marque o pedido como pago";
+
+/* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.subtitle" = "Mostre um código QR para o cliente pagar pelo telefone.";
+
+/* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.title" = "Verifique para pagar";
+
+/* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
+"pos.otherPaymentMethods.sheet.title" = "Outros métodos de pagamento";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Opções disponíveis";
+
+/* Accessibility label for the delete key on the POS PIN numpad */
+"pos.pinEntry.delete.accessibilityLabel" = "Excluir";
+
+/* Accessibility label for the PIN dots on the POS PIN numpad */
+"pos.pinEntry.dots.accessibilityLabel" = "Entrada de PIN";
+
+/* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
+"pos.pinEntry.dots.accessibilityValue" = "%1$d de %2$d dígitos inseridos";
+
+/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+"pos.pinEntry.error.generic" = "Ocorreu um erro. Tente novamente.";
+
+/* VoiceOver announcement when an entered POS PIN is incorrect. */
+"pos.pinEntry.error.invalidPIN" = "PIN incorreto. Tente novamente.";
+
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
+"pos.pinEntry.lockout.countdown" = "Muitas tentativas. Tente novamente em %1$@.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "Não foi possível encontrar nenhum cupom com esse nome. Tente ajustar o termo de pesquisa.";
@@ -13014,23 +13311,101 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
-/* Button to go back to the previous screen */
-"pos.refundConfirmationView.backButton" = "Voltar";
+/* Error shown when POS tries to process a second refund while another refund is in progress. */
+"pos.refund.processing.error.alreadyInProgress" = "Um reembolso já está em andamento. Aguarde a conclusão.";
 
-/* Accessibility label for close button on refund confirmation modal */
-"pos.refundConfirmationView.closeButton.accessibilityLabel" = "Fechar";
+/* Error shown when POS tries to process a refund without selected refund items. */
+"pos.refund.processing.error.emptySelection" = "Selecione pelo menos um item para reembolso.";
+
+/* Error shown when POS tries to process a refund without prepared order refund data. */
+"pos.refund.processing.error.missingPreparation" = "Não foi possível preparar o reembolso. Tente novamente.";
+
+/* Button shown in POS to return to refund review after a card reader refund is canceled. */
+"pos.refundCardPresent.backToRefund.button.title" = "Voltar para reembolso";
+
+/* Button shown in POS to cancel a failed card reader refund. */
+"pos.refundCardPresent.cancelRefund.button.title" = "Cancelar reembolso";
+
+/* Title shown in POS when a refund is canceled on the card reader. */
+"pos.refundCardPresent.cancelledOnReader.title" = "Reembolso cancelado no leitor";
+
+/* Message shown in POS when a card has been inserted for a refund. */
+"pos.refundCardPresent.cardInserted.message" = "Cartão inserido";
+
+/* Message shown in POS while validating a refund before using a card reader. */
+"pos.refundCardPresent.checkingRefund.message" = "Verificando reembolso";
+
+/* Button shown in POS to dismiss a card reader refund message. */
+"pos.refundCardPresent.close.button.title" = "Fechar";
+
+/* Title shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.gettingReady.title" = "Quase pronto";
+
+/* Instruction shown in POS when a card should be inserted for a refund. */
+"pos.refundCardPresent.insert.message" = "Insira um cartão para receber o reembolso";
+
+/* Message shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.pleaseWait.message" = "Aguarde";
+
+/* Message shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.preparingReader.message" = "Preparando o leitor para reembolso";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.presentCard.message" = "Apresente um cartão para receber o reembolso";
+
+/* Title shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.processingRefund.title" = "Processando reembolso";
+
+/* Title shown in POS when the card reader is ready to process a refund. */
+"pos.refundCardPresent.readyForRefund.title" = "Pronto para reembolso";
+
+/* Title shown in POS when a card reader refund fails. */
+"pos.refundCardPresent.refundFailed.title" = "Falha no reembolso";
+
+/* Instruction shown in POS when a card should be tapped for a refund. */
+"pos.refundCardPresent.tap.message" = "Toque em um cartão para receber o reembolso";
+
+/* Instruction shown in POS when a card should be tapped or inserted for a refund. */
+"pos.refundCardPresent.tapInsert.message" = "Toque ou insira um cartão para receber o reembolso";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.tapSwipeInsert.message" = "Toque, deslize ou insira um cartão para reembolsar";
+
+/* Button shown in POS to retry a failed card reader refund. */
+"pos.refundCardPresent.tryRefundAgain.button.title" = "Tentar reembolsar novamente";
+
+/* Warning shown on the refund confirmation screen. */
+"pos.refundConfirmationView.actionCannotBeUndone" = "Essa ação não pode ser desfeita.";
+
+/* Accessibility label for the back button on the refund confirmation screen */
+"pos.refundConfirmationView.backButton.accessibilityLabel" = "Voltar";
+
+/* Button to cancel and dismiss the refund confirmation screen */
+"pos.refundConfirmationView.cancelButton" = "Cancelar";
+
+/* Error shown when POS cannot confirm whether a card reader refund succeeded. */
+"pos.refundConfirmationView.cardPresent.unableToConfirmRefund" = "Não é possível confirmar o reembolso. Verifique o pedido antes de tentar novamente.";
 
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "Sim, continuar";
 
-/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat.1" = "Tem certeza de que deseja reembolsar %1$@ por %2$@? Essa ação não pode ser desfeita.";
+/* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationQuestionFormat" = "Tem certeza de que deseja reembolsar %1$@ com %2$@?";
+
+/* Message shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderMessage" = "Preparando o leitor para reembolso";
+
+/* Title shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderTitle" = "Preparando o leitor";
 
 /* Message shown while the refund is being processed. */
 "pos.refundConfirmationView.processingMessage" = "Aguarde enquanto processamos o reembolso.";
 
 /* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.processingTitleFormat" = "Reembolsando %@";
+
+/* Title shown when an in-person refund fails. */
+"pos.refundConfirmationView.readerErrorTitle" = "Falha no reembolso";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Reembolsar %@";
@@ -13050,11 +13425,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for tax row in refund detail */
 "pos.refundDetailView.taxLabel" = "Imposto";
 
+/* Accessibility label for the back button on the refund error screen */
+"pos.refundErrorView.backButton.accessibilityLabel" = "Voltar";
+
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Cancelar";
-
-/* Accessibility label for close button on refund error screen */
-"pos.refundErrorView.closeButton.accessibilityLabel" = "Fechar";
 
 /* Button to retry the refund creation */
 "pos.refundErrorView.retryButton" = "Tentar novamente";
@@ -13078,8 +13453,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility state when item is not selected for refund */
 "pos.refundItemRow.unselectedState" = "Não selecionado para reembolso";
 
-/* Accessibility label for close button on refund items selection modal */
-"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "Fechar";
+/* Accessibility label for the back button on the refund items selection screen */
+"pos.refundItemsSelectionView.backButton.accessibilityLabel" = "Voltar";
 
 /* Button to continue with selected items for refund */
 "pos.refundItemsSelectionView.continueButton" = "Continuar";
@@ -13096,11 +13471,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Selecione itens para reembolsar";
 
+/* Accessibility label for the back button on the refund loading screen */
+"pos.refundLoadingView.backButton.accessibilityLabel" = "Voltar";
+
 /* Message shown while loading refund information */
 "pos.refundLoadingView.loadingMessage" = "Carregando detalhes do reembolso...";
 
-/* Accessibility label for close button on nothing to refund modal */
-"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Fechar";
+/* Title shown while loading refund information */
+"pos.refundLoadingView.loadingTitle" = "Preparando o reembolso";
+
+/* Button to leave the card-present refund error screen and return to the order. */
+"pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "Voltar para o pedido";
+
+/* Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.subtitle" = "Volte para o pedido e verifique-o antes de tentar novamente.";
+
+/* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.title" = "Não foi possível confirmar o reembolso";
+
+/* Accessibility label for the back button on the nothing to refund screen */
+"pos.refundNothingToRefundView.backButton.accessibilityLabel" = "Voltar";
 
 /* Button to dismiss the nothing to refund screen */
 "pos.refundNothingToRefundView.doneButton" = "Concluído";
@@ -13110,6 +13500,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when there are no items available to refund */
 "pos.refundNothingToRefundView.title" = "Nada para reembolsar";
+
+/* Accessibility label for the back button shown before connecting a card reader for a refund. */
+"pos.refundReaderDisconnectedView.backButton.accessibilityLabel" = "Voltar";
+
+/* Button to cancel a refund when no card reader is connected. */
+"pos.refundReaderDisconnectedView.cancelButton.title" = "Cancelar";
+
+/* Button to connect to a card reader before processing an in-person refund. */
+"pos.refundReaderDisconnectedView.connectButton.title" = "Conecte seu leitor";
+
+/* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.instruction" = "Para processar esse reembolso, conecte seu leitor.";
+
+/* Title shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.title" = "Leitor não conectado";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Adicionar";
@@ -13126,8 +13531,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to add a reason for the refund */
 "pos.refundReviewView.addReasonButton" = "Adicionar motivo";
 
-/* Accessibility label for close button on refund review modal */
-"pos.refundReviewView.closeButton.accessibilityLabel" = "Fechar";
+/* Button to go back from the refund review screen to refund item selection */
+"pos.refundReviewView.backButton" = "Voltar";
+
+/* Accessibility label for the back button on the refund review screen */
+"pos.refundReviewView.backButton.accessibilityLabel" = "Voltar";
 
 /* Button to continue with the refund */
 "pos.refundReviewView.continueButton" = "Continuar";
@@ -13137,9 +13545,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "Editar motivo";
-
-/* Button to go back and edit the refund items */
-"pos.refundReviewView.editRefundButton" = "Editar reembolso";
 
 /* Label for items subtotal row in refund review. %d is the number of items. */
 "pos.refundReviewView.itemsSubtotalFormat" = "Subtotal de itens (%d itens)";
@@ -13159,8 +13564,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Revisar reembolso";
 
-/* Accessibility label for close button on refund success screen */
-"pos.refundSuccessView.closeButton.accessibilityLabel" = "Fechar";
+/* Fallback name for a custom amount fee line in POS refunds. */
+"pos.refundSubmissionAdaptor.defaultFeeName" = "Valor personalizado";
+
+/* Error shown when POS tries to submit a refund without prepared refund data. */
+"pos.refundSubmissionAdaptor.error.missingPreparedRefund" = "Não foi possível preparar o reembolso. Tente novamente.";
+
+/* Error shown when POS tries to submit a second refund while another refund is in progress. */
+"pos.refundSubmissionAdaptor.error.refundAlreadyInProgress" = "Um reembolso já está em andamento. Aguarde a conclusão.";
+
+/* Fallback payment method description for POS refunds when no payment method title is available. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "pagamento manual";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "com %1$@ %2$@";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "com %1$@";
 
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "Concluído";
@@ -13179,6 +13599,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
 "pos.refundedProductRow.accessibilityLabel" = "%1$@. Quantidade: %2$@ a %3$@ cada. Total reembolsado: %4$@";
+
+/* Accessibility label for refunded custom amount/fee row. %1$@ is the custom amount name, %2$@ is the refund total. */
+"pos.refundedProductRow.lumpSumAccessibilityLabel" = "%1$@, reembolso de %2$@";
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
@@ -13209,6 +13632,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "PDV";
+
+/* Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. The full product name \"Tap to Pay on iPhone\" appears in the hero title above, so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines permit this once the full name has been shown on the same screen. */
+"pos.tapToPay.hero.payButton.v2" = "Pagar com Tap to Pay";
+
+/* Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout. */
+"pos.tapToPay.hero.subtitle" = "Use este dispositivo para aceitar pagamentos com cartão por aproximação.";
+
+/* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
+"pos.tapToPay.hero.title.v2" = "Tap to Pay on iPhone";
 
 /* Label for discount in the totals breakdown. */
 "pos.totalsSectionView.discountLabel.v2" = "Desconto";
@@ -13257,6 +13689,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Desconto total";
+
+/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+"pos.totalsView.otherPaymentMethods.button.title" = "Outras formas de pagamento";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "Subtotal";
@@ -13350,6 +13785,87 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Data de atualização indisponível";
+
+/* Error message when REST API discovery fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.apiDiscoveryFailed" = "Endpoint da API REST não encontrado.";
+
+/* Error message when application passwords are disabled in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsDisabled" = "As senhas de aplicativo estão desativadas.";
+
+/* Error message when application passwords are not available in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsUnavailable" = "As senhas de aplicativo não estão disponíveis.";
+
+/* Error message when REST API is unavailable in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noRESTAPI" = "A API REST do WordPress não está acessível no seu site.";
+
+/* Error message when WooCommerce is not active in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noWooCommerce" = "A API do WooCommerce não está acessível no seu site.";
+
+/* Error message when site info lookup fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.siteInfoFailed" = "Não foi possível recuperar as informações do site.";
+
+/* Site info line shown when the site is an eCommerce Garden (CIAB) site */
+"preLoginConnectivityTool.siteInfo.commerceGarden" = "Site de eCommerce Garden.";
+
+/* Site info line shown when Jetpack is active but not connected */
+"preLoginConnectivityTool.siteInfo.jetpackActiveNotConnected" = "O Jetpack está instalado e ativo, mas não conectado.";
+
+/* Site info line shown when Jetpack is installed and connected */
+"preLoginConnectivityTool.siteInfo.jetpackConnected" = "O Jetpack está instalado e conectado.";
+
+/* Site info line shown when Jetpack is installed but not active */
+"preLoginConnectivityTool.siteInfo.jetpackInstalledNotActive" = "O Jetpack está instalado, mas inativo.";
+
+/* Site info line shown when Jetpack is not installed */
+"preLoginConnectivityTool.siteInfo.jetpackNotInstalled" = "O Jetpack não está instalado.";
+
+/* Site info line shown when the site is a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressDetected" = "Site do WordPress detectado.";
+
+/* Site info line shown when the site is not a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressNotDetected" = "O WordPress não foi detectado neste site.";
+
+/* Success info when REST API discovery succeeds in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.apiDiscovered" = "Endpoint da API REST descoberto.";
+
+/* Success info when application passwords are likely available in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable" = "As senhas de aplicativo parecem ser compatíveis.";
+
+/* Success info when REST API check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.restAPIAvailable" = "A API REST do WordPress está disponível.";
+
+/* Success info when WooCommerce check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.wooCommerceActive" = "O WooCommerce está ativo no seu site.";
+
+/* Title for the REST API discovery test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.apiDiscovery" = "Descoberta de API";
+
+/* Title for the application passwords test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.applicationPasswords" = "Senhas de aplicativo";
+
+/* Title for the site info test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.siteInfo" = "Informações do site";
+
+/* Title for the WooCommerce API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wooCommerceAPI" = "Plugin do WooCommerce";
+
+/* Title for the WordPress REST API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wordPressRESTAPI" = "API REST do WordPress.com";
+
+/* Chat with AI support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.chatWithSupport" = "Conversar por chat com o suporte";
+
+/* Contact support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.contactSupport" = "Falar com o suporte";
+
+/* Subtitle on the pre-login connectivity tool screen. The placeholder is the site address */
+"preLoginConnectivityToolView.subtitle" = "Verificando a compatibilidade do site %1$@ com o aplicativo do WooCommerce.";
+
+/* Navigation title for the pre-login connectivity tool */
+"preLoginConnectivityToolView.title" = "Compatibilidade do site";
+
+/* Button to view technical diagnostic details for a failed connectivity check */
+"preLoginConnectivityToolView.viewDetails" = "Visualizar detalhes";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Fechar";
@@ -13738,6 +14254,90 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "Adicionar produtos";
 
+/* Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications. */
+"pushNotificationPreferencesView.enableNotificationsCTA" = "Ativar notificações";
+
+/* Message shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.message" = "Verifique sua conexão e tente novamente.";
+
+/* Title shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.title" = "Não foi possível carregar as preferências de notificação";
+
+/* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newOrders.accessibilityHint" = "Personalizar notificações de pedido novas";
+
+/* Title of the row that toggles new-order push notifications. */
+"pushNotificationPreferencesView.newOrders.title" = "Novos pedidos";
+
+/* VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newReviews.accessibilityHint" = "Personalizar notificações de avaliação novas";
+
+/* Title of the row that toggles new-review push notifications. */
+"pushNotificationPreferencesView.newReviews.title" = "Novas avaliações";
+
+/* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
+"pushNotificationPreferencesView.notificationsDisabled" = "As notificações estão desativadas para o Woo";
+
+/* Label indicating notifications are enabled, shown at the top of the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsEnabled" = "Notificações ativadas";
+
+/* Footer of the notifications-enabled section on the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsFooter" = "Incluindo lembretes e notificações por push remotas.";
+
+/* Detail text shown on a notification row when notifications are disabled. */
+"pushNotificationPreferencesView.off" = "Desativadas";
+
+/* Button on the error state to retry loading push notification preferences. */
+"pushNotificationPreferencesView.retry" = "Tentar novamente";
+
+/* Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app. */
+"pushNotificationPreferencesView.settingsAppCTA" = "Alterar";
+
+/* VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.stock.accessibilityHint" = "Personalizar notificações de estoque";
+
+/* Title of the row that toggles stock push notifications. */
+"pushNotificationPreferencesView.stock.title" = "Estoque";
+
+/* Title of the push notification preferences screen. */
+"pushNotificationPreferencesView.title" = "Notificações por push";
+
+/* Message of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeMessage" = "Tente novamente.";
+
+/* Title of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeTitle" = "Não foi possível atualizar as preferências de notificação";
+
+/* Detail text for the New orders row when notifications fire for every order. */
+"pushNotificationPreferencesViewModel.storeOrder.allOrders" = "Todos os pedidos";
+
+/* Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500. */
+"pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "Pedidos acima de %1$@";
+
+/* Detail text for the New reviews row when notifications fire for every review. */
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "Todas as avaliações";
+
+/* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "%1$@ estrelas para baixo";
+
+/* Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular" = "%1$@ estrela para baixo";
+
+/* Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.all" = "Todos os alertas de estoque";
+
+/* Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.lowStock" = "Estoque baixo";
+
+/* Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.none" = "Sem alertas";
+
+/* Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.onBackorder" = "Sob encomenda";
+
+/* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Sem estoque";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "Concluído";
 
@@ -13819,6 +14419,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
 "salesChannelFilter.row.wpAdmin.description" = "Painel WP Admin";
 
+/* Accessibility label for the clear button in the search header */
+"searchHeader.clearButton.accessibilityLabel" = "Apagar";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Cancelar";
 
@@ -13839,6 +14442,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the Notification Settings screen */
 "settingsViewController.notificationSettings" = "Configurações de notificação";
+
+/* Navigates to the Push Notifications preferences screen */
+"settingsViewController.pushNotifications" = "Notificações por push";
 
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "Temas";
@@ -13988,14 +14594,26 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Ocultar desempenho";
 
-/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
-"storePerformanceView.netSales" = "Vendas líquidas";
-
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Nenhuma receita para datas selecionadas";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "Abre uma planilha na parte inferior para alterar quais pedidos estão incluídos nos totais de desempenho.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Pedidos";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "Tipo de receita";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "Bruta";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "Líquida";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "Total";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Não foi possível exibir o desempenho da sua loja";
@@ -14011,6 +14629,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit the items to be displayed on the store picker */
 "storePicker.editList" = "Editar";
+
+/* Body text for the store picker error screen when the permission check fails */
+"storePickerError.permissionErrorBody" = "Ocorreu um problema ao verificar suas permissões. Tente novamente ou fale conosco. Teremos prazer em ajudar você!";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Conectar loja existente";
@@ -14028,40 +14649,88 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "Receita selecionada";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValueNetSales" = "Vendas líquidas";
+"storeStatsChart.yValueTotalSales" = "Total de vendas";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Sem receita";
 
-/* Widget description, displayed when selecting which widget to add */
-"storeWidgets.description" = "Estatísticas de hoje do WooCommerce";
+/* Fallback label for a store stats widget site entity when its name is unknown. */
+"storeStatsWidget.storeEntity.fallbackName" = "Loja";
 
-/* Widget title, displayed when selecting which widget to add */
-"storeWidgets.displayName" = "Hoje";
+/* Range label for the Last Month option in the Store Stats widget */
+"storeWidgets.dateRange.lastMonth" = "Mês passado";
+
+/* Compact range label for the previous calendar month option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastMonthCompact.calendarMonth" = "MP";
+
+/* Range label for the Last Week option in the Store Stats widget */
+"storeWidgets.dateRange.lastWeek" = "Semana passada";
+
+/* Compact range label for the previous calendar week option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastWeekCompact.calendarWeek" = "SP";
+
+/* Range label for the Month to Date option in the Store Stats widget */
+"storeWidgets.dateRange.monthToDate" = "Acumulado mensal";
+
+/* Compact range label for the Month to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.monthToDateCompact" = "Mensal";
+
+/* Range label for the Today option in the Store Stats widget */
+"storeWidgets.dateRange.today" = "Hoje";
+
+/* Compact range label for the Today option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.todayCompact.today" = "Hoje";
+
+/* Range label for the Week to Date option in the Store Stats widget */
+"storeWidgets.dateRange.weekToDate" = "Acumulado semanal";
+
+/* Compact range label for the Week to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.weekToDateCompact" = "Semanal";
+
+/* Range label for the Yesterday option in the Store Stats widget */
+"storeWidgets.dateRange.yesterday" = "Ontem";
+
+/* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.yesterdayCompact.yesterday" = "Ont";
 
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "Minha loja";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "Hoje";
-
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget. */
 "storeWidgets.infoView.conversion" = "Conversão";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.infoView.netSales" = "Vendas líquidas";
-
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget. */
 "storeWidgets.infoView.orders" = "Pedidos";
+
+/* Revenue metric title — gross revenue including taxes and shipping. */
+"storeWidgets.infoView.totalSales" = "Total de vendas";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Às %1$@";
 
-/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
-"storeWidgets.infoView.viewMore" = "Visualizar mais";
-
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget. */
 "storeWidgets.infoView.visitors" = "Visitantes";
+
+/* Compact title for the average order value metric, shown on the widget cell. */
+"storeWidgets.metric.averageOrderValueShort" = "Valor médio por pedido";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "Itens vendidos";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "Vendas líquidas";
+
+/* Metric picker sentinel that hides the corresponding widget metric slot. */
+"storeWidgets.metric.none" = "Nenhuma";
+
+/* Accessibility label for a downward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.decreased" = "Caiu %1$@";
+
+/* Accessibility label for an upward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.increased" = "Subiu %1$@";
+
+/* Accessibility label for a metric trend that did not change between the current and previous period. */
+"storeWidgets.metricTrend.unchanged" = "Não alterada";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "Fazer login";
@@ -14069,20 +14738,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "Faça login para ver as estatísticas de hoje.";
 
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.stats.description" = "Loja de estatísticas do WooCommerce";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.stats.displayName" = "Estatísticas";
+
 /* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
 "storeWidgets.storeInfoInlineWidget.noData" = "Receita: ⚠ Sem dados";
 
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "Receita: %1$@";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.storeInfoRectangularWidget.netSales" = "Vendas líquidas";
-
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Sem dados";
 
-/* Title label when the widget can't fetch data. */
-"storeWidgets.unableToFetchView.unableToFetch" = "Não é possível buscar as estatísticas de hoje";
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.storeInfoRectangularWidget.totalSales" = "Total de vendas";
+
+/* Widget description, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.description" = "Acompanhe as tendências da loja na tela de bloqueio.";
+
+/* Widget title, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.displayName" = "Tendências";
+
+/* Label when the Trends rectangular lock-screen widget cannot fetch data. */
+"storeWidgets.trendsRectangularWidget.noData" = "Sem dados";
+
+/* Title label when the home-screen stats widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetchStats" = "Não foi possível obter as estatísticas";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "%1$@ em estoque";
@@ -14121,6 +14805,228 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Teste gratuito";
 
+/* Message shown after user rates a bot response as helpful */
+"supportChatFeedbackRow.helpful" = "Útil";
+
+/* Message shown after user rates a bot response as not helpful */
+"supportChatFeedbackRow.notHelpful" = "Não é útil";
+
+/* Accessibility label for thumbs up button to rate bot response as helpful */
+"supportChatFeedbackRow.rateHelpful" = "Avaliar como útil";
+
+/* Accessibility label for thumbs down button to rate bot response as not helpful */
+"supportChatFeedbackRow.rateNotHelpful" = "Avaliar como inútil";
+
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "Chat sem título";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "Você ainda não conversou com o suporte.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "Histórico do chat";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "Conversar por chat com o suporte";
+
+/* Title of the web view to update WooCommerce plugin from support chat */
+"supportChatHostingController.updateWooCommerce" = "Atualizar WooCommerce";
+
+/* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
+"supportChatMessageRow.failedAccessibilityLabel" = "Não enviada. %1$@";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "Todas as verificações foram concluídas sem problemas.";
+
+/* Message shown when the merchant has marked a support chat as resolved */
+"supportChatView.chatResolvedMessage" = "Esta conversa foi marcada como resolvida.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "Falar com o suporte";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "Continuar para o chat";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "Diagnóstico concluído";
+
+/* Cancel button in the support chat error alert */
+"supportChatView.errorDismiss" = "Ignorar";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "Erro";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "Parece que você precisa de mais ajuda. Deseja entrar em contato com a equipe de suporte?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "Olá! Eu sou o bot de suporte móvel do Woo. Com o que você está tendo problemas hoje?";
+
+/* Confirmation button for marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.confirm" = "Marcar como resolvida";
+
+/* Message for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.message" = "Isso encerrará as ações de chat desta conversa.";
+
+/* Title for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.title" = "Marcar conversa como resolvida?";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "Digite uma mensagem…";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "Continuando conversa anterior";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "Executando diagnóstico…";
+
+/* Message shown when a support ticket has already been created for this chat */
+"supportChatView.ticketCreatedMessage" = "Um tíquete de suporte foi criado para este chat. Responderemos por e-mail.";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "Conversar por chat com o suporte";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.contactSupport" = "Falar com o suporte";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
+"supportChatView.toolbar.markResolved" = "Marcar como resolvida";
+
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.aiChatConnectionErrorMessage" = "Não foi possível conectar ao chat com IA no momento.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "Olá! Eu sou o bot de suporte móvel do Woo. Com o que posso ajudar hoje?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "Descreva seu problema com mais detalhes para que eu possa ajudar.";
+
+/* Error message shown when the AI support chat rate limit (HTTP 429) is hit */
+"supportChatViewModel.rateLimitErrorMessage" = "Você atingiu o limite de conversas. Tente novamente mais tarde.";
+
+/* Message shown by the bot when a support chat answer appears to have solved the merchant's issue */
+"supportChatViewModel.resolvedPromptMessage" = "Marque a conversa como resolvida se o problema for resolvido ou envie uma mensagem se você tiver outras dúvidas.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "Ativar dados analíticos";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "Ativar notificações de pedidos";
+
+/* Action button to open the store push notification preferences screen */
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "Preferências de notificação";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "Abrir configurações";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "Registrar dispositivo";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "Tentar novamente";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "Configurar Jetpack";
+
+/* Action button to update the WooCommerce plugin */
+"supportDiagnosticsService.action.updateWooCommercePlugin" = "Atualizar WooCommerce";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "Não foi possível verificar sua configuração de dados analíticos.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "O WooCommerce Analytics não está ativado na sua loja.\n\nOs dados analíticos, como estatísticas de pedido e receita, não estarão disponíveis até que sejam ativados.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "Não conseguimos trabalhar de forma adequada com a resposta do seu site.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "Seu dispositivo não parece estar registrado para notificações por push.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "Há um problema no seu site.\n\nEntre em contato com o provedor de hospedagem para obter mais ajuda.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "O plugin do Jetpack não parece estar ativo no seu site.\n\nAs notificações por push exigem uma conexão ativa do Jetpack.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "Parece que você não está conectado à Internet.\n\nVerifique se seu Wi-Fi está ligado. Se você estiver usando dados móveis, verifique se a opção está ativada nas configurações do seu dispositivo.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "Há um problema na sua conexão ao Jetpack.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "Não foi possível verificar suas configurações de notificação.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "Notificações por push não são permitidas para este aplicativo.\n\nAtive-as nas configurações do seu dispositivo para receber notificações de pedidos.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "As notificações de pedido não estão ativadas para esta loja.\n\nAtive-as para receber alertas quando novos pedidos chegarem.";
+
+/* Message when some store push notification preferences are disabled */
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "Algumas preferências de notificação por push estão desativadas para esta loja.\n\nAbra suas preferências para escolher quais notificações você deseja receber.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "Seu site está demorando muito para responder.\n\nEntre em contato com o provedor de hospedagem para obter mais ajuda.";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "Seu plugin do WooCommerce precisa ser atualizado para ativar as notificações por push.\n\nAtualize o WooCommerce para a versão %1$@ ou mais recente e tente fazer o registro novamente.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "Não é possível se conectar ao WordPress.com no momento.\n\nTente novamente em alguns minutos.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "Verificação da configuração de dados analíticos";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "Conexão à Internet";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "Busca por produtos em sua loja";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "Verificação das configurações de notificação";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "Conexão ao seu site";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "Busca pelos pedidos do seu site";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "Conexão aos servidores do WordPress.com";
+
+/* Button on the transcript consent alert that dismisses without taking action */
+"supportEscalationCoordinator.cancel" = "Cancelar";
+
+/* Button on the transcript consent alert that opens the support contact form */
+"supportEscalationCoordinator.contactForm" = "Formulário de contato";
+
+/* Loading message shown while creating a support ticket */
+"supportEscalationCoordinator.creatingTicket" = "Criando solicitação de suporte…";
+
+/* Button on the ticket created alert */
+"supportEscalationCoordinator.gotIt" = "Entendi";
+
+/* Button on the transcript consent alert that sends the chat transcript as a support request */
+"supportEscalationCoordinator.sendTicket" = "Enviar solicitação";
+
+/* Alert message shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedMessage" = "Recebemos sua solicitação de suporte. Responderemos por e-mail o mais rápido possível.";
+
+/* Alert title shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedTitle" = "Solicitação enviada.";
+
+/* Message for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentMessage" = "Podemos criar uma solicitação de suporte usando esta transcrição do chat, ou você pode abrir o formulário de contato e inserir os detalhes.";
+
+/* Title for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentTitle" = "Enviar este chat para o suporte?";
+
+/* Header text before the chat transcript in support ticket description */
+"supportEscalationCoordinator.transcriptHeader" = "Veja a seguir a transcrição de uma sessão de suporte com a IA no aplicativo:";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Entendi";
 
@@ -14151,11 +15057,41 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "Não é possível criar solicitações de suporte agora. Tente novamente mais tarde.";
 
+/* Subject line for auto-created support tickets for card reader/IPP issues */
+"supportFormViewModel.subject.cardReader" = "Solicitação de suporte para leitor de cartão";
+
+/* Subject line for auto-created support tickets for mobile app issues */
+"supportFormViewModel.subject.mobileApp" = "Solicitação de suporte para aplicativos móveis";
+
+/* Subject line for auto-created support tickets for other plugin/extension issues */
+"supportFormViewModel.subject.otherPlugin" = "Solicitação de suporte para plugins";
+
+/* Subject line for auto-created support tickets for WooCommerce plugin issues */
+"supportFormViewModel.subject.wooCommercePlugin" = "Solicitação de suporte para plugins do WooCommerce";
+
+/* Subject line for auto-created support tickets for WooPayments issues */
+"supportFormViewModel.subject.wooPayments" = "Solicitação de suporte do WooPayments";
+
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Não é possível criar solicitações de suporte agora. Tente novamente mais tarde.";
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "Carregamento de dados analíticos";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "Carregamento de pedidos";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "Carregamento de produtos";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "Outro";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "Recebimento de notificações por push";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Relatório de status do sistema";
@@ -14406,9 +15342,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Visualizar detalhes do produto";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "Cancelar";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "Eu concordo com os %1$@.";
 
@@ -14418,26 +15351,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "Também concordo com o %1$@.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "Confirmar e continuar";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "Ocorreu um erro inesperado ao confirmar sua aceitação. Tente novamente.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "Erro ao confirmar aceitação";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "Para começar a fazer envios deste endereço com a UPS®, você precisa concordar com os seguintes termos e condições:";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "itens proibidos";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "Tentar novamente";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "Origem do envio";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "Acordo de tecnologia da UPS®";
@@ -14475,9 +15393,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "Falha ao carregar os dados da loja";
 
-/* Net sales title on the watch store stats screen. */
-"watch.mystore.netSales.title" = "Vendas líquidas";
-
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Tentar novamente";
 
@@ -14486,6 +15401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Today title on the watch store stats screen. */
 "watch.mystore.today.title" = "Hoje";
+
+/* Total sales title on the watch store stats screen. */
+"watch.mystore.totalSales.title" = "Total de vendas";
 
 /* Title when there is an error loading an order notification on the watch app */
 "watch.notification.order.error" = "Ocorreu um erro ao carregar a notificação";
@@ -14928,6 +15846,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when loading shipping label rates failed on the shipping label creation screen */
 "wooShipping.createLabels.rates.failedLoadingDataError" = "Não foi possível carregar as taxas de envio";
 
+/* Error message when shipping rates fail to load because the destination address name is invalid. */
+"wooShipping.createLabels.rates.invalidDestinationNameError" = "Não foi possível carregar as taxas de envio. Adicione um nome e sobrenome ao endereço de destino e tente novamente.";
+
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressMessage" = "Precisamos saber o destino do pacote para mostrar as taxas de envio disponíveis.";
 
@@ -15120,6 +16041,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "Descrição";
 
+/* Warning text when the customs item description is too long for USPS domestic mail shipments */
+"wooShipping.customsItems.descriptionLengthWarning" = "A descrição deve ter 30 caracteres ou menos.";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "Código tarifário HS";
 
@@ -15180,6 +16104,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.originAddresses.unverified" = "Endereço não verificado";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.removingFailure" = "Não foi possível remover o pacote";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShipping.packageStarToggle.retry" = "Tentar novamente";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.savingFailure" = "Não foi possível salvar o pacote";
+
 /* Button to navigate to the custom package screen in the shipping label creation flow */
 "wooShipping.packagesSelectionView.createCustomPackageCTA" = "Criar pacote personalizado";
 
@@ -15222,14 +16155,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "Envios fracionados";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "Não foi possível remover o pacote";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "Tentar novamente";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "Não foi possível salvar o pacote";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Insira um ITN válido em um destes formatos: AES X12345678901234 ou NOEEI 30.37(a).";
@@ -15432,7 +16362,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "Quer começar um novo site?";
 
-/* Error message that describes an unknown error had occured */
+/* Error message that describes an unknown error had occurred */
 "wordpress-api.error.unknown" = "Ocorreu um erro. Tente novamente mais tarde.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */

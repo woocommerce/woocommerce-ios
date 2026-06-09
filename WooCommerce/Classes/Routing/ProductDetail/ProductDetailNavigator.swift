@@ -39,12 +39,15 @@ final class ProductDetailNavigator {
     ///   - presentationStyle: How to present **native** detail (ignored for web).
     ///   - isReadOnly: Whether the native screen should be read-only.
     ///   - onDelete: Optional callback invoked after a successful product delete.
+    ///   - onDuplicate: Optional callback invoked with the new duplicate after a successful product duplication,
+    ///     letting the caller decide how to open it (native flow only).
     /// - Returns: A ready-to-present view controller (native or web).
     func makeDestination(product: Product,
                          presentationStyle: Presentation = .push,
                          isReadOnly: Bool,
                          onDismissWeb: (() -> Void)? = nil,
-                         onDelete: (() -> Void)? = nil) -> UIViewController {
+                         onDelete: (() -> Void)? = nil,
+                         onDuplicate: ((Product) -> Void)? = nil) -> UIViewController {
 
         let viewController: UIViewController
         if shouldOpenInWeb(product: product) {
@@ -52,13 +55,13 @@ final class ProductDetailNavigator {
             viewController = coordinator.viewController(product: product) {
                 onDismissWeb?()
             }
-
         } else {
             let coordinator = coordinatorFactory.nativeCoordinator()
             viewController = coordinator.viewController(product: product,
                                                         presentationStyle: presentationStyle,
                                                         isReadOnly: isReadOnly,
-                                                        onDelete: onDelete)
+                                                        onDelete: onDelete,
+                                                        onDuplicate: onDuplicate)
         }
 
         return viewController

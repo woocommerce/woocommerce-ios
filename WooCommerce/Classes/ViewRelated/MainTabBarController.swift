@@ -8,6 +8,7 @@ import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSLockStateKey
 
 
 /// Enum representing the individual tabs
@@ -98,7 +99,7 @@ final class MainTabBarController: UITabBarController {
     /// For picking up the child view controller's status bar styling
     /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
     ///
-    public override var childForStatusBarStyle: UIViewController? {
+    override public var childForStatusBarStyle: UIViewController? {
         return nil
     }
 
@@ -133,6 +134,11 @@ final class MainTabBarController: UITabBarController {
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
 
+    /// One-shot signal that the POS tab should auto-reopen at cold launch if the persisted
+    /// lock state for the active site is true. Flipped to false after the first attempt so
+    /// subsequent site switches don't keep yanking the user back into POS.
+    private var needsPOSAutoReopenCheck = true
+
     private let bookingsContainerController = TabContainerController()
 
     private let hubMenuContainerController = TabContainerController()
@@ -159,6 +165,17 @@ final class MainTabBarController: UITabBarController {
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
+
+    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) on phones
+    /// where the POS visibility check is short-circuited and would otherwise not run the
+    /// refresher. iPad goes through `POSTabVisibilityChecker` which refreshes inline before
+    /// reading the cache.
+    private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
+        CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
+        )
+    }()
+    private var cardPresentExpansionRefreshTask: Task<Void, Never>?
 
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
@@ -219,6 +236,7 @@ final class MainTabBarController: UITabBarController {
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
         bookingsEligibilityCheckTask?.cancel()
+        cardPresentExpansionRefreshTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -433,7 +451,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsSelectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -454,7 +472,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsReselectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
@@ -550,6 +568,8 @@ extension MainTabBarController {
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
+        case .storeStock:
+            navigateToProductDetails(using: notification)
         default:
             break
         }
@@ -636,6 +656,30 @@ extension MainTabBarController {
         })
     }
 
+    static func navigateToProductDetails(using notification: PushNotification) {
+        guard let productID = notification.meta?.identifier(forKey: .product) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its product ID!")
+            return
+        }
+
+        switchToProductsTab {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+            }
+        }
+    }
+
+    private static func presentProductDetails(productID: Int64, siteID: Int64) {
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+
+        let model: ProductLoaderViewController.Model = .product(productID: productID)
+        let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        tabBar.rootTabViewController(tab: .products).present(productNavController, animated: true)
+    }
+
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
@@ -711,11 +755,37 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case let analyticsDestination as AnalyticsHubDestination:
+            navigateTo(.myStore) { [weak self] in
+                self?.presentAnalyticsHub(for: analyticsDestination)
+            }
         case is POSPromotionDestination:
             presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {
+        let analyticsHubVC: AnalyticsHubHostingViewController
+        switch destination {
+        case .focusedCard(let card, let range):
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                selectionType: range,
+                focusedCard: card,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        case .defaultHub:
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                timeRange: .today,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        }
+        dashboardNavigationController.pushViewController(analyticsHubVC, animated: true)
     }
 
     private func presentPOSPromotionModal() {
@@ -827,7 +897,37 @@ private extension MainTabBarController {
 
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
+                refreshCardPresentExpansionEligibilityIfNeeded(for: site)
             }
+    }
+
+    /// Refreshes the IPP country expansion eligibility cache for phones, where the
+    /// POS visibility check is skipped. On iPad the visibility checker handles this
+    /// inline before reading the cache, so we no-op to avoid a duplicate dispatch.
+    func refreshCardPresentExpansionEligibilityIfNeeded(for site: Site) {
+        guard !isPad else { return }
+        cardPresentExpansionRefreshTask?.cancel()
+        cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let siteSettings = await waitForSiteSettings(siteID: site.siteID)
+            guard !Task.isCancelled else { return }
+            let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
+            await cardPresentExpansionRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
+        }
+    }
+
+    /// Waits for the first non-empty site settings event matching the given site ID.
+    /// Mirrors `POSTabVisibilityChecker.waitForSiteSettingsRefresh()`.
+    private func waitForSiteSettings(siteID: Int64) async -> [SiteSetting] {
+        for await event in ServiceLocator.selectedSiteSettings.settingsStream.values {
+            guard event.siteID == siteID,
+                  event.settings.isNotEmpty,
+                  event.source != .initialLoad else {
+                continue
+            }
+            return event.settings
+        }
+        return []
     }
 
     func observeSiteIDForViewControllers() {
@@ -885,6 +985,7 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
+        autoReopenPOSIfNeeded(siteID: siteID)
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -1118,6 +1219,25 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
         posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
+    }
+}
+
+private extension MainTabBarController {
+    /// Reopen POS on cold launch if the active site's persisted key says it was locked.
+    func autoReopenPOSIfNeeded(siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
+        guard needsPOSAutoReopenCheck else { return }
+        // Consume the one-shot only when the active site is the locked one.
+        guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+        needsPOSAutoReopenCheck = false
+
+        // Capture the just-created coordinator weakly so a site change between
+        // scheduling and execution can't redirect this auto-reopen at a different
+        // coordinator. If the active site changes mid-flight the old coordinator
+        // is released and the closure no-ops.
+        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
+            coordinator?.onTabSelected()
+        }
     }
 }
 

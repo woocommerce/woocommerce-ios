@@ -101,7 +101,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     // Sku validation
     private var skuIsValid: Bool = true
     private var globalUniqueIdIsValid: Bool = true
-    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
+    private lazy var throttler = Throttler(seconds: 0.5)
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

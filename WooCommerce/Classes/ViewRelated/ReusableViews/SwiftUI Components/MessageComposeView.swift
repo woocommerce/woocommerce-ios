@@ -33,7 +33,6 @@ struct MessageComposeView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: MFMessageComposeViewController,
                                 context: UIViewControllerRepresentableContext<MessageComposeView>) {
-
     }
 
     /// Returns a Boolean that indicates whether the current device is able to send a text.

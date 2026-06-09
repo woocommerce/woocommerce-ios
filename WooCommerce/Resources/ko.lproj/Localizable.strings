@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-07 09:58:15+0000 */
+/* Translation-Revision-Date: 2026-06-02 09:56:35+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -664,7 +664,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message presented when an unexpected error occurs with the store's payment gateway. */
 "An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "주문 결제를 캡처할 때 스토어의 결제 게이트웨이에서 예기치 않은 오류가 발생했습니다.";
 
-/* A failure reason for when the error that occured wasn't able to be determined. */
+/* A failure reason for when the error that occurred wasn't able to be determined. */
 "An unknown error occurred." = "알 수 없는 오류가 발생했습니다.";
 
 /* Analytics toggle title in the privacy screen.
@@ -1072,6 +1072,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice message shown when a phone call cannot be initiated. */
 "BookingDetailsView.phoneNumberOptions.error" = "이 번호로 전화를 걸 수 없습니다.";
+
+/* 'Reschedule' button title in appointment details section in booking details view. */
+"BookingDetailsView.rescheduleBookingButton.title" = "예약 일정 조정";
 
 /* Retry Action */
 "BookingDetailsView.retry.action" = "다시 시도";
@@ -2713,7 +2716,7 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "주문 #%1$d 업데이트 중 오류 발생";
 
-/* String indicating that a payout date is an estimate. Shown on whe WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
+/* String indicating that a payout date is an estimate. Shown on the WooPayments Payouts View. %1$@ will be replaced with a locale-appropriate date string. */
 "Est. %1$@" = "%1$@(으)로 예상";
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
@@ -4886,9 +4889,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "리더를 충전하세요.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "스마트폰이 iOS 16.7 이상을 실행하는 iPhone XS 이상이라는 요구 사항을 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
-
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "상품권의 잔액을 확인하세요.";
 
@@ -5595,6 +5595,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "필수 항목";
+
+/* Navigation bar title for the reschedule booking screen. */
+"RescheduleBookingView.title" = "예약 일정 조정";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "활동 로그 재설정";
@@ -8485,6 +8488,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder text for address search bar. */
 "addressMapPicker.search.placeholder" = "주소 검색";
 
+/* Accessibility label for the loading spinner shown while a chat-linked detail is being fetched */
+"aiAssistant.loadingPlaceholder.accessibilityLabel" = "로드 중";
+
+/* Error shown when the chat client needs a WPCOM token but the merchant signed in with an application password or wp-org credentials. */
+"aiAssistant.token.error.missingWPCOMCredentials" = "AI 도우미에는 WPCOM 자격 증명이 필요합니다.";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "평상시";
 
@@ -8652,6 +8661,60 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when a video file failed to export from the local library. */
 "assetExportError.failedToExportVideo.message" = "선택한 미디어를 내보내지 못했습니다.";
+
+/* Placeholder shown on the assistant customer row when the customer has no email. */
+"assistant.externalViews.customer.noEmailPlaceholder" = "등록된 이메일 없음";
+
+/* Plural orders-count badge on the assistant customer row. %1$@ is the count. */
+"assistant.externalViews.customer.orderCount.plural" = "주문 %1$@개";
+
+/* Singular orders-count badge on the assistant customer row. */
+"assistant.externalViews.customer.orderCount.singular" = "주문 1개";
+
+/* Customer name shown on the assistant order card when the order has no registered customer. */
+"assistant.externalViews.order.guestCustomer" = "비회원";
+
+/* Fallback shown on the assistant order card when a registered customer has no billing name and no email on file. %@ is the customer id. */
+"assistant.externalViews.order.registeredCustomerWithID" = "고객 #%@";
+
+/* Subtitle on the assistant product row inlining the stock count. %1$@ is the count. */
+"assistant.externalViews.product.stock.countFormat" = "재고 %1$@개 있음";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.inStock" = "재고 있음";
+
+/* Accessory on the assistant product row when stock quantity is known. %1$@ is the count. */
+"assistant.externalViews.product.stock.left" = "%1$@개 남음";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.onBackorder" = "이월 주문 시";
+
+/* Stock status badge on the assistant product card. */
+"assistant.externalViews.product.stock.outOfStock" = "재고 없음";
+
+/* Variations badge on the assistant product row for variable products. %1$@ is the count. */
+"assistant.externalViews.product.variations.plural" = "변형 %1$@개";
+
+/* Variations badge on the assistant product row when the product has exactly one variation. */
+"assistant.externalViews.product.variations.singular" = "변형 1개";
+
+/* Trailing column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.avgOrderValue" = "평균 주문 값";
+
+/* Placeholder shown on the assistant analytics card when a metric is missing from the tool result. */
+"assistant.externalViews.stats.metricUnavailable" = "-";
+
+/* Trailing column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.netSales" = "순매출액";
+
+/* Shell title shared by the assistant revenue and orders analytics cards. */
+"assistant.externalViews.stats.shellTitle" = "분석";
+
+/* Leading column title on the assistant orders analytics card. */
+"assistant.externalViews.stats.totalOrders" = "총 주문 수";
+
+/* Leading column title on the assistant revenue analytics card. */
+"assistant.externalViews.stats.totalSales" = "총매출액";
 
 /* Label displayed on audio media items. */
 "audio" = "오디오";
@@ -9716,7 +9779,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "색상 또는 크기 등 변형이 있는 상품";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
+/* Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.title" = "변형 상품";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
@@ -9815,6 +9878,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected */
 "cardPresentPaymentsModal.success.saveReceiptAndContinue" = "영수증 저장 및 계속";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"cardReader.error.unsupportedMobileDeviceConfiguration.message" = "스마트폰이 18.0.1 이상을 실행하는 iPhone XS 이상이라는 요구 사항을 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
+
+/* Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt */
+"cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2" = "다시 연결 취소";
+
+/* Settings > Manage Card Reader > Connected Reader > Button title shown while cancellation is in progress */
+"cardReaderSettingsConnectedViewController.cancellingReconnectionButtonTitle" = "취소 중...";
+
+/* Settings > Manage Card Reader > Connected Reader > Status message when reader is reconnecting */
+"cardReaderSettingsConnectedViewController.reconnectingText" = "카드 리더에 다시 연결 중...";
+
+/* Button to cancel confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.cancel" = "취소";
+
+/* Button to confirm all agreements on the carrier Terms and Conditions view */
+"carrierTermsView.confirmButton" = "확인하고 계속하기";
+
+/* Message of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorMessage" = "수락을 확인하는 동안 예기치 않은 오류가 발생했습니다. 다시 시도해 주세요.";
+
+/* Title of the alert when confirming agreements on the carrier Terms and Conditions view fails */
+"carrierTermsView.errorTitle" = "수락 확인 오류";
+
+/* Button to retry confirming agreements on the carrier Terms and Conditions view */
+"carrierTermsView.retry" = "다시 시도";
+
+/* Title label for the origin address on the carrier Terms and Conditions view */
+"carrierTermsView.shippingFrom" = "배송 출발지";
 
 /* Title for the toggle that specifies whether to add a note to the order with the change data. */
 "cashPaymentTenderView.addNoteToggle.title" = "주문 메모에 거래 상세 정보 기록";
@@ -9966,6 +10059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "새 주문 놓치지 않기";
 
+/* Button to open AI chat support in the connectivity tool screen */
+"connectivityTool.chatWithSupport" = "지원팀과 채팅";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "연결 문제 해결";
 
@@ -10027,7 +10123,7 @@ which should be translated separately and considered part of this sentence. */
 "connectivityToolViewModel.errorMessage.default" = "사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
 
 /* Message when the device is not registered for push notifications in the connectivity tool */
-"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "기기의 푸시 알림이 등록되지 않은 것 같습니다.\n\n로그아웃 후 다시 로그인하여 다시 등록해 보세요.";
+"connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN" = "회원님의 기기가 푸시 알림에 등록되지 않은 것 같습니다.";
 
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "젯팩 연결에서 문제가 발생했습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
@@ -10311,6 +10407,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "고객";
 
+/* Accessibility label for the AI Assistant entry card on the dashboard. */
+"dashboardCard.aiAssistant.accessibilityLabel" = "AI 도우미 열기";
+
+/* Placeholder text on the AI Assistant entry card on the dashboard, styled like a chat input. */
+"dashboardCard.aiAssistant.placeholder" = "회원님의 스토어 소개 요청...";
+
+/* Name for the AI Assistant dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.aiAssistant" = "AI 도우미";
+
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze 캠페인";
 
@@ -10570,6 +10675,18 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss a feature announcement card */
 "featureAnnouncementCardView.hideContent" = "이 콘텐츠 숨기기";
 
+/* The checkbox on the FedEx Terms of Service view. The placeholder is a link to the FedEx Terms of Service. Reads as: 'I agree to the FedEx Terms of Service.' */
+"fedExTermsView.checkbox" = "%1$@에 동의합니다.";
+
+/* Message on the FedEx Terms of Service view */
+"fedExTermsView.message" = "FedEx 배송 레이블을 구매하려면 다음 약관에 동의해야 합니다.";
+
+/* Link to the terms of service on the FedEx Terms of Service view */
+"fedExTermsView.termsOfService" = "FedEx 서비스 약관";
+
+/* Title of the FedEx Terms of Service view */
+"fedExTermsView.title" = "FedEx 서비스 약관";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "적용";
 
@@ -10803,6 +10920,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "검색에서 반환된 리더에 IP 주소가 없으며 연결할 수 없습니다.";
+
+/* Subtitle for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.subtitle" = "AI 도우미의 도움을 받기";
+
+/* Title for the AI support chat row on the Help screen */
+"helpAndSupport.aiSupportChat.title" = "지원팀과 채팅";
+
+/* Subtitle for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.subtitle" = "이전 지원 대화 다시 보기";
+
+/* Title for the support chat history row on the Help screen */
+"helpAndSupport.chatHistory.title" = "채팅 기록";
+
+/* Subtitle for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.subtitle" = "사이트가 앱에서 작동하는지 테스트";
+
+/* Title for the site compatibility check row on the Help screen */
+"helpAndSupport.siteCompatibility.title" = "사이트 호환성 확인";
 
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "예약";
@@ -11150,6 +11285,108 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken label to indicate switch control is turned on */
 "newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "고객에게 이메일로 메모 보내기 켜기";
 
+/* Subtitle of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "값과 관계없이 주문마다 소리로 알려줍니다.";
+
+/* Title of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "모든 새 주문";
+
+/* Subtitle of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.subtitle" = "스토어에 주문이 들어올 때 알림을 받으세요.";
+
+/* Title of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.title" = "알림 활성화";
+
+/* Subtitle of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "기준값을 초과하는 주문으로 필터링하세요.";
+
+/* Title of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.title" = "고가의 주문만";
+
+/* Section header for new-order notification customization options. */
+"newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "알림 받기";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "최솟값(%1$@)";
+
+/* Placeholder for the order-total threshold text field. */
+"newOrderNotificationPreferencesDetailView.threshold.placeholder" = "금액";
+
+/* Title of the new-order push notification preferences detail screen. */
+"newOrderNotificationPreferencesDetailView.title" = "새 주문";
+
+/* Subtitle of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "리뷰마다 소리로 알려줍니다.";
+
+/* Title of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "모든 새 리뷰";
+
+/* Subtitle of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "스토어에 대한 리뷰가 남겨질 때 알림을 받으세요.";
+
+/* Title of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.title" = "알림 활성화";
+
+/* Subtitle of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "선택한 평점 이하의 리뷰로 필터링하세요.";
+
+/* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "평점이 낮은 리뷰만";
+
+/* Section header for new-review notification customization options. */
+"newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "알림 받기";
+
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "별 %1$@개";
+
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "별 %1$@개";
+
+/* Title of the new-review push notification preferences detail screen. */
+"newReviewNotificationPreferencesDetailView.title" = "새 리뷰";
+
+/* Subtitle of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.subtitle" = "상품 재고 변경에 주의가 필요할 때 알림을 받으세요.";
+
+/* Title of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.title" = "재고 알림 활성화";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "스토어 전체 기준값 편집";
+
+/* Subtitle of the low-stock toggle row. */
+"newStockNotificationPreferencesDetailView.lowStock.subtitle" = "상품 변형이 재고 부족 기준값에 도달하는 때입니다.";
+
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "상품에서는 자체 기준값 또는 스토어 전체 기준값({00A0}%1$@)을 사용할 수 있습니다. %2$@";
+
+/* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.title" = "재고 부족";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "스토어 전체 기준값 보기";
+
+/* Section header for stock notification customization options. */
+"newStockNotificationPreferencesDetailView.notifyMeFor.header" = "알림 받기";
+
+/* Subtitle of the on-backorder toggle row. */
+"newStockNotificationPreferencesDetailView.onBackorder.subtitle" = "고객이 현재 품절인 아이템을 주문할 때입니다.";
+
+/* Title of the toggle row that enables notifications when a product is backordered. */
+"newStockNotificationPreferencesDetailView.onBackorder.title" = "이월 주문";
+
+/* Subtitle of the out-of-stock toggle row. */
+"newStockNotificationPreferencesDetailView.outOfStock.subtitle" = "상품 변형이 0에 도달할 때입니다.";
+
+/* Title of the toggle row that enables notifications when a product reaches the no-stock amount. */
+"newStockNotificationPreferencesDetailView.outOfStock.title" = "품절";
+
+/* Title of the stock push notification preferences detail screen. */
+"newStockNotificationPreferencesDetailView.title" = "재고";
+
+/* Title of the authenticated webview shown when the merchant taps 'Edit store-wide threshold' under the Low stock toggle. */
+"newStockNotificationPreferencesHostingController.editThreshold.webTitle" = "재고 부족 기준값";
+
 /* Cancel button title for the tax rate selector */
 "newTaxRateSelectorView.cancelButton" = "취소";
 
@@ -11182,6 +11419,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
+
+/* VoiceOver label for the back button on a push notification preferences detail screen. */
+"notificationDetailHostingController.back" = "뒤로";
+
+/* Title of the Save bar button on a push notification preferences detail screen. */
+"notificationDetailHostingController.save" = "저장";
 
 /* Button to cancel saving site settings on the notification settings view */
 "notificationSettingsView.cancel" = "취소";
@@ -11484,6 +11727,15 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "배송";
 
+/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
+"orderFulfillmentStatus.badge.fulfilled" = "처리됨";
+
+/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
+"orderFulfillmentStatus.badge.fulfilledWithDate" = "%1$@에 처리됨";
+
+/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
+"orderFulfillmentStatus.badge.unfulfilled" = "처리 안 됨";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "쿠폰";
 
@@ -11562,9 +11814,6 @@ which should be translated separately and considered part of this sentence. */
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "대면 결제";
 
-/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "거래당 단 2.70%% + $0.10로 대면 결제를 수락하세요. Pro로 업그레이드하여 실시간 재고 및 주문 동기화를 통해 스마트폰과 전체 POS(판매 지점) 시스템의 눌러서 결제 기능을 이용하세요. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "주문이 현금으로 결제되었습니다. 고객이 %1$@을(를) 결제했습니다. %2$@이(가) 거슬러줄 잔돈이었습니다.";
 
@@ -11616,6 +11865,36 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "편집";
 
+/* Description of the completed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.completedDescription.v2" = "완료로 표시된 날짜를 기준으로 주문 수를 계산합니다.";
+
+/* Order type option that counts orders by the date they were marked as completed. */
+"performanceCardOrderTypeBottomSheet.completedTitle" = "완료된 주문";
+
+/* Description shown below the title of the order type bottom sheet on the dashboard Performance card. */
+"performanceCardOrderTypeBottomSheet.description.v2" = "선택한 시간 범위에 대한 성과 지표에 포함할 주문을 선택합니다.";
+
+/* Clarification text shown below the order type options on the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.footer" = "스토어 전체 설정으로, WooCommerce 관리자 분석 설정의 \"날짜 유형\" 옵션도 제어합니다.";
+
+/* Description of the paid orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.paidDescription.v2" = "주문이 결제된 날짜를 기준으로 주문 수를 계산합니다.";
+
+/* Order type option that counts orders by the date they were paid. */
+"performanceCardOrderTypeBottomSheet.paidTitle" = "결제된 주문";
+
+/* Description of the placed orders option in the dashboard Performance card bottom sheet. */
+"performanceCardOrderTypeBottomSheet.placedDescription" = "주문이 접수되거나 생성된 날짜를 기준으로 주문 수를 계산합니다.";
+
+/* Order type option that counts orders by the date they were placed (created). */
+"performanceCardOrderTypeBottomSheet.placedTitle" = "주문됨";
+
+/* Title of the bottom sheet that lets the merchant choose which order date type to include in dashboard analytics. */
+"performanceCardOrderTypeBottomSheet.title.v2" = "주문 날짜 유형";
+
+/* Inline error shown when saving the analytics order type setting fails. */
+"performanceCardOrderTypeBottomSheet.updateError" = "주문 유형을 업데이트할 수 없습니다. 다시 시도해 주세요.";
+
 /* Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name. */
 "pluginDetailsViewModel.updatePluginTitle" = "%1$@ 업데이트";
 
@@ -11654,6 +11933,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "알 수 없음";
+
+/* Button to cancel card reader reconnection, shown on the Point of Sale Checkout */
+"pointOfSale.cardPresent.cancelReconnection.button.title" = "다시 연결 취소";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.canceledOnReader.title" = "리더에서 결제 취소됨";
@@ -11756,6 +12038,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Instruction to merchants shown on the Point of Sale Checkout when card reader is not connected. */
 "pointOfSale.cardPresent.readerNotConnectedOrCash.instruction" = "이 결제를 처리하려면 리더를 연결하거나 현금을 선택하세요.";
+
+/* Title shown on the Point of Sale Checkout when the card reader is reconnecting */
+"pointOfSale.cardPresent.reconnecting.title" = "리더 다시 연결 중...";
 
 /* Message shown on the Point of Sale checkout while the order is being validated. */
 "pointOfSale.cardPresent.validatingOrder.message" = "주문 확인하기";
@@ -12006,14 +12291,17 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "쿠폰이 적용되지 않음";
 
-/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "예약";
+/* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
+"pointOfSale.floatingButtons.cancelReconnection.button.title" = "다시 연결 취소";
 
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "기다려 주세요.";
 
+/* The title of the floating button to indicate that the reader reconnection is being cancelled. */
+"pointOfSale.floatingButtons.cancellingReconnection.title" = "취소 중...";
+
 /* The title of the menu button to disconnect a connected card reader, as confirmation. */
-"pointOfSale.floatingButtons.disconnectCardReader.button.title" = "리더 연결 해제";
+"pointOfSale.floatingButtons.disconnectCardReader.button.title.2" = "리더 연결 해제";
 
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "POS 종료";
@@ -12030,14 +12318,41 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "연결 해제 중";
 
+/* The title of the floating button to indicate that the reader is attempting to reconnect. */
+"pointOfSale.floatingButtons.readerReconnecting.title" = "다시 연결 중…";
+
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "설정";
+
+/* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
+"pointOfSale.item.edit.button.accessibilityLabel" = "편집";
 
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "로드 중";
+
+/* Confirmation button on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.confirmButton" = "결제됨으로 표시";
+
+/* Body of the Point of Sale confirmation for manually marking an order as paid. %1$@ is the formatted order total, e.g. $24.99. */
+"pointOfSale.markAsPaid.confirmation.message" = "그러면 %1$@ 주문이 완료됨으로 표시됩니다. 이미 다른 방법으로 결제된 경우에만 사용하세요.";
+
+/* Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.noteKeyboardDone" = "완료";
+
+/* Label above the optional note text field on the Point of Sale Mark as paid confirmation, where the merchant can record reconciliation context for the order. */
+"pointOfSale.markAsPaid.confirmation.noteLabel" = "참고 사항 추가(선택 사항)";
+
+/* Placeholder shown inside the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.notePlaceholder" = "예: Maria의 은행 계좌 이체, 참조 4827";
+
+/* Title of the Point of Sale confirmation for manually marking an order as paid. */
+"pointOfSale.markAsPaid.confirmation.title" = "주문을 결제됨으로 표시할까요?";
+
+/* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
+"pointOfSale.markAsPaid.failureMessage" = "이 주문을 결제됨으로 표시할 수 없습니다. 다시 시도하세요.";
 
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "하나 이상의 제품";
@@ -12087,6 +12402,18 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "제품 더 보기";
 
+/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "이미 다른 방법으로 결제되었을 때 사용하세요.";
+
+/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
+"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "주문을 결제됨으로 표시";
+
+/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "스마트폰에서 결제할 QR 코드를 고객에게 보여주세요.";
+
+/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
+"pointOfSale.otherPaymentMethods.scanToPay.title" = "Scan to Pay";
+
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "주문 로드 중";
 
@@ -12108,12 +12435,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
 "pointOfSale.paymentError.noOrder" = "아직 주문이 로드되지 않았습니다. 영수증을 보내기 전에 결제를 시작하세요.";
 
-/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "예약으로 돌아가기";
-
-/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "완료";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "주문 편집";
 
@@ -12126,11 +12447,53 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "%1$@의 현금 결제가 완료되었습니다.";
 
+/* Message shown to users when an order is marked as paid manually. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.markAsPaid.1" = "%1$@ 결제가 수신됨으로 표시되었습니다.";
+
+/* Message shown to users when a scan-to-pay payment is confirmed. %1$@ is a placeholder for the order total, e.g $10.50. Please include %1$@ in your formatted string */
+"pointOfSale.paymentSuccessful.message.scanToPay.1" = "Scan to Pay의 %1$@ 결제가 완료되었습니다.";
+
 /* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
 "pointOfSale.paymentSuccessful.receiptSent" = "영수증이 %1$@(으)로 발송되었습니다.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "결제 성공";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "%1$@ 이용";
+
+/* Error message shown when confirming a scan-to-pay payment fails in Point of Sale. */
+"pointOfSale.scanToPay.failedToConfirmPayment.errorMessage" = "결제 확인 중 오류가 발생했습니다. 다시 시도하세요.";
+
+/* Button to confirm a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.markpaymentcompleted.button.title" = "결제 완료로 표시";
+
+/* Subtitle showing the order total on the Point of Sale scan-to-pay screen. Reads as 'Total: $1.23' */
+"pointOfSale.scanToPay.navigation.subtitle" = "합계: %1$@";
+
+/* Title for the Point of Sale scan-to-pay screen */
+"pointOfSale.scanToPay.navigation.title" = "Scan to Pay";
+
+/* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
+"pointOfSale.scanToPay.orderNote" = "고객이 Scan to Pay를 통해 결제함";
+
+/* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
+"pointOfSale.scanToPay.preparing.message" = "QR 코드 생성 중…";
+
+/* Message shown when no payment URL is available to render a QR code in Point of Sale scan-to-pay. */
+"pointOfSale.scanToPay.qrUnavailable.message" = "이 주문에 대한 QR 코드를 생성할 수 없습니다. 다른 결제 수단을 사용해 보세요.";
+
+/* Instruction text shown above the QR code in the Point of Sale scan-to-pay screen. */
+"pointOfSale.scanToPay.scan.instruction" = "고객에게 스마트폰으로 QR 코드를 스캔하여 결제를 완료해 달라고 요청하세요.";
+
+/* Status text shown after the backend confirms a scan-to-pay payment, while the app finalizes success. */
+"pointOfSale.scanToPay.status.confirming" = "결제가 수신되었습니다. 확인 중...";
+
+/* Status text shown when polling for scan-to-pay payment fails (network etc.). Polling will retry. */
+"pointOfSale.scanToPay.status.error" = "결제 상태를 확인할 수 없습니다. 재시도 중…";
+
+/* Status text shown under the scan-to-pay QR code while polling for payment. */
+"pointOfSale.scanToPay.status.waiting" = "결제 대기 중...";
 
 /* Button title for sending a receipt */
 "pointOfSale.sendreceipt.button.title" = "보내기";
@@ -12150,17 +12513,47 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "취소";
 
+/* Phone-only floating button to open the cart from the items list. %1$d is the cart item count. */
+"pointOfSaleDashboard.phone.cart" = "장바구니(%1$d)";
+
+/* Phone-only header title shown above the totals view during checkout. */
+"pointOfSaleDashboard.phone.checkoutTitle" = "계산";
+
+/* VoiceOver label for the phone-only Point of Sale overflow menu button. */
+"pointOfSaleDashboard.phone.menu.accessibilityLabel" = "추가 옵션";
+
+/* Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab. */
+"pointOfSaleDashboard.phone.menu.createCoupon" = "쿠폰 생성";
+
+/* Phone-only overflow menu item to exit Point of Sale. */
+"pointOfSaleDashboard.phone.menu.exit" = "POS 종료";
+
+/* Phone-only overflow menu item to open the historical orders view. */
+"pointOfSaleDashboard.phone.menu.orders" = "주문";
+
+/* Phone-only overflow menu item to open Point of Sale settings. */
+"pointOfSaleDashboard.phone.menu.settings" = "설정";
+
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "취소";
 
 /* Title for the payment method used when collecting cash payment in Point of Sale. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "대면 결제";
 
+/* Title for the payment method used when manually marking an order as paid in Point of Sale. */
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "기타";
+
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
 
 /* Text displayed on Point of Sale settings when card reader battery is unknown. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "알 수 없음";
+
+/* Menu option to cancel card reader reconnection in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancelReconnectionTitle" = "다시 연결 취소";
+
+/* Button title shown when card reader reconnection is being cancelled in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.cancellingReconnectionTitle" = "취소 중...";
 
 /* Subtitle for card reader connect button when no reader is connected. */
 "pointOfSaleSettingsHardwareDetailView.cardReaderConnectSubtitle" = "카드 리더 연결 및 결제 수락 시작";
@@ -12213,6 +12606,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle.1" = "기기 이름";
 
+/* Button title shown when card reader is reconnecting in POS settings. */
+"pointOfSaleSettingsHardwareDetailView.reconnectingButtonTitle" = "다시 연결 중…";
+
 /* Subtitle describing barcode scanner documentation in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "POS의 바코드 스캔에 대해 더 알아보기";
 
@@ -12242,6 +12638,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for address field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.address" = "주소";
+
+/* Navigation title for the web view used to edit POS receipt information. */
+"pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle" = "영수증 설정";
 
 /* Label for email field in Point of Sale settings. */
 "pointOfSaleSettingsStoreDetailView.email" = "이메일";
@@ -12299,6 +12698,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Store section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "스토어";
+
+/* Primary button in the Point of Sale add custom amount form that adds the amount to the order. */
+"pos.addCustomAmount.addButton" = "사용자 정의 금액 추가";
+
+/* Label above the amount field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.amountLabel" = "금액";
+
+/* Title of the taxable toggle in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.chargeTaxes" = "세금 청구";
+
+/* Default name used for a Point of Sale custom amount when the merchant leaves the name field empty. */
+"pos.addCustomAmount.defaultName" = "사용자 정의 금액";
+
+/* Title of the full-screen Point of Sale form when editing an existing custom amount on the order. */
+"pos.addCustomAmount.editTitle" = "사용자 정의 금액 편집";
+
+/* Label above the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.nameLabel" = "이름";
+
+/* Placeholder for the name field in the Point of Sale add custom amount form. */
+"pos.addCustomAmount.namePlaceholder" = "사용자 정의 금액";
+
+/* Title of the full-screen Point of Sale form for adding a custom amount to the order. */
+"pos.addCustomAmount.title" = "사용자 정의 금액";
+
+/* Primary button in the Point of Sale custom amount form when editing, that saves the changes to the order. */
+"pos.addCustomAmount.updateButton" = "사용자 정의 금액 업데이트";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "바코드 스캔 중";
@@ -12468,207 +12894,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "스캐너 테스트";
 
-/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d시간";
-
-/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d시간 %2$d분";
-
-/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d분";
-
-/* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "참석";
-
-/* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "불참";
-
-/* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "다음날";
-
-/* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "전날";
-
-/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@, 눌러서 캘린더 열기";
-
-/* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "메모 추가";
-
-/* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "참석 상태";
-
-/* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "출석을 표시하여 정확한 보고서를 유지하고 예약 추세를 파악하세요.";
-
-/* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "참석 업데이트에 실패했습니다. 다시 시도해 주세요.";
-
-/* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "참석";
-
-/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "예약 #%lld";
-
-/* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "예약 메모";
-
-/* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "비공개 메모입니다. 고객과 공유되지 않습니다.";
-
-/* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "예약 취소";
-
-/* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "결제 수령";
-
-/* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "이메일 주소 복사";
-
-/* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "전화번호 복사";
-
-/* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "고객";
-
-/* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "기간";
-
-/* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "메모 편집";
-
-/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "이메일: %1$@";
-
-/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "비회원";
-
-/* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "환불 발행";
-
-/* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "위치";
-
-/* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "추가 작업";
-
-/* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "참고";
-
-/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "전화: %1$@";
-
-/* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "팀 구성원";
-
-/* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "불참";
-
-/* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "주문 보기";
-
-/* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "예약을 눌러 상세 정보 보기";
-
-/* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "예약됨";
-
-/* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "취소됨";
-
-/* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "완료됨";
-
-/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "더 많은 예약을 로드할 수 없음";
-
-/* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "예약을 로드할 수 없음";
-
-/* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "예약";
-
-/* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "검색과 일치하는 예약을 찾을 수 없습니다. 검색 기간을 조정해 보세요.";
-
-/* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "예약 없음";
-
-/* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "이 날짜의 예약이 여기에 표시됩니다.";
-
-/* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "이 날짜의 예약 없음";
-
-/* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "예약 검색";
-
-/* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "예약 검색";
-
-/* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "추가";
-
-/* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "메모 추가";
-
-/* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "메모 편집";
-
-/* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "메모 입력";
-
-/* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "저장";
-
-/* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "메모를 저장하지 못했습니다. 다시 시도해 주세요.";
-
-/* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "인증 무효화됨";
-
-/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "인증됨";
-
-/* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "실패";
-
-/* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "결제";
-
-/* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "환불";
-
-/* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "미결제";
-
-/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "예약이 취소되었습니다.";
-
-/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@의 %2$@에 대한 #%1$@ 예약이 취소됩니다.";
-
-/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
-"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%3$@의 %2$@에 대한 #%1$@ 예약(%4$@)이 취소됩니다.";
-
-/* Accessibility label for close button on cancel booking confirmation modal. */
-"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "닫기";
-
-/* Button to confirm and proceed with booking cancellation. */
-"pos.cancelBookingConfirmation.confirmButton" = "예, 예약을 취소합니다.";
-
-/* Secondary message informing that the customer will receive an email notification about the cancellation. */
-"pos.cancelBookingConfirmation.customerNotificationMessage" = "고객에게 이메일을 통해 알립니다.";
-
-/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
-"pos.cancelBookingConfirmation.inlineErrorMessage" = "예약을 취소할 수 없습니다. 다시 시도해 주세요.";
-
-/* Button to dismiss the cancel booking confirmation and keep the booking. */
-"pos.cancelBookingConfirmation.keepButton" = "아니요, 유지합니다.";
-
-/* Title for the cancel booking confirmation modal in POS. */
-"pos.cancelBookingConfirmation.title" = "이 예약을 취소하시겠습니까?";
-
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "pos.cardReader.updateAddress.webview.title" = "우커머스 설정";
 
@@ -12696,6 +12921,15 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an unselected checkbox */
 "pos.checkbox.unselected.accessibilityLabel" = "선택되지 않음";
 
+/* Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected. */
+"pos.checkout.paymentMethod.cardReader" = "카드 리더";
+
+/* Title for the cash-payment button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.cashPayment" = "현금 결제";
+
+/* Title for the Tap to Pay button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "인터넷에 연결되지 않음";
 
@@ -12714,23 +12948,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "판매 지점 모드를 종료할까요?";
 
-/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "거래당 단 2.70% + $0.10로 대면 결제를 수락하세요.";
-
-/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Pro로 업그레이드하여 실시간 재고 및 주문 동기화를 통해 스마트폰과 전체 POS(판매 지점) 시스템의 눌러서 결제 기능을 이용하세요.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS 종료";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS 활성화";
-
-/* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "더 알아보기";
-
-/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Pro 요금제 필수";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "다시 시도";
@@ -12756,11 +12978,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "로드할 수 없음";
 
-/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "요금제 업그레이드";
-
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "인터넷 연결을 확인하고 다시 시도하세요.";
+
+/* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.subtitle" = "일회성 청구를 추가하세요.";
+
+/* Title for the row in the Point of Sale products list that opens the custom amount form. */
+"pos.itemList.customAmountEntryRow.title" = "사용자 정의 금액";
 
 /* Title appearing on the coupon list screen when there's an error enabling coupons setting in the store. */
 "pos.itemList.enablingCouponsErrorTitle.2" = "쿠폰을 활성화할 수 없음";
@@ -12825,7 +13050,13 @@ which should be translated separately and considered part of this sentence. */
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "카탈로그 새로 고침";
 
-/* Title at the top of the Point of Sale product selector screen. */
+/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.description" = "8월 1일부터는 POS(판매 시점 관리)에 우커머스 10.5.0 이상이 필요합니다. 중단 없이 접근하려면 업데이트하세요.";
+
+/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
+"pos.itemlistview.sunsetWarning.title" = "바로 우커머스 업데이트";
+
+/* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "상품";
 
 /* Text shown when there's nothing to show before a search term is typed in POS */
@@ -12840,6 +13071,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button text to exit Point of Sale when there's a critical error */
 "pos.listError.exitButton" = "POS 종료";
 
+/* Title shown on the POS lock screen. */
+"pos.lockScreen.enterYourPIN.title" = "PIN 입력";
+
+/* Title shown on the POS manager approval modal. */
+"pos.managerOverride.approvalRequired.title" = "승인 필요";
+
+/* Accessibility label for dismissing the POS manager approval screen. */
+"pos.managerOverride.close" = "닫기";
+
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "해제";
 
@@ -12852,8 +13092,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "주문";
 
-/* Section title for the products list */
-"pos.orderDetailsLoadingView.productsTitle" = "상품";
+/* Section title for the items list (products and custom amounts) shown in the loading skeleton */
+"pos.orderDetailsLoadingView.itemsTitle" = "아이템";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "합계";
@@ -12863,6 +13103,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "환불 생성 실패";
+
+/* Accessibility label for a custom amount row. %1$@ is the name, %2$@ is the formatted total. */
+"pos.orderDetailsView.customAmountRow.accessibilityLabel" = "%1$@, %2$@";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "눌러서 이메일로 주문 영수증 보내기";
@@ -12882,6 +13125,12 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "환불 발행";
 
+/* Label for items subtotal (products and custom amounts) in the totals section */
+"pos.orderDetailsView.itemsLabel" = "아이템";
+
+/* Section title for the order items list (products and custom amounts) in order details */
+"pos.orderDetailsView.itemsTitle" = "아이템";
+
 /* Subtitle shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.subtitle" = "다시 시도해 주세요.";
 
@@ -12900,20 +13149,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "수량: %1$@개, 각 %2$@개, 총 %3$@개";
 
-/* Label for products subtotal in the totals section */
-"pos.orderDetailsView.productsLabel" = "상품";
-
-/* Section title for the products list */
-"pos.orderDetailsView.productsTitle" = "상품";
-
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "환불 #%1$d";
 
-/* Section title for the refunded products list in order details */
-"pos.orderDetailsView.refundedProductsTitle" = "환불된 제품";
+/* Section title for the refunded items list (products and custom amounts) in order details */
+"pos.orderDetailsView.refundedItemsTitle" = "환불된 아이템";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "합계";
@@ -12927,11 +13170,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "주문을 로드할 수 없음";
 
-/* Description for refund via a specific payment method. %@ is the payment method name */
-"pos.orderListController.refund.viaPaymentMethodFormat" = "%@ 이용";
-
-/* Button text for opening an information view when orders when list is empty. */
-"pos.orderListView.emptyOrdersButtonTitle2" = "더 알아보기";
+/* Button text for reloading the orders list when it's empty. */
+"pos.orderListView.emptyOrdersButtonTitle.3" = "새로 고침";
 
 /* Subtitle appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchSubtitle.2" = "해당 이름으로 된 주문을 찾을 수 없습니다. 검색어를 변경해 보세요.";
@@ -12940,7 +13180,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderListView.emptyOrdersSearchTitle" = "주문을 찾을 수 없음";
 
 /* Subtitle appearing when there are no orders to display. */
-"pos.orderListView.emptyOrdersSubtitle2" = "스토어 판매를 늘리는 방법을 살펴보세요.";
+"pos.orderListView.emptyOrdersSubtitle.3" = "POS에서 판매 처리를 시작하면 여기에 주문이 표시됩니다.";
 
 /* Title appearing when there are no orders to display. */
 "pos.orderListView.emptyOrdersTitle" = "아직 주문 없음";
@@ -12966,8 +13206,62 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for a search field in the Orders view. */
 "pos.orderListView.searchFieldPlaceholder" = "주문 검색";
 
+/* Fallback label shown for a fee on a Point of Sale order whose name is missing or blank. */
+"pos.orderMapper.defaultFeeName" = "사용자 정의 금액";
+
+/* Button to cancel the current POS refund selection and select another order. */
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "환불 취소";
+
+/* Button to keep editing the current POS refund selection instead of selecting another order. */
+"pos.ordersView.cancelRefundAlert.keepEditing.button" = "계속 편집하기";
+
+/* Message for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.message" = "선택한 현재 환불이 취소됩니다.";
+
+/* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.title" = "이 환불을 취소할까요?";
+
+/* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.subtitle" = "블루투스 리더를 연결하여 카드 결제를 받으세요.";
+
+/* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.title" = "카드 리더";
+
+/* Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.subtitle" = "이 기기 외부에서 수령된 결제를 기록하세요.";
+
+/* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.title" = "결제됨으로 주문 표시";
+
+/* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.subtitle" = "스마트폰에서 결제할 고객에게 QR 코드를 보여주세요.";
+
+/* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.title" = "스캔하여 결제";
+
+/* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
+"pos.otherPaymentMethods.sheet.title" = "기타 결제 수단";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "사용 가능한 옵션";
+
+/* Accessibility label for the delete key on the POS PIN numpad */
+"pos.pinEntry.delete.accessibilityLabel" = "삭제";
+
+/* Accessibility label for the PIN dots on the POS PIN numpad */
+"pos.pinEntry.dots.accessibilityLabel" = "PIN 항목";
+
+/* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
+"pos.pinEntry.dots.accessibilityValue" = "%1$d\/%2$d개 숫자 입력됨";
+
+/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+"pos.pinEntry.error.generic" = "문제가 발생했습니다. 다시 시도하세요.";
+
+/* VoiceOver announcement when an entered POS PIN is incorrect. */
+"pos.pinEntry.error.invalidPIN" = "올바르지 않은 PIN입니다. 다시 시도하세요.";
+
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
+"pos.pinEntry.lockout.countdown" = "너무 많이 시도했습니다. %1$@ 후에 다시 시도하세요.";
 
 /* Text appearing on the coupons list screen as subtitle when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponSearchSubtitle.3" = "해당 이름과 일치하는 쿠폰을 찾을 수 없습니다. 검색어를 조정해 보세요.";
@@ -13014,23 +13308,101 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "확인";
 
-/* Button to go back to the previous screen */
-"pos.refundConfirmationView.backButton" = "뒤로";
+/* Error shown when POS tries to process a second refund while another refund is in progress. */
+"pos.refund.processing.error.alreadyInProgress" = "환불이 이미 진행 중입니다. 마무리될 때까지 기다려 주세요.";
 
-/* Accessibility label for close button on refund confirmation modal */
-"pos.refundConfirmationView.closeButton.accessibilityLabel" = "닫기";
+/* Error shown when POS tries to process a refund without selected refund items. */
+"pos.refund.processing.error.emptySelection" = "환불할 아이템을 하나 이상 선택하세요.";
+
+/* Error shown when POS tries to process a refund without prepared order refund data. */
+"pos.refund.processing.error.missingPreparation" = "환불을 준비할 수 없습니다. 다시 시도해 보세요.";
+
+/* Button shown in POS to return to refund review after a card reader refund is canceled. */
+"pos.refundCardPresent.backToRefund.button.title" = "환불로 돌아가기";
+
+/* Button shown in POS to cancel a failed card reader refund. */
+"pos.refundCardPresent.cancelRefund.button.title" = "환불 취소";
+
+/* Title shown in POS when a refund is canceled on the card reader. */
+"pos.refundCardPresent.cancelledOnReader.title" = "리더에서 환불 취소됨";
+
+/* Message shown in POS when a card has been inserted for a refund. */
+"pos.refundCardPresent.cardInserted.message" = "카드 삽입됨";
+
+/* Message shown in POS while validating a refund before using a card reader. */
+"pos.refundCardPresent.checkingRefund.message" = "환불 확인 중";
+
+/* Button shown in POS to dismiss a card reader refund message. */
+"pos.refundCardPresent.close.button.title" = "닫기";
+
+/* Title shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.gettingReady.title" = "준비 중";
+
+/* Instruction shown in POS when a card should be inserted for a refund. */
+"pos.refundCardPresent.insert.message" = "환불할 카드 삽입";
+
+/* Message shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.pleaseWait.message" = "기다려 주세요.";
+
+/* Message shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.preparingReader.message" = "환불용 리더 준비 중";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.presentCard.message" = "환불할 카드 제시";
+
+/* Title shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.processingRefund.title" = "환불 처리 중";
+
+/* Title shown in POS when the card reader is ready to process a refund. */
+"pos.refundCardPresent.readyForRefund.title" = "환불 준비됨";
+
+/* Title shown in POS when a card reader refund fails. */
+"pos.refundCardPresent.refundFailed.title" = "환불 실패";
+
+/* Instruction shown in POS when a card should be tapped for a refund. */
+"pos.refundCardPresent.tap.message" = "환불할 카드 가볍게 대기";
+
+/* Instruction shown in POS when a card should be tapped or inserted for a refund. */
+"pos.refundCardPresent.tapInsert.message" = "환불할 카드 가볍게 대기 또는 삽입";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.tapSwipeInsert.message" = "환불할 카드 가볍게 대기, 긋기 또는 삽입";
+
+/* Button shown in POS to retry a failed card reader refund. */
+"pos.refundCardPresent.tryRefundAgain.button.title" = "다시 환불 시도";
+
+/* Warning shown on the refund confirmation screen. */
+"pos.refundConfirmationView.actionCannotBeUndone" = "이 작업은 실행을 취소할 수 없습니다.";
+
+/* Accessibility label for the back button on the refund confirmation screen */
+"pos.refundConfirmationView.backButton.accessibilityLabel" = "뒤로";
+
+/* Button to cancel and dismiss the refund confirmation screen */
+"pos.refundConfirmationView.cancelButton" = "취소";
+
+/* Error shown when POS cannot confirm whether a card reader refund succeeded. */
+"pos.refundConfirmationView.cardPresent.unableToConfirmRefund" = "환불에 성공했는지 확인할 수 없습니다. 다시 시도하기 전에 주문을 확인하세요.";
 
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "예. 진행";
 
-/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat.1" = "%1$@ %2$@을(를) 환불하시겠습니까? 이 작업은 취소할 수 없습니다.";
+/* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationQuestionFormat" = "%1$@ %2$@ 환불을 원하시나요?";
+
+/* Message shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderMessage" = "환불용 리더 준비 중";
+
+/* Title shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderTitle" = "리더 준비 중";
 
 /* Message shown while the refund is being processed. */
 "pos.refundConfirmationView.processingMessage" = "환불을 처리하는 동안 기다려 주세요.";
 
 /* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.processingTitleFormat" = "%@ 환불 중";
+
+/* Title shown when an in-person refund fails. */
+"pos.refundConfirmationView.readerErrorTitle" = "환불 실패";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "%@ 환불";
@@ -13050,11 +13422,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for tax row in refund detail */
 "pos.refundDetailView.taxLabel" = "세금";
 
+/* Accessibility label for the back button on the refund error screen */
+"pos.refundErrorView.backButton.accessibilityLabel" = "뒤로";
+
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "취소";
-
-/* Accessibility label for close button on refund error screen */
-"pos.refundErrorView.closeButton.accessibilityLabel" = "닫기";
 
 /* Button to retry the refund creation */
 "pos.refundErrorView.retryButton" = "다시 시도";
@@ -13078,8 +13450,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility state when item is not selected for refund */
 "pos.refundItemRow.unselectedState" = "환불 대상으로 선택되지 않음";
 
-/* Accessibility label for close button on refund items selection modal */
-"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "닫기";
+/* Accessibility label for the back button on the refund items selection screen */
+"pos.refundItemsSelectionView.backButton.accessibilityLabel" = "뒤로";
 
 /* Button to continue with selected items for refund */
 "pos.refundItemsSelectionView.continueButton" = "계속";
@@ -13096,11 +13468,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "환불할 아이템 선택";
 
+/* Accessibility label for the back button on the refund loading screen */
+"pos.refundLoadingView.backButton.accessibilityLabel" = "뒤로";
+
 /* Message shown while loading refund information */
 "pos.refundLoadingView.loadingMessage" = "상세 정보 로드 중...";
 
-/* Accessibility label for close button on nothing to refund modal */
-"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "닫기";
+/* Title shown while loading refund information */
+"pos.refundLoadingView.loadingTitle" = "환불 준비 중";
+
+/* Button to leave the card-present refund error screen and return to the order. */
+"pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "주문으로 돌아가기";
+
+/* Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.subtitle" = "다시 시도하기 전에 주문으로 돌아가서 확인하세요.";
+
+/* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.title" = "환불을 확인할 수 없음";
+
+/* Accessibility label for the back button on the nothing to refund screen */
+"pos.refundNothingToRefundView.backButton.accessibilityLabel" = "뒤로";
 
 /* Button to dismiss the nothing to refund screen */
 "pos.refundNothingToRefundView.doneButton" = "완료";
@@ -13110,6 +13497,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when there are no items available to refund */
 "pos.refundNothingToRefundView.title" = "환불할 아이템 없음";
+
+/* Accessibility label for the back button shown before connecting a card reader for a refund. */
+"pos.refundReaderDisconnectedView.backButton.accessibilityLabel" = "뒤로";
+
+/* Button to cancel a refund when no card reader is connected. */
+"pos.refundReaderDisconnectedView.cancelButton.title" = "취소";
+
+/* Button to connect to a card reader before processing an in-person refund. */
+"pos.refundReaderDisconnectedView.connectButton.title" = "리더 연결";
+
+/* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.instruction" = "이 환불을 처리하려면 리더를 연결하세요.";
+
+/* Title shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.title" = "리더가 연결되지 않음";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "추가";
@@ -13126,8 +13528,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to add a reason for the refund */
 "pos.refundReviewView.addReasonButton" = "사유 추가";
 
-/* Accessibility label for close button on refund review modal */
-"pos.refundReviewView.closeButton.accessibilityLabel" = "닫기";
+/* Button to go back from the refund review screen to refund item selection */
+"pos.refundReviewView.backButton" = "뒤로";
+
+/* Accessibility label for the back button on the refund review screen */
+"pos.refundReviewView.backButton.accessibilityLabel" = "뒤로";
 
 /* Button to continue with the refund */
 "pos.refundReviewView.continueButton" = "계속";
@@ -13137,9 +13542,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit an existing refund reason */
 "pos.refundReviewView.editReasonButton" = "사유 편집";
-
-/* Button to go back and edit the refund items */
-"pos.refundReviewView.editRefundButton" = "환불 편집";
 
 /* Label for items subtotal row in refund review. %d is the number of items. */
 "pos.refundReviewView.itemsSubtotalFormat" = "아이템 소계(%d개 아이템)";
@@ -13159,8 +13561,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "환불 검토";
 
-/* Accessibility label for close button on refund success screen */
-"pos.refundSuccessView.closeButton.accessibilityLabel" = "닫기";
+/* Fallback name for a custom amount fee line in POS refunds. */
+"pos.refundSubmissionAdaptor.defaultFeeName" = "사용자 정의 금액";
+
+/* Error shown when POS tries to submit a refund without prepared refund data. */
+"pos.refundSubmissionAdaptor.error.missingPreparedRefund" = "환불을 준비할 수 없습니다. 다시 시도해 보세요.";
+
+/* Error shown when POS tries to submit a second refund while another refund is in progress. */
+"pos.refundSubmissionAdaptor.error.refundAlreadyInProgress" = "환불이 이미 진행 중입니다. 마무리될 때까지 기다려 주세요.";
+
+/* Fallback payment method description for POS refunds when no payment method title is available. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "수동 결제";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "%1$@ %2$@ 이용";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "%1$@ 이용";
 
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "완료";
@@ -13179,6 +13596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
 "pos.refundedProductRow.accessibilityLabel" = "%1$@, 수량: %2$@, 각각 %3$@, 환불됨 %4$@";
+
+/* Accessibility label for refunded custom amount/fee row. %1$@ is the custom amount name, %2$@ is the refund total. */
+"pos.refundedProductRow.lumpSumAccessibilityLabel" = "%1$@, 환불된 %2$@";
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
@@ -13209,6 +13629,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
+
+/* Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. The full product name \"Tap to Pay on iPhone\" appears in the hero title above, so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines permit this once the full name has been shown on the same screen. */
+"pos.tapToPay.hero.payButton.v2" = "Tap to Pay로 결제";
+
+/* Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout. */
+"pos.tapToPay.hero.subtitle" = "비접촉 카드 결제를 수락하려면 이 기기를 사용하세요.";
+
+/* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
+"pos.tapToPay.hero.title.v2" = "iPhone의 Tap to Pay";
 
 /* Label for discount in the totals breakdown. */
 "pos.totalsSectionView.discountLabel.v2" = "할인";
@@ -13257,6 +13686,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "할인 총 금액";
+
+/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+"pos.totalsView.otherPaymentMethods.button.title" = "기타 결제 수단";
 
 /* Title for subtotal amount field */
 "pos.totalsView.subtotal" = "소계";
@@ -13350,6 +13782,87 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "업데이트 날짜가 제공되지 않음";
+
+/* Error message when REST API discovery fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API 엔드포인트를 찾을 수 없습니다.";
+
+/* Error message when application passwords are disabled in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsDisabled" = "애플리케이션 비밀번호가 비활성화되어 있습니다.";
+
+/* Error message when application passwords are not available in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.appPasswordsUnavailable" = "애플리케이션 비밀번호를 사용할 수 없습니다.";
+
+/* Error message when REST API is unavailable in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noRESTAPI" = "회원님의 사이트에서 워드프레스 REST API에 접근할 수 없습니다.";
+
+/* Error message when WooCommerce is not active in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.noWooCommerce" = "회원님의 사이트에서 우커머스 API에 접근할 수 없습니다.";
+
+/* Error message when site info lookup fails in the pre-login connectivity tool */
+"preLoginConnectivityTool.error.siteInfoFailed" = "사이트 데이터를 조회할 수 없습니다.";
+
+/* Site info line shown when the site is an eCommerce Garden (CIAB) site */
+"preLoginConnectivityTool.siteInfo.commerceGarden" = "전자상거래 정원 사이트입니다.";
+
+/* Site info line shown when Jetpack is active but not connected */
+"preLoginConnectivityTool.siteInfo.jetpackActiveNotConnected" = "젯팩이 설치되고 활성화되었지만, 연결되지 않았습니다.";
+
+/* Site info line shown when Jetpack is installed and connected */
+"preLoginConnectivityTool.siteInfo.jetpackConnected" = "젯팩이 설치되고 연결되어 있습니다.";
+
+/* Site info line shown when Jetpack is installed but not active */
+"preLoginConnectivityTool.siteInfo.jetpackInstalledNotActive" = "젯팩이 설치되었지만, 활성화되지 않았습니다.";
+
+/* Site info line shown when Jetpack is not installed */
+"preLoginConnectivityTool.siteInfo.jetpackNotInstalled" = "젯팩이 설치되지 않았습니다.";
+
+/* Site info line shown when the site is a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressDetected" = "워드프레스 사이트가 감지되었습니다.";
+
+/* Site info line shown when the site is not a WordPress site */
+"preLoginConnectivityTool.siteInfo.wordPressNotDetected" = "이 사이트에서 워드프레스가 감지되지 않았습니다.";
+
+/* Success info when REST API discovery succeeds in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.apiDiscovered" = "REST API 엔드포인트가 검색되었습니다.";
+
+/* Success info when application passwords are likely available in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable" = "애플리케이션 비밀번호가 지원되는 것 같습니다.";
+
+/* Success info when REST API check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.restAPIAvailable" = "워드프레스 REST API를 사용할 수 있습니다.";
+
+/* Success info when WooCommerce check passes in the pre-login connectivity tool */
+"preLoginConnectivityTool.success.wooCommerceActive" = "회원님의 사이트에서 우커머스가 활성화되어 있습니다.";
+
+/* Title for the REST API discovery test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.apiDiscovery" = "API 검색";
+
+/* Title for the application passwords test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.applicationPasswords" = "애플리케이션 비밀번호";
+
+/* Title for the site info test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.siteInfo" = "사이트 정보";
+
+/* Title for the WooCommerce API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wooCommerceAPI" = "우커머스 플러그인";
+
+/* Title for the WordPress REST API test card in the pre-login connectivity tool */
+"preLoginConnectivityTool.test.wordPressRESTAPI" = "워드프레스 REST API";
+
+/* Chat with AI support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.chatWithSupport" = "지원팀과 채팅";
+
+/* Contact support button in the pre-login connectivity tool */
+"preLoginConnectivityToolView.contactSupport" = "지원 문의";
+
+/* Subtitle on the pre-login connectivity tool screen. The placeholder is the site address */
+"preLoginConnectivityToolView.subtitle" = "우커머스 앱과 호환하는지 회원님의 %1$@ 사이트를 확인하는 중입니다.";
+
+/* Navigation title for the pre-login connectivity tool */
+"preLoginConnectivityToolView.title" = "사이트 호환성";
+
+/* Button to view technical diagnostic details for a failed connectivity check */
+"preLoginConnectivityToolView.viewDetails" = "상세 정보 보기";
 
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "닫기";
@@ -13738,6 +14251,90 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "상품 추가";
 
+/* Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications. */
+"pushNotificationPreferencesView.enableNotificationsCTA" = "알림 활성화";
+
+/* Message shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.message" = "연결을 확인하고 다시 시도해 보세요.";
+
+/* Title shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.title" = "알림 기본 설정을 로드할 수 없음";
+
+/* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newOrders.accessibilityHint" = "새 주문 알림 사용자 정의";
+
+/* Title of the row that toggles new-order push notifications. */
+"pushNotificationPreferencesView.newOrders.title" = "새 주문";
+
+/* VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newReviews.accessibilityHint" = "새 리뷰 알림 사용자 정의";
+
+/* Title of the row that toggles new-review push notifications. */
+"pushNotificationPreferencesView.newReviews.title" = "새 리뷰";
+
+/* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
+"pushNotificationPreferencesView.notificationsDisabled" = "Woo에 대한 알림이 비활성화되었음";
+
+/* Label indicating notifications are enabled, shown at the top of the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsEnabled" = "알림 활성화됨";
+
+/* Footer of the notifications-enabled section on the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsFooter" = "알림 및 원격 푸시 알림이 포함됩니다.";
+
+/* Detail text shown on a notification row when notifications are disabled. */
+"pushNotificationPreferencesView.off" = "끄기";
+
+/* Button on the error state to retry loading push notification preferences. */
+"pushNotificationPreferencesView.retry" = "다시 시도";
+
+/* Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app. */
+"pushNotificationPreferencesView.settingsAppCTA" = "변경";
+
+/* VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.stock.accessibilityHint" = "재고 알림 사용자 정의";
+
+/* Title of the row that toggles stock push notifications. */
+"pushNotificationPreferencesView.stock.title" = "재고";
+
+/* Title of the push notification preferences screen. */
+"pushNotificationPreferencesView.title" = "푸시 알림";
+
+/* Message of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeMessage" = "다시 시도해 보세요.";
+
+/* Title of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeTitle" = "알림 기본 설정을 업데이트할 수 없음";
+
+/* Detail text for the New orders row when notifications fire for every order. */
+"pushNotificationPreferencesViewModel.storeOrder.allOrders" = "모든 주문";
+
+/* Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500. */
+"pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "%1$@ 초과 주문";
+
+/* Detail text for the New reviews row when notifications fire for every review. */
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "모든 리뷰";
+
+/* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "별 %1$@개 이하";
+
+/* Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular" = "별 %1$@개 이하";
+
+/* Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.all" = "모든 재고 알림";
+
+/* Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.lowStock" = "재고 부족";
+
+/* Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.none" = "알림 없음";
+
+/* Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.onBackorder" = "이월 주문";
+
+/* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "품절";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "완료";
 
@@ -13819,6 +14416,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the Sales channel filter option, when selecting 'WP-Admin' orders */
 "salesChannelFilter.row.wpAdmin.description" = "WP 관리자";
 
+/* Accessibility label for the clear button in the search header */
+"searchHeader.clearButton.accessibilityLabel" = "지우기";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "취소";
 
@@ -13839,6 +14439,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the Notification Settings screen */
 "settingsViewController.notificationSettings" = "알림 설정";
+
+/* Navigates to the Push Notifications preferences screen */
+"settingsViewController.pushNotifications" = "푸시 알림";
 
 /* Navigates to Themes screen. */
 "settingsViewController.themesRow" = "테마";
@@ -13988,14 +14591,26 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "성과 숨기기";
 
-/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
-"storePerformanceView.netSales" = "순매출액";
-
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "선택한 날짜에 수익 없음";
 
+/* Accessibility hint for the order type chevron button on the dashboard Performance card. */
+"storePerformanceView.orderTypeAccessibilityHint" = "성과 합계에 포함되는 주문을 변경하려면 하단 시트를 엽니다.";
+
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "주문";
+
+/* Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card. */
+"storePerformanceView.revenueType.accessibilityLabel" = "수익 유형";
+
+/* Segmented control option that displays Gross sales (before taxes, shipping, refunds, discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.gross" = "총계";
+
+/* Segmented control option that displays Net revenue (after refunds and discounts) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.net" = "순액";
+
+/* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
+"storePerformanceView.revenueType.total" = "합계";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "스토어의 성과를 표시할 수 없음";
@@ -14011,6 +14626,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to edit the items to be displayed on the store picker */
 "storePicker.editList" = "편집";
+
+/* Body text for the store picker error screen when the permission check fails */
+"storePickerError.permissionErrorBody" = "권한 확인 중 문제가 발생했습니다. 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "기존 스토어 연결";
@@ -14028,40 +14646,88 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "선택한 수익";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValueNetSales" = "순매출액";
+"storeStatsChart.yValueTotalSales" = "총매출액";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "수익 없음";
 
-/* Widget description, displayed when selecting which widget to add */
-"storeWidgets.description" = "우커머스 통계 오늘";
+/* Fallback label for a store stats widget site entity when its name is unknown. */
+"storeStatsWidget.storeEntity.fallbackName" = "스토어";
 
-/* Widget title, displayed when selecting which widget to add */
-"storeWidgets.displayName" = "오늘";
+/* Range label for the Last Month option in the Store Stats widget */
+"storeWidgets.dateRange.lastMonth" = "지난달";
+
+/* Compact range label for the previous calendar month option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastMonthCompact.calendarMonth" = "LM";
+
+/* Range label for the Last Week option in the Store Stats widget */
+"storeWidgets.dateRange.lastWeek" = "지난주";
+
+/* Compact range label for the previous calendar week option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.lastWeekCompact.calendarWeek" = "LW";
+
+/* Range label for the Month to Date option in the Store Stats widget */
+"storeWidgets.dateRange.monthToDate" = "월간 누계";
+
+/* Compact range label for the Month to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.monthToDateCompact" = "MTD";
+
+/* Range label for the Today option in the Store Stats widget */
+"storeWidgets.dateRange.today" = "오늘";
+
+/* Compact range label for the Today option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.todayCompact.today" = "오늘";
+
+/* Range label for the Week to Date option in the Store Stats widget */
+"storeWidgets.dateRange.weekToDate" = "주간 누계";
+
+/* Compact range label for the Week to Date option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.weekToDateCompact" = "WTD";
+
+/* Range label for the Yesterday option in the Store Stats widget */
+"storeWidgets.dateRange.yesterday" = "어제";
+
+/* Compact range label for the Yesterday option in the Store Stats lock-screen widget */
+"storeWidgets.dateRange.yesterdayCompact.yesterday" = "Yd";
 
 /* Generic store name for the store info widget preview */
 "storeWidgets.infoProvider.myShop" = "내 상점";
 
-/* Range title for the today store info widget */
-"storeWidgets.infoProvider.today" = "오늘";
-
-/* Conversion title label for the store info widget */
+/* Conversion rate metric title for the store info widget. */
 "storeWidgets.infoView.conversion" = "전환";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.infoView.netSales" = "순매출액";
-
-/* Orders title label for the store info widget */
+/* Orders metric title for the store info widget. */
 "storeWidgets.infoView.orders" = "주문";
+
+/* Revenue metric title — gross revenue including taxes and shipping. */
+"storeWidgets.infoView.totalSales" = "총매출액";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "%1$@ 현재";
 
-/* Title for the button indicator to display more stats in the Today's Stat widget when using accessibility fonts. */
-"storeWidgets.infoView.viewMore" = "더 보기";
-
-/* Visitors title label for the store info widget */
+/* Visitors metric title for the store info widget. */
 "storeWidgets.infoView.visitors" = "방문자";
+
+/* Compact title for the average order value metric, shown on the widget cell. */
+"storeWidgets.metric.averageOrderValueShort" = "평균 주문";
+
+/* Items sold metric title — total units sold in the period. */
+"storeWidgets.metric.itemsSold" = "판매된 아이템";
+
+/* Net sales metric title — revenue excluding tax, shipping, and refunds. */
+"storeWidgets.metric.netSales" = "순매출액";
+
+/* Metric picker sentinel that hides the corresponding widget metric slot. */
+"storeWidgets.metric.none" = "없음";
+
+/* Accessibility label for a downward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.decreased" = "%1$@ 감소";
+
+/* Accessibility label for an upward metric trend. %1$@ is the formatted percentage change. */
+"storeWidgets.metricTrend.increased" = "%1$@ 증가";
+
+/* Accessibility label for a metric trend that did not change between the current and previous period. */
+"storeWidgets.metricTrend.unchanged" = "변경되지 않음";
 
 /* Title label for the login button on the store info widget. */
 "storeWidgets.notLoggedInView.login" = "로그인";
@@ -14069,20 +14735,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget does not have a logged-in store. */
 "storeWidgets.notLoggedInView.notLoggedIn" = "로그인하여 오늘의 통계를 보세요.";
 
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.stats.description" = "우커머스 스토어 통계";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.stats.displayName" = "통계";
+
 /* Title label when the widget can't fetch data. Should fit in 1 line on lock screen */
 "storeWidgets.storeInfoInlineWidget.noData" = "수익: ⚠ 데이터 없음";
 
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "수익: %1$@";
 
-/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
-"storeWidgets.storeInfoRectangularWidget.netSales" = "순매출액";
-
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ 데이터 없음";
 
-/* Title label when the widget can't fetch data. */
-"storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";
+/* Total sales title label for the store info widget — shows revenue including taxes and shipping. */
+"storeWidgets.storeInfoRectangularWidget.totalSales" = "총매출액";
+
+/* Widget description, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.description" = "잠금 화면에서 스토어 트렌드를 추적하세요.";
+
+/* Widget title, displayed when selecting the configurable Store Stats trends widget. */
+"storeWidgets.trends.displayName" = "트렌드";
+
+/* Label when the Trends rectangular lock-screen widget cannot fetch data. */
+"storeWidgets.trendsRectangularWidget.noData" = "데이터 없음";
+
+/* Title label when the home-screen stats widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetchStats" = "통계를 가져올 수 없음";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "재고 %1$@개 있음";
@@ -14121,6 +14802,228 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "무료 평가판";
 
+/* Message shown after user rates a bot response as helpful */
+"supportChatFeedbackRow.helpful" = "도움이 됨";
+
+/* Message shown after user rates a bot response as not helpful */
+"supportChatFeedbackRow.notHelpful" = "도움이 되지 않음";
+
+/* Accessibility label for thumbs up button to rate bot response as helpful */
+"supportChatFeedbackRow.rateHelpful" = "도움이 됨으로 평가";
+
+/* Accessibility label for thumbs down button to rate bot response as not helpful */
+"supportChatFeedbackRow.rateNotHelpful" = "도움이 되지 않음으로 평가";
+
+/* Fallback title for a support chat history row when no title was captured */
+"supportChatHistoryRow.untitledFallback" = "제목 없는 채팅";
+
+/* Empty state message shown when there are no stored support chats */
+"supportChatHistoryView.emptyState" = "아직 지원팀과 채팅하지 않으셨습니다.";
+
+/* Navigation title for the support chat history screen */
+"supportChatHistoryView.title" = "채팅 기록";
+
+/* Navigation title for the AI support chat screen */
+"supportChatHostingController.title" = "지원팀과 채팅";
+
+/* Title of the web view to update WooCommerce plugin from support chat */
+"supportChatHostingController.updateWooCommerce" = "우커머스 업데이트";
+
+/* VoiceOver label for a user chat message that failed to send. %1$@ is the message text. */
+"supportChatMessageRow.failedAccessibilityLabel" = "발송되지 않았습니다. %1$@";
+
+/* Message shown when all diagnostic checks pass */
+"supportChatView.allChecksPassed" = "모든 검사가 문제 없이 완료되었습니다.";
+
+/* Message shown when the merchant has marked a support chat as resolved */
+"supportChatView.chatResolvedMessage" = "이 채팅이 해결됨으로 표시되었습니다.";
+
+/* Button to contact human support from the chat */
+"supportChatView.contactSupport" = "지원 문의";
+
+/* Button to proceed from diagnostics results to chat */
+"supportChatView.continueToChat" = "채팅 계속하기";
+
+/* Header shown when diagnostics have finished running */
+"supportChatView.diagnosticsComplete" = "진단 완료";
+
+/* Cancel button in the support chat error alert */
+"supportChatView.errorDismiss" = "무시";
+
+/* Title for the error alert in support chat */
+"supportChatView.errorTitle" = "오류";
+
+/* Message shown when the bot suggests contacting human support */
+"supportChatView.humanSupportMessage" = "추가적인 도움이 필요하신 것 같습니다. 지원팀에 문의하시겠어요?";
+
+/* Greeting and header for the issue picker in support chat */
+"supportChatView.issuePickerHeader" = "안녕하세요! Woo 모바일 지원 봇입니다. 오늘 어떤 문제가 있으신가요?";
+
+/* Confirmation button for marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.confirm" = "해결됨으로 표시";
+
+/* Message for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.message" = "그러면 이 대화에 대한 채팅 작업이 종료됩니다.";
+
+/* Title for the confirmation alert before marking a support chat as resolved */
+"supportChatView.markResolvedConfirmation.title" = "채팅을 해결됨으로 표시할까요?";
+
+/* Placeholder text for the chat input field */
+"supportChatView.placeholder" = "메시지 입력...";
+
+/* Inline separator shown at the top of a chat that was opened from history, signalling that prior messages follow */
+"supportChatView.resumedChatHeader" = "이전 대화 계속하기";
+
+/* Message shown while running diagnostics in support chat */
+"supportChatView.runningDiagnostics" = "진단 실행 중...";
+
+/* Message shown when a support ticket has already been created for this chat */
+"supportChatView.ticketCreatedMessage" = "이 채팅에 대한 지원 티켓이 생성되었습니다. 이메일을 통해 응답하겠습니다.";
+
+/* Navigation title for the AI support chat screen */
+"supportChatView.title" = "지원팀과 채팅";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.contactSupport" = "지원 문의";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
+"supportChatView.toolbar.markResolved" = "해결됨으로 표시";
+
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.aiChatConnectionErrorMessage" = "지금은 AI 채팅에 연결할 수 없습니다.";
+
+/* Initial greeting message from the AI support bot */
+"supportChatViewModel.greetingMessage" = "안녕하세요! Woo 모바일 지원 봇입니다. 오늘 제가 도와드릴 일이 있나요?";
+
+/* Message prompting user to describe their issue after diagnostics */
+"supportChatViewModel.postDiagnosticsGreeting" = "제가 도와드릴 수 있도록 문제를 자세히 설명해 주세요.";
+
+/* Error message shown when the AI support chat rate limit (HTTP 429) is hit */
+"supportChatViewModel.rateLimitErrorMessage" = "채팅 한도에 도달했습니다. 나중에 다시 시도해 주세요.";
+
+/* Message shown by the bot when a support chat answer appears to have solved the merchant's issue */
+"supportChatViewModel.resolvedPromptMessage" = "문제가 해결되었으면 채팅을 해결됨으로 표시하고, 다른 질문이 있으면 메시지를 남겨주세요.";
+
+/* Action button to enable WooCommerce Analytics */
+"supportDiagnosticsService.action.enableAnalytics" = "분석 활성화";
+
+/* Action button to enable order notifications */
+"supportDiagnosticsService.action.enableOrderNotifications" = "주문 알림 활성화";
+
+/* Action button to open the store push notification preferences screen */
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "알림 기본 설정";
+
+/* Action button to open device notification settings */
+"supportDiagnosticsService.action.openSettings" = "설정 열기";
+
+/* Action button to register the device for push notifications */
+"supportDiagnosticsService.action.registerDevice" = "기기 등록";
+
+/* Action button to retry diagnostic tests */
+"supportDiagnosticsService.action.retryDiagnostics" = "다시 시도";
+
+/* Action button to start the Jetpack setup flow */
+"supportDiagnosticsService.action.setupJetpack" = "젯팩 설정";
+
+/* Action button to update the WooCommerce plugin */
+"supportDiagnosticsService.action.updateWooCommercePlugin" = "우커머스 업데이트";
+
+/* Message when the analytics setting check fails */
+"supportDiagnosticsService.error.analyticsCheckFailed" = "분석 설정을 확인할 수 없습니다.";
+
+/* Message when WooCommerce Analytics is disabled */
+"supportDiagnosticsService.error.analyticsDisabled" = "우커머스 분석이 스토어에서 활성화되지 않았습니다.\n\n수익 및 주문 통계와 같은 분석 데이터는 활성화하지 않으면 사용할 수 없습니다.";
+
+/* Message when there is a decoding error */
+"supportDiagnosticsService.error.decodingError" = "사이트의 응답을 제대로 처리할 수 없습니다.";
+
+/* Message when the device is not registered for push notifications */
+"supportDiagnosticsService.error.deviceNotRegistered" = "기기가 푸시 알림에 등록되지 않은 것 같습니다.";
+
+/* Message when there is a generic error */
+"supportDiagnosticsService.error.generic" = "사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
+/* Message when Jetpack plugin is not active */
+"supportDiagnosticsService.error.jetpackNotActive" = "젯팩 플러그인이 사이트에서 활성 상태가 아닌 것 같습니다.\n\n푸시 알림을 받으려면 젯팩 연결이 활성화되어야 합니다.";
+
+/* Message when there is no internet connection */
+"supportDiagnosticsService.error.noInternet" = "인터넷에 연결되지 않은 것 같습니다.\n\n와이파이가 켜졌는지 확인하세요. 모바일 데이터를 사용 중이라면 기기 설정에서 활성화되었는지 확인하세요.";
+
+/* Message when there is a Jetpack connection error */
+"supportDiagnosticsService.error.noJetpackConnection" = "젯팩 연결에서 문제가 발생했습니다.";
+
+/* Message when the notification config check fails */
+"supportDiagnosticsService.error.notificationConfigCheckFailed" = "알림 설정을 확인할 수 없습니다.";
+
+/* Message when iOS notification permission is denied */
+"supportDiagnosticsService.error.notificationsNotAuthorized" = "이 앱에 대해 푸시 알림이 허용되지 않았습니다.\n\n주문 알림을 받으려면 기기 설정에서 활성화하세요.";
+
+/* Message when order notifications are disabled */
+"supportDiagnosticsService.error.orderNotificationsDisabled" = "이 스토어에 대해 주문 알림이 활성화되지 않았습니다.\n\n새 주문이 들어올 때 알림을 받을 수 있도록 활성화하세요.";
+
+/* Message when some store push notification preferences are disabled */
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "이 스토어의 일부 푸시 알림 기본 설정이 비활성화되어 있습니다.\n\n기본 설정을 열어서 수신할 알림을 선택하세요.";
+
+/* Message when there is a timeout error */
+"supportDiagnosticsService.error.timeout" = "사이트의 응답이 너무 오래 걸립니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "푸시 알림을 활성화하려면 우커머스 플러그인을 업데이트해야 합니다.\n\n우커머스를 버전 %1$@ 이상으로 업데이트한 다음에 다시 등록해 보세요.";
+
+/* Message when we can't reach WPCom */
+"supportDiagnosticsService.error.wpcomConnection" = "지금은 워드프레스닷컴에 연결할 수 없습니다.\n\n잠시 후에 다시 시도하세요.";
+
+/* Title for the analytics setting diagnostic test */
+"supportDiagnosticsService.test.analyticsSetting" = "분석 설정 확인하기";
+
+/* Title for the internet connection diagnostic test */
+"supportDiagnosticsService.test.internetConnection" = "인터넷 연결";
+
+/* Title for the loading products diagnostic test */
+"supportDiagnosticsService.test.loadingProducts" = "스토어에서 제품 가져오기";
+
+/* Title for the notification settings diagnostic test */
+"supportDiagnosticsService.test.notifications" = "알림 설정 확인하기";
+
+/* Title for the site connection diagnostic test */
+"supportDiagnosticsService.test.site" = "사이트에 연결하기";
+
+/* Title for the site orders diagnostic test */
+"supportDiagnosticsService.test.siteOrders" = "사이트 주문 가져오기";
+
+/* Title for the WPCom servers diagnostic test */
+"supportDiagnosticsService.test.wpComServers" = "워드프레스닷컴 서버에 연결하기";
+
+/* Button on the transcript consent alert that dismisses without taking action */
+"supportEscalationCoordinator.cancel" = "취소";
+
+/* Button on the transcript consent alert that opens the support contact form */
+"supportEscalationCoordinator.contactForm" = "문의 양식";
+
+/* Loading message shown while creating a support ticket */
+"supportEscalationCoordinator.creatingTicket" = "지원 요청 생성 중...";
+
+/* Button on the ticket created alert */
+"supportEscalationCoordinator.gotIt" = "확인";
+
+/* Button on the transcript consent alert that sends the chat transcript as a support request */
+"supportEscalationCoordinator.sendTicket" = "요청 보내기";
+
+/* Alert message shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedMessage" = "회원님의 지원 요청이 받은 편지함에 도착했습니다. 최대한 빨리 이메일로 회신하겠습니다.";
+
+/* Alert title shown after support ticket is created successfully */
+"supportEscalationCoordinator.ticketCreatedTitle" = "요청이 발송되었습니다!";
+
+/* Message for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentMessage" = "이 채팅 기록을 사용하여 지원 요청을 생성해 드리거나, 문의 양식을 열어서 직접 상세 정보를 입력하실 수 있습니다.";
+
+/* Title for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentTitle" = "지원팀에 이 채팅을 보내주시나요?";
+
+/* Header text before the chat transcript in support ticket description */
+"supportEscalationCoordinator.transcriptHeader" = "다음은 앱 내 AI 지원 채팅 세션의 대본입니다.";
+
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "확인";
 
@@ -14151,11 +15054,41 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the app can't create a zendesk identity. */
 "supportFormViewModel.badIdentityError" = "죄송합니다. 지금은 지원 요청을 생성할 수 없습니다. 나중에 다시 시도해 주세요.";
 
+/* Subject line for auto-created support tickets for card reader/IPP issues */
+"supportFormViewModel.subject.cardReader" = "카드 리더 지원 요청";
+
+/* Subject line for auto-created support tickets for mobile app issues */
+"supportFormViewModel.subject.mobileApp" = "모바일 앱 지원 요청";
+
+/* Subject line for auto-created support tickets for other plugin/extension issues */
+"supportFormViewModel.subject.otherPlugin" = "플러그인 지원 요청";
+
+/* Subject line for auto-created support tickets for WooCommerce plugin issues */
+"supportFormViewModel.subject.wooCommercePlugin" = "우커머스 플러그인 지원 요청";
+
+/* Subject line for auto-created support tickets for WooPayments issues */
+"supportFormViewModel.subject.wooPayments" = "WooPayments 지원 요청";
+
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "죄송합니다. 지금은 지원 요청을 생성할 수 없습니다. 나중에 다시 시도해 주세요.";
 
 /* Title of the WooPayments support area option */
 "supportFormViewModel.wooPayments" = "WooPayments";
+
+/* Support issue type for problems loading analytics */
+"supportIssueType.loadingAnalytics" = "분석 로드하기";
+
+/* Support issue type for problems loading orders */
+"supportIssueType.loadingOrders" = "주문 로드하기";
+
+/* Support issue type for problems loading products */
+"supportIssueType.loadingProducts" = "제품 로드하기";
+
+/* Support issue type for other problems not listed */
+"supportIssueType.other" = "기타";
+
+/* Support issue type for problems receiving push notifications */
+"supportIssueType.receivingNotifications" = "푸시 알림 수신하기";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "시스템 상태 보고서";
@@ -14406,9 +15339,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "상품 상세 정보 보기";
 
-/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.cancel" = "취소";
-
 /* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
 "upsTermsView.checkbox1" = "%1$@에 동의합니다.";
 
@@ -14418,26 +15348,11 @@ which should be translated separately and considered part of this sentence. */
 /* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
 "upsTermsView.checkbox3" = "%1$@에도 동의합니다.";
 
-/* Button to confirm all agreements on the UPS Terms and Conditions view */
-"upsTermsView.confirmButton" = "확인하고 계속하기";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorMessage" = "수락을 확인하는 동안 예기치 않은 오류가 발생했습니다. 다시 시도해 주세요.";
-
-/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.errorTitle" = "수락 확인 오류";
-
 /* Message on the UPS Terms and Conditions view */
 "upsTermsView.message" = "이 주소에서 UPS®를 통해 발송을 시작하려면 다음 이용 약관에 동의하셔야 합니다.";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "금지된 아이템";
-
-/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
-"upsTermsView.retry" = "다시 시도";
-
-/* Title label for the origin address on the UPS Terms and Conditions view */
-"upsTermsView.shippingFrom" = "배송 출발지";
 
 /* Link to the technology agreement on the UPS Terms and Conditions view */
 "upsTermsView.technologyAgreement" = "UPS® 기술 계약";
@@ -14475,9 +15390,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "스토어 데이터 로드 실패";
 
-/* Net sales title on the watch store stats screen. */
-"watch.mystore.netSales.title" = "순매출액";
-
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "다시 시도";
 
@@ -14486,6 +15398,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Today title on the watch store stats screen. */
 "watch.mystore.today.title" = "오늘";
+
+/* Total sales title on the watch store stats screen. */
+"watch.mystore.totalSales.title" = "총매출액";
 
 /* Title when there is an error loading an order notification on the watch app */
 "watch.notification.order.error" = "알림을 로드하는 중 오류가 발생했습니다.";
@@ -14928,6 +15843,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when loading shipping label rates failed on the shipping label creation screen */
 "wooShipping.createLabels.rates.failedLoadingDataError" = "배송비를 로드할 수 없습니다.";
 
+/* Error message when shipping rates fail to load because the destination address name is invalid. */
+"wooShipping.createLabels.rates.invalidDestinationNameError" = "배송비를 로드할 수 없습니다. 목적지 주소에 성과 이름을 추가하고 다시 시도해 보세요.";
+
 /* Message displayed when no destination address is provided in the shipping label creation screen. */
 "wooShipping.createLabels.rates.noDestinationAddressMessage" = "적용되는 배송비를 표시하려면 이 패키지의 행선지를 알아야 합니다.";
 
@@ -15120,6 +16038,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the customs items description text field for customs items */
 "wooShipping.customsItems.description" = "설명";
 
+/* Warning text when the customs item description is too long for USPS domestic mail shipments */
+"wooShipping.customsItems.descriptionLengthWarning" = "설명은 30자 이하여야 합니다.";
+
 /* Title for the HS Tariff Number text field for customs items */
 "wooShipping.customsItems.hsTariffNumber" = "HS 관세 번호";
 
@@ -15180,6 +16101,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label when an address is unverified on the shipping label creation screen */
 "wooShipping.originAddresses.unverified" = "미확인된 주소";
 
+/* Message on a notice when removing a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.removingFailure" = "패키지를 제거할 수 없음";
+
+/* Button to retry saving/removing a package in the shipping creation flow */
+"wooShipping.packageStarToggle.retry" = "다시 시도";
+
+/* Message on a notice when saving a package fails in the shipping creation flow */
+"wooShipping.packageStarToggle.savingFailure" = "패키지를 저장할 수 없음";
+
 /* Button to navigate to the custom package screen in the shipping label creation flow */
 "wooShipping.packagesSelectionView.createCustomPackageCTA" = "사용자 정의 패키지 생성";
 
@@ -15222,14 +16152,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button in shipping label creation to start split shipments flow. */
 "wooShipping.splitShipments.splitShipmentsButtonTitle" = "분할 배송";
 
-/* Message on a notice when removing a package fails in the shipping creation flow */
+/* Message on a notice when removing a saved package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.removingPackageFailure" = "패키지를 제거할 수 없음";
 
-/* Button to retry saving/removing a package in the shipping creation flow */
+/* Button to retry removing a saved package in the shipping creation flow */
 "wooShippingAddPackageViewModel.retry" = "다시 시도";
-
-/* Message on a notice when saving a package fails in the shipping creation flow */
-"wooShippingAddPackageViewModel.savingPackageFailure" = "패키지를 저장할 수 없음";
 
 /* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
 "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "AES X12345678901234 또는 NOEEI 30.37(a) 형식 중 하나로 유효한 ITN을 입력하세요.";
@@ -15432,7 +16359,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "새 사이트를 시작하시나요?";
 
-/* Error message that describes an unknown error had occured */
+/* Error message that describes an unknown error had occurred */
 "wordpress-api.error.unknown" = "문제가 발생했습니다. 나중에 다시 시도하세요.";
 
 /* Placeholder text shown when loading media for the WordPress Media Library */

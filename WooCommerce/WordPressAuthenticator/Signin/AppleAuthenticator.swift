@@ -12,7 +12,7 @@ class AppleAuthenticator: NSObject {
 
     // MARK: - Properties
 
-    static var sharedInstance: AppleAuthenticator = AppleAuthenticator()
+    static var sharedInstance = AppleAuthenticator()
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
@@ -89,7 +89,7 @@ private extension AppleAuthenticator {
     }
 
     func signupSuccessful(with credentials: AuthenticatorCredentials) {
-        // This stat is part of a funnel that provides critical information.  Before
+        // This stat is part of a funnel that provides critical information. Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
 
@@ -101,7 +101,7 @@ private extension AppleAuthenticator {
     }
 
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
-        // This stat is part of a funnel that provides critical information.  Please
+        // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         track(.signedIn)
 
@@ -172,7 +172,6 @@ private extension AppleAuthenticator {
         loginFields.emailAddress = email
         loginFields.username = email
     }
-
 }
 
 extension AppleAuthenticator: ASAuthorizationControllerDelegate {
@@ -280,7 +279,6 @@ extension AppleAuthenticator {
                         self?.loginSuccessful(with: credentials)
                     }
                 }
-
             },
             failure: { [weak self] error in
                 SVProgressHUD.dismiss()

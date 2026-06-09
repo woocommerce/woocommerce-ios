@@ -266,7 +266,7 @@ private extension ShippingLabelFormViewController {
                originAddress.phone.isEmpty {
                 return self.displayEditAddressFormVC(address: originAddress, email: nil, validationError: nil, type: .origin)
             }
-            self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
+            self.viewModel.validateAddress(type: .origin) { [weak self] validationState, response in
                 guard let self else { return }
                 let shippingLabelAddress = self.viewModel.originAddress
                 switch validationState {
@@ -305,7 +305,7 @@ private extension ShippingLabelFormViewController {
                                                      type: .destination)
             }
 
-            self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
+            self.viewModel.validateAddress(type: .destination) { [weak self] validationState, response in
                 guard let self else { return }
                 let shippingLabelAddress = self.viewModel.destinationAddress
                 switch validationState {
@@ -385,29 +385,29 @@ private extension ShippingLabelFormViewController {
             let discountInfoVC = ShippingLabelDiscountInfoViewController()
             let bottomSheet = BottomSheetViewController(childViewController: discountInfoVC)
             bottomSheet.show(from: self, sourceView: cell)
-        } onSwitchChange: { [weak self] (switchIsOn) in
+        } onSwitchChange: { [weak self] switchIsOn in
             self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
             guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
-                 "amount": self.viewModel.totalAmount,
-                "fulfill_order": self.shouldMarkOrderComplete])
+                                                                                        "amount": self.viewModel.totalAmount,
+                                                                                        "fulfill_order": self.shouldMarkOrderComplete])
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
-                                         "amount": self.viewModel.totalAmount,
-                                         "fulfill_order": self.shouldMarkOrderComplete,
-                                         "total_duration": Double(totalDuration)])
+                                                                                                "amount": self.viewModel.totalAmount,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete,
+                                                                                                "total_duration": Double(totalDuration)])
                     self.onLabelPurchase?(self.shouldMarkOrderComplete)
                     self.dismiss(animated: true)
                     self.displayPrintShippingLabelVC()
                 case .failure:
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_failed",
-                                         "amount": self.viewModel.totalAmount,
-                                         "fulfill_order": self.shouldMarkOrderComplete])
+                                                                                                "amount": self.viewModel.totalAmount,
+                                                                                                "fulfill_order": self.shouldMarkOrderComplete])
                     self.dismiss(animated: true)
                     self.displayLabelPurchaseErrorNotice()
                 }
@@ -443,7 +443,7 @@ private extension ShippingLabelFormViewController {
             needsPhoneNumberValidation: viewModel.customsFormRequired,
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
-            completion: { [weak self] (newShippingLabelAddress) in
+            completion: { [weak self] newShippingLabelAddress in
                 guard let self else { return }
                 switch type {
                 case .origin:
@@ -470,7 +470,7 @@ private extension ShippingLabelFormViewController {
                                                              type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress, email: email,
-                                                             countries: viewModel.countries) { [weak self] (newShippingLabelAddress) in
+                                                             countries: viewModel.countries) { [weak self] newShippingLabelAddress in
             switch type {
             case .origin:
                 self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
@@ -490,7 +490,7 @@ private extension ShippingLabelFormViewController {
                                                     onSelectionCompletion: { [weak self] selectedPackages in
                                                         self?.viewModel.handlePackageDetailsValueChanges(details: selectedPackages)
                                                     },
-                                                    onPackageSyncCompletion: { [weak self] (packagesResponse) in
+                                                    onPackageSyncCompletion: { [weak self] packagesResponse in
                                                       self?.viewModel.handleNewPackagesResponse(packagesResponse: packagesResponse)
                                                     })
         let packagesForm = ShippingLabelPackagesForm(viewModel: vm)
@@ -501,7 +501,12 @@ private extension ShippingLabelFormViewController {
     func displayCustomsFormListVC(customsForms: [ShippingLabelCustomsForm]) {
         guard let countryCode = viewModel.destinationAddress?.country,
               let country = viewModel.countries.first(where: { $0.code == countryCode }) else {
-            fatalError("⛔️ Destination country is not found")
+            let notice = Notice(title: Localization.noticeUnableToFetchCountries, feedbackType: .error, actionTitle: Localization.noticeRetryAction) {
+                [weak self] in
+                self?.viewModel.fetchCountries()
+            }
+            noticePresenter.enqueue(notice: notice)
+            return
         }
         let hostingVC = ShippingCustomsFormListHostingController(order: viewModel.order,
                                                                  customsForms: viewModel.customsForms,
@@ -528,7 +533,7 @@ private extension ShippingLabelFormViewController {
                                                 packages: viewModel.selectedPackages,
                                                 selectedRates: selectedRates)
 
-        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] (selectedRates) in
+        let carriersView = ShippingLabelCarriers(viewModel: vm) { [weak self] selectedRates in
             self?.viewModel.handleCarrierAndRatesValueChanges(selectedRates: selectedRates,
                                                               editable: true)
         }
@@ -604,7 +609,6 @@ private extension ShippingLabelFormViewController {
                 } else {
                     self.hideTopBannerView()
                 }
-
             }.store(in: &viewModel.subscriptions)
     }
 

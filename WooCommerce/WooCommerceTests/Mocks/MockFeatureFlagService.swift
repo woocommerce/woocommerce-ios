@@ -25,6 +25,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isCIABBookingsEnabled: Bool
     var isCIABBookingRescheduleEnabled: Bool
     var selfDrivenPushToken: Bool
+    var smarterNotifications: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -46,7 +47,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
          isCIABBookingRescheduleEnabled: Bool = false,
-         selfDrivenPushToken: Bool = false) {
+         selfDrivenPushToken: Bool = false,
+         smarterNotifications: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -68,6 +70,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
         self.isCIABBookingRescheduleEnabled = isCIABBookingRescheduleEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
+        self.smarterNotifications = smarterNotifications
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -120,6 +123,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isCIABBookingRescheduleEnabled
         case .selfDrivenPushToken:
             return selfDrivenPushToken
+        case .smarterNotifications:
+            return smarterNotifications
         default:
             return false
         }

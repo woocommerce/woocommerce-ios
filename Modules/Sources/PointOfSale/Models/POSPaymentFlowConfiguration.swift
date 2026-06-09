@@ -72,6 +72,5 @@ private extension POSPaymentFlowConfiguration {
                 "in the Point of Sale checkout to go back and edit the current order"
             )
         }
-
     }
 }

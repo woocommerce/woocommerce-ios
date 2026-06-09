@@ -6,12 +6,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
-        /// Whether this is a UI test run.
-        ///
-        /// This can be used to enable/disable a feature flag specifically for UI testing.
-        ///
-        let isUITesting = CommandLine.arguments.contains("-ui_testing")
-
         switch featureFlag {
         case .inbox:
             return true
@@ -95,22 +89,40 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleRefundsi1:
             return true
-        case .selfDrivenPushToken:
+        case .pointOfSaleRoles:
             return false
+        case .pointOfSaleCustomAmounts:
+            return false
+        case .pointOfSalePhonePrototype:
+            // Behind the flag for now — gates and UI follow in stacked PRs. Default to
+            // localDeveloper only so alpha builds aren't affected until we're ready.
+            return buildConfig == .localDeveloper
+        case .pointOfSaleScanToPay:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleMarkOrderAsPaid:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleTapToPay:
+            // Behind the flag while the TTP integration lands. localDeveloper-only so
+            // alpha and beta keep showing only Cash + Card reader for now.
+            return buildConfig == .localDeveloper
+        case .selfDrivenPushToken:
+            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .configurableStoreStatsWidgets:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
-            return false
+            return true
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         case .aiSupportChat:
-            return !buildConfig.isProduction
+            return true
         case .wooAIAssistant:
-            return !buildConfig.isProduction
+            return true
+        case .arParcelFitting:
+            return true
+        case .smarterNotifications:
+            return true
         default:
             return true
         }

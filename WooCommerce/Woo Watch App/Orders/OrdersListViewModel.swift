@@ -88,7 +88,7 @@ final class OrdersListViewModel: ObservableObject {
 
     /// Determines when we should transition to a loading state.
     ///
-    static private func shouldTransitionToLoading(state: OrdersListView.State) -> Bool {
+    private static func shouldTransitionToLoading(state: OrdersListView.State) -> Bool {
         switch state {
         case .idle, .error:
             return true
@@ -136,7 +136,7 @@ extension OrdersListView {
 
         /// Empty order used as a redacted placeholder.
         ///
-        static let placeholder: Order = Order(date: "----",
+        static let placeholder = Order(date: "----",
                                               time: "----",
                                               number: "----",
                                               name: "----- -----",

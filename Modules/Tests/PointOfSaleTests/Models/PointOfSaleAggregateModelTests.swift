@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
@@ -12,6 +13,7 @@ import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSItemType
+import enum WooFoundationCore.WooAnalyticsStat
 import Combine
 
 @MainActor
@@ -177,6 +179,138 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.isEmpty)
         }
 
+        @Test func upsertCustomAmount_adds_a_new_custom_amount_to_cart() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            try #require(sut.cart.customAmounts.isEmpty)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+
+            // When
+            sut.upsertCustomAmount(customAmount, mode: .add)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first == customAmount)
+        }
+
+        @Test func upsertCustomAmount_with_add_mode_tracks_pointOfSaleCustomAmountSubmitted() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+
+            // When
+            sut.upsertCustomAmount(customAmount, mode: .add)
+
+            // Then
+            let event = try #require(analytics.events.first(where: { $0.eventName == "custom_amount_submitted" }))
+            #expect(event.properties["mode"] as? String == "add")
+            #expect(event.properties["is_taxable"] as? Bool == true)
+        }
+
+        @Test func upsertCustomAmount_with_edit_mode_tracks_pointOfSaleCustomAmountSubmitted() async throws {
+            // Given - first add, then edit
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            sut.upsertCustomAmount(original, mode: .add)
+
+            // When
+            let updated = POSCustomAmount(id: original.id, name: "Tip", amount: "12.50", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then
+            let editEvent = try #require(analytics.events.last(where: { $0.eventName == "custom_amount_submitted" }))
+            #expect(editEvent.properties["mode"] as? String == "edit")
+            #expect(editEvent.properties["is_taxable"] as? Bool == false)
+        }
+
+        @Test func upsertCustomAmount_replaces_existing_custom_amount_by_id() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let id = UUID()
+            let original = POSCustomAmount(id: id, name: "Service fee", amount: "10.00", isTaxable: true)
+            sut.upsertCustomAmount(original, mode: .add)
+            try #require(sut.cart.customAmounts.count == 1)
+
+            // When
+            let updated = POSCustomAmount(id: id, name: "Tip", amount: "12.50", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first == updated)
+        }
+
+        @Test func removeCustomAmount_removes_the_matching_custom_amount() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let first = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            let second = POSCustomAmount(name: "Delivery", amount: "5.00", isTaxable: false)
+            sut.upsertCustomAmount(first, mode: .add)
+            sut.upsertCustomAmount(second, mode: .add)
+            try #require(sut.cart.customAmounts.count == 2)
+
+            // When
+            sut.removeCustomAmount(id: first.id)
+
+            // Then
+            #expect(sut.cart.customAmounts.count == 1)
+            #expect(sut.cart.customAmounts.first?.id == second.id)
+        }
+
+        @Test func editingCustomAmount_starts_nil() async throws {
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+
+            #expect(sut.editingCustomAmount == nil)
+        }
+
+        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+
+            // When set to a value
+            sut.editingCustomAmount = customAmount
+
+            // Then
+            #expect(sut.editingCustomAmount == customAmount)
+
+            // When cleared
+            sut.editingCustomAmount = nil
+
+            // Then
+            #expect(sut.editingCustomAmount == nil)
+        }
+
+        @Test func upsertCustomAmount_does_not_mutate_editingCustomAmount() async throws {
+            // Given - the cart-edit modal is open on one entry
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+            sut.upsertCustomAmount(original, mode: .add)
+            sut.editingCustomAmount = original
+
+            // When the merchant submits an updated value
+            let updated = POSCustomAmount(id: original.id, name: "Service fee", amount: "12.00", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
+
+            // Then upsert leaves editingCustomAmount alone — dismissal is the caller's responsibility
+            #expect(sut.editingCustomAmount == original)
+        }
+
+        @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+            sut.addToCart(makePurchasableItem())
+            sut.upsertCustomAmount(POSCustomAmount(name: "Tip", amount: "5.00", isTaxable: false), mode: .add)
+            try #require(!sut.cart.isEmpty)
+
+            // When
+            sut.removeAllItemsFromCart()
+
+            // Then
+            #expect(sut.cart.isEmpty)
+            #expect(sut.cart.customAmounts.isEmpty)
+        }
+
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
@@ -287,6 +421,45 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
+        }
+
+        @Test func cancelInFlightCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
+            // Given
+            let cardPresentPaymentService = MockCardPresentPaymentService()
+            let orderController = MockPointOfSaleOrderController()
+            let itemsController = MockPointOfSaleItemsController()
+            var releaseSyncOrder: (() -> Void)?
+            var checkoutTask: Task<Void, Never>?
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+
+            // When
+            await fireOnce { fire in
+                orderController.onSyncOrderCalled = {
+                    await withCheckedContinuation { continuation in
+                        releaseSyncOrder = {
+                            continuation.resume()
+                        }
+                        fire()
+                    }
+                }
+                checkoutTask = Task { @MainActor in
+                    await sut.checkOut()
+                }
+            }
+
+            sut.cancelInFlightCheckout()
+            releaseSyncOrder?()
+            await checkoutTask?.value
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
         }
 
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {
@@ -796,7 +969,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .pluginNotActivated(plugin: .stripe)
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
             try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
@@ -920,7 +1093,7 @@ struct PointOfSaleAggregateModelTests {
 
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .noConnectionError
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
 
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
@@ -928,7 +1101,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_dismissed" }))
             let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -949,7 +1122,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
         @Test func connectCardReader_when_tapped_then_tracks_event() {
@@ -965,7 +1138,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_connection_tapped" }))
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
@@ -981,7 +1154,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_disconnect_tapped" }))
         }
 
         @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
@@ -1030,7 +1203,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "back_to_checkout_from_cash" }))
         }
 
         @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
@@ -1041,7 +1214,7 @@ struct PointOfSaleAggregateModelTests {
             sut.startCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "checkout_cash_payment_tapped" }))
         }
 
         @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {
@@ -1126,6 +1299,51 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
+    @MainActor struct StaleSyncWarningTests {
+        @Test func checkStaleSyncStatus_when_called_concurrently_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When - both tab views drive this check concurrently; it must only track once
+            async let firstCheck: Void = sut.checkStaleSyncStatus()
+            async let secondCheck: Void = sut.checkStaleSyncStatus()
+            _ = await (firstCheck, secondCheck)
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkStaleSyncStatus_when_warning_is_dismissed_then_does_not_track_shown_event() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            sut.dismissStaleSyncWarning()
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
+        }
+    }
+
     @MainActor struct SunsetWarningTests {
         @Test func showSunsetWarning_defaults_to_false() {
             // Given
@@ -1149,14 +1367,19 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
             // Given
+            let analytics = MockPOSAnalytics()
             let checker = MockPOSSunsetWarningChecker(shouldShow: false)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
 
             // When
             await sut.checkSunsetWarningStatus()
 
             // Then
             #expect(sut.showSunsetWarning == false)
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
         }
 
         @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
@@ -1172,6 +1395,59 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.showSunsetWarning == false)
             #expect(checker.recordDismissalCalled == true)
+        }
+
+        @Test func checkSunsetWarningStatus_when_called_twice_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - both tab views drive this check; it must only track once
+            await sut.checkSunsetWarningStatus()
+            await sut.checkSunsetWarningStatus()
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkSunsetWarningStatus_when_called_concurrently_then_tracks_shown_event_once() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - both tab views drive this check concurrently; it must only track once
+            async let firstCheck: Void = sut.checkSunsetWarningStatus()
+            async let secondCheck: Void = sut.checkSunsetWarningStatus()
+            _ = await (firstCheck, secondCheck)
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkSunsetWarningStatus_when_dismissed_and_reshown_then_tracks_again() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
+
+            // When - shown, dismissed, then shown again
+            await sut.checkSunsetWarningStatus()
+            sut.dismissSunsetWarning()
+            await sut.checkSunsetWarningStatus()
+
+            // Then - each transition into shown tracks once
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 2)
         }
     }
 }
@@ -1223,6 +1499,7 @@ private func makePointOfSaleAggregateModel(
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+    isLocalCatalogEligible: Bool = false,
     sunsetWarningChecker: POSSunsetWarningChecking? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
@@ -1244,6 +1521,7 @@ private func makePointOfSaleAggregateModel(
         paymentState: paymentState,
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
+        isLocalCatalogEligible: isLocalCatalogEligible,
         sunsetWarningChecker: sunsetWarningChecker
     )
 }

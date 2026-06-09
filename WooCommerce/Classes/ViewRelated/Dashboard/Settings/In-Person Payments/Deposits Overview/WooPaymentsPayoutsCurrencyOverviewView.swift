@@ -27,7 +27,6 @@ struct WooPaymentsPayoutsCurrencyOverviewView: View {
                     Image(systemName: "chevron.down")
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(Text(Localization.showPayoutDetailAccessibilityLabel))
-
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {

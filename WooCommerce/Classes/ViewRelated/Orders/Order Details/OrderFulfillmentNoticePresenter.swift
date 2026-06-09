@@ -54,7 +54,7 @@ final class OrderFulfillmentNoticePresenter {
 
     /// Observe the given process and display error notices if needed.
     private func observe(fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
-        var cancellable: AnyCancellable = AnyCancellable { }
+        var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure(let fulfillmentError) = completion {
                 self.displayFulfillmentErrorNotice(error: fulfillmentError)

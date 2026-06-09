@@ -134,7 +134,6 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
             scanTester.stopTimer()
         }
     }
-
 }
 
 private extension PointOfSaleBarcodeScannerTestBarcodeView {

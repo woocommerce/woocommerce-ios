@@ -115,7 +115,6 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
                                                      transactionType: transactionType,
                                                      tryAgainAction: tryAgain,
                                                      dismissCompletion: dismissCompletion)
-
         }
     }
 

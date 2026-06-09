@@ -49,7 +49,6 @@ struct LastOrdersDashboardCard: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
             }
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -132,14 +131,13 @@ private extension LastOrdersDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color(.secondaryLabel))
             }
-
         }
     }
 
     var orderList: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             ForEach(viewModel.rows) { element in
-                LastOrderDashboardRow(viewModel: element, tapHandler: {
+                LastOrderDashboardRow(data: element.rowData, tapHandler: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
 
                     onViewOrderDetail(element.order)

@@ -91,7 +91,6 @@ struct PluginDetailsRowContent: View {
             }
         }
     }
-
 }
 
 struct PluginDetailsRowUpdateAvailable: View {

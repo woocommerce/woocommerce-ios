@@ -67,6 +67,7 @@ extension SurveyViewController {
         case addOnsI1
         case orderCreation
         case orderFormShippingLines
+        case aiAssistantFeedback
 
         fileprivate var url: URL {
             let url: URL = {
@@ -85,6 +86,9 @@ extension SurveyViewController {
                         .asURL()
                 case .orderFormShippingLines:
                     return WooConstants.URLs.orderCreationShippingFeedback
+                        .asURL()
+                case .aiAssistantFeedback:
+                    return WooConstants.URLs.aiAssistantFeedback
                         .asURL()
                 }
             }()
@@ -105,7 +109,8 @@ extension SurveyViewController {
             case .productsFeedback,
                     .addOnsI1,
                     .orderCreation,
-                    .orderFormShippingLines:
+                    .orderFormShippingLines,
+                    .aiAssistantFeedback:
                 return Localization.giveFeedback
             }
         }
@@ -123,6 +128,8 @@ extension SurveyViewController {
                 return .orderCreation
             case .orderFormShippingLines:
                 return .orderFormShippingLines
+            case .aiAssistantFeedback:
+                return .aiAssistant
             }
         }
     }

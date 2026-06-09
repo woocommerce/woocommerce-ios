@@ -49,7 +49,6 @@ private struct UnableToFetchView: View {
 #if DEBUG
 import class WooFoundation.CurrencySettings
 
-@available(iOSApplicationExtension 16.0, *)
 struct StoreInfoCircularWidget_Previews: PreviewProvider {
     static var exampleData = StoreInfoData(range: "Today",
                                            name: "Ernest Shop",

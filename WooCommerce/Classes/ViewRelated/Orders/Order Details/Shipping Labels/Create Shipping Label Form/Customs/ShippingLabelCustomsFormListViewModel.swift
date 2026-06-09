@@ -109,7 +109,7 @@ private extension ShippingLabelCustomsFormListViewModel {
     /// Observe changes in all customs forms and save their validation states by package ID.
     ///
     func configureFormsValidation() {
-        inputViewModels.enumerated().forEach { (index, viewModel) in
+        inputViewModels.enumerated().forEach { index, viewModel in
             viewModel.$validForm
                 .sink { [weak self] isValid in
                     self?.customsFormValidation[index] = isValid
@@ -121,6 +121,6 @@ private extension ShippingLabelCustomsFormListViewModel {
     /// Check if all forms are validated to enable Done button.
     ///
     func configureDoneButton() {
-        doneButtonEnabled = customsFormValidation.values.first(where: { !$0 }) == nil
+        doneButtonEnabled = !customsFormValidation.values.contains(where: { !$0 })
     }
 }

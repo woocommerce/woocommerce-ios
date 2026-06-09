@@ -30,10 +30,12 @@ extension UserDefaults {
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
+        case lastWidgetSnapshot
 
         // Tooltip
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
+        case hasDismissedWooAIAssistantEarlyAccessTooltip
 
         // Store profiler answers
         case storeProfilerAnswers
@@ -78,14 +80,20 @@ extension UserDefaults {
         /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
         case hideWPComConnectionOnDashboard
 
+        /// Whether the dashboard analytics update mode explanation has been opened.
+        case hasOpenedDashboardAnalyticsUpdateModeInfo
+
         /// Pending flow for magic link: notification setup or Jetpack setup
         case pendingMagicLinkFlow
 
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
 
-        /// Whether configurable store stats widgets are enabled
-        case configurableStoreStatsWidgetsEnabled
+        /// Sites available for selection in the configurable store stats widget picker
+        case widgetSelectableSites
+
+        /// Per-site currency settings fetched lazily by the Store Stats widget extension
+        case widgetSiteCurrencySettingsCache
     }
 }
 
@@ -94,20 +102,6 @@ extension UserDefaults {
     ///
     static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
 }
-
-extension UserDefaults {
-    /// Whether configurable store stats widgets are enabled.
-    ///
-    var configurableStoreStatsWidgetsEnabled: Bool {
-        get {
-            object(forKey: .configurableStoreStatsWidgetsEnabled) ?? false
-        }
-        set {
-            set(newValue, forKey: .configurableStoreStatsWidgetsEnabled)
-        }
-    }
-}
-
 
 // MARK: - Convenience Methods
 //

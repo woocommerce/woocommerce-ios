@@ -86,7 +86,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
-    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+    private lazy var filterButton = UIButton(frame: .zero)
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -100,7 +100,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
+    private lazy var topBannerContainerView = SwappableSubviewContainerView()
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let imageUploader = ServiceLocator.productImageUploader
     private var activeUploadIds: [Int64] = []
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+    private var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
                 if filters != oldValue ||
@@ -355,7 +355,6 @@ private extension ProductsViewController {
                 // Reset button state on finishing the task
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
-
         }, onPermissionsDenied: {
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
                                                                                                            reason: .cameraAccessNotPermitted))
@@ -948,7 +947,7 @@ private extension ProductsViewController {
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] (result) in
+        syncLocalProductsSettings { [weak self] result in
             guard let self else { return }
 
             if result.isFailure {
@@ -1031,7 +1030,7 @@ private extension ProductsViewController {
 
     func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
         selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
-        selectedProductListener?.onUpsert = { [weak self] product in
+        selectedProductListener?.onUpsert = { [weak self] _ in
             guard let self,
                   let selectedIndexPath = tableView.indexPathForSelectedRow,
                   !isIndexPathVisible(selectedIndexPath) else {
@@ -1476,15 +1475,15 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
+                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
         }
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let settings):
                 self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in

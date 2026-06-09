@@ -6,10 +6,14 @@ import Foundation
 public struct POSCart {
     public let items: [POSCartItem]
     public let coupons: [POSCoupon]
+    public let customAmounts: [POSCustomAmount]
 
-    public init(items: [POSCartItem] = [], coupons: [POSCoupon] = []) {
+    public init(items: [POSCartItem] = [],
+                coupons: [POSCoupon] = [],
+                customAmounts: [POSCustomAmount] = []) {
         self.items = items
         self.coupons = coupons
+        self.customAmounts = customAmounts
     }
 }
 
@@ -25,17 +29,23 @@ public struct POSCartItem {
 
 public extension POSCart {
     func matches(order: Order?) -> Bool {
-        return items.matches(order: order) && coupons.matches(order: order)
+        return items.matches(order: order)
+            && coupons.matches(order: order)
+            && customAmounts.matches(order: order)
     }
 
     func compareWithOrder(_ order: Order?) -> CartOrderComparison {
         let itemsComparison = items.compareWithOrder(order)
         let couponsMatch = coupons.matches(order: order)
+        let customAmountComparison = customAmounts.comparison(with: order)
 
         return CartOrderComparison(
             missingItems: itemsComparison.missingItems,
             quantityMismatches: itemsComparison.quantityMismatches,
-            couponsMatch: couponsMatch
+            extraItemsCount: itemsComparison.extraItemsCount,
+            couponsMatch: couponsMatch,
+            customAmountsMatch: customAmountComparison.matches,
+            extraCustomAmountsCount: customAmountComparison.extraFeesCount
         )
     }
 }
@@ -46,12 +56,26 @@ public struct CartOrderComparison {
     public let missingItems: [MissingCartItem]
     /// Items where the quantity in the order doesn't match the cart
     public let quantityMismatches: [QuantityMismatch]
+    /// Number of product/variation groups found in the order but not in the cart
+    public let extraItemsCount: Int
     /// Whether the coupons in the cart match the order
     public let couponsMatch: Bool
+    /// Whether the custom amounts in the cart match the order's active fee lines
+    public let customAmountsMatch: Bool
+    /// Number of active fee lines found in the order but not in the cart.
+    ///
+    /// Remote-added fee lines are allowed so stores can add charges from snippets or plugins. They are tracked for logging,
+    /// but do not count as cart-order discrepancies.
+    public let extraCustomAmountsCount: Int
 
     /// Returns true if there are any discrepancies between cart and order
     public var hasDiscrepancies: Bool {
-        return !missingItems.isEmpty || !quantityMismatches.isEmpty || !couponsMatch
+        return !missingItems.isEmpty || !quantityMismatches.isEmpty || extraItemsCount > 0 || !couponsMatch || !customAmountsMatch
+    }
+
+    /// Returns true when the order has allowed remote-added fee lines that are not present in the cart.
+    public var hasRemoteAdditions: Bool {
+        return extraCustomAmountsCount > 0
     }
 
     /// Represents an item that was expected in the cart but is missing from the order
@@ -84,6 +108,10 @@ extension [POSCartItem] {
             return self.isEmpty
         }
 
+        guard !self.isEmpty else {
+            return order.items.isEmpty
+        }
+
         let consolidatedCartItems = self.reduce(into: [POSCartItem]()) { partialResult, nextItem in
             if let matchingIndex = partialResult.firstIndex(where: { $0.item.isEqual(to: nextItem.item) }) {
                 let itemToUpdate = partialResult[matchingIndex]
@@ -102,10 +130,6 @@ extension [POSCartItem] {
             }
         }
 
-        guard consolidatedCartItems.count == consolidatedOrderItems.count else {
-            return false
-        }
-
         for cartItem in consolidatedCartItems {
             guard consolidatedOrderItems.contains(where: { orderItem in
                 cartItem.item.matches(orderItem: orderItem) && cartItem.quantity == orderItem.quantity
@@ -113,6 +137,15 @@ extension [POSCartItem] {
                 return false
             }
         }
+
+        for orderItem in consolidatedOrderItems {
+            guard consolidatedCartItems.contains(where: { cartItem in
+                cartItem.item.matches(orderItem: orderItem) && cartItem.quantity == orderItem.quantity
+            }) else {
+                return false
+            }
+        }
+
         return true
     }
 
@@ -129,7 +162,7 @@ extension [POSCartItem] {
                     name: cartItem.item.name
                 )
             }
-            return ItemsComparison(missingItems: missingItems, quantityMismatches: [])
+            return ItemsComparison(missingItems: missingItems, quantityMismatches: [], extraItemsCount: 0)
         }
 
         // Group cart items by product/variation ID to consolidate duplicates
@@ -149,9 +182,10 @@ extension [POSCartItem] {
         }
 
         // Group order items by product/variation ID
-        let orderQuantities = Dictionary(grouping: order.items, by: { (item: OrderItem) -> String in
+        let orderItemsByProductKey = Dictionary(grouping: order.items, by: { (item: OrderItem) -> String in
             item.variationID != 0 ? "variation_\(item.variationID)" : "product_\(item.productID)"
-        }).mapValues { items in
+        })
+        let orderQuantities = orderItemsByProductKey.mapValues { items in
             items.reduce(Decimal(0)) { $0 + $1.quantity }
         }
 
@@ -189,7 +223,9 @@ extension [POSCartItem] {
             }
         }
 
-        return ItemsComparison(missingItems: missingItems, quantityMismatches: quantityMismatches)
+        let extraItemsCount = orderItemsByProductKey.keys.filter { cartQuantities[$0] == nil }.count
+
+        return ItemsComparison(missingItems: missingItems, quantityMismatches: quantityMismatches, extraItemsCount: extraItemsCount)
     }
 
     private func extractProductIDs(from item: POSOrderableItem) -> (productID: Int64, variationID: Int64)? {
@@ -207,6 +243,7 @@ extension [POSCartItem] {
     struct ItemsComparison {
         let missingItems: [CartOrderComparison.MissingCartItem]
         let quantityMismatches: [CartOrderComparison.QuantityMismatch]
+        let extraItemsCount: Int
     }
 
     func createGroupedOrderSyncProductInputs() -> [OrderSyncProductInput.ProductType: OrderSyncProductInput] {

@@ -276,6 +276,10 @@ public class AppSettingsStore: Store {
             setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedPerformanceTimeRange(siteID, onCompletion):
             loadLastSelectedPerformanceTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedDashboardRevenueStatsType(siteID, revenueType):
+            setLastSelectedDashboardRevenueStatsType(siteID: siteID, revenueType: revenueType)
+        case let .loadLastSelectedDashboardRevenueStatsType(siteID, onCompletion):
+            loadLastSelectedDashboardRevenueStatsType(siteID: siteID, onCompletion: onCompletion)
         case let .setLastSelectedTopPerformersTimeRange(siteID, timeRange):
             setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
@@ -393,7 +397,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
@@ -453,7 +456,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
@@ -501,7 +503,7 @@ private extension AppSettingsStore {
 
     /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
     /// NOTE: We now only persist one card reader maximum.
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
@@ -576,7 +578,7 @@ private extension AppSettingsStore {
     func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
-            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { (current, _) in
+            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { current, _ in
                 // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
                 return current
             }
@@ -606,7 +608,6 @@ private extension AppSettingsStore {
                     providerName: providerName,
                     fileURL: selectedProvidersURL,
                     onCompletion: onCompletion)
-
     }
 
     func addCustomTrackingProvider(siteID: Int64,
@@ -648,9 +649,9 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -674,13 +675,13 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
-        let providerURL = allSavedProviders.filter {
+        let providerURL = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerURL
+        })?.providerURL
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -1251,6 +1252,18 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedPerformanceTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+
+    func setLastSelectedDashboardRevenueStatsType(siteID: Int64, revenueType: DashboardRevenueStatsType) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedDashboardRevenueStatsType: revenueType.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedDashboardRevenueStatsType(siteID: Int64, onCompletion: (DashboardRevenueStatsType?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let rawValue = storeSettings.lastSelectedDashboardRevenueStatsType
+        onCompletion(DashboardRevenueStatsType(rawValue: rawValue))
     }
 
     func setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {

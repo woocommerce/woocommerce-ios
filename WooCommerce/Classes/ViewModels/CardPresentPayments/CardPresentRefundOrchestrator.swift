@@ -21,6 +21,7 @@ final class CardPresentRefundOrchestrator {
     ///   - charge: details about how the order was charged to verify refund.
     ///   - paymentGatewayAccount: payment gateway (e.g. WCPay or Stripe extension).
     ///   - onWaitingForInput: called when the card reader is waiting for card input.
+    ///   - onCardInserted: called when a card is inserted into the reader.
     ///   - onProcessingMessage: called when the refund is processing.
     ///   - onDisplayMessage: called when the card reader sends a message to display to the user.
     ///   - onCompletion: called when the refund completes.
@@ -28,6 +29,7 @@ final class CardPresentRefundOrchestrator {
                 charge: WCPayCharge,
                 paymentGatewayAccount: PaymentGatewayAccount,
                 onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                onCardInserted: @escaping () -> Void,
                 onProcessingMessage: @escaping () -> Void,
                 onDisplayMessage: @escaping (String) -> Void,
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -44,6 +46,10 @@ final class CardPresentRefundOrchestrator {
                 onWaitingForInput(inputMethods)
             case .displayMessage(let message):
                 onDisplayMessage(message)
+            case .removeCardRequested(let message):
+                onDisplayMessage(message)
+            case .cardInserted:
+                onCardInserted()
             case .cardDetailsCollected:
                 onProcessingMessage()
             default:

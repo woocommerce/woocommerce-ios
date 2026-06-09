@@ -392,7 +392,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
+    private(set) lazy var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
 
     // MARK: Payment properties
 
@@ -1524,7 +1524,6 @@ private extension EditableOrderViewModel {
         }
 
         return inputsToBeRemoved
-
     }
 
     /// Adds, or removes multiple products from an Order
@@ -1951,8 +1950,7 @@ private extension EditableOrderViewModel {
     }
 
     func observeGiftCardStatesForAnalytics() {
-        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
-            .first()
+        $paymentDataViewModel.first(where: { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled })
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
@@ -2318,7 +2316,6 @@ private extension EditableOrderViewModel {
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))
-
         }
     }
 

@@ -51,11 +51,11 @@ struct TotalsViewHelperTests {
     }
 
     @Test(arguments: [PointOfSaleCardPaymentState.cardInserted,
-         PointOfSaleCardPaymentState.validatingOrder,
-         PointOfSaleCardPaymentState.preparingReader,
-         PointOfSaleCardPaymentState.processingPayment,
-         PointOfSaleCardPaymentState.paymentError,
-         PointOfSaleCardPaymentState.cardPaymentSuccessful])
+                      PointOfSaleCardPaymentState.validatingOrder,
+                      PointOfSaleCardPaymentState.preparingReader,
+                      PointOfSaleCardPaymentState.processingPayment,
+                      PointOfSaleCardPaymentState.paymentError,
+                      PointOfSaleCardPaymentState.cardPaymentSuccessful])
     func test_shouldShowCollectCashPaymentButton_returns_false_when_reader_disconnected_for_unsupported_states(
         cardPaymentState: PointOfSaleCardPaymentState) {
             #expect(TotalsViewHelper().shouldShowCollectCashPaymentButton(orderState: .loaded(.init(cartTotal: "10",

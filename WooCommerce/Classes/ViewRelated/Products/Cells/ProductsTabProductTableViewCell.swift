@@ -104,7 +104,7 @@ extension ProductsTabProductTableViewCell {
                 imageService.downloadAndCacheImageForImageView(productImageView,
                                                                with: productURLString,
                                                                placeholder: .productsTabProductCellPlaceholderImage,
-                                                               progressBlock: nil) { [weak self] (image, error) in
+                                                               progressBlock: nil) { [weak self] image, error in
                                                                 let success = image != nil && error == nil
                                                                 if success {
                                                                     self?.productImageView.contentMode = .scaleAspectFill

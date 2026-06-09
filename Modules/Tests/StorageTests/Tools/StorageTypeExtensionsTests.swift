@@ -37,7 +37,6 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(account, storedAccount)
-
     }
 
     func test_loadAccountSettings_by_user_ID() throws {

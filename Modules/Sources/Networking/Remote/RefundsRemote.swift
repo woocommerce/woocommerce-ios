@@ -115,13 +115,19 @@ public final class RefundsRemote: Remote {
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
 
-            enqueue(request, mapper: mapper, completion: completion)
+            enqueue(request, mapper: mapper) { result in
+                switch result {
+                case .success(let refund):
+                    completion(refund, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
+            }
         } catch {
             completion(nil, error)
             DDLogError("Unable to serialize data for refunds: \(error)")
         }
     }
-
 }
 
 // MARK: - Constants
@@ -154,38 +160,8 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
                     continuation.resume(throwing: error)
                 } else {
                     continuation.resume(returning: refunds ?? [])
-
                 }
             }
         }
     }
-
-    public func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund {
-        return try await withCheckedThrowingContinuation { continuation in
-            createRefund(for: siteID, by: orderID, refund: refund) { createdRefund, error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else if let createdRefund {
-                    continuation.resume(returning: createdRefund)
-                } else {
-                    continuation.resume(throwing: RefundsRemoteError.unexpectedNilRefund)
-                }
-            }
-        }
-    }
-}
-
-
-struct POSRefundsRemote {
-    let refundsRemote: RefundsRemote
-
-    func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
-        try await refundsRemote.loadRefunds(for: siteID, by: orderID, with: refundIDs)
-    }
-}
-
-// MARK: - Errors
-
-public enum RefundsRemoteError: Error {
-    case unexpectedNilRefund
 }

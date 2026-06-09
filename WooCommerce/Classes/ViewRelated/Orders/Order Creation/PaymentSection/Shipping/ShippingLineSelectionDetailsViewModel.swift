@@ -171,7 +171,7 @@ private extension ShippingLineSelectionDetailsViewModel {
     func observeShippingLineDetailsForUIStates(with currencyFormatter: CurrencyFormatter) {
         formattableAmountViewModel.$amount
             .combineLatest($methodTitle, $selectedMethod)
-            .map { [weak self] (amount, methodTitle, selectedMethod) in
+            .map { [weak self] amount, methodTitle, selectedMethod in
                 guard let self, let amountDecimal = currencyFormatter.convertToDecimal(amount) as? Decimal else {
                     return false
                 }

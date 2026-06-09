@@ -1,16 +1,10 @@
 import Foundation
-import SwiftUI
 
 struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
-        itemsContainerState: ItemsContainerState,
-        horizontalSizeClass: UserInterfaceSizeClass?
+        itemsContainerState: ItemsContainerState
     ) -> PointOfSaleDashboardView.ViewState {
-
-        guard case .regular = horizontalSizeClass else {
-            return .unsupportedWidth
-        }
 
         guard let eligibilityState else {
             return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
@@ -36,7 +30,7 @@ struct PointOfSaleDashboardViewHelper {
 extension PointOfSaleDashboardView.ViewState {
     var showsFloatingControl: Bool {
         switch self {
-        case .content, .unsupportedWidth:
+        case .content:
             return true
         case .error(let error):
             // Hide floating controls for initial catalog sync errors

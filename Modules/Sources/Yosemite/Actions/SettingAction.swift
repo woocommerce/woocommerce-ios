@@ -48,4 +48,20 @@ public enum SettingAction: Action {
     /// Checks if a specific feature is enabled in the site WC settings
     ///
     case isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Retrieves the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    case retrieveAnalyticsOrderDateType(siteID: Int64, onCompletion: (Result<AnalyticsOrderDateType, Error>) -> Void)
+
+    /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    case updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Retrieves the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    case retrieveAnalyticsImportUpdateMode(siteID: Int64, onCompletion: (Result<AnalyticsImportUpdateMode, Error>) -> Void)
+
+    /// Updates the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    case updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode, onCompletion: (Result<Void, Error>) -> Void)
 }

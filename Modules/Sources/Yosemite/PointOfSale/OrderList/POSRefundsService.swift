@@ -3,15 +3,12 @@ import Combine
 import Networking
 import protocol NetworkingCore.POSRefundsRemoteProtocol
 import struct NetworkingCore.Refund
-import struct NetworkingCore.OrderItemRefund
-import struct NetworkingCore.OrderItemTaxRefund
 import class WooFoundation.CurrencySettings
 import class WooFoundationCore.CurrencyFormatter
 
 public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
     private let paymentGatewayRemote: POSPaymentGatewayRemoteProtocol
-    private let refundCalculator: POSRefundCalculating
     private let currencySettings: CurrencySettings
     private let siteID: Int64
     private let mapper: POSRefundMapper
@@ -29,20 +26,17 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                                        appPasswordSupportState: appPasswordSupportState)
         self.refundsRemote = RefundsRemote(network: network)
         self.paymentGatewayRemote = PaymentGatewayRemote(network: network)
-        self.refundCalculator = POSRefundCalculator()
         self.mapper = POSRefundMapper()
     }
 
     init(siteID: Int64,
          refundsRemote: POSRefundsRemoteProtocol,
          paymentGatewayRemote: POSPaymentGatewayRemoteProtocol,
-         currencySettings: CurrencySettings,
-         refundCalculator: POSRefundCalculating = POSRefundCalculator()) {
+         currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.currencySettings = currencySettings
         self.refundsRemote = refundsRemote
         self.paymentGatewayRemote = paymentGatewayRemote
-        self.refundCalculator = refundCalculator
         self.mapper = POSRefundMapper()
     }
 
@@ -55,6 +49,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             let items = mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
+                customAmounts: order.customAmounts,
                 currencyFormatter: currencyFormatter,
                 currency: currency
             )
@@ -90,6 +85,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             POSRefund(items: mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
+                customAmounts: order.customAmounts,
                 currencyFormatter: currencyFormatter,
                 currency: currency
             ))
@@ -126,69 +122,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         }
         // Fallback: if gateway not found, use simple check
         return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
-    }
-
-    public func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts {
-        let numberOfDecimals = currencySettings.fractionDigits
-        return refundCalculator.calculateRefundAmounts(for: items, numberOfDecimals: numberOfDecimals)
-    }
-
-    public func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {
-        let numberOfDecimals = currencySettings.fractionDigits
-        let request = refundCalculator.buildRefundRequest(
-            orderID: orderID,
-            selectedItems: items,
-            reason: reason,
-            numberOfDecimals: numberOfDecimals
-        )
-        let refund = buildRefund(from: request, createAutomated: isAutomaticRefund, numberOfDecimals: numberOfDecimals)
-        _ = try await refundsRemote.createRefund(for: siteID, by: orderID, refund: refund)
-    }
-
-    private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {
-        let items = request.items.map { item in
-            let refundQuantity = Decimal(item.quantity)
-            let refundTotal = formatDecimalForAPI(item.refundTotal, numberOfDecimals: numberOfDecimals)
-            let refundTaxes = buildRefundTaxes(for: item.refundTax, numberOfDecimals: numberOfDecimals)
-
-            return OrderItemRefund(
-                itemID: item.itemID,
-                quantity: refundQuantity,
-                taxes: refundTaxes,
-                total: refundTotal
-            )
-        }
-
-        return Refund(
-            refundID: 0,
-            orderID: request.orderID,
-            siteID: siteID,
-            dateCreated: Date(),
-            amount: formatDecimalForAPI(request.amount, numberOfDecimals: numberOfDecimals),
-            reason: request.reason ?? "",
-            refundedByUserID: 0,
-            isAutomated: nil,
-            createAutomated: createAutomated,
-            items: items,
-            shippingLines: nil
-        )
-    }
-
-    private func formatDecimalForAPI(_ value: Decimal, numberOfDecimals: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = numberOfDecimals
-        formatter.maximumFractionDigits = numberOfDecimals
-        formatter.groupingSeparator = ""
-        formatter.decimalSeparator = "."
-        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
-    }
-
-    private func buildRefundTaxes(for refundTax: Decimal, numberOfDecimals: Int) -> [OrderItemTaxRefund] {
-        guard refundTax > 0 else { return [] }
-        return [OrderItemTaxRefund(taxID: 0,
-                                   subtotal: "",
-                                   total: formatDecimalForAPI(refundTax, numberOfDecimals: numberOfDecimals))]
     }
 
     /// Checks if all ordered products have been fully refunded.

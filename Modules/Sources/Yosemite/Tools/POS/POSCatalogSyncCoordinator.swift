@@ -1,6 +1,7 @@
 // periphery:ignore:all
 import Foundation
 import Networking
+import enum NetworkingCore.POSCatalogFileError
 import Storage
 import GRDB
 import Alamofire
@@ -141,7 +142,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private var backgroundFTSRebuildTasks: [Int64: Task<Void, Never>] = [:]
 
     /// Observable model for full sync state updates
-    public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
+    nonisolated public let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
@@ -252,13 +253,17 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
             // Track sync failed analytics, extracting polling metadata from enriched errors
             let (pollAttempts, lastGenerationState) = Self.extractPollingMetadata(from: error)
+            let catalogFileMetadata = Self.extractCatalogFileMetadata(from: error)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.full.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify,
                 pollAttempts: pollAttempts,
-                lastGenerationState: lastGenerationState
+                lastGenerationState: lastGenerationState,
+                failureStage: catalogFileMetadata.failureStage,
+                httpStatusCode: catalogFileMetadata.httpStatusCode,
+                responseContentType: catalogFileMetadata.responseContentType
             ))
             throw error
         }
@@ -600,7 +605,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     // MARK: - Analytics Helpers
 
-    private nonisolated func trackAnalytics(_ event: WooAnalyticsEvent) {
+    nonisolated private func trackAnalytics(_ event: WooAnalyticsEvent) {
         analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
     }
 
@@ -619,7 +624,41 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    private nonisolated func getConnectionType() -> String {
+    private static func extractCatalogFileMetadata(from error: Error) -> (failureStage: String?, httpStatusCode: Int?, responseContentType: String?) {
+        guard let catalogFileError = error as? POSCatalogFileError else {
+            return (nil, nil, nil)
+        }
+
+        switch catalogFileError {
+        case .downloadFailed(let statusCode, let contentType):
+            return ("catalog_file_download", statusCode, sanitizeContentType(contentType))
+        case .invalidResponse(let statusCode, let contentType, _):
+            return ("catalog_file_parse", statusCode, sanitizeContentType(contentType))
+        }
+    }
+
+    private static func sanitizeContentType(_ contentType: String?) -> String? {
+        guard let contentType else {
+            return nil
+        }
+
+        let mediaType = contentType
+            .split(separator: ";", maxSplits: 1)
+            .first?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        guard let mediaType, !mediaType.isEmpty else {
+            return nil
+        }
+
+        return mediaType
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "-", with: "_")
+            .replacingOccurrences(of: ".", with: "_")
+    }
+
+    nonisolated private func getConnectionType() -> String {
         guard let observer = connectivityObserver else { return "unknown" }
         switch observer.currentStatus {
         case .reachable(let connectionType):
@@ -762,7 +801,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         guard let task = backgroundFTSRebuildTasks[siteID] else { return }
         await task.value
     }
-
 }
 
 // MARK: - Syncing State

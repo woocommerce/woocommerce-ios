@@ -54,13 +54,13 @@ struct AddOnCrossreferenceUseCase {
         return components.dropLast().joined(separator: splitToken)
     }
 
-    /// Returns wether if the provided add-on name matches any of the stored product add-ons
+    /// Returns whether the provided add-on name matches any of the stored product add-ons
     ///
     private func addOnNameExistsInProductAddOns(_ name: String) -> Bool {
         product.addOns.contains { $0.name == name }
     }
 
-    /// Returns wether if the provided add-on name matches any of the stored global add-ons
+    /// Returns whether the provided add-on name matches any of the stored global add-ons
     ///
     private func addOnNameExistsInGlobalAddOns(_ name: String) -> Bool {
         let globalAddOns = addOnGroups.flatMap { $0.addOns }

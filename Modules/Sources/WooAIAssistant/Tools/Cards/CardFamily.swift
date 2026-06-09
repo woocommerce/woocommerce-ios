@@ -90,7 +90,8 @@ struct CardFamily: Sendable {
                                                         query: nil,
                                                         body: nil)
                     return (ref.id, Self.outcome(for: response,
-                                                 checkTrash: self.checkTrash))
+                                                 checkTrash: self.checkTrash,
+                                                 injectParentID: ref.parentID))
                 }
             }
             var outcomes: [Int64: CardFetchOutcome] = [:]
@@ -101,7 +102,12 @@ struct CardFamily: Sendable {
         }
     }
 
-    private static func outcome(for response: WCRESTResponse, checkTrash: Bool) -> CardFetchOutcome {
+    /// WC variation responses omit `parent_id`, but the renderer needs it for
+    /// tap-through and the summary keys project it to the model. Inject the
+    /// parent we already used to build the request URL so both consumers see it.
+    private static func outcome(for response: WCRESTResponse,
+                                checkTrash: Bool,
+                                injectParentID: Int64? = nil) -> CardFetchOutcome {
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             return .rejected(CardRefRejectionReason.forStatusCode(response.statusCode))
         }
@@ -113,7 +119,13 @@ struct CardFamily: Sendable {
         if checkTrash, RESTResponseParsing.stringField(pruned, "status") == "trash" {
             return .rejected(.staleReference)
         }
-        return .found(pruned)
+        guard let parentID = injectParentID, case .object(var dict) = pruned else {
+            return .found(pruned)
+        }
+        if dict["parent_id"] == nil {
+            dict["parent_id"] = .int(parentID)
+        }
+        return .found(.object(dict))
     }
 
     func summarize(_ entity: AnyCodableJSON) -> AnyCodableJSON {
@@ -132,6 +144,8 @@ struct CardFamily: Sendable {
         case .product: return .product
         case .productVariation: return .productVariation
         case .customer: return .customer
+        case .analyticsStats:
+            preconditionFailure("CardFamily.forID(.analyticsStats) - resolver must dispatch analytics through AnalyticsCardFetch")
         }
     }
 
@@ -140,19 +154,51 @@ struct CardFamily: Sendable {
         pathStrategy: .batchedList(path: "wc/v3/orders"),
         summaryKeys: ["id", "number", "status", "total", "currency", "date_created"],
         extraSummary: { entity in
-            guard let billing = RESTResponseParsing.objectField(entity, "billing") else { return [:] }
-            let first = RESTResponseParsing.stringField(billing, "first_name") ?? ""
-            let last = RESTResponseParsing.stringField(billing, "last_name") ?? ""
-            let combined = "\(first) \(last)".trimmingCharacters(in: .whitespaces)
-            return combined.isEmpty ? [:] : ["customer_name": .string(combined)]
+            var extras: [String: AnyCodableJSON] = [:]
+            if let billing = RESTResponseParsing.objectField(entity, "billing") {
+                let first = RESTResponseParsing.stringField(billing, "first_name") ?? ""
+                let last = RESTResponseParsing.stringField(billing, "last_name") ?? ""
+                let combined = "\(first) \(last)".trimmingCharacters(in: .whitespaces)
+                if !combined.isEmpty { extras["customer_name"] = .string(combined) }
+            }
+            if let title = RESTResponseParsing.stringField(entity, "payment_method_title"), !title.isEmpty {
+                extras["payment_method_title"] = .string(title)
+            }
+            if let customerID = RESTResponseParsing.intField(entity, "customer_id"), customerID > 0 {
+                extras["customer_id"] = .int(customerID)
+            }
+            let lineItems = RESTResponseParsing.arrayItems(
+                RESTResponseParsing.objectField(entity, "line_items") ?? .null
+            ) ?? []
+            extras["line_items_count"] = .int(Int64(lineItems.count))
+            extras["line_items"] = .array(lineItems.prefix(showCardsLineItemLimit).map(showCardsLineItem))
+            return extras
         },
         checkTrash: true
     )
 
+    private static let showCardsLineItemLimit = 5
+
+    private static func showCardsLineItem(_ item: AnyCodableJSON) -> AnyCodableJSON {
+        var out: [String: AnyCodableJSON] = [:]
+        if let id = RESTResponseParsing.intField(item, "id") { out["id"] = .int(id) }
+        if let name = RESTResponseParsing.stringField(item, "name") { out["name"] = .string(name) }
+        if let qty = RESTResponseParsing.intField(item, "quantity") { out["quantity"] = .int(qty) }
+        if let sku = RESTResponseParsing.stringField(item, "sku") { out["sku"] = .string(sku) }
+        if let total = RESTResponseParsing.stringField(item, "total") { out["total"] = .string(total) }
+        if let pid = RESTResponseParsing.intField(item, "product_id") { out["product_id"] = .int(pid) }
+        if let vid = RESTResponseParsing.intField(item, "variation_id") { out["variation_id"] = .int(vid) }
+        return .object(out)
+    }
+
     static let product = CardFamily(
         id: .product,
         pathStrategy: .batchedList(path: "wc/v3/products"),
-        summaryKeys: ["id", "name", "sku", "price", "stock_status"],
+        summaryKeys: [
+            "id", "name", "sku", "price", "stock_status",
+            "type", "manage_stock", "on_sale", "stock_quantity",
+            "variations_count"
+        ],
         checkTrash: true
     )
 

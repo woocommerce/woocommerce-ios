@@ -163,8 +163,9 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            viewModel.onPullToRefresh()
+            await viewModel.onPullToRefresh()
         }
+        .notice($viewModel.notice)
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
@@ -202,6 +203,11 @@ struct DashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
+        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
+            AnalyticsUpdateModeBottomSheet(
+                viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel()
+            )
+        }
         .onAppear {
             Task {
                 await viewModel.onViewAppear()
@@ -216,7 +222,7 @@ private extension DashboardView {
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(items.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:
@@ -238,11 +244,15 @@ private extension DashboardView {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .topPerformers:
                         TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel) {
@@ -284,6 +294,8 @@ private extension DashboardView {
                         shareStoreCard
                     case .connectWPCom:
                         connectWPComCard
+                    case .aiAssistant:
+                        aiAssistantCard
                     }
                 }
             }
@@ -293,6 +305,14 @@ private extension DashboardView {
     var feedbackCard: some View {
         InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
             .padding(.horizontal, Layout.padding)
+    }
+
+    @ViewBuilder
+    var aiAssistantCard: some View {
+        if let currentSite {
+            AIAssistantDashboardCard(site: currentSite)
+                .padding(.horizontal, Layout.padding)
+        }
     }
 
     var shareStoreCard: some View {
@@ -501,7 +521,6 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
-
     }
 }
 

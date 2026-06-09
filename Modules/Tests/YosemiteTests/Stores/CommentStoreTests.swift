@@ -53,7 +53,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Approve comment")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { (updatedStatus, error) in
+        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .approved)
             expectation.fulfill()
@@ -70,7 +70,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Unpprove comment")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-unapproved")
-        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: false) { (updatedStatus, error) in
+        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: false) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .unapproved)
             expectation.fulfill()
@@ -87,7 +87,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Approve comment error response")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
-        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { (updatedStatus, error) in
+        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()
@@ -103,7 +103,7 @@ class CommentStoreTests: XCTestCase {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Approve comment empty response error")
 
-        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { (updatedStatus, error) in
+        let action = CommentAction.updateApprovalStatus(siteID: sampleSiteID, commentID: sampleCommentID, isApproved: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()
@@ -123,7 +123,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as spam")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-spam")
-        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { (updatedStatus, error) in
+        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .spam)
             expectation.fulfill()
@@ -140,7 +140,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as not spam")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: false) { (updatedStatus, error) in
+        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: false) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .approved)
             expectation.fulfill()
@@ -157,7 +157,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as spam error response")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
-        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { (updatedStatus, error) in
+        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()
@@ -173,7 +173,7 @@ class CommentStoreTests: XCTestCase {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as spam empty response")
 
-        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { (updatedStatus, error) in
+        let action = CommentAction.updateSpamStatus(siteID: sampleSiteID, commentID: sampleCommentID, isSpam: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()
@@ -193,7 +193,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as trash")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-trash")
-        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { (updatedStatus, error) in
+        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .trash)
             expectation.fulfill()
@@ -210,7 +210,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as not trash")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "comment-moderate-approved")
-        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: false) { (updatedStatus, error) in
+        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: false) { updatedStatus, error in
             XCTAssertNil(error)
             XCTAssertEqual(updatedStatus, .approved)
             expectation.fulfill()
@@ -227,7 +227,7 @@ class CommentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Mark comment as trash error response")
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
-        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { (updatedStatus, error) in
+        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()
@@ -243,7 +243,7 @@ class CommentStoreTests: XCTestCase {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as trash empty response")
 
-        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { (updatedStatus, error) in
+        let action = CommentAction.updateTrashStatus(siteID: sampleSiteID, commentID: sampleCommentID, isTrash: true) { updatedStatus, error in
             XCTAssertNotNil(error)
             XCTAssertNil(updatedStatus)
             expectation.fulfill()

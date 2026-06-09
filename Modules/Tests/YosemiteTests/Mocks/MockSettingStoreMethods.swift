@@ -16,6 +16,17 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var retrievePointOfSaleSettingsResult: Result<[SiteSetting], Error> = .success([])
     var retrievePointOfSaleSettingsSiteID: Int64?
 
+    var retrieveAnalyticsOrderDateTypeResult: Result<AnalyticsOrderDateType, Error> = .success(.paid)
+    var retrieveAnalyticsOrderDateTypeReceivedSiteID: Int64?
+    var updateAnalyticsOrderDateTypeResult: Result<Void, Error> = .success(())
+    var updateAnalyticsOrderDateTypeReceivedSiteID: Int64?
+    var updateAnalyticsOrderDateTypeReceivedValue: AnalyticsOrderDateType?
+    var retrieveAnalyticsImportUpdateModeResult: Result<AnalyticsImportUpdateMode, Error> = .success(.immediate)
+    var retrieveAnalyticsImportUpdateModeReceivedSiteID: Int64?
+    var updateAnalyticsImportUpdateModeResult: Result<Void, Error> = .success(())
+    var updateAnalyticsImportUpdateModeReceivedSiteID: Int64?
+    var updateAnalyticsImportUpdateModeReceivedValue: AnalyticsImportUpdateMode?
+
     func synchronizeGeneralSiteSettings(siteID: Int64,
                                       onCompletion: @escaping (Error?) -> Void) {
         generalSiteSettingsSyncCalled = true
@@ -82,6 +93,48 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
         switch retrievePointOfSaleSettingsResult {
         case .success(let settings):
             return settings
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType {
+        retrieveAnalyticsOrderDateTypeReceivedSiteID = siteID
+        switch retrieveAnalyticsOrderDateTypeResult {
+        case .success(let dateType):
+            return dateType
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws {
+        updateAnalyticsOrderDateTypeReceivedSiteID = siteID
+        updateAnalyticsOrderDateTypeReceivedValue = value
+        switch updateAnalyticsOrderDateTypeResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func retrieveAnalyticsImportUpdateMode(siteID: Int64) async throws -> AnalyticsImportUpdateMode {
+        retrieveAnalyticsImportUpdateModeReceivedSiteID = siteID
+        switch retrieveAnalyticsImportUpdateModeResult {
+        case .success(let mode):
+            return mode
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws {
+        updateAnalyticsImportUpdateModeReceivedSiteID = siteID
+        updateAnalyticsImportUpdateModeReceivedValue = value
+        switch updateAnalyticsImportUpdateModeResult {
+        case .success:
+            return
         case .failure(let error):
             throw error
         }

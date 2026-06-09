@@ -286,7 +286,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                     onFailure()
                     return
                 }
-
             },
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
@@ -326,7 +325,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .scanToPay, cardReaderType: .none)
     }
 
-    /// Perform the necesary tasks after a link is shared.
+    /// Perform the necessary tasks after a link is shared.
     ///
     func performLinkSharedTasks() {
         presentNoticeSubject.send(.created)
@@ -492,12 +491,6 @@ private extension PaymentMethodsViewModel {
             }
 
         stores.dispatch(action)
-    }
-
-    private func updatePaymentGateway() {
-        CardPresentPaymentAction.loadActivePaymentGatewayExtension { paymentGateway in
-            self.cardPaymentGateway = paymentGateway
-        }
     }
 
     func updateOrderAsynchronously() {

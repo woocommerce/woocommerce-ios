@@ -8,7 +8,7 @@ import Storage
 public class RefundStore: Store {
     private let remote: RefundsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = RefundsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -50,7 +50,7 @@ private extension RefundStore {
     /// Creates a new Refund.
     ///
     func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
-        remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
+        remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] refund, error in
             guard let refund else {
                 onCompletion(nil, error)
                 return
@@ -65,7 +65,7 @@ private extension RefundStore {
     /// Retrieves a single Refund by ID.
     ///
     func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
-        remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
+        remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] refund, error in
             guard let refund else {
                 if case NetworkError.notFound? = error {
                     self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
@@ -120,7 +120,7 @@ private extension RefundStore {
         }
 
         // Request any refunds that don't exist in storage.
-        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] (refunds, error) in
+        remote.loadRefunds(for: siteID, by: orderID, with: missingRefundIDs) { [weak self] refunds, error in
             guard let refunds else {
                 return onCompletion(error)
             }
@@ -137,7 +137,7 @@ private extension RefundStore {
     /// Synchronizes the refunds associated with a given orderID
     ///
     func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
+        remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] refunds, error in
             guard let refunds else {
                 onCompletion(error)
                 return
@@ -249,7 +249,7 @@ private extension RefundStore {
 
         // Now, remove any objects that exist in storageRefund.items but not in readOnlyRefund.items
         storedRefundItems?.forEach { storageItem in
-            if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name } ) == nil {
+            if !readOnlyRefund.items.contains(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name }) {
                 storageRefund.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
@@ -305,7 +305,7 @@ private extension RefundStore {
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }

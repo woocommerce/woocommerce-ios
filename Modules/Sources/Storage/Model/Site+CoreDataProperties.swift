@@ -32,9 +32,7 @@ extension Site {
     @NSManaged public var isGarden: Bool
     @NSManaged public var gardenName: String?
     @NSManaged public var gardenPartner: String?
-
 }
 
 extension Site: Identifiable {
-
 }

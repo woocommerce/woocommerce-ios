@@ -1,5 +1,6 @@
 // periphery:ignore:all
 import Foundation
+import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
 public protocol POSCatalogSyncRemoteProtocol {
@@ -249,12 +250,20 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         )
         backgroundDownloadStateStore.save(downloadState)
 
-        let fileURL = try await backgroundDownloader.downloadFile(from: url,
-                                                                   sessionIdentifier: sessionIdentifier,
-                                                                   allowCellular: allowCellular)
+        let downloadResult = try await backgroundDownloader.downloadFile(from: url,
+                                                                         sessionIdentifier: sessionIdentifier,
+                                                                         allowCellular: allowCellular)
+
+        if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
+            throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
+                                                     contentType: downloadResult.contentType)
+        }
 
         // Download completed - parse the file
-        let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+        let catalogResponse = try await parseDownloadedCatalog(from: downloadResult.fileURL,
+                                                               siteID: siteID,
+                                                               statusCode: downloadResult.statusCode,
+                                                               contentType: downloadResult.contentType)
 
         // Clear the saved state since we successfully completed
         backgroundDownloadStateStore.clear()
@@ -268,6 +277,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID for proper mapping.
     /// - Returns: Parsed POS catalog.
     public func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
+        try await parseDownloadedCatalog(from: fileURL, siteID: siteID, statusCode: nil, contentType: nil)
+    }
+
+    private func parseDownloadedCatalog(from fileURL: URL, siteID: Int64, statusCode: Int?, contentType: String?) async throws -> POSCatalogResponse {
         let data = try Data(contentsOf: fileURL)
 
         // Clean up downloaded files, but only if they're in our Documents directory.
@@ -277,7 +290,12 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         let mapper = ListMapper<POSCatalogItem>(siteID: siteID)
-        let items = try mapper.map(response: data)
+        let items: [POSCatalogItem]
+        do {
+            items = try mapper.map(response: data)
+        } catch {
+            throw POSCatalogFileError.invalidResponse(statusCode: statusCode, contentType: contentType, underlyingError: error)
+        }
 
         var products: [POSProduct] = []
         var variations: [POSProductVariation] = []

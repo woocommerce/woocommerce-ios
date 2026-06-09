@@ -37,7 +37,6 @@ struct StatSelectionBar<Stat: Hashable>: View {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color(.secondaryLabel))
             }
-
         }
     }
 }

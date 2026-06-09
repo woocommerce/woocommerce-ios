@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import ParcelFittingCheck
 import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
@@ -408,7 +409,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         let countries = [
             Country(code: "US", name: "United States", states: []),
-            Country(code: "CA", name: "Canada", states: [])
+            Country(code: "VN", name: "Vietnam", states: [])
         ]
         storageManager.insertSampleCountries(readOnlyCountries: countries)
 
@@ -417,7 +418,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         )
 
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
-            sampleDestinationAddress(country: "US", state: "CA")
+            sampleDestinationAddress(country: "VN", state: "")
         )
 
         let viewModel = WooShippingShipmentDetailsViewModel(
@@ -442,6 +443,78 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             sentCustomsForm != nil
         }
         XCTAssertEqual(sentCustomsForm, expectedCustomsForm)
+    }
+
+    func test_changing_customs_form_loads_new_label_rates_without_customs_form_when_customs_form_is_not_required() {
+        // Given
+        var sentCustomsForm: ShippingLabelCustomsForm?
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, _):
+                sentCustomsForm = packages.first?.customsForm
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([]))
+            case .loadConfig:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let countries = [
+            Country(code: "US", name: "United States", states: [])
+        ]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleOriginAddress(country: "US", state: "NY")
+        )
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA")
+        )
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager,
+            debounceDuration: 0
+        )
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        waitUntil {
+            stores.receivedActions.contains { action in
+                guard let action = action as? WooShippingAction,
+                      case .loadLabelRates = action else {
+                    return false
+                }
+                return true
+            }
+        }
+        stores.reset()
+
+        viewModel.customsFormViewModel.contentType = .gift
+        viewModel.customsFormViewModel.restrictionType = .quarantine
+        viewModel.customsFormViewModel.onDismiss()
+
+        // Then
+        waitUntil {
+            stores.receivedActions.contains { action in
+                guard let action = action as? WooShippingAction,
+                      case .loadLabelRates = action else {
+                    return false
+                }
+                return true
+            }
+        }
+        XCTAssertNil(sentCustomsForm)
     }
 
     func test_changing_HAZMAT_category_loads_new_label_rates_with_updated_HAZMAT_category() {
@@ -512,6 +585,54 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_destination_is_unnormalized_US_territory_then_returns_true() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_origin_and_destination_are_same_unnormalized_US_territory_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "PR"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowCustomsForm)
+    }
+
+    func test_shouldShowCustomsForm_when_origin_and_destination_are_same_territory_with_mixed_encoding_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "PR", state: ""))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "PR"))
 
         // When
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
@@ -978,6 +1099,72 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             customsFormItem.weight == shipmentItem.weight &&
             customsFormItem.originCountry == originCountry.code
         }
+    }
+
+    func test_currentPackage_does_not_contain_prefilled_customs_form_when_customs_form_is_not_required() throws {
+        // Setup
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        // Given
+        let originCountry = Country(code: "US", name: "United States", states: [])
+        storageManager.insertSampleCountries(readOnlyCountries: [originCountry])
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        // When
+        destinationAddressSubject.send(sampleDestinationAddress(country: originCountry.code, state: "CA"))
+        originAddressSubject.send(sampleOriginAddress(country: originCountry.code, state: "NY"))
+
+        viewModel.selectPackage(samplePackageData())
+
+        // Then
+        waitUntil {
+            viewModel.customsFormViewModel.requiredInformationIsEntered
+        }
+        viewModel.customsFormViewModel.onDismiss()
+        XCTAssertNil(viewModel.currentPackage?.customsForm)
+    }
+
+    func test_parcelFittingDidConfirm_when_called_then_sets_package_and_caches_AR_state() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(nil)
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                             shipment: sampleShipment,
+                                                             shippingLabel: nil,
+                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        let package = ParcelPresetPackage(id: "usps_medium", name: "Medium Box", length: 11, width: 8.5, height: 5.5)
+        let carrier = ParcelPresetCarrier(id: "usps", name: "USPS", packages: [package])
+        let measurement = ParcelDimensions(length: 10, width: 8, height: 5)
+        let result = ParcelFittingResult.carrierPackage(package, measurement: measurement)
+
+        // When
+        viewModel.parcelFittingDidConfirm(result,
+                                           carriers: [carrier],
+                                           starredPackageIDs: ["usps_medium"],
+                                           dimensionUnit: .inches)
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedPackage)
+        XCTAssertEqual(viewModel.selectedPackage?.id, "usps_medium")
+        XCTAssertNotNil(viewModel.lastARState)
+        XCTAssertNotNil(viewModel.lastARState?.measurement)
+        XCTAssertEqual(viewModel.lastARState?.carriers.count, 1)
+        XCTAssertTrue(viewModel.lastARState?.starredPackageIDs.contains("usps_medium") == true)
+        XCTAssertEqual(viewModel.lastARState?.dimensionUnit, .inches)
     }
 }
 

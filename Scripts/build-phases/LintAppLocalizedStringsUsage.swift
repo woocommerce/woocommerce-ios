@@ -78,7 +78,7 @@ extension Xcodeproj {
             return object.path.map { groupURL.appendingPathComponent($0) } ?? groupURL
         case .projectRoot:
             return object.path.map { URL(fileURLWithPath: $0, relativeTo: projectDirectory) } ?? projectDirectory
-        case .buildProductsDir, .devDir, .sdkDir:
+        case .buildProductsDir, .devDir, .sdkDir, .derivedFileDir:
             print("\(self.projectURL.path): warning: Reference \(objectUUID) is relative to \(object.sourceTree.rawValue) which is not supported by the linter")
             return nil
         }
@@ -208,6 +208,7 @@ extension Xcodeproj {
         case buildProductsDir = "BUILT_PRODUCTS_DIR"
         case devDir = "DEVELOPER_DIR"
         case sdkDir = "SDKROOT"
+        case derivedFileDir = "DERIVED_FILE_DIR"
         var description: String { rawValue }
     }
 
@@ -269,7 +270,7 @@ enum LintResult { case ok, skipped, violationsFound([(line: Int, col: Int)]) }
 /// Lint a given file for usages of `NSLocalizedString` instead of `AppLocalizedString`
 func lint(fileAt url: URL, targetName: String) throws -> LintResult {
     guard ["m", "swift"].contains(url.pathExtension) else { return .skipped }
-    let content = try String(contentsOf: url)
+    let content = try String(contentsOf: url, encoding: .utf8)
     var lineNo = 0
     var violations: [(line: Int, col: Int)] = []
     content.enumerateLines { line, _ in

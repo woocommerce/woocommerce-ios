@@ -8,7 +8,7 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
     private let networkMonitor: NetworkMonitoring
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    @Published private(set) public var currentStatus: ConnectivityStatus = .unknown
+    @Published public private(set) var currentStatus: ConnectivityStatus = .unknown
 
     public var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()

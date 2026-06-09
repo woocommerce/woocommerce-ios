@@ -76,7 +76,7 @@ final class CouponListViewModel {
     }
 
     func buildCouponViewModels() {
-        var seenIdentifiers: Set<String> = Set<String>()
+        var seenIdentifiers = Set<String>()
 
         couponViewModels = resultsController.fetchedObjects.compactMap { coupon in
             guard coupon.couponID > 0, coupon.code.isNotEmpty else { return nil }

@@ -551,7 +551,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                     userDefaults: userDefaults)
 
         // When
-        shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, validationSuccess in
+        shippingLabelFormViewModel.validateAddress(type: .origin) { validationState, _ in
             guard case let .validationError(error) = validationState else {
                 XCTFail("Validation error was not returned")
                 return

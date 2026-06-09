@@ -114,7 +114,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         remote.loadAllProductVariations(for: sampleSiteID,
                                         productID: sampleProductID,
-                                        variationIDs: []) { (productVariations, error) in
+                                        variationIDs: []) { productVariations, error in
             XCTAssertNil(productVariations)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -361,7 +361,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             remote.createProductVariation(for: self.sampleSiteID,
                                           productID: self.sampleProductID,
                                           newVariation:
-                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { result in
                 promise(result)
             }
         }
@@ -385,7 +385,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             remote.createProductVariation(for: self.sampleSiteID,
                                           productID: self.sampleProductID,
                                           newVariation:
-                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { result in
                 promise(result)
             }
         }

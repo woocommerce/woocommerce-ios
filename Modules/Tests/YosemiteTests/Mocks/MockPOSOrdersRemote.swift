@@ -136,4 +136,28 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
             throw error
         }
     }
+
+    var addPOSOrderNoteCalled = false
+    var spyAddPOSOrderNoteOrderID: Int64?
+    var spyAddPOSOrderNoteIsCustomerNote: Bool?
+    var spyAddPOSOrderNoteText: String?
+    var addPOSOrderNoteResult: Result<OrderNote, Error> = .success(OrderNote.fake())
+
+    func addPOSOrderNote(siteID: Int64,
+                         orderID: Int64,
+                         isCustomerNote: Bool,
+                         note: String) async throws -> OrderNote {
+        addPOSOrderNoteCalled = true
+        spySiteID = siteID
+        spyAddPOSOrderNoteOrderID = orderID
+        spyAddPOSOrderNoteIsCustomerNote = isCustomerNote
+        spyAddPOSOrderNoteText = note
+
+        switch addPOSOrderNoteResult {
+        case .success(let orderNote):
+            return orderNote
+        case .failure(let error):
+            throw error
+        }
+    }
 }

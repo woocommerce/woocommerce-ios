@@ -12,9 +12,14 @@ public enum ProductsGetTool {
         name: name,
         description: """
         Fetch a single product with full detail (price, stock, categories, \
-        type). Use when the merchant references a specific product by ID. \
-        For variable products use product_variations_list to inspect the \
-        variants.
+        type, full description). Use when the merchant references a specific \
+        product by ID, including by position from a prior turn ("the first \
+        one", "that product"). Required when the merchant asks about the \
+        full description, categories, or other fields the rendered product \
+        card doesn't surface. For variations / sizes / colors of variable \
+        products, use product_variations_list instead. Don't redundantly \
+        call this to re-render an existing card; only fetch when the \
+        merchant asks for fields the card doesn't show.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -26,14 +31,22 @@ public enum ProductsGetTool {
                 ])
             ]),
             "required": .array([.string("id")])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private struct Args: Decodable, Sendable {
         let id: Int
     }
 
+    private static let allowedArguments: Set<String> = ["id"]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -53,12 +66,7 @@ public enum ProductsGetTool {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = ProductSummary.make(from: pruned)
-        let resolvedID = RESTResponseParsing.intField(pruned, "id").map(String.init) ?? String(args.id)
-        let card = RenderedCardPayload(family: .product,
-                                       id: resolvedID,
-                                       element: pruned)
         return .success(.init(toolName: name,
-                              structured: LLMPayloadCap.capped(summary, toolName: name),
-                              uiStructured: UIStructured(cards: [card])))
+                              structured: LLMPayloadCap.capped(summary, toolName: name)))
     }
 }

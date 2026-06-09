@@ -25,9 +25,7 @@ extension WCPayCharge {
     @NSManaged public var paymentMethodType: String
     @NSManaged public var cardDetails: WCPayCardPaymentDetails?
     @NSManaged public var cardPresentDetails: WCPayCardPresentPaymentDetails?
-
 }
 
 extension WCPayCharge: Identifiable {
-
 }

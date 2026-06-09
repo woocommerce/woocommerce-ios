@@ -4,5 +4,4 @@ import CoreData
 
 @objc(ProductImage)
 public class ProductImage: NSManagedObject {
-
 }

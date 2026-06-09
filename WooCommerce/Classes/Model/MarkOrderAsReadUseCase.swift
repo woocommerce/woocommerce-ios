@@ -11,10 +11,10 @@ struct MarkOrderAsReadUseCase {
     }
 
     /// Async method that marks the order note as read if it is the notification for the last order.
-    /// We do it in a way that first we syncronize notification to get the remote `Note`
+    /// We do it in a way that first we synchronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.
     /// If they match we mark it as read.
-    /// Returns syncronized note id if marking was successful and error if some error happened
+    /// Returns synchronized note id if marking was successful and error if some error happened
     static func markOrderNoteAsReadIfNeeded(network: Network, noteID: Int64, orderID: Int) async -> Result<Int64, Error> {
         let notesRemote = NotificationsRemote(network: network)
 

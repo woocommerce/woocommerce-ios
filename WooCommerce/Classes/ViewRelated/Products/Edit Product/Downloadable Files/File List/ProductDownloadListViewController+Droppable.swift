@@ -45,7 +45,7 @@ extension ProductDownloadListViewController: UITableViewDropDelegate {
 
         for item in coordinator.items {
             guard let sourceIndexPathRow = item.sourceIndexPath?.row else { continue }
-            item.dragItem.itemProvider.loadObject(ofClass: ProductDownloadDragAndDrop.self) { [weak self] (object, error) in
+            item.dragItem.itemProvider.loadObject(ofClass: ProductDownloadDragAndDrop.self) { [weak self] object, _ in
                 DispatchQueue.main.async {
                     if let item = object as? ProductDownloadDragAndDrop {
                         self?.viewModel.remove(at: sourceIndexPathRow)

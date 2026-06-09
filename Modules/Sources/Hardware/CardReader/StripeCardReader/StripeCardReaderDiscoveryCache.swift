@@ -22,9 +22,9 @@ final class StripeCardReaderDiscoveryCache {
     }
 
     func reader(matching: CardReader) -> StripeCardReader? {
-        cachedReaders.filter {
+        cachedReaders.first(where: {
             $0.serialNumber == matching.serial
-        }.first
+        })
     }
 }
 #endif

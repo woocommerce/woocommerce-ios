@@ -188,12 +188,22 @@ private extension POSTabCoordinator {
     }
 
     func presentPOSView(siteID: Int64) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+        let hostingController = UIHostingController(
+            rootView: POSPresentationRootView(posView: nil)
+        )
+        hostingController.modalPresentationStyle = .fullScreen
+        viewControllerToPresent.present(hostingController, animated: true, completion: nil)
+
+        Task { @MainActor [weak self, weak hostingController] in
+            guard let self, let hostingController else { return }
 
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
+                // Resolve POS eligibility before deciding the fetch strategy
+                let posState = await eligibilityChecker.checkEligibility()
+                try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
+
                 // Retry transient failures before using the value
                 let state = try await service.catalogEligibility(for: siteID)
                 if case .ineligible(reason: .catalogSizeCheckFailed) = state {
@@ -263,6 +273,7 @@ private extension POSTabCoordinator {
                     orderService = posOrderService
                 } else {
                     DDLogError("POSOrderService not provided")
+                    await hostingController.dismiss(animated: true)
                     return
                 }
 
@@ -270,6 +281,30 @@ private extension POSTabCoordinator {
                 if ProcessConfiguration.shouldLoadMockedPOSProducts {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
+
+                let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
+
+                // Resolve TTP eligibility once, up front, so we can hand the right
+                // preferred method down to POSPaymentModel. The same checker is also
+                // passed in for the availability controller that drives the buttons /
+                // hero, but POSPaymentModel needs the answer synchronously to know
+                // whether to skip the BT auto-collect on checkout entry.
+                let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
+                    siteID: siteID,
+                    eligibilityService: POSEligibilityService()
+                )
+                let preferredConnectionMethod: CardReaderConnectionMethod
+                switch await tapToPayAvailabilityChecker.checkAvailability() {
+                case .available:
+                    preferredConnectionMethod = .tapToPay
+                case .unknown, .unavailable:
+                    preferredConnectionMethod = .bluetooth
+                }
+
+                let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           stores: storesManager,
+                                                                           storageManager: storageManager,
+                                                                           currencySettings: currencySettings)
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
@@ -287,6 +322,7 @@ private extension POSTabCoordinator {
                     ),
                     orderService: orderService,
                     refundsService: refundsService,
+                    refundSubmissionProcessor: refundSubmissionProcessor,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },
@@ -304,18 +340,38 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
+                    receiptSettingsAdminURL: receiptSettingsAdminURL,
                     sunsetWarningChecker: sunsetWarningChecker,
+                    tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
+                    preferredConnectionMethod: preferredConnectionMethod,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
 
-                let hostingController = UIHostingController(rootView: posView)
-                hostingController.modalPresentationStyle = .fullScreen
-                viewControllerToPresent.present(hostingController, animated: true)
+                guard hostingController.presentingViewController != nil else {
+                    return
+                }
+                hostingController.rootView = POSPresentationRootView(posView: posView)
+            } else {
+                await hostingController.dismiss(animated: true)
             }
         }
     }
 }
+
+
+struct POSPresentationRootView: View {
+    let posView: PointOfSaleEntryPointView?
+
+    var body: some View {
+        if let posView {
+            posView
+        } else {
+            PointOfSaleLoadingEntryPointView()
+        }
+    }
+}
+
 
 private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

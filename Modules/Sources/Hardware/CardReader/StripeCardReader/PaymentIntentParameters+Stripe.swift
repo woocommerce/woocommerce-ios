@@ -53,6 +53,10 @@ private extension Hardware.PaymentIntentParameters {
             builder.setApplicationFeeAmount(applicationFeeForStripe)
         }
 
+        if let cardPresentCaptureMethod {
+            _ = builder.setPaymentMethodOptionsParameters(try createCardPresentPaymentMethodOptions(captureMethod: cardPresentCaptureMethod))
+        }
+
         builder.setReceiptEmail(receiptEmail)
 
         let updatedMetadata = prepareMetadataForStripe(with: cardReaderMetadata)
@@ -60,6 +64,15 @@ private extension Hardware.PaymentIntentParameters {
 
         // Return payment intent built configuration:
         return try builder.build()
+    }
+
+    func createCardPresentPaymentMethodOptions(captureMethod: Hardware.CardPresentCaptureMethod) throws -> PaymentMethodOptionsParameters {
+        let cardPresentParameters = try CardPresentParametersBuilder()
+            .setCaptureMethod(captureMethod.stripeTerminalCardPresentCaptureMethod)
+            .build()
+
+        return try PaymentMethodOptionsParametersBuilder(cardPresentParameters: cardPresentParameters)
+            .build()
     }
 
     /// Updates the existing PaymentIntentParameters metadata with our CardReader metadata, if any.
@@ -75,7 +88,7 @@ private extension Hardware.PaymentIntentParameters {
             "platform": "\(meta.platformMetadataKey)"
         ]
 
-        let updatedMetadata = metadata?.merging(cardReaderMetadata) { (_, new) in new }
+        let updatedMetadata = metadata?.merging(cardReaderMetadata) { _, new in new }
 
         return updatedMetadata
     }
@@ -88,6 +101,17 @@ private extension PaymentMethodType {
             return .cardPresent
         case .interacPresent:
             return .interacPresent
+        }
+    }
+}
+
+private extension Hardware.CardPresentCaptureMethod {
+    var stripeTerminalCardPresentCaptureMethod: StripeTerminal.CardPresentCaptureMethod {
+        switch self {
+        case .manualPreferred:
+            return .manualPreferred
+        case .manual:
+            return .manual
         }
     }
 }

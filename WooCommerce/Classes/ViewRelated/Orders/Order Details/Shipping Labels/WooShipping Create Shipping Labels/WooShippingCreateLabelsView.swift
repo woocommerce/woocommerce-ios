@@ -10,7 +10,7 @@ final class WooShippingCreateLabelsViewHostingController: UIHostingController<Wo
         super.init(rootView: WooShippingCreateLabelsView(viewModel: viewModel))
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -102,7 +102,9 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .sheet(isPresented: $showingCustomsForm) {
-                WooShippingCustomsForm(viewModel: viewModel.currentShipmentDetailsViewModel.customsFormViewModel)
+                if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
+                    WooShippingCustomsForm(viewModel: currentShipmentDetailsViewModel.customsFormViewModel)
+                }
             }
             .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
             .notice($viewModel.hazmatNotice)
@@ -151,7 +153,7 @@ struct WooShippingCreateLabelsView: View {
 
 private extension WooShippingCreateLabelsView {
     var tabs: [TopTabItem<EmptyView>] {
-        viewModel.shipments.enumerated().map { (index, shipment) in
+        viewModel.shipments.enumerated().map { index, shipment in
             TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                        icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
                        customAccessibilityValue: shipment.isPurchased ?
@@ -207,8 +209,10 @@ private extension WooShippingCreateLabelsView {
                         showingSplitShipments = true
                     })
                 }
-                WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
-                    .disabled(viewModel.isPurchasingLabel)
+                if let currentShipmentDetailsViewModel = viewModel.currentShipmentDetailsViewModel {
+                    WooShippingShipmentDetailsView(viewModel: currentShipmentDetailsViewModel)
+                        .disabled(viewModel.isPurchasingLabel)
+                }
             }
             .padding(Layout.contentSpacing)
         }
@@ -340,13 +344,13 @@ private extension WooShippingCreateLabelsView {
                             viewModel.editDestinationAddress()
                         }
                     })
-                } else if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                } else if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel?.itnMissingNoticeLabel {
                     // Verification notice for missing ITN in customs form
                     verificationNotice(with: itnMissingNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel = nil
+                            viewModel.currentShipmentDetailsViewModel?.itnMissingNoticeLabel = nil
                         }
                     },
                                        onTap: {
@@ -371,14 +375,14 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                     }
-                    if shouldShowPurchaseButton || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
+                    if shouldShowPurchaseButton || viewModel.currentShipmentDetailsViewModel?.selectedPackage != nil {
                         purchaseButton
                     }
                 }
             }
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
-                    if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                    if viewModel.currentShipmentDetailsViewModel?.selectedPackage != nil || isShipmentDetailsExpanded {
                         Toggle(isOn: $viewModel.markOrderComplete) {
                             Text(Localization.BottomSheet.markComplete)
                                 .font(.subheadline)

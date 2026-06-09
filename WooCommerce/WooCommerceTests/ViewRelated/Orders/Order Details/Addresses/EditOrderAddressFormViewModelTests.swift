@@ -232,7 +232,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let showPlaceholdersStates: [Bool] = waitFor { promise in
-            viewModel.$showPlaceholders
+            viewModel.showPlaceholdersPublisher
                 .dropFirst() // Drop initial value
                 .collect(2)  // Expect two state changes
                 .sink { emittedValues in
@@ -352,6 +352,37 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fields.state, newState.name)
+    }
+
+    func test_changing_selectedCountry_to_a_country_without_states_clears_the_state_text() {
+        // Given
+        var fields = AddressFormFields()
+        fields.selectedCountry = Country(code: "US",
+                                         name: "United States",
+                                         states: [StateOfACountry(code: "NY", name: "New York")])
+        fields.selectedState = StateOfACountry(code: "NY", name: "New York")
+        XCTAssertEqual(fields.state, "New York")
+
+        // When
+        fields.selectedCountry = Country(code: "GB", name: "United Kingdom", states: [])
+
+        // Then
+        XCTAssertEqual(fields.state, "")
+        XCTAssertNil(fields.selectedState)
+    }
+
+    func test_re_setting_selectedCountry_to_same_country_preserves_state_text() {
+        // Given
+        var fields = AddressFormFields()
+        let unitedKingdom = Country(code: "GB", name: "United Kingdom", states: [])
+        fields.selectedCountry = unitedKingdom
+        fields.state = "Greater London"
+
+        // When
+        fields.selectedCountry = unitedKingdom
+
+        // Then
+        XCTAssertEqual(fields.state, "Greater London")
     }
 
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {

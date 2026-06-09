@@ -54,7 +54,6 @@ struct BlazeAdDestinationSettingView: View {
                     .padding(.leading, Layout.contentSpacing)
                     .listRowSeparator(.hidden, edges: .bottom)
                     .disabled(viewModel.shouldDisableAddParameterButton)
-
                 } header: {
                     Text(Localization.urlParametersHeading)
                 } footer: {

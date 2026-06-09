@@ -199,6 +199,38 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
+    /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
+    ///
+    case pointOfSaleRoles
+
+    /// Enables adding custom amounts to the cart in Point of Sale
+    ///
+    case pointOfSaleCustomAmounts
+
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
+    ///
+    case pointOfSalePhonePrototype
+
+    /// Enables Scan to Pay as a secondary payment method in Point of Sale.
+    /// When enabled, the merchant can have the customer pay by scanning a QR code that
+    /// opens the order's gateway-hosted payment page on their phone.
+    ///
+    case pointOfSaleScanToPay
+
+    /// Enables "Mark order as paid" as a secondary payment method in Point of Sale.
+    /// Used when the merchant has collected payment out-of-band (external reader, gift card,
+    /// account credit, etc.) and just needs the order marked as completed.
+    ///
+    case pointOfSaleMarkOrderAsPaid
+
+    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
+    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
+    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
+    ///
+    case pointOfSaleTapToPay
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
@@ -206,10 +238,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
-
-    /// Enables configurable store stats widgets
-    ///
-    case configurableStoreStatsWidgets
 
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj
@@ -231,4 +259,12 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
+
+    /// Enables smarter (AI-powered) push notifications.
+    ///
+    case smarterNotifications
 }

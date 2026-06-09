@@ -13,7 +13,7 @@ class BookingListViewModelTests {
 
     private let sampleSiteID: Int64 = 322
     private let analyticsProvider = MockAnalyticsProvider()
-    private lazy var analytics: WooAnalytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
+    private lazy var analytics = WooAnalytics(analyticsProvider: self.analyticsProvider)
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
     /// Mock Storage: InMemory
@@ -638,7 +638,7 @@ class BookingListViewModelTests {
         let booking = createBooking(id: 1, startDate: testDate, status: .confirmed)
         insertBookings([booking])
 
-        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+        stores.whenReceivingAction(ofType: BookingAction.self) { _ in
             // Don't complete the sync — keep it in progress
         }
 

@@ -58,7 +58,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// Not applicable to product variation form
     private(set) var productName: AnyPublisher<String, Never>? = nil
 
-    private let productVariationSubject: PassthroughSubject<EditableProductVariationModel, Never> = PassthroughSubject<EditableProductVariationModel, Never>()
+    private let productVariationSubject = PassthroughSubject<EditableProductVariationModel, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
 
     /// The product variation before any potential edits; reset after a remote update.
@@ -131,7 +131,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
         self.productImagesUploader = productImagesUploader
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }

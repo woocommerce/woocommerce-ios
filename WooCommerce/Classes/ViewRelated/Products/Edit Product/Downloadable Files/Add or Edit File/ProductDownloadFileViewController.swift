@@ -72,7 +72,7 @@ extension ProductDownloadFileViewController {
         menuAlert.view.tintColor = .text
 
         let deleteTitle = Localization.actionSheetDeleteTitle
-        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
+        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] _ in
             ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "deleted"])
             self?.onDeletion()
         }
@@ -107,7 +107,7 @@ extension ProductDownloadFileViewController {
         case .edit:
             ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "updated"])
         }
-        viewModel.completeUpdating { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
+        viewModel.completeUpdating { [weak self] fileName, fileURL, fileID, hasUnsavedChanges in
              self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
         }
     }
@@ -163,7 +163,7 @@ private extension ProductDownloadFileViewController {
 
     func configureName(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadFileNameViewModel(fileName: viewModel.fileName) { [weak self] value in
-            self?.viewModel.handleFileNameChange(value) { [weak self] (isValid) in
+            self?.viewModel.handleFileNameChange(value) { [weak self] isValid in
                 self?.enableDoneButton(isValid)
                 if let indexPath = self?.viewModel.sections.indexPathForRow(.name),
                     let cell = self?.tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell {
@@ -176,7 +176,7 @@ private extension ProductDownloadFileViewController {
 
     func configureURL(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadFileUrlViewModel(fileUrl: viewModel.fileURL) { [weak self] value in
-            self?.viewModel.handleFileUrlChange(value) { [weak self] (isValid) in
+            self?.viewModel.handleFileUrlChange(value) { [weak self] isValid in
                 self?.enableDoneButton(isValid)
                 if let indexPath = self?.viewModel.sections.indexPathForRow(.url),
                     let cell = self?.tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell {

@@ -246,7 +246,7 @@ struct TopTabView<Content: View>: View {
                     // The gesture could be simultaneous with an external scroll view
                     .simultaneousGesture(
                         DragGesture()
-                            .updating($dragState) { drag, state, transaction in
+                            .updating($dragState) { drag, state, _ in
                                 let isHorizontalDrag = abs(drag.translation.width) > abs(drag.translation.height)
                                 if isHorizontalDrag {
                                     state = .dragging(translation: drag.translation)
@@ -293,7 +293,7 @@ struct TopTabView<Content: View>: View {
     }
 
     private func calculateOffset(index: Int) -> CGFloat {
-        // Takes all preceeding tab widths, and adds appropriate spacing to each side to get the overall offset
+        // Takes all preceding tab widths, and adds appropriate spacing to each side to get the overall offset
         return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (tabPadding * 2)
     }
 

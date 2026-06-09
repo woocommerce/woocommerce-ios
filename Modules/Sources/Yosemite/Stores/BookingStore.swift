@@ -8,7 +8,7 @@ public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
     private let ordersRemote: OrdersRemoteProtocol
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
         let ordersRemote = OrdersRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, ordersRemote: ordersRemote)

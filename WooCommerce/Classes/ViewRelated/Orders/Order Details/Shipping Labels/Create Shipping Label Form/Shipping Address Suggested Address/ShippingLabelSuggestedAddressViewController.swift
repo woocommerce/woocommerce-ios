@@ -167,7 +167,6 @@ private extension ShippingLabelSuggestedAddressViewController {
             ServiceLocator.analytics.track(.shippingLabelAddressSuggestionsEditSelectedAddressButtonTapped, withProperties: ["type": "suggested"])
             displayEditAddressFormVC(address: suggestedAddress, email: email, type: type)
         }
-
     }
 
     func displayEditAddressFormVC(address: ShippingLabelAddress?, email: String?, type: ShipType) {
@@ -178,7 +177,7 @@ private extension ShippingLabelSuggestedAddressViewController {
             email: email,
             validationError: nil,
             countries: countries,
-            completion: { [weak self] (newShippingLabelAddress) in
+            completion: { [weak self] newShippingLabelAddress in
                 guard let self else { return }
                 self.onCompletion(newShippingLabelAddress)
                 self.navigationController?.popViewController(animated: true)

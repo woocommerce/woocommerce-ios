@@ -42,6 +42,8 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    private let grdbManagerProvider: GRDBManagerProviding
+
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
     private var trackedEligibleSites: Set<Int64> = []
@@ -155,12 +157,14 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
-         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.grdbManagerProvider = grdbManagerProvider
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -216,7 +220,7 @@ class DefaultStoresManager: StoresManager {
     func listenToWPCOMInvalidWPCOMTokenNotification() {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
-                                                                               queue: .main) { [weak self] note in
+                                                                               queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
     }
@@ -296,10 +300,14 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        // Stop any ongoing catalog sync tasks before resetting session
-        if let siteID = sessionManager.defaultStoreID {
+        let siteIDForSync = sessionManager.defaultStoreID
+        let syncCoordinator = posCatalogSyncCoordinator
+        let grdbManager = grdbManagerProvider.initializedGRDBManager
+
+        // Stop any ongoing catalog sync tasks before resetting session.
+        if let siteID = siteIDForSync {
             Task {
-                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+                await syncCoordinator?.stopOngoingSyncs(for: siteID)
             }
         }
 
@@ -311,13 +319,14 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
-        // Reset GRDB on a background thread to avoid blocking logout
-        // when there's a large catalog to delete
-        Task.detached(priority: .userInitiated) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+        // Reset GRDB on a background thread to avoid blocking logout when there's a large catalog to delete.
+        if let grdbManager {
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 
@@ -337,6 +346,16 @@ class DefaultStoresManager: StoresManager {
     /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
+        // Stop any ongoing catalog sync tasks for the old site before switching.
+        // Without this, the in-flight sync continues polling but AlamofireNetwork's
+        // selectedSite publisher switches to the new site's credentials, causing
+        // the old task to download the wrong site's catalog and persist it under the old siteID.
+        if let oldSiteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: oldSiteID)
+            }
+        }
+
         sessionManager.defaultStoreID = storeID
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
@@ -465,7 +484,7 @@ private extension DefaultStoresManager {
     }
 
     /// Replaces the temporary UUID username in default credentials with the
-    /// actual username from the passed account.  This *shouldn't* be necessary
+    /// actual username from the passed account. This *shouldn't* be necessary
     /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///

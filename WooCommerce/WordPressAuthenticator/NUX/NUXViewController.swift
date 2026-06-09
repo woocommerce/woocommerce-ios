@@ -7,8 +7,8 @@ import WordPressUI
 open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewControllerTransitioningDelegate {
     // MARK: NUXViewControllerBase properties
     /// these properties comply with NUXViewControllerBase and are duplicated with NUXTableViewController
-    public var helpNotificationIndicator: WPHelpIndicatorView = WPHelpIndicatorView()
-    public var helpButton: UIButton = UIButton(type: .custom)
+    public var helpNotificationIndicator = WPHelpIndicatorView()
+    public var helpButton = UIButton(type: .custom)
     public var dismissBlock: ((_ cancelled: Bool) -> Void)?
     public var loginFields = LoginFields()
     open var sourceTag: WordPressSupportSourceTag {

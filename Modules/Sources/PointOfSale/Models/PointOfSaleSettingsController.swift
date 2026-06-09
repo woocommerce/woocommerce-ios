@@ -34,12 +34,14 @@ protocol POSSettingsControllerProtocol {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
-         isLocalCatalogEligible: Bool) {
+         isLocalCatalogEligible: Bool,
+         receiptSettingsAdminURL: String) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
-                                                        siteSettings: siteSettings)
+                                                        siteSettings: siteSettings,
+                                                        receiptSettingsAdminURL: receiptSettingsAdminURL)
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         if let catalogSyncCoordinator, let grdbManager {
@@ -79,11 +81,12 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
         softwareVersion: "2.0.1.23"
     )
 
-    var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
+    var storeViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: PluginsServicePreview(),
                                                                               defaultSiteName: "Sample Store",
-                                                                              siteSettings: [])
+                                                                              siteSettings: [],
+                                                                              receiptSettingsAdminURL: "")
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 

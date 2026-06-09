@@ -13,7 +13,7 @@ final class ProductSelectorViewController: UIHostingController<ProductSelectorVi
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -195,7 +195,7 @@ struct ProductSelectorView: View {
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
         guard let horizontalSizeClass,
-              let presentationStyle else {
+              presentationStyle != nil else {
             return
         }
 

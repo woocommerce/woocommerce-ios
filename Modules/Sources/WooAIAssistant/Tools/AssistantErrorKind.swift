@@ -7,6 +7,7 @@ public enum AssistantErrorKind: String, Sendable, Codable {
     case rateLimit          = "rate_limit"
     case timeout
     case upstreamFailure    = "upstream_failure"
+    case invalidStream      = "invalid_stream"
     case toolFailed         = "tool_failed"
     case invalidToolCall    = "invalid_tool_call"
     case outcomeUnknown     = "outcome_unknown"

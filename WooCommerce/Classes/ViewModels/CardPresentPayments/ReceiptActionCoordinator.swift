@@ -14,7 +14,7 @@ struct ReceiptActionCoordinator {
                                                                     source: .local))
 
          await withCheckedContinuation { continuation in
-            let action = ReceiptAction.print(order: order, parameters: params) { (result) in
+            let action = ReceiptAction.print(order: order, parameters: params) { result in
                 switch result {
                 case .success:
                     analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: countryCode,

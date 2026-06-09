@@ -21,9 +21,9 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - statuses: Filters the Orders by the specified Status, if any.
-    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///     - after: If given, limit response to orders published after a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
-    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
+    ///     - before: If given, limit response to resources published before a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine.
     ///     This method will convert it to UTC ISO 8601 before calling the REST API.
@@ -494,6 +494,21 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    public func addPOSOrderNote(siteID: Int64,
+                                orderID: Int64,
+                                isCustomerNote: Bool,
+                                note: String) async throws -> OrderNote {
+        try await withCheckedThrowingContinuation { continuation in
+            addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { orderNote, error in
+                if let orderNote {
+                    continuation.resume(returning: orderNote)
+                } else {
+                    continuation.resume(throwing: error ?? POSOrdersRemoteError.addOrderNoteFailed)
+                }
+            }
+        }
+    }
+
     public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
         let parameters: [String: Any] = [
             "billing": [
@@ -529,8 +544,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
@@ -551,8 +567,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 }
@@ -661,7 +678,7 @@ public extension OrdersRemote {
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
+    func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
         guard !orderIDs.isEmpty else { return [] }
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
@@ -675,8 +692,9 @@ public extension OrdersRemote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let lossyOrders = try await enqueue(request, mapper: mapper)
+        return lossyOrders.compactMap(\.order)
     }
 }
 

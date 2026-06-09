@@ -261,7 +261,7 @@ private extension CardReaderConnectionController {
     /// Returns any found reader which is also known
     ///
     func getFoundKnownReader() -> CardReader? {
-        foundReaders.filter({knownReaderID == $0.id}).first
+        foundReaders.first(where: {knownReaderID == $0.id})
     }
 
     /// A helper to return an array of found reader IDs
@@ -564,7 +564,7 @@ private extension CardReaderConnectionController {
     }
 
     func observePermissionChanges() {
-        locationService.observePermissionChanges { [weak self] permission in
+        locationService.observePermissionChanges { [weak self] _ in
             guard let self else { return }
             locationService.stopObservingPermissionChanges()
             if case .requestLocationPermission = state {

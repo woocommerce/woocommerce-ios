@@ -9,7 +9,7 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)
@@ -407,7 +407,6 @@ private extension ProductStore {
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
-
         }
     }
 
@@ -476,7 +475,7 @@ private extension ProductStore {
     /// Delete an existing product.
     ///
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+        remote.deleteProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
@@ -962,7 +961,7 @@ extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.attributes but not in readOnlyProduct.attributes
         storageProduct.attributes?.forEach { storageAttribute in
-            if readOnlyProduct.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name } ) == nil {
+            if !readOnlyProduct.attributes.contains(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name }) {
                 storageProduct.removeFromAttributes(storageAttribute)
                 storage.deleteObject(storageAttribute)
             }
@@ -989,8 +988,8 @@ extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.defaultAttributes but not in readOnlyProduct.defaultAttributes
         storageProduct.defaultAttributes?.forEach { storageDefaultAttribute in
-            if readOnlyProduct.defaultAttributes.first(where: {
-                $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name } ) == nil {
+            if !readOnlyProduct.defaultAttributes.contains(where: {
+                $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name }) {
                     storageProduct.removeFromDefaultAttributes(storageDefaultAttribute)
                     storage.deleteObject(storageDefaultAttribute)
             }
@@ -1190,7 +1189,7 @@ extension ProductStore {
 
         // Now, remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
         storageProduct.customFields?.forEach { storageCustomField in
-            if readOnlyProduct.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyProduct.customFields.contains(where: { $0.metadataID == storageCustomField.metadataID }) {
                 storageProduct.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }

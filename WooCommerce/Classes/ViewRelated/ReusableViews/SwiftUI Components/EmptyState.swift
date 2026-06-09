@@ -71,6 +71,5 @@ struct EmptyState_Previews: PreviewProvider {
                    image: .productErrorImage)
             .background(Color(UIColor.basicBackground))
             .environment(\.colorScheme, .dark)
-
     }
 }

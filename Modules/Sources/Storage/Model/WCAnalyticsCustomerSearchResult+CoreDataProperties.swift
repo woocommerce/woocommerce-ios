@@ -11,7 +11,6 @@ extension WCAnalyticsCustomerSearchResult {
     @NSManaged public var siteID: Int64
     @NSManaged public var keyword: String?
     @NSManaged public var customers: Set<WCAnalyticsCustomer>?
-
 }
 
 // MARK: Generated accessors for customers
@@ -28,9 +27,7 @@ extension WCAnalyticsCustomerSearchResult {
 
     @objc(removeCustomers:)
     @NSManaged public func removeFromCustomers(_ values: NSSet)
-
 }
 
 extension WCAnalyticsCustomerSearchResult: Identifiable {
-
 }

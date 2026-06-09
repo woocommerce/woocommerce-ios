@@ -240,7 +240,7 @@ final class CustomerStoreTests: XCTestCase {
                                                         order: .asc,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
-                                                        filter: .name) { result in
+                                                        filter: .name) { _ in
                 promise(())
             }
             self.dispatcher.dispatch(action)

@@ -73,11 +73,16 @@ final class ServiceLocator {
 
     /// Selected Site Settings
     ///
-    private static var _selectedSiteSettings: SelectedSiteSettings = SelectedSiteSettings()
+    private static var _selectedSiteSettings = SelectedSiteSettings()
+
+    /// Mirrors selectable WooCommerce sites into shared app-group `UserDefaults` for the
+    /// `StoreWidgetsExtension` site picker. Idle until `start()` is called.
+    ///
+    private static var _widgetSiteListSyncManager = WidgetSiteListSyncManager()
 
     /// Currency Settings
     ///
-    private static var _currencySettings: CurrencySettings = CurrencySettings()
+    private static var _currencySettings = CurrencySettings()
 
     /// CoreData Stack
     ///
@@ -86,6 +91,7 @@ final class ServiceLocator {
     /// GRDB Manager for local catalog persistence
     ///
     private static var _grdbManager: GRDBManagerProtocol?
+    private static let grdbManagerLock = NSLock()
 
     /// Cocoalumberjack DDLog
     ///
@@ -125,9 +131,9 @@ final class ServiceLocator {
 
     /// Storage for general app settings
     ///
-    private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
+    private static var _generalAppSettings = GeneralAppSettingsStorage()
 
-    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
+    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
     private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
@@ -136,7 +142,7 @@ final class ServiceLocator {
 
     /// Tracker for app startup waiting time
     ///
-    private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+    private static var _startupWaitingTimeTracker = AppStartupWaitingTimeTracker()
 
     /// Age range verification (Declared Age Range API wrapper)
     ///
@@ -144,7 +150,7 @@ final class ServiceLocator {
 
     /// Age rating change detector
     ///
-    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+    private static var _ageRatingChangeDetector = AgeRatingChangeDetector(
         defaults: .standard,
         provider: StoreKitAgeRatingProvider()
     )
@@ -234,6 +240,13 @@ final class ServiceLocator {
         return _selectedSiteSettings
     }
 
+    /// Provides the access point to the WidgetSiteListSyncManager.
+    /// - Returns: A shared `WidgetSiteListSyncManager` instance. The instance is idle until
+    ///   `start()` is called.
+    static var widgetSiteListSyncManager: WidgetSiteListSyncManager {
+        return _widgetSiteListSyncManager
+    }
+
     /// Provides the access point to the Currency Settings for the current Site.
     /// - Returns: An instance of CurrencySettings.
     static var currencySettings: CurrencySettings {
@@ -252,25 +265,43 @@ final class ServiceLocator {
     /// - Returns: An instance of GRDBManagerProtocol
     /// - Throws: Fatal error if GRDBManager initialization fails
     static var grdbManager: GRDBManagerProtocol {
-        guard let grdbManager = _grdbManager else {
-            do {
-                guard let documentsPath = FileManager.default.urls(
-                    for: .documentDirectory,
-                    in: .userDomainMask).first else {
-                    fatalError("Failed to get the path to the documents directory.")
+        withGRDBManagerLock {
+            guard let grdbManager = _grdbManager else {
+                do {
+                    guard let documentsPath = FileManager.default.urls(
+                        for: .documentDirectory,
+                        in: .userDomainMask).first else {
+                        fatalError("Failed to get the path to the documents directory.")
+                    }
+
+                    let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
+                    let manager = try GRDBManager(databasePath: databasePath)
+                    DDLogInfo("Started GRDBManager with database path: \(databasePath)")
+                    _grdbManager = manager
+                    return manager
+                } catch {
+                    fatalError("Failed to initialize GRDBManager: \(error)")
                 }
-
-                let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
-                let manager = try GRDBManager(databasePath: databasePath)
-                DDLogInfo("Started GRDBManager with database path: \(databasePath)")
-                _grdbManager = manager
-                return manager
-            } catch {
-                fatalError("Failed to initialize GRDBManager: \(error)")
             }
-        }
 
-        return grdbManager
+            return grdbManager
+        }
+    }
+
+    /// The already initialized GRDB manager, if any.
+    /// This intentionally does not create the database.
+    static var initializedGRDBManager: GRDBManagerProtocol? {
+        withGRDBManagerLock {
+            _grdbManager
+        }
+    }
+
+    private static func withGRDBManagerLock<T>(_ block: () -> T) -> T {
+        grdbManagerLock.lock()
+        defer {
+            grdbManagerLock.unlock()
+        }
+        return block()
     }
 
     /// Provides the access point to the FileLogger.
@@ -533,15 +564,6 @@ extension ServiceLocator {
         }
 
         _productImageUploader = mock
-    }
-
-    /// periphery:ignore - for use in future tests.
-    static func setGRDBManager(_ testInstance: GRDBManagerProtocol) {
-        guard isRunningTests() else {
-            return
-        }
-
-        _grdbManager = testInstance
     }
 }
 

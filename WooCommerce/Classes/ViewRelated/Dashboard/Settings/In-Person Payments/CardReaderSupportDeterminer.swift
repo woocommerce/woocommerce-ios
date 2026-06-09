@@ -15,7 +15,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let stores: StoresManager
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64
-    private var locationManager: CLLocationManager = CLLocationManager()
+    private var locationManager = CLLocationManager()
     private static var deviceSupportsTapToPayReader: [Int64: ExpiringBool] = [:]
 
     init(siteID: Int64,

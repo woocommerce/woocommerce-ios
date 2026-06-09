@@ -11,5 +11,4 @@ import CoreData
 
 @objc(ProductAttributeTerm)
 public class ProductAttributeTerm: NSManagedObject {
-
 }

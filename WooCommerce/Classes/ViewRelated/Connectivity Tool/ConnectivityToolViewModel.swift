@@ -51,7 +51,7 @@ final class ConnectivityToolViewModel {
     /// (not application password), since the chatbot requires WPCom authentication.
     ///
     var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
     }
 
     /// Remote used to check the connection to WPCom servers.
@@ -103,6 +103,10 @@ final class ConnectivityToolViewModel {
     ///
     private var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after the site connectivity test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     /// Whether Jetpack is among the active plugins from the system status report.
     /// Populated after the site connectivity test. Internal for testability.
     ///
@@ -152,7 +156,8 @@ final class ConnectivityToolViewModel {
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
+                // Push notification diagnostics are temporarily hidden until the check is updated.
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
@@ -210,23 +215,22 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String) -> Void) -> SupportChatViewModel {
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
         var context: [String: Any] = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = troubleshootingDescription
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
+            context["selectedSiteID"] = site.siteID
             context["site_url"] = site.url
         }
 
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
-
         return SupportChatViewModel(
+            entryPoint: .connectivityTool,
             initialContext: context,
+            systemStatusReport: formattedSystemStatusReport,
             onContactHumanSupport: onContactHumanSupport
         )
     }
@@ -326,6 +330,7 @@ final class ConnectivityToolViewModel {
                 case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
@@ -388,7 +393,7 @@ final class ConnectivityToolViewModel {
                     }
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = String(describing: error)
+                    let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                         title: Localization.Action.viewDetails,
                         systemImage: SystemImages.viewDetails.rawValue,
@@ -496,7 +501,7 @@ final class ConnectivityToolViewModel {
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
-            let technicalDetails = String(describing: error)
+            let technicalDetails = error.formattedTechnicalDetails
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,
@@ -841,6 +846,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
+        Self(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

@@ -14,7 +14,10 @@ public enum CustomersListTool {
         List customers, optionally filtered by keyword (matches name, email, \
         username) or email. Use `include=[id]` to look up one customer by ID; \
         the per-id customer endpoint requires manage_woocommerce so include \
-        is the universal path.
+        is the universal path. After calling, pass results to `show_cards` \
+        to render. If a search returns no matches, do not retry with \
+        synonyms, capitalisation variants, or broader terms - say no match \
+        was found.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -53,7 +56,8 @@ public enum CustomersListTool {
                     "description": .string("Max items; clamped 1-50, default 20.")
                 ])
             ])
-        ])
+        ]),
+        safetyLevel: .safe
     )
 
     private struct Args: Decodable, Sendable {
@@ -90,7 +94,16 @@ public enum CustomersListTool {
         return query
     }
 
+    private static let allowedArguments: Set<String> = [
+        "search", "email", "include", "orderby", "order", "page", "per_page"
+    ]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value

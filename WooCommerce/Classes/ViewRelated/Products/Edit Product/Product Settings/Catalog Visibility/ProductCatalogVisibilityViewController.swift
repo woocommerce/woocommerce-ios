@@ -3,7 +3,7 @@ import Yosemite
 
 final class ProductCatalogVisibilityViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     // Completion callback
     //

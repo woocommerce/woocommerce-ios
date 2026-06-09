@@ -86,7 +86,7 @@ final class MyStoreViewModel: ObservableObject {
 
     /// Determines when we should transition to a loading state.
     ///
-    static private func shouldTransitionToLoading(state: ViewState) -> Bool {
+    private static func shouldTransitionToLoading(state: ViewState) -> Bool {
         switch state {
         case .idle, .error:
             return true

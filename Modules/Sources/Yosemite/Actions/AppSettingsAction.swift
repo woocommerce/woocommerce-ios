@@ -158,7 +158,7 @@ public enum AppSettingsAction: Action {
     case forgetCardReader(onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the most recently membered reader, if any (i.e. a reader that should be reconnected to automatically)
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     case loadCardReader(onCompletion: (Result<String?, Error>) -> Void)
 
@@ -328,6 +328,15 @@ public enum AppSettingsAction: Action {
     /// Loads the last selected time range for the Performance dashboard card.
     ///
     case loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected revenue metric (Gross / Net / Total) for the Performance dashboard card.
+    ///
+    case setLastSelectedDashboardRevenueStatsType(siteID: Int64, revenueType: DashboardRevenueStatsType)
+
+    /// Loads the last selected revenue metric for the Performance dashboard card. `nil` if the merchant
+    /// has not yet picked one (the UI should fall back to the default `.total`).
+    ///
+    case loadLastSelectedDashboardRevenueStatsType(siteID: Int64, onCompletion: (DashboardRevenueStatsType?) -> Void)
 
     /// Stores the last selected time range for the Top Performers dashboard card.
     ///

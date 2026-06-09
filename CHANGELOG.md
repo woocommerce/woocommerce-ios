@@ -1,6 +1,15 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.9
+Big news if you’re in Canada — Point of Sale is now available on iPad, and the refund flow is smoother for everyone. You can use our new troubleshooting and AI help tools in the support area. Plus, configure your Store Stats widget, try a new Trends widget on your lock screen, and more fixes for your daily tasks.
+
+## 24.8
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
+
+## 24.7
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+
 ## 24.6
 This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
 

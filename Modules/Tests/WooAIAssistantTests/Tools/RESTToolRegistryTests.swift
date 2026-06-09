@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct RESTToolRegistryTests {
     @Test
     func test_execute_when_tool_unknown_then_returns_failed_invalidToolCall() async {
@@ -32,7 +33,8 @@ struct RESTToolRegistryTests {
         let tool = RESTTool(
             definition: AITool(name: "orders_list",
                                description: "List orders",
-                               parametersSchema: .object([:])),
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe),
             executor: { _, _ in
                 .success(.init(toolName: "orders_list", structured: structured))
             }
@@ -58,7 +60,8 @@ struct RESTToolRegistryTests {
         let tool = RESTTool(
             definition: AITool(name: "orders_get",
                                description: "Get",
-                               parametersSchema: .object([:])),
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe),
             executor: { _, _ in
                 .failed(.init(toolName: "orders_get",
                               toolCallID: "executor_emitted",
@@ -87,7 +90,8 @@ struct RESTToolRegistryTests {
         let tool = RESTTool(
             definition: AITool(name: "orders_get",
                                description: "Get one",
-                               parametersSchema: .object([:])),
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe),
             executor: { arguments, client in
                 await recorder.record(arguments: arguments)
                 _ = await client.request(method: "GET",
@@ -114,13 +118,15 @@ struct RESTToolRegistryTests {
         let listTool = RESTTool(
             definition: AITool(name: "orders_list",
                                description: "List",
-                               parametersSchema: .object([:])),
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe),
             executor: { _, _ in .failed(.init(toolName: "orders_list", kind: .toolFailed, reason: "stub")) }
         )
         let getTool = RESTTool(
             definition: AITool(name: "orders_get",
                                description: "Get",
-                               parametersSchema: .object([:])),
+                               parametersSchema: .object([:]),
+                               safetyLevel: .safe),
             executor: { _, _ in .failed(.init(toolName: "orders_get", kind: .toolFailed, reason: "stub")) }
         )
         let registry = RESTToolRegistry(client: NoopWCRESTClient(), tools: [listTool, getTool])

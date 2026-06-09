@@ -87,6 +87,10 @@ let package = Package(
             name: "WooAIAssistant",
             targets: ["WooAIAssistant"]
         ),
+        .library(
+            name: "ParcelFittingCheck",
+            targets: ["ParcelFittingCheck"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -259,6 +263,12 @@ let package = Package(
             dependencies: ["Yosemite"]
         ),
         .target(
+            name: "ParcelFittingCheck",
+            dependencies: [
+                "EventHorizonSDK",
+            ]
+        ),
+        .target(
             name: "PointOfSale",
             dependencies: [
                 "Experiments",
@@ -273,6 +283,8 @@ let package = Package(
         .target(
             name: "WooAIAssistant",
             dependencies: [
+                "WooFoundation",
+                "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),
@@ -364,10 +376,17 @@ let package = Package(
                 .target(name: "WooAIAssistant"),
             ]
         ),
+        .testTarget(
+            name: "ParcelFittingCheckTests",
+            dependencies: [
+                .target(name: "ParcelFittingCheck"),
+                "EventHorizonSDK",
+            ]
+        ),
         .binaryTarget(
             name: "EventHorizonSDK",
-            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-04-09-13-24-36/EventHorizon-woocommerce-2026-04-09-13-24-36.xcframework.zip",
-            checksum: "d70ad147c6ea3e5f874cddb3adb320dca76f8c409d350eae2bcd8846b58d32a3"
+            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-05-22-09-23-44/EventHorizon-woocommerce-2026-05-22-09-23-44.xcframework.zip",
+            checksum: "f200c7ad8d807b48e333cefbde40500d83c798a6b592af6fa3f166c528bad083"
         ),
     ]
 )
@@ -454,6 +473,7 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "ParcelFittingCheck",
                     "PointOfSale",
                     "WooAIAssistant",
                     .product(name: "Alamofire", package: "Alamofire"),

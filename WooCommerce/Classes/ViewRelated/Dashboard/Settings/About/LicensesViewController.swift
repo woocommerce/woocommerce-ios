@@ -7,7 +7,7 @@ class LicensesViewController: UIViewController {
 
     /// Main WebView
     ///
-    @IBOutlet weak private var webView: WKWebView!
+    @IBOutlet private weak var webView: WKWebView!
 
     /// URL to the local licenses HTML file
     ///

@@ -7,7 +7,7 @@ import Storage
 public class JetpackSettingsStore: Store {
     private let remote: JetpackSettingsRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = JetpackSettingsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

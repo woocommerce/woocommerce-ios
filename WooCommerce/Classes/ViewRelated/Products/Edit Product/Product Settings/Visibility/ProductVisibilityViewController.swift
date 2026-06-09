@@ -3,7 +3,7 @@ import Yosemite
 
 final class ProductVisibilityViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var sections: [Section] = []
 
@@ -240,7 +240,7 @@ private extension ProductVisibilityViewController {
 
         let placeholder = NSLocalizedString("Enter password", comment: "Enter password placeholder in Product Visibility")
         let viewModel = TitleAndTextFieldWithImageTableViewCell.ViewModel(title: row.description, text: productSettings.password,
-                                                                          placeholder: placeholder, image: .visibilityImage) { [weak self] (text) in
+                                                                          placeholder: placeholder, image: .visibilityImage) { [weak self] text in
             cell.rightImageViewIsHidden = text?.isEmpty == false
             self?.productSettings.password = text
         }

@@ -37,11 +37,11 @@ final class OrdersRootViewController: UIViewController {
     /// The top bar for apply filters, that will be embedded inside the stackview, on top of everything.
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
-        let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
+        let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
 
-    private var filters: FilterOrderListViewModel.Filters = FilterOrderListViewModel.Filters() {
+    private var filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
                 updateLocalOrdersSettings(filters: filters)
@@ -313,7 +313,7 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
         }
 
-        let fetchedStatuses: [OrderStatus] = statusResultsController.fetchedObjects.map { $0 }
+        let fetchedStatuses = statusResultsController.fetchedObjects
         let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
             ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
             : fetchedStatuses
@@ -388,7 +388,7 @@ private extension OrdersRootViewController {
     /// This is useful for stay up to date with the remote statuses, resetting the filters if one of the local status filters was deleted remotely.
     ///
     func configureStatusResultsController() {
-        statusResultsController.onDidChangeObject = { [weak self] (updatedOrdersStatus, _, _, _) in
+        statusResultsController.onDidChangeObject = { [weak self] _, _, _, _ in
             guard let self else { return }
             self.resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: self.statusResultsController.fetchedObjects)
         }
@@ -452,10 +452,10 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
 // MARK: - Stored Order Settings (eg. filters)
 private extension OrdersRootViewController {
-    /// Fetch local Orders Settings (eg.  status or date range filters stored in Orders settings)
+    /// Fetch local Orders Settings (eg. status or date range filters stored in Orders settings)
     ///
     func syncLocalOrdersSettings(onCompletion: @escaping (Result<StoredOrderSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let settings):
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,

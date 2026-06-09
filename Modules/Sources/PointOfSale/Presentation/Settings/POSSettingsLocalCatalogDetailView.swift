@@ -122,7 +122,6 @@ private extension POSSettingsLocalCatalogDetailView {
         }
         return POSErrorViewModel(error: errorState, primaryButton: retryButton, secondaryButton: cancelButton)
     }
-
 }
 
 private extension POSSettingsLocalCatalogDetailView {

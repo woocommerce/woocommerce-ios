@@ -43,6 +43,12 @@ final class QRLoginCoordinator {
     /// Guards `onFinished` so it fires at most once.
     private var didFinish = false
 
+    /// Guards the camera-permission check + scanner presentation so a rapid
+    /// double-tap on "Scan QR code" can't run the check twice and push two
+    /// scanners onto the navigation stack. Cleared once the in-flight check
+    /// resolves (scanner shown or a denial alert presented).
+    private var isCheckingCameraPermission = false
+
     /// The prologue screen, held weakly so "Scan a new code" can pop back to it
     /// and present a fresh scanner. The previous scanner latches onto its
     /// consumed payload and the camera session keeps running, so it can never
@@ -124,7 +130,16 @@ private extension QRLoginCoordinator {
     /// honour the permission gate rather than pushing a scanner
     /// that has no camera access.
     func presentScannerAfterCameraPermissionCheck() {
+        // Reject a second tap that lands before the in-flight check resolves.
+        // The set is synchronous here (before the Task) so the guard is atomic
+        // on the main actor even when the `.notDetermined` path suspends on the
+        // permission prompt.
+        guard !isCheckingCameraPermission else {
+            return
+        }
+        isCheckingCameraPermission = true
         Task { @MainActor in
+            defer { isCheckingCameraPermission = false }
             switch cameraPermissionChecker.status {
             case .authorized:
                 showScanner()

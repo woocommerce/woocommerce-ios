@@ -448,6 +448,7 @@ private struct TotalsFieldsContent: View {
     let totalsFieldAnimation: Namespace.ID
     private let paymentViewHelper = POSPaymentViewHelper()
     private let viewHelper = TotalsViewHelper()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Used for synchronizing animations of shimmeringLine and textField
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
@@ -505,8 +506,14 @@ private struct TotalsFieldsContent: View {
             )
         }
         .padding(TotalsView.Constants.totalsLineViewPadding)
-        .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-        .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass == .compact) {
+            $0.frame(maxWidth: .infinity)
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                .fixedSize(horizontal: true, vertical: false)
+        }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
 }

@@ -71,8 +71,9 @@ final class POSStaffCache: Sendable {
     }
 
     func lastFetched(siteID: Int64) -> Date? {
-        // Read atomically with the staff payload - a torn cache (timestamp present, payload missing)
-        // would otherwise read as "no PINs" and auto-unlock POS without a verified fetch.
+        // Require the staff payload before trusting the timestamp: a torn cache (timestamp present,
+        // payload missing) must read as "never fetched" - not silently as "no PINs", which would
+        // auto-unlock POS without a verified fetch.
         guard load(siteID: siteID) != nil else { return nil }
         guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
               let interval = TimeInterval(raw) else { return nil }

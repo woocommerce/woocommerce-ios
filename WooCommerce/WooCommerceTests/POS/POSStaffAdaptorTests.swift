@@ -3,6 +3,7 @@ import Testing
 import enum Networking.NetworkError
 import enum NetworkingCore.DotcomError
 import struct Networking.POSStaffMember
+import protocol Networking.POSStaffRemoteProtocol
 import enum PointOfSale.POSStaffFetchError
 @testable import WooCommerce
 
@@ -146,8 +147,7 @@ private extension POSStaffAdaptorTests {
 
 private struct AnonymousError: Error {}
 
-/// `@unchecked Sendable` is sound: each test owns its mock and never shares it across tasks.
-private final class MockPOSStaffRemote: POSStaffRemoteProtocol, @unchecked Sendable {
+private final class MockPOSStaffRemote: POSStaffRemoteProtocol {
     private let result: Result<[POSStaffMember], Error>
 
     init(result: Result<[POSStaffMember], Error>) {

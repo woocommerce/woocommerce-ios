@@ -70,10 +70,6 @@ final class POSStaffCache: Sendable {
         storage.setString(nil, forKey: timestampKey(siteID: siteID))
     }
 
-    func hasAnyPINs(siteID: Int64) -> Bool {
-        load(siteID: siteID)?.contains(where: { $0.pin != nil }) ?? false
-    }
-
     func lastFetched(siteID: Int64) -> Date? {
         // Read atomically with the staff payload - a torn cache (timestamp present, payload missing)
         // would otherwise read as "no PINs" and auto-unlock POS without a verified fetch.
@@ -81,6 +77,15 @@ final class POSStaffCache: Sendable {
         guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
               let interval = TimeInterval(raw) else { return nil }
         return Date(timeIntervalSince1970: interval)
+    }
+}
+
+// MARK: - Derived queries
+
+extension POSStaffCache {
+    /// `true` when the cached staff list for the site contains at least one member with a PIN.
+    func hasAnyPINs(siteID: Int64) -> Bool {
+        load(siteID: siteID)?.contains(where: { $0.pin != nil }) ?? false
     }
 }
 

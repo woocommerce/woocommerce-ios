@@ -5,14 +5,6 @@ import Networking
 import NetworkingCore
 import PointOfSale
 
-/// Test-seam wrapping `POSStaffRemote` so the adaptor can be unit-tested with a mock.
-///
-protocol POSStaffRemoteProtocol: Sendable {
-    func fetchStaff(siteID: Int64) async throws -> [POSStaffMember]
-}
-
-extension POSStaffRemote: POSStaffRemoteProtocol {}
-
 /// Concrete `POSStaffFetching` in the app target. Calls `POSStaffRemote` and maps Networking
 /// errors to the typed `POSStaffFetchError` so PointOfSale callers can branch by intent.
 ///

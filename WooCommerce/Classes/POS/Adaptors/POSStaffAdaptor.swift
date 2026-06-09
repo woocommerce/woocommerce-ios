@@ -61,10 +61,12 @@ final class POSStaffAdaptor: POSStaffFetching {
     }
 
     private static func classify(networkError error: NetworkError) -> POSStaffFetchError {
-        if case .notFound = error, error.errorCode == "rest_no_route" {
+        // `errorCode` decodes the response body on each access, so read it once.
+        let code = error.errorCode
+        if case .notFound = error, code == "rest_no_route" {
             return .endpointUnavailable
         }
-        if let code = error.errorCode, isAuthDenialCode(code) {
+        if let code, isAuthDenialCode(code) {
             return .adminMissingCapability
         }
         if let status = error.responseCode, status == 401 || status == 403 {

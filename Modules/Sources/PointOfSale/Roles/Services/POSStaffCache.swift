@@ -9,7 +9,7 @@ protocol POSStaffKeyValueStorage: Sendable {
 }
 
 struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
-    static let service = "com.woocommerce.pos.staffCache"
+    static let service = "com.automattic.woocommerce.pos.staffCache"
 
     private let keychain: Keychain
 

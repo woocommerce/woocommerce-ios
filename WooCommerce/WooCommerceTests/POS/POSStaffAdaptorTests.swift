@@ -68,7 +68,7 @@ struct POSStaffAdaptorTests {
                      forRemoteError: networkError(statusCode: 404, code: "rest_no_route"))
     }
 
-    @Test func test_fetchStaff_when_network_woocommerce_rest_cannot_code_then_adminMissingCapability() async {
+    @Test func test_fetchStaff_when_network_woocommerce_rest_cannot_view_then_adminMissingCapability() async {
         await expect(.adminMissingCapability,
                      forRemoteError: networkError(statusCode: 403, code: "woocommerce_rest_cannot_view"))
     }

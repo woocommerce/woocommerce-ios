@@ -1,6 +1,8 @@
 swiftlint_version: 0.63.2
 
 excluded:
+  # Local agent worktrees contain full repo copies (incl. vendored sub-configs); never lint them
+  - .claude/worktrees
   - build
   - BuildTools/.build
   - DerivedData

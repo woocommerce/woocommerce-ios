@@ -112,7 +112,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: 10000,
                 minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
-        case .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES:
+        case .FI, .IE, .LU, .NL:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],

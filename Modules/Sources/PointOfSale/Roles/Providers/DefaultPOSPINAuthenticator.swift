@@ -42,7 +42,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
 
     private func findMatch(in members: [POSStaffMember], pin: String) -> POSStaffMember? {
         for member in members {
-            guard let details = member.pin, details.algo == "pbkdf2-sha256" else { continue }
+            guard let details = member.pin, details.algorithm == "pbkdf2-sha256" else { continue }
             if verifyPIN(pin, against: details) {
                 return member
             }

@@ -144,7 +144,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                           reason: Localization.paymentRefundReason,
                                                           automaticallyRefundsPayment: true,
                                                           items: refundableOrderItems,
-                                                          shippingLine: summaryViewModel.order.shippingLines.first,
+                                                          shippingLines: summaryViewModel.order.shippingLines,
                                                           fees: summaryViewModel.order.fees,
                                                           currencyFormatter: CurrencyFormatter(currencySettings: ServiceLocator.currencySettings))
                 let refund = refundUseCase.createRefund()

@@ -1,5 +1,6 @@
 import Foundation
 import enum Alamofire.AFError
+import Yosemite
 
 struct PointOfSaleErrorState: Equatable {
     enum ErrorType: Equatable {
@@ -100,7 +101,7 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersLoadError,
             title: Constants.failedToLoadOrdersTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnLoadingOrdersNextPage(error: Error? = nil) -> Self {
@@ -108,7 +109,7 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersNextPageError,
             title: Constants.failedToLoadOrdersNextPageTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnInitalCatalogSync(error: Error? = nil) -> Self {
@@ -136,6 +137,10 @@ struct PointOfSaleErrorState: Equatable {
     }
 
     private static func subtitle(for error: Error?) -> String {
+        if let error, error.isPOSCatalogFileDownloadError {
+            return Constants.catalogFileResponseErrorSubtitle
+        }
+
         if let error, error.isConnectivityError {
             return Constants.connectivityErrorSubtitle
         }
@@ -227,6 +232,12 @@ struct PointOfSaleErrorState: Equatable {
             value: "Please check your internet connection and try again.",
             comment: "Subtitle appearing on error screens when there is a network connectivity error."
         )
+        static let catalogFileResponseErrorSubtitle = NSLocalizedString(
+            "pos.itemList.catalogFileResponseErrorSubtitle",
+            value: "The catalog file could not be downloaded from your store due to blocked server permissions. " +
+            "Please contact your hosting provider.",
+            comment: "Subtitle appearing on POS local catalog sync error screens when the generated catalog file cannot be downloaded."
+        )
         static let failedToLoadOrdersTitle = NSLocalizedString(
             "pos.orderList.failedToLoadOrdersTitle",
             value: "Unable to load orders",
@@ -242,6 +253,11 @@ struct PointOfSaleErrorState: Equatable {
             "pos.staff.failedToLoadTitle",
             value: "Unable to load staff",
             comment: "Title appearing when the POS staff list (used for PIN verification) can't be loaded."
+        )
+        static let ordersTryAgainButtonTitle = NSLocalizedString(
+            "pos.orderList.tryAgainButtonTitle",
+            value: "Try again",
+            comment: "Button text to retry loading orders in Point of Sale."
         )
     }
 }

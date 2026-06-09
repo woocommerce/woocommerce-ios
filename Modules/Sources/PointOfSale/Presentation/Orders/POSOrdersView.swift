@@ -106,11 +106,11 @@ struct POSOrdersView: View {
         ZStack {
             VStack {
                 Spacer()
-                POSListErrorView(error: error) {
+                POSListErrorView(error: error, onAction: {
                     Task { @MainActor in
                         await orderListModel.ordersController.loadOrders()
                     }
-                }
+                })
                 Spacer()
             }
 

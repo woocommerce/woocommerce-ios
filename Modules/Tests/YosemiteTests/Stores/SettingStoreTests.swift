@@ -1081,6 +1081,107 @@ final class SettingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - SettingAction.retrieveAnalyticsImportUpdateMode
+
+    func test_retrieveAnalyticsImportUpdateMode_returns_scheduled_value() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-yes")
+
+        // When
+        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let mode = try XCTUnwrap(result.get())
+        XCTAssertEqual(mode, .scheduled)
+    }
+
+    func test_retrieveAnalyticsImportUpdateMode_when_value_is_null_then_returns_immediate_value_and_caches_no() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-null")
+
+        // When
+        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let mode = try XCTUnwrap(result.get())
+        XCTAssertEqual(mode, .immediate)
+        XCTAssertEqual(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_analytics_scheduled_import")?.value, "no")
+    }
+
+    func test_retrieveAnalyticsImportUpdateMode_returns_parse_error_and_skips_cache_when_value_is_unknown() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-parse-error")
+
+        // When
+        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result else {
+            return XCTFail("Expected failure")
+        }
+        XCTAssertEqual(error as? SettingError, .parseError)
+        XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_analytics_scheduled_import"))
+    }
+
+    // MARK: - SettingAction.updateAnalyticsImportUpdateMode
+
+    func test_updateAnalyticsImportUpdateMode_returns_success_when_response_parses() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-no")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .immediate) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateAnalyticsImportUpdateMode_returns_failure_when_network_fails() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import", error: expectedError)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .scheduled) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 

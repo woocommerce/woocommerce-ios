@@ -108,12 +108,24 @@ public final class POSOrderService: POSOrderServiceProtocol {
             DDLogWarn("""
                 ⚠️ Order created but cart-order mismatch detected. \
                 Missing items: \(comparison.missingItems.count), \
-                Quantity mismatches: \(comparison.quantityMismatches.count)
+                Quantity mismatches: \(comparison.quantityMismatches.count), \
+                Extra items: \(comparison.extraItemsCount), \
+                Coupons match: \(comparison.couponsMatch), \
+                Custom amounts match: \(comparison.customAmountsMatch), \
+                Extra custom amounts: \(comparison.extraCustomAmountsCount)
                 """)
 
             if !comparison.missingItems.isEmpty {
                 throw POSOrderServiceError.missingProductsInOrder(comparison.missingItems)
             }
+            throw POSOrderServiceError.orderDoesNotMatchCart
+        }
+
+        if comparison.hasRemoteAdditions {
+            DDLogInfo("""
+                ℹ️ POS order contains remote-added fee lines. \
+                Extra fee lines: \(comparison.extraCustomAmountsCount)
+                """)
         }
 
         return createdOrder
@@ -239,9 +251,24 @@ private extension POSCustomAmount {
 }
 
 public extension POSOrderService {
-    enum POSOrderServiceError: Error {
+    enum POSOrderServiceError: Error, LocalizedError {
         case updateOrderFailed
         case missingProductsInOrder([CartOrderComparison.MissingCartItem])
+        /// The localized description is shown in POS checkout when the created order does not match the cart contents.
+        case orderDoesNotMatchCart
+
+        public var errorDescription: String? {
+            switch self {
+            case .orderDoesNotMatchCart:
+                return NSLocalizedString(
+                    "pointOfSale.orderController.orderDoesNotMatchCart2",
+                    value: "There was a problem creating this order, the items don't match your selection. Check the cart contents and try again.",
+                    comment: "Error displayed in Point of Sale checkout when the created order does not match the cart contents."
+                )
+            default:
+                return nil
+            }
+        }
     }
 }
 

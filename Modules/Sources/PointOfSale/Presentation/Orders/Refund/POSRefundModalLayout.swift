@@ -120,15 +120,19 @@ struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
             content
                 .frame(maxWidth: .infinity)
                 .frame(maxWidth: maxWidth)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.top, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .if(horizontalSizeClass == .compact) {
+                    $0.posPhoneBottomButtonPadding()
+                }
+                .if(horizontalSizeClass != .compact) {
+                    $0
+                        .padding(.horizontal, POSPadding.medium)
+                        .padding(.top, POSPadding.medium)
+                        .padding(.bottom, POSPadding.medium)
+                }
                 .frame(maxWidth: .infinity)
         } else if horizontalSizeClass == .compact {
             content
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.top, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
+                .posPhoneBottomButtonPadding()
         } else {
             content
                 .padding(POSPadding.xLarge)

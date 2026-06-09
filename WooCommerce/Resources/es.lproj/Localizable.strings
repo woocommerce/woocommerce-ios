@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-01 12:55:11+0000 */
+/* Translation-Revision-Date: 2026-06-03 09:56:22+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -11289,7 +11289,7 @@ which should be translated separately and considered part of this sentence. */
 "newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Haz ping para cada pedido, independientemente del valor.";
 
 /* Title of the radio row that enables notifications for every new order. */
-"newOrderNotificationPreferencesDetailView.allOrders.title" = "Nuevos pedidos";
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "Todos los nuevos pedidos";
 
 /* Subtitle of the master toggle for new-order push notifications. */
 "newOrderNotificationPreferencesDetailView.enable.subtitle" = "Recibe notificaciones cuando se realice un pedido en tu tienda.";
@@ -11306,6 +11306,9 @@ which should be translated separately and considered part of this sentence. */
 /* Section header for new-order notification customization options. */
 "newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "Notificarme por";
 
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "Valor mínimo (%1$@)";
+
 /* Placeholder for the order-total threshold text field. */
 "newOrderNotificationPreferencesDetailView.threshold.placeholder" = "Cantidad";
 
@@ -11316,7 +11319,7 @@ which should be translated separately and considered part of this sentence. */
 "newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "Haz ping para cada reseña.";
 
 /* Title of the radio row that enables notifications for every new review. */
-"newReviewNotificationPreferencesDetailView.allReviews.title" = "Todas las valoraciones";
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "Todas las reseñas nuevas";
 
 /* Subtitle of the master toggle for new-review push notifications. */
 "newReviewNotificationPreferencesDetailView.enable.subtitle" = "Recibe una notificación cuando se deje una reseña para tu tienda.";
@@ -11328,13 +11331,16 @@ which should be translated separately and considered part of this sentence. */
 "newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "Filtra las reseñas en la puntuación que has elegido o por debajo.";
 
 /* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
-"newReviewNotificationPreferencesDetailView.lowRated.title" = "Solo valoraciones bajas";
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "Solo reseñas bajas";
 
 /* Section header for new-review notification customization options. */
 "newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "Notificarme por";
 
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "%1$@ estrellas";
+
 /* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
-"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@ estrellas";
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@ estrella";
 
 /* Title of the new-review push notification preferences detail screen. */
 "newReviewNotificationPreferencesDetailView.title" = "Nuevas reseñas";
@@ -11343,7 +11349,10 @@ which should be translated separately and considered part of this sentence. */
 "newStockNotificationPreferencesDetailView.enable.subtitle" = "Recibe notificaciones cuando los cambios en el inventario de productos necesiten tu atención.";
 
 /* Title of the master toggle for stock push notifications. */
-"newStockNotificationPreferencesDetailView.enable.title" = "Activar avisos de pocas existencias";
+"newStockNotificationPreferencesDetailView.enable.title" = "Activar notificaciones de existencias";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Editar el umbral de la tienda";
 
 /* Subtitle of the low-stock toggle row. */
 "newStockNotificationPreferencesDetailView.lowStock.subtitle" = "Cuando una variante de producto alcanza su umbral de pocas existencias.";
@@ -11356,6 +11365,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
 "newStockNotificationPreferencesDetailView.lowStock.title" = "Pocas existencias";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Ver umbral de la tienda";
 
 /* Section header for stock notification customization options. */
 "newStockNotificationPreferencesDetailView.notifyMeFor.header" = "Notificarme por";
@@ -13201,7 +13213,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.orderMapper.defaultFeeName" = "Importe personalizado";
 
 /* Button to cancel the current POS refund selection and select another order. */
-"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "Cancelación y reembolso";
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "Cancelar reembolso";
 
 /* Button to keep editing the current POS refund selection instead of selecting another order. */
 "pos.ordersView.cancelRefundAlert.keepEditing.button" = "Seguir editando";
@@ -13222,7 +13234,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.otherPaymentMethods.markAsPaid.subtitle" = "Registra el pago recibido fuera de este dispositivo.";
 
 /* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
-"pos.otherPaymentMethods.markAsPaid.title" = "Marcar como pagado";
+"pos.otherPaymentMethods.markAsPaid.title" = "Marcar pedido como pagado";
 
 /* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
 "pos.otherPaymentMethods.scanToPay.subtitle" = "Muestra un código QR para que el cliente pague desde su teléfono.";
@@ -13312,7 +13324,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.backToRefund.button.title" = "Volver al reembolso";
 
 /* Button shown in POS to cancel a failed card reader refund. */
-"pos.refundCardPresent.cancelRefund.button.title" = "Cancelación y reembolso";
+"pos.refundCardPresent.cancelRefund.button.title" = "Cancelar reembolso";
 
 /* Title shown in POS when a refund is canceled on the card reader. */
 "pos.refundCardPresent.cancelledOnReader.title" = "Reembolso cancelado en el lector";
@@ -13336,7 +13348,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.pleaseWait.message" = "Espera";
 
 /* Message shown in POS while preparing a card reader for a refund. */
-"pos.refundCardPresent.preparingReader.message" = "Preparando el lector para el pago";
+"pos.refundCardPresent.preparingReader.message" = "Preparando el lector para el reembolso";
 
 /* Instruction shown in POS when a card should be presented for a refund. */
 "pos.refundCardPresent.presentCard.message" = "Presenta una tarjeta para el reembolso";
@@ -13348,16 +13360,16 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundCardPresent.readyForRefund.title" = "Listo para el reembolso";
 
 /* Title shown in POS when a card reader refund fails. */
-"pos.refundCardPresent.refundFailed.title" = "Falló el reembolso.";
+"pos.refundCardPresent.refundFailed.title" = "Falló el reembolso";
 
 /* Instruction shown in POS when a card should be tapped for a refund. */
 "pos.refundCardPresent.tap.message" = "Toca una tarjeta para el reembolso";
 
 /* Instruction shown in POS when a card should be tapped or inserted for a refund. */
-"pos.refundCardPresent.tapInsert.message" = "Toca o introduce una tarjeta para obtener el reembolso";
+"pos.refundCardPresent.tapInsert.message" = "Toca, pasa o introduce una tarjeta para obtener el reembolso";
 
 /* Instruction shown in POS when a card should be presented for a refund. */
-"pos.refundCardPresent.tapSwipeInsert.message" = "Toca o introduce una tarjeta para obtener el reembolso";
+"pos.refundCardPresent.tapSwipeInsert.message" = "Toca, pasa o introduce una tarjeta para obtener el reembolso";
 
 /* Button shown in POS to retry a failed card reader refund. */
 "pos.refundCardPresent.tryRefundAgain.button.title" = "Intentar el reembolso de nuevo";
@@ -13378,10 +13390,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "Sí, continuar";
 
 /* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationQuestionFormat" = "¿Estás seguro de que deseas reembolsar %1$@ %2$@?";
+"pos.refundConfirmationView.confirmationQuestionFormat" = "¿Seguro que deseas reembolsar %1$@ %2$@?";
 
 /* Message shown while preparing a card reader for an in-person refund. */
-"pos.refundConfirmationView.preparingReaderMessage" = "Preparando el lector para el pago";
+"pos.refundConfirmationView.preparingReaderMessage" = "Preparando el lector para el reembolso";
 
 /* Title shown while preparing a card reader for an in-person refund. */
 "pos.refundConfirmationView.preparingReaderTitle" = "Preparando el lector";
@@ -13393,7 +13405,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.processingTitleFormat" = "Reembolsando %@";
 
 /* Title shown when an in-person refund fails. */
-"pos.refundConfirmationView.readerErrorTitle" = "Falló el reembolso.";
+"pos.refundConfirmationView.readerErrorTitle" = "Falló el reembolso";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Reembolsar %@";
@@ -13466,7 +13478,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundLoadingView.loadingMessage" = "Cargando detalles del reembolso...";
 
 /* Title shown while loading refund information */
-"pos.refundLoadingView.loadingTitle" = "En preparación";
+"pos.refundLoadingView.loadingTitle" = "Preparando el reembolso";
 
 /* Button to leave the card-present refund error screen and return to the order. */
 "pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "Volver al pedido";
@@ -13499,7 +13511,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundReaderDisconnectedView.connectButton.title" = "Conectar tu lector";
 
 /* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
-"pos.refundReaderDisconnectedView.instruction" = "Para procesar este pago, conecta tu lector.";
+"pos.refundReaderDisconnectedView.instruction" = "Para procesar este reembolso, conecta tu lector.";
 
 /* Title shown when an in-person refund needs a card reader, but no reader is connected. */
 "pos.refundReaderDisconnectedView.title" = "Lector no conectado";
@@ -13565,7 +13577,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "Pago manual";
 
 /* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
-"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "%1$@ a través de %2$@";
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "a través de %1$@ %2$@";
 
 /* Payment method description for POS refunds. %1$@ is the payment method title. */
 "pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "a través de %1$@";
@@ -13628,7 +13640,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.tapToPay.hero.subtitle" = "Utiliza este dispositivo para aceptar pagos con tarjeta sin contacto.";
 
 /* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
-"pos.tapToPay.hero.title.v2" = "Tap to Pay on iPhone";
+"pos.tapToPay.hero.title.v2" = "Tap to Pay en iPhone";
 
 /* Label for discount in the totals breakdown. */
 "pos.totalsSectionView.discountLabel.v2" = "Descuento";
@@ -14754,7 +14766,7 @@ which should be translated separately and considered part of this sentence. */
 "storeWidgets.trendsRectangularWidget.noData" = "No hay datos";
 
 /* Title label when the home-screen stats widget can't fetch data. */
-"storeWidgets.unableToFetchView.unableToFetchStats" = "No se han podido recuperar las estadísticas de hoy.";
+"storeWidgets.unableToFetchView.unableToFetchStats" = "No se han podido recuperar las estadísticas";
 
 /* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
 "string.createStockText.count" = "%1$@ disponibles";

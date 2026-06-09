@@ -7,7 +7,6 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
     var pendingResume: (fileURL: URL, siteID: Int64)?
 
     private(set) var resumePendingParseIfNeededCallCount = 0
-    private(set) var discardPendingParseCallCount = 0
     private(set) var lastParseHandlerError: Error?
 
     /// Captures the staleness-date provider passed by the coordinator, so tests can assert it
@@ -28,8 +27,4 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
         }
     }
 
-    func discardPendingParse() async {
-        discardPendingParseCallCount += 1
-        pendingResume = nil
-    }
 }

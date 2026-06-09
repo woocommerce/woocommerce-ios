@@ -266,47 +266,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         try? fileManager.removeItem(at: downloadedFile)
     }
 
-    // MARK: - discardPendingParse
-
-    @Test func discardPendingParse_when_record_and_file_exist_then_clears_record_and_deletes_file() async throws {
-        // Given
-        let downloadedFile = try makeDownloadedFile(named: "to-discard.json")
-        pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 666))
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        // When
-        await coordinator.discardPendingParse()
-
-        // Then
-        #expect(pendingFileStore.load() == nil)
-        #expect(fileManager.fileExists(atPath: downloadedFile.path) == false)
-    }
-
-    @Test func discardPendingParse_when_no_record_then_no_op() async {
-        // Given
-        pendingFileStore.clear()
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        // When
-        await coordinator.discardPendingParse()
-
-        // Then
-        #expect(pendingFileStore.load() == nil)
-    }
-
-    @Test func discardPendingParse_when_record_but_file_missing_then_clears_record() async {
-        // Given
-        pendingFileStore.save(.init(filePath: "/does/not/exist/catalog.json", siteID: 777))
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        // When
-        await coordinator.discardPendingParse()
-
-        // Then
-        #expect(pendingFileStore.load() == nil)
-    }
-
-    @Test func handleBackgroundSessionEvent_when_old_pending_file_exists_then_deletes_it_before_staging_new() async throws {
+    @Test func handleBackgroundSessionEvent_when_old_pending_file_exists_and_new_file_stages_then_replaces_pending_record() async throws {
         // Given — an orphaned pending file from a prior session
         let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
         pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
@@ -331,6 +291,34 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then — old staged file gone, new flow completed normally
         #expect(fileManager.fileExists(atPath: oldStagedFile.path) == false)
         #expect(downloadStateStore.load(for: sessionIdentifier) == nil)
+    }
+
+    @Test func handleBackgroundSessionEvent_when_staging_new_file_fails_then_keeps_existing_pending_record() async throws {
+        // Given — a recoverable pending file from a prior session
+        let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
+        pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
+
+        let sessionIdentifier = "com.woocommerce.pos.catalog.download.stage-fails"
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: 999))
+
+        let mockDownloader = MockBackgroundDownloader()
+        mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/missing-new-download-\(UUID().uuidString).json")
+        let coordinator = makeCoordinator(downloader: mockDownloader)
+
+        // When
+        await coordinator.handleBackgroundSessionEvent(
+            sessionIdentifier: sessionIdentifier,
+            completionHandler: { },
+            parseHandler: { _, _ in }
+        )
+
+        // Then — the old pending file remains recoverable because no durable replacement exists
+        let pending = try #require(pendingFileStore.load())
+        #expect(pending.filePath == oldStagedFile.path)
+        #expect(fileManager.fileExists(atPath: oldStagedFile.path) == true)
+
+        // Cleanup
+        try? fileManager.removeItem(at: oldStagedFile)
     }
 
     @Test func resumePendingParseIfNeeded_when_catalog_persisted_after_file_staged_then_discards_without_parsing() async throws {

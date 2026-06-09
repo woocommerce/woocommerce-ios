@@ -97,17 +97,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager
     private let backgroundDownloadStateStore: BackgroundDownloadStateStore
-    private let pendingParseResumer: BackgroundCatalogParseResuming
 
     public init(network: Network,
                 backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
                 fileManager: FileManager = .default,
-                backgroundDownloadStateStore: BackgroundDownloadStateStore = .init(),
-                pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator()) {
+                backgroundDownloadStateStore: BackgroundDownloadStateStore = .init()) {
         self.backgroundDownloader = backgroundDownloader
         self.fileManager = fileManager
         self.backgroundDownloadStateStore = backgroundDownloadStateStore
-        self.pendingParseResumer = pendingParseResumer
         super.init(network: network)
     }
 
@@ -235,11 +232,6 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         guard let url = URL(string: downloadURL) else {
             throw NetworkError.invalidURL
         }
-
-        // A new download supersedes any pending parse from a prior failed attempt.
-        // Without this, the stale pending file would overwrite this download's catalog
-        // on the next foreground entry via `resumePendingParseIfNeeded`.
-        await pendingParseResumer.discardPendingParse()
 
         let sessionIdentifier = "\(POSCatalogSyncConstants.backgroundDownloadSessionPrefix).\(siteID).\(UUID().uuidString)"
 

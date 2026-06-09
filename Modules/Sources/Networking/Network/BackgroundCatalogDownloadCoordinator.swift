@@ -83,7 +83,9 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         let stagedURL: URL
         do {
             stagedURL = try stageDownloadedFile(fileURL, siteID: state.siteID)
-            pendingCatalogFileStore.save(.init(filePath: stagedURL.path, siteID: state.siteID))
+            pendingCatalogFileStore.save(.init(filePath: stagedURL.path,
+                                               siteID: state.siteID,
+                                               createdAt: state.downloadStartedAt))
             DDLogInfo("🟣 Staged background catalog at: \(stagedURL.path)")
         } catch {
             DDLogError("⛔️ Failed to stage background download: \(error). Falling back to original URL.")

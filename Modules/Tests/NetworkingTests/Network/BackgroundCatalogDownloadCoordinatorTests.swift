@@ -155,7 +155,10 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.fail"
         let siteID: Int64 = 222
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        let downloadStartedAt = Date(timeIntervalSince1970: 1_000)
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: siteID,
+                                      downloadStartedAt: downloadStartedAt))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -179,6 +182,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         #expect(downloadStateStore.load(for: sessionIdentifier) == nil) // session state always cleared
         let pending = try #require(pendingFileStore.load())
         #expect(pending.siteID == siteID)
+        #expect(pending.createdAt == downloadStartedAt)
         let staged = try #require(stagedPath)
         #expect(pending.filePath == staged)
         #expect(fileManager.fileExists(atPath: staged) == true)

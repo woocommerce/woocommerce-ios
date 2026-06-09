@@ -26,5 +26,4 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
             lastParseHandlerError = error
         }
     }
-
 }

@@ -140,7 +140,6 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         }
         // On failure: leave file + record in place for the next foreground entry.
     }
-
 }
 
 private extension BackgroundCatalogDownloadCoordinator {

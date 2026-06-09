@@ -7,7 +7,7 @@ public struct BackgroundDownloadState: Codable {
     let siteID: Int64
     let downloadStartedAt: Date
 
-    init(sessionIdentifier: String, siteID: Int64, downloadStartedAt: Date = Date()) {
+    public init(sessionIdentifier: String, siteID: Int64, downloadStartedAt: Date = Date()) {
         self.sessionIdentifier = sessionIdentifier
         self.siteID = siteID
         self.downloadStartedAt = downloadStartedAt
@@ -17,7 +17,7 @@ public struct BackgroundDownloadState: Codable {
         case sessionIdentifier, siteID, downloadStartedAt
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         sessionIdentifier = try container.decode(String.self, forKey: .sessionIdentifier)
         siteID = try container.decode(Int64.self, forKey: .siteID)

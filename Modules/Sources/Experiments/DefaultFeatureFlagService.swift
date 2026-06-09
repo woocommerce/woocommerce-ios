@@ -100,13 +100,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleCustomAmounts:
             return false
         case .pointOfSalePhonePrototype:
-            // Behind the flag for now — gates and UI follow in stacked PRs. Default to
-            // localDeveloper only so alpha builds aren't affected until we're ready.
-            return buildConfig == .localDeveloper
+            return true
         case .pointOfSaleScanToPay:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // Temporarily false for CfT
+            return false
         case .pointOfSaleMarkOrderAsPaid:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // Temporarily false for CfT
+            return false
         case .pointOfSaleTapToPay:
             // Behind the flag while the TTP integration lands. localDeveloper-only so
             // alpha and beta keep showing only Cash + Card reader for now.

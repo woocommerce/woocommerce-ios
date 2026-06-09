@@ -19,8 +19,6 @@
 		3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */; };
-		3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3F0BFD682F85E1CD001182F9 /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0BFD642F85E1C4001182F9 /* ApiCredentials.swift */; };
 		3F0BFD692F85E1D4001182F9 /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0BFD662F85E1C4001182F9 /* ApiCredentials.swift */; };
 		3F1FA84228B60125009E246C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F1FA84128B60125009E246C /* WidgetKit.framework */; };
@@ -177,7 +175,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3F09A3FE2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 				3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -197,7 +194,6 @@
 		315E14F32698DA24000AD5FF /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
 		3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F0904082D26A40800D8ACCE /* WordPressAuthenticatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPressAuthenticatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F0BFD622F85DF6E001182F9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3F0BFD642F85E1C4001182F9 /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = DERIVED_FILE_DIR; };
 		3F0BFD662F85E1C4001182F9 /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = DERIVED_FILE_DIR; };
@@ -577,7 +573,6 @@
 			files = (
 				5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */,
 				315E14F42698DA24000AD5FF /* PassKit.framework in Frameworks */,
-				3F09A3FD2D243D3F00D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 				3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */,
 				3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */,
 			);
@@ -653,7 +648,6 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */,
 				26B0FDE12BFFBAC500A0D937 /* Contacts.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,
 				200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */,
@@ -1205,6 +1199,7 @@
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);

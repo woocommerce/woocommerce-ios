@@ -1637,4 +1637,22 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockPendingParseResumer.lastParseHandlerError as NSError? == resumeError)
         #expect(mockSyncService.startFullSyncCallCount == 1)
     }
+
+    @Test func performSmartSync_provides_latest_persisted_catalog_date_as_max_of_full_and_incremental() async throws {
+        // Given — a site whose last incremental sync is more recent than its last full sync
+        let lastFull = Date(timeIntervalSince1970: 1_000)
+        let lastIncremental = Date(timeIntervalSince1970: 2_000)
+        mockPendingParseResumer.pendingResume = nil
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: lastFull, lastIncrementalSyncDate: lastIncremental)
+
+        // When
+        try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
+
+        // Then — the staleness-date provider handed to the resumer resolves to the later of the
+        // two persist dates, so an older background snapshot is correctly treated as stale.
+        let provider = try #require(mockPendingParseResumer.lastPersistedCatalogDateProvider)
+        let resolved = await provider(sampleSiteID)
+        #expect(resolved == lastIncremental)
+    }
 }

@@ -1228,7 +1228,8 @@ private final class MockBackgroundCatalogParseResumingForRemote: BackgroundCatal
     var discardPendingParseCallCount = 0
     var discardCallCountAtDownloadStart: Int?
 
-    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async {}
+    func resumePendingParseIfNeeded(lastPersistedCatalogDate: @escaping (Int64) async -> Date?,
+                                    parseHandler: @escaping (URL, Int64) async throws -> Void) async {}
 
     func discardPendingParse() async {
         discardPendingParseCallCount += 1

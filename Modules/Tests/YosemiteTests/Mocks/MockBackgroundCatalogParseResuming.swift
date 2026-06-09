@@ -10,8 +10,14 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
     private(set) var discardPendingParseCallCount = 0
     private(set) var lastParseHandlerError: Error?
 
-    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async {
+    /// Captures the staleness-date provider passed by the coordinator, so tests can assert it
+    /// resolves to the expected per-site value.
+    private(set) var lastPersistedCatalogDateProvider: ((Int64) async -> Date?)?
+
+    func resumePendingParseIfNeeded(lastPersistedCatalogDate: @escaping (Int64) async -> Date?,
+                                    parseHandler: @escaping (URL, Int64) async throws -> Void) async {
         resumePendingParseIfNeededCallCount += 1
+        lastPersistedCatalogDateProvider = lastPersistedCatalogDate
         guard let pending = pendingResume else { return }
         do {
             try await parseHandler(pending.fileURL, pending.siteID)

@@ -5,7 +5,15 @@ import CocoaLumberjackSwift
 /// but never finished its write transaction. The download itself is already complete —
 /// only the parse step is retried.
 public protocol BackgroundCatalogParseResuming {
-    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+    /// Retries the parse step for a previously-staged catalog file, if one exists and is not stale.
+    /// - Parameters:
+    ///   - lastPersistedCatalogDate: Returns the most recent moment catalog data was persisted for
+    ///     the given site (later of the full/incremental sync dates), or `nil` if never synced.
+    ///     If that date is at or after the staged file's `createdAt`, the file is stale and is
+    ///     discarded instead of applied — preventing it from overwriting fresher data.
+    ///   - parseHandler: Closure that parses and persists the staged file for a `(URL, siteID)`.
+    func resumePendingParseIfNeeded(lastPersistedCatalogDate: @escaping (Int64) async -> Date?,
+                                    parseHandler: @escaping (URL, Int64) async throws -> Void) async
 
     /// Drops any pending parse state without attempting it. Deletes the staged file on
     /// disk and clears the persisted record. Use when a fresh download supersedes the
@@ -102,9 +110,22 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     /// the file on disk. Called on POS foreground entry — no iOS execution-time pressure here.
     /// Errors are logged but swallowed so normal sync can proceed.
     public func resumePendingParseIfNeeded(
+        lastPersistedCatalogDate: @escaping (Int64) async -> Date? = { _ in nil },
         parseHandler: @escaping (URL, Int64) async throws -> Void
     ) async {
         guard let pending = pendingCatalogFileStore.load() else {
+            return
+        }
+
+        // Staleness guard: if catalog data was already persisted for this site at or after the
+        // pending file was staged, a later sync (full or incremental) has superseded it.
+        // Re-applying the snapshot would overwrite that fresher data, so discard it instead.
+        if let lastPersisted = await lastPersistedCatalogDate(pending.siteID),
+           lastPersisted >= pending.createdAt {
+            DDLogInfo("🟣 Discarding stale pending parse for site \(pending.siteID): staged at " +
+                      "\(pending.createdAt) but catalog was persisted at \(lastPersisted)")
+            try? fileManager.removeItem(atPath: pending.filePath)
+            pendingCatalogFileStore.clear()
             return
         }
 

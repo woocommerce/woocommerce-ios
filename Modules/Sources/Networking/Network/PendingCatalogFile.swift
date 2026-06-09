@@ -10,9 +10,26 @@ public struct PendingCatalogFile: Codable {
     public let filePath: String
     public let siteID: Int64
 
-    public init(filePath: String, siteID: Int64) {
+    /// Used to detect a stale snapshot: if catalog data was persisted for the site at or after
+    /// this moment, the file has been superseded and must not be re-applied — re-parsing it would
+    /// overwrite fresher data. See `BackgroundCatalogDownloadCoordinator.resumePendingParseIfNeeded`.
+    public let createdAt: Date
+
+    public init(filePath: String, siteID: Int64, createdAt: Date = Date()) {
         self.filePath = filePath
         self.siteID = siteID
+        self.createdAt = createdAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case filePath, siteID, createdAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        filePath = try container.decode(String.self, forKey: .filePath)
+        siteID = try container.decode(Int64.self, forKey: .siteID)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .distantPast
     }
 }
 

@@ -83,6 +83,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
     private var hasConfiguredLiquidGlassHeaderOverlay = false
+    private var liquidGlassHeaderBackgroundView: UIView?
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -759,6 +760,7 @@ private extension ProductsViewController {
         }
 
         let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        liquidGlassHeaderBackgroundView?.transform = transform
         toolbar.transform = transform
         toolbarBottomSeparator.transform = transform
     }
@@ -825,10 +827,17 @@ private extension ProductsViewController {
         stackView.removeArrangedSubview(toolbarBottomSeparator)
         toolbarBottomSeparator.removeFromSuperview()
 
+        let backgroundView = UIView.makeLiquidGlassHeaderBackgroundView()
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
         view.addSubview(toolbar)
         view.addSubview(toolbarBottomSeparator)
 
         NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: toolbar.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
             toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             toolbar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
@@ -836,6 +845,8 @@ private extension ProductsViewController {
             toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
             toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)
         ])
+
+        updateLiquidGlassHeaderVisibility()
     }
 
     private func updateLiquidGlassHeaderOverlayLayout() {
@@ -844,10 +855,7 @@ private extension ProductsViewController {
             return
         }
 
-        let height = toolbar.bounds.height + toolbarBottomSeparator.bounds.height
-        guard height > 0 else {
-            return
-        }
+        let height = toolbar.isHidden ? 0 : toolbar.bounds.height + toolbarBottomSeparator.bounds.height
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
@@ -860,6 +868,15 @@ private extension ProductsViewController {
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets
         scrollIndicatorInsets.top = height
         tableView.scrollIndicatorInsets = scrollIndicatorInsets
+    }
+
+    private func updateLiquidGlassHeaderVisibility() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        toolbarBottomSeparator.isHidden = toolbar.isHidden
+        liquidGlassHeaderBackgroundView?.isHidden = toolbar.isHidden
     }
 
     func configureScrollWatcher() {
@@ -887,10 +904,14 @@ private extension ProductsViewController {
     func showOrHideToolbar() {
         guard !tableView.isEditing else {
             toolbar.isHidden = true
+            updateLiquidGlassHeaderVisibility()
+            updateLiquidGlassHeaderOverlayLayout()
             return
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 }
 

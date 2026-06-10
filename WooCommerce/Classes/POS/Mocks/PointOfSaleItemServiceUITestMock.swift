@@ -29,8 +29,6 @@ final class PointOfSaleItemServiceUITestMock: Yosemite.PointOfSaleItemServicePro
     }
 }
 
-#endif
-
 private extension PointOfSaleItemServiceUITestMock {
     static var simpleProduct: Yosemite.POSSimpleProduct {
         Yosemite.POSSimpleProduct(
@@ -67,3 +65,5 @@ private extension PointOfSaleItemServiceUITestMock {
         )
     }
 }
+
+#endif

@@ -12,7 +12,7 @@
             "isJetpackActive": true,
             "isJetpackConnected": true,
             "isWordPressDotCom": true,
-            "urlAfterRedirects": "https:\/\/yourwoosite.com",
+            "urlAfterRedirects": "http:\/\/yourwoosite.com",
             "jetpackVersion": false
         },
         "headers": {

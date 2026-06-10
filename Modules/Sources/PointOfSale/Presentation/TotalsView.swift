@@ -812,8 +812,14 @@ private extension TotalsView {
 
             otherPaymentMethodsButton
         }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.bottom, POSPadding.xxLarge)
+        .if(horizontalSizeClass == .compact) {
+            $0.posPhoneBottomButtonPadding()
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.xxLarge)
+        }
     }
 
     /// "Reader not connected" layout for devices where Tap to Pay is unavailable

@@ -183,6 +183,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         registerTableViewHeadersAndCells()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -351,6 +352,14 @@ private extension OrderListViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.allowsFocus = supportsFocus()
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 
     /// Registers all of the available table view cells and headers

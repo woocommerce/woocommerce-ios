@@ -109,6 +109,7 @@ final class OrdersRootViewController: UIViewController {
         configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
+        configureLiquidGlassTabBarUnderlap()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
@@ -369,6 +370,14 @@ private extension OrdersRootViewController {
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 
     func configureChildViewController() {

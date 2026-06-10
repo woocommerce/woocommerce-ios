@@ -364,6 +364,7 @@ final class MainTabBarController: UITabBarController {
 
         if Bundle.main.isLiquidGlassDesignEnabled {
             mode = .tabBar
+            tabBar.isTranslucent = true
             clearTabBarTraitOverridesOnIpad()
             return
         }

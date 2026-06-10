@@ -57,7 +57,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
-        if contentTypes.isEmpty {
+        if contentTypes.isEmpty || contentTypes == [.empty] {
             showEmptyViewOrFirstProduct()
         }
     }

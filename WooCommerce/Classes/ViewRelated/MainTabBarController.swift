@@ -283,6 +283,16 @@ final class MainTabBarController: UITabBarController {
         viewModel.onViewDidAppear()
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate { [weak self] _ in
+            self?.fixTabBarTraitCollectionOnIpadForiOS18()
+        } completion: { [weak self] _ in
+            self?.fixTabBarTraitCollectionOnIpadForiOS18()
+        }
+    }
+
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {

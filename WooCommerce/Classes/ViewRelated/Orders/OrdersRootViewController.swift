@@ -45,6 +45,8 @@ final class OrdersRootViewController: UIViewController {
         return filteredOrdersBar
     }()
 
+    private var filtersBarHeightConstraint: NSLayoutConstraint?
+
     private var filters = FilterOrderListViewModel.Filters() {
         didSet {
             if filters != oldValue {
@@ -118,6 +120,12 @@ final class OrdersRootViewController: UIViewController {
             guard let self else { return }
             self.configureStatusResultsController()
         }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -365,11 +373,66 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        // Display the filtered orders bar
-        stackView.addArrangedSubview(filtersBar)
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            configureLiquidGlassHeaderOverlay()
+        } else {
+            // Display the filtered orders bar
+            stackView.addArrangedSubview(filtersBar)
+        }
+
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
+    }
+
+    func configureLiquidGlassHeaderOverlay() {
+        filtersBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(filtersBar)
+
+        let heightConstraint = filtersBar.heightAnchor.constraint(equalToConstant: filtersBar.bounds.height)
+        filtersBarHeightConstraint = heightConstraint
+
+        NSLayoutConstraint.activate([
+            filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            heightConstraint
+        ])
+    }
+
+    func updateLiquidGlassHeaderOverlayLayout() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let height = filtersBar.systemLayoutSizeFitting(targetSize,
+                                                       withHorizontalFittingPriority: .required,
+                                                       verticalFittingPriority: .fittingSizeLevel).height
+
+        guard height > 0 else {
+            return
+        }
+
+        if abs((filtersBarHeightConstraint?.constant ?? 0) - height) > 0.5 {
+            filtersBarHeightConstraint?.constant = height
+        }
+
+        guard let tableView = ordersViewController.tableView else {
+            return
+        }
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            tableView.contentOffset.y -= height - previousTopInset
+        }
+
+        var scrollIndicatorInsets = tableView.scrollIndicatorInsets
+        scrollIndicatorInsets.top = height
+        tableView.scrollIndicatorInsets = scrollIndicatorInsets
     }
 
     func configureLiquidGlassTabBarUnderlap() {

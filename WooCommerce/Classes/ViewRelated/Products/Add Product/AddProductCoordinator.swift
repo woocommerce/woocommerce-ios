@@ -303,7 +303,8 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+        let navigationController = navigationController
+        return BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
 

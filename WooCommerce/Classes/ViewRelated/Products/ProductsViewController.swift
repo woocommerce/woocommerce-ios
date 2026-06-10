@@ -82,6 +82,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var toolbarBottomSeparator: UIView!
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
+    private var hasConfiguredLiquidGlassHeaderOverlay = false
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
@@ -294,6 +296,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewDidLayoutSubviews()
 
         updateTableHeaderViewHeight()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -779,6 +782,7 @@ private extension ProductsViewController {
     private func configureToolbar() {
         setupToolbar()
         showOrHideToolbar()
+        configureLiquidGlassHeaderOverlay()
     }
 
     private func setupToolbar() {
@@ -804,6 +808,58 @@ private extension ProductsViewController {
 
         toolbarBottomSeparator.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.separator)
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
+    }
+
+    private func configureLiquidGlassHeaderOverlay() {
+        guard Bundle.main.isLiquidGlassDesignEnabled,
+              !hasConfiguredLiquidGlassHeaderOverlay,
+              let stackView = toolbar.superview as? UIStackView,
+              toolbarBottomSeparator.superview === stackView else {
+            return
+        }
+
+        hasConfiguredLiquidGlassHeaderOverlay = true
+
+        stackView.removeArrangedSubview(toolbar)
+        toolbar.removeFromSuperview()
+        stackView.removeArrangedSubview(toolbarBottomSeparator)
+        toolbarBottomSeparator.removeFromSuperview()
+
+        view.addSubview(toolbar)
+        view.addSubview(toolbarBottomSeparator)
+
+        NSLayoutConstraint.activate([
+            toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            toolbarBottomSeparator.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)
+        ])
+    }
+
+    private func updateLiquidGlassHeaderOverlayLayout() {
+        guard Bundle.main.isLiquidGlassDesignEnabled,
+              hasConfiguredLiquidGlassHeaderOverlay else {
+            return
+        }
+
+        let height = toolbar.bounds.height + toolbarBottomSeparator.bounds.height
+        guard height > 0 else {
+            return
+        }
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            tableView.contentOffset.y -= height - previousTopInset
+        }
+
+        var scrollIndicatorInsets = tableView.scrollIndicatorInsets
+        scrollIndicatorInsets.top = height
+        tableView.scrollIndicatorInsets = scrollIndicatorInsets
     }
 
     func configureScrollWatcher() {

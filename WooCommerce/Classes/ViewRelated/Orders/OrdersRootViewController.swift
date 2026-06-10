@@ -448,6 +448,8 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateFiltersBarOverscrollPosition(from: scrollView)
+
         guard usesLargeTitleWorkaround else {
             return
         }
@@ -469,6 +471,14 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
         let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+    }
+
+    private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        filtersBar.transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
     }
 }
 

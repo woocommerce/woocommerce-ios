@@ -750,6 +750,16 @@ private extension ProductsViewController {
         setContentScrollView(tableView, for: [.top, .bottom])
     }
 
+    private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        toolbar.transform = transform
+        toolbarBottomSeparator.transform = transform
+    }
+
     private func configureHiddenScrollView() {
         guard usesLargeTitleWorkaround else {
             return
@@ -1212,6 +1222,8 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateToolbarOverscrollPosition(from: scrollView)
+
         guard usesLargeTitleWorkaround else {
             return
         }

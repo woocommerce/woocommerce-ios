@@ -80,6 +80,17 @@ struct POSCustomAmountTests {
         #expect(sut.matches(order: order) == true)
     }
 
+    @Test func cart_with_custom_amount_matches_order_when_amount_uses_non_Latin_digits() async throws {
+        // Given the cart stores the amount using Arabic-Indic numerals (a store may display non-Latin
+        // digits), while the synced order's fee total comes back canonical with Latin digits
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "15.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "١٥", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
     @Test func cart_with_custom_amount_does_not_match_order_with_different_name() async throws {
         // Given
         let fee = OrderFeeLine.fake().copy(name: "Service fee", total: "5.00")

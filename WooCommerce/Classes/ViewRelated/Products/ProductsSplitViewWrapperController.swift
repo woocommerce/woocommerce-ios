@@ -36,6 +36,18 @@ final class ProductsSplitViewWrapperController: UIViewController {
         coordinator.refreshExpandedLayoutIfNeeded()
     }
 
+    override func viewWillTransition(to size: CGSize, with transitionCoordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: transitionCoordinator)
+
+        coordinator.windowTransitionWillBegin()
+        transitionCoordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.coordinator.refreshExpandedLayoutIfNeeded()
+        }, completion: { [weak self] _ in
+            self?.coordinator.windowTransitionDidEnd()
+            self?.coordinator.refreshExpandedLayoutIfNeeded()
+        })
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }

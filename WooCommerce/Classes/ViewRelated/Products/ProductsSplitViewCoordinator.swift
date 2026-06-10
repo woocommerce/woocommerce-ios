@@ -31,6 +31,7 @@ final class ProductsSplitViewCoordinator: NSObject {
                                                                      navigateToContent: showFromProductList)
 
     private var addProductCoordinator: AddProductCoordinator?
+    private var isWindowTransitionInProgress = false
 
     init(siteID: Int64, splitViewController: UISplitViewController) {
         self.siteID = siteID
@@ -68,6 +69,14 @@ final class ProductsSplitViewCoordinator: NSObject {
             return
         }
         didExpand()
+    }
+
+    func windowTransitionWillBegin() {
+        isWindowTransitionInProgress = true
+    }
+
+    func windowTransitionDidEnd() {
+        isWindowTransitionInProgress = false
     }
 
     func startProductCreation() {
@@ -303,7 +312,7 @@ private extension ProductsSplitViewCoordinator {
                                                                                     didShow viewController: UIViewController) -> Bool {
         let isNavigatingToProductList = viewController == productsViewController ||
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
-        return splitViewController.isCollapsed && navigationController == primaryNavigationController
+        return splitViewController.isCollapsed && !isWindowTransitionInProgress && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
     }
 

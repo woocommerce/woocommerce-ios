@@ -24,6 +24,10 @@ final class OrdersRootViewController: UIViewController {
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
+    private var usesLargeTitleWorkaround: Bool {
+        !Bundle.main.isLiquidGlassDesignEnabled
+    }
+
     private let siteID: Int64
 
     private let analytics = ServiceLocator.analytics
@@ -368,13 +372,15 @@ private extension OrdersRootViewController {
     }
 
     func configureChildViewController() {
-        // Configure large title using the `hiddenScrollView` trick.
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-        view.addSubview(hiddenScrollView)
-        view.sendSubviewToBack(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        if usesLargeTitleWorkaround {
+            // Configure large title using the `hiddenScrollView` trick.
+            hiddenScrollView.configureForLargeTitleWorkaround()
+            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+            view.addSubview(hiddenScrollView)
+            view.sendSubviewToBack(hiddenScrollView)
+            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        }
         ordersViewController.delegate = self
 
         // Add contentView to stackview
@@ -430,6 +436,10 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 

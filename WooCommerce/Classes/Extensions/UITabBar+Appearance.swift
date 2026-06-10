@@ -14,8 +14,8 @@ extension UITabBar {
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
 
-        if #available(iOS 26.0, *) {
-            appearance.standardAppearance = createLiquidGlassTabBarAppearance()
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            appearance.barTintColor = nil
             appearance.scrollEdgeAppearance = nil
             return
         }
@@ -39,15 +39,6 @@ extension UITabBar {
         let standardAppearance = UITabBarAppearance()
         standardAppearance.backgroundColor = .appTabBar
         standardAppearance.shadowColor = .systemColor(.separator)
-        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
-        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
-        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
-        return standardAppearance
-    }
-
-    private static func createLiquidGlassTabBarAppearance() -> UITabBarAppearance {
-        let standardAppearance = UITabBarAppearance()
-        standardAppearance.configureWithDefaultBackground()
         applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
         applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
         applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)

@@ -88,6 +88,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// The filter CTA in the top toolbar.
     private lazy var filterButton = UIButton(frame: .zero)
 
+    private var usesLargeTitleWorkaround: Bool {
+        !Bundle.main.isLiquidGlassDesignEnabled
+    }
+
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: Localization.bulkEditingToolbarButtonTitle,
@@ -716,7 +720,8 @@ private extension ProductsViewController {
         tableView.addSubview(refreshControl)
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        let headerBackgroundColor: UIColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.secondarySystemGroupedBackground)
+        headerContainer.backgroundColor = headerBackgroundColor
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
@@ -733,6 +738,10 @@ private extension ProductsViewController {
     }
 
     private func configureHiddenScrollView() {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
         // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
@@ -767,10 +776,10 @@ private extension ProductsViewController {
             $0.configuration = configuration
         }
 
-        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.backgroundColor = headerBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        toolbarBottomSeparator.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.separator)
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
     }
 
@@ -1190,6 +1199,10 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 

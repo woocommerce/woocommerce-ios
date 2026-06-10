@@ -56,15 +56,12 @@ struct PointOfSaleDashboardView: View {
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
         case content
-        case unsupportedWidth
     }
 
     private var viewState: ViewState {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
-            itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass,
-            isPhonePrototypeEnabled: featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+            itemsContainerState: itemsViewState.containerState
         )
     }
 
@@ -108,10 +105,6 @@ struct PointOfSaleDashboardView: View {
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
-            case .unsupportedWidth:
-                PointOfSaleUnsupportedWidthView()
-                    .transition(.opacity)
-                    .ignoresSafeArea()
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
@@ -213,7 +206,8 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact && featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact &&
+        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 
     @ViewBuilder
@@ -409,17 +403,8 @@ struct PointOfSaleDashboardView: View {
             min(phoneOverflowMenuScaledSize, POSHeaderLayoutConstants.minHeight * 1.2))
     }
 
-    /// Tangible items shown in the cart count — products + custom amounts.
-    /// Coupons are tracked separately and pulse-only (see below).
     private var phoneCartItemsCount: Int {
-        posModel.cart.purchasableItems.count + posModel.cart.customAmounts.count
-    }
-
-    /// Total cart size — products + custom amounts + coupons — used to drive the cart-button
-    /// pulse so adding a coupon also gives visual feedback even though the displayed number
-    /// stays items-only.
-    private var phoneCartTotalCount: Int {
-        phoneCartItemsCount + posModel.cart.coupons.count
+        posModel.cart.totalItemCount
     }
 
     private var phoneCartButton: some View {
@@ -434,17 +419,11 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.top, POSPadding.medium)
-        // Bottom padding clears the home indicator: the parent `phoneContentView` applies
-        // `.ignoresSafeArea()`, so the standard safe-area inset doesn't push the button up.
-        .padding(.bottom, POSPadding.xxLarge)
+        .posPhoneBottomButtonPadding()
         // Quick pulse to confirm an item was added — only on count increases, so removing items
-        // doesn't bounce the button distractingly. Watches the full cart count (products +
-        // custom amounts + coupons) so adding any of those pulses, even though the displayed
-        // number stays items-only (no coupons).
+        // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
-        .onChange(of: phoneCartTotalCount) { oldValue, newValue in
+        .onChange(of: phoneCartItemsCount) { oldValue, newValue in
             guard newValue > oldValue else { return }
             withAnimation(.spring(response: 0.18, dampingFraction: 0.5)) {
                 phoneCartButtonPulse = true

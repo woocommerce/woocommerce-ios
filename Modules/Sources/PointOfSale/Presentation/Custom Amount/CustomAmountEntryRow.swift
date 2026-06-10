@@ -14,7 +14,7 @@ struct CustomAmountEntryRow: View {
         Button(action: onTap) {
             HStack(spacing: Constants.cardSpacing) {
                 ZStack {
-                    Color.posSurfaceContainerLow
+                    Color.posSurfaceDim
 
                     // Composite of `tag` + a `plus.circle.fill` badge to convey "add a custom amount".
                     // Avoids `tag.badge.plus`, which is iOS 18+ only (SF Symbols 6) and renders blank

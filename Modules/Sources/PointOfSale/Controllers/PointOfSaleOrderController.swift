@@ -305,6 +305,9 @@ private extension PointOfSaleOrderController {
             }
             return .missingProducts(missingProductInfo)
         }
+        else if case .orderDoesNotMatchCart = error as? POSOrderService.POSOrderServiceError {
+            return .orderDoesNotMatchCart
+        }
         else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)
         } else {

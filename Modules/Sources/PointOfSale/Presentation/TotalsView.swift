@@ -124,6 +124,15 @@ struct TotalsView: View {
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
 
+            case .error(.orderDoesNotMatchCart, _):
+                PointOfSaleOrderSyncErrorMessageView(
+                    title: Localization.orderMismatchTitle,
+                    message: Localization.orderMismatchMessage,
+                    actionTitle: Localization.orderMismatchActionTitle,
+                    action: posModel.addMoreToCart
+                )
+                    .transition(.opacity)
+
             case .error(.invalidCoupon(let message), let handler):
                 PointOfSaleOrderSyncCouponsErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -414,6 +423,18 @@ private extension TotalsView {
             value: "Other payment methods",
             comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. "
                 + "Tapping it opens a sheet with non-TTP options (currently Card reader).")
+        static let orderMismatchTitle = NSLocalizedString(
+            "pos.totalsView.orderMismatch.error.title",
+            value: "Couldn't check out",
+            comment: "Title shown when the POS order created by the server does not match the cart contents.")
+        static let orderMismatchMessage = NSLocalizedString(
+            "pos.totalsView.orderMismatch.error.message",
+            value: "There was a problem creating this order, the items don't match your selection. Check the cart contents and try again.",
+            comment: "Message shown when the POS order created by the server does not match the cart contents.")
+        static let orderMismatchActionTitle = NSLocalizedString(
+            "pos.totalsView.orderMismatch.error.editOrder",
+            value: "Edit order",
+            comment: "Button to return to item selection when the POS order created by the server does not match the cart contents.")
     }
 }
 
@@ -424,6 +445,7 @@ private struct TotalsFieldsContent: View {
     let totalsFieldAnimation: Namespace.ID
     private let paymentViewHelper = POSPaymentViewHelper()
     private let viewHelper = TotalsViewHelper()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Used for synchronizing animations of shimmeringLine and textField
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
@@ -490,8 +512,14 @@ private struct TotalsFieldsContent: View {
             )
         }
         .padding(TotalsView.Constants.totalsLineViewPadding)
-        .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-        .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass == .compact) {
+            $0.frame(maxWidth: .infinity)
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                .fixedSize(horizontal: true, vertical: false)
+        }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
 }
@@ -819,8 +847,14 @@ private extension TotalsView {
                 otherPaymentMethodsButton
             }
         }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.bottom, POSPadding.xxLarge)
+        .if(horizontalSizeClass == .compact) {
+            $0.posPhoneBottomButtonPadding()
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.xxLarge)
+        }
     }
 
     /// True whenever the bottom of the totals view should render the

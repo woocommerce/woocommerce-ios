@@ -45,7 +45,24 @@ final class MockStoresManager: DefaultStoresManager {
         } else {
             if let callback = receivedActionCallbacks[String(describing: type(of: action))] {
                 callback(action)
+            } else {
+                resolveDefaultIfNeeded(action)
             }
+        }
+    }
+
+    /// Provides a sensible default response for actions whose completion must always be called to
+    /// avoid leaking suspended continuations when a test does not register an explicit callback.
+    ///
+    private func resolveDefaultIfNeeded(_ action: Action) {
+        switch action {
+        case let action as FeatureFlagAction:
+            // Mirror `FeatureFlagStore`: with no remote override configured, resolve to the local default.
+            if case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion) = action {
+                completion(defaultValue)
+            }
+        default:
+            break
         }
     }
 
@@ -86,5 +103,16 @@ extension MockStoresManager {
         }
         let key = String(describing: actionType)
         receivedActionCallbacks[key] = wrappingCallback
+    }
+
+    /// Resolves `FeatureFlagAction.isRemoteFeatureFlagEnabled` by returning the given fixed value,
+    /// regardless of the local `defaultValue` — mimicking a remote override.
+    ///
+    func resolveRemoteFeatureFlag(returning value: Bool) {
+        whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .isRemoteFeatureFlagEnabled(_, _, _, completion) = action {
+                completion(value)
+            }
+        }
     }
 }

@@ -461,10 +461,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        if let item = viewModel.item(at: sourceIndexPath.row) {
-            viewModel.remove(at: destinationIndexPath.row)
-            viewModel.insert(item, at: destinationIndexPath.row)
-        }
+        viewModel.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
     }
 }
 

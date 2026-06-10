@@ -21,6 +21,15 @@ struct POSCustomAmountTests {
         #expect([POSCustomAmount]().matches(order: order) == true)
     }
 
+    @Test func empty_cart_matches_order_with_remote_added_fee() async throws {
+        // Given
+        let fee = OrderFeeLine.fake().copy(name: "Plugin fee", total: "2.50")
+        let order = Order.fake().copy(fees: [fee])
+
+        // When, Then
+        #expect([POSCustomAmount]().matches(order: order) == true)
+    }
+
     @Test func cart_with_custom_amount_does_not_match_order_with_no_fees() async throws {
         // Given
         let order = Order.fake()
@@ -50,6 +59,38 @@ struct POSCustomAmountTests {
         #expect(sut.matches(order: order) == false)
     }
 
+    @Test func cart_with_custom_amount_matches_order_when_amount_uses_store_decimal_separator() async throws {
+        // Given the cart stores the amount with a comma decimal separator (store locale),
+        // while the synced order's fee total comes back canonical with a period
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "5,00", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
+    @Test func cart_with_custom_amount_matches_order_when_amount_omits_fraction_digits() async throws {
+        // Given the cart stores an unpadded amount, while the synced order's fee total is padded
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "5", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
+    @Test func cart_with_custom_amount_matches_order_when_amount_uses_non_Latin_digits() async throws {
+        // Given the cart stores the amount using Arabic-Indic numerals (a store may display non-Latin
+        // digits), while the synced order's fee total comes back canonical with Latin digits
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "15.00")
+        let order = Order.fake().copy(fees: [fee])
+        let sut = [POSCustomAmount(name: "Tip", amount: "١٥", isTaxable: false)]
+
+        // When, Then
+        #expect(sut.matches(order: order) == true)
+    }
+
     @Test func cart_with_custom_amount_does_not_match_order_with_different_name() async throws {
         // Given
         let fee = OrderFeeLine.fake().copy(name: "Service fee", total: "5.00")
@@ -60,7 +101,7 @@ struct POSCustomAmountTests {
         #expect(sut.matches(order: order) == false)
     }
 
-    @Test func cart_with_custom_amount_does_not_match_order_with_extra_fee() async throws {
+    @Test func cart_with_custom_amount_matches_order_with_extra_remote_added_fee() async throws {
         // Given
         let fee1 = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
         let fee2 = OrderFeeLine.fake().copy(name: "Delivery", total: "2.50")
@@ -68,7 +109,7 @@ struct POSCustomAmountTests {
         let sut = [POSCustomAmount(name: "Tip", amount: "5.00", isTaxable: false)]
 
         // When, Then
-        #expect(sut.matches(order: order) == false)
+        #expect(sut.matches(order: order) == true)
     }
 
     @Test func cart_with_multiple_custom_amounts_matches_order_with_all_fees() async throws {

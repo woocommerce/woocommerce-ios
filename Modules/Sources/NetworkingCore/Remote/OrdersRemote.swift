@@ -544,8 +544,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
@@ -566,8 +567,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 }
@@ -676,7 +678,7 @@ public extension OrdersRemote {
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
+    func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
         guard !orderIDs.isEmpty else { return [] }
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
@@ -690,8 +692,9 @@ public extension OrdersRemote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let lossyOrders = try await enqueue(request, mapper: mapper)
+        return lossyOrders.compactMap(\.order)
     }
 }
 

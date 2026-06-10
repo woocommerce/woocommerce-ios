@@ -62,8 +62,8 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
 
     /// Creates a selectable item from a POSOrderCustomAmount (a fee line on the order).
     /// Custom amounts refund as a single lump-sum line: no per-unit math, no attributes,
-    /// no product image. `originalQuantity` is fixed at `1` so the calculator's
-    /// full-refund branch returns `lineItemTotal` directly.
+    /// no product image. `originalQuantity` is fixed at `1` because custom amounts
+    /// refund as a single unit.
     init(from customAmount: POSOrderCustomAmount, isSelected: Bool) {
         self.itemID = customAmount.id
         self.name = customAmount.name

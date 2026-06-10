@@ -29,19 +29,30 @@ extension [POSCustomAmount] {
     /// intent (e.g. a tax-exempt customer or store-level tax-class override). Treating
     /// a divergence on `isTaxable` as a mismatch would force a redundant resync every
     /// time the merchant places a taxable custom amount on a non-taxable order.
+    /// Remote-added fees are allowed so server plugins can add their own charges.
     func matches(order: Order?) -> Bool {
-        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
-        guard self.count == activeOrderFees.count else {
-            return false
-        }
+        return comparison(with: order).matches
+    }
 
+    func extraActiveFeesCount(order: Order?) -> Int {
+        return comparison(with: order).extraFeesCount
+    }
+
+    func comparison(with order: Order?) -> (matches: Bool, extraFeesCount: Int) {
+        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
         let cartSummaries = self
             .map { CustomAmountSummary(name: $0.name, amount: $0.amount) }
-            .sorted()
-        let orderSummaries = activeOrderFees
+        var unmatchedOrderSummaries = activeOrderFees
             .map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) }
-            .sorted()
-        return cartSummaries == orderSummaries
+
+        for cartSummary in cartSummaries {
+            guard let matchingIndex = unmatchedOrderSummaries.firstIndex(of: cartSummary) else {
+                return (matches: false, extraFeesCount: unmatchedOrderSummaries.count)
+            }
+            unmatchedOrderSummaries.remove(at: matchingIndex)
+        }
+
+        return (matches: true, extraFeesCount: unmatchedOrderSummaries.count)
     }
 
     /// Returns `true` when the taxable intent of these custom amounts matches a
@@ -75,12 +86,22 @@ extension [POSCustomAmount] {
         return result
     }
 
-    private struct CustomAmountSummary: Hashable, Comparable {
+    private struct CustomAmountSummary: Hashable {
         let name: String
-        let amount: String
+        let amount: Decimal
 
-        static func < (lhs: Self, rhs: Self) -> Bool {
-            (lhs.name, lhs.amount) < (rhs.name, rhs.amount)
+        init(name: String, amount: String) {
+            self.name = name
+            // Compare amounts numerically. The cart stores the merchant's input in the store's
+            // decimal separator with no fraction padding (e.g. "15" or "15,00"), while the synced
+            // order's fee total comes back canonical ("15.00"); a raw string compare treats those
+            // as different. Transliterate to Latin digits first (a store may display Arabic-Indic or
+            // other numerals), then map any comma to a period, for a locale-independent value to parse.
+            let latinDigits = amount.applyingTransform(.toLatin, reverse: false) ?? amount
+            let normalized = latinDigits.replacingOccurrences(of: ",", with: ".")
+            self.amount = Decimal(string: normalized, locale: Self.posixLocale) ?? .zero
         }
+
+        private static let posixLocale = Locale(identifier: "en_US_POSIX")
     }
 }

@@ -2,7 +2,14 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.0
 -----
-
+- [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]
+- [*] Fixed refunds for orders with multiple shipping lines so all shipping lines can be refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17312]
+- [*] POS: Prevent checkout when the server-created order does not match the cart. [https://github.com/woocommerce/woocommerce-ios/pull/17314]
+- [*] Fixed duplicating a product overwriting the original product's images; the duplicate now opens after copying. [https://github.com/woocommerce/woocommerce-ios/pull/17291]
+- [*] Improvements to POS by downloading product catalog to the device [https://github.com/woocommerce/woocommerce-ios/pull/16958]
+- [*] Dashboard: Added option to update analytic update setting [https://github.com/woocommerce/woocommerce-ios/pull/17304]
+- [*] Fixed several crash-risk code paths in Shipping Labels, Stats, and Downloadable files [https://github.com/woocommerce/woocommerce-ios/pull/17307]
+- [internal] Speculatively fixed occasional crash on launch when creating TracksService [https://github.com/woocommerce/woocommerce-ios/pull/17328]
 
 24.9
 -----
@@ -15,7 +22,6 @@
 - [Internal] Enabled local flag for self-driven push notifications [https://github.com/woocommerce/woocommerce-ios/pull/17254]
 - [Internal] Phone POS Tap to Pay on iPhone: hero CTA stays tappable during silent pre-connect, Apple-compliant "Tap to Pay on iPhone" wording, Bluetooth as a one-shot opt-in from the Other payment methods sheet. Feature-flagged. [https://github.com/woocommerce/woocommerce-ios/pull/17152]
 - [*] POS: Receipt details can be edited directly from POS settings [https://github.com/woocommerce/woocommerce-ios/pull/16811]
-
 
 24.8
 -----

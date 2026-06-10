@@ -14,7 +14,6 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefundItem
 import struct Yosemite.POSOrderRefund
 @testable import struct Yosemite.POSRefundsResult
-@testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
@@ -1123,7 +1122,7 @@ final class POSOrderListControllerTests {
     // MARK: - Process Refund Tests
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
+    @Test func processRefund_then_submits_refund_with_correct_order_id() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1143,12 +1142,12 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.createRefundCalled == true)
-        #expect(refundsService.spyCreateRefundOrderID == 123)
+        #expect(refundSubmissionProcessor.submitRefundCalled == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundOrderID == 123)
     }
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_selected_items() async throws {
+    @Test func processRefund_then_submits_refund_with_selected_items() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1170,14 +1169,14 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 2)
         #expect(items.contains(where: { $0.itemID == 1 }))
         #expect(items.contains(where: { $0.itemID == 2 }))
     }
 
     @MainActor
-    @Test func processRefund_then_calls_service_with_reason() async throws {
+    @Test func processRefund_then_submits_refund_with_reason() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1197,7 +1196,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: "Customer changed their mind")
 
         // Then
-        #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
+        #expect(refundSubmissionProcessor.spySubmitRefundReason == "Customer changed their mind")
     }
 
     @MainActor
@@ -1226,7 +1225,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_service_throws_then_propagates_error() async throws {
+    @Test func processRefund_when_submission_throws_then_propagates_error() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1243,7 +1242,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         struct TestError: Error {}
-        refundsService.createRefundErrorToThrow = TestError()
+        refundSubmissionProcessor.submitRefundErrorToThrow = TestError()
 
         // When / Then
         var thrownError: Error?
@@ -1364,7 +1363,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
+        let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
         #expect(items.count == 3)
 
         let firstItem = items[0]
@@ -1375,7 +1374,7 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_calls_service_with_automatic_refund_true() async throws {
+    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_submits_refund_with_automatic_refund_true() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1395,11 +1394,11 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == true)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == true)
     }
 
     @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_calls_service_with_automatic_refund_false() async throws {
+    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_submits_refund_with_automatic_refund_false() async throws {
         // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1419,7 +1418,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == false)
+        #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == false)
     }
 
     @MainActor
@@ -1858,6 +1857,13 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     var onSubmitRefundStarted: (() -> Void)?
     private var submitRefundContinuation: CheckedContinuation<Void, Never>?
 
+    private(set) var submitRefundCalled = false
+    private(set) var spySubmitRefundOrderID: Int64?
+    private(set) var spySubmitRefundItems: [POSRefundSelectableItem]?
+    private(set) var spySubmitRefundReason: String?
+    private(set) var spySubmitRefundIsAutomaticRefund: Bool?
+    var submitRefundErrorToThrow: Error?
+
     nonisolated init(refundsService: MockPOSRefundsService,
                      currencyFormatter: CurrencyFormatter) {
         self.refundsService = refundsService
@@ -1904,20 +1910,10 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) -> POSRefundReviewData? {
-        let refundableItems = selectedItems.map { item in
-            POSRefundableItem(
-                itemID: item.itemID,
-                lineItemTotal: item.lineItemTotal,
-                totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity,
-                isLumpSum: item.isLumpSum
-            )
-        }
-
-        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
+        let amounts = reviewAmounts(for: selectedItems)
         guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
               let formattedTax = currencyFormatter.formatAmount(amounts.tax),
-              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
+              let formattedTotal = currencyFormatter.formatAmount(amounts.subtotal + amounts.tax) else {
             return nil
         }
 
@@ -1944,23 +1940,38 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             }
         }
 
-        let refundableItems = selectedItems.map { item in
-            POSRefundableItem(
-                itemID: item.itemID,
-                lineItemTotal: item.lineItemTotal,
-                totalTax: item.totalTax,
-                originalQuantity: item.originalQuantity,
-                isLumpSum: item.isLumpSum
-            )
+        submitRefundCalled = true
+        spySubmitRefundOrderID = order.id
+        spySubmitRefundItems = selectedItems
+        spySubmitRefundReason = reason
+        spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
+
+        if let error = submitRefundErrorToThrow {
+            throw error
         }
 
-        try await refundsService.createRefund(
-            orderID: order.id,
-            items: refundableItems,
-            reason: reason,
-            isAutomaticRefund: refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
-        )
         stateModel.state = .completed
+    }
+
+    private func reviewAmounts(for items: [POSRefundSelectableItem]) -> (subtotal: Decimal, tax: Decimal) {
+        let groupedItems = Dictionary(grouping: items, by: \.itemID)
+        return groupedItems.values.reduce((subtotal: Decimal.zero, tax: Decimal.zero)) { result, items in
+            let subtotal = calculateAmount(for: items, keyPath: \.lineItemTotal)
+            let tax = calculateAmount(for: items, keyPath: \.totalTax)
+            return (result.subtotal + subtotal, result.tax + tax)
+        }
+    }
+
+    private func calculateAmount(for items: [POSRefundSelectableItem], keyPath: KeyPath<POSRefundSelectableItem, Decimal>) -> Decimal {
+        guard let firstItem = items.first, firstItem.originalQuantity > 0 else {
+            return .zero
+        }
+
+        if firstItem.isLumpSum || Decimal(items.count) == firstItem.originalQuantity {
+            return firstItem[keyPath: keyPath]
+        }
+
+        return (firstItem[keyPath: keyPath] / firstItem.originalQuantity) * Decimal(items.count)
     }
 
     func resumeSubmitRefund() {

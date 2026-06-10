@@ -84,6 +84,17 @@ final class FeatureFlagRemoteTests: XCTestCase {
         XCTAssertEqual(flag, .inPersonPaymentsAustraliaWooPayments)
     }
 
+    func test_rawValue_when_smarter_notifications_then_maps_to_smarterNotifications_case() {
+        // Given
+        let key = "smarter_notifications"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertEqual(flag, .smarterNotifications)
+    }
+
     func test_rawValue_when_unknown_key_then_returns_nil() {
         // Given
         let key = "definitely_not_a_known_flag"

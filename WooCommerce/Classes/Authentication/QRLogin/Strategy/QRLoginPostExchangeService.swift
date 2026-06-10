@@ -31,7 +31,12 @@ import struct NetworkingCore.Secret
 /// a confusing UI state is not.
 @MainActor
 protocol QRLoginPostExchangeServicing {
-    func complete(_ response: SelfHostedQRLoginExchangeResponse) async -> Result<Void, QRLoginUserFacingError>
+    /// - Parameters:
+    ///   - response: the `/exchange` response (its `site_url` is server-controlled).
+    ///   - scannedSiteURL: the https-validated URL the merchant scanned and
+    ///     confirmed on the number-match screen. Used to validate `response.siteURL`.
+    func complete(_ response: SelfHostedQRLoginExchangeResponse,
+                  scannedSiteURL: URL) async -> Result<Void, QRLoginUserFacingError>
 }
 
 @MainActor
@@ -57,7 +62,8 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
         self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory ?? Self.defaultApplicationPasswordUseCaseFactory
     }
 
-    func complete(_ response: SelfHostedQRLoginExchangeResponse) async -> Result<Void, QRLoginUserFacingError> {
+    func complete(_ response: SelfHostedQRLoginExchangeResponse,
+                  scannedSiteURL: URL) async -> Result<Void, QRLoginUserFacingError> {
         let applicationPassword = ApplicationPassword(
             wpOrgUsername: response.userLogin,
             password: Secret(response.applicationPassword),
@@ -66,14 +72,30 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
             // so a placeholder is fine here.
             uuid: UUID().uuidString
         )
-        let useCase = applicationPasswordUseCaseFactory(applicationPassword, response.siteURL)
+
+        // The exchange response's `site_url` is server-controlled. Trusting it
+        // blindly would let a malicious/compromised server bind the minted
+        // credentials to a different host or downgrade the scheme to http,
+        // bypassing both the scan-time https rule and the host the merchant
+        // confirmed on the number-match screen. Require it to match the scanned
+        // URL (exact host, same scheme) before authenticating against it.
+        guard let siteURL = Self.validatedSiteURL(from: response, scannedSiteURL: scannedSiteURL) else {
+            // The `/exchange` call already minted an AP on the scanned site, so
+            // revoke it (using the trusted scanned URL — the response URL is what
+            // we're rejecting) rather than leaving an orphan, then surface a
+            // sign-in failure. No credentials were authenticated yet.
+            let useCase = applicationPasswordUseCaseFactory(applicationPassword, scannedSiteURL.absoluteString)
+            return await fail(.siteAuthFailure, useCase: useCase)
+        }
+
+        let useCase = applicationPasswordUseCaseFactory(applicationPassword, siteURL)
 
         let credentials = Credentials.applicationPassword(username: response.userLogin,
                                                           password: response.applicationPassword,
-                                                          siteAddress: response.siteURL)
+                                                          siteAddress: siteURL)
         _ = stores.authenticate(credentials: credentials)
 
-        let siteResult = await fetchSiteInfo(siteURL: response.siteURL)
+        let siteResult = await fetchSiteInfo(siteURL: siteURL)
         let site: Site
         switch siteResult {
         case .success(let value):
@@ -132,5 +154,25 @@ private extension QRLoginPostExchangeService {
 
     static let defaultApplicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = { ap, siteAddress in
         OneTimeApplicationPasswordUseCase(applicationPassword: ap, siteAddress: siteAddress)
+    }
+
+    /// Returns the server-returned `site_url` only when it matches the scanned,
+    /// confirmed URL — exact host (case-insensitive) and the same scheme. Matching
+    /// the scanned scheme inherits the parser's policy (https-only in release,
+    /// http allowed in DEBUG), so no separate scheme list is duplicated here.
+    /// Returns `nil` when the response URL is malformed or doesn't match, which the
+    /// caller treats as a sign-in failure. On match the response value is used
+    /// verbatim so a legitimate canonical path (e.g. a subdirectory install) is
+    /// preserved.
+    static func validatedSiteURL(from response: SelfHostedQRLoginExchangeResponse,
+                                 scannedSiteURL: URL) -> String? {
+        guard let responseURL = URL(string: response.siteURL),
+              let responseHost = responseURL.host?.lowercased(),
+              let scannedHost = scannedSiteURL.host?.lowercased(),
+              responseHost == scannedHost,
+              responseURL.scheme?.lowercased() == scannedSiteURL.scheme?.lowercased() else {
+            return nil
+        }
+        return response.siteURL
     }
 }

@@ -85,7 +85,7 @@ final class SelfHostedQRLoginStrategy: QRLoginStrategy {
                                                  exchangeGrant: grant,
                                                  completion: completion)
             }
-            switch await postExchangeService.complete(response) {
+            switch await postExchangeService.complete(response, scannedSiteURL: siteURL) {
             case .success:
                 return .success(.authenticated)
             case .failure(let error):

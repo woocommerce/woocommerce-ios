@@ -33,6 +33,10 @@ final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLay
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
         coordinator.refreshExpandedLayoutIfNeeded()
     }
 

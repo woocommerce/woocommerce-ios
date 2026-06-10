@@ -59,12 +59,16 @@ final class ProductsSplitViewCoordinator: NSObject {
         // Auto-selects the first product if there is no content to be shown.
         if contentTypes.isEmpty {
             showEmptyViewOrFirstProduct()
-        } else {
+        } else if Bundle.main.isLiquidGlassDesignEnabled {
             refreshSelectedProductRow()
         }
     }
 
     func refreshExpandedLayoutIfNeeded() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
         guard !splitViewController.isCollapsed,
               splitViewController.traitCollection.horizontalSizeClass == .regular else {
             return
@@ -268,11 +272,22 @@ private extension ProductsSplitViewCoordinator {
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
+        if Bundle.main.isLiquidGlassDesignEnabled,
+           didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
             let dismissedProduct = productShownInSecondaryContent()
             DispatchQueue.main.async { [weak self] in
                 self?.clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
             }
+            return
+        }
+
+        if !Bundle.main.isLiquidGlassDesignEnabled,
+           didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
+            if let dismissedProduct = productShownInSecondaryContent() {
+                didDismissProductForm(product: dismissedProduct)
+            }
+            contentTypes = []
+            secondaryNavigationController.viewControllers = []
             return
         }
 
@@ -310,6 +325,14 @@ private extension ProductsSplitViewCoordinator {
         let isNavigatingToProductList = viewController == productsViewController ||
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return animated && splitViewController.isCollapsed && navigationController == primaryNavigationController
+            && contentTypes.isNotEmpty && isNavigatingToProductList
+    }
+
+    func didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
+                                                                                    didShow viewController: UIViewController) -> Bool {
+        let isNavigatingToProductList = viewController == productsViewController ||
+        viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        return splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
     }
 

@@ -26,7 +26,7 @@ final class TabContainerController: UIViewController {
             view.addSubview(newWrappedController.view)
             newWrappedController.didMove(toParent: self)
 
-            applyHorizontalSizeClassToWrappedController()
+            configureHorizontalSizeClassForWrappedController(newWrappedController)
 
             newWrappedController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -59,15 +59,29 @@ private extension TabContainerController {
     }
 
     func observeTraitChanges() {
-        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+        if #available(iOS 18.0, *), shouldDynamicallyUpdateWrappedControllerHorizontalSizeClass {
             registerForTraitChanges([UITraitHorizontalSizeClass.self]) { (self: Self, _) in
                 self.applyHorizontalSizeClassToWrappedController()
             }
         }
     }
 
-    func applyHorizontalSizeClassToWrappedController() {
+    func configureHorizontalSizeClassForWrappedController(_ wrappedController: UIViewController) {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            guard shouldDynamicallyUpdateWrappedControllerHorizontalSizeClass else {
+                if let horizontalSize = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
+                    wrappedController.traitOverrides.horizontalSizeClass = horizontalSize
+                    appliedWrappedControllerHorizontalSizeClass = horizontalSize
+                }
+                return
+            }
+
+            applyHorizontalSizeClassToWrappedController()
+        }
+    }
+
+    func applyHorizontalSizeClassToWrappedController() {
+        if #available(iOS 18.0, *), shouldDynamicallyUpdateWrappedControllerHorizontalSizeClass {
             guard let wrappedController else {
                 return
             }
@@ -90,5 +104,9 @@ private extension TabContainerController {
         }
 
         return .compact
+    }
+
+    var shouldDynamicallyUpdateWrappedControllerHorizontalSizeClass: Bool {
+        Bundle.main.isLiquidGlassDesignEnabled && UIDevice.current.userInterfaceIdiom == .pad
     }
 }

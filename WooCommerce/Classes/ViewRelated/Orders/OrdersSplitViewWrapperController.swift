@@ -3,7 +3,7 @@ import Yosemite
 
 /// Controller to wrap the orders split view
 ///
-final class OrdersSplitViewWrapperController: UIViewController {
+final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)

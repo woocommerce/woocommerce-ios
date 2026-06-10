@@ -1,5 +1,7 @@
 import UIKit
 
+protocol UsesCompactLayoutInNarrowWindow: AnyObject {}
+
 /// Container for a Woo tab, shown as the root view controller of one of the tabs.
 /// Provided as an alternative to `WooTabNavigationController`, for root controllers which should not be in a nav view
 /// For example, a Split View, which will not work correctly on iPhone when wrapped in a navigation view.
@@ -40,9 +42,19 @@ final class TabContainerController: UIViewController {
 
         observeTraitChanges()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        applyHorizontalSizeClassToWrappedController()
+    }
 }
 
 private extension TabContainerController {
+    enum Constants {
+        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
+    }
+
     func observeTraitChanges() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             registerForTraitChanges([UITraitHorizontalSizeClass.self]) { (self: Self, _) in
@@ -53,7 +65,21 @@ private extension TabContainerController {
 
     func applyHorizontalSizeClassToWrappedController() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            wrappedController?.traitOverrides.horizontalSizeClass = traitCollection.horizontalSizeClass
+            let effectiveHorizontalSizeClass = effectiveHorizontalSizeClassForWrappedController()
+            guard wrappedController?.traitOverrides.horizontalSizeClass != effectiveHorizontalSizeClass else {
+                return
+            }
+            wrappedController?.traitOverrides.horizontalSizeClass = effectiveHorizontalSizeClass
         }
+    }
+
+    func effectiveHorizontalSizeClassForWrappedController() -> UIUserInterfaceSizeClass {
+        guard Bundle.main.isLiquidGlassDesignEnabled,
+              wrappedController is UsesCompactLayoutInNarrowWindow,
+              view.bounds.width < Constants.narrowWindowCompactLayoutThreshold else {
+            return traitCollection.horizontalSizeClass
+        }
+
+        return .compact
     }
 }

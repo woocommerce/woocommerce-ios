@@ -52,8 +52,11 @@ final class WooSplitViewController: UISplitViewController {
         let secondaryFrame = secondaryView.convert(secondaryView.bounds, to: view)
         let overlapFrame = primaryFrame.intersection(secondaryFrame)
         let overlapWidth = overlapFrame.isNull ? 0 : overlapFrame.width.rounded(.up)
-        let targetLeftInset = primaryEdge == .leading ? overlapWidth : 0
-        let targetRightInset = primaryEdge == .trailing ? overlapWidth : 0
+        let currentInsets = secondaryViewController.additionalSafeAreaInsets
+        let systemLeftSafeArea = max(0, secondaryView.safeAreaInsets.left - currentInsets.left)
+        let systemRightSafeArea = max(0, secondaryView.safeAreaInsets.right - currentInsets.right)
+        let targetLeftInset = primaryEdge == .leading ? max(0, overlapWidth - systemLeftSafeArea) : 0
+        let targetRightInset = primaryEdge == .trailing ? max(0, overlapWidth - systemRightSafeArea) : 0
 
         setSecondaryColumnHorizontalSafeAreaInsets(left: targetLeftInset,
                                                    right: targetRightInset,

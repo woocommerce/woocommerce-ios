@@ -46,6 +46,7 @@ final class OrdersRootViewController: UIViewController {
     }()
 
     private var filtersBarHeightConstraint: NSLayoutConstraint?
+    private var liquidGlassHeaderBackgroundView: UIView?
 
     private var filters = FilterOrderListViewModel.Filters() {
         didSet {
@@ -386,6 +387,10 @@ private extension OrdersRootViewController {
     }
 
     func configureLiquidGlassHeaderOverlay() {
+        let backgroundView = UIView.makeLiquidGlassHeaderBackgroundView()
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+
         filtersBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(filtersBar)
 
@@ -393,6 +398,10 @@ private extension OrdersRootViewController {
         filtersBarHeightConstraint = heightConstraint
 
         NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: filtersBar.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
             filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -541,7 +550,9 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
             return
         }
 
-        filtersBar.transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        liquidGlassHeaderBackgroundView?.transform = transform
+        filtersBar.transform = transform
     }
 }
 

@@ -96,7 +96,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 
     private var headerBackgroundColor: UIColor {
-        Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.secondarySystemGroupedBackground)
+        .systemColor(.secondarySystemGroupedBackground)
     }
 
     /// The bulk edit CTA in the navbar.
@@ -827,7 +827,7 @@ private extension ProductsViewController {
         stackView.removeArrangedSubview(toolbarBottomSeparator)
         toolbarBottomSeparator.removeFromSuperview()
 
-        let backgroundView = UIView.makeLiquidGlassHeaderBackgroundView()
+        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: headerBackgroundColor)
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
         view.addSubview(toolbar)

@@ -387,7 +387,7 @@ private extension OrdersRootViewController {
     }
 
     func configureLiquidGlassHeaderOverlay() {
-        let backgroundView = UIView.makeLiquidGlassHeaderBackgroundView()
+        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: .listForeground(modal: false))
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 

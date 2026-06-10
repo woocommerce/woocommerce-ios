@@ -1,17 +1,9 @@
 import UIKit
 
 extension UIView {
-    static func makeLiquidGlassHeaderBackgroundView() -> UIView {
-        let backgroundView: UIView
-        if #available(iOS 26.0, *) {
-            let effect = UIGlassEffect(style: .regular)
-            backgroundView = UIVisualEffectView(effect: effect)
-        } else {
-            let view = UIView()
-            view.backgroundColor = .listForeground(modal: false)
-            backgroundView = view
-        }
-
+    static func makePinnedHeaderBackgroundView(color: UIColor) -> UIView {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = color
         backgroundView.isUserInteractionEnabled = false
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         return backgroundView

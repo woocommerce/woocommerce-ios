@@ -2,6 +2,12 @@ import UITestsFoundation
 import XCTest
 
 final class POSTests: XCTestCase {
+    private enum ProductIDs {
+        static let simpleProduct = 1
+        static let variableProduct = 4
+        static let variation = 401
+    }
+
     private static let baseLaunchArguments = [
         "logout-at-launch",
         "disable-animations",
@@ -10,6 +16,11 @@ final class POSTests: XCTestCase {
         // APIMocks does not stub mobile/feature-flags; override the remote POS flag to keep launch deterministic.
         "-com.woocommerce.featureflag.override.remote.pointOfSale",
         "YES"
+    ]
+
+    private static let checkoutLaunchArguments = [
+        "bypass-pos-eligibility-checks",
+        "use-pos-ui-test-mocks"
     ]
 
     // Start disconnected so POS exposes the Card reader CTA while screenshot flows keep the mock connected by default.
@@ -40,7 +51,7 @@ final class POSTests: XCTestCase {
             .tapMarkPaymentComplete()
             .waitForPaymentSuccess()
             .tapNewOrder()
-            .verifyReadyForNewOrder()
+            .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
     func test_POS_eligible_site_can_complete_card_payment_with_simulated_reader_and_start_new_order() throws {
@@ -49,18 +60,18 @@ final class POSTests: XCTestCase {
             .waitForCardPaymentStartedOrSucceeded()
             .waitForPaymentSuccess()
             .tapNewOrder()
-            .verifyReadyForNewOrder()
+            .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
     private func beginTwoProductCheckout(extraLaunchArguments: [String] = []) throws -> POSScreen {
-        try launchAndLogin(extraLaunchArguments: ["bypass-pos-eligibility-checks"] + extraLaunchArguments)
+        try launchAndLogin(extraLaunchArguments: Self.checkoutLaunchArguments + extraLaunchArguments)
 
         return try TabNavComponent()
             .goToPOSScreen()
-            .tapAddProduct(productID: 2130)
-            .tapAddProduct(productID: 2131)
-            .verifyCartContainsProduct(productID: 2130)
-            .verifyCartContainsProduct(productID: 2131)
+            .tapAddProduct(productID: ProductIDs.simpleProduct)
+            .tapAddVariation(parentProductID: ProductIDs.variableProduct, variationID: ProductIDs.variation)
+            .verifyCartContainsProduct(productID: ProductIDs.simpleProduct)
+            .verifyCartContainsVariation(variationID: ProductIDs.variation)
             .tapCheckout()
             .waitForTotalsLoaded()
     }

@@ -4,7 +4,7 @@ import XCTest
 // periphery: ignore - used for UI testing
 public final class POSScreen: ScreenObject {
     private let firstProductCardGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["pos-product-card-2130"]
+        $0.buttons["pos-product-card-1"]
     }
     private let cartViewGetter: (XCUIApplication) -> XCUIElement = {
         $0.otherElements["pos-cart-view"]
@@ -29,10 +29,33 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
+    public func tapAddVariation(parentProductID: Int, variationID: Int) -> Self {
+        let parentProductButton = app.buttons["pos-variable-product-card-\(parentProductID)"]
+        parentProductButton.scrollIntoView(app: app)
+        XCTAssertTrue(parentProductButton.waitForIsHittable(timeout: 5), "Variable product \(parentProductID) should be tappable in POS.")
+        parentProductButton.tap()
+
+        let variationButton = app.buttons["pos-variation-card-\(variationID)"]
+        variationButton.scrollIntoView(app: app)
+        XCTAssertTrue(variationButton.waitForIsHittable(timeout: 5), "Variation \(variationID) should be tappable in POS.")
+        variationButton.tap()
+
+        return self
+    }
+
+    @discardableResult
     public func verifyCartContainsProduct(productID: Int) -> Self {
         showPhoneCartIfNeeded()
         let cartItem = app.descendants(matching: .any)["pos-cart-item-product-\(productID)"]
         XCTAssertTrue(cartItem.waitForExistence(timeout: 10), "Product \(productID) should be visible in the POS cart.")
+        return self
+    }
+
+    @discardableResult
+    public func verifyCartContainsVariation(variationID: Int) -> Self {
+        showPhoneCartIfNeeded()
+        let cartItem = app.descendants(matching: .any)["pos-cart-item-variation-\(variationID)"]
+        XCTAssertTrue(cartItem.waitForExistence(timeout: 10), "Variation \(variationID) should be visible in the POS cart.")
         return self
     }
 
@@ -182,7 +205,7 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyReadyForNewOrder() -> Self {
+    public func verifyReadyForNewOrder(previousProductID: Int? = nil, previousVariationID: Int? = nil) -> Self {
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
         let phoneCartButton = app.buttons["pos-phone-cart-button"]
         if phoneCartButton.waitForIsHittable(timeout: 1) {
@@ -190,8 +213,18 @@ public final class POSScreen: ScreenObject {
             XCTAssertTrue(phoneCartButton.label.contains("0"), "Phone cart button should show an empty cart for a new order.")
         } else {
             XCTAssertTrue(cartViewGetter(app).waitForExistence(timeout: 10), "POS cart should be visible for a new order.")
-            XCTAssertFalse(app.descendants(matching: .any)["pos-cart-item-product-2130"].exists, "Previous cart item should be cleared for a new order.")
-            XCTAssertFalse(app.descendants(matching: .any)["pos-cart-item-product-2131"].exists, "Previous cart item should be cleared for a new order.")
+            if let previousProductID {
+                XCTAssertFalse(
+                    app.descendants(matching: .any)["pos-cart-item-product-\(previousProductID)"].exists,
+                    "Previous product cart item should be cleared for a new order."
+                )
+            }
+            if let previousVariationID {
+                XCTAssertFalse(
+                    app.descendants(matching: .any)["pos-cart-item-variation-\(previousVariationID)"].exists,
+                    "Previous variation cart item should be cleared for a new order."
+                )
+            }
         }
         return self
     }

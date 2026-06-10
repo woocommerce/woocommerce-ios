@@ -32,6 +32,15 @@ struct ProcessConfiguration {
         ProcessInfo.processInfo.arguments.contains("load-mocked-pos-products")
     }
 
+    /// Returns `true` when POS should use deterministic mocks for UI tests.
+    static var shouldUsePOSUITestMocks: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("use-pos-ui-test-mocks")
+        #else
+        false
+        #endif
+    }
+
     /// Returns `true` when POS order syncing should be bypassed for screenshot tests.
     static var shouldBypassPOSOrderSyncing: Bool {
         ProcessInfo.processInfo.arguments.contains("bypass-pos-order-syncing")

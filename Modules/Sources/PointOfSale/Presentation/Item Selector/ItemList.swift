@@ -166,6 +166,7 @@ struct ItemListRow: View {
                                           imageSource: parentProduct.productImageSource,
                                           detailText: Localization.variationsAvailable)
                 }
+                .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
                 .simultaneousGesture(TapGesture().onEnded {
                     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 })
@@ -186,6 +187,7 @@ struct ItemListRow: View {
                                           imageSource: parentProduct.productImageSource,
                                           detailText: Localization.variationsAvailable)
                 })
+                .accessibilityIdentifier("pos-variable-product-card-\(parentProduct.productID)")
             }
         case let .variation(variation):
             Button(action: {
@@ -193,6 +195,7 @@ struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
+            .accessibilityIdentifier("pos-variation-card-\(variation.productVariationID)")
         case let .searchResultVariation(variation, parentProduct):
             Button(action: {
                 itemActionHandler.handleTap(item, position: position)

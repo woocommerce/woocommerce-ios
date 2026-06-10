@@ -182,3 +182,51 @@ extension XCUIElement {
         }
     }
 }
+
+extension XCUIApplication {
+    public func dismissSavePasswordPromptIfNeeded(timeout: TimeInterval = 15, until element: XCUIElement? = nil, stableFor: TimeInterval = 0.5) {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let deadline = Date().addingTimeInterval(timeout)
+        var elementVisibleWithoutPromptSince: Date?
+
+        while Date() < deadline {
+            if tapSavePasswordDismissButtonIfNeeded(in: self) || tapSavePasswordDismissButtonIfNeeded(in: springboard) {
+                elementVisibleWithoutPromptSince = nil
+                continue
+            }
+
+            if let element, element.exists {
+                if elementVisibleWithoutPromptSince == nil {
+                    elementVisibleWithoutPromptSince = Date()
+                }
+                if let visibleSince = elementVisibleWithoutPromptSince,
+                   Date().timeIntervalSince(visibleSince) >= stableFor {
+                    return
+                }
+            } else {
+                elementVisibleWithoutPromptSince = nil
+            }
+
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))
+        }
+
+        XCTAssertFalse(
+            isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard),
+            "Save Password prompt should be dismissible."
+        )
+    }
+
+    private func tapSavePasswordDismissButtonIfNeeded(in app: XCUIApplication) -> Bool {
+        guard isSavePasswordPromptVisible(in: app) else { return false }
+
+        let dismissButton = app.buttons["Not Now"]
+        guard dismissButton.waitForIsHittable(timeout: 2) else { return false }
+
+        dismissButton.tap()
+        return true
+    }
+
+    private func isSavePasswordPromptVisible(in app: XCUIApplication) -> Bool {
+        app.staticTexts["Save Password?"].exists || app.buttons["Not Now"].exists
+    }
+}

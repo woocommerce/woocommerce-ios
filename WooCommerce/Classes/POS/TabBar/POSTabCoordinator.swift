@@ -229,7 +229,9 @@ private extension POSTabCoordinator {
 
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
-                cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+                cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock(
+                    startsConnected: !ProcessConfiguration.shouldStartMockCardPresentPaymentDisconnected
+                )
             } else {
                 cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,

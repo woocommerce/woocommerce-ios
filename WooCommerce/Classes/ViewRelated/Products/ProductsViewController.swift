@@ -84,6 +84,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var hasConfiguredLiquidGlassHeaderOverlay = false
     private var liquidGlassHeaderBackgroundView: UIView?
+    private var hasAlignedInitialLiquidGlassHeaderContentOffset = false
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -313,6 +314,13 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             return
         }
         didSelectProduct(product: firstProduct)
+    }
+
+    func hasFirstProductAvailable() -> Bool {
+        guard isViewLoaded else {
+            return false
+        }
+        return resultsController.safeObject(at: IndexPath(row: 0, section: 0)) != nil
     }
 
     func startProductCreation() {
@@ -856,13 +864,21 @@ private extension ProductsViewController {
         }
 
         let height = toolbar.isHidden ? 0 : toolbar.bounds.height + toolbarBottomSeparator.bounds.height
+        let previousAdjustedTopInset = tableView.adjustedContentInset.top
+        let wasAtTop = tableView.contentOffset.y <= -previousAdjustedTopInset + 0.5
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-            tableView.contentOffset.y -= height - previousTopInset
+
+            if height > 0 && (!hasAlignedInitialLiquidGlassHeaderContentOffset || wasAtTop) {
+                tableView.contentOffset.y = -tableView.adjustedContentInset.top
+                hasAlignedInitialLiquidGlassHeaderContentOffset = true
+            } else {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
         }
 
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets

@@ -128,9 +128,28 @@ final class QRLoginViewModel {
     func cancelFromNumberMatch() {
         guard case .numberMatch = state else { return }
         analytics.trackClick(.qrCancelNumberMatch)
+        stopPolling()
+    }
+
+    /// Cancels any in-flight polling without making a server call. Idempotent.
+    ///
+    /// Invoked both by the explicit number-match Cancel button and by the host
+    /// view's `.onDisappear`: navigating back / swipe-back tears the view down
+    /// without routing through the Cancel button, and the host's `.task`
+    /// cancellation does not reach the polling work because it runs in an
+    /// unstructured `Task` (see `runPolling`). Without this, backing out would
+    /// leave an orphaned loop polling every couple of seconds — a later approval
+    /// would then sign the merchant in "from nowhere".
+    ///
+    /// Resets out of `numberMatch` so a poll that resolved `.approved` in the
+    /// same turn as the cancel cannot proceed to the exchange (see the guard in
+    /// `handlePollingOutcome`).
+    func stopPolling() {
         pollingTask?.cancel()
         pollingTask = nil
-        state = .idle
+        if case .numberMatch = state {
+            state = .idle
+        }
     }
 }
 
@@ -182,6 +201,12 @@ private extension QRLoginViewModel {
     func handlePollingOutcome(_ outcome: QRLoginPollingLoop.Outcome) async {
         switch outcome {
         case .approved(let grant):
+            // Guard the approve-after-cancel race: if the merchant tapped Cancel
+            // or backed out at the exact moment the desktop approved, polling was
+            // cancelled and `stopPolling` reset state out of `numberMatch`. Running
+            // the exchange anyway would mint an Application Password (self-hosted)
+            // or open the magic link (wp.com) after the user already left the flow.
+            guard case .numberMatch = state else { return }
             lastGrant = grant
             await runExchange(grant: grant)
         case .error(let error):

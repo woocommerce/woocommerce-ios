@@ -71,5 +71,12 @@ struct QRLoginHostView: View {
             // Idempotent — guarded inside the view model.
             await viewModel.start()
         }
+        .onDisappear {
+            // Navigating back / swipe-back tears this view down without hitting
+            // the number-match Cancel button, and `.task` cancellation doesn't
+            // reach the unstructured polling task. Stop polling explicitly so a
+            // later approval can't sign the merchant in after they left.
+            viewModel.stopPolling()
+        }
     }
 }

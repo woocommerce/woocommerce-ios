@@ -61,6 +61,10 @@ final class QRLoginPollingLoop {
 
                 switch state {
                 case .approved(let grant):
+                    // Re-check cancellation after the in-flight poll resolves:
+                    // a cancel that landed while `attempt()` was running must not
+                    // surface as `.approved` (which would trigger the exchange).
+                    if Task.isCancelled { return .cancelled }
                     if let grant, grant.isEmpty == false {
                         return .approved(exchangeGrant: grant)
                     }

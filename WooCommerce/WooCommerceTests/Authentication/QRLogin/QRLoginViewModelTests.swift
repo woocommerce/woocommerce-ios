@@ -73,6 +73,50 @@ struct QRLoginViewModelTests {
         #expect(strategy.exchangeCalls.isEmpty)
     }
 
+    @Test func when_cancel_races_an_in_flight_poll_that_approves_then_exchange_does_not_run() async {
+        // Given — the poll resolves `.approved`, but a cancel (number-match Cancel
+        // button or nav back / swipe-back) lands while that poll is in flight, in
+        // the same turn the desktop approves. Modeled by cancelling from inside the
+        // poll attempt, just before it returns `.approved`.
+        let strategy = MockQRLoginStrategy()
+        strategy.scanResult = .success(makeScanResult())
+        strategy.pollResults = [.success(.approved(exchangeGrant: "grant-1"))]
+        strategy.exchangeResult = .success(.authenticated)
+        let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
+        strategy.onPoll = { [weak viewModel] in viewModel?.stopPolling() }
+
+        // When
+        await viewModel.start()
+
+        // Then — the approval is discarded: no exchange runs (no Application
+        // Password minted / magic link opened) and we land back on idle.
+        #expect(viewModel.state == .idle)
+        #expect(strategy.exchangeCalls.isEmpty)
+    }
+
+    @Test func stopPolling_when_polling_then_ends_flow_without_exchange() async {
+        // Given — an orphaned loop scenario: the host view disappears (nav back /
+        // swipe-back) while polling, which calls `stopPolling()` via `.onDisappear`.
+        // The poll would eventually approve, but must not after the user has left.
+        let strategy = MockQRLoginStrategy()
+        strategy.scanResult = .success(makeScanResult())
+        strategy.pollResults = Array(repeating: .success(.scanned), count: 100)
+        let viewModel = QRLoginViewModel(strategy: strategy, analytics: SpyAnalytics(), pollIntervalSeconds: 0)
+
+        // When
+        let task = Task { await viewModel.start() }
+        await waitForState(viewModel) { state in
+            if case .numberMatch = state { return true }
+            return false
+        }
+        viewModel.stopPolling()
+        await task.value
+
+        // Then
+        #expect(viewModel.state == .idle)
+        #expect(strategy.exchangeCalls.isEmpty)
+    }
+
     // MARK: - Retry semantics
 
     @Test func retry_when_scan_failed_then_runs_scan_again() async {
@@ -246,6 +290,11 @@ private final class MockQRLoginStrategy: QRLoginStrategy {
     var exchangeResult: Result<QRLoginExchangeOutcome, QRLoginUserFacingError> =
         .failure(.init(kind: .unexpected, phase: .exchange, primaryAction: .retryFailedPhase))
 
+    /// Invoked on `@MainActor` inside each poll attempt, just before it returns
+    /// its result. Lets a test simulate a cancel landing while a poll is in
+    /// flight (the approve-after-cancel race).
+    var onPoll: (@MainActor () -> Void)?
+
     private(set) var scanCount = 0
     private(set) var exchangeCalls: [String] = []
     private var pollIndex = 0
@@ -271,6 +320,7 @@ private final class MockQRLoginStrategy: QRLoginStrategy {
             let result = await MainActor.run { [self] in
                 pollResults.indices.contains(index) ? pollResults[index] : pollResults.last ?? .failure(.malformed)
             }
+            await MainActor.run { [self] in onPoll?() }
             switch result {
             case .success(let status):
                 return status

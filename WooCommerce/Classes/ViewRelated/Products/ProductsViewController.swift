@@ -92,6 +92,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         !Bundle.main.isLiquidGlassDesignEnabled
     }
 
+    private var headerBackgroundColor: UIColor {
+        Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.secondarySystemGroupedBackground)
+    }
+
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: Localization.bulkEditingToolbarButtonTitle,
@@ -720,7 +724,6 @@ private extension ProductsViewController {
         tableView.addSubview(refreshControl)
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        let headerBackgroundColor: UIColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.secondarySystemGroupedBackground)
         headerContainer.backgroundColor = headerBackgroundColor
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)

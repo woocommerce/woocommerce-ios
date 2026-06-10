@@ -256,13 +256,13 @@ final class MainTabBarController: UITabBarController {
 
         startListeningToHubMenuTabBadgeUpdates()
 
-        fixTabBarTraitCollectionOnIpadForiOS18()
+        configureTabBarLayoutOnIpad()
         observeTraitChanges()
     }
 
     private func observeTraitChanges() {
         registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
-            self.fixTabBarTraitCollectionOnIpadForiOS18()
+            self.configureTabBarLayoutOnIpad()
         }
     }
 
@@ -287,9 +287,9 @@ final class MainTabBarController: UITabBarController {
         super.viewWillTransition(to: size, with: coordinator)
 
         coordinator.animate { [weak self] _ in
-            self?.fixTabBarTraitCollectionOnIpadForiOS18()
+            self?.configureTabBarLayoutOnIpad()
         } completion: { [weak self] _ in
-            self?.fixTabBarTraitCollectionOnIpadForiOS18()
+            self?.configureTabBarLayoutOnIpad()
         }
     }
 
@@ -351,27 +351,37 @@ final class MainTabBarController: UITabBarController {
         hubMenuTabCoordinator = nil
     }
 
-    // MARK: - iPadOS 18 tabs support
+    // MARK: - iPadOS tabs support
 
-    /// Force a previous bottom tab bar design on iPadOS 18 when built with Xcode 16
+    /// Uses the native iPad tab bar layout on iPadOS 26 and keeps the compact trait override as a fallback on iPadOS 18-25.
     ///
-    /// Override a trait collection for the tab bar controller to be compact to show the same tab layout as on iPhone
-    /// Set a trait collection to the default one for child view controllers to support split views
-    ///
-    /// The code is only executed when built with Xcode 16 and run on iPadOS 18
-    ///
-    /// The solution is borrowed from https://github.com/Automattic/pocket-casts-ios/pull/2077
-    private func fixTabBarTraitCollectionOnIpadForiOS18() {
-        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
-                tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
-                if let viewControllers {
-                    for vc in viewControllers {
-                        vc.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
-                    }
-                }
+    /// The fallback overrides the tab bar controller trait collection to compact to show the same bottom tab layout as on iPhone,
+    /// while restoring the real window size class for the tab bar and child view controllers so split-view layouts still work.
+    private func configureTabBarLayoutOnIpad() {
+        guard #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
+        if #available(iOS 26.0, *) {
+            mode = .tabBar
+            clearTabBarTraitOverridesOnIpad()
+            return
+        }
+
+        traitOverrides.horizontalSizeClass = .compact
+        if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
+            tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
+            viewControllers?.forEach { viewController in
+                viewController.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
             }
+        }
+    }
+
+    private func clearTabBarTraitOverridesOnIpad() {
+        traitOverrides.horizontalSizeClass = .unspecified
+        tabBar.traitOverrides.horizontalSizeClass = .unspecified
+        viewControllers?.forEach { viewController in
+            viewController.traitOverrides.horizontalSizeClass = .unspecified
         }
     }
 

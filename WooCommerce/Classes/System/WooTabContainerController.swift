@@ -7,8 +7,11 @@ protocol UsesCompactLayoutInNarrowWindow: AnyObject {}
 /// For example, a Split View, which will not work correctly on iPhone when wrapped in a navigation view.
 /// This wraps a controller which can be replaced when the selected site changes.
 final class TabContainerController: UIViewController {
+    private var appliedWrappedControllerHorizontalSizeClass: UIUserInterfaceSizeClass?
+
     var wrappedController: UIViewController? {
         willSet {
+            appliedWrappedControllerHorizontalSizeClass = nil
             wrappedController?.willMove(toParent: nil)
             wrappedController?.view.removeFromSuperview()
             wrappedController?.removeFromParent()
@@ -65,11 +68,17 @@ private extension TabContainerController {
 
     func applyHorizontalSizeClassToWrappedController() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            let effectiveHorizontalSizeClass = effectiveHorizontalSizeClassForWrappedController()
-            guard wrappedController?.traitOverrides.horizontalSizeClass != effectiveHorizontalSizeClass else {
+            guard let wrappedController else {
                 return
             }
-            wrappedController?.traitOverrides.horizontalSizeClass = effectiveHorizontalSizeClass
+
+            let effectiveHorizontalSizeClass = effectiveHorizontalSizeClassForWrappedController()
+            guard appliedWrappedControllerHorizontalSizeClass != effectiveHorizontalSizeClass else {
+                return
+            }
+
+            wrappedController.traitOverrides.horizontalSizeClass = effectiveHorizontalSizeClass
+            appliedWrappedControllerHorizontalSizeClass = effectiveHorizontalSizeClass
         }
     }
 

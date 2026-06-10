@@ -308,15 +308,15 @@ private extension AddProductCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
 
             // Sets detents for the sheet.
-            // Skips large detent if the device is iPad.
-            let traitCollection = UIScreen.main.traitCollection
-            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
-            if isIPad {
+            // Skips large detent when the current window has enough room.
+            let traitCollection = navigationController.topmostPresentedViewController.traitCollection
+            let isRegularWindow = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if isRegularWindow {
                 sheet.detents = [.medium()]
             } else {
                 sheet.detents = [.large(), .medium()]
             }
-            sheet.prefersGrabberVisible = !isIPad
+            sheet.prefersGrabberVisible = !isRegularWindow
         })
     }
 }

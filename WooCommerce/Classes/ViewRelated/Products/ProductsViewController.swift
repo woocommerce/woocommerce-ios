@@ -96,7 +96,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 
     private var headerBackgroundColor: UIColor {
-        Bundle.main.isLiquidGlassDesignEnabled ? .listBackground : .systemColor(.secondarySystemGroupedBackground)
+        .listBackground
     }
 
     /// The bulk edit CTA in the navbar.

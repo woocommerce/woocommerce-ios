@@ -309,11 +309,8 @@ private extension AddProductCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
 
             // Sets detents for the sheet.
-            // Skips large detent when the current window has enough room on Liquid Glass, while preserving the
-            // previous iOS 18 behavior that used the full screen traits.
-            let traitCollection = Bundle.main.isLiquidGlassDesignEnabled ?
-                navigationController.topmostPresentedViewController.traitCollection :
-                UIScreen.main.traitCollection
+            // Skips large detent when the current window has enough room.
+            let traitCollection = navigationController.topmostPresentedViewController.traitCollection
             let isRegularWindow = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
             if isRegularWindow {
                 sheet.detents = [.medium()]

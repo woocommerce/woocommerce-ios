@@ -286,10 +286,6 @@ final class MainTabBarController: UITabBarController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
-            return
-        }
-
         coordinator.animate { [weak self] _ in
             self?.configureTabBarLayoutOnIpad()
         } completion: { [weak self] _ in

@@ -27,60 +27,10 @@ final class WooSplitViewController: UISplitViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        updateSecondaryColumnSafeAreaInsets()
-    }
-
     private func configureCommonStyle() {
         preferredDisplayMode = .oneBesideSecondary
         preferredSplitBehavior = .tile
         delegate = self
-    }
-
-    private func updateSecondaryColumnSafeAreaInsets() {
-        guard Bundle.main.isLiquidGlassDesignEnabled,
-              !isCollapsed,
-              let primaryView = viewController(for: .primary)?.view,
-              let secondaryViewController = viewController(for: .secondary),
-              let secondaryView = secondaryViewController.view else {
-            resetSecondaryColumnHorizontalSafeAreaInsets()
-            return
-        }
-
-        let primaryFrame = primaryView.convert(primaryView.bounds, to: view)
-        let secondaryFrame = secondaryView.convert(secondaryView.bounds, to: view)
-        let overlapFrame = primaryFrame.intersection(secondaryFrame)
-        let overlapWidth = overlapFrame.isNull ? 0 : overlapFrame.width.rounded(.up)
-        let currentInsets = secondaryViewController.additionalSafeAreaInsets
-        let systemLeftSafeArea = max(0, secondaryView.safeAreaInsets.left - currentInsets.left)
-        let systemRightSafeArea = max(0, secondaryView.safeAreaInsets.right - currentInsets.right)
-        let targetLeftInset = primaryEdge == .leading ? max(0, overlapWidth - systemLeftSafeArea) : 0
-        let targetRightInset = primaryEdge == .trailing ? max(0, overlapWidth - systemRightSafeArea) : 0
-
-        setSecondaryColumnHorizontalSafeAreaInsets(left: targetLeftInset,
-                                                   right: targetRightInset,
-                                                   on: secondaryViewController)
-    }
-
-    private func resetSecondaryColumnHorizontalSafeAreaInsets() {
-        guard let secondaryViewController = viewController(for: .secondary) else {
-            return
-        }
-        setSecondaryColumnHorizontalSafeAreaInsets(left: 0, right: 0, on: secondaryViewController)
-    }
-
-    private func setSecondaryColumnHorizontalSafeAreaInsets(left: CGFloat,
-                                                           right: CGFloat,
-                                                           on viewController: UIViewController) {
-        var insets = viewController.additionalSafeAreaInsets
-        guard abs(insets.left - left) > 0.5 || abs(insets.right - right) > 0.5 else {
-            return
-        }
-
-        insets.left = left
-        insets.right = right
-        viewController.additionalSafeAreaInsets = insets
     }
 }
 

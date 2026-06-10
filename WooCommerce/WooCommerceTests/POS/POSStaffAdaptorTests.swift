@@ -2,7 +2,7 @@ import Foundation
 import Testing
 import enum Networking.NetworkError
 import enum NetworkingCore.DotcomError
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 import protocol Networking.POSStaffRemoteProtocol
 import enum PointOfSale.POSStaffFetchError
 @testable import WooCommerce

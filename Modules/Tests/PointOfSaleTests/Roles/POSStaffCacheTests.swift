@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 @testable import PointOfSale
 
 struct POSStaffCacheTests {

@@ -101,6 +101,7 @@ public typealias Product = Networking.Product
 public typealias PushNotificationPreferences = Networking.PushNotificationPreferences
 public typealias POSProduct = Networking.POSProduct
 public typealias POSProductVariation = Networking.POSProductVariation
+public typealias POSStaffMember = Networking.POSStaffMember
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption
 public typealias ProductBackordersSetting = Networking.ProductBackordersSetting

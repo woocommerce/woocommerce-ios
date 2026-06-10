@@ -1,4 +1,4 @@
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 
 /// Fetches the POS staff list for a site. The concrete implementation (`POSStaffAdaptor`) lives in
 /// the app target and maps Networking errors to `POSStaffFetchError`.

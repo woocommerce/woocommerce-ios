@@ -1,6 +1,6 @@
 import CocoaLumberjackSwift
 import Foundation
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 @preconcurrency import KeychainAccess
 
 protocol POSStaffKeyValueStorage: Sendable {

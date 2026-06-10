@@ -96,7 +96,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         if let rootVC = window?.rootViewController {
-            _ = AppDelegate.shared.handleAuthenticationUrl(url, options: [:], rootViewController: rootVC)
+            Task { @MainActor in
+                _ = await AppDelegate.shared.handleAuthenticationUrl(url, options: [:], rootViewController: rootVC)
+            }
         }
     }
 

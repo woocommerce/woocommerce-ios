@@ -346,6 +346,7 @@ final class AppCoordinatorTests: XCTestCase {
         _ = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.loginOnboardingShown.rawValue}))
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
@@ -359,7 +360,10 @@ final class AppCoordinatorTests: XCTestCase {
 
         // When
         let rootViewController = try XCTUnwrap(window.rootViewController)
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: rootViewController))
+        Task { @MainActor in
+            let result = await self.authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: rootViewController)
+            XCTAssertTrue(result)
+        }
 
         // Then
         waitUntil {
@@ -369,6 +373,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
@@ -384,13 +389,19 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(loginNavigationController.viewControllers.count, 1)
 
         // When
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController))
+        Task { @MainActor in
+            let result = await self.authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController)
+            XCTAssertTrue(result)
+        }
 
         // Then
+        waitUntil {
+            loginNavigationController.viewControllers.count == 2
+        }
         XCTAssertEqual(window.rootViewController, loginNavigationController)
-        XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
     }
 
+    @MainActor
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_dismisses_modal_and_pushes_view_controller_when_modal_is_shown() throws {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
@@ -411,7 +422,10 @@ final class AppCoordinatorTests: XCTestCase {
         waitUntil {
             loginNavigationController.presentedViewController != nil
         }
-        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController))
+        Task { @MainActor in
+            let result = await self.authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController)
+            XCTAssertTrue(result)
+        }
 
         // Then
         XCTAssertEqual(window.rootViewController, loginNavigationController)

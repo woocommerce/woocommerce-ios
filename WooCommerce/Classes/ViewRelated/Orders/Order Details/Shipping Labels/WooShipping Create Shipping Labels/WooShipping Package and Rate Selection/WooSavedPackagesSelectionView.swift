@@ -283,15 +283,21 @@ private extension WooSavedPackagesSelectionView {
 
     func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
-            WooShippingPackageOptionView(
-                isSelected: viewModel.selectedSavedPackageId == package.id,
-                package: package,
-                showTopDivider: false,
-                showSource: true,
-                tapAction: {
-                    viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
-                }
-            )
+            // Wrapped in a `Button` rather than relying on the option view's own `onTapGesture`
+            // because a custom tap gesture inside a `List` row is swallowed by `.swipeActions`,
+            // leaving the row unselectable (see WOOMOB-2980).
+            Button {
+                viewModel.selectedSavedPackageId = viewModel.selectedSavedPackageId == package.id ? nil : package.id
+            } label: {
+                WooShippingPackageOptionView(
+                    isSelected: viewModel.selectedSavedPackageId == package.id,
+                    package: package,
+                    showTopDivider: false,
+                    showSource: true,
+                    tapAction: nil
+                )
+            }
+            .buttonStyle(.plain)
             .id(package.id)
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 16

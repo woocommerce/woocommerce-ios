@@ -11,7 +11,7 @@ struct WooShippingPackageOptionView: View {
     var package: WooShippingPackageDataRepresentable
     var showTopDivider: Bool
     var showSource: Bool
-    var tapAction: () -> Void
+    var tapAction: (() -> Void)?
     var starAction: (() -> Void)?
     var starred: Bool?
 
@@ -48,8 +48,10 @@ struct WooShippingPackageOptionView: View {
                 Spacer()
             }
             .contentShape(Rectangle())
-            .onTapGesture {
-                tapAction()
+            .if(tapAction != nil) { view in
+                view.onTapGesture {
+                    tapAction?()
+                }
             }
             .padding(Constants.contentPadding)
             if let starAction, let starred {

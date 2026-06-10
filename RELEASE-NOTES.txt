@@ -10,6 +10,7 @@
 - [*] Dashboard: Added option to update analytic update setting [https://github.com/woocommerce/woocommerce-ios/pull/17304]
 - [*] Fixed several crash-risk code paths in Shipping Labels, Stats, and Downloadable files [https://github.com/woocommerce/woocommerce-ios/pull/17307]
 - [internal] Speculatively fixed occasional crash on launch when creating TracksService [https://github.com/woocommerce/woocommerce-ios/pull/17328]
+- [*] Fixed tapping a row in the Saved packages tab when creating a shipping label [PR_URL]
 
 24.9
 -----

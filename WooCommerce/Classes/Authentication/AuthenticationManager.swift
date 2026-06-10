@@ -853,6 +853,19 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
+        // Reaching the store picker means a sign-in completed and the login surface
+        // (including any QR-login flow) is being replaced — release the QR-login
+        // coordinator here. This is the "or replaced on a successful sign-in" half
+        // promised in `QRLoginCoordinator.handleEnterSiteURL`: the site-address
+        // fallback never calls `finish()`. `startStorePicker` is the single chokepoint
+        // every successful sign-in funnels through (wp.com & wp-org epilogues,
+        // application-password recovery, QR success), so clearing here covers them all.
+        // Without it, the stale coordinator (this is a process-lifetime singleton)
+        // makes the prologue "Log in" CTA a silent no-op after a later logout
+        // (`authenticationUI()` returns early while `qrLoginCoordinator != nil`) and
+        // poisons later `woocommerce://qr-login` deep links.
+        qrLoginCoordinator = nil
+
         // Start the store picker
         let config = StorePickerConfiguration.login
         storePickerCoordinator = StorePickerCoordinator(navigationController,

@@ -711,14 +711,6 @@ private extension ProductFormViewController {
         // This moves the bottom bar above the keyboard and naturally resizes the table view.
         moreDetailsContainerView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        if Bundle.main.isLiquidGlassDesignEnabled {
-            if #available(iOS 17.0, *) {
-                view.keyboardLayoutGuide.usesBottomSafeArea = false
-            }
-            if let stackView = tableView.superview {
-                view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
-            }
-        }
 
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

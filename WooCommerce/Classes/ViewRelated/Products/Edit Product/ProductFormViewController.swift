@@ -655,6 +655,8 @@ private extension ProductFormViewController {
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never
 
+        configureLiquidGlassTabBarUnderlap()
+
         tableView.reloadData()
     }
 
@@ -709,6 +711,14 @@ private extension ProductFormViewController {
         // This moves the bottom bar above the keyboard and naturally resizes the table view.
         moreDetailsContainerView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            if #available(iOS 17.0, *) {
+                view.keyboardLayoutGuide.usesBottomSafeArea = false
+            }
+            if let stackView = tableView.superview {
+                view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+            }
+        }
 
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -720,6 +730,14 @@ private extension ProductFormViewController {
             moreDetailsContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             moreDetailsContainerView.topAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
     }
 }
 

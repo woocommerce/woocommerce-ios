@@ -359,6 +359,7 @@ private extension OrderListViewController {
             return
         }
 
+        setContentScrollView(tableView, for: .bottom)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 

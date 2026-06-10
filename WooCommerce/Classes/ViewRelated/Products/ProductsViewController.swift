@@ -738,6 +738,16 @@ private extension ProductsViewController {
 
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+
+        configureLiquidGlassTabBarUnderlap()
+    }
+
+    private func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
     }
 
     private func configureHiddenScrollView() {

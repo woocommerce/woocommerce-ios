@@ -377,6 +377,9 @@ private extension OrdersRootViewController {
             return
         }
 
+        // The list table lives in a child controller, so register it from the root
+        // controller that owns the navigation item for native large title tracking.
+        setContentScrollView(ordersViewController.tableView, for: .top)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 

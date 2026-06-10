@@ -747,7 +747,7 @@ private extension ProductsViewController {
             return
         }
 
-        setContentScrollView(tableView, for: .bottom)
+        setContentScrollView(tableView, for: [.top, .bottom])
     }
 
     private func configureHiddenScrollView() {

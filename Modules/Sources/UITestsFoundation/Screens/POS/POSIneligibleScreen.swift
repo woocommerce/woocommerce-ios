@@ -41,4 +41,11 @@ public final class POSIneligibleScreen: ScreenObject {
         XCTAssertTrue(dismissButton.waitForExistence(timeout: 5), "Exit POS button should be visible.")
         return self
     }
+
+    @discardableResult
+    public func tapExitPOS() throws -> TabNavComponent {
+        XCTAssertTrue(dismissButton.waitForIsHittable(timeout: 5), "Exit POS button should be tappable.")
+        dismissButton.tap()
+        return try TabNavComponent(app: app)
+    }
 }

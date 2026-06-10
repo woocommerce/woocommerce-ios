@@ -56,4 +56,14 @@ struct ProcessConfiguration {
     static var shouldStartMockCardPresentPaymentDisconnected: Bool {
         ProcessInfo.processInfo.arguments.contains("start-mocked-card-present-payment-disconnected")
     }
+
+    /// Returns `true` when the mocked card present payment service should automatically complete a payment.
+    /// Screenshots keep the card-ready state visible; POS UI tests opt into completion to verify the success flow.
+    static var shouldAutoCompleteMockCardPresentPayment: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("auto-complete-mocked-card-present-payment")
+        #else
+        false
+        #endif
+    }
 }

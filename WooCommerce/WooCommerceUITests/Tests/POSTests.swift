@@ -27,6 +27,7 @@ final class POSTests: XCTestCase {
     private static let disconnectedSimulatedReaderLaunchArguments = [
         "use-mocked-card-present-payment",
         "start-mocked-card-present-payment-disconnected",
+        "auto-complete-mocked-card-present-payment",
         "-simulate-stripe-card-reader",
         "-com.woocommerce.featureflag.override.pointOfSaleTapToPay",
         "NO"

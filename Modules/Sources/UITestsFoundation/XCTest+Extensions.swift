@@ -227,6 +227,6 @@ extension XCUIApplication {
     }
 
     private func isSavePasswordPromptVisible(in app: XCUIApplication) -> Bool {
-        app.staticTexts["Save Password?"].exists || app.buttons["Not Now"].exists
+        app.staticTexts["Save Password?"].exists && app.buttons["Not Now"].exists
     }
 }

@@ -37,7 +37,7 @@ public final class TwoFAScreen: ScreenObject {
     }
 
     public func proceedWith(twoFACode: String) throws {
-        app.dismissSavePasswordPromptIfNeeded(timeout: 1)
+        app.dismissSavePasswordPromptIfNeeded(timeout: 1, until: twoFAField)
         twoFAField.enterText(text: twoFACode)
         continueButton.tap()
     }

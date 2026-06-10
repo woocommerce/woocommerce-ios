@@ -10,8 +10,11 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
     private let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
+    private let automaticallyCompletesPayment: Bool
 
-    init(startsConnected: Bool = true) {
+    init(startsConnected: Bool = true, automaticallyCompletesPayment: Bool = false) {
+        self.automaticallyCompletesPayment = automaticallyCompletesPayment
+
         paymentEventPublisher = paymentEventSubject
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -65,12 +68,15 @@ final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
         // 3. Ready to accept card
         let inputMethods: Yosemite.CardReaderInput = [.tap, .swipe, .insert]
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: inputMethods, cancelPayment: {})))
-        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
 
-        // 4. Processing and success
-        paymentEventSubject.send(.show(eventDetails: .processing))
-        try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-        paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
+        if automaticallyCompletesPayment {
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+            // 4. Processing and success
+            paymentEventSubject.send(.show(eventDetails: .processing))
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+            paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
+        }
 
         try await Task.sleep(nanoseconds: 3_000_000_000) // 3 seconds, give it some time for the screenshot
 

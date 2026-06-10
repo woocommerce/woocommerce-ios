@@ -62,6 +62,14 @@ final class ProductsSplitViewCoordinator: NSObject {
         }
     }
 
+    func refreshExpandedLayoutIfNeeded() {
+        guard !splitViewController.isCollapsed,
+              splitViewController.traitCollection.horizontalSizeClass == .regular else {
+            return
+        }
+        didExpand()
+    }
+
     func startProductCreation() {
         productsViewController.startProductCreation()
     }

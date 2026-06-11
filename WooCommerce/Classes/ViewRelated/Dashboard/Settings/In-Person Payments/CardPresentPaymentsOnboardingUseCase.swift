@@ -558,7 +558,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func isNetworkError(_ error: Error) -> Bool {
-        if let afError = error as? AFError {
+        if error is AFError {
             return true
         } else {
             return (error as NSError).domain == NSURLErrorDomain

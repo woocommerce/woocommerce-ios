@@ -15,6 +15,7 @@ struct POSPaymentContentView: View {
     let onDismiss: (() -> Void)?
 
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
@@ -176,8 +177,14 @@ struct POSPaymentContentView: View {
                 leading: POSPadding.large,
                 bottom: POSPadding.medium,
                 trailing: POSPadding.large))
-            .frame(minWidth: 382)
-            .fixedSize(horizontal: true, vertical: false)
+            .if(horizontalSizeClass == .compact) {
+                $0.frame(maxWidth: .infinity)
+            }
+            .if(horizontalSizeClass != .compact) {
+                $0
+                    .frame(minWidth: Constants.totalsFieldsIdealWidth)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
             Spacer()
         }
         .transition(.opacity)
@@ -222,6 +229,10 @@ struct POSPaymentContentView: View {
 // MARK: - Localization
 
 private extension POSPaymentContentView {
+    enum Constants {
+        static let totalsFieldsIdealWidth: CGFloat = 382
+    }
+
     enum Localization {
         static let subtotal = NSLocalizedString(
             "pointOfSale.paymentContent.subtotal",

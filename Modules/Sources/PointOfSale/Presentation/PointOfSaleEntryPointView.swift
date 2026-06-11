@@ -238,7 +238,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
+        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -258,6 +258,11 @@ public struct PointOfSaleEntryPointView: View {
             guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
             accessSession.lock()
         }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact &&
+        services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }
 

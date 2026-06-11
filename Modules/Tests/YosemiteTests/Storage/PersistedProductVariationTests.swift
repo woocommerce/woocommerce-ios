@@ -36,7 +36,8 @@ struct PersistedProductVariationTests {
             downloadable: false,
             manageStock: true,
             stockQuantity: 2,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 4)]
         )
 
         // When
@@ -53,6 +54,7 @@ struct PersistedProductVariationTests {
         #expect(persisted.fullDescription == pos.fullDescription)
         #expect(persisted.manageStock == pos.manageStock)
         #expect(persisted.stockQuantity == pos.stockQuantity)
+        #expect(persisted.pointOfSaleStockQuantity == pos.pointOfSaleStockQuantity)
         #expect(persisted.stockStatusKey == pos.stockStatusKey)
     }
 
@@ -73,6 +75,7 @@ struct PersistedProductVariationTests {
             fullDescription: "Full",
             manageStock: false,
             stockQuantity: nil,
+            pointOfSaleStockQuantity: 5,
             stockStatusKey: "outofstock"
         )
 
@@ -114,6 +117,7 @@ struct PersistedProductVariationTests {
         #expect(pos.fullDescription == persisted.fullDescription)
         #expect(pos.manageStock == persisted.manageStock)
         #expect(pos.stockQuantity == persisted.stockQuantity)
+        #expect(pos.pointOfSaleStockQuantity == persisted.pointOfSaleStockQuantity)
         #expect(pos.stockStatusKey == persisted.stockStatusKey)
         #expect(pos.attributes.count == 2)
         #expect(pos.image?.imageID == varImage.id)
@@ -564,7 +568,8 @@ struct PersistedProductVariationTests {
             downloadable: false,
             manageStock: true,
             stockQuantity: 25,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 8)]
         )
 
         // When saving and loading back
@@ -584,6 +589,7 @@ struct PersistedProductVariationTests {
         #expect(loadedPOSVariation.sku == posVariation.sku)
         #expect(loadedPOSVariation.price == posVariation.price)
         #expect(loadedPOSVariation.stockQuantity == posVariation.stockQuantity)
+        #expect(loadedPOSVariation.pointOfSaleStockQuantity == posVariation.pointOfSaleStockQuantity)
         #expect(loadedPOSVariation.attributes.count == 2)
         #expect(loadedPOSVariation.image != nil)
 

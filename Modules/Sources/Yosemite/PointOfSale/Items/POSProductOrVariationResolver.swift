@@ -91,7 +91,8 @@ private extension POSProduct {
                 downloadable: downloadable,
                 manageStock: manageStock,
                 stockQuantity: stockQuantity,
-                stockStatusKey: stockStatusKey
+                stockStatusKey: stockStatusKey,
+                locationStock: locationStock
             )
         } catch {
             throw .mappingError(scannedCode: scannedCode, underlyingError: error)

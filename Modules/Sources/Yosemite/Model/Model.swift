@@ -100,6 +100,7 @@ public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
 public typealias PushNotificationPreferences = Networking.PushNotificationPreferences
 public typealias POSProduct = Networking.POSProduct
+public typealias POSLocationStock = Networking.POSLocationStock
 public typealias POSProductVariation = Networking.POSProductVariation
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption

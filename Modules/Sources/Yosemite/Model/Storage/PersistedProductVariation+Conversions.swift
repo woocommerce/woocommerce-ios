@@ -17,11 +17,14 @@ extension PersistedProductVariation {
             fullDescription: posProductVariation.fullDescription,
             manageStock: posProductVariation.manageStock,
             stockQuantity: posProductVariation.stockQuantity,
+            pointOfSaleStockQuantity: posProductVariation.pointOfSaleStockQuantity,
             stockStatusKey: posProductVariation.stockStatusKey
         )
     }
 
     func toPOSProductVariation(attributes: [ProductVariationAttribute] = [], image: ProductImage? = nil) -> POSProductVariation {
+        let locationStock = pointOfSaleStockQuantity.map { [POSLocationStock.pointOfSale(quantity: $0)] } ?? []
+
         return POSProductVariation(
             siteID: siteID,
             productID: productID,
@@ -36,7 +39,8 @@ extension PersistedProductVariation {
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            locationStock: locationStock
         )
     }
 

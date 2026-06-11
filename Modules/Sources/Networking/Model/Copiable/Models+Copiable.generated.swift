@@ -1323,7 +1323,8 @@ extension Networking.POSProduct {
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
         statusKey: CopiableProp<String> = .copy,
-        variationIDs: CopiableProp<[Int64]> = .copy
+        variationIDs: CopiableProp<[Int64]> = .copy,
+        locationStock: CopiableProp<[POSLocationStock]> = .copy
     ) -> Networking.POSProduct {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1343,6 +1344,7 @@ extension Networking.POSProduct {
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
         let statusKey = statusKey ?? self.statusKey
         let variationIDs = variationIDs ?? self.variationIDs
+        let locationStock = locationStock ?? self.locationStock
 
         return Networking.POSProduct(
             siteID: siteID,
@@ -1362,7 +1364,8 @@ extension Networking.POSProduct {
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
             statusKey: statusKey,
-            variationIDs: variationIDs
+            variationIDs: variationIDs,
+            locationStock: locationStock
         )
     }
 }
@@ -1382,7 +1385,8 @@ extension Networking.POSProductVariation {
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
-        stockStatusKey: CopiableProp<String> = .copy
+        stockStatusKey: CopiableProp<String> = .copy,
+        locationStock: CopiableProp<[Networking.POSLocationStock]> = .copy
     ) -> Networking.POSProductVariation {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1398,6 +1402,7 @@ extension Networking.POSProductVariation {
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+        let locationStock = locationStock ?? self.locationStock
 
         return Networking.POSProductVariation(
             siteID: siteID,
@@ -1413,7 +1418,8 @@ extension Networking.POSProductVariation {
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
+            stockStatusKey: stockStatusKey,
+            locationStock: locationStock
         )
     }
 }

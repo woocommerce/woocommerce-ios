@@ -59,19 +59,28 @@ struct POSProductOrVariationResolverTests {
             name: "Variation",
             productTypeKey: "variation",
             price: "15.00",
-            parentID: 123
+            parentID: 123,
+            locationStock: [.pointOfSale(quantity: 4)]
         )
         let parentProduct = POSProduct.fake().copy(
             productID: 123,
             name: "Parent Product",
-            productTypeKey: "variable"
+            productTypeKey: "variable",
+            manageStock: true,
+            stockQuantity: 9,
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 7)]
         )
         let expectedParentItem = POSItem.variableParentProduct(POSVariableParentProduct(
             id: POSItemIdentifier(underlyingType: .product, itemID: 1),
             name: "Parent Product",
             productImageSource: nil,
             productID: 123,
-            allAttributes: []
+            allAttributes: [],
+            manageStock: true,
+            stockQuantity: 9,
+            stockStatusKey: "instock",
+            pointOfSaleStockQuantity: 7
         ))
         let expectedVariationItem = POSItem.variation(POSVariation(
             id: POSItemIdentifier(underlyingType: .product, itemID: 1),
@@ -99,6 +108,8 @@ struct POSProductOrVariationResolverTests {
         #expect(mockItemMapper.mapVariationsToPOSItemsCalled)
         #expect(mockItemMapper.mockVariations.count == 1)
         #expect(mockItemMapper.mockVariations.first?.productVariationID == 456)
+        #expect(mockItemMapper.mockVariations.first?.pointOfSaleStockQuantity == 4)
+        #expect(mockItemMapper.mockParentProduct?.pointOfSaleStockQuantity == 7)
         #expect(result == expectedVariationItem)
     }
 

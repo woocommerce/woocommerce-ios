@@ -8,9 +8,14 @@ struct SearchResultVariationCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posFeatureFlags) private var featureFlags
 
     private var dimension: CGFloat {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+    }
+
+    private var shouldShowProductLabels: Bool {
+        featureFlags.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
     }
 
     init(variation: POSVariation, parentProduct: POSVariableParentProduct) {
@@ -43,6 +48,11 @@ struct SearchResultVariationCardView: View {
                 Text(variation.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
+
+                Text(POSStockFormatter.stockStatusLabel(for: variation))
+                    .foregroundStyle(Constants.detailColor)
+                    .font(Constants.itemDetailFont)
+                    .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))

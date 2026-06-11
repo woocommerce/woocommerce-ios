@@ -38,14 +38,19 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                                            price: product.price,
                                                            manageStock: product.manageStock,
                                                            stockQuantity: product.stockQuantity,
-                                                           stockStatusKey: product.stockStatusKey))
+                                                           stockStatusKey: product.stockStatusKey,
+                                                           pointOfSaleStockQuantity: product.pointOfSaleStockQuantity))
                 case .variable:
                     return .variableParentProduct(POSVariableParentProduct(
                         id: id,
                         name: product.name,
                         productImageSource: thumbnailSource,
                         productID: product.productID,
-                        allAttributes: product.attributesForVariations
+                        allAttributes: product.attributesForVariations,
+                        manageStock: product.manageStock,
+                        stockQuantity: product.stockQuantity,
+                        stockStatusKey: product.stockStatusKey,
+                        pointOfSaleStockQuantity: product.pointOfSaleStockQuantity
                     ))
                 default:
                     return nil
@@ -69,7 +74,15 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                  productImageSource: variation.image?.src,
                                  productID: variation.productID,
                                  variationID: variation.productVariationID,
-                                 parentProductName: parentProduct.name))
+                                 parentProductName: parentProduct.name,
+                                 manageStock: variation.manageStock,
+                                 stockQuantity: variation.stockQuantity,
+                                 stockStatusKey: variation.stockStatusKey,
+                                 pointOfSaleStockQuantity: variation.pointOfSaleStockQuantity,
+                                 parentManageStock: parentProduct.manageStock,
+                                 parentStockQuantity: parentProduct.stockQuantity,
+                                 parentStockStatusKey: parentProduct.stockStatusKey,
+                                 parentPointOfSaleStockQuantity: parentProduct.pointOfSaleStockQuantity))
         }
     }
 
@@ -87,14 +100,19 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
                                                    price: product.price,
                                                    manageStock: product.manageStock,
                                                    stockQuantity: product.stockQuantity,
-                                                   stockStatusKey: product.stockStatusKey))
+                                                   stockStatusKey: product.stockStatusKey,
+                                                   pointOfSaleStockQuantity: product.pointOfSaleStockQuantity))
         case .variable:
             return .variableParentProduct(POSVariableParentProduct(
                 id: id,
                 name: product.name,
                 productImageSource: thumbnailSource,
                 productID: product.productID,
-                allAttributes: product.attributesForVariations
+                allAttributes: product.attributesForVariations,
+                manageStock: product.manageStock,
+                stockQuantity: product.stockQuantity,
+                stockStatusKey: product.stockStatusKey,
+                pointOfSaleStockQuantity: product.pointOfSaleStockQuantity
             ))
         default:
             return nil
@@ -117,7 +135,15 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
             productImageSource: variation.image?.src,
             productID: variation.productID,
             variationID: variation.productVariationID,
-            parentProductName: parentProduct.name
+            parentProductName: parentProduct.name,
+            manageStock: variation.manageStock,
+            stockQuantity: variation.stockQuantity,
+            stockStatusKey: variation.stockStatusKey,
+            pointOfSaleStockQuantity: variation.pointOfSaleStockQuantity,
+            parentManageStock: parentProduct.manageStock,
+            parentStockQuantity: parentProduct.stockQuantity,
+            parentStockStatusKey: parentProduct.stockStatusKey,
+            parentPointOfSaleStockQuantity: parentProduct.pointOfSaleStockQuantity
         )
 
         let parentId = POSItemIdentifier(underlyingType: .product, itemID: parentProduct.productID)
@@ -127,7 +153,11 @@ final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
             name: parentProduct.name,
             productImageSource: thumbnailSource,
             productID: parentProduct.productID,
-            allAttributes: parentProduct.attributesForVariations
+            allAttributes: parentProduct.attributesForVariations,
+            manageStock: parentProduct.manageStock,
+            stockQuantity: parentProduct.stockQuantity,
+            stockStatusKey: parentProduct.stockStatusKey,
+            pointOfSaleStockQuantity: parentProduct.pointOfSaleStockQuantity
         )
 
         return .searchResultVariation(posVariation, parentProduct: posParentProduct)

@@ -30,6 +30,11 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public let locationStock: [POSLocationStock]
+
+    public var pointOfSaleStockQuantity: Decimal? {
+        locationStock.first { $0.slug == POSLocationStock.pointOfSaleSlug }?.quantity
+    }
 
     public var stockStatus: ProductStockStatus {
         return ProductStockStatus(rawValue: stockStatusKey)
@@ -48,7 +53,8 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 downloadable: Bool,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                locationStock: [POSLocationStock] = []) {
         self.siteID = siteID
         self.productID = productID
         self.productVariationID = productVariationID
@@ -63,6 +69,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+        self.locationStock = locationStock
     }
 
     public init(from decoder: Decoder) throws {
@@ -108,6 +115,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let typeKey = try container.decode(String.self, forKey: .typeKey)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+        let locationStock = try container.decodeIfPresent([POSLocationStock].self, forKey: .locationStock) ?? []
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -122,7 +130,8 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                   downloadable: downloadable,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
-                  stockStatusKey: stockStatusKey)
+                  stockStatusKey: stockStatusKey,
+                  locationStock: locationStock)
     }
 
     static let requestFields: [String] = {
@@ -154,6 +163,7 @@ private extension POSProductVariation {
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
+        case locationStock = "location_stock"
     }
 }
 

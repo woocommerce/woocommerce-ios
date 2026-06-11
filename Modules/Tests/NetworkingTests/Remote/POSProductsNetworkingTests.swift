@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import NetworkingCore
@@ -195,6 +196,121 @@ struct POSProductsNetworkingTests {
         #expect(fieldNames.contains("manage_stock"))
         #expect(fieldNames.contains("stock_quantity"))
         #expect(fieldNames.contains("stock_status"))
+        #expect(fieldNames.contains("location_stock"))
+    }
+
+    @Test func posProduct_decodes_location_stock_array_with_pos_entry() throws {
+        // Given
+        let json = """
+        {
+            "id": 100,
+            "name": "POS Stock Product",
+            "type": "simple",
+            "downloadable": false,
+            "parent_id": 0,
+            "images": [],
+            "attributes": [],
+            "manage_stock": true,
+            "stock_quantity": 12,
+            "stock_status": "instock",
+            "status": "publish",
+            "variations": [],
+            "location_stock": [
+                {
+                    "slug": "warehouse",
+                    "name": "Warehouse",
+                    "quantity": 12,
+                    "stock_status": "instock"
+                },
+                {
+                    "slug": "pos",
+                    "name": "POS",
+                    "quantity": 4,
+                    "stock_status": "instock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let product = try decodePOSProduct(from: json)
+
+        // Then
+        #expect(product.locationStock.count == 2)
+        let posStock = try #require(product.locationStock.first { $0.slug == "pos" })
+        #expect(posStock.name == "POS")
+        #expect(posStock.quantity == 4)
+        #expect(posStock.stockStatusKey == "instock")
+        #expect(product.pointOfSaleStockQuantity == 4)
+    }
+
+    @Test func posProduct_decodes_location_stock_without_removed_fields() throws {
+        // Given
+        let json = """
+        {
+            "id": 101,
+            "name": "Minimal Location Stock Product",
+            "type": "simple",
+            "downloadable": false,
+            "parent_id": 0,
+            "images": [],
+            "attributes": [],
+            "manage_stock": true,
+            "stock_quantity": 8,
+            "stock_status": "instock",
+            "status": "publish",
+            "variations": [],
+            "location_stock": [
+                {
+                    "slug": "pos",
+                    "name": "POS",
+                    "quantity": 0,
+                    "stock_status": "outofstock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let product = try decodePOSProduct(from: json)
+
+        // Then
+        #expect(product.pointOfSaleStockQuantity == 0)
+        #expect(product.locationStock.first?.stockStatusKey == "outofstock")
+    }
+
+    @Test func posProduct_returns_nil_pointOfSaleStockQuantity_without_pos_location_stock() throws {
+        // Given
+        let json = """
+        {
+            "id": 102,
+            "name": "Warehouse Stock Product",
+            "type": "simple",
+            "downloadable": false,
+            "parent_id": 0,
+            "images": [],
+            "attributes": [],
+            "manage_stock": true,
+            "stock_quantity": 6,
+            "stock_status": "instock",
+            "status": "publish",
+            "variations": [],
+            "location_stock": [
+                {
+                    "slug": "warehouse",
+                    "name": "Warehouse",
+                    "quantity": 6,
+                    "stock_status": "instock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let product = try decodePOSProduct(from: json)
+
+        // Then
+        #expect(product.pointOfSaleStockQuantity == nil)
     }
 
     @Test func loadProductsForPointOfSale_requests_only_required_fields() async throws {
@@ -353,5 +469,11 @@ struct POSProductsNetworkingTests {
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         #expect(request.parameters["pos_products_only"] as? String == "true")
+    }
+
+    private func decodePOSProduct(from json: String) throws -> POSProduct {
+        let decoder = JSONDecoder()
+        decoder.userInfo[.siteID] = sampleSiteID
+        return try decoder.decode(POSProduct.self, from: Data(json.utf8))
     }
 }

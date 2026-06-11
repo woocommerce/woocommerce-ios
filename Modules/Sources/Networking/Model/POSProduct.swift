@@ -42,6 +42,11 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public let locationStock: [POSLocationStock]
+
+    public var pointOfSaleStockQuantity: Decimal? {
+        locationStock.first { $0.slug == POSLocationStock.pointOfSaleSlug }?.quantity
+    }
 
     public let statusKey: String
 
@@ -68,7 +73,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 stockQuantity: Decimal?,
                 stockStatusKey: String,
                 statusKey: String,
-                variationIDs: [Int64]) {
+                variationIDs: [Int64],
+                locationStock: [POSLocationStock] = []) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -91,6 +97,7 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+        self.locationStock = locationStock
 
         self.statusKey = statusKey
 
@@ -137,6 +144,7 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let manageStock = try container.decode(Bool.self, forKey: .manageStock)
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+        let locationStock = try container.decodeIfPresent([POSLocationStock].self, forKey: .locationStock) ?? []
 
         let statusKey = try container.decode(String.self, forKey: .statusKey)
 
@@ -159,7 +167,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   stockQuantity: stockQuantity,
                   stockStatusKey: stockStatusKey,
                   statusKey: statusKey,
-                  variationIDs: variationIDs)
+                  variationIDs: variationIDs,
+                  locationStock: locationStock)
     }
 
     static let requestFields: [String] = {
@@ -194,5 +203,58 @@ private extension POSProduct {
         case stockStatusKey = "stock_status"
         case statusKey = "status"
         case variationIDs = "variations"
+        case locationStock = "location_stock"
+    }
+}
+
+public struct POSLocationStock: Codable, Equatable {
+    public static let pointOfSaleSlug = "pos"
+
+    public let slug: String
+    public let name: String
+    public let quantity: Decimal
+    public let stockStatusKey: String
+
+    public init(slug: String,
+                name: String,
+                quantity: Decimal,
+                stockStatusKey: String) {
+        self.slug = slug
+        self.name = name
+        self.quantity = quantity
+        self.stockStatusKey = stockStatusKey
+    }
+
+    public static func pointOfSale(quantity: Decimal) -> POSLocationStock {
+        POSLocationStock(
+            slug: pointOfSaleSlug,
+            name: "POS",
+            quantity: quantity,
+            stockStatusKey: quantity > 0 ? ProductStockStatus.inStock.rawValue : ProductStockStatus.outOfStock.rawValue
+        )
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let slug = try container.decode(String.self, forKey: .slug)
+        let name = try container.decode(String.self, forKey: .name)
+        let quantity = container.failsafeDecodeIfPresent(decimalForKey: .quantity) ?? 0
+        let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+
+        self.init(
+            slug: slug,
+            name: name,
+            quantity: quantity,
+            stockStatusKey: stockStatusKey
+        )
+    }
+}
+
+private extension POSLocationStock {
+    enum CodingKeys: String, CodingKey {
+        case slug
+        case name
+        case quantity
+        case stockStatusKey = "stock_status"
     }
 }

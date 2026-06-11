@@ -196,7 +196,11 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                         name: product.name,
                         productImageSource: nil, // Image not needed for variation name generation
                         productID: product.id,
-                        allAttributes: attributes
+                        allAttributes: attributes,
+                        manageStock: product.manageStock,
+                        stockQuantity: product.stockQuantity,
+                        stockStatusKey: product.stockStatusKey,
+                        pointOfSaleStockQuantity: product.pointOfSaleStockQuantity
                     )
                 } else {
                     updatedParentProduct = parentProduct

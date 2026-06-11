@@ -84,6 +84,7 @@ final class OrderDetailsViewController: UIViewController {
         configureTopLoaderView()
         configureTableView()
         configureStackView()
+        configureLiquidGlassTabBarUnderlap()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
@@ -143,6 +144,15 @@ private extension OrderDetailsViewController {
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 
     func configureStackView() {

@@ -441,7 +441,7 @@ private extension ProductsViewController {
         tableView.setEditing(true, animated: true)
 
         // Disable pull-to-refresh while editing
-        refreshControl.removeFromSuperview()
+        uninstallRefreshControl()
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
@@ -459,7 +459,7 @@ private extension ProductsViewController {
         bulkEditButton.isEnabled = false
 
         // Enable pull-to-refresh
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         configureNavigationBar()
         showOrHideToolbar()
@@ -726,16 +726,14 @@ private extension ProductsViewController {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.accessibilityIdentifier = "products-table-view"
 
-        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
-        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
-        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = headerBackgroundColor
+        headerContainer.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : headerBackgroundColor
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
+        bottomBorderView.isHidden = Bundle.main.isLiquidGlassDesignEnabled
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
             bottomBorderView.constrainToSuperview(attribute: .leading),
@@ -746,7 +744,22 @@ private extension ProductsViewController {
 
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+    }
 
+    private func installRefreshControl() {
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
+    }
+
+    private func uninstallRefreshControl() {
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            tableView.refreshControl = nil
+        } else {
+            refreshControl.removeFromSuperview()
+        }
     }
 
     private func configureLiquidGlassTabBarUnderlap() {
@@ -871,7 +884,9 @@ private extension ProductsViewController {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-            tableView.contentOffset.y -= height - previousTopInset
+            if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
         }
 
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets

@@ -31,7 +31,6 @@ final class ProductsSplitViewCoordinator: NSObject {
                                                                      navigateToContent: showFromProductList)
 
     private var addProductCoordinator: AddProductCoordinator?
-    private var hasShownCompactListWithoutSelection = false
 
     init(siteID: Int64, splitViewController: UISplitViewController) {
         self.siteID = siteID
@@ -68,8 +67,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     }
 
     func refreshExpandedLayoutIfNeeded() {
-        if splitViewController.isCollapsed {
-            hasShownCompactListWithoutSelection = !isShowingSecondaryProductContent()
+        guard !splitViewController.isCollapsed else {
             return
         }
         didExpand()
@@ -124,15 +122,12 @@ private extension ProductsSplitViewCoordinator {
             return false
         }
 
-        guard !hasShownCompactListWithoutSelection else {
-            return false
+        if contentTypes.isEmpty {
+            return true
         }
 
-        guard contentTypes.last == .empty else {
-            return false
-        }
-
-        return (primaryNavigationController.topViewController as? ProductsViewController)?.hasFirstProductAvailable() == true
+        return contentTypes.last == .empty &&
+            (primaryNavigationController.topViewController as? ProductsViewController)?.hasFirstProductAvailable() == true
     }
 
     func isShowingRegularExpandedLayout() -> Bool {
@@ -156,8 +151,6 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        hasShownCompactListWithoutSelection = false
-
         let viewController = ProductDetailNavigator.shared.makeDestination(
             product: product,
             isReadOnly: false,
@@ -185,8 +178,6 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
-        hasShownCompactListWithoutSelection = false
-
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
                                                           source: .productsTab,
                                                           sourceView: sourceView,
@@ -367,14 +358,6 @@ private extension ProductsSplitViewCoordinator {
             return nil
         }
         return product
-    }
-
-    func isShowingSecondaryProductContent() -> Bool {
-        guard let contentType = contentTypes.last,
-              case .productForm = contentType else {
-            return false
-        }
-        return true
     }
 
     func refreshSelectedProductRow() {

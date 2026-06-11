@@ -8,6 +8,9 @@ import struct Yosemite.POSStaffMember
 /// It is a pure reader of `POSStaffCache`: keeping the cache fresh (fetching staff from the server)
 /// is the access session's responsibility, not the authenticator's. On a cache miss it simply
 /// reports `.invalidPIN`; the session decides whether to refresh and retry.
+///
+/// The keychain read + PBKDF2 work runs on a detached task: PBKDF2 is intentionally CPU-heavy and the
+/// callers are `@MainActor`, so doing it inline would block the UI thread during PIN entry.
 struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     private let cache: POSStaffCache
     private let siteID: Int64
@@ -18,39 +21,49 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     }
 
     func authenticate(withPIN pin: String) async throws(POSAuthError) -> POSStaff {
-        guard let match = findMatch(pin: pin) else {
+        guard let match = await findMatch(pin: pin) else {
             throw .invalidPIN
         }
         return staff(from: match)
     }
 
     func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
-        guard let match = findMatch(pin: pin), holdsCapability(match, capability) else {
+        guard let match = await findMatch(pin: pin), holdsCapability(match, capability) else {
             throw .invalidPIN
         }
     }
 
     func hasAnyPINs() async throws(POSAuthError) -> Bool {
-        cache.hasAnyPINs(siteID: siteID)
+        let cache = self.cache
+        let siteID = self.siteID
+        // Keychain read + JSON decode — kept off the calling (main) actor.
+        return await Task.detached(priority: .userInitiated) {
+            cache.hasAnyPINs(siteID: siteID)
+        }.value
     }
 }
 
 // MARK: - Lookup helpers
 
 private extension DefaultPOSPINAuthenticator {
-    /// Returns the cached staff member whose PIN matches `pin`, or `nil` if none do.
-    func findMatch(pin: String) -> POSStaffMember? {
-        for member in cache.load(siteID: siteID) ?? [] {
-            guard let details = member.pin else { continue }
-            guard details.algorithm == Constants.supportedAlgorithm else {
-                DDLogError("POS PIN: unsupported hash algorithm '\(details.algorithm)' for staff \(member.userID); skipping")
-                continue
+    /// Returns the cached staff member whose PIN matches `pin`, or `nil` if none do. The keychain
+    /// read and PBKDF2 verification run on a detached task so PIN entry never stalls the UI thread.
+    func findMatch(pin: String) async -> POSStaffMember? {
+        let cache = self.cache
+        let siteID = self.siteID
+        return await Task.detached(priority: .userInitiated) {
+            for member in cache.load(siteID: siteID) ?? [] {
+                guard let details = member.pin else { continue }
+                guard details.algorithm == Constants.supportedAlgorithm else {
+                    DDLogError("POS PIN: unsupported hash algorithm '\(details.algorithm)' for staff \(member.userID); skipping")
+                    continue
+                }
+                if Self.verifyPIN(pin, against: details) {
+                    return member
+                }
             }
-            if verifyPIN(pin, against: details) {
-                return member
-            }
-        }
-        return nil
+            return nil
+        }.value
     }
 
     func holdsCapability(_ member: POSStaffMember, _ capability: POSCapability) -> Bool {
@@ -61,7 +74,7 @@ private extension DefaultPOSPINAuthenticator {
 // MARK: - PBKDF2
 
 private extension DefaultPOSPINAuthenticator {
-    func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
+    static func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
         guard let saltData = Data(base64Encoded: details.salt),
               let expectedHash = Data(base64Encoded: details.hash),
               let pinData = pin.data(using: .utf8),
@@ -88,7 +101,7 @@ private extension DefaultPOSPINAuthenticator {
         return constantTimeEqual(Data(derived), expectedHash)
     }
 
-    func constantTimeEqual(_ a: Data, _ b: Data) -> Bool {
+    static func constantTimeEqual(_ a: Data, _ b: Data) -> Bool {
         guard a.count == b.count else { return false }
         var result: UInt8 = 0
         for i in 0..<a.count {

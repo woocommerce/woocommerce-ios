@@ -1,38 +1,34 @@
-import ScreenObject
 import XCTest
 
-public final class TwoFAScreen: ScreenObject {
+public final class TwoFAScreen {
 
     private let twoFAFieldGetter: (XCUIApplication) -> XCUIElement = {
         $0.textFields["Authentication code"]
-    }
-
-    private let backButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
     }
 
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Continue Button"]
     }
 
+    public let app: XCUIApplication
+
     private var twoFAField: XCUIElement { twoFAFieldGetter(app) }
     private var continueButton: XCUIElement { continueButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
+        self.app = app
+
         // iOS can show this prompt over 2FA after the password screen has already advanced.
-        // Dismiss it before ScreenObject checks screen readiness.
+        // Dismiss it before checking screen readiness.
         guard app.dismissSavePasswordPromptIfNeeded(timeout: 30) else {
-            throw ScreenObject.WaitForScreenError.timedOut
+            throw TwoFAScreenError.timedOut
         }
-        try super.init(
-            expectedElementGetters: [
-                backButtonGetter,
-                twoFAFieldGetter,
-                continueButtonGetter
-            ],
-            app: app,
-            waitTimeout: 2
-        )
+
+        // ScreenObject waits for the first element to be hittable. On iPad/iOS 26, visible 2FA
+        // controls can stay non-hittable while the numeric keyboard is active, so wait by existence.
+        guard twoFAField.waitForExistence(timeout: 30) else {
+            throw TwoFAScreenError.timedOut
+        }
     }
 
     @discardableResult
@@ -84,5 +80,9 @@ public final class TwoFAScreen: ScreenObject {
 
         codeKeys.forEach { $0.tap() }
         return true
+    }
+
+    private enum TwoFAScreenError: Error {
+        case timedOut
     }
 }

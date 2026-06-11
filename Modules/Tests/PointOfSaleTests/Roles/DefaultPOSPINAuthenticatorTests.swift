@@ -143,21 +143,6 @@ struct DefaultPOSPINAuthenticatorTests {
             try await sut.verify(managerPIN: "9999", authorizes: .issueRefunds)
         }
     }
-
-    // MARK: - hasAnyPINs
-
-    @MainActor
-    @Test func test_hasAnyPINs_reflects_the_cache() async throws {
-        // Given a cache with one member that has a PIN
-        let sut = makeSUT(cached: [makeMember(userID: 1, pin: pinDetails(forPIN: "1234"))])
-
-        // Then
-        #expect(try await sut.hasAnyPINs())
-
-        // Given an empty cache
-        let empty = makeSUT()
-        #expect(try await empty.hasAnyPINs() == false)
-    }
 }
 
 // MARK: - Helpers

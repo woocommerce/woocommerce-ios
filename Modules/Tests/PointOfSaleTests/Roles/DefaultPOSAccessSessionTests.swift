@@ -139,33 +139,6 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.currentStaff == staff)
     }
 
-    @Test func test_refreshPINStatus_when_authenticator_succeeds_then_updates_hasAnyPINs() async {
-        // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
-        let sut = makeSUT(authenticator: authenticator)
-
-        // When
-        await sut.session.refreshPINStatus()
-
-        // Then
-        #expect(sut.session.hasAnyPINs == true)
-        #expect(authenticator.hasAnyPINsCallCount == 1)
-    }
-
-    @Test func test_refreshPINStatus_when_authenticator_fails_then_keeps_last_value() async {
-        // Given
-        let authenticator = MockPOSPINAuthenticator(hasAnyPINsResult: .success(true))
-        let sut = makeSUT(authenticator: authenticator)
-        await sut.session.refreshPINStatus()
-
-        // When
-        authenticator.hasAnyPINsResult = .failure(.unknown)
-        await sut.session.refreshPINStatus()
-
-        // Then
-        #expect(sut.session.hasAnyPINs == true)
-    }
-
     @Test func test_requestManagerApproval_when_called_then_throws_unknown() async {
         // Given
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())

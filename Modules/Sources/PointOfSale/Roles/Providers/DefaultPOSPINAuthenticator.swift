@@ -32,14 +32,6 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
             throw .invalidPIN
         }
     }
-
-    func hasAnyPINs() async throws(POSAuthError) -> Bool {
-        // Keychain read + JSON decode — kept off the calling (main) actor. The capture list pulls in
-        // just `cache` and `siteID` so the `@Sendable` closure doesn't capture the whole `self`.
-        return await Task.detached(priority: .userInitiated) { [cache, siteID] in
-            cache.hasAnyPINs(siteID: siteID)
-        }.value
-    }
 }
 
 // MARK: - Lookup helpers

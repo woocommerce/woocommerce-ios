@@ -31,6 +31,7 @@ final class ProductsSplitViewCoordinator: NSObject {
                                                                      navigateToContent: showFromProductList)
 
     private var addProductCoordinator: AddProductCoordinator?
+    private var hasShownCompactListWithoutSelection = false
 
     init(siteID: Int64, splitViewController: UISplitViewController) {
         self.siteID = siteID
@@ -59,13 +60,16 @@ final class ProductsSplitViewCoordinator: NSObject {
         // Auto-selects the first product if there is no content to be shown.
         if shouldAutoSelectProductInExpandedLayout() {
             showEmptyViewOrFirstProduct()
+        } else if contentTypes.isEmpty {
+            showEmptyView()
         } else {
             refreshSelectedProductRow()
         }
     }
 
     func refreshExpandedLayoutIfNeeded() {
-        guard isShowingRegularExpandedLayout() else {
+        if splitViewController.isCollapsed {
+            hasShownCompactListWithoutSelection = !isShowingSecondaryProductContent()
             return
         }
         didExpand()
@@ -120,8 +124,8 @@ private extension ProductsSplitViewCoordinator {
             return false
         }
 
-        if contentTypes.isEmpty {
-            return true
+        guard !hasShownCompactListWithoutSelection else {
+            return false
         }
 
         guard contentTypes.last == .empty else {
@@ -133,7 +137,7 @@ private extension ProductsSplitViewCoordinator {
 
     func isShowingRegularExpandedLayout() -> Bool {
         !splitViewController.isCollapsed &&
-            splitViewController.traitCollection.horizontalSizeClass == .regular
+            splitViewController.view.bounds.width >= Constants.narrowWindowCompactLayoutThreshold
     }
 
     func showEmptyView() {
@@ -152,6 +156,8 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
+        hasShownCompactListWithoutSelection = false
+
         let viewController = ProductDetailNavigator.shared.makeDestination(
             product: product,
             isReadOnly: false,
@@ -179,6 +185,8 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func startProductCreation(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
+        hasShownCompactListWithoutSelection = false
+
         let addProductCoordinator = AddProductCoordinator(siteID: siteID,
                                                           source: .productsTab,
                                                           sourceView: sourceView,
@@ -255,6 +263,10 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
+    enum Constants {
+        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
+    }
+
     func configureSplitView() {
         primaryNavigationController.viewControllers = [productsViewController]
         splitViewController.setViewController(primaryNavigationController, for: .primary)
@@ -355,6 +367,14 @@ private extension ProductsSplitViewCoordinator {
             return nil
         }
         return product
+    }
+
+    func isShowingSecondaryProductContent() -> Bool {
+        guard let contentType = contentTypes.last,
+              case .productForm = contentType else {
+            return false
+        }
+        return true
     }
 
     func refreshSelectedProductRow() {

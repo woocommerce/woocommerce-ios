@@ -410,12 +410,11 @@ final class MainTabBarController: UITabBarController {
 
     private func effectiveDashboardHorizontalSizeClass() -> UIUserInterfaceSizeClass {
         guard Bundle.main.isLiquidGlassDesignEnabled,
-              view.bounds.width > 0,
-              view.bounds.width < Constants.narrowWindowCompactLayoutThreshold else {
+              view.bounds.width > 0 else {
             return traitCollection.horizontalSizeClass
         }
 
-        return .compact
+        return view.bounds.width < Constants.narrowWindowCompactLayoutThreshold ? .compact : .regular
     }
 
     private func setupConditionalTabsInitialVisibility() {

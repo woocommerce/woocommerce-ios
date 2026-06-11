@@ -655,6 +655,8 @@ private extension ProductFormViewController {
         // Since the table view is in a container under a stack view, the safe area adjustment should be handled in the container view.
         tableView.contentInsetAdjustmentBehavior = .never
 
+        configureLiquidGlassTabBarUnderlap()
+
         tableView.reloadData()
     }
 
@@ -712,14 +714,22 @@ private extension ProductFormViewController {
 
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 
-            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             moreDetailsContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
             moreDetailsContainerView.topAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
     }
 }
 

@@ -237,7 +237,7 @@ struct PointOfSaleErrorState: Equatable {
         )
         static let catalogBlockedSubtitle = NSLocalizedString(
             "pos.itemList.catalogBlockedSubtitle",
-            value: "Point of Sale can't access a file with your product information because your hosting provider is blocking it. " +
+            value: "Point of Sale can't access a file with your product information because your hosting provider is blocking it.\n" +
             "Please ask them to allow access to it so Point of Sale keeps working properly.",
             comment: "Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file."
         )

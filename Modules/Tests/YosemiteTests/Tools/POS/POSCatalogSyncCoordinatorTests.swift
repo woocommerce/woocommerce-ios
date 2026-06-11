@@ -1380,7 +1380,7 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(completed != nil)
     }
 
-    @Test func performFullSyncIfApplicable_when_blocked_on_WC_11_does_not_fall_back() async throws {
+    @Test func performFullSyncIfApplicable_when_blocked_on_WC_11_does_not_fall_back_on_first_attempt() async throws {
         // Given
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
@@ -1399,6 +1399,68 @@ extension POSCatalogSyncCoordinatorTests {
         // When/Then: the blocked error surfaces so the merchant is told to contact their host
         await #expect(throws: Error.self) {
             try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        }
+        #expect(mockSyncService.startPaginatedFullSyncCallCount == 0)
+    }
+
+    @Test func performFullSyncIfApplicable_when_blocked_on_WC_11_falls_back_on_retry() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            usesCatalogAPI: true
+        )
+        await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+            statusCode: 403,
+            contentType: "text/html"
+        ))
+        mockSyncService.startPaginatedFullSyncResult = .success(POSCatalog(products: [POSProduct.fake()], variations: [], syncDate: .now))
+
+        // When: the first attempt surfaces the blocked error
+        await #expect(throws: Error.self) {
+            try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        }
+        #expect(mockSyncService.startPaginatedFullSyncCallCount == 0)
+
+        // Then: retrying while still blocked falls back to the paginated sync and completes
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        #expect(mockSyncService.startPaginatedFullSyncCallCount == 1)
+        let fellBack = mockAnalytics.trackedEvents.filter { $0.eventName == "local_catalog_blocked_fell_back_to_remote" }
+        #expect(fellBack.count == 1)
+    }
+
+    @Test func performFullSyncIfApplicable_when_file_sync_succeeds_again_clears_blocked_memory() async throws {
+        // Given
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            usesCatalogAPI: true
+        )
+        await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
+        let blockedError = POSCatalogFileError.blocked(statusCode: 403, contentType: "text/html")
+
+        // When: blocked once, then the host is fixed and the file sync succeeds
+        mockSyncService.startFullSyncResult = .failure(blockedError)
+        await #expect(throws: Error.self) {
+            try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        }
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        try await sut.performFullSync(for: sampleSiteID)
+
+        // Then: a later block surfaces the error again instead of falling back
+        // (performFullSync uses maxAge zero so the recent success doesn't skip the sync)
+        mockSyncService.startFullSyncResult = .failure(blockedError)
+        await #expect(throws: Error.self) {
+            try await sut.performFullSync(for: sampleSiteID)
         }
         #expect(mockSyncService.startPaginatedFullSyncCallCount == 0)
     }

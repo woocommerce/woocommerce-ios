@@ -133,6 +133,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
 
+    /// Sites whose catalog file was blocked by the host this session. On the first block (WC >= 11
+    /// or unknown version) the error surfaces; a retry while still blocked falls back to the
+    /// paginated sync instead. Cleared when a file sync succeeds again.
+    private var sitesWithBlockedCatalogFile: Set<Int64> = []
+
     /// Tracks ongoing full sync tasks by site ID for cancellation
     private var ongoingFullSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
@@ -278,19 +283,26 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Runs the full sync; when the host blocks access to the generated catalog file on a store
     /// where the core `.htaccess` fix isn't available (WC < 11.0), falls back to the legacy
     /// paginated full sync so the local catalog still gets populated. On WC 11.0+ (or unknown
-    /// version) the blocked error propagates so the merchant is told to contact their host.
+    /// version) the first blocked error propagates so the merchant is told to contact their host;
+    /// retrying while still blocked falls back too — retrying the file cannot succeed until the
+    /// host is fixed, so the retry should at least leave the merchant with a working catalog.
     private func runFullSyncWithBlockedFallback(for siteID: Int64,
                                                 regenerateCatalog: Bool,
                                                 allowCellular: Bool,
                                                 isBackgroundSync: Bool) async throws -> POSCatalog {
         do {
-            return try await fullSyncService.startFullSync(for: siteID,
-                                                           regenerateCatalog: regenerateCatalog,
-                                                           allowCellular: allowCellular,
-                                                           isBackgroundSync: isBackgroundSync)
+            let catalog = try await fullSyncService.startFullSync(for: siteID,
+                                                                  regenerateCatalog: regenerateCatalog,
+                                                                  allowCellular: allowCellular,
+                                                                  isBackgroundSync: isBackgroundSync)
+            // The file is accessible (again) — clear any blocked memory for the site.
+            sitesWithBlockedCatalogFile.remove(siteID)
+            return catalog
         } catch where error.isPOSCatalogFileBlockedError {
             let wooCommerceVersion = await catalogEligibilityChecker.wooCommerceVersion(for: siteID)
-            guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) else {
+            let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
+            sitesWithBlockedCatalogFile.insert(siteID)
+            guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) || isRetryWhileBlocked else {
                 throw error
             }
 

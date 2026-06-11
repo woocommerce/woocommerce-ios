@@ -144,6 +144,23 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         XCTAssertEqual(result, expectedResult)
     }
 
+    func test_determineRefundableOrderItems_when_duplicate_product_line_has_refunded_item_id_returns_unrefunded_duplicate() {
+        // Given
+        let productID: Int64 = 5
+        let refundedItem = MockOrderItem.sampleItem(itemID: 101, productID: productID, quantity: 1)
+        let unrefundedItem = MockOrderItem.sampleItem(itemID: 102, productID: productID, quantity: 1)
+        let order = Order.fake().copy(items: [refundedItem, unrefundedItem])
+        let refund = MockRefunds.sampleRefund(items: [
+            MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "101", quantity: -1)
+        ])
+
+        // When
+        let result = sut.determineRefundableOrderItems(from: order, with: [refund])
+
+        // Then
+        XCTAssertEqual(result, [RefundableOrderItem(item: unrefundedItem, quantity: 1)])
+    }
+
     func shouldRefundCustomAmountsByDefault_when_the_order_has_only_items_return_false() {
         // Given
         let items = [

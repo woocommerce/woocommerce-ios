@@ -32,7 +32,7 @@ public struct MockRefunds {
                                         name: String = "",
                                         productID: Int64 = 0,
                                         variationID: Int64 = 0,
-                                        refundedItemID: String = "1",
+                                        refundedItemID: String? = nil,
                                         quantity: Decimal = 0,
                                         price: NSDecimalNumber = 0,
                                         sku: String? = nil,

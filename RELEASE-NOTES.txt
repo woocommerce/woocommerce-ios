@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.0
 -----
+- [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]
 - [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]
 - [*] Fixed refunds for orders with multiple shipping lines so all shipping lines can be refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17312]
 - [*] POS: Prevent checkout when the server-created order does not match the cart. [https://github.com/woocommerce/woocommerce-ios/pull/17314]

@@ -41,8 +41,8 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
     func start() {
-        configureSplitView()
         autoSelectProductOnInitialDataLoad()
+        configureSplitView()
     }
 
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
@@ -117,10 +117,6 @@ private extension ProductsSplitViewCoordinator {
 
 private extension ProductsSplitViewCoordinator {
     func shouldAutoSelectProductInExpandedLayout() -> Bool {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
-            return contentTypes.isEmpty
-        }
-
         if contentTypes.isEmpty {
             return true
         }
@@ -239,9 +235,6 @@ private extension ProductsSplitViewCoordinator {
         showEmptyView()
         switch primaryNavigationController.topViewController {
             case let productsViewController as ProductsViewController:
-                guard productsViewController.isViewLoaded else {
-                    return
-                }
                 productsViewController.selectFirstProductIfAvailable()
             case let productSearchViewController as SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>:
                 productSearchViewController.selectFirstObjectIfAvailable()

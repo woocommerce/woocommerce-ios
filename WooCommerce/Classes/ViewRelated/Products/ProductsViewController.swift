@@ -307,9 +307,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard isViewLoaded else {
-            return
-        }
+        loadViewIfNeeded()
         guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
@@ -317,9 +315,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 
     func hasFirstProductAvailable() -> Bool {
-        guard isViewLoaded else {
-            return false
-        }
+        loadViewIfNeeded()
         return resultsController.safeObject(at: IndexPath(row: 0, section: 0)) != nil
     }
 
@@ -855,6 +851,7 @@ private extension ProductsViewController {
         ])
 
         updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     private func updateLiquidGlassHeaderOverlayLayout() {
@@ -868,17 +865,21 @@ private extension ProductsViewController {
         let wasAtTop = tableView.contentOffset.y <= -previousAdjustedTopInset + 0.5
 
         let previousTopInset = tableView.contentInset.top
-        if abs(previousTopInset - height) > 0.5 {
+        let topInsetChanged = abs(previousTopInset - height) > 0.5
+        let shouldAlignToTop = height > 0 && (!hasAlignedInitialLiquidGlassHeaderContentOffset || (topInsetChanged && wasAtTop))
+        if topInsetChanged {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
 
-            if height > 0 && (!hasAlignedInitialLiquidGlassHeaderContentOffset || wasAtTop) {
-                tableView.contentOffset.y = -tableView.adjustedContentInset.top
-                hasAlignedInitialLiquidGlassHeaderContentOffset = true
-            } else {
+            if !shouldAlignToTop {
                 tableView.contentOffset.y -= height - previousTopInset
             }
+        }
+
+        if shouldAlignToTop {
+            tableView.contentOffset.y = -tableView.adjustedContentInset.top
+            hasAlignedInitialLiquidGlassHeaderContentOffset = true
         }
 
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets

@@ -46,7 +46,7 @@ final class POSStaffAdaptor: POSStaffFetching {
                 throw .adminMissingCapability
             case .noRestRoute:
                 throw .endpointUnavailable
-            case .unknown(let code, _, _) where code == "rest_forbidden":
+            case .unknown(let code, _, _) where Self.isAuthDenialCode(code):
                 throw .adminMissingCapability
             default:
                 throw .transient(retryable: true)

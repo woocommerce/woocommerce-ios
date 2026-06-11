@@ -57,6 +57,13 @@ struct POSStaffAdaptorTests {
                      forRemoteError: DotcomError.unknown(code: "rest_forbidden", message: nil, data: nil))
     }
 
+    @Test func test_fetchStaff_when_dotcom_unknown_woocommerce_rest_cannot_view_then_adminMissingCapability() async {
+        // The Jetpack-tunnelled path must classify a `woocommerce_rest_cannot*` denial the same as
+        // the direct REST path does, rather than letting it fall through to `.transient`.
+        await expect(.adminMissingCapability,
+                     forRemoteError: DotcomError.unknown(code: "woocommerce_rest_cannot_view", message: nil, data: nil))
+    }
+
     @Test func test_fetchStaff_when_dotcom_other_then_transient_retryable() async {
         await expect(.transient(retryable: true), forRemoteError: DotcomError.requestFailed())
     }

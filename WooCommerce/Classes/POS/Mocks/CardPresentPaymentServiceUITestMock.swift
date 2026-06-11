@@ -13,12 +13,12 @@ final class CardPresentPaymentServiceUITestMock: CardPresentPaymentFacade {
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
     private let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
 
-    init(startsConnected: Bool) {
+    init() {
         paymentEventPublisher = paymentEventSubject
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
 
-        readerConnectionStatusSubject = CurrentValueSubject(startsConnected ? .connected(Self.mockReader) : .disconnected)
+        readerConnectionStatusSubject = CurrentValueSubject(.disconnected)
         readerConnectionStatusPublisher = readerConnectionStatusSubject
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()

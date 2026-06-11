@@ -50,13 +50,4 @@ struct ProcessConfiguration {
     static var shouldUseMockCardPresentPayment: Bool {
         ProcessInfo.processInfo.arguments.contains("use-mocked-card-present-payment")
     }
-
-    /// Returns `true` when the UI test mocked card present payment service should start with no reader connected.
-    static var shouldStartMockCardPresentPaymentDisconnected: Bool {
-        #if DEBUG
-        ProcessInfo.processInfo.arguments.contains("start-mocked-card-present-payment-disconnected")
-        #else
-        false
-        #endif
-    }
 }

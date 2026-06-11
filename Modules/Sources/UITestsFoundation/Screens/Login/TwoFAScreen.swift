@@ -37,8 +37,18 @@ public final class TwoFAScreen: ScreenObject {
     }
 
     public func proceedWith(twoFACode: String) throws {
-        app.dismissSavePasswordPromptIfNeeded(timeout: 1, until: twoFAField)
-        twoFAField.enterText(text: twoFACode)
+        enterTwoFACode(twoFACode)
+        XCTAssertTrue(continueButton.waitForIsHittable(timeout: 10), "Continue button should be tappable after entering the 2FA code.")
         continueButton.tap()
+    }
+
+    private func enterTwoFACode(_ twoFACode: String) {
+        app.dismissSavePasswordPromptIfNeeded(timeout: 2, until: twoFAField, stableFor: 0.5)
+        XCTAssertTrue(twoFAField.waitForIsHittable(timeout: 10), "2FA field should be ready for typing.")
+
+        twoFAField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        app.dismissSavePasswordPromptIfNeeded(timeout: 2, until: twoFAField, stableFor: 0.5)
+        twoFAField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        twoFAField.typeText(twoFACode)
     }
 }

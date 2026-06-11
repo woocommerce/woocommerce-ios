@@ -231,9 +231,7 @@ private extension POSTabCoordinator {
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
                 #if DEBUG
                 if ProcessConfiguration.shouldUsePOSUITestMocks {
-                    cardPresentPaymentService = CardPresentPaymentServiceUITestMock(
-                        startsConnected: !ProcessConfiguration.shouldStartMockCardPresentPaymentDisconnected
-                    )
+                    cardPresentPaymentService = CardPresentPaymentServiceUITestMock()
                 } else {
                     cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
                 }

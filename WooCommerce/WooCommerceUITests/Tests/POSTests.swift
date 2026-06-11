@@ -23,10 +23,9 @@ final class POSTests: XCTestCase {
         "use-pos-ui-test-mocks"
     ]
 
-    // Start disconnected so POS exposes the Card reader CTA while screenshot flows keep the mock connected by default.
-    private static let disconnectedSimulatedReaderLaunchArguments = [
+    // The UI-test card payment mock starts disconnected so POS exposes the Card reader CTA.
+    private static let simulatedReaderLaunchArguments = [
         "use-mocked-card-present-payment",
-        "start-mocked-card-present-payment-disconnected",
         "-simulate-stripe-card-reader",
         "-com.woocommerce.featureflag.override.pointOfSaleTapToPay",
         "NO"
@@ -55,7 +54,7 @@ final class POSTests: XCTestCase {
     }
 
     func test_POS_eligible_site_can_complete_card_payment_with_simulated_reader_and_start_new_order() throws {
-        try beginTwoProductCheckout(extraLaunchArguments: Self.disconnectedSimulatedReaderLaunchArguments)
+        try beginTwoProductCheckout(extraLaunchArguments: Self.simulatedReaderLaunchArguments)
             .tapCardReaderPayment()
             .waitForCardPaymentStartedOrSucceeded()
             .waitForPaymentSuccess()

@@ -247,6 +247,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                                                                          allowCellular: allowCellular)
 
         if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
+            if statusCode == 403 || Self.isHTMLContentType(downloadResult.contentType) {
+                throw POSCatalogFileError.blocked(statusCode: statusCode,
+                                                  contentType: downloadResult.contentType)
+            }
             throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
                                                      contentType: downloadResult.contentType)
         }
@@ -279,6 +283,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         // Files in iOS temporary directories should be left for iOS to clean up automatically.
         defer {
             cleanupDownloadedFileIfNeeded(at: fileURL)
+        }
+
+        if Self.isHTMLContentType(contentType) || Self.hasHTMLBody(data) {
+            throw POSCatalogFileError.blocked(statusCode: statusCode, contentType: contentType)
         }
 
         let mapper = ListMapper<POSCatalogItem>(siteID: siteID)
@@ -319,6 +327,36 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         try? fileManager.removeItem(at: fileURL)
+    }
+
+    /// Returns true when the response content type is `text/html` — a sign that the host served an
+    /// HTML error page instead of the catalog JSON (e.g. an `.htaccess` permission block).
+    static func isHTMLContentType(_ contentType: String?) -> Bool {
+        guard let mediaType = contentType?
+            .split(separator: ";", maxSplits: 1)
+            .first?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased() else {
+            return false
+        }
+        return mediaType == "text/html"
+    }
+
+    /// Returns true when the file body looks like HTML: the first non-whitespace byte is `<`.
+    /// The expected catalog payload is a JSON array, so an HTML body means the host blocked the
+    /// file and served an error page. This is the only block signal available for background
+    /// downloads, which don't retain response metadata.
+    static func hasHTMLBody(_ data: Data) -> Bool {
+        var bytes = data[...]
+        let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]
+        if bytes.starts(with: utf8BOM) {
+            bytes = bytes.dropFirst(utf8BOM.count)
+        }
+        let whitespace: Set<UInt8> = [0x20, 0x09, 0x0A, 0x0D] // space, tab, LF, CR
+        guard let firstByte = bytes.first(where: { !whitespace.contains($0) }) else {
+            return false
+        }
+        return firstByte == UInt8(ascii: "<")
     }
 
     /// Loads POS products for full sync.

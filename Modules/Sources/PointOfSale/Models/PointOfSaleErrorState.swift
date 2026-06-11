@@ -114,7 +114,7 @@ struct PointOfSaleErrorState: Equatable {
     static func errorOnInitalCatalogSync(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .initialCatalogSyncError,
-            title: Constants.failedToSyncCatalogTitle,
+            title: title(for: error, default: Constants.failedToSyncCatalogTitle),
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
@@ -122,14 +122,21 @@ struct PointOfSaleErrorState: Equatable {
     static func errorOnRefreshingCatalog(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .refreshCatalogSyncError,
-            title: Constants.failedToRefreshCatalogTitle,
+            title: title(for: error, default: Constants.failedToRefreshCatalogTitle),
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
+    private static func title(for error: Error?, default defaultTitle: String) -> String {
+        if let error, error.isPOSCatalogFileBlockedError {
+            return Constants.catalogBlockedTitle
+        }
+        return defaultTitle
+    }
+
     private static func subtitle(for error: Error?) -> String {
-        if let error, error.isPOSCatalogFileDownloadError {
-            return Constants.catalogFileResponseErrorSubtitle
+        if let error, error.isPOSCatalogFileBlockedError {
+            return Constants.catalogBlockedSubtitle
         }
 
         if let error, error.isConnectivityError {
@@ -223,11 +230,16 @@ struct PointOfSaleErrorState: Equatable {
             value: "Please check your internet connection and try again.",
             comment: "Subtitle appearing on error screens when there is a network connectivity error."
         )
-        static let catalogFileResponseErrorSubtitle = NSLocalizedString(
-            "pos.itemList.catalogFileResponseErrorSubtitle",
-            value: "The catalog file could not be downloaded from your store due to blocked server permissions. " +
-            "Please contact your hosting provider.",
-            comment: "Subtitle appearing on POS local catalog sync error screens when the generated catalog file cannot be downloaded."
+        static let catalogBlockedTitle = NSLocalizedString(
+            "pos.itemList.catalogBlockedTitle",
+            value: "Action needed on your store",
+            comment: "Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file."
+        )
+        static let catalogBlockedSubtitle = NSLocalizedString(
+            "pos.itemList.catalogBlockedSubtitle",
+            value: "Point of Sale can't access a file with your product information because your hosting provider is blocking it. " +
+            "Please ask them to allow access to it so Point of Sale keeps working properly.",
+            comment: "Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file."
         )
         static let failedToLoadOrdersTitle = NSLocalizedString(
             "pos.orderList.failedToLoadOrdersTitle",

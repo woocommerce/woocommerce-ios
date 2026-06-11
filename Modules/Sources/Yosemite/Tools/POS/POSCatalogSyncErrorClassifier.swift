@@ -156,6 +156,8 @@ enum POSCatalogSyncErrorClassifier {
         switch error {
         case .downloadFailed:
             return "catalog_file_download_failed"
+        case .blocked:
+            return "catalog_file_blocked"
         case .invalidResponse:
             return "catalog_file_invalid_response"
         }

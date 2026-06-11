@@ -9,6 +9,7 @@ import protocol WooFoundation.Analytics
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectionType
 import struct WooFoundationCore.WooAnalyticsEvent
+import class WooFoundationCore.VersionHelpers
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync if applicable for the specified site
@@ -199,10 +200,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Create a task to perform the sync
         let syncTask = Task<POSCatalog, Error> {
-            try await fullSyncService.startFullSync(for: siteID,
-                                                    regenerateCatalog: regenerateCatalog,
-                                                    allowCellular: allowCellular,
-                                                    isBackgroundSync: isBackgroundSync)
+            try await runFullSyncWithBlockedFallback(for: siteID,
+                                                     regenerateCatalog: regenerateCatalog,
+                                                     allowCellular: allowCellular,
+                                                     isBackgroundSync: isBackgroundSync)
         }
 
         // Store the task for potential cancellation
@@ -272,6 +273,57 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
+    }
+
+    /// Runs the full sync; when the host blocks access to the generated catalog file on a store
+    /// where the core `.htaccess` fix isn't available (WC < 11.0), falls back to the legacy
+    /// paginated full sync so the local catalog still gets populated. On WC 11.0+ (or unknown
+    /// version) the blocked error propagates so the merchant is told to contact their host.
+    private func runFullSyncWithBlockedFallback(for siteID: Int64,
+                                                regenerateCatalog: Bool,
+                                                allowCellular: Bool,
+                                                isBackgroundSync: Bool) async throws -> POSCatalog {
+        do {
+            return try await fullSyncService.startFullSync(for: siteID,
+                                                           regenerateCatalog: regenerateCatalog,
+                                                           allowCellular: allowCellular,
+                                                           isBackgroundSync: isBackgroundSync)
+        } catch where error.isPOSCatalogFileBlockedError {
+            let wooCommerceVersion = await catalogEligibilityChecker.wooCommerceVersion(for: siteID)
+            guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) else {
+                throw error
+            }
+
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Catalog file blocked by host for site \(siteID) " +
+                      "(WC \(wooCommerceVersion ?? "unknown")), falling back to paginated full sync")
+
+            // Preserve the blocked failure signal before falling back.
+            let catalogFileMetadata = Self.extractCatalogFileMetadata(from: error)
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
+                syncType: POSCatalogSyncType.full.rawValue,
+                syncStrategy: syncStrategy.rawValue,
+                error: error,
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                failureStage: catalogFileMetadata.failureStage,
+                httpStatusCode: catalogFileMetadata.httpStatusCode,
+                responseContentType: catalogFileMetadata.responseContentType
+            ))
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
+
+            return try await fullSyncService.startPaginatedFullSync(for: siteID, allowCellular: allowCellular)
+        }
+    }
+
+    /// The core fix for host-blocked catalog files ships in WooCommerce 11.0
+    /// (the feed directory's `.htaccess` allows file access and is refreshed in place).
+    /// Below 11.0 the block is expected, so the sync silently falls back to the paginated path;
+    /// on 11.0+ or when the version is unknown the error surfaces instead.
+    static func shouldFallBackToPaginatedSync(wooCommerceVersion: String?) -> Bool {
+        guard let wooCommerceVersion else {
+            return false
+        }
+        return !VersionHelpers.isVersionSupported(version: wooCommerceVersion,
+                                                  minimumRequired: Constants.blockedCatalogCoreFixMinimumWooCommerceVersion)
     }
 
     // TODO: WOOMOB-1677 - Add logic to check for in-progress catalog generation before starting new sync.
@@ -632,6 +684,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         switch catalogFileError {
         case .downloadFailed(let statusCode, let contentType):
             return ("catalog_file_download", statusCode, sanitizeContentType(contentType))
+        case .blocked(let statusCode, let contentType):
+            return ("catalog_file_download", statusCode, sanitizeContentType(contentType))
         case .invalidResponse(let statusCode, let contentType, _):
             return ("catalog_file_parse", statusCode, sanitizeContentType(contentType))
         }
@@ -863,6 +917,7 @@ public enum POSCatalogSyncState: Equatable {
 private extension POSCatalogSyncCoordinator {
     enum Constants {
         static let maxDaysSinceLastOpened = 30
+        static let blockedCatalogCoreFixMinimumWooCommerceVersion = "11.0"
     }
 
     // MARK: - Sync Eligibility

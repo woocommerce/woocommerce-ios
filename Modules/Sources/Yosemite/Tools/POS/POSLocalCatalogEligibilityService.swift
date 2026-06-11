@@ -17,6 +17,9 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     // POS eligibility states cached per site
     private var posEligibilityStates: [Int64: Bool] = [:]
 
+    // WooCommerce core version observed during the last eligibility refresh, per site
+    private var wooCommerceVersions: [Int64: String] = [:]
+
     // Cached remote feature flag value
     private var cachedRemoteFeatureFlag: Bool?
 
@@ -133,6 +136,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
                 return state
             }
 
+            wooCommerceVersions[siteID] = wcPlugin.version
+
             guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                     minimumRequired: minimumVersion) else {
                 let state = POSLocalCatalogEligibilityState.ineligible(
@@ -192,6 +197,10 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
             return state
         }
+    }
+
+    public func wooCommerceVersion(for siteID: Int64) -> String? {
+        wooCommerceVersions[siteID]
     }
 
     private func featureFlagSettings() async -> (Bool, Bool, Bool) {

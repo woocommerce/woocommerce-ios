@@ -32,9 +32,6 @@ public final class PasswordScreen: ScreenObject {
     @discardableResult
     public func enterValidPassword() throws -> TwoFAScreen {
         try proceedWith(password: "pw")
-        // Keep this out of proceedWith(password:) so tests do not pay the full prompt timeout when it never appears.
-        // The simulator can show this prompt over 2FA; dismiss it before TwoFAScreen waits for hittable controls.
-        app.dismissSavePasswordPromptIfNeeded(timeout: 15, until: app.textFields["Authentication code"], stableFor: 1)
 
         return try TwoFAScreen(app: app)
     }

@@ -19,13 +19,24 @@ public final class TwoFAScreen: ScreenObject {
     private var continueButton: XCUIElement { continueButtonGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
+        // iOS can show this prompt over 2FA after the password screen has already advanced.
+        // Dismiss it before ScreenObject waits for the covered Passkeys button to become hittable.
+        guard app.dismissSavePasswordPromptIfNeeded(
+            timeout: 30,
+            until: app.buttons["Passkeys"],
+            stableFor: 0.5,
+            elementDescription: "Passkeys button"
+        ) else {
+            throw ScreenObject.WaitForScreenError.timedOut
+        }
         try super.init(
             expectedElementGetters: [
                 securityKeyButtonGetter, // Please keep this element at the beginning of this list to ensure its presence via the internal waitForScreen
                 twoFAFieldGetter,
                 continueButtonGetter
             ],
-            app: app
+            app: app,
+            waitTimeout: 2
         )
     }
 
@@ -43,12 +54,9 @@ public final class TwoFAScreen: ScreenObject {
     }
 
     private func enterTwoFACode(_ twoFACode: String) {
-        app.dismissSavePasswordPromptIfNeeded(timeout: 2, until: twoFAField, stableFor: 0.5)
+        app.dismissSavePasswordPromptIfNeeded(timeout: 2)
         XCTAssertTrue(twoFAField.waitForIsHittable(timeout: 10), "2FA field should be ready for typing.")
 
-        twoFAField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        app.dismissSavePasswordPromptIfNeeded(timeout: 2, until: twoFAField, stableFor: 0.5)
-        twoFAField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        twoFAField.typeText(twoFACode)
+        twoFAField.enterText(text: twoFACode)
     }
 }

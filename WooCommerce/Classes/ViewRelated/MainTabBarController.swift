@@ -120,6 +120,7 @@ final class MainTabBarController: UITabBarController {
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
+    private var appliedDashboardHorizontalSizeClass: UIUserInterfaceSizeClass?
     private let ordersContainerController = TabContainerController()
 
     private let productsContainerController = TabContainerController()
@@ -293,6 +294,12 @@ final class MainTabBarController: UITabBarController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        configureTabBarLayoutOnIpad()
+    }
+
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
@@ -366,9 +373,11 @@ final class MainTabBarController: UITabBarController {
             mode = .tabBar
             tabBar.isTranslucent = true
             clearTabBarTraitOverridesOnIpad()
+            applyDashboardHorizontalSizeClassOnIpad()
             return
         }
 
+        appliedDashboardHorizontalSizeClass = nil
         traitOverrides.horizontalSizeClass = .compact
         if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
             tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
@@ -382,8 +391,31 @@ final class MainTabBarController: UITabBarController {
         traitOverrides.horizontalSizeClass = .unspecified
         tabBar.traitOverrides.horizontalSizeClass = .unspecified
         viewControllers?.forEach { viewController in
+            guard viewController !== dashboardNavigationController else {
+                return
+            }
             viewController.traitOverrides.horizontalSizeClass = .unspecified
         }
+    }
+
+    private func applyDashboardHorizontalSizeClassOnIpad() {
+        let effectiveHorizontalSizeClass = effectiveDashboardHorizontalSizeClass()
+        guard appliedDashboardHorizontalSizeClass != effectiveHorizontalSizeClass else {
+            return
+        }
+
+        dashboardNavigationController.traitOverrides.horizontalSizeClass = effectiveHorizontalSizeClass
+        appliedDashboardHorizontalSizeClass = effectiveHorizontalSizeClass
+    }
+
+    private func effectiveDashboardHorizontalSizeClass() -> UIUserInterfaceSizeClass {
+        guard Bundle.main.isLiquidGlassDesignEnabled,
+              view.bounds.width > 0,
+              view.bounds.width < Constants.narrowWindowCompactLayoutThreshold else {
+            return traitCollection.horizontalSizeClass
+        }
+
+        return .compact
     }
 
     private func setupConditionalTabsInitialVisibility() {
@@ -1267,6 +1299,7 @@ private extension MainTabBarController {
         // the second one might not happen.
         static let screenTransitionsDelay = 0.3
         static let blazeScreenTransitionsDelay = 1.0
+        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
     }
 }
 

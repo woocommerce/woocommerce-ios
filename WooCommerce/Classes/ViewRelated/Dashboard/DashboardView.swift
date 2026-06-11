@@ -91,35 +91,23 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Layout.padding) {
-                // Store title
-                Text(currentSite?.name ?? Localization.title)
-                    .subheadlineStyle()
-                    .padding(Layout.sectionHeadingPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(verticalSizeClass == .regular)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: Layout.padding) {
+                    // Store title
+                    Text(currentSite?.name ?? Localization.title)
+                        .subheadlineStyle()
+                        .padding(Layout.sectionHeadingPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .renderedIf(verticalSizeClass == .regular)
 
-                // Feature announcement if any.
-                featureAnnouncementCard
+                    // Feature announcement if any.
+                    featureAnnouncementCard
 
-                // Card views
-                Group {
-                    if horizontalSizeClass == .regular,
-                       !dynamicTypeSize.isAccessibilitySize,
-                       viewModel.showOnDashboardSecondColumn.isNotEmpty {
-                        // display cards in 2 columns for large screen sizes if there are more than 1 cards.
-                        HStack(alignment: .top, spacing: 0) {
-                            dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                            dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
-                        }
-                    } else {
-                        // display all cards in a single column
-                        dashboardCardList(with: viewModel.showOnDashboardCards)
-                    }
+                    dashboardCards(availableWidth: proxy.size.width)
                 }
+                .padding(.bottom, Layout.padding)
             }
-            .padding(.bottom, Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -219,6 +207,30 @@ struct DashboardView: View {
 // MARK: Private helpers
 //
 private extension DashboardView {
+    @ViewBuilder
+    func dashboardCards(availableWidth: CGFloat) -> some View {
+        if shouldDisplayDashboardCardsInTwoColumns(availableWidth: availableWidth) {
+            // Display cards in 2 columns for large screen sizes if there are more than 1 cards.
+            HStack(alignment: .top, spacing: 0) {
+                dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+            }
+        } else {
+            // Display all cards in a single column.
+            dashboardCardList(with: viewModel.showOnDashboardCards)
+        }
+    }
+
+    func shouldDisplayDashboardCardsInTwoColumns(availableWidth: CGFloat) -> Bool {
+        let hasRegularWidth = Bundle.main.isLiquidGlassDesignEnabled
+            ? availableWidth >= Layout.twoColumnMinimumWidth
+            : horizontalSizeClass == .regular
+
+        return hasRegularWidth &&
+            !dynamicTypeSize.isAccessibilitySize &&
+            viewModel.showOnDashboardSecondColumn.isNotEmpty
+    }
+
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
@@ -459,6 +471,7 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
+        static let twoColumnMinimumWidth: CGFloat = 700
     }
     enum Localization {
         static let title = NSLocalizedString(

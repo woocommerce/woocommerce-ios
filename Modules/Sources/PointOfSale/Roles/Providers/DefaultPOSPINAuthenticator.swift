@@ -34,10 +34,9 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     }
 
     func hasAnyPINs() async throws(POSAuthError) -> Bool {
-        let cache = self.cache
-        let siteID = self.siteID
-        // Keychain read + JSON decode — kept off the calling (main) actor.
-        return await Task.detached(priority: .userInitiated) {
+        // Keychain read + JSON decode — kept off the calling (main) actor. The capture list pulls in
+        // just `cache` and `siteID` so the `@Sendable` closure doesn't capture the whole `self`.
+        return await Task.detached(priority: .userInitiated) { [cache, siteID] in
             cache.hasAnyPINs(siteID: siteID)
         }.value
     }
@@ -49,9 +48,9 @@ private extension DefaultPOSPINAuthenticator {
     /// Returns the cached staff member whose PIN matches `pin`, or `nil` if none do. The keychain
     /// read and PBKDF2 verification run on a detached task so PIN entry never stalls the UI thread.
     func findMatch(pin: String) async -> POSStaffMember? {
-        let cache = self.cache
-        let siteID = self.siteID
-        return await Task.detached(priority: .userInitiated) {
+        // The capture list pulls in just `cache` and `siteID` so the `@Sendable` closure doesn't
+        // capture the whole `self`.
+        return await Task.detached(priority: .userInitiated) { [cache, siteID] in
             for member in cache.load(siteID: siteID) ?? [] {
                 guard let details = member.pin else { continue }
                 guard details.algorithm == Constants.supportedAlgorithm else {

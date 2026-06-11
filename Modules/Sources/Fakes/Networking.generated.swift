@@ -1758,7 +1758,8 @@ extension Networking.SiteAPI {
         .init(
             siteID: .fake(),
             namespaces: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            routes: .fake()
         )
     }
 }

@@ -240,18 +240,12 @@ extension XCUIApplication {
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))
         }
 
-        XCTAssertFalse(
-            isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard),
-            "Save Password prompt should be dismissible. " +
+        XCTFail(
+            "Timed out after \(timeout) seconds waiting for the Save Password prompt to clear" +
+            (element == nil ? "." : " and \(elementDescription) to become hittable.") +
+            " " +
             savePasswordPromptState(app: self, springboard: springboard, element: element, elementDescription: elementDescription)
         )
-        if let element {
-            XCTAssertTrue(
-                element.exists && element.isHittable,
-                "\(elementDescription) should be hittable after dismissing the Save Password prompt. " +
-                savePasswordPromptState(app: self, springboard: springboard, element: element, elementDescription: elementDescription)
-            )
-        }
         return false
     }
 

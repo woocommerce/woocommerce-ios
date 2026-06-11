@@ -7,10 +7,6 @@ public final class TwoFAScreen: ScreenObject {
         $0.textFields["Authentication code"]
     }
 
-    private let securityKeyButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Passkeys"]
-    }
-
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Continue Button"]
     }
@@ -20,18 +16,17 @@ public final class TwoFAScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         // iOS can show this prompt over 2FA after the password screen has already advanced.
-        // Dismiss it before ScreenObject waits for the covered Passkeys button to become hittable.
+        // Dismiss it before ScreenObject waits for the covered 2FA field to become hittable.
         guard app.dismissSavePasswordPromptIfNeeded(
             timeout: 30,
-            until: app.buttons["Passkeys"],
+            until: app.textFields["Authentication code"],
             stableFor: 0.5,
-            elementDescription: "Passkeys button"
+            elementDescription: "2FA field"
         ) else {
             throw ScreenObject.WaitForScreenError.timedOut
         }
         try super.init(
             expectedElementGetters: [
-                securityKeyButtonGetter, // Please keep this element at the beginning of this list to ensure its presence via the internal waitForScreen
                 twoFAFieldGetter,
                 continueButtonGetter
             ],

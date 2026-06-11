@@ -40,8 +40,7 @@ public final class TwoFAScreen {
 
     public func proceedWith(twoFACode: String) throws {
         enterTwoFACode(twoFACode)
-        XCTAssertTrue(continueButton.waitForIsHittable(timeout: 10), "Continue button should be tappable after entering the 2FA code.")
-        continueButton.tap()
+        tapContinueButton()
     }
 
     private func enterTwoFACode(_ twoFACode: String) {
@@ -80,6 +79,41 @@ public final class TwoFAScreen {
 
         codeKeys.forEach { $0.tap() }
         return true
+    }
+
+    private func tapContinueButton() {
+        if continueButton.waitForIsHittable(timeout: 2) {
+            continueButton.tap()
+            return
+        }
+
+        dismissKeyboardIfNeeded()
+        if continueButton.waitForIsHittable(timeout: 5) {
+            continueButton.tap()
+            return
+        }
+
+        XCTAssertTrue(continueButton.waitForExistence(timeout: 5), "Continue button should exist after entering the 2FA code.")
+        XCTAssertTrue(continueButton.isEnabled, "Continue button should be enabled after entering the 2FA code.")
+        XCTAssertFalse(continueButton.frame.isEmpty, "Continue button should have a tappable frame after entering the 2FA code.")
+        continueButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+    }
+
+    private func dismissKeyboardIfNeeded() {
+        guard app.keyboards.firstMatch.exists else {
+            return
+        }
+
+        let keyboardDismissButtons = ["Done", "Hide keyboard"]
+        for label in keyboardDismissButtons {
+            let button = app.keyboards.buttons[label].firstMatch
+            if button.exists && button.isHittable {
+                button.tap()
+                return
+            }
+        }
+
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.1)).tap()
     }
 
     private enum TwoFAScreenError: Error {

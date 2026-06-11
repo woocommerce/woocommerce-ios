@@ -190,12 +190,13 @@ extension XCUIApplication {
         var elementVisibleWithoutPromptSince: Date?
 
         while Date() < deadline {
+            let promptVisible = isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard)
             if tapSavePasswordDismissButtonIfNeeded(in: self) || tapSavePasswordDismissButtonIfNeeded(in: springboard) {
                 elementVisibleWithoutPromptSince = nil
                 continue
             }
 
-            if let element, element.exists {
+            if let element, element.exists, !promptVisible {
                 if elementVisibleWithoutPromptSince == nil {
                     elementVisibleWithoutPromptSince = Date()
                 }
@@ -227,6 +228,6 @@ extension XCUIApplication {
     }
 
     private func isSavePasswordPromptVisible(in app: XCUIApplication) -> Bool {
-        app.staticTexts["Save Password?"].exists && app.buttons["Not Now"].exists
+        app.staticTexts["Save Password?"].exists
     }
 }

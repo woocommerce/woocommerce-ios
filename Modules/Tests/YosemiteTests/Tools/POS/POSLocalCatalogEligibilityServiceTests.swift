@@ -593,6 +593,40 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 
+    @Test("Caches the WooCommerce version observed during eligibility refresh")
+    func test_wooCommerceVersion_after_eligibility_refresh_then_returns_plugin_version() async throws {
+        // Given
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
+        )
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(
+                    wcPlugin: makeSystemPlugin(version: "10.8.1"),
+                    featureValue: true
+                )
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            isCatalogAPIFeatureFlagEnabled: true,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+
+        // Then: unknown before any refresh
+        #expect(await service.wooCommerceVersion(for: siteID) == nil)
+
+        // When
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // Then
+        #expect(await service.wooCommerceVersion(for: siteID) == "10.8.1")
+    }
+
     @Test("Catalog API requires WC 10.5+",
           arguments: [
             ("10.3.0", false),

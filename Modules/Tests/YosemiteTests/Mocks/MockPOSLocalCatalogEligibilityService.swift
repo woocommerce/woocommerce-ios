@@ -26,4 +26,14 @@ actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServicePr
     func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         return eligibilityStates[siteID] ?? .eligible
     }
+
+    private var wooCommerceVersions: [Int64: String] = [:]
+
+    func setWooCommerceVersion(_ version: String?, for siteID: Int64) {
+        wooCommerceVersions[siteID] = version
+    }
+
+    func wooCommerceVersion(for siteID: Int64) -> String? {
+        wooCommerceVersions[siteID]
+    }
 }

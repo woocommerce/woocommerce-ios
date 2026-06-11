@@ -117,6 +117,18 @@ struct POSCatalogSyncErrorClassifierTests {
         #expect(result == "catalog_file_download_failed")
     }
 
+    @Test func classify_catalog_file_blocked_error_returns_catalog_file_blocked() {
+        // Given
+        let error = POSCatalogFileError.blocked(statusCode: 403,
+                                                contentType: "text/html")
+
+        // When
+        let result = POSCatalogSyncErrorClassifier.classify(error)
+
+        // Then: classified by the catalog file error type, not the 403 authentication fallback
+        #expect(result == "catalog_file_blocked")
+    }
+
     @Test func classify_catalog_file_invalid_response_error_returns_catalog_file_invalid_response() {
         // Given
         let error = POSCatalogFileError.invalidResponse(statusCode: 200,

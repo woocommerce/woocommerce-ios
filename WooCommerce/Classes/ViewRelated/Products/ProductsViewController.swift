@@ -99,6 +99,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         .listBackground
     }
 
+    private var toolbarBackgroundColor: UIColor {
+        Bundle.main.isLiquidGlassDesignEnabled ? .clear : headerBackgroundColor
+    }
+
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: Localization.bulkEditingToolbarButtonTitle,
@@ -821,7 +825,7 @@ private extension ProductsViewController {
             $0.configuration = configuration
         }
 
-        toolbar.backgroundColor = headerBackgroundColor
+        toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         toolbarBottomSeparator.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.separator)

@@ -13,8 +13,9 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
 
     init(authenticateResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(
+                userID: 1,
                 displayName: "Maya",
-                role: "shop_manager",
+                preset: "shop_manager",
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
             )
          ),

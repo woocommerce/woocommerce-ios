@@ -8,8 +8,9 @@ struct DefaultPOSAccessSessionTests {
     @Test func test_signIn_when_pin_is_valid_then_sets_currentStaff_and_unlocks_and_resets_limiter() async throws {
         // Given
         let staff = POSStaff(
+            userID: 1,
             displayName: "Maya",
-            role: "shop_manager",
+            preset: "shop_manager",
             capabilities: Set(POSCapability.allCases.map(\.rawValue))
         )
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
@@ -126,7 +127,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_lock_when_called_then_sets_isLocked_true_and_keeps_currentStaff() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -171,32 +172,33 @@ struct DefaultPOSAccessSessionTests {
 
         // When / Then
         await #expect(throws: POSAuthError.unknown) {
-            try await sut.session.requestManagerApproval(withPIN: "1234", for: .refundShopOrders)
+            try await sut.session.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
         }
     }
 
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
         let staff = POSStaff(
+            userID: 1,
             displayName: "Maya",
-            role: "shop_manager",
-            capabilities: [POSCapability.refundShopOrders.rawValue]
+            preset: "shop_manager",
+            capabilities: [POSCapability.issueRefunds.rawValue]
         )
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == true)
+        #expect(sut.session.allows(.issueRefunds) == true)
     }
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "pos_cashier", capabilities: [])
+        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "pos_cashier", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == false)
+        #expect(sut.session.allows(.issueRefunds) == false)
     }
 
     @Test func test_allows_when_no_currentStaff_then_returns_false() {
@@ -204,7 +206,7 @@ struct DefaultPOSAccessSessionTests {
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
 
         // When / Then
-        #expect(sut.session.allows(.refundShopOrders) == false)
+        #expect(sut.session.allows(.issueRefunds) == false)
     }
 
     @Test func test_lock_when_called_then_persists_true_to_per_site_lock_key() {
@@ -220,7 +222,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_signIn_when_pin_is_valid_then_persists_false_to_per_site_lock_key() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         sut.session.lock()
         #expect(sut.scope.defaults.bool(forKey: POSLockStateKey.key(for: 123)) == true)
@@ -245,7 +247,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_signIn_when_pin_is_valid_then_sets_hasAnyPINs_true() async throws {
         // Given
-        let staff = POSStaff(displayName: "Maya", role: "shop_manager", capabilities: [])
+        let staff = POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         #expect(sut.session.hasAnyPINs == false)
 

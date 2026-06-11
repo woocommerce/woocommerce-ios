@@ -255,6 +255,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()
+        configureLiquidGlassTabBarUnderlap()
         configureScrollWatcher()
         configurePaginationTracker()
         registerTableViewCells()
@@ -746,7 +747,6 @@ private extension ProductsViewController {
         // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
 
-        configureLiquidGlassTabBarUnderlap()
     }
 
     private func configureLiquidGlassTabBarUnderlap() {
@@ -842,8 +842,8 @@ private extension ProductsViewController {
             backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
             toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            toolbar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             toolbarBottomSeparator.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
             toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
             toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)

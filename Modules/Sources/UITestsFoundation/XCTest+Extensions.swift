@@ -208,17 +208,27 @@ extension XCUIApplication {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let deadline = Date().addingTimeInterval(timeout)
         var elementVisibleWithoutPromptSince: Date?
+        var promptAbsentSince: Date?
 
         while Date() < deadline {
             let promptVisible = isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard)
             if tapSavePasswordDismissButtonIfNeeded(in: self) || tapSavePasswordDismissButtonIfNeeded(in: springboard) {
                 elementVisibleWithoutPromptSince = nil
+                promptAbsentSince = nil
                 continue
             }
 
             guard let element else {
                 if !promptVisible {
-                    return true
+                    if promptAbsentSince == nil {
+                        promptAbsentSince = Date()
+                    }
+                    if let absentSince = promptAbsentSince,
+                       Date().timeIntervalSince(absentSince) >= stableFor {
+                        return true
+                    }
+                } else {
+                    promptAbsentSince = nil
                 }
 
                 RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))

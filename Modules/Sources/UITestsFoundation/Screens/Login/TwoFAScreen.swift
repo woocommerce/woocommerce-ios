@@ -7,6 +7,10 @@ public final class TwoFAScreen: ScreenObject {
         $0.textFields["Authentication code"]
     }
 
+    private let helpButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["authenticator-help-button"]
+    }
+
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["Continue Button"]
     }
@@ -16,17 +20,13 @@ public final class TwoFAScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         // iOS can show this prompt over 2FA after the password screen has already advanced.
-        // Dismiss it before ScreenObject waits for the covered 2FA field to become hittable.
-        guard app.dismissSavePasswordPromptIfNeeded(
-            timeout: 30,
-            until: app.textFields["Authentication code"],
-            stableFor: 0.5,
-            elementDescription: "2FA field"
-        ) else {
+        // Dismiss it before ScreenObject checks screen readiness.
+        guard app.dismissSavePasswordPromptIfNeeded(timeout: 30) else {
             throw ScreenObject.WaitForScreenError.timedOut
         }
         try super.init(
             expectedElementGetters: [
+                helpButtonGetter,
                 twoFAFieldGetter,
                 continueButtonGetter
             ],
@@ -50,14 +50,26 @@ public final class TwoFAScreen: ScreenObject {
 
     private func enterTwoFACode(_ twoFACode: String) {
         app.dismissSavePasswordPromptIfNeeded(timeout: 2)
-        XCTAssertTrue(twoFAField.waitForIsHittable(timeout: 10), "2FA field should be ready for typing.")
+        XCTAssertTrue(twoFAField.waitForExistence(timeout: 10), "2FA field should be visible before typing.")
 
-        twoFAField.tap()
+        focusTwoFAFieldIfNeeded()
         if tapTwoFACodeKeyboardKeys(twoFACode) {
             return
         }
 
         twoFAField.typeText(twoFACode)
+    }
+
+    private func focusTwoFAFieldIfNeeded() {
+        if app.keyboards.firstMatch.exists {
+            return
+        }
+
+        if twoFAField.isHittable {
+            twoFAField.tap()
+        } else if !twoFAField.frame.isEmpty {
+            twoFAField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
     }
 
     private func tapTwoFACodeKeyboardKeys(_ twoFACode: String) -> Bool {

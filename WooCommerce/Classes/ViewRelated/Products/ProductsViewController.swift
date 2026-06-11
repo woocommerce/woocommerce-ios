@@ -84,7 +84,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var hasConfiguredLiquidGlassHeaderOverlay = false
     private var liquidGlassHeaderBackgroundView: UIView?
-    private var hasAlignedInitialLiquidGlassHeaderContentOffset = false
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -292,12 +291,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override func viewDidLayoutSubviews() {
@@ -866,29 +859,19 @@ private extension ProductsViewController {
             return
         }
 
-        let height = toolbar.isHidden ? 0 : toolbar.bounds.height + toolbarBottomSeparator.bounds.height
-        let previousAdjustedTopInset = tableView.adjustedContentInset.top
-        let wasAtTop = tableView.contentOffset.y <= -previousAdjustedTopInset + 0.5
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.systemLayoutSizeFitting(targetSize,
+                                                                                   withHorizontalFittingPriority: .required,
+                                                                                   verticalFittingPriority: .fittingSizeLevel).height
+        let separatorHeight = toolbar.isHidden ? 0 : toolbarBottomSeparatorHeightConstraint.constant
+        let height = toolbarHeight + separatorHeight
 
         let previousTopInset = tableView.contentInset.top
-        let topInsetChanged = abs(previousTopInset - height) > 0.5
-        let canUpdateContentOffset = view.window != nil
-        let shouldAlignToTop = canUpdateContentOffset &&
-            height > 0 &&
-            (!hasAlignedInitialLiquidGlassHeaderContentOffset || (topInsetChanged && wasAtTop))
-        if topInsetChanged {
+        if abs(previousTopInset - height) > 0.5 {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-
-            if canUpdateContentOffset && !shouldAlignToTop {
-                tableView.contentOffset.y -= height - previousTopInset
-            }
-        }
-
-        if shouldAlignToTop {
-            tableView.contentOffset.y = -tableView.adjustedContentInset.top
-            hasAlignedInitialLiquidGlassHeaderContentOffset = true
+            tableView.contentOffset.y -= height - previousTopInset
         }
 
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets

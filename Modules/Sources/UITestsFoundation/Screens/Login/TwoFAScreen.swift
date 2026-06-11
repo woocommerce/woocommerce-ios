@@ -7,8 +7,8 @@ public final class TwoFAScreen: ScreenObject {
         $0.textFields["Authentication code"]
     }
 
-    private let helpButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["authenticator-help-button"]
+    private let backButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)
     }
 
     private let continueButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -26,7 +26,7 @@ public final class TwoFAScreen: ScreenObject {
         }
         try super.init(
             expectedElementGetters: [
-                helpButtonGetter,
+                backButtonGetter,
                 twoFAFieldGetter,
                 continueButtonGetter
             ],

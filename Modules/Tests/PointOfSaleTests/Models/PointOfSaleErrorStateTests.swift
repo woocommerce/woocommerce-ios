@@ -121,5 +121,5 @@ struct PointOfSaleErrorStateTests {
 }
 
 private let catalogBlockedTitle = "Action needed on your store"
-private let catalogBlockedSubtitle = "Point of Sale can't access a file with your product information because your hosting provider is blocking it. " +
+private let catalogBlockedSubtitle = "Point of Sale can't access a file with your product information because your hosting provider is blocking it.\n" +
 "Please ask them to allow access to it so Point of Sale keeps working properly."

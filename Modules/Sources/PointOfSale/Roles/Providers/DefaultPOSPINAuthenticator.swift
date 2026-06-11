@@ -77,8 +77,13 @@ private extension DefaultPOSPINAuthenticator {
     static func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
         guard let saltData = Data(base64Encoded: details.salt),
               let expectedHash = Data(base64Encoded: details.hash),
+              !expectedHash.isEmpty,
               let pinData = pin.data(using: .utf8),
-              let iterations = UInt32(exactly: details.iterations) else {
+              let iterations = UInt32(exactly: details.iterations),
+              iterations > 0 else {
+            // Reject empty hashes and non-positive iteration counts outright: an empty `expectedHash`
+            // would otherwise make `constantTimeEqual` return true for any PIN if PBKDF2 ever
+            // succeeded with a zero-length derivation.
             return false
         }
         var derived = [UInt8](repeating: 0, count: expectedHash.count)

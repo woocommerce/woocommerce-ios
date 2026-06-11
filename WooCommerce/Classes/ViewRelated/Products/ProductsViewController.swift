@@ -287,7 +287,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.displayGhostContent(over: tableView)
         }
 
-        navigationController?.navigationBar.removeShadow()
+        if !Bundle.main.isLiquidGlassDesignEnabled {
+            navigationController?.navigationBar.removeShadow()
+        }
 
         reloadFavoriteProductsIfNeeded()
     }

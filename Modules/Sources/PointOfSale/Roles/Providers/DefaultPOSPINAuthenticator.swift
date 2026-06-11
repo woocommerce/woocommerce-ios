@@ -77,12 +77,14 @@ private extension DefaultPOSPINAuthenticator {
         guard let saltData = Data(base64Encoded: details.salt),
               let expectedHash = Data(base64Encoded: details.hash),
               !expectedHash.isEmpty,
+              expectedHash.count <= Constants.maxHashByteCount,
               let pinData = pin.data(using: .utf8),
               let iterations = UInt32(exactly: details.iterations),
               iterations > 0 else {
-            // Reject empty hashes and non-positive iteration counts outright: an empty `expectedHash`
-            // would otherwise make `constantTimeEqual` return true for any PIN if PBKDF2 ever
-            // succeeded with a zero-length derivation.
+            // Reject empty/oversized hashes and non-positive iteration counts outright before
+            // touching PBKDF2. An empty `expectedHash` would otherwise make `constantTimeEqual`
+            // return true for any PIN; an oversized one (from a corrupted/tampered cache) sizes the
+            // derived-key buffer — and therefore the PBKDF2 work — proportional to it.
             return false
         }
         var derived = [UInt8](repeating: 0, count: expectedHash.count)
@@ -139,4 +141,9 @@ private enum Constants {
     /// The only PIN hashing scheme the client knows how to verify. PINs tagged with anything else
     /// are skipped (and logged) rather than silently treated as a match/mismatch.
     static let supportedAlgorithm = "pbkdf2-sha256"
+
+    /// Upper bound on the decoded PIN hash length. A PBKDF2-HMAC-SHA256 digest is 32 bytes; we keep
+    /// some headroom but reject anything larger so a corrupted/tampered cache entry can't size the
+    /// derived-key buffer — and the PBKDF2 work — to an arbitrarily large value.
+    static let maxHashByteCount = 64
 }

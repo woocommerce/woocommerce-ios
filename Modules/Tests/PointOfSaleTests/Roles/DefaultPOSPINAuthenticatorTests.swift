@@ -68,6 +68,22 @@ struct DefaultPOSPINAuthenticatorTests {
     }
 
     @MainActor
+    @Test func test_authenticate_rejects_members_whose_hash_exceeds_the_maximum_length() async throws {
+        // Given a cached member whose PIN hash is far larger than a real PBKDF2-SHA256 digest,
+        // simulating a corrupted or tampered cache entry
+        let oversizedHash = Data(repeating: 0, count: 1_024).base64EncodedString()
+        let details = POSStaffMember.PINDetails(algorithm: "pbkdf2-sha256", iterations: 1_000,
+                                                salt: "c2FsdC1mb3ItdGVzdHM=", hash: oversizedHash)
+        let member = makeMember(userID: 1, pin: details)
+        let sut = makeSUT(cached: [member])
+
+        // When / Then — the oversized hash is treated as invalid data rather than fed to PBKDF2
+        await #expect(throws: POSAuthError.invalidPIN) {
+            _ = try await sut.authenticate(withPIN: "1234")
+        }
+    }
+
+    @MainActor
     @Test func test_authenticate_keeps_only_known_pos_capabilities_that_are_granted() async throws {
         // Given a member with a granted known cap, a denied known cap, and an unknown cap
         let member = makeMember(userID: 1,

@@ -65,8 +65,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     }
 
     func refreshExpandedLayoutIfNeeded() {
-        guard !splitViewController.isCollapsed,
-              splitViewController.traitCollection.horizontalSizeClass == .regular else {
+        guard !splitViewController.isCollapsed else {
             return
         }
         didExpand()
@@ -265,8 +264,7 @@ private extension ProductsSplitViewCoordinator {
                     return false
                 }
                 return selectedProduct == nil &&
-                    !splitViewController.isCollapsed &&
-                    splitViewController.traitCollection.horizontalSizeClass == .regular
+                    !splitViewController.isCollapsed
             })
             .sink { [weak self] _, _ in
                 self?.productsViewController.selectFirstProductIfAvailable()

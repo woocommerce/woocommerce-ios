@@ -294,6 +294,12 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         finishBulkEditing()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        updateLiquidGlassHeaderOverlayLayout()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
@@ -866,13 +872,16 @@ private extension ProductsViewController {
 
         let previousTopInset = tableView.contentInset.top
         let topInsetChanged = abs(previousTopInset - height) > 0.5
-        let shouldAlignToTop = height > 0 && (!hasAlignedInitialLiquidGlassHeaderContentOffset || (topInsetChanged && wasAtTop))
+        let canUpdateContentOffset = view.window != nil
+        let shouldAlignToTop = canUpdateContentOffset &&
+            height > 0 &&
+            (!hasAlignedInitialLiquidGlassHeaderContentOffset || (topInsetChanged && wasAtTop))
         if topInsetChanged {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
 
-            if !shouldAlignToTop {
+            if canUpdateContentOffset && !shouldAlignToTop {
                 tableView.contentOffset.y -= height - previousTopInset
             }
         }

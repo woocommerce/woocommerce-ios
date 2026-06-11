@@ -306,6 +306,14 @@ private extension POSTabCoordinator {
                                                                            storageManager: storageManager,
                                                                            currencySettings: currencySettings)
 
+                guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
+                                                         selectedSite: defaultSitePublisher,
+                                                         appPasswordSupportState: isAppPasswordSupported) else {
+                    DDLogError("⛔️ Could not start POS: POSStaffAdaptor unavailable (missing credentials)")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -344,6 +352,7 @@ private extension POSTabCoordinator {
                     sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
+                    staffFetcher: staffFetcher,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

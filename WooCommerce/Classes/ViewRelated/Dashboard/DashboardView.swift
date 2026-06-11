@@ -22,7 +22,6 @@ struct DashboardView: View {
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
-    @State private var dashboardContentWidth: CGFloat = 0
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -92,25 +91,22 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Layout.padding) {
-                // Store title
-                Text(currentSite?.name ?? Localization.title)
-                    .subheadlineStyle()
-                    .padding(Layout.sectionHeadingPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(verticalSizeClass == .regular)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: Layout.padding) {
+                    // Store title
+                    Text(currentSite?.name ?? Localization.title)
+                        .subheadlineStyle()
+                        .padding(Layout.sectionHeadingPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .renderedIf(verticalSizeClass == .regular)
 
-                // Feature announcement if any.
-                featureAnnouncementCard
+                    // Feature announcement if any.
+                    featureAnnouncementCard
 
-                dashboardCards
-            }
-            .padding(.bottom, Layout.padding)
-            .background {
-                GeometryReader { proxy in
-                    Color.clear.preference(key: DashboardContentWidthPreferenceKey.self, value: proxy.size.width)
+                    dashboardCards(availableWidth: proxy.size.width)
                 }
+                .padding(.bottom, Layout.padding)
             }
         }
         .background(Color(.listBackground))
@@ -205,17 +201,6 @@ struct DashboardView: View {
                 await viewModel.onViewAppear()
             }
         }
-        .onPreferenceChange(DashboardContentWidthPreferenceKey.self) { width in
-            dashboardContentWidth = width
-        }
-    }
-}
-
-private struct DashboardContentWidthPreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
     }
 }
 
@@ -223,8 +208,8 @@ private struct DashboardContentWidthPreferenceKey: PreferenceKey {
 //
 private extension DashboardView {
     @ViewBuilder
-    var dashboardCards: some View {
-        if shouldDisplayDashboardCardsInTwoColumns {
+    func dashboardCards(availableWidth: CGFloat) -> some View {
+        if shouldDisplayDashboardCardsInTwoColumns(availableWidth: availableWidth) {
             // Display cards in 2 columns for large screen sizes if there are more than 1 cards.
             HStack(alignment: .top, spacing: 0) {
                 dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
@@ -236,9 +221,9 @@ private extension DashboardView {
         }
     }
 
-    var shouldDisplayDashboardCardsInTwoColumns: Bool {
+    func shouldDisplayDashboardCardsInTwoColumns(availableWidth: CGFloat) -> Bool {
         let hasRegularWidth = Bundle.main.isLiquidGlassDesignEnabled
-            ? dashboardContentWidth >= Layout.twoColumnMinimumWidth
+            ? availableWidth >= Layout.twoColumnMinimumWidth
             : horizontalSizeClass == .regular
 
         return hasRegularWidth &&

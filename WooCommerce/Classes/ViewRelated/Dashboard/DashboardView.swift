@@ -22,6 +22,7 @@ struct DashboardView: View {
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
+    @State private var dashboardContentWidth: CGFloat = 0
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -103,23 +104,14 @@ struct DashboardView: View {
                 // Feature announcement if any.
                 featureAnnouncementCard
 
-                // Card views
-                Group {
-                    if horizontalSizeClass == .regular,
-                       !dynamicTypeSize.isAccessibilitySize,
-                       viewModel.showOnDashboardSecondColumn.isNotEmpty {
-                        // display cards in 2 columns for large screen sizes if there are more than 1 cards.
-                        HStack(alignment: .top, spacing: 0) {
-                            dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                            dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
-                        }
-                    } else {
-                        // display all cards in a single column
-                        dashboardCardList(with: viewModel.showOnDashboardCards)
-                    }
-                }
+                dashboardCards
             }
             .padding(.bottom, Layout.padding)
+            .background {
+                GeometryReader { proxy in
+                    Color.clear.preference(key: DashboardContentWidthPreferenceKey.self, value: proxy.size.width)
+                }
+            }
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -213,12 +205,47 @@ struct DashboardView: View {
                 await viewModel.onViewAppear()
             }
         }
+        .onPreferenceChange(DashboardContentWidthPreferenceKey.self) { width in
+            dashboardContentWidth = width
+        }
+    }
+}
+
+private struct DashboardContentWidthPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
 // MARK: Private helpers
 //
 private extension DashboardView {
+    @ViewBuilder
+    var dashboardCards: some View {
+        if shouldDisplayDashboardCardsInTwoColumns {
+            // Display cards in 2 columns for large screen sizes if there are more than 1 cards.
+            HStack(alignment: .top, spacing: 0) {
+                dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+            }
+        } else {
+            // Display all cards in a single column.
+            dashboardCardList(with: viewModel.showOnDashboardCards)
+        }
+    }
+
+    var shouldDisplayDashboardCardsInTwoColumns: Bool {
+        let hasRegularWidth = Bundle.main.isLiquidGlassDesignEnabled
+            ? dashboardContentWidth >= Layout.twoColumnMinimumWidth
+            : horizontalSizeClass == .regular
+
+        return hasRegularWidth &&
+            !dynamicTypeSize.isAccessibilitySize &&
+            viewModel.showOnDashboardSecondColumn.isNotEmpty
+    }
+
     @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
@@ -459,6 +486,7 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
+        static let twoColumnMinimumWidth: CGFloat = 700
     }
     enum Localization {
         static let title = NSLocalizedString(

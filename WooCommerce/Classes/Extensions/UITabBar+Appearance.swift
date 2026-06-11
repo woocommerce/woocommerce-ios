@@ -8,12 +8,19 @@ extension UITabBar {
     ///
     class func applyWooAppearance() {
         let appearance = Self.appearance()
-        appearance.barTintColor = .appTabBar
         appearance.tintColor = .accent
 
         // tab bar needs to be translucent to get rid of the extra space at the bottom of
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
+
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            appearance.barTintColor = nil
+            appearance.scrollEdgeAppearance = nil
+            return
+        }
+
+        appearance.barTintColor = .appTabBar
 
         /// iOS 13.0 and 13.1 doesn't render the tabbar shadow color correctly while in dark mode.
         /// To fix it, we have to specifically set it in the `standardAppearance` object.

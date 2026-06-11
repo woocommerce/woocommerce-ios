@@ -240,6 +240,17 @@ extension XCUIApplication {
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.25))
         }
 
+        let promptVisible = isSavePasswordPromptVisible(in: self) || isSavePasswordPromptVisible(in: springboard)
+        if !promptVisible {
+            guard let element else {
+                return true
+            }
+
+            if element.exists, element.isHittable {
+                return true
+            }
+        }
+
         XCTFail(
             "Timed out after \(timeout) seconds waiting for the Save Password prompt to clear" +
             (element == nil ? "." : " and \(elementDescription) to become hittable.") +

@@ -52,6 +52,25 @@ public final class TwoFAScreen: ScreenObject {
         app.dismissSavePasswordPromptIfNeeded(timeout: 2)
         XCTAssertTrue(twoFAField.waitForIsHittable(timeout: 10), "2FA field should be ready for typing.")
 
-        twoFAField.enterText(text: twoFACode)
+        twoFAField.tap()
+        if tapTwoFACodeKeyboardKeys(twoFACode) {
+            return
+        }
+
+        twoFAField.typeText(twoFACode)
+    }
+
+    private func tapTwoFACodeKeyboardKeys(_ twoFACode: String) -> Bool {
+        guard app.keyboards.firstMatch.waitForExistence(timeout: 2) else {
+            return false
+        }
+
+        let codeKeys = twoFACode.map { app.keyboards.keys[String($0)].firstMatch }
+        guard codeKeys.allSatisfy({ $0.waitForIsHittable(timeout: 2) }) else {
+            return false
+        }
+
+        codeKeys.forEach { $0.tap() }
+        return true
     }
 }

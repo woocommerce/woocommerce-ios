@@ -171,8 +171,8 @@ private extension DefaultPOSPINAuthenticatorTests {
         let salt = Data(base64Encoded: saltBase64)!
         let pinData = pin.data(using: .utf8)!
         var derived = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        _ = salt.withUnsafeBytes { saltBytes in
-            pinData.withUnsafeBytes { pinBytes in
+        let status = salt.withUnsafeBytes { saltBytes -> Int32 in
+            pinData.withUnsafeBytes { pinBytes -> Int32 in
                 CCKeyDerivationPBKDF(
                     CCPBKDFAlgorithm(kCCPBKDF2),
                     pinBytes.baseAddress?.assumingMemoryBound(to: Int8.self),
@@ -186,6 +186,9 @@ private extension DefaultPOSPINAuthenticatorTests {
                 )
             }
         }
+        // Fail fast if key derivation fails — otherwise the helper would hand back an all-zero hash
+        // and the test would silently assert against meaningless data.
+        precondition(status == kCCSuccess, "PBKDF2 derivation failed in test helper (status: \(status))")
         return POSStaffMember.PINDetails(algorithm: "pbkdf2-sha256",
                                          iterations: iterations,
                                          salt: saltBase64,

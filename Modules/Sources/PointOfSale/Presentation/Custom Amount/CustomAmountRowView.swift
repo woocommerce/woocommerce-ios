@@ -26,7 +26,6 @@ struct CustomAmountRowView: View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             CustomAmountAvatar(name: customAmount.name)
                 .frame(width: dimension, height: dimension)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall * (1 / scale)) {
                 Text(customAmount.name)

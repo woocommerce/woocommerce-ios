@@ -291,7 +291,7 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     // star/unstar packages
     func starUnstarPackage(_ packageID: String, carrierID: String) {
         let isStarring = !starredCarriersPackages.contains(packageID)
-        _ = withAnimation(starAnimation) {
+        withAnimation(starAnimation) {
             if isStarring {
                 starredCarriersPackages.insert(packageID)
             } else {

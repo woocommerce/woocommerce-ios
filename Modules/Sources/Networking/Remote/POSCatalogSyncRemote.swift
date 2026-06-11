@@ -247,10 +247,6 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                                                                          allowCellular: allowCellular)
 
         if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
-            if statusCode == 403 || Self.isHTMLContentType(downloadResult.contentType) {
-                throw POSCatalogFileError.blocked(statusCode: statusCode,
-                                                  contentType: downloadResult.contentType)
-            }
             throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
                                                      contentType: downloadResult.contentType)
         }
@@ -285,16 +281,15 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             cleanupDownloadedFileIfNeeded(at: fileURL)
         }
 
-        if Self.isHTMLContentType(contentType) || Self.hasHTMLBody(data) {
-            throw POSCatalogFileError.blocked(statusCode: statusCode, contentType: contentType)
-        }
-
         let mapper = ListMapper<POSCatalogItem>(siteID: siteID)
         let items: [POSCatalogItem]
         do {
             items = try mapper.map(response: data)
         } catch {
-            throw POSCatalogFileError.invalidResponse(statusCode: statusCode, contentType: contentType, underlyingError: error)
+            throw POSCatalogFileError.invalidResponse(statusCode: statusCode,
+                                                      contentType: contentType,
+                                                      hasHTMLBody: Self.hasHTMLBody(data),
+                                                      underlyingError: error)
         }
 
         var products: [POSProduct] = []
@@ -329,23 +324,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         try? fileManager.removeItem(at: fileURL)
     }
 
-    /// Returns true when the response content type is `text/html` — a sign that the host served an
-    /// HTML error page instead of the catalog JSON (e.g. an `.htaccess` permission block).
-    static func isHTMLContentType(_ contentType: String?) -> Bool {
-        guard let mediaType = contentType?
-            .split(separator: ";", maxSplits: 1)
-            .first?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased() else {
-            return false
-        }
-        return mediaType == "text/html"
-    }
-
     /// Returns true when the file body looks like HTML: the first non-whitespace byte is `<`.
-    /// The expected catalog payload is a JSON array, so an HTML body means the host blocked the
-    /// file and served an error page. This is the only block signal available for background
-    /// downloads, which don't retain response metadata.
+    /// The expected catalog payload is a JSON array, so an HTML body usually means the host
+    /// served an error page instead of the file. This is the only response fact available for
+    /// background downloads, which don't retain status code or content type.
     static func hasHTMLBody(_ data: Data) -> Bool {
         var bytes = data[...]
         let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]

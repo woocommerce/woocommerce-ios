@@ -818,7 +818,7 @@ struct POSCatalogSyncRemoteTests {
         }
     }
 
-    @Test func downloadCatalog_when_download_returns_403_then_throws_blocked_error() async throws {
+    @Test func downloadCatalog_when_download_returns_403_then_throws_download_failed_with_response_facts() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
@@ -830,11 +830,11 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            if case let POSCatalogFileError.blocked(statusCode, contentType) = error {
+            if case let POSCatalogFileError.downloadFailed(statusCode, contentType) = error {
                 #expect(statusCode == 403)
                 #expect(contentType == "text/html; charset=UTF-8")
             } else {
-                Issue.record("Expected POSCatalogFileError.blocked")
+                Issue.record("Expected POSCatalogFileError.downloadFailed")
             }
         }
     }
@@ -876,11 +876,11 @@ struct POSCatalogSyncRemoteTests {
         }
     }
 
-    @Test func downloadCatalog_when_2xx_response_has_html_content_type_then_throws_blocked_error() async throws {
-        // Given
+    @Test func downloadCatalog_when_2xx_response_has_html_body_then_throws_invalid_response_with_html_body_fact() async throws {
+        // Given: a host that serves an HTML error page where the catalog JSON was expected
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
-        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "<html><body>Forbidden</body></html>")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "\n  <html><body>Login required</body></html>")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL, statusCode: 200, contentType: "text/html")
 
         // When/Then
@@ -888,32 +888,12 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            if case let POSCatalogFileError.blocked(statusCode, contentType) = error {
+            if case let POSCatalogFileError.invalidResponse(statusCode, contentType, hasHTMLBody, _) = error {
                 #expect(statusCode == 200)
                 #expect(contentType == "text/html")
+                #expect(hasHTMLBody == true)
             } else {
-                Issue.record("Expected POSCatalogFileError.blocked")
-            }
-        }
-    }
-
-    @Test func downloadCatalog_when_2xx_response_has_html_body_then_throws_blocked_error() async throws {
-        // Given: a host that reports a JSON content type but serves an HTML error page
-        let remote = createRemote()
-        let downloadURL = "https://example.com/catalog.json"
-        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "\n  <html><body>Login required</body></html>")
-        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL, statusCode: 200, contentType: "application/json")
-
-        // When/Then
-        do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
-            Issue.record("Expected error to be thrown")
-        } catch {
-            if case let POSCatalogFileError.blocked(statusCode, contentType) = error {
-                #expect(statusCode == 200)
-                #expect(contentType == "application/json")
-            } else {
-                Issue.record("Expected POSCatalogFileError.blocked")
+                Issue.record("Expected POSCatalogFileError.invalidResponse")
             }
         }
     }
@@ -930,10 +910,31 @@ struct POSCatalogSyncRemoteTests {
             _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
             Issue.record("Expected error to be thrown")
         } catch {
-            if case let POSCatalogFileError.invalidResponse(statusCode, contentType, underlyingError) = error {
+            if case let POSCatalogFileError.invalidResponse(statusCode, contentType, hasHTMLBody, underlyingError) = error {
                 #expect(statusCode == 200)
                 #expect(contentType == "application/json")
+                #expect(hasHTMLBody == false)
                 #expect(underlyingError is DecodingError)
+            } else {
+                Issue.record("Expected POSCatalogFileError.invalidResponse")
+            }
+        }
+    }
+
+    @Test func parseDownloadedCatalog_when_body_is_html_then_throws_invalid_response_with_html_body_fact() async throws {
+        // Given: the background-download parse path, where no response metadata is available
+        let remote = createRemote()
+        let fileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "<html><body>Forbidden</body></html>")
+
+        // When/Then
+        do {
+            _ = try await remote.parseDownloadedCatalog(from: fileURL, siteID: sampleSiteID)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            if case let POSCatalogFileError.invalidResponse(statusCode, contentType, hasHTMLBody, _) = error {
+                #expect(statusCode == nil)
+                #expect(contentType == nil)
+                #expect(hasHTMLBody == true)
             } else {
                 Issue.record("Expected POSCatalogFileError.invalidResponse")
             }
@@ -951,14 +952,6 @@ struct POSCatalogSyncRemoteTests {
         #expect(!POSCatalogSyncRemote.hasHTMLBody(Data("[]".utf8)))
         #expect(!POSCatalogSyncRemote.hasHTMLBody(Data("  [{\"id\": 1}]".utf8)))
         #expect(!POSCatalogSyncRemote.hasHTMLBody(Data()))
-    }
-
-    @Test func isHTMLContentType_matches_html_media_type_only() {
-        #expect(POSCatalogSyncRemote.isHTMLContentType("text/html"))
-        #expect(POSCatalogSyncRemote.isHTMLContentType("text/html; charset=UTF-8"))
-        #expect(POSCatalogSyncRemote.isHTMLContentType("TEXT/HTML"))
-        #expect(!POSCatalogSyncRemote.isHTMLContentType("application/json"))
-        #expect(!POSCatalogSyncRemote.isHTMLContentType(nil))
     }
 
     // MARK: - Background Download Tests

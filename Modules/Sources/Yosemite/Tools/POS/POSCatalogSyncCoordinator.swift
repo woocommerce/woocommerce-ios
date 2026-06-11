@@ -696,9 +696,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         switch catalogFileError {
         case .downloadFailed(let statusCode, let contentType):
             return ("catalog_file_download", statusCode, sanitizeContentType(contentType))
-        case .blocked(let statusCode, let contentType):
-            return ("catalog_file_download", statusCode, sanitizeContentType(contentType))
-        case .invalidResponse(let statusCode, let contentType, _):
+        case .invalidResponse(let statusCode, let contentType, _, _):
             return ("catalog_file_parse", statusCode, sanitizeContentType(contentType))
         }
     }

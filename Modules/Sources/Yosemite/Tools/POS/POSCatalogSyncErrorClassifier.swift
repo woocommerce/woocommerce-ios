@@ -153,11 +153,12 @@ enum POSCatalogSyncErrorClassifier {
     }
 
     private static func classifyCatalogFileError(_ error: POSCatalogFileError) -> String {
+        if error.isPOSCatalogFileBlockedError {
+            return "catalog_file_blocked"
+        }
         switch error {
         case .downloadFailed:
             return "catalog_file_download_failed"
-        case .blocked:
-            return "catalog_file_blocked"
         case .invalidResponse:
             return "catalog_file_invalid_response"
         }

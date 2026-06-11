@@ -28,7 +28,7 @@ struct PointOfSaleErrorStateTests {
 
     @Test func errorOnRefreshingCatalog_when_catalog_file_blocked_then_shows_blocked_title_and_subtitle() {
         // Given
-        let error = POSCatalogFileError.blocked(
+        let error = POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html; charset=UTF-8"
         )
@@ -43,7 +43,7 @@ struct PointOfSaleErrorStateTests {
 
     @Test func errorOnInitalCatalogSync_when_catalog_file_blocked_then_shows_blocked_title_and_subtitle() {
         // Given
-        let error = POSCatalogFileError.blocked(
+        let error = POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html; charset=UTF-8"
         )
@@ -75,7 +75,8 @@ struct PointOfSaleErrorStateTests {
         // Given
         let error = POSCatalogFileError.invalidResponse(
             statusCode: 200,
-            contentType: "text/html",
+            contentType: "application/json",
+            hasHTMLBody: false,
             underlyingError: NSError(domain: "Test", code: 0)
         )
 

@@ -1299,8 +1299,8 @@ extension POSCatalogSyncCoordinatorTests {
             usesCatalogAPI: true
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
-            statusCode: 403,
-            contentType: "text/html; charset=UTF-8"
+            statusCode: 404,
+            contentType: "application/json; charset=UTF-8"
         ))
 
         // When
@@ -1312,8 +1312,8 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncFailed?.properties?["sync_strategy"] as? String == "local_catalog_file")
         #expect(syncFailed?.properties?["error_type"] as? String == "catalog_file_download_failed")
         #expect(syncFailed?.properties?["failure_stage"] as? String == "catalog_file_download")
-        #expect(syncFailed?.properties?["http_status_code"] as? String == "403")
-        #expect(syncFailed?.properties?["response_content_type"] as? String == "text_html")
+        #expect(syncFailed?.properties?["http_status_code"] as? String == "404")
+        #expect(syncFailed?.properties?["response_content_type"] as? String == "application_json")
     }
 
     @Test func performFullSyncIfApplicable_when_catalog_file_blocked_tracks_blocked_error_type() async throws {
@@ -1328,7 +1328,7 @@ extension POSCatalogSyncCoordinatorTests {
             analytics: mockAnalytics,
             usesCatalogAPI: true
         )
-        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html; charset=UTF-8"
         ))
@@ -1360,7 +1360,7 @@ extension POSCatalogSyncCoordinatorTests {
             usesCatalogAPI: true
         )
         await mockEligibilityChecker.setWooCommerceVersion("10.8.1", for: sampleSiteID)
-        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html; charset=UTF-8"
         ))
@@ -1391,7 +1391,7 @@ extension POSCatalogSyncCoordinatorTests {
             usesCatalogAPI: true
         )
         await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
-        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
         ))
@@ -1416,7 +1416,7 @@ extension POSCatalogSyncCoordinatorTests {
             usesCatalogAPI: true
         )
         await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
-        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
         ))
@@ -1446,7 +1446,7 @@ extension POSCatalogSyncCoordinatorTests {
             usesCatalogAPI: true
         )
         await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
-        let blockedError = POSCatalogFileError.blocked(statusCode: 403, contentType: "text/html")
+        let blockedError = POSCatalogFileError.downloadFailed(statusCode: 403, contentType: "text/html")
 
         // When: blocked once, then the host is fixed and the file sync succeeds
         mockSyncService.startFullSyncResult = .failure(blockedError)
@@ -1467,7 +1467,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_when_blocked_with_unknown_WC_version_does_not_fall_back() async throws {
         // Given: no WooCommerce version cached for the site
-        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.blocked(
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
         ))

@@ -268,6 +268,55 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
     }
 
+    func test_origin_notice_shows_missing_phone_when_origin_phone_has_no_digits() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddress = WooShippingOriginAddress(siteID: 123,
+                                                     id: "default_address",
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: " - ",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .loadPackages, .verifyDestinationAddress:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores)
+
+        // Then
+        // A phone with no digits (whitespace/punctuation only) is rejected by the backend as empty,
+        // so it must surface the missing-phone notice rather than the generic unverified one.
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is required for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
     func test_origin_notice_shows_missing_email_when_origin_email_is_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

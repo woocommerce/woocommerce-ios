@@ -725,7 +725,9 @@ private extension WooShippingCreateLabelsViewModel {
                     }
                     // A missing phone number or email is the only origin input that reliably fails rate loading,
                     // so surface the specific missing field before falling back to the generic unverified notice.
-                    if selectedOriginAddress.phone.isEmpty {
+                    // Use the digit-based check (matching the destination phone notice) so whitespace/punctuation-only
+                    // phones, which the backend also rejects as empty, are treated as missing.
+                    if selectedOriginAddress.toWooShippingAddress().phoneDigits.isEmpty {
                         return Localization.OriginAddress.missingPhone
                     }
                     if selectedOriginAddress.email.isEmpty {

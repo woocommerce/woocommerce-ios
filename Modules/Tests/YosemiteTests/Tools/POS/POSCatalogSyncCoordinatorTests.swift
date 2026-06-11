@@ -1347,6 +1347,24 @@ extension POSCatalogSyncCoordinatorTests {
 
     // MARK: - Blocked Catalog File Paginated Fallback
 
+    /// Builds a mock plugins service whose stored WooCommerce plugin reports the given version.
+    private func makePluginsService(wooCommerceVersion: String) -> MockPluginsService {
+        let pluginsService = MockPluginsService()
+        pluginsService.pluginsToReturnByPlugin[.wooCommerce] = SystemPlugin(
+            siteID: sampleSiteID,
+            plugin: "woocommerce/woocommerce.php",
+            name: "WooCommerce",
+            version: wooCommerceVersion,
+            versionLatest: wooCommerceVersion,
+            url: "https://woocommerce.com",
+            authorName: "WooCommerce",
+            authorUrl: "https://woocommerce.com",
+            networkActivated: false,
+            active: true
+        )
+        return pluginsService
+    }
+
     @Test func performFullSyncIfApplicable_when_blocked_below_WC_11_falls_back_to_paginated_sync() async throws {
         // Given
         let mockAnalytics = MockAnalytics()
@@ -1357,9 +1375,9 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true
+            usesCatalogAPI: true,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
         )
-        await mockEligibilityChecker.setWooCommerceVersion("10.8.1", for: sampleSiteID)
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html; charset=UTF-8"
@@ -1388,9 +1406,9 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true
+            usesCatalogAPI: true,
+            pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
-        await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
@@ -1413,9 +1431,9 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true
+            usesCatalogAPI: true,
+            pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
-        await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
@@ -1443,9 +1461,9 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true
+            usesCatalogAPI: true,
+            pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
-        await mockEligibilityChecker.setWooCommerceVersion("11.0.0", for: sampleSiteID)
         let blockedError = POSCatalogFileError.downloadFailed(statusCode: 403, contentType: "text/html")
 
         // When: blocked once, then the host is fixed and the file sync succeeds
@@ -1466,7 +1484,7 @@ extension POSCatalogSyncCoordinatorTests {
     }
 
     @Test func performFullSyncIfApplicable_when_blocked_with_unknown_WC_version_does_not_fall_back() async throws {
-        // Given: no WooCommerce version cached for the site
+        // Given: the shared sut has no plugins service, so the WooCommerce version is unknown
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
             contentType: "text/html"
@@ -1481,7 +1499,6 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_when_non_blocked_failure_does_not_fall_back() async throws {
         // Given
-        await mockEligibilityChecker.setWooCommerceVersion("10.8.1", for: sampleSiteID)
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 404,
             contentType: nil

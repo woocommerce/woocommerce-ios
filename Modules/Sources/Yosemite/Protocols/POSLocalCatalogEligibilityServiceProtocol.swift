@@ -60,8 +60,4 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Fresh eligibility state with reason if ineligible
     @discardableResult func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
-
-    /// The WooCommerce core version observed during the last eligibility refresh for the site, if known.
-    /// Used to gate behavior on the WC version (e.g. the host-blocked catalog file fallback).
-    func wooCommerceVersion(for siteID: Int64) async -> String?
 }

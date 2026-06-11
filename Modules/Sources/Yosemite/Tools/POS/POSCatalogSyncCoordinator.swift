@@ -129,6 +129,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let connectivityObserver: ConnectivityObserver?
     private let syncStrategy: POSCatalogSyncStrategy
     private let pendingParseResumer: BackgroundCatalogParseResuming
+    private let pluginsService: PluginsServiceProtocol?
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -158,7 +159,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 analytics: Analytics? = nil,
                 connectivityObserver: ConnectivityObserver? = nil,
                 usesCatalogAPI: Bool = false,
-                pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator()) {
+                pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator(),
+                pluginsService: PluginsServiceProtocol? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -168,6 +170,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.connectivityObserver = connectivityObserver
         self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
         self.pendingParseResumer = pendingParseResumer
+        self.pluginsService = pluginsService
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
@@ -299,7 +302,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             sitesWithBlockedCatalogFile.remove(siteID)
             return catalog
         } catch where error.isPOSCatalogFileBlockedError {
-            let wooCommerceVersion = await catalogEligibilityChecker.wooCommerceVersion(for: siteID)
+            let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
+                                                                               plugin: .wooCommerce,
+                                                                               isActive: true)?.version
             let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
             sitesWithBlockedCatalogFile.insert(siteID)
             guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) || isRetryWhileBlocked else {

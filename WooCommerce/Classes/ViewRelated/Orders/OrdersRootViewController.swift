@@ -436,7 +436,9 @@ private extension OrdersRootViewController {
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-            tableView.contentOffset.y -= height - previousTopInset
+            if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
         }
 
         var scrollIndicatorInsets = tableView.scrollIndicatorInsets

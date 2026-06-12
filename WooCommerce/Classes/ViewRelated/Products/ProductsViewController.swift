@@ -294,6 +294,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
+        guard isViewLoaded else {
+            return
+        }
         guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
@@ -905,6 +908,9 @@ private extension ProductsViewController {
             ServiceLocator.crashLogging.logError(error)
         }
 
+        guard let tableView else {
+            return
+        }
         tableView.reloadData()
     }
 
@@ -923,6 +929,9 @@ private extension ProductsViewController {
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
+        guard let tableView else {
+            return
+        }
         showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()

@@ -30,6 +30,12 @@ final class ProductsSplitViewWrapperController: UIViewController {
         coordinator.start()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        coordinator.refreshExpandedLayoutIfNeeded()
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }

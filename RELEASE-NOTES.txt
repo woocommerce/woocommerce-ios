@@ -10,6 +10,7 @@
 - [*] Improvements to POS by downloading product catalog to the device [https://github.com/woocommerce/woocommerce-ios/pull/16958]
 - [*] Dashboard: Added option to update analytic update setting [https://github.com/woocommerce/woocommerce-ios/pull/17304]
 - [*] Fixed several crash-risk code paths in Shipping Labels, Stats, and Downloadable files [https://github.com/woocommerce/woocommerce-ios/pull/17307]
+- [*] Improved responsiveness to iPad window resizing throughout the app [https://github.com/woocommerce/woocommerce-ios/pull/17336]
 - [internal] Speculatively fixed occasional crash on launch when creating TracksService [https://github.com/woocommerce/woocommerce-ios/pull/17328]
 - [x] Added option to login with QR-code
 

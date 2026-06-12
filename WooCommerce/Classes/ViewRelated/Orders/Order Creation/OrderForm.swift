@@ -418,7 +418,7 @@ struct OrderForm: View {
                             .padding([.leading], Layout.dividerLeadingPadding)
 
                         completedButton
-                            .padding()
+                            .padding([.top, .horizontal])
                     }
                 } expandableContent: {
                     OrderPaymentSection(

@@ -87,6 +87,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
                 .layoutPriority(1)
 
                 Divider()
+                    .ignoresSafeArea(edges: .vertical)
 
                 NavigationStack {
                     primaryView(nil)

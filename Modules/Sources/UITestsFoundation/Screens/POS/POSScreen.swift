@@ -193,13 +193,14 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func tapNewOrder() -> Self {
         let newOrderButton = app.buttons["pos-new-order-button"]
-        if newOrderButton.waitForIsHittable(timeout: 15) {
+        XCTAssertTrue(waitForVisibleElement(newOrderButton, timeout: 15), "New order button should be visible on the payment success screen.")
+
+        if newOrderButton.isHittable {
             newOrderButton.tap()
             return self
         }
 
         // XCTest can report this animated SwiftUI button as non-hittable even after it is visible.
-        XCTAssertTrue(waitForVisibleElement(newOrderButton, timeout: 5), "New order button should be visible on the payment success screen.")
         newOrderButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         return self
     }

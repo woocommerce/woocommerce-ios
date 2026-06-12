@@ -10,10 +10,15 @@ public final class TwoFAScreen {
         $0.buttons["Continue Button"]
     }
 
+    private let myStoreTabGetter: (XCUIApplication) -> XCUIElement = {
+        $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
+    }
+
     public let app: XCUIApplication
 
     private var twoFAField: XCUIElement { twoFAFieldGetter(app) }
     private var continueButton: XCUIElement { continueButtonGetter(app) }
+    private var myStoreTab: XCUIElement { myStoreTabGetter(app) }
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         self.app = app
@@ -40,7 +45,7 @@ public final class TwoFAScreen {
 
     public func proceedWith(twoFACode: String) throws {
         enterTwoFACode(twoFACode)
-        tapContinueButton()
+        submitTwoFACode()
     }
 
     private func enterTwoFACode(_ twoFACode: String) {
@@ -81,22 +86,131 @@ public final class TwoFAScreen {
         return true
     }
 
+    private func submitTwoFACode() {
+        if hasAdvancedPastTwoFA() {
+            return
+        }
+
+        // On iPad/iOS 26 the numeric keypad can keep the on-screen CTA non-hittable,
+        // while submitting from the focused field advances reliably.
+        if submitFromFocusedFieldIfPossible() {
+            return
+        }
+
+        XCTAssertTrue(waitForContinueButtonReady(timeout: 5), "Continue button should be enabled after entering the 2FA code.")
+        tapContinueButton()
+    }
+
+    private func waitForContinueButtonReady(timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if hasAdvancedPastTwoFA() {
+                return true
+            }
+
+            if continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty {
+                return true
+            }
+
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.2))
+        }
+
+        if hasAdvancedPastTwoFA() {
+            return true
+        }
+
+        return continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty
+    }
+
+    private func submitFromFocusedFieldIfPossible() -> Bool {
+        guard app.keyboards.firstMatch.exists else {
+            return false
+        }
+
+        let keyboardContinueButton = app.keyboards.buttons["Continue"].firstMatch
+        if keyboardContinueButton.exists && keyboardContinueButton.isHittable {
+            keyboardContinueButton.tap()
+            if waitForSubmissionToStart(timeout: 1) {
+                return true
+            }
+        }
+
+        app.typeText("\n")
+        if waitForSubmissionToStart(timeout: 1) {
+            return true
+        }
+
+        if hasAdvancedPastTwoFA() {
+            return true
+        }
+
+        guard twoFAField.exists else {
+            return hasAdvancedPastTwoFA()
+        }
+
+        twoFAField.typeText("\n")
+        return waitForSubmissionToStart(timeout: 1)
+    }
+
+    private func waitForSubmissionToStart(timeout: TimeInterval) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if hasAdvancedPastTwoFA() || !twoFAField.exists {
+                return true
+            }
+
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.2))
+        }
+
+        return hasAdvancedPastTwoFA() || !twoFAField.exists
+    }
+
+    private func hasAdvancedPastTwoFA() -> Bool {
+        myStoreTab.exists || app.staticTexts["Your WooCommerce Store"].exists
+    }
+
     private func tapContinueButton() {
-        if continueButton.waitForIsHittable(timeout: 2) {
-            continueButton.tap()
+        if hasAdvancedPastTwoFA() {
+            return
+        }
+
+        if tapContinueButtonIfReady() {
             return
         }
 
         dismissKeyboardIfNeeded()
-        if continueButton.waitForIsHittable(timeout: 5) {
-            continueButton.tap()
+        if hasAdvancedPastTwoFA() {
+            return
+        }
+
+        if tapContinueButtonIfReady() {
             return
         }
 
         XCTAssertTrue(continueButton.waitForExistence(timeout: 5), "Continue button should exist after entering the 2FA code.")
         XCTAssertTrue(continueButton.isEnabled, "Continue button should be enabled after entering the 2FA code.")
         XCTAssertFalse(continueButton.frame.isEmpty, "Continue button should have a tappable frame after entering the 2FA code.")
-        continueButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTFail("2FA submission should start after tapping Continue.")
+    }
+
+    private func tapContinueButtonIfReady() -> Bool {
+        if hasAdvancedPastTwoFA() {
+            return true
+        }
+
+        guard continueButton.exists && continueButton.isEnabled && !continueButton.frame.isEmpty else {
+            return false
+        }
+
+        if continueButton.isHittable {
+            continueButton.tap()
+        } else {
+            continueButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
+
+        return waitForSubmissionToStart(timeout: 3)
     }
 
     private func dismissKeyboardIfNeeded() {
@@ -109,11 +223,27 @@ public final class TwoFAScreen {
             let button = app.keyboards.buttons[label].firstMatch
             if button.exists && button.isHittable {
                 button.tap()
-                return
+                waitForKeyboardToDismiss(timeout: 1)
+                if !app.keyboards.firstMatch.exists {
+                    return
+                }
             }
         }
 
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.1)).tap()
+        waitForKeyboardToDismiss(timeout: 1)
+    }
+
+    private func waitForKeyboardToDismiss(timeout: TimeInterval) {
+        let deadline = Date().addingTimeInterval(timeout)
+
+        while Date() < deadline {
+            if !app.keyboards.firstMatch.exists {
+                return
+            }
+
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+        }
     }
 
     private enum TwoFAScreenError: Error {

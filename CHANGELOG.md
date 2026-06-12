@@ -2,8 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 25.0
-Now you can log in with a QR-code and verify age eligibility as needed. Duplicating a product opens the copy and preserves original images. Refunds for orders with multiple shipping lines work as expected. You'll also see smoother resizing across the app on your iPad.
-
+Now you can log in easily with a QR-code. Duplicating a product opens the new copy and preserves original images. Refunds for orders with multiple shipping lines, or duplicate line items, now work as they should. Your POS catalog downloads more quickly, and you'll see smoother resizing of the app on iPad.
 ## 24.9
 Big news if you’re in Canada — Point of Sale is now available on iPad, and the refund flow is smoother for everyone. You can use our new troubleshooting and AI help tools in the support area. Plus, configure your Store Stats widget, try a new Trends widget on your lock screen, and more fixes for your daily tasks.
 

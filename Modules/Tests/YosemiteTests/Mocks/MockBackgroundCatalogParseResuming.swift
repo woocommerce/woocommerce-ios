@@ -9,6 +9,14 @@ final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, 
     private(set) var resumePendingParseIfNeededCallCount = 0
     private(set) var lastParseHandlerError: Error?
 
+    private(set) var discardPendingParseCallCount = 0
+    private(set) var discardPendingParseSiteIDs: [Int64] = []
+
+    func discardPendingParse(for siteID: Int64) {
+        discardPendingParseCallCount += 1
+        discardPendingParseSiteIDs.append(siteID)
+    }
+
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async {
         resumePendingParseIfNeededCallCount += 1
         guard let pending = pendingResume else { return }

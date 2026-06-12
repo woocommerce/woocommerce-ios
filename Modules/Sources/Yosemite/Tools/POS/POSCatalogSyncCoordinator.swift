@@ -270,6 +270,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
 
+        // The fresh full sync supersedes any staged pending-parse snapshot for this site.
+        // Discard it so it can't be re-applied over the newer data.
+        pendingParseResumer.discardPendingParse(for: siteID)
+
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
     }

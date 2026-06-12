@@ -1638,4 +1638,32 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
+    @Test func performFullSync_when_sync_succeeds_then_discards_pending_parse_for_site() async throws {
+        // Given
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performFullSync(for: sampleSiteID)
+
+        // Then: the fresh full sync supersedes any staged pending-parse snapshot for this site,
+        // so the coordinator discards it
+        #expect(mockPendingParseResumer.discardPendingParseCallCount == 1)
+        #expect(mockPendingParseResumer.discardPendingParseSiteIDs == [sampleSiteID])
+    }
+
+    @Test func performFullSync_when_sync_fails_then_does_not_discard_pending_parse() async throws {
+        // Given
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "sync", code: 1, userInfo: nil))
+        await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        await #expect(throws: Error.self) {
+            try await sut.performFullSync(for: sampleSiteID)
+        }
+
+        // Then: nothing was persisted, so the staged snapshot is still the best recovery option
+        #expect(mockPendingParseResumer.discardPendingParseCallCount == 0)
+    }
 }

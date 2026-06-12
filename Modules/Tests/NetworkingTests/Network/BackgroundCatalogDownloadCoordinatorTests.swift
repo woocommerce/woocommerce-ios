@@ -321,6 +321,52 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         try? fileManager.removeItem(at: oldStagedFile)
     }
 
+    // MARK: - discardPendingParse
+
+    @Test func discardPendingParse_when_pending_record_matches_site_then_deletes_file_and_clears_record() async throws {
+        // Given
+        let stagedFile = try makeDownloadedFile(named: "superseded.json")
+        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When — a full sync for the same site persisted successfully
+        coordinator.discardPendingParse(for: 444)
+
+        // Then — the staged snapshot is superseded, so it is removed
+        #expect(pendingFileStore.load() == nil)
+        #expect(fileManager.fileExists(atPath: stagedFile.path) == false)
+    }
+
+    @Test func discardPendingParse_when_pending_record_is_for_other_site_then_keeps_it() async throws {
+        // Given
+        let stagedFile = try makeDownloadedFile(named: "other-site.json")
+        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When — a full sync for a different site persisted
+        coordinator.discardPendingParse(for: 555)
+
+        // Then — the other site's pending retry is still valid, so it is untouched
+        let pending = pendingFileStore.load()
+        #expect(pending?.siteID == 444)
+        #expect(fileManager.fileExists(atPath: stagedFile.path) == true)
+
+        // Cleanup
+        try? fileManager.removeItem(at: stagedFile)
+    }
+
+    @Test func discardPendingParse_when_no_pending_record_then_does_nothing() async {
+        // Given
+        pendingFileStore.clear()
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When
+        coordinator.discardPendingParse(for: 444)
+
+        // Then
+        #expect(pendingFileStore.load() == nil)
+    }
+
     // MARK: - PendingCatalogFile round-trips
 
     @Suite

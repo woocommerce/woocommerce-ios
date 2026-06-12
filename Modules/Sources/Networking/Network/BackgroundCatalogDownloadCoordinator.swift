@@ -8,6 +8,11 @@ public protocol BackgroundCatalogParseResuming {
     /// Retries the parse step for a previously-staged catalog file, if one exists.
     /// - Parameter parseHandler: Closure that parses and persists the staged file for a `(URL, siteID)`.
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+
+    /// Discards a staged pending-parse file for the given site, if one exists.
+    /// Called after a full sync successfully persists: the fresh catalog supersedes the staged
+    /// snapshot, so retrying it would only overwrite newer data with older.
+    func discardPendingParse(for siteID: Int64)
 }
 
 /// Coordinates background catalog downloads, including handling app wake events.
@@ -120,6 +125,18 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
             pendingCatalogFileStore.clear()
         }
         // On failure: leave file + record in place for the next foreground entry.
+    }
+
+    /// Discards the staged pending-parse file and its record if it belongs to the given site.
+    /// The pending store is single-slot across sites, so a pending file for a *different* site is
+    /// left untouched — its retry is still valid.
+    public func discardPendingParse(for siteID: Int64) {
+        guard let pending = pendingCatalogFileStore.load(), pending.siteID == siteID else {
+            return
+        }
+        DDLogInfo("🟣 Discarding pending catalog parse for site \(siteID): superseded by a completed full sync")
+        try? fileManager.removeItem(atPath: pending.filePath)
+        pendingCatalogFileStore.clear()
     }
 }
 

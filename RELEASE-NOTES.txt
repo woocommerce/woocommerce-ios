@@ -16,6 +16,7 @@
 - [*] Fixed several crash-risk code paths in Shipping Labels, Stats, and Downloadable files [https://github.com/woocommerce/woocommerce-ios/pull/17307]
 - [*] Improved responsiveness to iPad window resizing throughout the app [https://github.com/woocommerce/woocommerce-ios/pull/17336]
 - [internal] Speculatively fixed occasional crash on launch when creating TracksService [https://github.com/woocommerce/woocommerce-ios/pull/17328]
+- [internal] Added tracking events for UPS and FedEx carrier Terms of Service (shown/accepted) [https://github.com/woocommerce/woocommerce-ios/pull/17343]
 - [x] Added option to login with QR-code
 
 24.9

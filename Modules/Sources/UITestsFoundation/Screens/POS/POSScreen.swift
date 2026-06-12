@@ -215,16 +215,12 @@ public final class POSScreen: ScreenObject {
         } else {
             XCTAssertTrue(cartViewGetter(app).waitForExistence(timeout: 10), "POS cart should be visible for a new order.")
             if let previousProductID {
-                XCTAssertFalse(
-                    app.descendants(matching: .any)["pos-cart-item-product-\(previousProductID)"].exists,
-                    "Previous product cart item should be cleared for a new order."
-                )
+                let previousProductCartItem = app.descendants(matching: .any)["pos-cart-item-product-\(previousProductID)"]
+                previousProductCartItem.waitForElementToNotExist(element: previousProductCartItem, timeout: 10)
             }
             if let previousVariationID {
-                XCTAssertFalse(
-                    app.descendants(matching: .any)["pos-cart-item-variation-\(previousVariationID)"].exists,
-                    "Previous variation cart item should be cleared for a new order."
-                )
+                let previousVariationCartItem = app.descendants(matching: .any)["pos-cart-item-variation-\(previousVariationID)"]
+                previousVariationCartItem.waitForElementToNotExist(element: previousVariationCartItem, timeout: 10)
             }
         }
         return self

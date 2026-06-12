@@ -139,9 +139,10 @@ struct OrderFormPresentationWrapper: View {
             },
             secondaryView: { isShowingProductSelector in
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorNavigationView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
                                         isPresented: isShowingProductSelector,
                                         viewModel: productSelectorViewModel)
+                    .wooNavigationBarStyle()
                     .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }

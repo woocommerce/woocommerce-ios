@@ -8,6 +8,9 @@ struct PointOfSaleOrderTotals: Equatable {
     let taxTotal: String
     let orderTotalDecimal: Decimal
     let discountTotal: String?
+    /// Formatted total of any custom amounts (order fees) on the order. `nil` when there are none,
+    /// so the totals breakdown can hide the row.
+    let customAmountsTotal: String?
     let couponsTotals: [PointOfSaleCouponTotal]
 
     init(cartTotal: String,
@@ -15,12 +18,14 @@ struct PointOfSaleOrderTotals: Equatable {
          taxTotal: String,
          orderTotalDecimal: Decimal,
          discountTotal: String? = nil,
+         customAmountsTotal: String? = nil,
          couponsTotals: [PointOfSaleCouponTotal] = []) {
         self.cartTotal = cartTotal
         self.orderTotal = orderTotal
         self.taxTotal = taxTotal
         self.orderTotalDecimal = orderTotalDecimal
         self.discountTotal = discountTotal
+        self.customAmountsTotal = customAmountsTotal
         self.couponsTotals = couponsTotals
     }
 }

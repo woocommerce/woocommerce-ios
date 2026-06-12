@@ -841,7 +841,7 @@ private extension StorePickerViewController {
                         self?.dismiss()
                     }
                 } else {
-                    let underlyingError = (error as? RoleEligibilityError)?.underlyingError ?? error
+                    let underlyingError = error.underlyingError ?? error
                     let isPermissionError = underlyingError is DotcomError
                     self.displayUnknownErrorModal(isPermissionError: isPermissionError)
                 }

@@ -72,6 +72,7 @@ extension WooAnalyticsEvent {
             static let httpStatusCode = "http_status_code"
             static let responseContentType = "response_content_type"
             static let reason = "reason"
+            static let wooCommerceVersion = "woocommerce_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -193,6 +194,15 @@ extension WooAnalyticsEvent {
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
                                            Key.syncStrategy: syncStrategy])
+        }
+
+        // MARK: - Host-Blocked Catalog File Events
+
+        /// Tracked once whenever a full sync falls back to the paginated sync because the host
+        /// blocks the catalog file (WC < 11, where the core `.htaccess` fix is unavailable).
+        public static func blockedFellBackToRemote(wooCommerceVersion: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogBlockedFellBackToRemote,
+                              properties: [Key.wooCommerceVersion: wooCommerceVersion ?? "unknown"])
         }
     }
 }

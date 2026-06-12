@@ -28,8 +28,10 @@ struct UniversalLinkRouter {
     func canHandle(url: URL) -> Bool {
         /// Ensure that the URL is not related to login
         ///
-        guard url.absoluteString.hasPrefix(WooConstants.appLoginURLPrefix) == false,
-              url.absoluteString.hasPrefix(WooConstants.appMagicLoginURLPrefix) == false else {
+        let loweredURL = url.absoluteString.lowercased()
+        guard loweredURL.hasPrefix(WooConstants.appLoginURLPrefix) == false,
+              loweredURL.hasPrefix(WooConstants.appMagicLoginURLPrefix) == false,
+              loweredURL.hasPrefix(WooConstants.qrLoginURLPrefix) == false else {
             return false
         }
 

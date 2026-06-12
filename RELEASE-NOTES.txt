@@ -13,7 +13,7 @@
 - [*] Improved responsiveness to iPad window resizing throughout the app [https://github.com/woocommerce/woocommerce-ios/pull/17336]
 - [internal] Speculatively fixed occasional crash on launch when creating TracksService [https://github.com/woocommerce/woocommerce-ios/pull/17328]
 - [x] Added option to login with QR-code
-- [Internal] Add Star Micronics StarXpand SDK and POS receipt-printing feature flag (off by default) [PR_URL]
+- [Internal] Add Star Micronics StarXpand SDK and POS receipt-printing feature flag (off by default) [https://github.com/woocommerce/woocommerce-ios/pull/17347]
 
 24.9
 -----

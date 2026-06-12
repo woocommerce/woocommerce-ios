@@ -31,7 +31,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
     ///   - snapshotDate: When the snapshot's download started. Used as the persisted sync
-    ///     watermark so a resumed snapshot doesn't claim to be current, 
+    ///     watermark so a resumed snapshot doesn't claim to be current,
     ///     keeping the next smart/incremental sync able to refetch everything since then.
     /// - Returns: The parsed catalog
     func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog

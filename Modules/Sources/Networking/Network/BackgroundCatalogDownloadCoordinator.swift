@@ -7,7 +7,7 @@ import CocoaLumberjackSwift
 public protocol BackgroundCatalogParseResuming {
     /// Retries the parse step for a previously-staged catalog file, if one exists.
     /// - Parameter parseHandler: Closure that parses and persists the staged file. Receives the
-    ///   file URL, the site ID, and the moment the snapshot's download started.  Callers use
+    ///   file URL, the site ID, and the moment the snapshot's download started. Callers use
     ///   that date (not the current time) as the sync watermark, so a resumed snapshot never
     ///   masquerades as fresher data than it is.
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async

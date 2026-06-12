@@ -51,16 +51,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             Spacer()
 
             // Content that will expand/collapse
-            Group {
+            VStack(spacing: 0) {
                 VStack {
                     VStack {
-                        if isExpanded || revealContentDuringDrag {
-                            expandableContent()
-                                .transition(.move(edge: .bottom))
-                        }
+                        expandableContent()
                     }
                     .trackSize(size: $expandingContentSize)
                     .onChange(of: expandingContentSize) {
+                        guard hasMeasuredCollapsedContent else {
+                            return
+                        }
                         withAnimation {
                             panelHeight = calculateHeight()
                         }
@@ -71,11 +71,13 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 // This isn't ideal... it should be something we can specify as content,
                 // but it's here as it wants to be outside the scrollview.
                 Divider()
-                    .renderedIf(isExpanded || revealContentDuringDrag)
                     .padding([.bottom, .leading], Layout.dividerPadding)
             }
             .frame(maxWidth: .infinity)
+            .frame(height: expandableContentContainerHeight, alignment: .bottom)
             .clipped()
+            .accessibilityHidden(!shouldExposeExpandableContent)
+            .allowsHitTesting(shouldExposeExpandableContent)
 
             // Always visible content
             alwaysVisibleContent()
@@ -169,7 +171,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
         let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
         let maxExpandedHeight = screenHeight * 0.8
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
@@ -178,6 +179,25 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
         // Prevent the view from shrinking below the minHeight when dragging down.
         return max(collapsedHeight, dragAdjustedHeight)
+    }
+
+    private var collapsedHeight: CGFloat {
+        fixedContentSize.height + chevronSize.height + Layout.chevronPadding
+    }
+
+    private var expandableContentContainerHeight: CGFloat {
+        guard hasMeasuredCollapsedContent else {
+            return 0
+        }
+        return max(0, panelHeight - collapsedHeight)
+    }
+
+    private var shouldExposeExpandableContent: Bool {
+        isExpanded || revealContentDuringDrag
+    }
+
+    private var hasMeasuredCollapsedContent: Bool {
+        fixedContentSize.height > 0 && chevronSize.height > 0
     }
 
     @ViewBuilder private var bottomSafeAreaBackground: some View {

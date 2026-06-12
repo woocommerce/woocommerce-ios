@@ -401,8 +401,7 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(extendsBackgroundIntoBottomSafeArea: true,
-                                      onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)

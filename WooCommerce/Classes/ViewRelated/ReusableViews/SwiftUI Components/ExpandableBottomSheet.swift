@@ -16,15 +16,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    private let extendsBackgroundIntoBottomSafeArea: Bool
-
     private var onChangeOfExpansion: ((Bool) -> Void)?
 
-    public init(extendsBackgroundIntoBottomSafeArea: Bool = false,
-                onChangeOfExpansion: ((Bool) -> Void)? = nil,
+    public init(onChangeOfExpansion: ((Bool) -> Void)? = nil,
                 @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
-        self.extendsBackgroundIntoBottomSafeArea = extendsBackgroundIntoBottomSafeArea
         self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
@@ -129,7 +125,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
-        .clipShape(ExpandableBottomSheetShape(radius: Layout.sheetCornerRadius, corners: roundedCorners))
+        .clipShape(ExpandableBottomSheetShape(radius: Layout.sheetCornerRadius, corners: [.topLeft, .topRight]))
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
         .padding([.top], -Layout.shadowRadius) // ensure shadow overlays views "underneath" it
@@ -161,11 +157,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .background {
-            if !extendsBackgroundIntoBottomSafeArea {
-                Color(.listForeground(modal: false))
-            }
-        }
         .background(alignment: .bottom) {
             bottomSafeAreaBackground
         }
@@ -189,12 +180,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         return max(collapsedHeight, dragAdjustedHeight)
     }
 
-    private var roundedCorners: UIRectCorner {
-        extendsBackgroundIntoBottomSafeArea ? [.topLeft, .topRight] : .allCorners
-    }
-
     @ViewBuilder private var bottomSafeAreaBackground: some View {
-        if extendsBackgroundIntoBottomSafeArea && safeAreaInsets.bottom > 0 {
+        if safeAreaInsets.bottom > 0 {
             Color(.listForeground(modal: false))
                 .frame(height: safeAreaInsets.bottom)
                 .offset(y: safeAreaInsets.bottom)

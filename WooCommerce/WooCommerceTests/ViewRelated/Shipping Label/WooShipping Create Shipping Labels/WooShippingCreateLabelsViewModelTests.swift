@@ -260,7 +260,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // A missing origin phone is surfaced specifically rather than the generic unverified notice,
         // so the merchant knows which field to fix.
         let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
-                                         value: "Phone number is required for the origin address.",
+                                         value: "Phone number is missing for the origin address.",
                                          comment: "")
         waitUntil {
             viewModel.originAddress.isNotEmpty
@@ -309,7 +309,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // A phone with no digits (whitespace/punctuation only) is rejected by the backend as empty,
         // so it must surface the missing-phone notice rather than the generic unverified one.
         let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
-                                         value: "Phone number is required for the origin address.",
+                                         value: "Phone number is missing for the origin address.",
                                          comment: "")
         waitUntil {
             viewModel.originAddress.isNotEmpty
@@ -357,7 +357,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Then
         // A present phone with a missing email surfaces the email notice (phone check takes precedence over email).
         let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingEmail",
-                                         value: "Email is required for the origin address.",
+                                         value: "Email is missing for the origin address.",
                                          comment: "")
         waitUntil {
             viewModel.originAddress.isNotEmpty

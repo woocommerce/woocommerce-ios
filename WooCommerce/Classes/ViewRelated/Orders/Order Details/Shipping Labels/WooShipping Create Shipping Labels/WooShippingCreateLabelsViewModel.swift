@@ -949,12 +949,12 @@ private extension WooShippingCreateLabelsViewModel {
         enum OriginAddress {
             static let missingPhone = NSLocalizedString(
                 "wooShipping.createLabels.originAddress.missingPhone",
-                value: "Phone number is required for the origin address.",
+                value: "Phone number is missing for the origin address.",
                 comment: "Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen"
             )
             static let missingEmail = NSLocalizedString(
                 "wooShipping.createLabels.originAddress.missingEmail",
-                value: "Email is required for the origin address.",
+                value: "Email is missing for the origin address.",
                 comment: "Notice when the origin (ship from) address is missing an email on the shipping label creation screen"
             )
         }

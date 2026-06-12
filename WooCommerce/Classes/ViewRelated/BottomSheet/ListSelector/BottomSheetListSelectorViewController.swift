@@ -95,7 +95,9 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
             as? BottomSheetListSelectorSectionHeaderView else {
                 fatalError()
         }
-        header.configure(title: viewProperties.title, subtitle: viewProperties.subtitle)
+        header.configure(title: viewProperties.title,
+                         subtitle: viewProperties.subtitle,
+                         backgroundColor: viewProperties.backgroundColor)
         return header
     }
 }
@@ -105,7 +107,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 private extension BottomSheetListSelectorViewController {
 
     func configureMainView() {
-        view.backgroundColor = .listForeground(modal: false)
+        view.backgroundColor = viewProperties.backgroundColor
 
         if let accessibilityIdentifier = viewProperties.accessibilityIdentifier {
             view.accessibilityIdentifier = accessibilityIdentifier
@@ -119,8 +121,11 @@ private extension BottomSheetListSelectorViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedSectionHeaderHeight = (viewProperties.title != nil || viewProperties.subtitle != nil) ? estimatedSectionHeight : .zero
         tableView.sectionHeaderHeight = UITableView.automaticDimension
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = .zero
+        }
 
-        tableView.backgroundColor = .listForeground(modal: false)
+        tableView.backgroundColor = viewProperties.backgroundColor
 
         registerTableViewCells()
         registerTableViewHeaderFooters()

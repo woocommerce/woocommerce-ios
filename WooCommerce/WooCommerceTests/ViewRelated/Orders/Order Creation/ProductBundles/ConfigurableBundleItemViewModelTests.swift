@@ -105,7 +105,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                                                       attributes: [
             .init(metaID: 0, name: "Color", value: "Indigo"),
             .init(metaID: 0, name: "Flavor", value: "Pineapple")
-        ])
+                                                      ])
         let variableProduct = createVariableProduct()
             .copy(attributes: [
                 .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"]),

@@ -84,6 +84,10 @@ only_rules:
 
   - line_length
 
+  # Trailing closure end-token indentation should match the line that
+  # opens the literal/expression.
+  - literal_expression_end_indentation
+
   # MARK comment should be in valid format.
   - mark
 

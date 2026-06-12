@@ -32,7 +32,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3),
             MockRefunds.sampleRefundItem(productID: 2, quantity: -2),
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)
@@ -55,7 +55,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3),
             MockRefunds.sampleRefundItem(productID: 2, quantity: -2),
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)
@@ -76,7 +76,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         let refund = MockRefunds.sampleRefund(amount: orderTotal,
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3)
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)

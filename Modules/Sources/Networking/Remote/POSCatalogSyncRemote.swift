@@ -287,7 +287,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         do {
             items = try mapper.map(response: data)
         } catch {
-            throw POSCatalogFileError.invalidResponse(statusCode: statusCode, contentType: contentType, underlyingError: error)
+            throw POSCatalogFileError.invalidResponse(statusCode: statusCode,
+                                                      contentType: contentType,
+                                                      hasHTMLBody: Self.hasHTMLBody(data),
+                                                      underlyingError: error)
         }
 
         var products: [POSProduct] = []
@@ -320,6 +323,23 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         try? fileManager.removeItem(at: fileURL)
+    }
+
+    /// Returns true when the file body looks like HTML: the first non-whitespace byte is `<`.
+    /// The expected catalog payload is a JSON array, so an HTML body usually means the host
+    /// served an error page instead of the file. This is the only response fact available for
+    /// background downloads, which don't retain status code or content type.
+    static func hasHTMLBody(_ data: Data) -> Bool {
+        var bytes = data[...]
+        let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]
+        if bytes.starts(with: utf8BOM) {
+            bytes = bytes.dropFirst(utf8BOM.count)
+        }
+        let whitespace: Set<UInt8> = [0x20, 0x09, 0x0A, 0x0D] // space, tab, LF, CR
+        guard let firstByte = bytes.first(where: { !whitespace.contains($0) }) else {
+            return false
+        }
+        return firstByte == UInt8(ascii: "<")
     }
 
     /// Loads POS products for full sync.

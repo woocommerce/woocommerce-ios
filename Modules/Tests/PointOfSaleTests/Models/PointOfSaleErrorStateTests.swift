@@ -26,7 +26,7 @@ struct PointOfSaleErrorStateTests {
         #expect(errorState.buttonText == "Retry")
     }
 
-    @Test func errorOnRefreshingCatalog_when_catalog_file_download_fails_then_shows_server_permissions_subtitle() {
+    @Test func errorOnRefreshingCatalog_when_catalog_file_blocked_then_shows_blocked_title_and_subtitle() {
         // Given
         let error = POSCatalogFileError.downloadFailed(
             statusCode: 403,
@@ -37,14 +37,46 @@ struct PointOfSaleErrorStateTests {
         let errorState = PointOfSaleErrorState.errorOnRefreshingCatalog(error: error)
 
         // Then
-        #expect(errorState.subtitle == catalogFileResponseErrorSubtitle)
+        #expect(errorState.title == catalogBlockedTitle)
+        #expect(errorState.subtitle == catalogBlockedSubtitle)
+    }
+
+    @Test func errorOnInitalCatalogSync_when_catalog_file_blocked_then_shows_blocked_title_and_subtitle() {
+        // Given
+        let error = POSCatalogFileError.downloadFailed(
+            statusCode: 403,
+            contentType: "text/html; charset=UTF-8"
+        )
+
+        // When
+        let errorState = PointOfSaleErrorState.errorOnInitalCatalogSync(error: error)
+
+        // Then
+        #expect(errorState.title == catalogBlockedTitle)
+        #expect(errorState.subtitle == catalogBlockedSubtitle)
+    }
+
+    @Test func errorOnRefreshingCatalog_when_catalog_file_download_fails_then_shows_generic_subtitle() {
+        // Given
+        let error = POSCatalogFileError.downloadFailed(
+            statusCode: 404,
+            contentType: nil
+        )
+
+        // When
+        let errorState = PointOfSaleErrorState.errorOnRefreshingCatalog(error: error)
+
+        // Then
+        #expect(errorState.title == "Unable to refresh catalog")
+        #expect(errorState.subtitle == "Please try again.")
     }
 
     @Test func errorOnRefreshingCatalog_when_catalog_file_response_is_invalid_then_shows_generic_subtitle() {
         // Given
         let error = POSCatalogFileError.invalidResponse(
             statusCode: 200,
-            contentType: "text/html",
+            contentType: "application/json",
+            hasHTMLBody: false,
             underlyingError: NSError(domain: "Test", code: 0)
         )
 
@@ -89,5 +121,6 @@ struct PointOfSaleErrorStateTests {
     }
 }
 
-private let catalogFileResponseErrorSubtitle = "The catalog file could not be downloaded from your store due to blocked server permissions. " +
-"Please contact your hosting provider."
+private let catalogBlockedTitle = "Action needed on your store"
+private let catalogBlockedSubtitle = "Point of Sale can't access a file with your product information because your hosting provider is blocking it.\n" +
+"Please ask them to allow access to it so Point of Sale keeps working properly."

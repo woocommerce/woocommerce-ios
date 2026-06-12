@@ -6,15 +6,36 @@ import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
 
 public class TracksProvider: NSObject, AnalyticsProvider {
-    private static let contextManager = TracksContextManager()
 
-    private static let tracksService: TracksService = {
-        let tracksService = TracksService(contextManager: contextManager)!
-        tracksService.eventNamePrefix = Constants.eventNamePrefix
-        return tracksService
-    }()
+    /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
+    private enum TracksServiceExecutor {
+        private static let contextManager = TracksContextManager()
 
-    private static let tracksQueue = DispatchQueue(label: "com.woocommerce.TracksProvider")
+        private static let service: TracksService = {
+            let service = TracksService(contextManager: contextManager)!
+            service.eventNamePrefix = Constants.eventNamePrefix
+            return service
+        }()
+
+        private static let queue = DispatchQueue(label: "com.woocommerce.TracksProvider")
+
+        /// Keep lazy `TracksService` construction off the serialization queue while still serializing service use.
+        static func enqueue(_ operation: @escaping (TracksService) -> Void) {
+            let enqueue: (TracksService) -> Void = { tracksService in
+                queue.async {
+                    operation(tracksService)
+                }
+            }
+
+            if Thread.isMainThread {
+                enqueue(service)
+            } else {
+                DispatchQueue.main.async {
+                    enqueue(service)
+                }
+            }
+        }
+    }
 
     private static var isPOSModeActive: Bool = false
 
@@ -38,9 +59,9 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        Self.tracksQueue.async {
+        Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
-                guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
+                guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                     return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
                 }
 
@@ -52,15 +73,15 @@ public extension TracksProvider {
 
                 DDLogInfo("🔵 Tracked \(eventName), properties: [\(keyValuePairs)]")
             } else {
-                Self.tracksService.trackEventName(eventName)
+                tracksService.trackEventName(eventName)
                 DDLogInfo("🔵 Tracked \(eventName)")
             }
         }
     }
 
     func clearEvents() {
-        Self.tracksQueue.async {
-            Self.tracksService.clearQueuedEvents()
+        Self.TracksServiceExecutor.enqueue { tracksService in
+            tracksService.clearQueuedEvents()
         }
     }
 
@@ -72,8 +93,8 @@ public extension TracksProvider {
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil
             let anonymousUserID = ServiceLocator.stores.sessionManager.anonymousUserID
-            Self.tracksQueue.async {
-                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousUserID)
+            Self.TracksServiceExecutor.enqueue { tracksService in
+                tracksService.switchToAnonymousUser(withAnonymousID: anonymousUserID)
             }
             return
         }
@@ -95,34 +116,34 @@ private extension TracksProvider {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
-                Self.tracksQueue.async {
-                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                                 userID: String(account.userID),
-                                                                 wpComToken: authToken,
-                                                                 skipAliasEventCreation: false)
+                Self.TracksServiceExecutor.enqueue { tracksService in
+                    tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                           userID: String(account.userID),
+                                                           wpComToken: authToken,
+                                                           skipAliasEventCreation: false)
                 }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
-                Self.tracksQueue.async {
-                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                                 userID: String(account.userID),
-                                                                 wpComToken: authToken,
-                                                                 skipAliasEventCreation: true)
+                Self.TracksServiceExecutor.enqueue { tracksService in
+                    tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                           userID: String(account.userID),
+                                                           wpComToken: authToken,
+                                                           skipAliasEventCreation: true)
                 }
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                Self.tracksQueue.async {
-                    Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
-                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                                 userID: String(account.userID),
-                                                                 wpComToken: authToken,
-                                                                 skipAliasEventCreation: false)
+                Self.TracksServiceExecutor.enqueue { tracksService in
+                    tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                    tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                           userID: String(account.userID),
+                                                           wpComToken: authToken,
+                                                           skipAliasEventCreation: false)
                 }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            Self.tracksQueue.async {
-                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+            Self.TracksServiceExecutor.enqueue { tracksService in
+                tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
             }
         }
     }
@@ -267,7 +288,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
             WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
         // Local catalog events always get pos_ prefix since they're POS-specific features
@@ -284,7 +306,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
             WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
+            WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
         // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event
@@ -300,9 +323,9 @@ private extension TracksProvider {
         let readUIKitAndApply = {
             let voiceOver = UIAccessibility.isVoiceOverRunning
             let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
-            Self.tracksQueue.async {
-                Self.tracksService.userProperties.removeAllObjects()
-                Self.tracksService.userProperties.addEntries(from: [
+            Self.TracksServiceExecutor.enqueue { tracksService in
+                tracksService.userProperties.removeAllObjects()
+                tracksService.userProperties.addEntries(from: [
                     UserProperties.platformKey: "iOS",
                     UserProperties.voiceOverKey: voiceOver,
                     UserProperties.rtlKey: isRTL

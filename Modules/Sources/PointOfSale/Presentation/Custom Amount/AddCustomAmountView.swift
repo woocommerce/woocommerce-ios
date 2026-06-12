@@ -54,34 +54,53 @@ struct AddCustomAmountView: View {
                 title: viewModel.isEditing ? Localization.editTitle : Localization.title,
                 backButtonConfiguration: .init(
                     state: .enabled,
-                    action: { onDismiss() },
+                    action: {
+                        clearFocus()
+                        onDismiss()
+                    },
                     buttonIcon: backButtonStyle.iconName
                 )
             )
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
-                    amountSection
-                        .padding(.top, POSSpacing.xLarge)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                        amountSection
+                            .id(Field.amount)
+                            .padding(.top, POSSpacing.xLarge)
 
-                    Divider()
+                        Divider()
 
-                    taxesRow
+                        taxesRow
 
-                    Divider()
+                        Divider()
 
-                    nameSection
+                        nameSection
+                            .id(Field.name)
 
-                    Spacer(minLength: POSSpacing.xxLarge)
+                        Spacer(minLength: POSSpacing.xxLarge)
+                    }
+                    .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                 }
-                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .scrollDismissesKeyboard(.interactively)
+                // The submit button is pinned below the scroll view, so a focused field (especially the
+                // lower Name field) can end up hidden behind the keyboard. Scroll the focused field into
+                // the keyboard-avoided area once the keyboard has settled.
+                .onChange(of: isAmountFocused) { _, focused in
+                    guard focused else { return }
+                    scrollToField(.amount, using: proxy)
+                }
+                .onChange(of: isNameFocused) { _, focused in
+                    guard focused else { return }
+                    scrollToField(.name, using: proxy)
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
 
             submitButton
                 .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
                 .padding(.vertical, POSPadding.medium)
         }
+        .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
         .background(Color.posSurfaceBright.ignoresSafeArea())
     }
 
@@ -169,12 +188,36 @@ struct AddCustomAmountView: View {
 
     private func submit() {
         guard let customAmount = viewModel.resolvedCustomAmount() else { return }
+        clearFocus()
         onSubmit(customAmount)
         onDismiss()
+    }
+
+    /// Clears focus so the keyboard dismisses as the form goes away, rather than lingering over the
+    /// next screen (e.g. proceeding to checkout while the Name field is focused).
+    private func clearFocus() {
+        isAmountFocused = false
+        isNameFocused = false
+    }
+
+    /// Scrolls the focused field into view when it gains focus, deferred one runloop tick so the
+    /// focus and layout changes are applied before the scroll runs.
+    private func scrollToField(_ field: Field, using proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            withAnimation {
+                proxy.scrollTo(field, anchor: .center)
+            }
+        }
     }
 }
 
 private extension AddCustomAmountView {
+    /// Scroll-target identifiers for the form's focusable fields.
+    enum Field {
+        case amount
+        case name
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.addCustomAmount.title",

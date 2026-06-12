@@ -123,7 +123,7 @@ class RatingView: UIView {
                                        attribute: .width,
                                        multiplier: 1.0,
                                        constant: 0.0),
-                    ]
+                ]
                 NSLayoutConstraint.activate(relationalConstraints)
             } else {
                 let leftEdgeConstraints = [
@@ -142,7 +142,7 @@ class RatingView: UIView {
                                        attribute: .top,
                                        multiplier: 1.0,
                                        constant: 0.0),
-                    ]
+                ]
                 NSLayoutConstraint.activate(leftEdgeConstraints)
             }
 

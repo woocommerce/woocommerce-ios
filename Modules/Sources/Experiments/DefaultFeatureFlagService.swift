@@ -86,13 +86,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ciabBookings:
             return !buildConfig.isProduction
         case .pointOfSaleCatalogAPI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleRefundsi1:
             return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
-            return false
+            return buildConfig == .localDeveloper
         case .pointOfSalePhonePrototype:
             // Behind the flag for now — gates and UI follow in stacked PRs. Default to
             // localDeveloper only so alpha builds aren't affected until we're ready.

@@ -84,7 +84,7 @@ private extension POSManagerOverrideModalSizing {
 #Preview("Sample order") {
     POSManagerOverridePreview(
         session: MockPOSAccessSession(),
-        capability: .refundShopOrders,
+        capability: .issueRefunds,
         reason: "Issue a refund for Order #1043"
     )
 }
@@ -92,7 +92,7 @@ private extension POSManagerOverrideModalSizing {
 #Preview("Sample order - Invalid PIN") {
     POSManagerOverridePreview(
         session: MockPOSAccessSession(managerApprovalResult: .failure(.invalidPIN)),
-        capability: .publishShopCoupons,
+        capability: .createCoupons,
         reason: "Creating coupons requires manager approval",
         pinEntryState: .error(kind: .invalidPIN)
     )

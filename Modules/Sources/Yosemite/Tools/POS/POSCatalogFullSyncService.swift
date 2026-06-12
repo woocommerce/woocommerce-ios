@@ -18,6 +18,14 @@ public protocol POSCatalogFullSyncServiceProtocol {
     /// - Returns: The synced catalog containing products and variations
     func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, isBackgroundSync: Bool) async throws -> POSCatalog
 
+    /// Runs a full catalog sync using the legacy paginated REST endpoints, bypassing the catalog file API.
+    /// Used as a fallback when the host blocks access to the generated catalog file.
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - allowCellular: Should cellular data be used if required.
+    /// - Returns: The synced catalog containing products and variations
+    func startPaginatedFullSync(for siteID: Int64, allowCellular: Bool) async throws -> POSCatalog
+
     /// Parses and persists a downloaded catalog file from a background download.
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
@@ -151,6 +159,18 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             DDLogError("❌ Failed to sync and persist catalog: \(error)")
             throw error
         }
+    }
+
+    public func startPaginatedFullSync(for siteID: Int64, allowCellular: Bool) async throws -> POSCatalog {
+        DDLogInfo("🔄 Starting paginated full catalog sync for site ID: \(siteID) with allowCellular: \(allowCellular)")
+
+        let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
+        DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
+        try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
+        DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+
+        return catalog
     }
 
     public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {

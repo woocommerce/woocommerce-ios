@@ -195,7 +195,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
             ParameterKey.include: stringOfProductIDs,
             ParameterKey.exclude: stringOfExcludedProductIDs
-            ].filter({ $0.value.isEmpty == false })
+        ].filter({ $0.value.isEmpty == false })
 
         let parameters = [
             ParameterKey.page: String(pageNumber),
@@ -459,7 +459,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.productType: productType?.rawValue ?? "",
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
             ParameterKey.exclude: stringOfExcludedProductIDs
-            ].filter({ $0.value.isEmpty == false })
+        ].filter({ $0.value.isEmpty == false })
 
         let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),

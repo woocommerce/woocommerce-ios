@@ -125,7 +125,7 @@ private extension NoticeView {
         NSLayoutConstraint.activate([
             labelStackView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
             labelStackView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor)
-            ])
+        ])
 
         titleLabel.font = Fonts.titleLabelFont
         subtitleLabel.font = Fonts.subtitleLabelFont
@@ -142,7 +142,7 @@ private extension NoticeView {
         NSLayoutConstraint.activate([
             actionButton.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
             actionButton.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
-            ])
+        ])
 
         actionButton.titleLabel?.font = Fonts.actionButtonFont
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)

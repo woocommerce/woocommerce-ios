@@ -112,6 +112,9 @@ extension PickListTableViewCell {
     /// Configure a pick list cell
     ///
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
+        /// Make sure `productImageView` is laid out and gained bounds, so the image is
+        /// downsampled to the thumbnail size rather than the large fallback size.
+        productImageView.layoutIfNeeded()
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),

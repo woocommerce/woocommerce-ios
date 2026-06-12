@@ -16,11 +16,15 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
+    private let extendsBackgroundIntoBottomSafeArea: Bool
+
     private var onChangeOfExpansion: ((Bool) -> Void)?
 
-    public init(onChangeOfExpansion: ((Bool) -> Void)? = nil,
+    public init(extendsBackgroundIntoBottomSafeArea: Bool = false,
+                onChangeOfExpansion: ((Bool) -> Void)? = nil,
                 @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
+        self.extendsBackgroundIntoBottomSafeArea = extendsBackgroundIntoBottomSafeArea
         self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
@@ -125,7 +129,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
-        .cornerRadius(Layout.sheetCornerRadius)
+        .clipShape(ExpandableBottomSheetShape(radius: Layout.sheetCornerRadius, corners: roundedCorners))
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
         .padding([.top], -Layout.shadowRadius) // ensure shadow overlays views "underneath" it
@@ -157,7 +161,14 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .background(Color(.listForeground(modal: false)))
+        .background {
+            if !extendsBackgroundIntoBottomSafeArea {
+                Color(.listForeground(modal: false))
+            }
+        }
+        .background(alignment: .bottom) {
+            bottomSafeAreaBackground
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
             /// This workaround cancels the dragging when the app re-enters the foreground
@@ -176,6 +187,31 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
         // Prevent the view from shrinking below the minHeight when dragging down.
         return max(collapsedHeight, dragAdjustedHeight)
+    }
+
+    private var roundedCorners: UIRectCorner {
+        extendsBackgroundIntoBottomSafeArea ? [.topLeft, .topRight] : .allCorners
+    }
+
+    @ViewBuilder private var bottomSafeAreaBackground: some View {
+        if extendsBackgroundIntoBottomSafeArea && safeAreaInsets.bottom > 0 {
+            Color(.listForeground(modal: false))
+                .frame(height: safeAreaInsets.bottom)
+                .offset(y: safeAreaInsets.bottom)
+                .ignoresSafeArea(edges: .bottom)
+                .allowsHitTesting(false)
+        }
+    }
+}
+
+private struct ExpandableBottomSheetShape: Shape {
+    let radius: CGFloat
+    let corners: UIRectCorner
+
+    func path(in rect: CGRect) -> Path {
+        Path(UIBezierPath(roundedRect: rect,
+                          byRoundingCorners: corners,
+                          cornerRadii: CGSize(width: radius, height: radius)).cgPath)
     }
 }
 

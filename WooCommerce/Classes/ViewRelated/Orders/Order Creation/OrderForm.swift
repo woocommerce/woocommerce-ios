@@ -396,12 +396,13 @@ struct OrderForm: View {
         .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
             bannerWidth = newWidth
         }
-        .safeAreaInset(edge: .bottom) {
-            VStack {
+        .safeAreaInset(edge: .bottom, spacing: .zero) {
+            VStack(spacing: .zero) {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                ExpandableBottomSheet(extendsBackgroundIntoBottomSafeArea: true,
+                                      onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)

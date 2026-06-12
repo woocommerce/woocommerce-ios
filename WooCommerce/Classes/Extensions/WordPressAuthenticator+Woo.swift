@@ -40,6 +40,12 @@ extension WordPressAuthenticator {
                                                                 enableManualSiteCredentialLogin: true,
                                                                 enableManualErrorHandlingForSiteCredentialLogin: isManualErrorHandlingEnabled,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
+                                                                // `enableSiteAddressLoginOnlyInPrologue: true` selects the
+                                                                // stacked-buttons prologue layout, whose site-address CTA is
+                                                                // where QR login intercepts the primary login tap. Changing
+                                                                // this (or the other prologue flags) switches the layout and
+                                                                // silently drops the QR-login entry point — see
+                                                                // `LoginPrologueViewController.configureButtonVC()`.
                                                                 enableSiteAddressLoginOnlyInPrologue: true,
                                                                 enableSiteCreationGuide: false,
                                                                 enableSiteCredentialsLoginForWPCOMSuspendedSites: true)

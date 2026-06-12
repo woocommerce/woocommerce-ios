@@ -417,6 +417,10 @@ private extension TotalsView {
             "pos.totalsView.discountTotal2",
             value: "Discount total",
             comment: "Title for discount total amount field")
+        static let customAmountsTotal = NSLocalizedString(
+            "pos.totalsView.customAmountsTotal",
+            value: "Custom amounts",
+            comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -448,6 +452,7 @@ private struct TotalsFieldsContent: View {
     let totalsFieldAnimation: Namespace.ID
     private let paymentViewHelper = POSPaymentViewHelper()
     private let viewHelper = TotalsViewHelper()
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Used for synchronizing animations of shimmeringLine and textField
     static let matchedGeometryId: String = "pos_totals_view_matched_geometry_id"
@@ -480,6 +485,15 @@ private struct TotalsFieldsContent: View {
             )
             Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
 
+            if viewHelper.shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) {
+                SubtotalFieldView(
+                    title: TotalsView.Localization.customAmountsTotal,
+                    formattedPrice: orderTotals?.customAmountsTotal,
+                    shimmeringActive: totalsLoading
+                )
+                Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+            }
+
             if viewHelper.shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) {
                 SubtotalFieldView(
                     title: TotalsView.Localization.discountTotal,
@@ -505,8 +519,14 @@ private struct TotalsFieldsContent: View {
             )
         }
         .padding(TotalsView.Constants.totalsLineViewPadding)
-        .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-        .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass == .compact) {
+            $0.frame(maxWidth: .infinity)
+        }
+        .if(horizontalSizeClass != .compact) {
+            $0
+                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                .fixedSize(horizontal: true, vertical: false)
+        }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
 }

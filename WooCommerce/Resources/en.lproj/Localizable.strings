@@ -864,6 +864,36 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Metric";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "Choose when analytics data is updated.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "This is a store-wide setting, which also controls the \"Updates\" option in WooCommerce admin analytics settings. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "Updates as soon as new data is available.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "Immediately";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "Learn more";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "Updates automatically every 12 hours.\nRecommended for high order volume stores.";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "Scheduled";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "Analytics updates";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "Couldn't update the setting. Please try again.";
+
 /* Country option for a site address. */
 "Andorra" = "Andorra";
 
@@ -3360,9 +3390,6 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Connecting your store";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "Chat with Support";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Troubleshoot Connection";
 
@@ -4156,6 +4183,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "My store";
+
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "Learn more";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "Stats may be up to 12 hours delayed.";
 
 /* Title of 'Date Paid' section in the receipt */
 "Date paid" = "Date paid";
@@ -5735,17 +5768,14 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "Get help from our AI assistant";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "Chat with Support";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "Revisit past support conversations";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chat History";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "Get help with app or store issues";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Test if your site works with the app";
@@ -8967,6 +8997,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "Couldn't mark this order as paid. Try again.";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "There was a problem creating this order, the items don't match your selection. Check the cart contents and try again.";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "One or more products";
 
@@ -9443,6 +9476,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Image of a code to be scanned by a barcode scanner.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "Close";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "You are ready to start scanning products. Next time you need to connect your scanner, just turn it on and it will reconnect automatically.";
 
@@ -9619,6 +9655,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Unable to load";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Point of Sale can't access a file with your product information because your hosting provider is blocking it.\nPlease ask them to allow access to it so Point of Sale keeps working properly.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "Action needed on your store";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Please check your internet connection and try again.";
@@ -9811,6 +9853,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Unable to load orders";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "Try again";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Refresh";
@@ -10326,8 +10371,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Cash payment";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "Custom amounts";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Discount total";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "Edit order";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "There was a problem creating this order, the items don't match your selection. Check the cart contents and try again.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "Couldn't check out";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Other payment methods";
@@ -10340,12 +10397,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Total";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Please adjust your screen split to give Point of Sale more space.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Point of Sale is not supported in this screen width.";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "Learn more";
@@ -10506,9 +10557,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "Chat with Support";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "Contact Support";
@@ -11258,6 +11306,207 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Qatar" = "Qatar";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "Signing you in…";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "Cancel";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "Without camera access, you can still log in by entering your store address.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "Allow camera access";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "Camera access needed";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "Enable camera access in Settings or cancel to sign in with your store address instead.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "Open Permissions Settings";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "Camera access is turned off";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "This sign-in was already completed on another device. Generate a new code if you need to try again.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "Already signed in elsewhere";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "That code has already been scanned. Generate a new one in your store.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "Code already used";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "That code expired or has already been used. Generate a new one in your store.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "Code expired";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "Enter site URL instead";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "The app's already installed — this QR installs it. In wp-admin, tap the App is installed button to reveal the sign-in QR. Or visit woo.com/mobilelogin on your computer.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "That's the install QR";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "This QR isn't a WooCommerce login code. Generate a new one from your store and try again.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "Not a WooCommerce code";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "Check your connection and try again.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "Couldn't reach your store";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "This site doesn't have WooCommerce installed.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "Not a WooCommerce store";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "Please wait a few minutes and try again.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "Too many attempts";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "We couldn't read that QR code. Please try again.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "Couldn't read that code";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "Scan a new code";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "For your security, this sign-in attempt was cancelled. Generate a new code in your store to try again.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "Sign-in denied";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "Your sign-in was interrupted. Generate a new code in your store and try again.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "Sign-in interrupted";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "You didn't confirm in time. Generate a new code in your store and try again.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "Sign-in timed out";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "We couldn't authenticate with your store. Please try again.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "Sign-in failed";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "Your WooCommerce plugin doesn't support QR login. Please update WooCommerce on your store and try again, or sign in by entering your site URL.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "This store can't complete QR login";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "Try again";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "Your store returned an unexpected error. Please try again in a moment.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "Something went wrong";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "Your account doesn't have permission to use the app for this store.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "Permission needed";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "Help";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "Cancel";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "Expires in %1$ds";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "Both screens must show the same number for sign-in to complete.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "You're signing in to";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "You're signing in as";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "Tap this number on your computer to finish.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "Confirm sign-in";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "Back";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "No computer? Log in with site address";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "Help";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "Scan QR code";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "Then scan the QR code that appears.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "On your computer, visit:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "Scan to log in";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "Copies the URL to the clipboard.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "Link copied!";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "Cancel";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "Center the QR code in the frame";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "Visit woo.com/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "Continuing will sign you out of your current session and start a new sign-in.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "Cancel";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "Continue and sign out";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "You're already signed in";
+
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
@@ -11308,9 +11557,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "rated once";
-
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Read our Troubleshooting Tips";
@@ -12605,6 +12851,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "Total";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "Stats may be up to 12 hours delayed";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "Analytics update details";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Unable to display your store's performance";
 
@@ -12861,9 +13113,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chat History";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "Chat with Support";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "Update WooCommerce";
 
@@ -12918,11 +13167,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "A support ticket has been created for this chat. We'll respond via email.";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "Chat with Support";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "Contact Support";
+"supportChatView.toolbar.humanSupport" = "Ask a happiness engineer";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Mark Resolved";
@@ -14113,6 +14359,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Hide Top Performers";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "Stats may be up to 12 hours delayed";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "Analytics update details";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "Unable to display your store's top performers";

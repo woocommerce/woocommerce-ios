@@ -1,6 +1,7 @@
 import Testing
 @testable import PointOfSale
 import struct Yosemite.POSItemIdentifier
+import struct Yosemite.POSCustomAmount
 
 struct TotalsViewHelperTests {
 
@@ -139,6 +140,62 @@ struct TotalsViewHelperTests {
                                                  orderTotalDecimal: 10)
 
         #expect(TotalsViewHelper().shouldShowTotalDiscountField(cart: cart, orderTotals: orderTotals) == false)
+    }
+
+    // MARK: - shouldShowCustomAmountsField tests
+
+    @Test
+    func test_shouldShowCustomAmountsField_returns_false_when_cart_has_no_custom_amounts() {
+        // Given
+        let cart = Cart()
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "10",
+                                                 orderTotal: "10",
+                                                 taxTotal: "0",
+                                                 orderTotalDecimal: 10,
+                                                 customAmountsTotal: nil)
+
+        // When / Then
+        #expect(TotalsViewHelper().shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) == false)
+    }
+
+    @Test
+    func test_shouldShowCustomAmountsField_returns_true_when_cart_has_custom_amounts_and_order_syncing() {
+        // Given
+        var cart = Cart()
+        cart.upsertCustomAmount(POSCustomAmount(name: "Service fee", amount: "25", isTaxable: true))
+
+        // When / Then
+        #expect(TotalsViewHelper().shouldShowCustomAmountsField(cart: cart, orderTotals: nil))
+    }
+
+    @Test
+    func test_shouldShowCustomAmountsField_returns_true_when_cart_has_custom_amounts_and_orderTotals_with_custom_amounts() {
+        // Given
+        var cart = Cart()
+        cart.upsertCustomAmount(POSCustomAmount(name: "Service fee", amount: "25", isTaxable: true))
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "0",
+                                                 orderTotal: "26.25",
+                                                 taxTotal: "1.25",
+                                                 orderTotalDecimal: 26.25,
+                                                 customAmountsTotal: "25")
+
+        // When / Then
+        #expect(TotalsViewHelper().shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals))
+    }
+
+    @Test
+    func test_shouldShowCustomAmountsField_returns_false_when_cart_has_custom_amounts_but_orderTotals_without_custom_amounts() {
+        // Given
+        var cart = Cart()
+        cart.upsertCustomAmount(POSCustomAmount(name: "Service fee", amount: "25", isTaxable: true))
+        let orderTotals = PointOfSaleOrderTotals(cartTotal: "0",
+                                                 orderTotal: "0",
+                                                 taxTotal: "0",
+                                                 orderTotalDecimal: 0,
+                                                 customAmountsTotal: nil)
+
+        // When / Then
+        #expect(TotalsViewHelper().shouldShowCustomAmountsField(cart: cart, orderTotals: orderTotals) == false)
     }
 
     // MARK: - shouldShowReconnectingMessage tests

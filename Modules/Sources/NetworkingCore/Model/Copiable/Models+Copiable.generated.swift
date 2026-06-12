@@ -2,7 +2,6 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
-import struct NetworkingCore.JetpackSite
 
 // swiftlint:disable line_length
 

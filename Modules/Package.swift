@@ -275,6 +275,7 @@ let package = Package(
                 "WooFoundation",
                 "Yosemite",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
                 .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                 .product(name: "Kingfisher", package: "Kingfisher"),
             ],

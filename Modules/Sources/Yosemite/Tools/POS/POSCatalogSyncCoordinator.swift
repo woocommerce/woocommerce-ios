@@ -64,7 +64,8 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws
+    ///   - snapshotDate: When the download started — persisted as the sync watermark
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws
 
     /// Deletes specific products and/or variations from the local catalog
     /// - Parameters:
@@ -286,9 +287,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // If a previous background download staged a catalog file but never finished
         // parse + persist (iOS killed the process within the ~30s window), retry it now that we're
         // in the foreground without time pressure. Errors are swallowed since a fresh sync would overwrite anyway.
-        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID in
+        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID, snapshotDate in
             guard let self else { return }
-            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
+            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL,
+                                                                                 siteID: pendingSiteID,
+                                                                                 snapshotDate: snapshotDate)
         }
 
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
@@ -592,11 +595,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    public func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    public func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         DDLogInfo("🟣 POSCatalogSyncCoordinator: Processing background download for site \(siteID)")
 
         // Parse and persist using the full sync service
-        let catalog = try await fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: siteID)
+        let catalog = try await fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL,
+                                                                                  siteID: siteID,
+                                                                                  snapshotDate: snapshotDate)
 
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 

@@ -633,11 +633,13 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     private(set) var parseAndPersistBackgroundDownloadCallCount = 0
     private(set) var lastBackgroundDownloadFileURL: URL?
     private(set) var lastBackgroundDownloadSiteID: Int64?
+    private(set) var lastBackgroundDownloadSnapshotDate: Date?
 
-    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {
         parseAndPersistBackgroundDownloadCallCount += 1
         lastBackgroundDownloadFileURL = fileURL
         lastBackgroundDownloadSiteID = siteID
+        lastBackgroundDownloadSnapshotDate = snapshotDate
 
         switch parseAndPersistBackgroundDownloadResult {
         case .success(let catalog):
@@ -1607,23 +1609,26 @@ extension POSCatalogSyncCoordinatorTests {
     @Test func performSmartSync_when_pending_background_download_then_calls_parseAndPersistBackgroundDownload_with_staged_file() async throws {
         // Given: resumer has a pending staged file for this site
         let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
-        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        let snapshotDate = Date(timeIntervalSince1970: 1_000)
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID, snapshotDate: snapshotDate)
         await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
 
         // When
         try await sut.performSmartSync(for: sampleSiteID, isBackgroundSync: false)
 
-        // Then: parse-and-persist was invoked with the staged file and siteID
+        // Then: parse-and-persist was invoked with the staged file, siteID, and the snapshot's
+        // own date — not the current time — so the persisted watermark reflects the data's real age
         #expect(mockSyncService.parseAndPersistBackgroundDownloadCallCount == 1)
         #expect(mockSyncService.lastBackgroundDownloadFileURL == stagedURL)
         #expect(mockSyncService.lastBackgroundDownloadSiteID == sampleSiteID)
+        #expect(mockSyncService.lastBackgroundDownloadSnapshotDate == snapshotDate)
     }
 
     @Test func performSmartSync_when_parseAndPersistBackgroundDownload_throws_then_normal_sync_still_proceeds() async throws {
         // Given: pending file exists but parse-and-persist will throw
         let stagedURL = URL(fileURLWithPath: "/tmp/pos-pending-\(sampleSiteID).json")
-        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID)
+        mockPendingParseResumer.pendingResume = (fileURL: stagedURL, siteID: sampleSiteID, snapshotDate: .distantPast)
         let resumeError = NSError(domain: "parse", code: 1, userInfo: nil)
         mockSyncService.parseAndPersistBackgroundDownloadResult = .failure(resumeError)
         await mockEligibilityChecker.setEligibility(.eligible, for: sampleSiteID)

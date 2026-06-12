@@ -6,8 +6,11 @@ import CocoaLumberjackSwift
 /// only the parse step is retried.
 public protocol BackgroundCatalogParseResuming {
     /// Retries the parse step for a previously-staged catalog file, if one exists.
-    /// - Parameter parseHandler: Closure that parses and persists the staged file for a `(URL, siteID)`.
-    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+    /// - Parameter parseHandler: Closure that parses and persists the staged file. Receives the
+    ///   file URL, the site ID, and the moment the snapshot's download started.  Callers use
+    ///   that date (not the current time) as the sync watermark, so a resumed snapshot never
+    ///   masquerades as fresher data than it is.
+    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async
 
     /// Discards a staged pending-parse file for the given site, if one exists.
     /// Called after a full sync successfully persists: the fresh catalog supersedes the staged
@@ -45,7 +48,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     public func handleBackgroundSessionEvent(
         sessionIdentifier: String,
         completionHandler: @escaping () -> Void,
-        parseHandler: @escaping (URL, Int64) async throws -> Void
+        parseHandler: @escaping (URL, Int64, Date) async throws -> Void
     ) async {
         DDLogInfo("🟣 Handling background session event for: \(sessionIdentifier)")
 
@@ -82,13 +85,13 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
             DDLogError("⛔️ Failed to stage background download: \(error). Falling back to original URL.")
             // If staging fails we still attempt parse from the temp URL
             // Result ignored: no staged file was written, so there's nothing to clean up either way.
-            _ = await runParse(url: fileURL, siteID: state.siteID, parseHandler: parseHandler)
+            _ = await runParse(url: fileURL, siteID: state.siteID, snapshotDate: state.downloadStartedAt, parseHandler: parseHandler)
             backgroundDownloadStateStore.clear()
             return
         }
 
         // Attempt parse + persist within the 30s window.
-        let success = await runParse(url: stagedURL, siteID: state.siteID, parseHandler: parseHandler)
+        let success = await runParse(url: stagedURL, siteID: state.siteID, snapshotDate: state.downloadStartedAt, parseHandler: parseHandler)
 
         if success {
             try? fileManager.removeItem(at: stagedURL)
@@ -103,7 +106,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     /// the file on disk. Called on POS foreground entry — no iOS execution-time pressure here.
     /// Errors are logged but swallowed so normal sync can proceed.
     public func resumePendingParseIfNeeded(
-        parseHandler: @escaping (URL, Int64) async throws -> Void
+        parseHandler: @escaping (URL, Int64, Date) async throws -> Void
     ) async {
         guard let pending = pendingCatalogFileStore.load() else {
             return
@@ -118,7 +121,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         }
 
         DDLogInfo("🟣 Resuming pending catalog persist for site \(pending.siteID) from \(pending.filePath)")
-        let success = await runParse(url: fileURL, siteID: pending.siteID, parseHandler: parseHandler)
+        let success = await runParse(url: fileURL, siteID: pending.siteID, snapshotDate: pending.createdAt, parseHandler: parseHandler)
 
         if success {
             try? fileManager.removeItem(at: fileURL)
@@ -143,9 +146,10 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
 private extension BackgroundCatalogDownloadCoordinator {
     func runParse(url: URL,
                   siteID: Int64,
-                  parseHandler: @escaping (URL, Int64) async throws -> Void) async -> Bool {
+                  snapshotDate: Date,
+                  parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async -> Bool {
         do {
-            try await parseHandler(url, siteID)
+            try await parseHandler(url, siteID, snapshotDate)
             DDLogInfo("✅ Background catalog processing completed successfully")
             return true
         } catch {

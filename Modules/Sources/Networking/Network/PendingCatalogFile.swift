@@ -10,9 +10,10 @@ public struct PendingCatalogFile: Codable {
     public let filePath: String
     public let siteID: Int64
 
-    /// Used to detect a stale snapshot: if catalog data was persisted for the site at or after
-    /// this moment, the file has been superseded and must not be re-applied — re-parsing it would
-    /// overwrite fresher data. See `BackgroundCatalogDownloadCoordinator.resumePendingParseIfNeeded`.
+    /// When the snapshot's background download started. Passed to the resume parse handler so the
+    /// persisted sync watermark reflects the snapshot's real age. A resumed
+    /// snapshot must not claim to be current, or the next incremental sync would skip the gap.
+    /// See `BackgroundCatalogDownloadCoordinator.resumePendingParseIfNeeded`.
     public let createdAt: Date
 
     public init(filePath: String, siteID: Int64, createdAt: Date = Date()) {

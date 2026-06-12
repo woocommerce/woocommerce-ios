@@ -1,0 +1,27 @@
+[
+    {
+        "user_id": 12,
+        "display_name": "Morgan Manager",
+        "preset": "pos_manager",
+        "capabilities": {
+            "pos_process_sales": true,
+            "pos_view_orders": true,
+            "pos_issue_refunds": true
+        },
+        "pin": {
+            "algo": "pbkdf2-sha256",
+            "iterations": 100000,
+            "salt": "RkFLRS1URVNULVNBTFQtbm90LWEtcmVhbC1waW4tbWFuYWdlcg==",
+            "hash": "RkFLRS1URVNULUhBU0gtbm90LWEtcmVhbC1waW4tbWFuYWdlcg=="
+        }
+    },
+    {
+        "user_id": 34,
+        "display_name": "Casey Cashier",
+        "preset": "pos_cashier",
+        "capabilities": {
+            "pos_process_sales": true
+        },
+        "pin": null
+    }
+]

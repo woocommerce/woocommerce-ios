@@ -85,7 +85,7 @@ private extension ProductListItem {
                                                          attributes: [
                                                             .foregroundColor: UIColor.textSubtle,
                                                             .font: StyleManager.footerLabelFont
-            ])
+                                                         ])
         if let statusText {
             attributedString.addAttributes([.foregroundColor: productStatus.descriptionColor],
                                            range: NSRange(location: 0, length: statusText.count))

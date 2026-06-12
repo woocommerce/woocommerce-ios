@@ -44,6 +44,7 @@ struct POSErrorView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posBodyLargeRegular())
                 .padding([.leading, .trailing])
+                .fixedSize(horizontal: false, vertical: true)
 
             if viewModel.primaryButton != nil || viewModel.secondaryButton != nil {
                 Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)

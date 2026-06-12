@@ -65,4 +65,16 @@ struct TotalsViewHelper {
 
         return orderIsLoading || hasDiscounts
     }
+
+    func shouldShowCustomAmountsField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
+        let hasCustomAmounts = cart.customAmounts.isNotEmpty
+        let orderIsLoading = orderTotals == nil
+        let hasCustomAmountsTotal = orderTotals?.customAmountsTotal != nil
+
+        guard hasCustomAmounts else {
+            return false
+        }
+
+        return orderIsLoading || hasCustomAmountsTotal
+    }
 }

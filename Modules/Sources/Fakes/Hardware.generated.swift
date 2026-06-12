@@ -40,6 +40,7 @@ extension Hardware.CardPresentTransactionDetails {
             expYear: .fake(),
             cardholderName: .fake(),
             brand: .fake(),
+            availableNetworks: .fake(),
             generatedCard: .fake(),
             receipt: .fake(),
             emvAuthData: .fake(),
@@ -82,7 +83,7 @@ extension Hardware.PaymentIntent {
             currency: .fake(),
             metadata: .fake(),
             charges: .fake(),
-            collectedPaymentMethod: nil
+            collectedPaymentMethod: .fake()
         )
     }
 }

@@ -510,7 +510,13 @@ private extension CardPresentPaymentEventDetails {
         case .updateFailedNonRetryable:
             return "updateFailedNonRetryable"
         case .updateFailedLowBattery(let batteryLevel, _, _):
-            return "updateFailedLowBattery-\(batteryLevel)"
+            let batteryLevelDescription: String
+            if let batteryLevel {
+                batteryLevelDescription = "\(batteryLevel)"
+            } else {
+                batteryLevelDescription = "nil"
+            }
+            return "updateFailedLowBattery-\(batteryLevelDescription)"
         case .connectionSuccess:
             return "connectionSuccess"
         case .locationRequestPreAlert:

@@ -1268,7 +1268,7 @@ extension WooAnalyticsEvent {
                 Keys.source: source,
                 Keys.justInTimeMessageID: messageID,
                 Keys.justInTimeMessageGroup: featureClass
-              ])
+            ])
         }
 
         static func dismissFailure(source: String,

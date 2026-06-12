@@ -321,65 +321,6 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         try? fileManager.removeItem(at: oldStagedFile)
     }
 
-    @Test func resumePendingParseIfNeeded_when_catalog_persisted_after_file_staged_then_discards_without_parsing() async throws {
-        // Given — a pending file staged in the past
-        let stagedFile = try makeDownloadedFile(named: "stale.json")
-        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444, createdAt: Date(timeIntervalSince1970: 1_000)))
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        var parseCalled = false
-
-        // When — the DB already persisted catalog data after the file was staged
-        // (e.g. a fresh full sync or an incremental sync ran in between)
-        await coordinator.resumePendingParseIfNeeded(
-            lastPersistedCatalogDate: { _ in Date(timeIntervalSince1970: 2_000) },
-            parseHandler: { _, _ in parseCalled = true }
-        )
-
-        // Then — the stale snapshot is discarded, not applied over the fresher data
-        #expect(parseCalled == false)
-        #expect(pendingFileStore.load() == nil)
-        #expect(fileManager.fileExists(atPath: stagedFile.path) == false)
-    }
-
-    @Test func resumePendingParseIfNeeded_when_file_staged_after_last_persist_then_parses() async throws {
-        // Given — a pending file staged *after* the last persist
-        let stagedFile = try makeDownloadedFile(named: "fresh.json")
-        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444, createdAt: Date(timeIntervalSince1970: 3_000)))
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        var parsedSiteID: Int64?
-
-        // When — the last persist predates the staged file (the snapshot is genuinely newer)
-        await coordinator.resumePendingParseIfNeeded(
-            lastPersistedCatalogDate: { _ in Date(timeIntervalSince1970: 2_000) },
-            parseHandler: { _, siteID in parsedSiteID = siteID }
-        )
-
-        // Then — the snapshot is applied
-        #expect(parsedSiteID == 444)
-        #expect(pendingFileStore.load() == nil)
-    }
-
-    @Test func resumePendingParseIfNeeded_when_no_prior_persist_then_parses() async throws {
-        // Given
-        let stagedFile = try makeDownloadedFile(named: "first.json")
-        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444, createdAt: Date(timeIntervalSince1970: 1_000)))
-        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
-
-        var parseCalled = false
-
-        // When — the site has never synced (nil last-persist date)
-        await coordinator.resumePendingParseIfNeeded(
-            lastPersistedCatalogDate: { _ in nil },
-            parseHandler: { _, _ in parseCalled = true }
-        )
-
-        // Then — nothing to be stale against, so the snapshot is applied
-        #expect(parseCalled == true)
-        #expect(pendingFileStore.load() == nil)
-    }
-
     // MARK: - PendingCatalogFile round-trips
 
     @Suite

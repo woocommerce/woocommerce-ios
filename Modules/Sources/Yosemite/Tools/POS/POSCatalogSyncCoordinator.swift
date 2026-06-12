@@ -282,15 +282,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // If a previous background download staged a catalog file but never finished
         // parse + persist (iOS killed the process within the ~30s window), retry it now that we're
         // in the foreground without time pressure. Errors are swallowed since a fresh sync would overwrite anyway.
-        await pendingParseResumer.resumePendingParseIfNeeded(
-            lastPersistedCatalogDate: { [weak self] pendingSiteID in
-                await self?.latestPersistedCatalogDate(for: pendingSiteID)
-            },
-            parseHandler: { [weak self] fileURL, pendingSiteID in
-                guard let self else { return }
-                _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
-            }
-        )
+        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID in
+            guard let self else { return }
+            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
+        }
 
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
@@ -482,15 +477,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     // MARK: - Private
-
-    /// The most recent moment catalog data was persisted for a site — the later of the last full
-    /// and last incremental sync dates, or `nil` if the site has never synced. Used to decide
-    /// whether a staged pending-parse file has been superseded by a newer sync (see
-    /// `resumePendingParseIfNeeded`).
-    private func latestPersistedCatalogDate(for siteID: Int64) async -> Date? {
-        let dates = [await lastFullSyncDate(for: siteID), await lastIncrementalSyncDate(for: siteID)]
-        return dates.compactMap { $0 }.max()
-    }
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {
         do {

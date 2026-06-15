@@ -35,9 +35,9 @@ final class DefaultPOSAccessSession: POSAccessSession {
         self.cache = cache
         self.fetcher = fetcher
         self.userDefaults = userDefaults
-        // Gating is cache-driven, not connection-driven: lock whenever the cached staff list has
-        // PINs — including offline, since the cache persists. Only an empty cache (never fetched,
-        // or cleared) means no gating and no lock screen.
+        // Gating is cache-driven, not connection-driven: lock whenever the cached staff list has at
+        // least one PIN — including offline, since the cache persists. No cached PINs (an empty
+        // cache, or staff that simply have no PINs) means no gating and no lock screen.
         let hasPINs = cache.hasAnyPINs(siteID: siteID)
         self.hasAnyPINs = hasPINs
         self.isLocked = hasPINs
@@ -96,7 +96,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
             invalidateCache()
         } catch {
             // adminMissingCapability / transient / malformedResponse: leave the cache as-is and let
-            // gating reflect whatever it already holds. An empty cache means no lock screen.
+            // gating reflect whatever it already holds (no cached PINs ⇒ no lock screen).
             DDLogError("POS staff refresh failed: \(error)")
         }
         applyCacheState()

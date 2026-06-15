@@ -2,10 +2,11 @@
 protocol POSAccessSession: AnyObject {
     var currentStaff: POSStaff? { get }
     var isLocked: Bool { get }
-    /// Whether the cached staff list has at least one PIN on file — i.e. POS access is PIN-gated.
-    /// Gating is cache-driven, not connection-driven: an existing cache still locks while offline.
-    /// Only an empty cache (never fetched, or cleared on logout / when roles are disabled
-    /// server-side) reports `false` — no gating, no lock screen.
+    /// Whether the cached staff list has at least one member with a PIN — i.e. POS access is
+    /// PIN-gated. Gating is cache-driven, not connection-driven: an existing cache still locks while
+    /// offline. Reports `false` whenever no cached member has a PIN — whether the cache is empty
+    /// (never fetched, or cleared on logout / when roles are disabled server-side) or it holds staff
+    /// who simply have no PINs — meaning no gating and no lock screen.
     var hasAnyPINs: Bool { get }
 
     func allows(_ capability: POSCapability) -> Bool

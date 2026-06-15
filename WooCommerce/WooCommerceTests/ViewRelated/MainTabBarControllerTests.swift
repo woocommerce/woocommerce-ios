@@ -641,7 +641,9 @@ final class MainTabBarControllerTests: XCTestCase {
             MainTabBarController(coder: coder,
                                  stores: stores,
                                  posTabVisibilityCheckerFactory: { site in
-                                     POSTabVisibilityChecker(site: site, eligibilityService: mockPOSEligibilityService)
+                                     POSTabVisibilityChecker(site: site,
+                                                            userInterfaceIdiom: .pad,
+                                                            eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,
                                  bookingsEligibilityCheckerFactory: { site in

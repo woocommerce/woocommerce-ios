@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
+- [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. Feature-flagged. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
 
 
 25.0

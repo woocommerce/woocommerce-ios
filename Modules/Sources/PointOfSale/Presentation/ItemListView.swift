@@ -443,6 +443,7 @@ private extension ItemListView {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
+                        .accessibilityIdentifier("pos-search-button")
                         .transition(.opacity.combined(with: .scale))
 
                         if let phoneHeaderAccessoryBuilder {

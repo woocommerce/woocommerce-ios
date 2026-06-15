@@ -33,9 +33,6 @@ extension UITabBar {
         if Bundle.main.isLiquidGlassDesignEnabled {
             standardAppearance.configureWithDefaultBackground()
         } else {
-            /// iOS 13.0 and 13.1 doesn't render the tabbar shadow color correctly while in dark mode.
-            /// To fix it, we have to specifically set it in the `standardAppearance` object.
-            ///
             standardAppearance.backgroundColor = .appTabBar
             standardAppearance.shadowColor = .systemColor(.separator)
         }

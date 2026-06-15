@@ -44,6 +44,87 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
+    public func tapSearchProducts() -> Self {
+        let searchButton = app.buttons["pos-search-button"]
+        XCTAssertTrue(searchButton.waitForIsHittable(timeout: 10), "POS search button should be tappable.")
+        searchButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func enterSearchTerm(_ term: String) -> Self {
+        let searchField = app.textFields["pos-search-field"]
+        XCTAssertTrue(searchField.waitForIsHittable(timeout: 10), "POS search field should be tappable.")
+        searchField.tap()
+        searchField.typeText(term)
+        return self
+    }
+
+    @discardableResult
+    public func dismissSearch() -> Self {
+        let searchField = app.textFields["pos-search-field"]
+        let searchButton = app.buttons["pos-search-button"]
+        guard waitForVisibleElement(searchField, timeout: 1), !searchButton.isHittable else {
+            return self
+        }
+
+        let searchBackButton = app.buttons["pos-search-back-button"]
+        if searchBackButton.waitForIsHittable(timeout: 5) {
+            searchBackButton.tap()
+            return self
+        }
+
+        if waitForVisibleElement(searchBackButton, timeout: 2) {
+            searchBackButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        } else {
+            // iPad can keep the symbol-only close affordance out of the accessibility tree.
+            // Tap the expected close affordance position relative to the visible search field.
+            searchField.coordinate(withNormalizedOffset: CGVector(dx: -0.08, dy: 0.5)).tap()
+        }
+        XCTAssertTrue(searchButton.waitForIsHittable(timeout: 10), "POS search should be dismissed.")
+        return self
+    }
+
+    @discardableResult
+    public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
+        let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]
+        customAmountEntryRow.scrollIntoView(app: app)
+        XCTAssertTrue(customAmountEntryRow.waitForIsHittable(timeout: 10), "Custom amount entry row should be tappable.")
+        customAmountEntryRow.tap()
+
+        let amountField = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-amount-field").firstMatch
+        XCTAssertTrue(waitForVisibleElement(amountField, timeout: 10), "Custom amount amount field should be visible.")
+        amountField.tap()
+        if let firstDigit = amount.first {
+            XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
+        }
+        app.typeText(amount)
+
+        if let name {
+            let nameField = app.textFields["pos-custom-amount-name-field"]
+            XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
+            nameField.scrollIntoView(app: app)
+            XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
+            nameField.tap()
+            nameField.typeText(name)
+        }
+
+        let submitButton = app.buttons["pos-add-custom-amount-submit-button"]
+        if submitButton.waitForIsHittable(timeout: 2) {
+            submitButton.tap()
+        } else {
+            XCTAssertTrue(waitForVisibleElement(submitButton, timeout: 5), "Custom amount submit button should be visible.")
+            submitButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
+
+        showPhoneCartIfNeeded()
+        XCTAssertTrue(app.descendants(matching: .any)["pos-custom-amount-row"].waitForExistence(timeout: 10),
+                      "Custom amount should be visible in the POS cart.")
+        return self
+    }
+
+    @discardableResult
     public func verifyCartContainsProduct(productID: Int) -> Self {
         showPhoneCartIfNeeded()
         let cartItem = app.descendants(matching: .any)["pos-cart-item-product-\(productID)"]
@@ -60,6 +141,46 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
+    public func verifyCartItemCount(_ count: Int) -> Self {
+        showPhoneCartIfNeeded()
+        let itemCountLabel = count == 1 ? "1 item" : "\(count) items"
+        XCTAssertTrue(app.staticTexts[itemCountLabel].waitForExistence(timeout: 10), "POS cart should show \(itemCountLabel).")
+        return self
+    }
+
+    @discardableResult
+    public func removeProductFromCart(productID: Int, remainingCartItemCount: Int) -> Self {
+        showPhoneCartIfNeeded()
+        let cartItem = app.buttons.matching(identifier: "pos-cart-item-product-\(productID)").firstMatch
+        cartItem.scrollIntoView(app: app)
+        XCTAssertTrue(waitForVisibleElement(cartItem, timeout: 10), "Product \(productID) cart row should be visible.")
+        tapTrailingRemoveAffordance(in: cartItem)
+
+        return verifyCartItemCount(remainingCartItemCount)
+    }
+
+    @discardableResult
+    public func verifyCartContainsCustomAmount(named name: String? = nil) -> Self {
+        showPhoneCartIfNeeded()
+        let customAmountRow = app.descendants(matching: .any)["pos-custom-amount-row"]
+        XCTAssertTrue(customAmountRow.waitForExistence(timeout: 10), "Custom amount row should be visible in the POS cart.")
+        if let name {
+            XCTAssertTrue(customAmountRow.label.contains(name), "Custom amount name should be visible in the POS cart.")
+        }
+        return self
+    }
+
+    @discardableResult
+    public func removeCustomAmountFromCart() -> Self {
+        showPhoneCartIfNeeded()
+        let customAmountRow = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-row").firstMatch
+        XCTAssertTrue(waitForVisibleElement(customAmountRow, timeout: 10), "Custom amount row should be visible.")
+        tapTrailingRemoveAffordance(in: customAmountRow)
+        customAmountRow.waitForElementToNotExist(element: customAmountRow, timeout: 10)
+        return self
+    }
+
+    @discardableResult
     public func showPhoneCartIfNeeded() -> Self {
         // Tablet keeps the cart pane visible; phone exposes it through a collapsed cart button.
         let phoneCartButton = app.buttons["pos-phone-cart-button"]
@@ -70,6 +191,19 @@ public final class POSScreen: ScreenObject {
         XCTAssertTrue(phoneCartButton.waitForIsHittable(timeout: 10), "POS cart should be visible or available from the phone cart button.")
         phoneCartButton.tap()
         XCTAssertTrue(waitForVisibleElement(cartViewGetter(app), timeout: 10), "POS cart should be visible after tapping the phone cart button.")
+        return self
+    }
+
+    @discardableResult
+    public func dismissPhoneCartIfNeeded() -> Self {
+        let phoneCartButton = app.buttons["pos-phone-cart-button"]
+        guard phoneCartButton.exists, waitForVisibleElement(cartViewGetter(app), timeout: 1) else {
+            return self
+        }
+
+        app.swipeDown()
+        XCTAssertTrue(phoneCartButton.waitForIsHittable(timeout: 10), "Phone cart should be dismissed.")
+        XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 10), "POS product list should be visible after dismissing the phone cart.")
         return self
     }
 
@@ -229,24 +363,40 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func tapMenuButton() -> Self {
         let menuButton = app.buttons["pos-menu-button"]
-
-        guard menuButton.waitForExistence(timeout: 3) else {
+        if menuButton.waitForIsHittable(timeout: 2) {
+            menuButton.tap()
             return self
         }
 
-        menuButton.tap()
+        let phoneOverflowMenu = app.buttons["pos-phone-overflow-menu"]
+        XCTAssertTrue(phoneOverflowMenu.waitForIsHittable(timeout: 10), "POS menu button should be tappable.")
+        phoneOverflowMenu.tap()
         return self
     }
 
     @discardableResult
     public func tapExitMenuItem() -> Self {
-        let exitMenuItem = app.buttons["pos-exit-menu-item"]
+        return tapMenuItem(identifier: "pos-exit-menu-item", label: "Exit POS")
+    }
 
-        guard exitMenuItem.waitForExistence(timeout: 3) else {
-            return self
-        }
+    @discardableResult
+    public func tapSettingsMenuItem() -> Self {
+        return tapMenuItem(identifier: "pos-settings-menu-item", label: "Settings")
+    }
 
-        exitMenuItem.tap()
+    @discardableResult
+    public func verifySettingsVisible() -> Self {
+        let settingsView = app.descendants(matching: .any)["pos-settings-view"]
+        XCTAssertTrue(settingsView.waitForExistence(timeout: 15), "POS settings should be visible.")
+        return self
+    }
+
+    @discardableResult
+    public func dismissSettings() -> Self {
+        let settingsTitle = app.staticTexts["Settings"]
+        XCTAssertTrue(waitForVisibleElement(settingsTitle, timeout: 10), "POS settings title should be visible.")
+        settingsTitle.coordinate(withNormalizedOffset: CGVector(dx: -0.65, dy: 0.5)).tap()
+        XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible after dismissing settings.")
         return self
     }
 
@@ -254,9 +404,7 @@ public final class POSScreen: ScreenObject {
     public func confirmExitPOS() throws -> TabNavComponent {
         let exitButton = app.buttons["pos-exit-confirm-button"]
 
-        guard exitButton.waitForExistence(timeout: 3) else {
-            return try TabNavComponent()
-        }
+        XCTAssertTrue(exitButton.waitForIsHittable(timeout: 10), "Exit POS confirmation button should be tappable.")
 
         exitButton.tap()
         return try TabNavComponent()
@@ -296,6 +444,28 @@ public final class POSScreen: ScreenObject {
         }
 
         return cardPaymentMessage.exists || successView.exists
+    }
+
+    @discardableResult
+    private func tapMenuItem(identifier: String, label: String) -> Self {
+        let menuItemByIdentifier = app.buttons[identifier]
+        if menuItemByIdentifier.waitForIsHittable(timeout: 5) {
+            menuItemByIdentifier.tap()
+            return self
+        }
+
+        let menuItemByLabel = app.buttons[label]
+        XCTAssertTrue(menuItemByLabel.waitForIsHittable(timeout: 10), "\(label) menu item should be tappable.")
+        menuItemByLabel.tap()
+        return self
+    }
+
+    private func tapTrailingRemoveAffordance(in row: XCUIElement) {
+        // Cart rows expose a stable identifier for the full row, but the small trailing
+        // trash button can inherit the row identity in SwiftUI's accessibility tree and
+        // is not consistently hittable when queried directly. After confirming the row is
+        // visible, tap the trailing edge where the remove affordance is rendered.
+        row.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
     }
 
     private func handleSystemLocationPermissionIfNeeded() {

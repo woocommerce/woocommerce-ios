@@ -23,6 +23,11 @@ final class POSTests: XCTestCase {
         "use-pos-ui-test-mocks"
     ]
 
+    private static let customAmountsLaunchArguments = [
+        "-com.woocommerce.featureflag.override.pointOfSaleCustomAmounts",
+        "YES"
+    ]
+
     // The UI-test card payment mock starts disconnected so POS exposes the Card reader CTA.
     private static let simulatedReaderLaunchArguments = [
         "use-mocked-card-present-payment",
@@ -62,17 +67,50 @@ final class POSTests: XCTestCase {
             .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
-    private func beginTwoProductCheckout(extraLaunchArguments: [String] = []) throws -> POSScreen {
-        try launchAndLogin(extraLaunchArguments: Self.checkoutLaunchArguments + extraLaunchArguments)
+    func test_POS_eligible_site_can_search_manage_cart_open_settings_and_exit_POS() throws {
+        try openPOS(extraLaunchArguments: Self.customAmountsLaunchArguments)
+            .tapSearchProducts()
+            .enterSearchTerm("Rose")
+            .tapAddProduct(productID: ProductIDs.simpleProduct)
+            .dismissSearch()
+            .verifyCartItemCount(1)
+            .dismissPhoneCartIfNeeded()
+            .tapAddProduct(productID: ProductIDs.simpleProduct)
+            .verifyCartItemCount(2)
+            .dismissPhoneCartIfNeeded()
+            .tapAddCustomAmount(amount: "12.34")
+            .verifyCartContainsProduct(productID: ProductIDs.simpleProduct)
+            .verifyCartItemCount(3)
+            .verifyCartContainsCustomAmount()
+            .removeProductFromCart(productID: ProductIDs.simpleProduct, remainingCartItemCount: 2)
+            .removeCustomAmountFromCart()
+            .verifyCartContainsProduct(productID: ProductIDs.simpleProduct)
+            .verifyCartItemCount(1)
+            .dismissPhoneCartIfNeeded()
+            .tapMenuButton()
+            .tapSettingsMenuItem()
+            .verifySettingsVisible()
+            .dismissSettings()
+            .tapMenuButton()
+            .tapExitMenuItem()
+            .confirmExitPOS()
+    }
 
-        return try TabNavComponent()
-            .goToPOSScreen()
+    private func beginTwoProductCheckout(extraLaunchArguments: [String] = []) throws -> POSScreen {
+        return try openPOS(extraLaunchArguments: extraLaunchArguments)
             .tapAddProduct(productID: ProductIDs.simpleProduct)
             .tapAddVariation(parentProductID: ProductIDs.variableProduct, variationID: ProductIDs.variation)
             .verifyCartContainsProduct(productID: ProductIDs.simpleProduct)
             .verifyCartContainsVariation(variationID: ProductIDs.variation)
             .tapCheckout()
             .waitForTotalsLoaded()
+    }
+
+    private func openPOS(extraLaunchArguments: [String] = []) throws -> POSScreen {
+        try launchAndLogin(extraLaunchArguments: Self.checkoutLaunchArguments + extraLaunchArguments)
+
+        return try TabNavComponent()
+            .goToPOSScreen()
     }
 
     private func launchAndLogin(extraLaunchArguments: [String] = []) throws {

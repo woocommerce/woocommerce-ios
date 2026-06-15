@@ -139,8 +139,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    # Temporarily also run on `codex/pos-ui-tests-card-payment` for POS UI test verification.
-    if: build.branch == "codex/pos-ui-tests-card-payment" || build.branch == "trunk" || build.branch =~ /^release\//
+    if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:
@@ -159,8 +158,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    # Temporarily also run on `codex/pos-ui-tests-card-payment` for POS UI test verification.
-    if: build.branch == "codex/pos-ui-tests-card-payment" || build.branch == "trunk" || build.branch =~ /^release\//
+    if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:

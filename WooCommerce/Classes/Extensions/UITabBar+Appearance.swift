@@ -14,28 +14,18 @@ extension UITabBar {
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
 
+        appearance.barTintColor = nil
+
         let tabBarAppearance = wooAppearance()
         appearance.standardAppearance = tabBarAppearance
         appearance.scrollEdgeAppearance = tabBarAppearance
-
-        if Bundle.main.isLiquidGlassDesignEnabled {
-            appearance.barTintColor = nil
-            return
-        }
-
-        appearance.barTintColor = .appTabBar
     }
 
     /// Creates an appearance object for a tabbar with the default WC style.
     ///
     static func wooAppearance() -> UITabBarAppearance {
         let standardAppearance = UITabBarAppearance()
-        if Bundle.main.isLiquidGlassDesignEnabled {
-            standardAppearance.configureWithDefaultBackground()
-        } else {
-            standardAppearance.backgroundColor = .appTabBar
-            standardAppearance.shadowColor = .systemColor(.separator)
-        }
+        standardAppearance.configureWithDefaultBackground()
         applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
         applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
         applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)

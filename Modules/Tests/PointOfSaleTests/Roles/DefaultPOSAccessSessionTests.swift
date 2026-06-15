@@ -383,6 +383,8 @@ struct DefaultPOSAccessSessionTests {
         // Then the fetched staff must not be written back into the just-cleared cache
         #expect(sut.cache.load(siteID: 123) == nil)
         #expect(sut.session.hasAnyPINs == false)
+        // ...and the racing logout leaves POS unlocked, not stranded behind an unsatisfiable lock screen
+        #expect(sut.session.isLocked == false)
     }
 
     @Test func test_refreshPINStatus_when_fetch_fails_but_cache_has_pins_then_stays_locked() async {

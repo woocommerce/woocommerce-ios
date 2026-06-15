@@ -122,6 +122,36 @@ struct POSCatalogSyncRemoteTests {
         #expect(pagedProducts.totalItems == expectedTotalItems)
     }
 
+    @Test func loadProducts_parses_server_date_from_http_date_header() async throws {
+        // Given - a standard RFC 1123 HTTP `Date` response header
+        let remote = createRemote()
+        network.responseHeaders = ["Date": "Tue, 15 Jun 2026 10:30:00 GMT"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let pagedProducts = try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+
+        // Then - the header is parsed (UTC) into serverDate
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        #expect(pagedProducts.serverDate == formatter.date(from: "2026-06-15T10:30:00"))
+    }
+
+    @Test func loadProducts_returns_nil_server_date_when_header_missing() async throws {
+        // Given
+        let remote = createRemote()
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let pagedProducts = try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+
+        // Then
+        #expect(pagedProducts.serverDate == nil)
+    }
+
     @Test func loadProducts_returns_nil_total_items_when_header_missing() async throws {
         // Given
         let remote = createRemote()

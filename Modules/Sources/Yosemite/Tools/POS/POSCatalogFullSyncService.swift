@@ -218,9 +218,15 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products,
-                          variations: variations,
-                          syncDate: syncStartDate)
+
+        // Prefer the server's clock as the sync watermark (the earliest across responses), falling
+        // back to the device clock only when no `Date` header was provided. See PagedItems.serverDate.
+        let serverDates = [products.serverDate, variations.serverDate].compactMap { $0 }
+        let syncDate = serverDates.min() ?? syncStartDate
+
+        return POSCatalog(products: products.items,
+                          variations: variations.items,
+                          syncDate: syncDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,
@@ -242,7 +248,14 @@ private extension POSCatalogFullSyncService {
         let metadata = POSCatalogSyncMetadata(pollAttempts: pollingResult.pollAttempts,
                                               generationDurationMs: generationDurationMs)
 
-        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init(), syncMetadata: metadata)
+        // Use the server's `scheduled_at` as the sync watermark, not the device clock. The catalog
+        // file is a snapshot taken somewhere in [scheduled_at, completed_at]; `scheduled_at` is the
+        // only safe lower bound for the next incremental's `modified_after` cursor — anything modified
+        // during generation is then re-fetched rather than skipped. Falls back to the device clock if
+        // the server omitted/garbled the timestamp.
+        let syncDate = pollingResult.scheduledAt.flatMap(Self.parseISO8601) ?? Date()
+
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: syncDate, syncMetadata: metadata)
     }
 
     /// Computes server-side generation duration in milliseconds from ISO8601 timestamp strings.

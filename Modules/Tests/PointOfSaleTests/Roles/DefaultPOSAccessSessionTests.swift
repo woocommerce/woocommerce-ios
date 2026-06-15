@@ -480,10 +480,3 @@ private final class UserDefaultsTestScope {
         defaults.removePersistentDomain(forName: suiteName)
     }
 }
-
-/// In-memory staff storage so cache contents stay isolated per test (no shared keychain state).
-private final class InMemoryStaffStorage: POSStaffKeyValueStorage, @unchecked Sendable {
-    private var store: [String: String] = [:]
-    func string(forKey key: String) -> String? { store[key] }
-    func setString(_ value: String?, forKey key: String) { store[key] = value }
-}

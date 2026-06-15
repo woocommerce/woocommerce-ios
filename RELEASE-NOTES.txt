@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
-- [*] Dashboard Performance and Top Performers cards: keep the time-range picker visible when a card fails to load, so a shorter range can be picked without leaving the error state. [WOOMOB-3255]
+- [*] Fixed dashboard Performance and Top Performers cards getting stuck in their error state — the time-range picker now stays visible when a card fails to load, so a shorter range can be picked without logging out. [WOOMOB-3254]
 
 25.0
 -----

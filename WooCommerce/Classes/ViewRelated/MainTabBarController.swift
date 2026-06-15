@@ -264,6 +264,10 @@ final class MainTabBarController: UITabBarController {
         registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
             self.configureTabBarLayoutOnIpad()
         }
+
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+            self.refreshLiquidGlassTabBarAppearanceOnIpad()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -296,7 +300,7 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        configureTabBarLayoutOnIpad()
+        configureLiquidGlassTabBarLayoutOnIpad()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -369,9 +373,7 @@ final class MainTabBarController: UITabBarController {
         }
 
         if Bundle.main.isLiquidGlassDesignEnabled {
-            mode = .tabBar
-            tabBar.isTranslucent = true
-            clearTabBarTraitOverridesOnIpad()
+            configureLiquidGlassTabBarLayoutOnIpad()
             return
         }
 
@@ -390,6 +392,30 @@ final class MainTabBarController: UITabBarController {
         viewControllers?.forEach { viewController in
             viewController.traitOverrides.horizontalSizeClass = .unspecified
         }
+    }
+
+    private func configureLiquidGlassTabBarLayoutOnIpad() {
+        guard #available(iOS 18.0, *),
+              UIDevice.current.userInterfaceIdiom == .pad,
+              Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        mode = .tabBar
+        tabBar.isTranslucent = true
+        refreshLiquidGlassTabBarAppearanceOnIpad()
+        clearTabBarTraitOverridesOnIpad()
+    }
+
+    private func refreshLiquidGlassTabBarAppearanceOnIpad() {
+        guard UIDevice.current.userInterfaceIdiom == .pad,
+              Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        let appearance = UITabBar.wooAppearance()
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
     }
 
     private func setupConditionalTabsInitialVisibility() {

@@ -174,6 +174,7 @@ private extension OrdersSplitViewWrapperController {
     /// Set up properties for `self` as a root tab bar controller.
     ///
     func configureTabBarItem() {
+        title = Localization.ordersTabTitle
         tabBarItem.title = Localization.ordersTabTitle
         tabBarItem.image = .pagesImage
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"

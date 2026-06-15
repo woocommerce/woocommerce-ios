@@ -58,6 +58,7 @@ private extension ProductsSplitViewWrapperController {
 
 private extension ProductsSplitViewWrapperController {
     func configureTabBarItem() {
+        title = Localization.tabTitle
         tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .productImage
         tabBarItem.accessibilityIdentifier = "tab-bar-products-item"

@@ -27,7 +27,6 @@ struct PointOfSalePaymentSuccessView: View {
         .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
         }
-        .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
             Task { @MainActor in
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
@@ -56,6 +55,7 @@ struct PointOfSalePaymentSuccessView: View {
                         .foregroundStyle(Color.posOnSurface)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityFocused($isTitleFocused)
+                        .accessibilityIdentifier("pos-payment-success-view")
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
 

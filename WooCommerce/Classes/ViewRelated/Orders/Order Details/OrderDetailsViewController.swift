@@ -151,6 +151,8 @@ private extension OrderDetailsViewController {
             return
         }
 
+        // This details table is one of the Orders panes adapted for Liquid Glass; registering it lets
+        // the native tab bar underlap this screen without changing unrelated tab roots.
         setContentScrollView(tableView, for: .bottom)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }

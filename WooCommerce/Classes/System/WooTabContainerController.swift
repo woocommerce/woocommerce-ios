@@ -1,5 +1,9 @@
 import UIKit
 
+enum NarrowWindowLayout {
+    static let compactLayoutThreshold: CGFloat = 700
+}
+
 protocol UsesCompactLayoutInNarrowWindow: AnyObject {}
 
 /// Container for a Woo tab, shown as the root view controller of one of the tabs.
@@ -54,10 +58,6 @@ final class TabContainerController: UIViewController {
 }
 
 private extension TabContainerController {
-    enum Constants {
-        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
-    }
-
     func observeTraitChanges() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             registerForTraitChanges([UITraitHorizontalSizeClass.self]) { (self: Self, _) in
@@ -72,6 +72,8 @@ private extension TabContainerController {
                 return
             }
 
+            // Liquid Glass uses the real iPad size class for native tabs. Wrapped split-view roots still need
+            // a compact layout in narrow Stage Manager windows, so forward that effective size class to them.
             let effectiveHorizontalSizeClass = effectiveHorizontalSizeClassForWrappedController()
             guard appliedWrappedControllerHorizontalSizeClass != effectiveHorizontalSizeClass else {
                 return
@@ -85,7 +87,7 @@ private extension TabContainerController {
     func effectiveHorizontalSizeClassForWrappedController() -> UIUserInterfaceSizeClass {
         guard Bundle.main.isLiquidGlassDesignEnabled,
               wrappedController is UsesCompactLayoutInNarrowWindow,
-              view.bounds.width < Constants.narrowWindowCompactLayoutThreshold else {
+              view.bounds.width < NarrowWindowLayout.compactLayoutThreshold else {
             return traitCollection.horizontalSizeClass
         }
 

@@ -242,6 +242,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
+        configureTitle()
         configureTabBarItem()
     }
 
@@ -632,13 +633,16 @@ private extension ProductsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
+        configureTitle()
+        configureNavigationBarLeftButtonItems()
+        configureNavigationBarRightButtonItems()
+    }
+
+    func configureTitle() {
         navigationItem.title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
-
-        configureNavigationBarLeftButtonItems()
-        configureNavigationBarRightButtonItems()
     }
 
     func configureNavigationBarLeftButtonItems() {

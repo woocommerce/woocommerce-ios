@@ -229,7 +229,15 @@ private extension POSTabCoordinator {
 
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
+                #if DEBUG
+                if ProcessConfiguration.shouldUsePOSUITestMocks {
+                    cardPresentPaymentService = CardPresentPaymentServiceUITestMock()
+                } else {
+                    cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+                }
+                #else
                 cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+                #endif
             } else {
                 cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
@@ -264,8 +272,8 @@ private extension POSTabCoordinator {
                                                       appPasswordSupportState: isAppPasswordSupported) {
 
                 let orderService: POSOrderServiceProtocol
-                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
-                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+                if let mockOrderService = makeMockPOSOrderService(currency: currencySettings.currencyCode.rawValue) {
+                    orderService = mockOrderService
                 } else if let posOrderService = POSOrderService(siteID: siteID,
                                                            credentials: credentials,
                                                            selectedSite: defaultSitePublisher,
@@ -277,10 +285,7 @@ private extension POSTabCoordinator {
                     return
                 }
 
-                var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
-                if ProcessConfiguration.shouldLoadMockedPOSProducts {
-                    itemProvider = PointOfSaleItemServiceScreenshotMock()
-                }
+                let itemProvider = makeMockPOSItemProvider()
 
                 let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
 
@@ -374,6 +379,34 @@ struct POSPresentationRootView: View {
 
 
 private extension POSTabCoordinator {
+    func makeMockPOSOrderService(currency: String) -> POSOrderServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return POSOrderServiceUITestMock()
+        }
+        #endif
+
+        if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+            return POSOrderServiceScreenshotMock(currency: currency)
+        }
+
+        return nil
+    }
+
+    func makeMockPOSItemProvider() -> Yosemite.PointOfSaleItemServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return PointOfSaleItemServiceUITestMock()
+        }
+        #endif
+
+        if ProcessConfiguration.shouldLoadMockedPOSProducts {
+            return PointOfSaleItemServiceScreenshotMock()
+        }
+
+        return nil
+    }
+
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
         updateTrackEventPrefix(isPointOfSaleActive)

@@ -14,8 +14,6 @@ extension UITabBar {
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
 
-        appearance.barTintColor = nil
-
         let tabBarAppearance = wooAppearance()
         appearance.standardAppearance = tabBarAppearance
         appearance.scrollEdgeAppearance = tabBarAppearance

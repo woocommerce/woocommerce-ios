@@ -133,7 +133,10 @@
                     "author_name": "WordPress Contributors",
                     "author_url": "https:\/\/github.com\/WordPress\/classic-editor\/",
                     "network_activated": false
-                }]
+                }],
+                "settings": {
+                    "enabled_features": []
+                }
             }
         },
         "headers": {

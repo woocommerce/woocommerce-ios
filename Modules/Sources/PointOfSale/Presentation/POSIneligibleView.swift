@@ -43,8 +43,10 @@ struct POSIneligibleView: View {
                             .font(POSFontStyle.posHeadingBold.font())
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color.posOnSurface)
+                            .accessibilityIdentifier("pos-ineligible-title")
 
                         suggestionBodyText(suggestionText)
+                            .accessibilityIdentifier("pos-ineligible-suggestion")
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier, 300)
@@ -72,6 +74,7 @@ struct POSIneligibleView: View {
                             Text(reason.refreshEligibilityTitle)
                         }
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                        .accessibilityIdentifier("pos-ineligible-refresh-button")
 
                         Button {
                             dismiss()
@@ -79,6 +82,7 @@ struct POSIneligibleView: View {
                             Text(Localization.dismiss)
                         }
                         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                        .accessibilityIdentifier("pos-ineligible-dismiss-button")
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier - 132, 300)
@@ -104,6 +108,7 @@ struct POSIneligibleView: View {
             scrollViewHeight = height
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityIdentifier("pos-ineligible-view")
     }
 
     private func suggestionBodyText(_ text: String) -> some View {

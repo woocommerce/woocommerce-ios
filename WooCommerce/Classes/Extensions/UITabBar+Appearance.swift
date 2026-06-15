@@ -14,31 +14,16 @@ extension UITabBar {
         // the view controllers embedded in split view.
         appearance.isTranslucent = true
 
-        if Bundle.main.isLiquidGlassDesignEnabled {
-            appearance.barTintColor = nil
-            appearance.scrollEdgeAppearance = nil
-            return
-        }
-
-        appearance.barTintColor = .appTabBar
-
-        /// iOS 13.0 and 13.1 doesn't render the tabbar shadow color correctly while in dark mode.
-        /// To fix it, we have to specifically set it in the `standardAppearance` object.
-        ///
-        appearance.standardAppearance = createWooTabBarAppearance()
-
-        /// This is needed because the tab bar background has the wrong color under iOS 15 (using Xcode 13).
-        /// More: issue-5018
-        ///
-        appearance.scrollEdgeAppearance = appearance.standardAppearance
+        let tabBarAppearance = wooAppearance()
+        appearance.standardAppearance = tabBarAppearance
+        appearance.scrollEdgeAppearance = tabBarAppearance
     }
 
     /// Creates an appearance object for a tabbar with the default WC style.
     ///
-    private static func createWooTabBarAppearance() -> UITabBarAppearance {
+    static func wooAppearance() -> UITabBarAppearance {
         let standardAppearance = UITabBarAppearance()
-        standardAppearance.backgroundColor = .appTabBar
-        standardAppearance.shadowColor = .systemColor(.separator)
+        standardAppearance.configureWithDefaultBackground()
         applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
         applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
         applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)

@@ -45,7 +45,6 @@ final class OrdersRootViewController: UIViewController {
         return filteredOrdersBar
     }()
 
-    private var filtersBarHeightConstraint: NSLayoutConstraint?
     private var liquidGlassHeaderBackgroundView: UIView?
 
     private var filters = FilterOrderListViewModel.Filters() {
@@ -394,9 +393,6 @@ private extension OrdersRootViewController {
         filtersBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(filtersBar)
 
-        let heightConstraint = filtersBar.heightAnchor.constraint(equalToConstant: filtersBar.bounds.height)
-        filtersBarHeightConstraint = heightConstraint
-
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: filtersBar.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
@@ -404,8 +400,7 @@ private extension OrdersRootViewController {
             backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
             filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            heightConstraint
+            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
 
@@ -421,10 +416,6 @@ private extension OrdersRootViewController {
 
         guard height > 0 else {
             return
-        }
-
-        if abs((filtersBarHeightConstraint?.constant ?? 0) - height) > 0.5 {
-            filtersBarHeightConstraint?.constant = height
         }
 
         guard let tableView = ordersViewController.tableView else {
@@ -550,6 +541,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
     }
 
+    /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
     private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
         guard Bundle.main.isLiquidGlassDesignEnabled else {
             return

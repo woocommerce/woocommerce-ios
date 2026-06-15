@@ -12,7 +12,7 @@ public struct PrinterDevice: Equatable, Hashable, Identifiable, Sendable {
 }
 
 /// The state of an in-progress printer discovery, for presentation.
-public enum PrinterDiscoveryState: Hashable, Identifiable {
+public enum PrinterDiscoveryState: Hashable, Identifiable, Sendable {
     public var id: Self {
         self
     }

@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
-- [internal] Added tracking events for UPS and FedEx carrier Terms of Service (shown/accepted) [https://github.com/woocommerce/woocommerce-ios/pull/17343]
+- [*] Added tracking events for UPS and FedEx carrier Terms of Service (shown/accepted) [https://github.com/woocommerce/woocommerce-ios/pull/17343]
 
 25.0
 -----

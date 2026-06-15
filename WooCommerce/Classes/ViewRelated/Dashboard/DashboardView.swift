@@ -223,7 +223,7 @@ private extension DashboardView {
 
     func shouldDisplayDashboardCardsInTwoColumns(availableWidth: CGFloat) -> Bool {
         let hasRegularWidth = Bundle.main.isLiquidGlassDesignEnabled
-            ? availableWidth >= Layout.twoColumnMinimumWidth
+            ? availableWidth >= NarrowWindowLayout.compactLayoutThreshold
             : horizontalSizeClass == .regular
 
         return hasRegularWidth &&
@@ -471,7 +471,6 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
-        static let twoColumnMinimumWidth: CGFloat = 700
     }
     enum Localization {
         static let title = NSLocalizedString(

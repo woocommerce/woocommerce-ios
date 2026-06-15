@@ -550,6 +550,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
     }
 
+    /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
     private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
         guard Bundle.main.isLiquidGlassDesignEnabled else {
             return

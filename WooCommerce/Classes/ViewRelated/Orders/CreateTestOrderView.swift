@@ -142,28 +142,41 @@ private extension CreateTestOrderView {
         static let blockSpacing: CGFloat = 32
     }
     enum Localization {
-        static let title = NSLocalizedString("Place your first order", comment: "Title shown on the test order screen")
+        static let title = NSLocalizedString(
+            "orderList.createTestOrder.title",
+            value: "Place your first order",
+            comment: "Title shown on the place-an-order screen opened from the Orders empty state."
+        )
         static let instruction1 = NSLocalizedString(
             "Tap the button below to be redirected to your online store via a web browser.",
             comment: "First instruction on the test order screen"
         )
         static let instruction2 = NSLocalizedString(
-            "Select your product, add to cart, and complete checkout on that web store as a real customer.",
-            comment: "Second instruction on the test order screen"
+            "orderList.createTestOrder.instruction2",
+            value: "Select your product, add to cart, and complete checkout on that web store as a real customer.",
+            comment: "Second instruction on the place-an-order screen."
         )
         static let instruction3 = NSLocalizedString(
             "Complete the payment and await a push notification about the order on your WooCommerce app.",
             comment: "Third instruction on the test order screen"
         )
         static let instruction4 = NSLocalizedString(
-            "Use the app to process the refund for the order. %1$@",
-            comment: "Fourth instruction on the test order screen. %1$@ is a tappable link to documentation about processing fees not being refundable."
+            "orderList.createTestOrder.instruction4",
+            value: "Use the app to process the refund for the order. %1$@",
+            comment: "Fourth instruction on the place-an-order screen. %1$@ is a placeholder for the tappable " +
+                "'Processing fees aren't refundable' link text."
         )
         static let feesNotRefundable = NSLocalizedString(
-            "Processing fees aren't refundable",
-            comment: "Tappable link on the fourth instruction of the test order screen that opens documentation about processing fees not being refundable."
+            "orderList.createTestOrder.feesNotRefundable",
+            value: "Processing fees aren't refundable",
+            comment: "Tappable link text in the fourth instruction; opens documentation explaining that payment " +
+                "processing fees are not refundable."
         )
-        static let startAction = NSLocalizedString("Place order", comment: "Title on the action button on the test order screen")
+        static let startAction = NSLocalizedString(
+            "orderList.createTestOrder.startAction",
+            value: "Place order",
+            comment: "Title on the action button on the place-an-order screen."
+        )
     }
 }
 

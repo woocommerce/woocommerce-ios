@@ -443,9 +443,9 @@ private extension OrdersRootViewController {
             }
         }
 
-        var scrollIndicatorInsets = tableView.scrollIndicatorInsets
-        scrollIndicatorInsets.top = height
-        tableView.scrollIndicatorInsets = scrollIndicatorInsets
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
     }
 
     func configureLiquidGlassTabBarUnderlap() {

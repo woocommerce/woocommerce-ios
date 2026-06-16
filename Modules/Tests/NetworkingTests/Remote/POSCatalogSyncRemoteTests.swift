@@ -123,7 +123,7 @@ struct POSCatalogSyncRemoteTests {
     }
 
     @Test func loadProducts_parses_server_date_from_http_date_header() async throws {
-        // Given - a standard RFC 1123 HTTP `Date` response header
+        // Given - an HTTP `Date` response header as the server sends it
         let remote = createRemote()
         network.responseHeaders = ["Date": "Tue, 15 Jun 2026 10:30:00 GMT"]
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")

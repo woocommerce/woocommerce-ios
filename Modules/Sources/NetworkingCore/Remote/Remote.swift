@@ -419,8 +419,8 @@ public extension Remote {
         }).flatMap { Int($0.value) }
     }
 
-    /// Parses the standard HTTP `Date` response header (RFC 1123, e.g. `Tue, 15 Jun 2026 10:30:00 GMT`)
-    /// into a `Date`. Returns `nil` if the header is absent or unparseable.
+    /// Parses the HTTP `Date` response header (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`) into a `Date`.
+    /// Returns `nil` if the header is absent or doesn't match the format we expect from the server.
     func serverDate(from responseHeaders: [String: String]?) -> Date? {
         responseHeaders?.first(where: {
             $0.key.lowercased() == PaginationHeaderKey.serverDate.lowercased()
@@ -429,7 +429,10 @@ public extension Remote {
 }
 
 private extension Remote {
-    /// RFC 1123 formatter for the HTTP `Date` header. Fixed POSIX locale + GMT, per the spec.
+    /// Formatter for the HTTP `Date` header as the server currently sends it
+    /// (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`). Fixed `en_US_POSIX` locale + GMT so parsing does not
+    /// depend on the device's locale or time zone. If the server's date format changes, update the
+    /// format string to match what we actually receive.
     static let httpDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")

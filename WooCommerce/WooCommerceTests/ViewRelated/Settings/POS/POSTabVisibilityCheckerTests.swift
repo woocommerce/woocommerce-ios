@@ -464,6 +464,32 @@ struct POSTabVisibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func static_checkInitialVisibility_returns_true_on_iPad_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .pad,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func static_checkInitialVisibility_returns_false_on_phone_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .phone,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == false)
+    }
 }
 
 extension POSTabVisibilityCheckerTests {

@@ -59,8 +59,12 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
+        userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        guard userInterfaceIdiom != .phone else {
+            return false
+        }
         return eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
     }
 

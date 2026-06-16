@@ -13,8 +13,7 @@ extension Site {
             PropertyKeys.isWPComStore: isWordPressComStore,
             PropertyKeys.isJetpackInstalled: isJetpackThePluginInstalled,
             PropertyKeys.isJetpackConnected: isJetpackConnected,
-            PropertyKeys.isJetpackCPConnected: isJetpackCPConnected,
-            PropertyKeys.isCIAB: isCIAB
+            PropertyKeys.isJetpackCPConnected: isJetpackCPConnected
         ]
         if let gardenPartner {
             properties[PropertyKeys.gardenPartner] = gardenPartner
@@ -29,7 +28,6 @@ extension Site {
         static let isJetpackInstalled = "is_jetpack_installed"
         static let isJetpackConnected = "is_jetpack_connected"
         static let isJetpackCPConnected = "is_jetpack_cp_connected"
-        static let isCIAB = "is_ciab"
         static let gardenPartner = "garden_partner"
     }
 }

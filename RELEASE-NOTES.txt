@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
-- [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/PRNUMBER]
+- [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/17359]
 
 
 25.0

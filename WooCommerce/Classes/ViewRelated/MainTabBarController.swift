@@ -195,7 +195,7 @@ final class MainTabBarController: UITabBarController {
           bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
           userDefaults: UserDefaults = .standard,
           // Injected for mocking in tests.
-          isPad: Bool = UIDevice.isPad()) {
+          isPad: Bool? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -209,7 +209,7 @@ final class MainTabBarController: UITabBarController {
             BookingsTabEligibilityChecker(site: site)
         }
         self.userDefaults = userDefaults
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         super.init(coder: coder)
     }
 

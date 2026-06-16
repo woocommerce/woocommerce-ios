@@ -386,6 +386,7 @@ final class MainTabBarController: UITabBarController {
     private func setupConditionalTabsInitialVisibility(for siteID: Int64) {
         let isPOSTabVisible = POSTabVisibilityChecker.checkInitialVisibility(
             for: siteID,
+            userInterfaceIdiom: isPad ? .pad : .phone,
             eligibilityService: posEligibilityService
         )
         let isBookingsFeatureAvailable = BookingsTabEligibilityChecker.checkInitialVisibility(

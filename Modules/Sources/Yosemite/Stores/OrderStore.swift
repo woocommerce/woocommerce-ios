@@ -291,6 +291,13 @@ private extension OrderStore {
                 return
             }
 
+            guard order.status != .autoDraft else {
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                    onCompletion(order, nil)
+                }
+                return
+            }
+
             self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
                 onCompletion(order, nil)
             }

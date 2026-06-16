@@ -992,11 +992,11 @@ private extension OrderListViewController {
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let createTestOrderDetail = NSLocalizedString(
-            "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.",
+            "Run an order to ensure your WooCommerce process delivers a seamless customer experience.",
             comment: "Message shown in Orders → All Orders tab if the list is empty and the site has been launched"
         )
         static let tryTestOrder = NSLocalizedString(
-            "Try a Test Order",
+            "Place your first order",
             comment: "Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched"
         )
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",

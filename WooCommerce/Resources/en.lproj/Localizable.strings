@@ -10677,6 +10677,9 @@ which should be translated separately and considered part of this sentence. */
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
 
+/* Tappable link on the fourth instruction of the test order screen that opens documentation about processing fees not being refundable. */
+"Processing fees aren't refundable" = "Processing fees aren't refundable";
+
 /* Alert title when processing a payment without a user name.
    VoiceOver accessibility label. Indicates that a payment is being processed */
 "Processing payment" = "Processing payment";
@@ -11870,7 +11873,7 @@ which should be translated separately and considered part of this sentence. */
 "Romania" = "Romania";
 
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.";
+"Run an order to ensure your WooCommerce process delivers a seamless customer experience." = "Run an order to ensure your WooCommerce process delivers a seamless customer experience.";
 
 /* Country option for a site address. */
 "Russia" = "Russia";
@@ -12153,7 +12156,7 @@ which should be translated separately and considered part of this sentence. */
 "Select your shipping carrier and rates" = "Select your shipping carrier and rates";
 
 /* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Select your test product, add to cart, and complete checkout on that web store as a real customer.";
+"Select your product, add to cart, and complete checkout on that web store as a real customer." = "Select your product, add to cart, and complete checkout on that web store as a real customer.";
 
 /* Dismiss button on the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.ok" = "OK";
@@ -12752,7 +12755,7 @@ which should be translated separately and considered part of this sentence. */
 "Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
 
 /* Title on the action button on the test order screen */
-"Start Test order" = "Start Test order";
+"Place order" = "Place order";
 
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
@@ -14434,10 +14437,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a payment using your own card (and refund it when you're done.)" = "Try a payment using your own card (and refund it when you're done.)";
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "Try a Test Order";
-
-/* Title shown on the test order screen */
-"Try a test order" = "Try a test order";
+"Place your first order" = "Place your first order";
 
 /* Action button to retry Jetpack activation. */
 "Try Activating Again" = "Try Activating Again";
@@ -14991,8 +14991,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Use Suggested Address";
 
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "Use the app to process the refund for the test order.";
+/* Fourth instruction on the test order screen. %1$@ is a tappable link to documentation about processing fees not being refundable. */
+"Use the app to process the refund for the order. %1$@" = "Use the app to process the refund for the order. %1$@";
 
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "User Profiles";

@@ -1,8 +1,6 @@
 import SwiftUI
 import Networking
 import struct Combine.AnyPublisher
-import struct NetworkingCore.JetpackSite
-import CocoaLumberjackSwift
 
 public protocol POSReceiptServiceProtocol {
     func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws

@@ -3465,30 +3465,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(mockScheduler.lastMerchantType)
     }
 
-    // MARK: - CIAB Order Status Editing
+    // MARK: - Order Status Editing
 
-    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+    func test_isOrderStatusEditingEnabled_returns_true() {
         // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
+                                               storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
-    }
-
-    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
-        // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
-
-        // Then
-        XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
     }
 }
 

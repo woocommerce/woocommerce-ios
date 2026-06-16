@@ -27,7 +27,6 @@ final class OrderSearchUICommand: SearchUICommand {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let stores: StoresManager
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let onSelectSearchResult: ((Order, UIViewController) -> Void)
 
@@ -35,14 +34,12 @@ final class OrderSearchUICommand: SearchUICommand {
          onSelectSearchResult: @escaping ((Order, UIViewController) -> Void),
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         stores: StoresManager = ServiceLocator.stores,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.onSelectSearchResult = onSelectSearchResult
         self.storageManager = storageManager
         self.analytics = analytics
         self.stores = stores
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
@@ -71,7 +68,7 @@ final class OrderSearchUICommand: SearchUICommand {
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         return OrderListCellViewModel(order: model,
                                       currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      isCIAB: false)
     }
 
     /// Synchronizes the Orders matching a given Keyword

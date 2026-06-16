@@ -107,52 +107,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_canShowInDashboard_returns_false_if_store_is_ciab_and_other_requirements_met() async {
-        // Given
-
-        let site = Site.fake().copy(
-            siteID: sampleSiteID,
-            isJetpackThePluginInstalled: true,
-            isJetpackConnected: true,
-            canBlaze: true,
-            isAdmin: true,
-        )
-
-        stores.updateDefaultStore(site)
-
-        let siteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
-        )
-        let blazeEligibilityChecker = BlazeEligibilityChecker(
-            stores: stores,
-            siteCIABEligibilityChecker: siteCIABChecker
-        )
-        let sut = BlazeCampaignDashboardViewModel(
-            siteID: sampleSiteID,
-            stores: stores,
-            storageManager: storageManager,
-            blazeEligibilityChecker: blazeEligibilityChecker
-        )
-
-        mockSynchronizeProducts(
-            insertProductToStorage: .fake().copy(
-                siteID: sampleSiteID,
-                statusKey: (ProductStatus.published.rawValue)
-            )
-        )
-
-        mockSynchronizeCampaignsList()
-
-        // When
-        await sut.checkAvailability()
-
-        // Then
-        XCTAssertFalse(sut.canShowInDashboard)
-    }
-
-    @MainActor
-    func test_canShowInDashboard_returns_true_if_store_is_non_ciab_and_other_requirements_met() async {
+    func test_canShowInDashboard_returns_true_when_other_requirements_met() async {
         // Given
         let site = Site.fake().copy(
             siteID: sampleSiteID,
@@ -164,11 +119,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.updateDefaultStore(site)
 
-        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
-        let blazeEligibilityChecker = BlazeEligibilityChecker(
-            stores: stores,
-            siteCIABEligibilityChecker: siteCIABChecker
-        )
+        let blazeEligibilityChecker = BlazeEligibilityChecker(stores: stores)
 
         let sut = BlazeCampaignDashboardViewModel(
             siteID: sampleSiteID,

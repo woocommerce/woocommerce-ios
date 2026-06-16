@@ -108,7 +108,6 @@ final class DashboardViewModel: ObservableObject {
     private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
-    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
@@ -167,7 +166,6 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
@@ -204,7 +202,6 @@ final class DashboardViewModel: ObservableObject {
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
-        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
         self.aiAssistantEligibilityChecker = aiAssistantEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -810,40 +807,14 @@ private extension DashboardViewModel {
     func observeStockEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .productsStockDashboardCard,
-                        for: site
-                    )
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStock)
     }
 
     func observeStoreSetupEligibility() {
         stores.site
             .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .storeSetupDashboardCard,
-                        for: site
-                    )
-            }
+            .map { $0 != nil }
             .assign(to: &$isEligibleForStoreSetup)
     }
 

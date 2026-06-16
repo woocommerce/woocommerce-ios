@@ -72,7 +72,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
     private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
     private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
@@ -1651,8 +1650,7 @@ private extension ProductFormViewController {
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: productType),
-            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker
         ) { [weak self] selectedProductType in
             self?.dismiss(animated: true, completion: nil)
 

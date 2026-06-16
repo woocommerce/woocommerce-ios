@@ -65,7 +65,6 @@ final class OrderListViewModel {
     }
 
     private let siteID: Int64
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     /// Used for tracking whether the app was _previously_ in the background.
     ///
@@ -130,8 +129,7 @@ final class OrderListViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -141,11 +139,10 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
                                                                                                     filters: filters,
-                                                                                                    isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB))
+                                                                                                    isCIAB: false))
     }
 
     deinit {
@@ -220,8 +217,7 @@ final class OrderListViewModel {
                                lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 filters: filters,
-                                                 ciabEligibilityChecker: ciabEligibilityChecker)
+                                                 filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -360,7 +356,7 @@ extension OrderListViewModel {
 
         return OrderListCellViewModel(order: order,
                                       currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      isCIAB: false)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

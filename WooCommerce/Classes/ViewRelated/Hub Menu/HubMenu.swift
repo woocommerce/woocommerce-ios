@@ -45,14 +45,6 @@ struct HubMenu: View {
         switch menu.id {
         case HubMenuViewModel.GoogleAds.id:
             googleAdsCampaignHandler()
-        case HubMenuViewModel.WoocommerceAdmin.id:
-            // On CIAB sites, open WC Admin in a Safari sheet instead of the in-app webview.
-            // The in-app webview hides the Admin navigation sidebar, which breaks WC Admin
-            // navigation on CIAB sites where the full admin experience is expected.
-            if viewModel.isCIABSite() {
-                safariSheetURL = viewModel.woocommerceAdminURL
-                return
-            }
         case HubMenuViewModel.Settings.id:
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:

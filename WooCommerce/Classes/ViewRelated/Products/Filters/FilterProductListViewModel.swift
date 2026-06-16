@@ -268,8 +268,7 @@ extension FilterProductListViewModel.ProductListFilter {
 extension FilterProductListViewModel.ProductListFilter {
     func createViewModel(filters: FilterProductListViewModel.Filters,
                          storageManager: StorageManagerType = ServiceLocator.storageManager,
-                         site: Site? = nil,
-                         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) -> FilterTypeViewModel {
+                         site: Site? = nil) -> FilterTypeViewModel {
         switch self {
         case .stockStatus:
             let options: [ProductStockStatus?] = [nil, .inStock, .outOfStock, .onBackOrder]
@@ -285,8 +284,7 @@ extension FilterProductListViewModel.ProductListFilter {
             let options = buildPromotableTypes(
                 siteID: siteID,
                 site: site,
-                storageManager: storageManager,
-                siteCIABEligibilityChecker: siteCIABEligibilityChecker
+                storageManager: storageManager
             )
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
@@ -307,96 +305,52 @@ extension FilterProductListViewModel.ProductListFilter {
     private func buildPromotableTypes(
         siteID: Int64,
         site: Site?,
-        storageManager: StorageManagerType,
-        siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol,
+        storageManager: StorageManagerType
     ) -> [PromotableProductType?] {
         let activePlugins = fetchActivePlugins(siteID: siteID, storageManager: storageManager)
         let isSubscriptionsAvailable = activePlugins.contains(.wooSubscriptions)
         let isCompositeProductsAvailable = activePlugins.contains(.wooCompositeProducts)
         let isProductBundlesAvailable = activePlugins.contains(.wooProductBundles)
 
-        let isVariableProductVisible: Bool
-        let isGroupedProductVisible: Bool
-        let isBookableProductVisible: Bool
-        let isSubscriptionProductVisible: Bool
-        let isBundleProductVisible: Bool
-        let isCompositeProductVisible: Bool
-
         let resolvedSite = site ?? fetchStorageSite(
             siteID: siteID,
             storageManager: storageManager
         )
 
-        if let site = resolvedSite {
-            isVariableProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .variableProducts,
-                for: site
-            )
-            isGroupedProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .groupedProducts,
-                for: site
-            )
-            isBookableProductVisible = siteCIABEligibilityChecker.isSiteCIAB(site)
-            isSubscriptionProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .subscriptionProducts,
-                for: site
-            )
-            isBundleProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .bundleProducts,
-                for: site
-            )
-            isCompositeProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .compositeProducts,
-                for: site
-            )
-        } else {
-            /// Fallback positively if site is absent and there is no way to check CIAB eligibility
-            isVariableProductVisible = true
-            isGroupedProductVisible = true
-            isBookableProductVisible = true
-            isSubscriptionProductVisible = true
-            isBundleProductVisible = true
-            isCompositeProductVisible = true
-        }
+        // Bookable products were only surfaced for CIAB sites. With CIAB removed they are
+        // hidden whenever a site is resolved, preserving the prior site-absent fallback.
+        let isBookableProductVisible = resolvedSite == nil
 
         let productTypes: [PromotableProductType] = [
             .init(productType: .simple, isAvailable: true, promoteUrl: nil),
-            isVariableProductVisible ? .init(
-                productType: .variable,
-                isAvailable: true,
-                promoteUrl: nil
-            ) : nil,
-            isGroupedProductVisible ? .init(
-                productType: .grouped,
-                isAvailable: true,
-                promoteUrl: nil
-            ) : nil,
+            .init(productType: .variable, isAvailable: true, promoteUrl: nil),
+            .init(productType: .grouped, isAvailable: true, promoteUrl: nil),
             isBookableProductVisible ? .init(
                 productType: .booking,
                 isAvailable: true,
                 promoteUrl: nil
             ) : nil,
             .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
-            isSubscriptionProductVisible ? .init(
+            .init(
                 productType: .subscription,
                 isAvailable: isSubscriptionsAvailable,
                 promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()
-            ) : nil,
-            isSubscriptionProductVisible ? .init(
+            ),
+            .init(
                 productType: .variableSubscription,
                 isAvailable: isSubscriptionsAvailable,
                 promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()
-            ) : nil,
-            isBundleProductVisible ? .init(
+            ),
+            .init(
                 productType: .bundle,
                 isAvailable: isProductBundlesAvailable,
                 promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()
-            ) : nil,
-            isCompositeProductVisible ? .init(
+            ),
+            .init(
                 productType: .composite,
                 isAvailable: isCompositeProductsAvailable,
                 promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL()
-            ) : nil
+            )
         ].compactMap { $0 }
 
         return [nil] + productTypes

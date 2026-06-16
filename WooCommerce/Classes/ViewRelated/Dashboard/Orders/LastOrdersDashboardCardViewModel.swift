@@ -109,7 +109,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
@@ -121,13 +120,11 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
-        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
@@ -146,9 +143,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
-            let isCIAB = ciabEligibilityChecker.isCurrentSiteCIAB
             rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0, isCIAB: isCIAB) }
+                .map { LastOrderDashboardRowViewModel(order: $0, isCIAB: false) }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error
@@ -193,9 +189,6 @@ private extension LastOrdersDashboardCardViewModel {
         return try await withCheckedThrowingContinuation { continuation in
             let resolvedStatuses: [String] = {
                 guard let status else { return [] }
-                if ciabEligibilityChecker.isCurrentSiteCIAB {
-                    return CIABOrderStatusMapper.resolveFilterStatuses([status]).map { $0.rawValue }
-                }
                 return [status.rawValue]
             }()
             stores.dispatch(OrderAction.fetchFilteredOrders(
@@ -245,19 +238,10 @@ private extension LastOrdersDashboardCardViewModel {
     }
 
     func updateStatuses() {
-        if ciabEligibilityChecker.isCurrentSiteCIAB {
-            let fetchedStatuses = statusResultsController.fetchedObjects.map {
-                OrderStatus(name: $0.name, siteID: $0.siteID, slug: $0.slug, total: Int($0.total))
-            }
-            let mappedStatuses = CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
-                .map { OrderStatusRow($0.status) }
-            allStatuses = [.any] + mappedStatuses
-        } else {
-            let remoteStatuses = statusResultsController.fetchedObjects
-                .map { OrderStatusEnum(rawValue: $0.slug) }
-                .map { OrderStatusRow($0) }
-            allStatuses = [.any] + remoteStatuses
-        }
+        let remoteStatuses = statusResultsController.fetchedObjects
+            .map { OrderStatusEnum(rawValue: $0.slug) }
+            .map { OrderStatusRow($0) }
+        allStatuses = [.any] + remoteStatuses
     }
 
     @MainActor

@@ -20,15 +20,11 @@ final class ProductDetailNavigator {
 
     static var shared = ProductDetailNavigator()
 
-    private let ciabChecker: CIABEligibilityCheckerProtocol
     private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
     private let stores: StoresManager
 
-    init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
-         coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
-         stores: StoresManager = ServiceLocator.stores,
-    ) {
-        self.ciabChecker = ciabChecker
+    init(coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
+         stores: StoresManager = ServiceLocator.stores) {
         self.coordinatorFactory = coordinatorFactory
         self.stores = stores
     }
@@ -68,8 +64,6 @@ final class ProductDetailNavigator {
     }
 
     private func shouldOpenInWeb(product: Product) -> Bool {
-        let isLegacyBookableType = product.productType == .legacyBooking
-        let isNewBookableType = ciabChecker.isCurrentSiteCIAB && product.productType == .booking
-        return isLegacyBookableType || isNewBookableType
+        return product.productType == .legacyBooking
     }
 }

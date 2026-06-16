@@ -539,7 +539,7 @@ private extension ItemListView {
         couponOverrideHandler.requestApproval(
             for: .createCoupons,
             reason: Localization.couponOverrideDescription,
-            onApproved: {
+            onApproved: { _ in
                 showCouponCreationModal = true
             }
         )

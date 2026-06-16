@@ -66,11 +66,12 @@ final class DefaultPOSAccessSession: POSAccessSession {
         }
     }
 
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
+    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) -> POSStaff? {
         try rateLimiter.checkAllowed()
         do {
-            try await verifyAndRefreshOnMiss(managerPIN: pin, authorizes: capability)
+            let staff = try await verifyAndRefreshOnMiss(managerPIN: pin, authorizes: capability)
             rateLimiter.reset()
+            return staff
         } catch POSAuthError.invalidPIN {
             // Same as signIn: a wrong PIN feeds the rate limiter; other errors propagate untouched.
             rateLimiter.recordFailure()
@@ -121,13 +122,13 @@ private extension DefaultPOSAccessSession {
         }
     }
 
-    func verifyAndRefreshOnMiss(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
+    func verifyAndRefreshOnMiss(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) -> POSStaff {
         do {
-            try await authenticator.verify(managerPIN: pin, authorizes: capability)
+            return try await authenticator.verify(managerPIN: pin, authorizes: capability)
         } catch POSAuthError.invalidPIN {
             // Same refresh-once-then-retry as authenticate; other errors propagate untouched.
             try await refreshStaffCache()
-            try await authenticator.verify(managerPIN: pin, authorizes: capability)
+            return try await authenticator.verify(managerPIN: pin, authorizes: capability)
         }
     }
 

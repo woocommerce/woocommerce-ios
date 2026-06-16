@@ -147,6 +147,19 @@ struct DefaultPOSAccessSessionTests {
         }
     }
 
+    @Test func test_requestManagerApproval_when_authenticator_succeeds_then_returns_approving_staff() async throws {
+        // Given
+        let approver = makeStaff(userID: 44, capabilities: [POSCapability.issueRefunds.rawValue])
+        let authenticator = MockPOSPINAuthenticator(verifyResult: .success(approver))
+        let sut = makeSUT(authenticator: authenticator)
+
+        // When
+        let approvedStaff = try await sut.session.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
+
+        // Then
+        #expect(approvedStaff == approver)
+    }
+
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
         let staff = makeStaff(capabilities: [POSCapability.issueRefunds.rawValue])
@@ -261,17 +274,19 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_requestManagerApproval_when_pin_misses_stale_cache_then_refreshes_once_and_succeeds() async throws {
         // Given a verify that misses on the first try but matches after a refresh
+        let approver = makeStaff(userID: 45, capabilities: [POSCapability.issueRefunds.rawValue])
         let authenticator = MockPOSPINAuthenticator()
-        authenticator.verifyResultSequence = [.failure(.invalidPIN), .success(())]
+        authenticator.verifyResultSequence = [.failure(.invalidPIN), .success(approver)]
         let fetcher = MockPOSStaffFetcher(result: .success([]))
         let sut = makeSUT(authenticator: authenticator, fetcher: fetcher)
 
         // When
-        try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
+        let approvedStaff = try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
 
         // Then
         #expect(fetcher.callCount == 1)
         #expect(authenticator.verifyCallCount == 2)
+        #expect(approvedStaff == approver)
     }
 
     // MARK: - Cache-driven gating

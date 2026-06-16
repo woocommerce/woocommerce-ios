@@ -27,10 +27,11 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         return staff(from: match)
     }
 
-    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
+    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) -> POSStaff {
         guard let match = await findMatch(pin: pin), holdsCapability(match, capability) else {
             throw .invalidPIN
         }
+        return staff(from: match)
     }
 }
 

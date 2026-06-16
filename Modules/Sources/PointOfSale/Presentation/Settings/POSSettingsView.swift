@@ -124,7 +124,7 @@ extension POSSettingsView {
         staffOverrideHandler.requestApproval(
             for: .editPOSSettings,
             reason: Localization.staffOverrideDescription,
-            onApproved: { selection = .staff }
+            onApproved: { _ in selection = .staff }
         )
     }
 

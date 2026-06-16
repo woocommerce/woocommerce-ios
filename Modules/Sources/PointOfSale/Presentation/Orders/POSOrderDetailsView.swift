@@ -638,8 +638,7 @@ private extension POSOrderDetailsView {
     /// Gates the refund button through the manager-override flow. When the operator
     /// already has `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the
     /// PIN modal is presented and the refund proceeds once a manager approves. The
-    /// approving manager is not surfaced by the session, so `pendingOverrideApprover`
-    /// stays `nil` and the refund carries no override-approver attribution meta.
+    /// approving manager becomes the refund actor and the current operator becomes the initiator.
     func requestRefundPermission() {
         guard !accessSession.allows(.issueRefunds) else {
             pendingOverrideApprover = nil
@@ -649,7 +648,8 @@ private extension POSOrderDetailsView {
         refundOverrideHandler.requestApproval(
             for: .issueRefunds,
             reason: Localization.refundOverrideDescription(order.number),
-            onApproved: {
+            onApproved: { approver in
+                pendingOverrideApprover = approver
                 initiateRefundFlow()
             }
         )
@@ -709,6 +709,7 @@ private extension POSOrderDetailsView {
         refundFlowPreparationID = nil
         refundModalState = nil
         currentRefundReason = nil
+        pendingOverrideApprover = nil
         orderListModel.ordersController.clearRefundSelection()
         dismissRefundSelectionIfNeeded()
     }

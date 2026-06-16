@@ -129,8 +129,11 @@ struct DefaultPOSPINAuthenticatorTests {
                                  pin: pinDetails(forPIN: "9999"))
         let sut = makeSUT(cached: [manager])
 
-        // When / Then — succeeds without throwing
-        try await sut.verify(managerPIN: "9999", authorizes: .issueRefunds)
+        // When
+        let staff = try await sut.verify(managerPIN: "9999", authorizes: .issueRefunds)
+
+        // Then
+        #expect(staff.userID == 5)
     }
 
     @MainActor

@@ -4,7 +4,7 @@ import Foundation
 @MainActor
 final class MockPOSPINAuthenticator: POSPINAuthenticating {
     var authenticateResult: Result<POSStaff, POSAuthError>
-    var verifyResult: Result<Void, POSAuthError>
+    var verifyResult: Result<POSStaff, POSAuthError>
 
     /// When non-empty, the first element is dequeued on each `authenticate` call and used instead of
     /// `authenticateResult`. Lets a test drive the session's refresh-on-miss retry: e.g. `.failure(.invalidPIN)`
@@ -12,7 +12,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
     var authenticateResultSequence: [Result<POSStaff, POSAuthError>] = []
 
     /// Same as `authenticateResultSequence`, but for `verify`.
-    var verifyResultSequence: [Result<Void, POSAuthError>] = []
+    var verifyResultSequence: [Result<POSStaff, POSAuthError>] = []
 
     private(set) var authenticatedPINs: [String] = []
     private(set) var verifyCallCount: Int = 0
@@ -25,7 +25,14 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
             )
          ),
-         verifyResult: Result<Void, POSAuthError> = .success(())) {
+         verifyResult: Result<POSStaff, POSAuthError> = .success(
+            POSStaff(
+                userID: 2,
+                displayName: "Morgan",
+                preset: "pos_manager",
+                capabilities: Set(POSCapability.allCases.map(\.rawValue))
+            )
+         )) {
         self.authenticateResult = authenticateResult
         self.verifyResult = verifyResult
     }
@@ -36,9 +43,9 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
         return try result.get()
     }
 
-    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
+    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) -> POSStaff {
         verifyCallCount += 1
         let result = verifyResultSequence.isEmpty ? verifyResult : verifyResultSequence.removeFirst()
-        try result.get()
+        return try result.get()
     }
 }

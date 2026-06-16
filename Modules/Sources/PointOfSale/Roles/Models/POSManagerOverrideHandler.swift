@@ -5,7 +5,7 @@ import Observation
 @MainActor
 final class POSManagerOverrideHandler {
     @ObservationIgnored private var session: POSAccessSession?
-    @ObservationIgnored private var onApproved: (() -> Void)?
+    @ObservationIgnored private var onApproved: ((POSStaff?) -> Void)?
 
     private(set) var request: POSManagerOverrideRequest?
     private(set) var pinEntryState: POSPINEntryState = .idle
@@ -28,7 +28,7 @@ final class POSManagerOverrideHandler {
         self.session = session
     }
 
-    func requestApproval(for capability: POSCapability, reason: String, onApproved: (() -> Void)? = nil) {
+    func requestApproval(for capability: POSCapability, reason: String, onApproved: ((POSStaff?) -> Void)? = nil) {
         request = POSManagerOverrideRequest(capability: capability, reason: reason)
         pinEntryState = .idle
         self.onApproved = onApproved
@@ -47,10 +47,10 @@ final class POSManagerOverrideHandler {
         pinEntryState = .loading
 
         do {
-            try await session.requestManagerApproval(withPIN: pin, for: request.capability)
+            let approver = try await session.requestManagerApproval(withPIN: pin, for: request.capability)
             guard self.request?.id == activeRequestID else { return true }
             dismiss()
-            activeOnApproved?()
+            activeOnApproved?(approver)
             return true
         } catch {
             guard self.request?.id == activeRequestID else { return true }

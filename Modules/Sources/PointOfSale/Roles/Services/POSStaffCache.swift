@@ -1,7 +1,7 @@
 import CocoaLumberjackSwift
 import Foundation
-import struct Networking.POSStaffMember
-import KeychainAccess
+import struct Yosemite.POSStaffMember
+@preconcurrency import KeychainAccess
 
 protocol POSStaffKeyValueStorage: Sendable {
     func string(forKey key: String) -> String?
@@ -9,7 +9,7 @@ protocol POSStaffKeyValueStorage: Sendable {
 }
 
 struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
-    static let service = "com.woocommerce.pos.staffCache"
+    static let service = "com.automattic.woocommerce.pos.staffCache"
 
     private let keychain: Keychain
 
@@ -39,15 +39,12 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
     }
 }
 
-/// `@unchecked Sendable` is sound because `KeychainPOSStaffStorage` serializes via the system
-/// Keychain and the test stub is only used under main-actor isolation.
-final class POSStaffCache: @unchecked Sendable {
+final class POSStaffCache: Sendable {
     private let storage: POSStaffKeyValueStorage
     private let now: @Sendable () -> Date
-    private(set) var generation: Int = 0
 
     init(storage: POSStaffKeyValueStorage = KeychainPOSStaffStorage(),
-         now: @escaping @Sendable () -> Date = Date.init) {
+         now: @escaping @Sendable () -> Date = { Date() }) {
         self.storage = storage
         self.now = now
     }
@@ -62,59 +59,40 @@ final class POSStaffCache: @unchecked Sendable {
     }
 
     func save(_ staff: [POSStaffMember], siteID: Int64) {
-        writeStaff(staff, siteID: siteID)
-    }
-
-    @discardableResult
-    func save(_ staff: [POSStaffMember], siteID: Int64, ifGenerationStill expectedGeneration: Int) -> Bool {
-        guard expectedGeneration == generation else { return false }
-        writeStaff(staff, siteID: siteID)
-        return true
+        guard let data = try? JSONEncoder().encode(staff),
+              let json = String(data: data, encoding: .utf8) else { return }
+        storage.setString(json, forKey: staffKey(siteID: siteID))
+        storage.setString(String(now().timeIntervalSince1970), forKey: timestampKey(siteID: siteID))
     }
 
     func clear(siteID: Int64) {
-        generation &+= 1
         storage.setString(nil, forKey: staffKey(siteID: siteID))
         storage.setString(nil, forKey: timestampKey(siteID: siteID))
     }
 
-    private func writeStaff(_ staff: [POSStaffMember], siteID: Int64) {
-        guard let data = try? JSONEncoder().encode(staff),
-              let json = String(data: data, encoding: .utf8) else { return }
-        storage.setString(json, forKey: staffKey(siteID: siteID))
-        // Hex bit-pattern round-trips losslessly; String(Double) and ISO8601 lose sub-second precision.
-        let ref = now().timeIntervalSinceReferenceDate
-        storage.setString(String(ref.bitPattern, radix: 16), forKey: timestampKey(siteID: siteID))
+    func lastFetched(siteID: Int64) -> Date? {
+        // Require the staff payload before trusting the timestamp: a torn cache (timestamp present,
+        // payload missing) must read as "never fetched" - not silently as "no PINs", which would
+        // auto-unlock POS without a verified fetch.
+        guard load(siteID: siteID) != nil else { return nil }
+        guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
+              let interval = TimeInterval(raw) else { return nil }
+        return Date(timeIntervalSince1970: interval)
     }
+}
 
+// MARK: - Derived queries
+
+extension POSStaffCache {
+    /// `true` when the cached staff list for the site contains at least one member with a PIN.
     func hasAnyPINs(siteID: Int64) -> Bool {
         load(siteID: siteID)?.contains(where: { $0.pin != nil }) ?? false
     }
-
-    func lastFetched(siteID: Int64) -> Date? {
-        // Atomic with the staff payload - a torn cache (timestamp present, payload missing)
-        // would otherwise read as "no PINs" and auto-unlock POS without a verified fetch.
-        guard load(siteID: siteID) != nil else { return nil }
-        guard let raw = storage.string(forKey: timestampKey(siteID: siteID)),
-              let bitPattern = UInt64(raw, radix: 16) else { return nil }
-        let ref = Double(bitPattern: bitPattern)
-        return Date(timeIntervalSinceReferenceDate: ref)
-    }
-
-    private func staffKey(siteID: Int64) -> String { "staff.\(siteID)" }
-    private func timestampKey(siteID: Int64) -> String { "lastFetched.\(siteID)" }
 }
 
-public enum POSStaffCacheCleaner {
-    public static func clear(siteID: Int64) {
-        POSStaffCache().clear(siteID: siteID)
-    }
+// MARK: - Storage keys
 
-    public static func clearAll() {
-        do {
-            try Keychain(service: KeychainPOSStaffStorage.service).removeAll()
-        } catch {
-            DDLogError("POSStaffCacheCleaner.clearAll failed: \(error)")
-        }
-    }
+private extension POSStaffCache {
+    func staffKey(siteID: Int64) -> String { "staff.\(siteID)" }
+    func timestampKey(siteID: Int64) -> String { "lastFetched.\(siteID)" }
 }

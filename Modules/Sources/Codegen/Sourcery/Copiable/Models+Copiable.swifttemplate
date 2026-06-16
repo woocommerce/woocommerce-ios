@@ -129,10 +129,13 @@ let modulesToGenerateImports: [String] = {
     // Targeted imports like "enum Foo.Bar" are redundant when "Foo" is already imported.
     let broadModules = Set(allModules.filter { !$0.contains(" ") && !$0.contains(".") })
 
+    let currentModule = matchingTypes.first?.module
+
     return allModules.filter { entry in
         guard entry.contains(" ") || entry.contains(".") else { return true }
         let path = entry.contains(" ") ? entry.split(separator: " ").last.map(String.init) ?? entry : entry
         let baseModule = path.split(separator: ".").first.map(String.init) ?? path
+        guard baseModule != currentModule else { return false }
         return !broadModules.contains(baseModule)
     }
 }()

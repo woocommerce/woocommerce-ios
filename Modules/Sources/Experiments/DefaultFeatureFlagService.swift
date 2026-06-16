@@ -6,12 +6,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
-        /// Whether this is a UI test run.
-        ///
-        /// This can be used to enable/disable a feature flag specifically for UI testing.
-        ///
-        let isUITesting = CommandLine.arguments.contains("-ui_testing")
-
         switch featureFlag {
         case .inbox:
             return true
@@ -92,13 +86,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ciabBookings:
             return !buildConfig.isProduction
         case .pointOfSaleCatalogAPI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleRefundsi1:
             return true
         case .pointOfSaleRoles:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleCustomAmounts:
-            return false
+            return buildConfig == .localDeveloper
         case .pointOfSalePhonePrototype:
             // Behind the flag for now — gates and UI follow in stacked PRs. Default to
             // localDeveloper only so alpha builds aren't affected until we're ready.
@@ -116,7 +110,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
-            return false
+            return true
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:

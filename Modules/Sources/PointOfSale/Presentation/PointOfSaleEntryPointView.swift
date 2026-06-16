@@ -12,7 +12,6 @@ import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PointOfSaleFixedItemFetchStrategyFactory
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
-import struct Networking.POSStaffMember
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
@@ -32,7 +31,6 @@ public struct PointOfSaleEntryPointView: View {
     @State private var posEntryPointController: POSEntryPointController
     @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.dismiss) private var dismiss
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -87,16 +85,15 @@ public struct PointOfSaleEntryPointView: View {
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
-         services: POSDependencyProviding,
          staffFetcher: POSStaffFetching,
+         services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        let session: any POSAccessSession = POSAccessSessionFactory.make(
+        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
             featureFlags: services.featureFlags,
             fetcher: staffFetcher
-        )
-        self._accessSession = State(initialValue: session)
+        ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -139,10 +136,7 @@ public struct PointOfSaleEntryPointView: View {
         self.orderController = PointOfSaleOrderController(orderService: orderService,
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
-                                                          analytics: services.analytics,
-                                                          staffUserIDProvider: { [weak session] in
-                                                              MainActor.assumeIsolated { session?.currentStaff?.userID }
-                                                          })
+                                                          analytics: services.analytics)
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -204,11 +198,6 @@ public struct PointOfSaleEntryPointView: View {
                 PointOfSaleLoadingView()
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
-            if accessSession.pinStatus == .present, accessSession.currentStaff != nil {
-                accessSession.lock()
-            }
-        }
         .task {
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
@@ -251,7 +240,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
+        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -261,11 +250,27 @@ public struct PointOfSaleEntryPointView: View {
             posModalManager.onDisappear()
             posModel?.pointOfSaleClosed()
         }
+        .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
+        .task {
+            await accessSession.refreshPINStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            // Active app switch, not idle - lock even mid-payment.
+            guard accessSession.hasAnyPINs, accessSession.currentStaff != nil else { return }
+            accessSession.lock()
+        }
+    }
+
+    private var isPhoneLayout: Bool {
+        horizontalSizeClass == .compact &&
+        services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }
 }
 
 #if DEBUG
+import struct Yosemite.POSStaffMember
+
 #Preview {
     PointOfSaleEntryPointView(
         siteID: 1,
@@ -292,10 +297,9 @@ public struct PointOfSaleEntryPointView: View {
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
-        services: POSPreviewServices(),
-        staffFetcher: POSPreviewStaffFetcher()
+        staffFetcher: POSPreviewStaffFetcher(),
+        services: POSPreviewServices()
     )
-    .environment(\.posAccessSession, UnrestrictedPOSAccessSession())
 }
 
 private struct POSPreviewStaffFetcher: POSStaffFetching {

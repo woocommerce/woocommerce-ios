@@ -1,10 +1,7 @@
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 
-/// Fetches the POS staff list for the given site. The concrete impl lives in the app target
-/// (`POSStaffAdaptor`) and wraps `POSStaffRemote`. Errors are translated to `POSStaffFetchError`
-/// at the adaptor so the authenticator and session can branch by intent without coupling to
-/// Networking error types.
-///
-public protocol POSStaffFetching: Sendable {
+/// Fetches the POS staff list for a site. The concrete implementation (`POSStaffAdaptor`) lives in
+/// the app target and maps Networking errors to `POSStaffFetchError`.
+public protocol POSStaffFetching {
     func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember]
 }

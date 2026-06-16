@@ -253,29 +253,34 @@ private extension POSRefundSubmissionAdaptor {
         return PreparedRefundSnapshot(preparation: preparation, context: context)
     }
 
+    /// Loads the order's refunds straight from the network so each refund's fee lines keep their
+    /// `_refunded_item_id` meta. The Core Data `OrderFeeLine` entity does not persist `refundedItemID`,
+    /// so reading refunds back from storage drops the link between a refund's fee line and the original
+    /// order fee — which left already-refunded custom amounts incorrectly selectable for a new refund.
+    /// `RefundAction.retrieveRefund` returns the freshly decoded refund, preserving that link.
     func loadDetailedRefunds(for order: Order) async throws -> [Refund] {
-        let refundIDs = order.refunds.map(\.refundID)
-        if refundIDs.isNotEmpty {
-            try await withCheckedThrowingContinuation { continuation in
-                var continuation: CheckedContinuation<Void, Error>? = continuation
-                let action = RefundAction.retrieveRefunds(siteID: order.siteID,
-                                                          orderID: order.orderID,
-                                                          refundIDs: refundIDs,
-                                                          deleteStaleRefunds: true) { error in
-                    if let error {
-                        continuation?.resume(throwing: error)
-                    } else {
-                        continuation?.resume()
-                    }
-                    continuation = nil
-                }
-                stores.dispatch(action)
+        var refunds: [Refund] = []
+        for refundID in order.refunds.map(\.refundID) {
+            if let refund = try await retrieveRefund(siteID: order.siteID, orderID: order.orderID, refundID: refundID) {
+                refunds.append(refund)
             }
         }
+        return refunds
+    }
 
-        return storageManager.viewStorage
-            .loadRefunds(siteID: order.siteID, orderID: order.orderID)
-            .map { $0.toReadOnly() }
+    func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64) async throws -> Refund? {
+        try await withCheckedThrowingContinuation { continuation in
+            var continuation: CheckedContinuation<Refund?, Error>? = continuation
+            let action = RefundAction.retrieveRefund(siteID: siteID, orderID: orderID, refundID: refundID) { refund, error in
+                if let error {
+                    continuation?.resume(throwing: error)
+                } else {
+                    continuation?.resume(returning: refund)
+                }
+                continuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 
     func fetchChargeIfNeeded(for order: Order) async throws -> WCPayCharge? {

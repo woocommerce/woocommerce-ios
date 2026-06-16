@@ -118,6 +118,17 @@ struct ItemListView: View {
     @State private var isAddingCustomAmount: Bool = false
 
     var body: some View {
+        navigationContainer
+            // The phone cart button and the iPad floating control are suppressed while the
+            // add-custom-amount form is pushed. Emit that request from this always-present view,
+            // keyed on the push flag, so it reverts the instant the form is popped: a preference
+            // set inside the pushed navigationDestination can stay stuck at its hidden value after
+            // dismissal, leaving the phone cart button hidden until an unrelated re-render.
+            .posHidesFloatingControl(isAddingCustomAmount)
+    }
+
+    @ViewBuilder
+    private var navigationContainer: some View {
         if #available(iOS 18.0, *) {
             NavigationStack {
                 content
@@ -171,6 +182,14 @@ struct ItemListView: View {
         }
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
+        }
+        // The add-custom-amount form is pushed onto this pane's own NavigationStack. On iPad the pane
+        // doesn't dismiss when checkout starts — the dashboard just slides it off-screen — so a form
+        // left pushed would still be there when the merchant returns to the product list. Pop it as the
+        // order leaves the building stage so returning always lands on the product list.
+        .onChange(of: posModel.orderStage) { _, stage in
+            guard stage != .building else { return }
+            isAddingCustomAmount = false
         }
     }
 
@@ -383,9 +402,6 @@ struct ItemListView: View {
         // (matches how `ChildItemList` handles the variations push).
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
-        // Suppress the dashboard's floating control overlay so it doesn't sit on top
-        // of the form's submit button while the form is pushed.
-        .posHidesFloatingControl()
     }
 }
 
@@ -516,9 +532,9 @@ private extension ItemListView {
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
     /// already has `pos_create_coupons` creation proceeds immediately; otherwise the PIN
-    /// modal is presented and the approver `POSStaff` is captured on `pendingCouponApprover`
-    /// so the resulting `POST /coupons` request can attach `_pos_override_staff_user_id`
-    /// meta.
+    /// modal is presented and creation proceeds once a manager approves. The approving
+    /// manager is not surfaced by the session, so `pendingCouponApprover` stays `nil` and
+    /// the `POST /coupons` request carries no override-approver attribution meta.
     private func requestCouponCreationPermission() {
         guard !accessSession.allows(.createCoupons) else {
             pendingCouponApprover = nil
@@ -528,8 +544,7 @@ private extension ItemListView {
         couponOverrideHandler.requestApproval(
             for: .createCoupons,
             reason: Localization.couponOverrideDescription,
-            onApproved: { approver in
-                pendingCouponApprover = approver
+            onApproved: {
                 showCouponCreationModal = true
             }
         )

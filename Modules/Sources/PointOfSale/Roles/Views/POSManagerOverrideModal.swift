@@ -6,12 +6,7 @@ private struct POSManagerOverrideModalModifier: ViewModifier {
     let handler: POSManagerOverrideHandler
 
     func body(content: Content) -> some View {
-        // Reading `handler.request` directly establishes an `@Observable` dependency on this
-        // modifier's body. Without it, the binding's getter closure runs lazily and SwiftUI
-        // doesn't track the read, so request mutations never trigger a body re-eval — the
-        // override modal silently fails to present.
-        _ = handler.request
-        return content
+        content
             .onAppear {
                 handler.configure(session: session)
             }

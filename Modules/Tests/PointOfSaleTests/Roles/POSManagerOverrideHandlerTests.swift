@@ -51,7 +51,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .viewPOSSettings,
             reason: "Viewing settings requires manager approval",
-            onApproved: { _ in
+            onApproved: {
                 completionWasCalled = true
             }
         )
@@ -127,7 +127,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: { _ in
+            onApproved: {
                 firstCompletionWasCalled = true
             }
         )
@@ -135,7 +135,7 @@ struct POSManagerOverrideHandlerTests {
             sut.requestApproval(
                 for: .createCoupons,
                 reason: "Creating coupons requires manager approval",
-                onApproved: { _ in
+                onApproved: {
                     secondCompletionWasCalled = true
                 }
             )
@@ -161,7 +161,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: { _ in
+            onApproved: {
                 completionWasCalled = true
             }
         )
@@ -189,7 +189,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: { _ in
+            onApproved: {
                 firstCompletionWasCalled = true
             }
         )
@@ -199,7 +199,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .createCoupons,
             reason: "Creating coupons requires manager approval",
-            onApproved: { _ in
+            onApproved: {
                 secondCompletionWasCalled = true
             }
         )

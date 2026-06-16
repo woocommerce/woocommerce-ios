@@ -5,14 +5,6 @@ import Networking
 import NetworkingCore
 import PointOfSale
 
-/// Test-seam wrapping `POSStaffRemote` so the adaptor can be unit-tested with a mock.
-///
-protocol POSStaffRemoteProtocol: Sendable {
-    func fetchStaff(siteID: Int64) async throws -> [POSStaffMember]
-}
-
-extension POSStaffRemote: POSStaffRemoteProtocol {}
-
 /// Concrete `POSStaffFetching` in the app target. Calls `POSStaffRemote` and maps Networking
 /// errors to the typed `POSStaffFetchError` so PointOfSale callers can branch by intent.
 ///
@@ -53,8 +45,8 @@ final class POSStaffAdaptor: POSStaffFetching {
             case .unauthorized, .invalidToken:
                 throw .adminMissingCapability
             case .noRestRoute:
-                throw .flagDisabledServerSide
-            case .unknown(let code, _, _) where code == "rest_forbidden":
+                throw .endpointUnavailable
+            case .unknown(let code, _, _) where Self.isAuthDenialCode(code):
                 throw .adminMissingCapability
             default:
                 throw .transient(retryable: true)
@@ -69,10 +61,12 @@ final class POSStaffAdaptor: POSStaffFetching {
     }
 
     private static func classify(networkError error: NetworkError) -> POSStaffFetchError {
-        if case .notFound = error, error.errorCode == "rest_no_route" {
-            return .flagDisabledServerSide
+        // `errorCode` decodes the response body on each access, so read it once.
+        let code = error.errorCode
+        if case .notFound = error, code == "rest_no_route" {
+            return .endpointUnavailable
         }
-        if let code = error.errorCode, isAuthDenialCode(code) {
+        if let code, isAuthDenialCode(code) {
             return .adminMissingCapability
         }
         if let status = error.responseCode, status == 401 || status == 403 {

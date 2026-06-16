@@ -7,9 +7,9 @@ import Observation
 final class MockPOSAccessSession: POSAccessSession {
     var currentStaff: POSStaff?
     var isLocked: Bool
-    var pinStatus: POSPINStatus
+    var hasAnyPINs: Bool
     var signInResult: Result<POSStaff, POSAuthError>
-    var managerApprovalResult: Result<POSStaff, POSAuthError>
+    var managerApprovalResult: Result<Void, POSAuthError>
     var checkLockoutResult: Result<Void, POSAuthError>
     var signInPINs: [String] = []
     var managerApprovalPINs: [String] = []
@@ -20,19 +20,16 @@ final class MockPOSAccessSession: POSAccessSession {
 
     init(currentStaff: POSStaff? = nil,
          isLocked: Bool = false,
-         pinStatus: POSPINStatus = .present,
+         hasAnyPINs: Bool = true,
          signInResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(userID: 1, displayName: "Maya",
                      preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
-         managerApprovalResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(userID: 2, displayName: "Morgan",
-                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-         ),
+         managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
         self.isLocked = isLocked
-        self.pinStatus = pinStatus
+        self.hasAnyPINs = hasAnyPINs
         self.signInResult = signInResult
         self.managerApprovalResult = managerApprovalResult
         self.checkLockoutResult = checkLockoutResult
@@ -55,15 +52,14 @@ final class MockPOSAccessSession: POSAccessSession {
         }
     }
 
-    @discardableResult
-    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) -> POSStaff {
+    func requestManagerApproval(withPIN pin: String, for capability: POSCapability) async throws(POSAuthError) {
         managerApprovalPINs.append(pin)
         managerApprovalCapabilities.append(capability)
         onManagerApproval?()
 
         switch managerApprovalResult {
-        case .success(let approver):
-            return approver
+        case .success:
+            break
         case .failure(let error):
             throw error
         }

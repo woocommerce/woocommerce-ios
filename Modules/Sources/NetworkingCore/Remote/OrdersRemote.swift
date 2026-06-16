@@ -712,7 +712,7 @@ public extension OrdersRemote {
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
+    func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
         guard !orderIDs.isEmpty else { return [] }
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),

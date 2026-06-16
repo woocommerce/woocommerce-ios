@@ -309,7 +309,8 @@ private extension POSTabCoordinator {
                 guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
                                                          selectedSite: defaultSitePublisher,
                                                          appPasswordSupportState: isAppPasswordSupported) else {
-                    DDLogError("⛔️ POSStaffAdaptor not provided")
+                    DDLogError("⛔️ Could not start POS: POSStaffAdaptor unavailable (missing credentials)")
+                    await hostingController.dismiss(animated: true)
                     return
                 }
 
@@ -351,8 +352,8 @@ private extension POSTabCoordinator {
                     sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
-                    services: serviceAdaptor,
                     staffFetcher: staffFetcher,
+                    services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
 

@@ -5,9 +5,7 @@ import Observation
 @MainActor
 final class POSManagerOverrideHandler {
     @ObservationIgnored private var session: POSAccessSession?
-    /// Approver-aware callback. Receives the manager `POSStaff` that authorized the action
-    /// so callers can attach `_pos_override_staff_user_id` meta on the next request.
-    @ObservationIgnored private var onApproved: ((POSStaff) -> Void)?
+    @ObservationIgnored private var onApproved: (() -> Void)?
 
     private(set) var request: POSManagerOverrideRequest?
     private(set) var pinEntryState: POSPINEntryState = .idle
@@ -30,7 +28,7 @@ final class POSManagerOverrideHandler {
         self.session = session
     }
 
-    func requestApproval(for capability: POSCapability, reason: String, onApproved: ((POSStaff) -> Void)? = nil) {
+    func requestApproval(for capability: POSCapability, reason: String, onApproved: (() -> Void)? = nil) {
         request = POSManagerOverrideRequest(capability: capability, reason: reason)
         pinEntryState = .idle
         self.onApproved = onApproved
@@ -49,15 +47,10 @@ final class POSManagerOverrideHandler {
         pinEntryState = .loading
 
         do {
-            let approver = try await session.requestManagerApproval(withPIN: pin, for: request.capability)
+            try await session.requestManagerApproval(withPIN: pin, for: request.capability)
             guard self.request?.id == activeRequestID else { return true }
             dismiss()
-            // Yield so the override modal's dismissal flushes through the shared `POSModalManager`
-            // before the success callback (which typically presents the next modal) runs. Without
-            // this gap the two writes race in the same runloop tick and `dismiss()` can clobber
-            // the new `present(...)`, leaving the user with no modal at all.
-            await Task.yield()
-            activeOnApproved?(approver)
+            activeOnApproved?()
             return true
         } catch {
             guard self.request?.id == activeRequestID else { return true }

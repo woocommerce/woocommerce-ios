@@ -1,81 +1,82 @@
+import CocoaLumberjackSwift
 import CommonCrypto
 import Foundation
-import struct Networking.POSStaffMember
+import struct Yosemite.POSStaffMember
 
+/// Verifies a PIN against the locally cached staff list using PBKDF2-HMAC-SHA256.
+///
+/// It is a pure reader of `POSStaffCache`: keeping the cache fresh (fetching staff from the server)
+/// is the access session's responsibility, not the authenticator's. On a cache miss it simply
+/// reports `.invalidPIN`; the session decides whether to refresh and retry.
+///
+/// The keychain read + PBKDF2 work runs on a detached task: PBKDF2 is intentionally CPU-heavy and the
+/// callers are `@MainActor`, so doing it inline would block the UI thread during PIN entry.
 struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
     private let cache: POSStaffCache
-    private let fetcher: POSStaffFetching
     private let siteID: Int64
 
-    init(cache: POSStaffCache, fetcher: POSStaffFetching, siteID: Int64) {
+    init(cache: POSStaffCache, siteID: Int64) {
         self.cache = cache
-        self.fetcher = fetcher
         self.siteID = siteID
     }
 
     func authenticate(withPIN pin: String) async throws(POSAuthError) -> POSStaff {
-        if let match = findMatch(in: cache.load(siteID: siteID) ?? [], pin: pin) {
-            return staff(from: match)
-        }
-        let refreshed = try await refetch()
-        guard let match = findMatch(in: refreshed, pin: pin) else {
+        guard let match = await findMatch(pin: pin) else {
             throw .invalidPIN
         }
         return staff(from: match)
     }
 
-    func verify(managerPIN pin: String, authorizes capability: POSCapability)
-        async throws(POSAuthError) -> POSStaff {
-        if let match = findMatch(in: cache.load(siteID: siteID) ?? [], pin: pin),
-           holdsCapability(match, capability) {
-            return staff(from: match)
-        }
-        let refreshed = try await refetch()
-        guard let match = findMatch(in: refreshed, pin: pin),
-              holdsCapability(match, capability) else {
+    func verify(managerPIN pin: String, authorizes capability: POSCapability) async throws(POSAuthError) {
+        guard let match = await findMatch(pin: pin), holdsCapability(match, capability) else {
             throw .invalidPIN
         }
-        return staff(from: match)
     }
+}
 
-    // MARK: - Lookup helpers
+// MARK: - Lookup helpers
 
-    private func findMatch(in members: [POSStaffMember], pin: String) -> POSStaffMember? {
-        for member in members {
-            guard let details = member.pin, details.algorithm == "pbkdf2-sha256" else { continue }
-            if verifyPIN(pin, against: details) {
-                return member
+private extension DefaultPOSPINAuthenticator {
+    /// Returns the cached staff member whose PIN matches `pin`, or `nil` if none do. The keychain
+    /// read and PBKDF2 verification run on a detached task so PIN entry never stalls the UI thread.
+    func findMatch(pin: String) async -> POSStaffMember? {
+        // The capture list pulls in just `cache` and `siteID` so the `@Sendable` closure doesn't
+        // capture the whole `self`.
+        return await Task.detached(priority: .userInitiated) { [cache, siteID] in
+            for member in cache.load(siteID: siteID) ?? [] {
+                guard let details = member.pin else { continue }
+                guard details.algorithm == Constants.supportedAlgorithm else {
+                    DDLogError("POS PIN: unsupported hash algorithm '\(details.algorithm)' for staff \(member.userID); skipping")
+                    continue
+                }
+                if Self.verifyPIN(pin, against: details) {
+                    return member
+                }
             }
-        }
-        return nil
+            return nil
+        }.value
     }
 
-    private func holdsCapability(_ member: POSStaffMember, _ capability: POSCapability) -> Bool {
+    func holdsCapability(_ member: POSStaffMember, _ capability: POSCapability) -> Bool {
         member.capabilities[capability.rawValue] == true
     }
+}
 
-    // MARK: - Refetch
+// MARK: - PBKDF2
 
-    private func refetch() async throws(POSAuthError) -> [POSStaffMember] {
-        let capturedGeneration = cache.generation
-        do {
-            let fresh = try await fetcher.fetchStaff(siteID: siteID)
-            guard cache.save(fresh, siteID: siteID, ifGenerationStill: capturedGeneration) else {
-                return []
-            }
-            return fresh
-        } catch {
-            throw .staffFetchFailed(error)
-        }
-    }
-
-    // MARK: - PBKDF2
-
-    private func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
+private extension DefaultPOSPINAuthenticator {
+    static func verifyPIN(_ pin: String, against details: POSStaffMember.PINDetails) -> Bool {
         guard let saltData = Data(base64Encoded: details.salt),
               let expectedHash = Data(base64Encoded: details.hash),
+              !expectedHash.isEmpty,
+              expectedHash.count <= Constants.maxHashByteCount,
               let pinData = pin.data(using: .utf8),
-              let iterations = UInt32(exactly: details.iterations) else {
+              let iterations = UInt32(exactly: details.iterations),
+              iterations > 0 else {
+            // Reject empty/oversized hashes and non-positive iteration counts outright before
+            // touching PBKDF2. An empty `expectedHash` would otherwise make `constantTimeEqual`
+            // return true for any PIN; an oversized one (from a corrupted/tampered cache) sizes the
+            // derived-key buffer — and therefore the PBKDF2 work — proportional to it.
             return false
         }
         var derived = [UInt8](repeating: 0, count: expectedHash.count)
@@ -98,7 +99,7 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         return constantTimeEqual(Data(derived), expectedHash)
     }
 
-    private func constantTimeEqual(_ a: Data, _ b: Data) -> Bool {
+    static func constantTimeEqual(_ a: Data, _ b: Data) -> Bool {
         guard a.count == b.count else { return false }
         var result: UInt8 = 0
         for i in 0..<a.count {
@@ -106,10 +107,15 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
         }
         return result == 0
     }
+}
 
-    // MARK: - POSStaff construction
+// MARK: - POSStaff construction
 
-    private func staff(from member: POSStaffMember) -> POSStaff {
+private extension DefaultPOSPINAuthenticator {
+    /// Builds the `POSStaff` for a verified member, keeping only the capabilities the client
+    /// recognizes — i.e. those that map to a known `POSCapability` — so unknown server-side keys
+    /// are dropped rather than carried into the app's permission checks.
+    func staff(from member: POSStaffMember) -> POSStaff {
         let posCaps = Set(member.capabilities.compactMap { key, granted -> String? in
             guard granted, POSCapability(rawValue: key) != nil else { return nil }
             return key
@@ -121,4 +127,15 @@ struct DefaultPOSPINAuthenticator: POSPINAuthenticating {
             capabilities: posCaps
         )
     }
+}
+
+private enum Constants {
+    /// The only PIN hashing scheme the client knows how to verify. PINs tagged with anything else
+    /// are skipped (and logged) rather than silently treated as a match/mismatch.
+    static let supportedAlgorithm = "pbkdf2-sha256"
+
+    /// Upper bound on the decoded PIN hash length. A PBKDF2-HMAC-SHA256 digest is 32 bytes; we keep
+    /// some headroom but reject anything larger so a corrupted/tampered cache entry can't size the
+    /// derived-key buffer — and the PBKDF2 work — to an arbitrarily large value.
+    static let maxHashByteCount = 64
 }

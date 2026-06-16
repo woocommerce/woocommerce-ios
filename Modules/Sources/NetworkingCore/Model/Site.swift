@@ -1,6 +1,5 @@
 import Foundation
 import Codegen
-import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///

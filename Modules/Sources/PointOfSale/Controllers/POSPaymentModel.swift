@@ -225,8 +225,8 @@ extension POSPaymentModel {
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
     func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
-        DDLogInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), "
-                  + "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
+        logInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), " +
+                "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
         // Same-method re-entry guard. Two different shapes:
         // - BT: card state moves out of `.idle` during collection, so the
@@ -886,9 +886,9 @@ extension POSPaymentModel {
     /// For cash, scan-to-pay, and mark-as-paid, restores session event subscriptions without
     /// activating the reader. If the QR was on screen, resumes polling.
     func activate() async {
-        DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), " +
-                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), " +
-                  "cash: \(paymentState.cash), scanToPay: \(paymentState.scanToPay)")
+        logInfo("▶️ [Session] activate called — isActive: \(isActive), " +
+                "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), " +
+                "cash: \(paymentState.cash), scanToPay: \(paymentState.scanToPay)")
         guard !isActive else { return }
         if paymentState.activePaymentMethod == .card {
             await startPayment()
@@ -995,8 +995,8 @@ extension POSPaymentModel {
                             // runs blind to events. Log the cancellables count
                             // here so a "no events firing after reconnect"
                             // bug is one Bartleby search away from the cause.
-                            DDLogDebug("🃏 [CardPayment] BT auto-resume re-kick — "
-                                       + "paymentSessionCancellables.count: \(self.paymentSessionCancellables.count)")
+                            logDebug("🃏 [CardPayment] BT auto-resume re-kick — " +
+                                     "paymentSessionCancellables.count: \(self.paymentSessionCancellables.count)")
                             await self.startPayment()
                         }
                     case .cancellingConnection, .disconnecting, .reconnecting:
@@ -1257,8 +1257,8 @@ private extension POSPaymentModel {
                 guard let self else { return }
                 if paymentState.cash != .idle {
                     if cardPaymentState.requiresCashExit {
-                        DDLogWarn("💵 [CashPayment] committed card event \(cardPaymentState) during cash flow " +
-                                  "- transitioning to card view")
+                        logWarn("💵 [CashPayment] committed card event \(cardPaymentState) during cash flow " +
+                                "- transitioning to card view")
                         paymentState.cash = .idle
                     } else {
                         DDLogInfo("💵 [CashPayment] ignoring non-committed card event \(cardPaymentState) during cash flow")
@@ -1267,8 +1267,8 @@ private extension POSPaymentModel {
                 }
                 if paymentState.scanToPay != .idle {
                     if cardPaymentState.requiresCashExit {
-                        DDLogWarn("📲 [ScanToPay] committed card event \(cardPaymentState) during scan-to-pay flow " +
-                                  "- transitioning to card view")
+                        logWarn("📲 [ScanToPay] committed card event \(cardPaymentState) during scan-to-pay flow " +
+                                "- transitioning to card view")
                         stopScanToPayPolling()
                         paymentState.scanToPay = .idle
                         scanToPayURL = nil
@@ -1280,8 +1280,8 @@ private extension POSPaymentModel {
                 }
                 if paymentState.markAsPaid != .idle {
                     if cardPaymentState.requiresCashExit {
-                        DDLogWarn("🪙 [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
-                                  "- transitioning to card view")
+                        logWarn("🪙 [MarkAsPaid] committed card event \(cardPaymentState) during mark-as-paid flow " +
+                                "- transitioning to card view")
                         paymentState.markAsPaid = .idle
                     } else {
                         // Verbose: the merchant can sit on the confirmation alert for a while;
@@ -1290,10 +1290,10 @@ private extension POSPaymentModel {
                         return
                     }
                 }
-                DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
-                          "current cash state: \(paymentState.cash), " +
-                          "current scanToPay state: \(paymentState.scanToPay), " +
-                          "current markAsPaid state: \(paymentState.markAsPaid)")
+                logInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
+                        "current cash state: \(paymentState.cash), " +
+                        "current scanToPay state: \(paymentState.scanToPay), " +
+                        "current markAsPaid state: \(paymentState.markAsPaid)")
                 paymentState.card = cardPaymentState
                 // Don't auto-clear `currentPaymentMethod` on `.idle` — Stripe
                 // emits `.idle` mid-cancel of a BT scan (before the merchant
@@ -1380,6 +1380,20 @@ extension POSPaymentModel {
         resetCardReaderObservation()
         paymentSessionCancellables.removeAll()
         cancellables.forEach { $0.cancel() }
+    }
+}
+
+private extension POSPaymentModel {
+    func logInfo(_ message: String) {
+        DDLogInfo(DDLogMessageFormat(stringLiteral: message))
+    }
+
+    func logWarn(_ message: String) {
+        DDLogWarn(DDLogMessageFormat(stringLiteral: message))
+    }
+
+    func logDebug(_ message: String) {
+        DDLogDebug(DDLogMessageFormat(stringLiteral: message))
     }
 }
 

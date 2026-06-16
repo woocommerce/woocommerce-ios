@@ -1,5 +1,7 @@
 enum POSCapability: String, CaseIterable, Sendable {
-    // Raw values match the WordPress capability identifiers reported for a staff member.
+    // POS-specific capabilities use the `pos_` prefix, matching the keys the staff endpoint
+    // reports. Capability matching is by raw value (see `POSStaff.hasCapability`), so non-`pos_`
+    // identifiers can be added as cases later without changing the lookup logic.
     case processSales = "pos_process_sales"
     case viewOrders = "pos_view_orders"
     case applyCoupons = "pos_apply_coupons"

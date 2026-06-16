@@ -9,6 +9,7 @@ import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSVariation
 import struct Yosemite.CouponsError
@@ -83,6 +84,12 @@ protocol PointOfSaleOrderControllerProtocol {
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
 
+    /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
+    /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
+    /// see (it ignores `isTaxable`). Compared against the cart's intent — never the server's
+    /// returned tax status — so a legitimate server/cart tax divergence won't cause a resync loop.
+    private var lastSyncedCustomAmounts: [POSCustomAmount] = []
+
     private var currencyFormatter: CurrencyFormatter {
         CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     }
@@ -96,7 +103,13 @@ protocol PointOfSaleOrderControllerProtocol {
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCart.matches(order: order) else {
+        // `matches(order:)` ignores `isTaxable`, so a "Charge taxes" toggle on an otherwise-
+        // unchanged amount would short-circuit and never re-sync. Force a sync when the cart's
+        // taxable intent diverges from what we last synced.
+        let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
+
+        guard !orderState.isSyncing,
+              !posCart.matches(order: order) || taxableIntentChanged else {
             return .success(.orderNotChanged)
         }
 
@@ -107,11 +120,13 @@ protocol PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency,
                                                                staffUserID: staffUserIDProvider())
             self.order = syncedOrder
+            self.lastSyncedCustomAmounts = posCart.customAmounts
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
             self.order = nil
+            self.lastSyncedCustomAmounts = []
             trackOrderCreationFailed(error: error)
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
@@ -138,6 +153,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     func clearOrder() {
         order = nil
+        lastSyncedCustomAmounts = []
         orderState = .idle
     }
 
@@ -240,6 +256,8 @@ private extension PointOfSaleOrderController {
             orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
             discountTotal: formattedDiscount(totalsCalculator.discountTotal,
                                              currency: order.currency),
+            customAmountsTotal: formattedCustomAmounts(totalsCalculator.feesTotal,
+                                                       currency: order.currency),
             couponsTotals: couponsTotals(order))
     }
 
@@ -266,6 +284,17 @@ private extension PointOfSaleOrderController {
         }
 
         return formattedDiscount
+    }
+
+    /// Custom amounts are stored as order fees, so they are absent from the items subtotal
+    /// (`cartTotal`). We surface them on their own line, returning `nil` when there are none.
+    func formattedCustomAmounts(_ fees: NSDecimalNumber, currency: String) -> String? {
+        guard !fees.isZero(),
+              let formattedFees = formattedPrice(fees.stringValue, currency: currency) else {
+            return nil
+        }
+
+        return formattedFees
     }
 }
 

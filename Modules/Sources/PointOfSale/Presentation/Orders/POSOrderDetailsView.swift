@@ -635,8 +635,9 @@ private extension POSOrderDetailsView {
 
     /// Gates the refund button through the manager-override flow. When the operator
     /// already has `pos_issue_refunds` the refund proceeds immediately; otherwise the
-    /// PIN modal is presented and the approver's `POSStaff` is captured on
-    /// `pendingOverrideApprover` so the refund can carry `_pos_override_staff_user_id` meta.
+    /// PIN modal is presented and the refund proceeds once a manager approves. The
+    /// approving manager is not surfaced by the session, so `pendingOverrideApprover`
+    /// stays `nil` and the refund carries no override-approver attribution meta.
     func requestRefundPermission() {
         guard !accessSession.allows(.issueRefunds) else {
             pendingOverrideApprover = nil
@@ -646,8 +647,7 @@ private extension POSOrderDetailsView {
         refundOverrideHandler.requestApproval(
             for: .issueRefunds,
             reason: Localization.refundOverrideDescription(order.number),
-            onApproved: { approver in
-                pendingOverrideApprover = approver
+            onApproved: {
                 initiateRefundFlow()
             }
         )

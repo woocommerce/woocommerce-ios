@@ -289,11 +289,12 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled_for_uk_store() async throws {
+    @Test(arguments: phoneSupportedCountries)
+    func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
-        setupCountry(country: .gb, currency: .GBP)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .phone,
@@ -313,7 +314,7 @@ struct POSTabVisibilityCheckerTests {
         (country: Country.pr, currency: CurrencyCode.USD),
         (country: Country.ca, currency: CurrencyCode.CAD)
     ])
-    fileprivate func is_invisible_when_device_is_phone_and_store_is_supported_non_uk_country(country: Country, currency: CurrencyCode) async throws {
+    func is_invisible_when_device_is_phone_and_store_is_supported_non_uk_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
@@ -351,10 +352,11 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func is_invisible_when_device_is_phone_and_phonePrototype_flag_disabled_for_uk_store() async throws {
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_phonePrototype_flag_disabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .gb, currency: .GBP)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .phone,
@@ -464,7 +466,11 @@ struct POSTabVisibilityCheckerTests {
     }
 }
 
-private extension POSTabVisibilityCheckerTests {
+extension POSTabVisibilityCheckerTests {
+    nonisolated static let phoneSupportedCountries: [(country: Country, currency: CurrencyCode)] = [
+        (country: .gb, currency: .GBP)
+    ]
+
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
         let countrySetting = mockCountrySetting(country: country)
         let currencySetting = mockCurrencySetting(currency: currency)

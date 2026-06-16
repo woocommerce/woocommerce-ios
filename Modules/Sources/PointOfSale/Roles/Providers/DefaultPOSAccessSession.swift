@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import CocoaLumberjackSwift
 
 @Observable
 @MainActor
@@ -36,7 +35,7 @@ final class DefaultPOSAccessSession: POSAccessSession {
             rateLimiter.reset()
             currentStaff = staff
             isLocked = false
-            // Sign-in proves a PIN exists; pre-empt refreshPINStatus.
+            // A successful sign-in proves at least one PIN exists.
             hasAnyPINs = true
             persistLockState(false)
         } catch {
@@ -65,11 +64,8 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {
-        do {
-            hasAnyPINs = try await authenticator.hasAnyPINs()
-        } catch {
-            DDLogError("Failed to refresh POS PIN status: \(error)")
-        }
+        // No-op until the session owns staff fetching and can derive PIN presence from the cached
+        // staff list. Until then, `hasAnyPINs` is set by a successful sign-in.
     }
 }
 

@@ -7,7 +7,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
     private let originalMetadata = [
             MetaData(metadataID: 1, key: "Key1", value: "Value1"),
             MetaData(metadataID: 2, key: "Key2", value: "Value2")
-        ]
+    ]
     private var originalFields: [CustomFieldViewModel] {
         originalMetadata.map(CustomFieldViewModel.init)
     }

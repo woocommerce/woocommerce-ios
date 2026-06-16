@@ -24,14 +24,14 @@ struct AztecUIConfigurator {
             richTextView.trailingAnchor.constraint(equalTo: editorContainerView.readableContentGuide.trailingAnchor),
             richTextView.topAnchor.constraint(equalTo: editorContainerView.topAnchor),
             richTextView.bottomAnchor.constraint(equalTo: editorContainerView.bottomAnchor)
-            ])
+        ])
 
         NSLayoutConstraint.activate([
             htmlTextView.leftAnchor.constraint(equalTo: richTextView.leftAnchor),
             htmlTextView.rightAnchor.constraint(equalTo: richTextView.rightAnchor),
             htmlTextView.topAnchor.constraint(equalTo: richTextView.topAnchor),
             htmlTextView.bottomAnchor.constraint(equalTo: richTextView.bottomAnchor)
-            ])
+        ])
 
         let insets = richTextView.textContainerInset
 
@@ -40,7 +40,7 @@ struct AztecUIConfigurator {
             placeholderView.rightAnchor.constraint(equalTo: richTextView.rightAnchor, constant: -insets.right - richTextView.textContainer.lineFragmentPadding),
             placeholderView.topAnchor.constraint(equalTo: richTextView.topAnchor, constant: insets.top),
             placeholderView.bottomAnchor.constraint(lessThanOrEqualTo: richTextView.bottomAnchor, constant: insets.bottom)
-            ])
+        ])
     }
 }
 

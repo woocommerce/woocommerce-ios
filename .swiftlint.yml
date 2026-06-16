@@ -1,6 +1,8 @@
 swiftlint_version: 0.63.2
 
 excluded:
+  # Local agent worktrees contain full repo copies (incl. vendored sub-configs); never lint them
+  - .claude/worktrees
   - build
   - BuildTools/.build
   - DerivedData
@@ -81,6 +83,10 @@ only_rules:
   - last_where
 
   - line_length
+
+  # Trailing closure end-token indentation should match the line that
+  # opens the literal/expression.
+  - literal_expression_end_indentation
 
   # MARK comment should be in valid format.
   - mark

@@ -43,12 +43,11 @@ private extension AnalyticsReportLink {
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {
     AnalyticsReportLink(showingWebReport: .constant(false),
                         reportViewModel: .init(reportType: .revenue,
                                                period: .today,
                                                webViewTitle: "Revenue Report",
                                                reportURL: URL(string: "https://woocommerce.com/")!,
                                                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
-        .previewLayout(.sizeThatFits)
 }

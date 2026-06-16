@@ -1043,8 +1043,7 @@ private extension OrderDetailsDataSource {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
             status: lookUpOrderStatus(for: order),
-            isEditButtonVisible: true,
-            isCIAB: false
+            isEditButtonVisible: true
         )
 
         cell.configure(cellViewModel)

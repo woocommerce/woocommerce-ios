@@ -49,8 +49,13 @@ public final class TabNavComponent: ScreenObject {
         return try ProductsScreen()
     }
     public func goToPOSScreen() throws -> POSScreen {
-        posTabButton.tap()
-        return try POSScreen()
+        posTabButton.waitAndTap()
+        return try POSScreen(app: app)
+    }
+    @discardableResult
+    public func goToPOSIneligibleScreen() throws -> POSIneligibleScreen {
+        posTabButton.waitAndTap()
+        return try POSIneligibleScreen(app: app)
     }
     @discardableResult
     public func goToMenuScreen() throws -> MenuScreen {
@@ -61,7 +66,7 @@ public final class TabNavComponent: ScreenObject {
         (try? TabNavComponent().isLoaded) ?? false
     }
     // TODO: This paradigm is used enough around the test suits that it would be worth extracting to `ScreenObject`.
-   static func isVisible() -> Bool {
+    static func isVisible() -> Bool {
         guard let tabNavComponent = try? TabNavComponent() else { return false }
         return tabNavComponent.isLoaded && tabNavComponent.expectedElement.isHittable
     }

@@ -36,7 +36,7 @@ final class FooterSpinnerView: UIView {
             safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
             safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
             centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
-            ])
+        ])
     }
 
     /// Starts the spinner animation

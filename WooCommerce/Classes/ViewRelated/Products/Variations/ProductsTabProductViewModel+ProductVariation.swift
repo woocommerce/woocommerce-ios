@@ -42,7 +42,7 @@ private extension EditableProductVariationModel {
                                   attributes: [
                                     .foregroundColor: UIColor.textSubtle,
                                     .font: StyleManager.footerLabelFont
-        ])
+                                  ])
     }
 
     func createVariationStatusOrPriceAttributedString(currencySettings: CurrencySettings) -> NSAttributedString {
@@ -67,7 +67,7 @@ private extension EditableProductVariationModel {
                                                          attributes: [
                                                             .foregroundColor: textColor,
                                                             .font: StyleManager.footerLabelFont
-        ])
+                                                         ])
         return attributedString
     }
 

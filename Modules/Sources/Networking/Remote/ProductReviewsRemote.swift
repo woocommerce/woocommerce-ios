@@ -44,7 +44,7 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.product: stringOfProductIDs,
             ParameterKey.status: statusFilter
-            ]
+        ]
 
         let path = Path.reviews
         let request = JetpackRequest(wooApiVersion: .mark3,

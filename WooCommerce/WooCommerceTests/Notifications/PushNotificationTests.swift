@@ -17,7 +17,7 @@ final class PushNotificationTests: XCTestCase {
             "alert": [
                 "body": "New order for $2.00 on the store",
                 "title": "You have a new order! 🎉"
-                ]
+            ]
         ],
         "type": "store_order",
         "blog_id": "205617935",

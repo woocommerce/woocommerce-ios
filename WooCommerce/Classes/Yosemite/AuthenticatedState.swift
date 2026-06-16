@@ -215,7 +215,8 @@ class AuthenticatedState: StoresManagerState {
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
                 connectivityObserver: ServiceLocator.connectivityObserver,
-                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
+                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
+                pluginsService: PluginsService(storageManager: ServiceLocator.storageManager)
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

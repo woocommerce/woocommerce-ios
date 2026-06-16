@@ -21,10 +21,7 @@ final class TabContainerController: UIViewController {
             view.addSubview(newWrappedController.view)
             newWrappedController.didMove(toParent: self)
 
-            if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad,
-               let horizontalSize = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
-                newWrappedController.traitOverrides.horizontalSizeClass = horizontalSize
-            }
+            applyHorizontalSizeClassToWrappedController()
 
             newWrappedController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -35,6 +32,28 @@ final class TabContainerController: UIViewController {
             ])
 
             tabBarItem = newWrappedController.tabBarItem
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        observeTraitChanges()
+    }
+}
+
+private extension TabContainerController {
+    func observeTraitChanges() {
+        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            registerForTraitChanges([UITraitHorizontalSizeClass.self]) { (self: Self, _) in
+                self.applyHorizontalSizeClassToWrappedController()
+            }
+        }
+    }
+
+    func applyHorizontalSizeClassToWrappedController() {
+        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            wrappedController?.traitOverrides.horizontalSizeClass = traitCollection.horizontalSizeClass
         }
     }
 }

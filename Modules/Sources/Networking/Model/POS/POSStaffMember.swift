@@ -11,8 +11,8 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     /// POS presets use the `pos_` prefix (e.g. `pos_cashier`, `pos_manager`, `pos_admin`).
     public let preset: String
 
-    /// POS capabilities the staff member holds, keyed by the server's `pos_*` capability
-    /// identifier. The server emits only granted entries (all values are `true` in the
+    /// POS capabilities the staff member holds, keyed by the server's `woocommerce_pos_*`
+    /// capability identifier. The server emits only granted entries (all values are `true` in the
     /// current preset bundles). Treated as opaque strings at this layer.
     public let capabilities: [String: Bool]
 

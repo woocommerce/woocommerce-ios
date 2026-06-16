@@ -539,7 +539,7 @@ private extension POSOrderDetailsView {
             return .init(primary: email, secondary: [])
         case .completed:
             // The refund button is always visible when refunds are enabled. When the
-            // operator lacks `pos_issue_refunds`, tapping it pops a manager-override
+            // operator lacks `woocommerce_pos_issue_refunds`, tapping it pops a manager-override
             // modal; an approver's PIN unlocks the action and their user id is sent as the
             // refund's `X-WC-POS-Staff-Id` actor header (the cashier becomes the initiator).
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
@@ -636,7 +636,7 @@ private extension POSOrderDetailsView {
     }
 
     /// Gates the refund button through the manager-override flow. When the operator
-    /// already has `pos_issue_refunds` the refund proceeds immediately; otherwise the
+    /// already has `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the
     /// PIN modal is presented and the refund proceeds once a manager approves. The
     /// approving manager is not surfaced by the session, so `pendingOverrideApprover`
     /// stays `nil` and the refund carries no override-approver attribution meta.

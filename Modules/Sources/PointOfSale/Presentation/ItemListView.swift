@@ -527,7 +527,7 @@ private extension ItemListView {
     }
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
-    /// already has `pos_create_coupons` creation proceeds immediately; otherwise the PIN
+    /// already has `woocommerce_pos_create_coupons` creation proceeds immediately; otherwise the PIN
     /// modal is presented and creation proceeds once a manager approves. The manager approval
     /// is a local gate — the `POST /coupons` request is always attributed to the operator and
     /// carries no override-approver header.

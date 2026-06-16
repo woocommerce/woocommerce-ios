@@ -110,7 +110,7 @@ extension POSSettingsView {
     }
 
     /// The Staff card is visible when the POS roles feature flag is on. Tapping it gates through
-    /// the manager-override modal — staff who already hold `pos_edit_settings` proceed immediately,
+    /// the manager-override modal — staff who already hold `woocommerce_pos_edit_settings` proceed immediately,
     /// everyone else gets a PIN prompt for a manager to authorize the navigation.
     private var isStaffSectionVisible: Bool {
         featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)

@@ -121,9 +121,7 @@ private extension BottomSheetListSelectorViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedSectionHeaderHeight = (viewProperties.title != nil || viewProperties.subtitle != nil) ? estimatedSectionHeight : .zero
         tableView.sectionHeaderHeight = UITableView.automaticDimension
-        if #available(iOS 15.0, *) {
-            tableView.sectionHeaderTopPadding = .zero
-        }
+        tableView.sectionHeaderTopPadding = .zero
 
         tableView.backgroundColor = viewProperties.backgroundColor
 

@@ -6,6 +6,7 @@
 
 25.0
 -----
+- [*] Fixed a crash that could occur when using the Connectivity Tool to troubleshoot connection issues. [https://github.com/woocommerce/woocommerce-ios/pull/17361]
 - [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]
 - [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]
 - [*] Fixed refunds for orders with multiple shipping lines so all shipping lines can be refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17312]

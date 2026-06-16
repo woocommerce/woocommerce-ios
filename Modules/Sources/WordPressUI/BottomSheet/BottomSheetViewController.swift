@@ -191,10 +191,18 @@ public class BottomSheetViewController: UIViewController {
     func computePreferredContentSize() -> CGSize {
         var size = childViewController?.preferredContentSize ?? super.preferredContentSize
         if size.height > 0 {
-            // Account for the grip handle, spacing, and stack view insets.
-            size.height += Constants.additionalContentTopMargin
+            size.height += additionalPreferredContentHeight
         }
         return size
+    }
+
+    private var additionalPreferredContentHeight: CGFloat {
+        guard isViewLoaded, gripButton.isHidden else {
+            // Account for the grip handle, spacing, and stack view insets.
+            return Constants.additionalContentTopMargin
+        }
+
+        return Constants.Stack.insets.top
     }
 
     override public func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {

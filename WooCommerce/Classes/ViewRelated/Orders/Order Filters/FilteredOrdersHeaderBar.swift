@@ -86,7 +86,7 @@ extension FilteredOrdersHeaderBar {
 // MARK: - Setup
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             backgroundColor = .clear
             bottomBorder.backgroundColor = UIColor.clear.cgColor
         } else {

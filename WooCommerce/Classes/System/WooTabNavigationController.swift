@@ -20,7 +20,7 @@ final class WooTabNavigationController: WooNavigationController {
     }
 
     private func updateNavigationBarAppearance(largeTitleDisplayMode: UINavigationItem.LargeTitleDisplayMode) {
-        guard !Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #unavailable(iOS 26.0) else {
             return
         }
 

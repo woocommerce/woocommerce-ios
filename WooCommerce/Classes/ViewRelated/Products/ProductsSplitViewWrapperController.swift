@@ -3,7 +3,7 @@ import Yosemite
 
 /// Controller to wrap the products split view
 ///
-final class ProductsSplitViewWrapperController: UIViewController {
+final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
     private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)

@@ -9,7 +9,7 @@ extension UINavigationBar {
     /// Applies the default WC's Appearance
     ///
     class func applyWooAppearance() {
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             let appearance = UINavigationBar.appearance()
             appearance.tintColor = .accent
             appearance.compactAppearance = nil

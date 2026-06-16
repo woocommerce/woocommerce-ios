@@ -109,7 +109,7 @@ public final class POSScreen: ScreenObject {
     public func verifyVariationSelectorVisible(variationID: Int) -> Self {
         let variationButton = app.buttons["pos-variation-card-\(variationID)"]
 
-        XCTAssertTrue(variationButton.waitForExistence(timeout: 15), "POS variation selector should remain visible when returning to edit the cart.")
+        XCTAssertTrue(waitForVisibleElement(variationButton, timeout: 15), "POS variation selector should remain visible when returning to edit the cart.")
 
         return self
     }

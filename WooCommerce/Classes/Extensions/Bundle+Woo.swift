@@ -18,6 +18,13 @@ extension Bundle {
         requiredNonEmptyInfoPlistString(for: "WCDotcomAuthScheme")
     }
 
+    var isLiquidGlassDesignEnabled: Bool {
+        guard #available(iOS 26.0, *) else {
+            return false
+        }
+        return (infoDictionary?["UIDesignRequiresCompatibility"] as? Bool) != true
+    }
+
     /// Google Sign-In URL scheme, read from Info.plist (`WCGoogleAuthScheme`).
     var googleAuthScheme: String {
         requiredNonEmptyInfoPlistString(for: "WCGoogleAuthScheme")

@@ -9,6 +9,15 @@ extension UINavigationBar {
     /// Applies the default WC's Appearance
     ///
     class func applyWooAppearance() {
+        if Bundle.main.isLiquidGlassDesignEnabled {
+            let appearance = UINavigationBar.appearance()
+            appearance.tintColor = .accent
+            appearance.compactAppearance = nil
+            appearance.scrollEdgeAppearance = nil
+            appearance.compactScrollEdgeAppearance = nil
+            return
+        }
+
         let appearance = wooAppearance()
         UINavigationBar.appearance().tintColor = .accent // The color of bar button items in the navigation bar
         UINavigationBar.appearance().standardAppearance = appearance

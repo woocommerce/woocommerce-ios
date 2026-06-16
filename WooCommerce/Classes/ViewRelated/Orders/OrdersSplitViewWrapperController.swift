@@ -3,7 +3,7 @@ import Yosemite
 
 /// Controller to wrap the orders split view
 ///
-final class OrdersSplitViewWrapperController: UIViewController {
+final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
@@ -174,6 +174,7 @@ private extension OrdersSplitViewWrapperController {
     /// Set up properties for `self` as a root tab bar controller.
     ///
     func configureTabBarItem() {
+        title = Localization.ordersTabTitle
         tabBarItem.title = Localization.ordersTabTitle
         tabBarItem.image = .pagesImage
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"

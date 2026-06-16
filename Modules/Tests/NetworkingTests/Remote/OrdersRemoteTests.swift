@@ -844,6 +844,34 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, "pos-rest-api")
     }
 
+    func test_createPOSOrder_attaches_custom_headers_to_request() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+        let headers = ["X-WC-POS-Request": "1", "X-WC-POS-Staff-Id": "42"]
+
+        // When
+        _ = try? await remote.createPOSOrder(siteID: 123, order: order, fields: [], customHeaders: headers)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        assertEqual(request.customHeaders, headers)
+    }
+
+    func test_updatePOSOrder_attaches_custom_headers_to_request() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+        let headers = ["X-WC-POS-Request": "1", "X-WC-POS-Staff-Id": "7", "X-WC-POS-Initiator-Id": "9"]
+
+        // When
+        _ = try? await remote.updatePOSOrder(siteID: sampleSiteID, order: order, fields: [], customHeaders: headers)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        assertEqual(request.customHeaders, headers)
+    }
+
     func test_createOrder_without_source_parameter_does_not_set_created_via() throws {
         // Given
         let remote = OrdersRemote(network: network)

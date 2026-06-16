@@ -98,14 +98,14 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
-                                  attribution: POSStaffAttribution?,
+                                  auth: POSStaffAuth?,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView {
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
             showTypeSelection: showTypeSelection,
-            additionalCreateMetadata: attribution?.metadata ?? [],
+            auth: auth,
             onSuccess: onSuccess,
             dismissHandler: dismissHandler,
             onDisappear: onDisappear

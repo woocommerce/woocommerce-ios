@@ -1,7 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
@@ -105,10 +105,6 @@ struct ItemListView: View {
     @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
-    /// Approver `POSStaff` captured when a cashier triggers coupon creation and a manager
-    /// authorizes it. Threaded into the coupon-create `attribution` so the resulting
-    /// request carries `_pos_override_staff_user_id` meta.
-    @State private var pendingCouponApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -168,7 +164,7 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
-                                attribution: couponCreationAttribution(),
+                                auth: couponCreationAuth(),
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -193,15 +189,15 @@ struct ItemListView: View {
         }
     }
 
-    /// Operator + (optional) manager-override approver for the coupon's create request.
-    /// `nil` when no operator is signed in so the network boundary attaches no attribution
-    /// meta — matching the pre-roll-out behaviour the server expects.
-    private func couponCreationAttribution() -> POSStaffAttribution? {
+    /// Staff attribution for the coupon's create request, sent as `X-WC-POS-*` headers.
+    /// The operator is always the actor — coupon creation carries no initiator, even when a
+    /// manager authorized it via override (that approval is a local gate, never sent). `nil` when
+    /// no operator is signed in so the network boundary sends no POS headers.
+    private func couponCreationAuth() -> POSStaffAuth? {
         guard let staffUserID = accessSession.currentStaff?.userID else {
             return nil
         }
-        return POSStaffAttribution(staffUserID: staffUserID,
-                                   overrideApproverUserID: pendingCouponApprover?.userID)
+        return POSStaffAuth(actorUserID: staffUserID)
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -532,12 +528,11 @@ private extension ItemListView {
 
     /// Gates the coupon-create flow through the manager-override modal. When the operator
     /// already has `pos_create_coupons` creation proceeds immediately; otherwise the PIN
-    /// modal is presented and creation proceeds once a manager approves. The approving
-    /// manager is not surfaced by the session, so `pendingCouponApprover` stays `nil` and
-    /// the `POST /coupons` request carries no override-approver attribution meta.
+    /// modal is presented and creation proceeds once a manager approves. The manager approval
+    /// is a local gate — the `POST /coupons` request is always attributed to the operator and
+    /// carries no override-approver header.
     private func requestCouponCreationPermission() {
         guard !accessSession.allows(.createCoupons) else {
-            pendingCouponApprover = nil
             showCouponCreationModal = true
             return
         }

@@ -28,11 +28,11 @@ public class RefundStore: Store {
         }
 
         switch action {
-        case .createRefund(let siteID, let orderID, let refund, let additionalMetadata, let onCompletion):
+        case .createRefund(let siteID, let orderID, let refund, let auth, let onCompletion):
             createRefund(siteID: siteID,
                          orderID: orderID,
                          refund: refund,
-                         additionalMetadata: additionalMetadata,
+                         auth: auth,
                          onCompletion: onCompletion)
         case .retrieveRefund(let siteID, let orderID, let refundID, let onCompletion):
             retrieveRefund(siteID: siteID, orderID: orderID, refundID: refundID, onCompletion: onCompletion)
@@ -56,12 +56,12 @@ private extension RefundStore {
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       refund: Refund,
-                      additionalMetadata: [MetaData],
+                      auth: POSStaffAuth?,
                       onCompletion: @escaping (Refund?, Error?) -> Void) {
         remote.createRefund(for: siteID,
                             by: orderID,
                             refund: refund,
-                            additionalMetadata: additionalMetadata) { [weak self] refund, error in
+                            customHeaders: auth?.headers ?? [:]) { [weak self] refund, error in
             guard let refund else {
                 onCompletion(nil, error)
                 return

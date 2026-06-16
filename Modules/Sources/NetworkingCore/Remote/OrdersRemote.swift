@@ -223,7 +223,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             fields: [CreateOrderField],
                             source: OrderCreationSource = .storeManagement,
-                            additionalMetadata: [MetaData] = [],
+                            customHeaders: [String: String] = [:],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = Constants.ordersPath
@@ -263,17 +263,14 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
-                // Set source type to mark the order as created from mobile, plus any
-                // POS attribution metadata (`_pos_staff_user_id` per the M1 plan) supplied
-                // by the caller. Caller-supplied entries are appended so the source-type
-                // record always lands first in the array.
+                // Set source type to mark the order as created from mobile. POS staff
+                // attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
                 let baseMetadata: [MetaData] = [
                     MetaData(metadataID: 0,
                              key: OrderAttributionInfo.Keys.sourceType.rawValue,
                              value: OrderAttributionInfo.Values.mobileAppSourceType)
                 ]
-                let allMetadata = baseMetadata + additionalMetadata
-                params[Order.CodingKeys.metadata.rawValue] = try allMetadata.map { try $0.toDictionary() }
+                params[Order.CodingKeys.metadata.rawValue] = try baseMetadata.map { try $0.toDictionary() }
 
                 if let createdViaValue = source.createdViaValue {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
@@ -289,6 +286,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -336,7 +334,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
-                            additionalMetadata: [MetaData] = [],
+                            customHeaders: [String: String] = [:],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
@@ -379,17 +377,12 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
-                // Merge cash-change meta (when present) with any caller-supplied meta
-                // (e.g. POS `_pos_staff_user_id`). WC's REST update merges by key, so callers
-                // can rely on existing meta with other keys being preserved server-side.
-                var metadataEntries: [MetaData] = []
+                // Attach cash-change meta when present. POS staff attribution travels in
+                // `customHeaders` (the `X-WC-POS-*` headers), not the body.
                 if let cashPaymentChangeDueAmount {
-                    metadataEntries.append(MetaData(metadataID: 0,
+                    let metadataEntries = [MetaData(metadataID: 0,
                                                     key: NestedFieldKeys.cashPaymentChangeDueAmount,
-                                                    value: cashPaymentChangeDueAmount))
-                }
-                metadataEntries.append(contentsOf: additionalMetadata)
-                if !metadataEntries.isEmpty {
+                                                    value: cashPaymentChangeDueAmount)]
                     params[Order.CodingKeys.metadata.rawValue] = try metadataEntries.map { try $0.toDictionary() }
                 }
 
@@ -404,6 +397,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -488,14 +482,14 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     public func createPOSOrder(siteID: Int64,
                                order: Order,
                                fields: [CreateOrderField],
-                               additionalMetadata: [MetaData]) async throws -> Order {
+                               customHeaders: [String: String] = [:]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
             createOrder(siteID: siteID,
                         order: order,
                         giftCard: nil,
                         fields: fields,
                         source: .pointOfSale,
-                        additionalMetadata: additionalMetadata) { result in
+                        customHeaders: customHeaders) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)
@@ -510,14 +504,14 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                order: Order,
                                cashPaymentChangeDueAmount: String? = nil,
                                fields: [UpdateOrderField],
-                               additionalMetadata: [MetaData] = []) async throws -> Order {
+                               customHeaders: [String: String] = [:]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
             updateOrder(from: siteID,
                         order: order,
                         giftCard: nil,
                         cashPaymentChangeDueAmount: cashPaymentChangeDueAmount,
                         fields: fields,
-                        additionalMetadata: additionalMetadata) { result in
+                        customHeaders: customHeaders) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

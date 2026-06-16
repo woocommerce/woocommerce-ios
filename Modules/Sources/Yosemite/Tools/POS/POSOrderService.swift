@@ -11,16 +11,16 @@ public protocol POSOrderServiceProtocol {
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
     ///   - currency: The store's currency code.
-    ///   - staffUserID: When non-nil, written to the order as `_pos_staff_user_id` meta
-    ///     (per the M1 plan) so the order timeline records which staff member processed it.
+    ///   - staffUserID: When non-nil, sent as the `X-WC-POS-Staff-Id` request header so the
+    ///     order timeline records which staff member processed it.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     /// Completes the order with a cash payment.
-    /// - Parameter staffUserID: When non-nil, the current operator's user id is written as
-    ///   `_pos_staff_user_id` meta so the server's timeline note attributes this update to them
-    ///   (otherwise the original `_pos_staff_user_id` from the create call sticks).
+    /// - Parameter staffUserID: When non-nil, the current operator's user id is sent as the
+    ///   `X-WC-POS-Staff-Id` header so the server's timeline note attributes this update to them
+    ///   (otherwise the original attribution from the create call sticks).
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws
     /// Marks an order as completed when payment was collected out-of-band (external reader,
     /// gift card, account credit, etc.) and the merchant confirms it via the "Mark order as
@@ -84,7 +84,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addCoupons(cart.coupons)
             .addCustomAmounts(cart.customAmounts)
 
-        let additionalMetadata = Self.attributionMetadata(staffUserID: staffUserID)
+        let customHeaders = Self.staffAuthHeaders(staffUserID: staffUserID)
 
         let createdOrder: Order
         do {
@@ -92,7 +92,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 siteID: siteID,
                 order: order,
                 fields: [.items, .status, .currency, .couponLines, .feeLines],
-                additionalMetadata: additionalMetadata
+                customHeaders: customHeaders
             )
         } catch {
             // Check if this is a server validation error about missing products
@@ -152,7 +152,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
                 fields: [.status],
-                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -185,7 +185,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
                 fields: fieldsToUpdate,
-                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -207,7 +207,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: changeDueAmount,
                 fields: fieldsToUpdate,
-                additionalMetadata: Self.attributionMetadata(staffUserID: staffUserID)
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -273,13 +273,12 @@ public extension POSOrderService {
 }
 
 private extension POSOrderService {
-    /// Returns `_pos_staff_user_id` meta per the M1 plan, or an empty array when no staff user
-    /// is signed in (so the server's `pre_insert_shop_order_object` validation doesn't reject
-    /// pre-roll-out clients). Defers key/value construction to `POSStaffAttribution` so refunds,
-    /// orders, and coupon creation share one source of truth for the meta keys.
-    static func attributionMetadata(staffUserID: Int64?) -> [MetaData] {
-        guard let staffUserID else { return [] }
-        return POSStaffAttribution(staffUserID: staffUserID).metadata
+    /// Returns the `X-WC-POS-*` staff attribution headers for the current operator, or an empty
+    /// dictionary when no staff user is signed in (so pre-roll-out clients send no POS headers).
+    /// Orders have no manager-override path, so the operator is always the actor.
+    static func staffAuthHeaders(staffUserID: Int64?) -> [String: String] {
+        guard let staffUserID else { return [:] }
+        return POSStaffAuth(actorUserID: staffUserID).headers
     }
 }
 

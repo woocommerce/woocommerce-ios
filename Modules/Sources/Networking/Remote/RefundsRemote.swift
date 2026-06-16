@@ -101,30 +101,21 @@ public final class RefundsRemote: Remote {
     public func createRefund(for siteID: Int64,
                              by orderID: Int64,
                              refund: Refund,
-                             additionalMetadata: [MetaData] = [],
+                             customHeaders: [String: String] = [:],
                              completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
         do {
             let encodedJson = try mapper.map(refund: refund)
-            var parameters = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any] ?? [:]
-            // Merge caller-supplied meta (e.g. POS `_pos_staff_user_id`) into the refund payload.
-            // The RefundMapper doesn't emit `meta_data` today so we attach it here directly.
-            if !additionalMetadata.isEmpty {
-                let metadataDicts = try additionalMetadata.map { try $0.toDictionary() }
-                if var existing = parameters[ParameterKey.metaData] as? [[String: Any]] {
-                    existing.append(contentsOf: metadataDicts)
-                    parameters[ParameterKey.metaData] = existing
-                } else {
-                    parameters[ParameterKey.metaData] = metadataDicts
-                }
-            }
+            let parameters = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any] ?? [:]
+            // POS staff attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
 
             enqueue(request, mapper: mapper) { result in
@@ -161,7 +152,6 @@ public extension RefundsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let include: String    = "include"
-        static let metaData: String   = "meta_data"
     }
 }
 

@@ -2,7 +2,7 @@
 
 import Foundation
 import WooFoundation
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -540,7 +540,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     @MainActor
-    func processRefund(reason: String?, attribution: POSStaffAttribution?) async throws {}
+    func processRefund(reason: String?, auth: POSStaffAuth?) async throws {}
     func loadOrderRefunds() async {}
 }
 

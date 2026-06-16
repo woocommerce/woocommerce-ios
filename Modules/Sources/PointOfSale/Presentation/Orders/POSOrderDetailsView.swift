@@ -5,7 +5,7 @@ import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -41,8 +41,8 @@ struct POSOrderDetailsView: View {
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
     /// Approver `POSStaff` captured when a cashier triggered the refund and a manager
-    /// authorized it. Threaded into the refund's `_pos_override_staff_user_id` meta so the
-    /// server can record who approved it.
+    /// authorized it. Becomes the refund's `X-WC-POS-Staff-Id` actor (with the cashier recorded
+    /// as `X-WC-POS-Initiator-Id`) so the server can record who approved it.
     @State private var pendingOverrideApprover: POSStaff?
 
     private var shouldShowBackButton: Bool {
@@ -174,7 +174,7 @@ struct POSOrderDetailsView: View {
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
                     onRefundFailure: onRefundFailure,
-                    attribution: refundAttribution(),
+                    auth: refundAuth(),
                     errorStrings: refundErrorStrings
                 )
             }
@@ -540,8 +540,8 @@ private extension POSOrderDetailsView {
         case .completed:
             // The refund button is always visible when refunds are enabled. When the
             // operator lacks `pos_issue_refunds`, tapping it pops a manager-override
-            // modal; an approver's PIN unlocks the action and their user id is attached
-            // as `_pos_override_staff_user_id` meta on the refund (M1 plan).
+            // modal; an approver's PIN unlocks the action and their user id is sent as the
+            // refund's `X-WC-POS-Staff-Id` actor header (the cashier becomes the initiator).
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
@@ -621,16 +621,18 @@ private extension POSOrderDetailsView {
         )
     }
 
-    /// Operator + (optional) manager-override approver for the refund's create request.
-    /// Returns `nil` when no operator is signed in so the network boundary appends no
-    /// attribution meta — matching the pre-roll-out behaviour the server's
-    /// `pre_insert_shop_order_object` validator expects.
-    private func refundAttribution() -> POSStaffAttribution? {
-        guard let staffUserID = accessSession.currentStaff?.userID else {
+    /// Staff attribution for the refund's create request, sent as `X-WC-POS-*` headers.
+    /// On a manager-override refund the approving manager is the actor and the operator (cashier)
+    /// is the initiator; otherwise the operator is the actor. Returns `nil` when no operator is
+    /// signed in so the network boundary sends no POS headers — matching pre-roll-out behaviour.
+    private func refundAuth() -> POSStaffAuth? {
+        guard let operatorUserID = accessSession.currentStaff?.userID else {
             return nil
         }
-        return POSStaffAttribution(staffUserID: staffUserID,
-                                   overrideApproverUserID: pendingOverrideApprover?.userID)
+        if let approverUserID = pendingOverrideApprover?.userID {
+            return POSStaffAuth(actorUserID: approverUserID, initiatorUserID: operatorUserID)
+        }
+        return POSStaffAuth(actorUserID: operatorUserID)
     }
 
     /// Gates the refund button through the manager-override flow. When the operator

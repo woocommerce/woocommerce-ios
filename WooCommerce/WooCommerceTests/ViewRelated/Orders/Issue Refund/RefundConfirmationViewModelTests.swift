@@ -203,7 +203,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
-            case let .createRefund(_, _, _, onCompletion):
+            case let .createRefund(_, _, _, _, onCompletion):
                 onCompletion(MockRefunds.sampleRefund(), nil)
             default:
                 break
@@ -242,7 +242,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
-            case let .createRefund(_, _, _, onCompletion):
+            case let .createRefund(_, _, _, _, onCompletion):
                 onCompletion(MockRefunds.sampleRefund(), nil)
             default:
                 break
@@ -293,7 +293,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
         let refund: Refund = waitFor { promise in
             dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
-                if case let .createRefund(_, _, refund, _) = action {
+                if case let .createRefund(_, _, refund, _, _) = action {
                     promise(refund)
                 }
             }
@@ -331,7 +331,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
         let refund: Refund = waitFor { promise in
             dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
-                if case let .createRefund(_, _, refund, _) = action {
+                if case let .createRefund(_, _, refund, _, _) = action {
                     promise(refund)
                 }
             }
@@ -366,7 +366,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
         let refund: Refund = waitFor { promise in
             dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
-                if case let .createRefund(_, _, refund, _) = action {
+                if case let .createRefund(_, _, refund, _, _) = action {
                     promise(refund)
                 }
             }
@@ -395,7 +395,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
-            case let .createRefund(_, _, _, onCompletion):
+            case let .createRefund(_, _, _, _, onCompletion):
                 onCompletion(nil, expectedError)
             default:
                 break
@@ -523,7 +523,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
-            case let .createRefund(_, _, _, onCompletion):
+            case let .createRefund(_, _, _, _, onCompletion):
                 onCompletion(nil, expectedError)
             default:
                 break
@@ -559,7 +559,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let dispatcher = MockStoresManager(sessionManager: .testingInstance)
         dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
-            case let .createRefund(_, _, refund, onCompletion):
+            case let .createRefund(_, _, refund, _, onCompletion):
                 onCompletion(refund, nil)
             default:
                 break

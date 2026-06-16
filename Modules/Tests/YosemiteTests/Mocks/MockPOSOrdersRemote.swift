@@ -5,18 +5,18 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var spyUpdatePOSOrder: Order?
     var spyUpdatePOSOrderFields: [OrdersRemote.UpdateOrderField]?
     var spyUpdatePOSOrderCashPaymentChangeDueAmount: String?
-    var spyUpdatePOSOrderAdditionalMetadata: [MetaData]?
+    var spyUpdatePOSOrderCustomHeaders: [String: String]?
     var updatePOSOrderResult: Result<Order, Error> = .success(Order.fake())
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,
                         fields: [OrdersRemote.UpdateOrderField],
-                        additionalMetadata: [MetaData]) async throws -> Order {
+                        customHeaders: [String: String]) async throws -> Order {
         updatePOSOrderCalled = true
         spyUpdatePOSOrder = order
         spyUpdatePOSOrderFields = fields
         spyUpdatePOSOrderCashPaymentChangeDueAmount = cashPaymentChangeDueAmount
-        spyUpdatePOSOrderAdditionalMetadata = additionalMetadata
+        spyUpdatePOSOrderCustomHeaders = customHeaders
         switch updatePOSOrderResult {
         case .success(let updatedOrder):
             return updatedOrder
@@ -47,16 +47,16 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var createPOSOrderCalled: Bool = false
     var spyCreatePOSOrder: Order?
     var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
-    var spyCreatePOSOrderAdditionalMetadata: [MetaData]?
+    var spyCreatePOSOrderCustomHeaders: [String: String]?
     var createPOSOrderResult: Result<Order, Error>?
     func createPOSOrder(siteID: Int64,
                         order: Networking.Order,
                         fields: [OrdersRemote.CreateOrderField],
-                        additionalMetadata: [MetaData]) async throws -> Order {
+                        customHeaders: [String: String]) async throws -> Order {
         createPOSOrderCalled = true
         spyCreatePOSOrder = order
         spyCreatePOSOrderFields = fields
-        spyCreatePOSOrderAdditionalMetadata = additionalMetadata
+        spyCreatePOSOrderCustomHeaders = customHeaders
 
         // If a custom result is set, use it
         if let result = createPOSOrderResult {

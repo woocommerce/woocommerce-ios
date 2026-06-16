@@ -28,6 +28,44 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func syncOrder_when_staffUserID_present_then_sends_pos_staff_headers() async throws {
+        // Given
+
+        // When
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD, staffUserID: 55)
+
+        // Then
+        let headers = try #require(mockOrdersRemote.spyCreatePOSOrderCustomHeaders)
+        #expect(headers["X-WC-POS-Request"] == "1")
+        #expect(headers["X-WC-POS-Staff-Id"] == "55")
+        #expect(headers["X-WC-POS-Initiator-Id"] == nil)
+    }
+
+    @Test
+    func syncOrder_when_no_staffUserID_then_sends_no_pos_staff_headers() async throws {
+        // Given
+
+        // When
+        _ = try await sut.syncOrder(cart: .init(), currency: .USD, staffUserID: nil)
+
+        // Then
+        #expect(mockOrdersRemote.spyCreatePOSOrderCustomHeaders?.isEmpty == true)
+    }
+
+    @Test
+    func markOrderAsCompletedWithCashPayment_when_staffUserID_present_then_sends_pos_staff_headers() async throws {
+        // Given
+        let order = Order.fake()
+
+        // When
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil, staffUserID: 88)
+
+        // Then
+        let headers = try #require(mockOrdersRemote.spyUpdatePOSOrderCustomHeaders)
+        #expect(headers["X-WC-POS-Staff-Id"] == "88")
+    }
+
+    @Test
     func syncOrder_creates_a_new_order_using_passed_currency() async throws {
         // Given
 

@@ -4,7 +4,7 @@ import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
 import struct NetworkingCore.Order
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
@@ -1140,7 +1140,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         #expect(refundSubmissionProcessor.submitRefundCalled == true)
@@ -1167,7 +1167,7 @@ final class POSOrderListControllerTests {
         sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
@@ -1194,7 +1194,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: "Customer changed their mind", attribution: nil)
+        try await sut.processRefund(reason: "Customer changed their mind", auth: nil)
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundReason == "Customer changed their mind")
@@ -1219,7 +1219,7 @@ final class POSOrderListControllerTests {
         try #require(sut.refundSelectableItems.count == 2)
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         #expect(sut.refundSelectableItems.isEmpty)
@@ -1248,7 +1248,7 @@ final class POSOrderListControllerTests {
         // When / Then
         var thrownError: Error?
         do {
-            try await sut.processRefund(reason: .none, attribution: nil)
+            try await sut.processRefund(reason: .none, auth: nil)
         } catch {
             thrownError = error
         }
@@ -1259,7 +1259,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_no_selected_order_then_throws_missingSelectedOrder() async throws {
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, attribution: nil)
+            try await sut.processRefund(reason: .none, auth: nil)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingSelectedOrder
         })
@@ -1274,7 +1274,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, attribution: nil)
+            try await sut.processRefund(reason: .none, auth: nil)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingRefundPreparation
         })
@@ -1299,7 +1299,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, attribution: nil)
+            try await sut.processRefund(reason: .none, auth: nil)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .emptySelection
         })
@@ -1328,13 +1328,13 @@ final class POSOrderListControllerTests {
                 fire()
             }
             firstRefundTask = Task { @MainActor in
-                try await sut.processRefund(reason: .none, attribution: nil)
+                try await sut.processRefund(reason: .none, auth: nil)
             }
         }
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, attribution: nil)
+            try await sut.processRefund(reason: .none, auth: nil)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .refundAlreadyInProgress
         })
@@ -1361,7 +1361,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
@@ -1392,7 +1392,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == true)
@@ -1416,7 +1416,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == false)
@@ -1444,7 +1444,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, attribution: nil)
+        try await sut.processRefund(reason: .none, auth: nil)
 
         // Then
         #expect(orderListService.loadOrderWasCalled == true)
@@ -1863,7 +1863,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     private(set) var spySubmitRefundItems: [POSRefundSelectableItem]?
     private(set) var spySubmitRefundReason: String?
     private(set) var spySubmitRefundIsAutomaticRefund: Bool?
-    private(set) var spySubmitRefundAttribution: POSStaffAttribution?
+    private(set) var spySubmitRefundAuth: POSStaffAuth?
     var submitRefundErrorToThrow: Error?
 
     nonisolated init(refundsService: MockPOSRefundsService,
@@ -1935,7 +1935,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
                       reason: String?,
-                      attribution: POSStaffAttribution?) async throws {
+                      auth: POSStaffAuth?) async throws {
         onSubmitRefundStarted?()
         if shouldSuspendSubmitRefund {
             await withCheckedContinuation { continuation in
@@ -1949,7 +1949,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         spySubmitRefundReason = reason
         spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
 
-        spySubmitRefundAttribution = attribution
+        spySubmitRefundAuth = auth
 
         if let error = submitRefundErrorToThrow {
             throw error

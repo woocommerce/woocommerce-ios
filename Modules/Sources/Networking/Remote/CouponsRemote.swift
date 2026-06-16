@@ -34,7 +34,7 @@ public protocol CouponsRemoteProtocol {
 
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
-                      additionalMetadata: [MetaData],
+                      customHeaders: [String: String],
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func loadCouponReport(for siteID: Int64,
@@ -248,7 +248,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     public func createCoupon(_ coupon: Coupon,
                              siteTimezone: TimeZone? = nil,
-                             additionalMetadata: [MetaData] = [],
+                             customHeaders: [String: String] = [:],
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
             let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -256,13 +256,8 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                 dateFormatter.timeZone = siteTimezone
             }
 
-            var parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
-            // Caller-supplied meta (e.g. POS `_pos_staff_user_id` / `_pos_override_staff_user_id`) is
-            // appended to the coupon payload. `Coupon` doesn't model `meta_data` itself, so
-            // we attach it as a parallel parameter — the WC REST endpoint treats it the same.
-            if !additionalMetadata.isEmpty {
-                parameters["meta_data"] = try additionalMetadata.map { try $0.toDictionary() }
-            }
+            let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            // POS staff attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
             let siteID = coupon.siteID
             let path = Path.coupons
             let request = JetpackRequest(wooApiVersion: .mark3,
@@ -270,6 +265,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             let mapper = CouponMapper(siteID: siteID)
 

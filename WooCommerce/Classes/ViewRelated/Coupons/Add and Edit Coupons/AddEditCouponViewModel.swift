@@ -18,10 +18,9 @@ final class AddEditCouponViewModel: ObservableObject {
 
     private let onSuccess: (Coupon) -> Void
 
-    /// Extra `meta_data` entries appended to the create-coupon request. Used by POS to
-    /// attach `_pos_staff_user_id` / `_pos_override_staff_user_id` attribution per the M1 plan.
-    /// Empty for non-POS coupon creation.
-    private let additionalCreateMetadata: [MetaData]
+    /// POS staff attribution sent as `X-WC-POS-*` headers on the create-coupon request.
+    /// `nil` for non-POS coupon creation.
+    private let couponCreationAuth: POSStaffAuth?
 
     /// Defines the current notice that should be shown.
     /// Defaults to `nil`.
@@ -226,7 +225,7 @@ final class AddEditCouponViewModel: ObservableObject {
          couponAmountInputFormatter: CouponAmountInputFormatter = CouponAmountInputFormatter(),
          inputWarningDurationInSeconds: Double = 3,
          timezone: TimeZone = .siteTimezone,
-         additionalCreateMetadata: [MetaData] = [],
+         couponCreationAuth: POSStaffAuth? = nil,
          onSuccess: @escaping (Coupon) -> Void) {
         self.siteID = siteID
         editingOption = .creation
@@ -237,7 +236,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.couponAmountInputFormatter = couponAmountInputFormatter
         self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
-        self.additionalCreateMetadata = additionalCreateMetadata
+        self.couponCreationAuth = couponCreationAuth
         self.onSuccess = onSuccess
 
         amountField = String()
@@ -277,7 +276,7 @@ final class AddEditCouponViewModel: ObservableObject {
         self.couponAmountInputFormatter = couponAmountInputFormatter
         self.inputWarningDurationInSeconds = inputWarningDurationInSeconds
         self.timezone = timezone
-        self.additionalCreateMetadata = []
+        self.couponCreationAuth = nil
         self.onSuccess = onSuccess
 
         // Populate fields
@@ -392,7 +391,7 @@ final class AddEditCouponViewModel: ObservableObject {
         isLoading = true
         let action = CouponAction.createCoupon(coupon,
                                                siteTimezone: timezone,
-                                               additionalMetadata: additionalCreateMetadata) { [weak self] result in
+                                               auth: couponCreationAuth) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
             switch result {

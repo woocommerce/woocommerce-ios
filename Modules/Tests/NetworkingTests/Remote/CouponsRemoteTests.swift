@@ -221,6 +221,22 @@ final class CouponsRemoteTests: XCTestCase {
         XCTAssertEqual(returnedCoupon, coupon)
     }
 
+    /// Verifies that createCoupon attaches caller-supplied custom headers (POS staff attribution) to the request.
+    ///
+    func test_createCoupon_attaches_custom_headers_to_request() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let coupon = sampleCoupon()
+        let headers = ["X-WC-POS-Request": "1", "X-WC-POS-Staff-Id": "42"]
+
+        // When
+        remote.createCoupon(coupon, siteTimezone: nil, customHeaders: headers) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(request.customHeaders, headers)
+    }
+
     /// Verifies that createCoupon properly relays Networking Layer errors.
     ///
     func test_createCoupon_properly_relays_networking_errors() throws {

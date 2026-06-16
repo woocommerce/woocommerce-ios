@@ -222,21 +222,20 @@ extension RefundSubmissionUseCase {
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
 
-        /// Extra `meta_data` entries forwarded to the create-refund request. POS uses this to
-        /// attach `_pos_staff_user_id` / `_pos_override_staff_user_id` attribution. Empty for
-        /// non-POS refund flows.
-        let additionalMetadata: [MetaData]
+        /// POS staff attribution forwarded to the create-refund request as `X-WC-POS-*` headers.
+        /// `nil` for non-POS refund flows.
+        let auth: POSStaffAuth?
 
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             additionalMetadata: [MetaData] = []) {
+             auth: POSStaffAuth? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
-            self.additionalMetadata = additionalMetadata
+            self.auth = auth
         }
     }
 }
@@ -418,7 +417,7 @@ private extension RefundSubmissionUseCase {
         let action = RefundAction.createRefund(siteID: details.order.siteID,
                                                orderID: details.order.orderID,
                                                refund: refund,
-                                               additionalMetadata: details.additionalMetadata) { [weak self]
+                                               auth: details.auth) { [weak self]
             refundData, error  in
 
             guard let self else { return }

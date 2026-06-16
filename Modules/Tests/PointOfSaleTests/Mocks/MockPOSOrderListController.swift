@@ -3,7 +3,7 @@ import Foundation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
@@ -112,13 +112,13 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     var processRefundCalled = false
     var spyProcessRefundReason: String?
-    var spyProcessRefundAttribution: POSStaffAttribution?
+    var spyProcessRefundAuth: POSStaffAuth?
     var shouldThrowProcessRefundError = false
 
-    func processRefund(reason: String?, attribution: POSStaffAttribution?) async throws {
+    func processRefund(reason: String?, auth: POSStaffAuth?) async throws {
         processRefundCalled = true
         spyProcessRefundReason = reason
-        spyProcessRefundAttribution = attribution
+        spyProcessRefundAuth = auth
 
         if shouldThrowProcessRefundError {
             throw TestError.updateOrderFailed

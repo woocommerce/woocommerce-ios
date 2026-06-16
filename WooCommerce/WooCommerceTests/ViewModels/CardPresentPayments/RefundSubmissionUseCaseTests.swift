@@ -485,7 +485,7 @@ private extension RefundSubmissionUseCaseTests {
 
     func mockServerSideRefund(refund: Refund?, error: Error?) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
-            if case let .createRefund(_, _, _, completion) = action {
+            if case let .createRefund(_, _, _, _, completion) = action {
                 completion(refund, error)
             }
         }

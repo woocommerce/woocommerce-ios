@@ -24,6 +24,11 @@ public struct RESTRequest: Request {
     ///
     let parameters: [String: Any]?
 
+    /// Extra HTTP headers attached to the underlying URL request (e.g. the `X-WC-POS-*`
+    /// POS staff headers).
+    ///
+    let customHeaders: [String: String]
+
     /// Whether this request should allow cellular access.
     ///
     let allowsCellularAccess: Bool
@@ -33,12 +38,14 @@ public struct RESTRequest: Request {
                  method: HTTPMethod,
                  path: String,
                  parameters: [String: Any]? = nil,
+                 customHeaders: [String: String] = [:],
                  allowsCellularAccess: Bool = true) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
         self.parameters = parameters
+        self.customHeaders = customHeaders
         self.allowsCellularAccess = allowsCellularAccess
     }
 
@@ -63,6 +70,7 @@ public struct RESTRequest: Request {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - customHeaders: Extra HTTP headers to attach to the underlying URL request.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     init(siteURL: String,
@@ -70,12 +78,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: [String: Any]? = nil,
+         customHeaders: [String: String] = [:],
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
                   parameters: parameters,
+                  customHeaders: customHeaders,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -117,6 +127,9 @@ public struct RESTRequest: Request {
         let url = try components.joined(separator: "/").asURL()
         var request = try URLRequest(url: url, method: method)
         request.allowsCellularAccess = allowsCellularAccess
+        for (field, value) in customHeaders {
+            request.setValue(value, forHTTPHeaderField: field)
+        }
         switch method {
         case .post, .put:
             return try JSONEncoding.default.encode(request, with: parameters)

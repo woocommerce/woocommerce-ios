@@ -8,7 +8,7 @@ public enum RefundAction: Action {
     case createRefund(siteID: Int64,
                       orderID: Int64,
                       refund: Refund,
-                      additionalMetadata: [MetaData],
+                      auth: POSStaffAuth?,
                       onCompletion: (Refund?, Error?) -> Void)
     case retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: (Refund?, Error?) -> Void)
     case retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], deleteStaleRefunds: Bool, onCompletion: (Error?) -> Void)

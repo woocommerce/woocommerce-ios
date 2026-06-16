@@ -5,7 +5,7 @@ import enum Experiments.FeatureFlag
 import struct Yosemite.Coupon
 import enum Yosemite.CouponDiscountType
 import enum Yosemite.POSItem
-import struct Yosemite.POSStaffAttribution
+import struct Yosemite.POSStaffAuth
 
 /// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
@@ -49,13 +49,12 @@ public protocol POSExternalNavigationProviding {
 ///
 public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
-    /// Presents the coupon-creation form. `attribution`, when non-nil, is appended to the
-    /// resulting `POST /wc/v3/coupons` request body's `meta_data` as `_pos_staff_user_id`
-    /// (plus `_pos_override_staff_user_id` when a manager authorized a cashier-triggered
-    /// create) per the M1 plan.
+    /// Presents the coupon-creation form. `auth`, when non-nil, attaches the `X-WC-POS-Staff-Id`
+    /// header to the resulting `POST /wc/v3/coupons` request attributing the coupon to the
+    /// operator who created it.
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
-                                  attribution: POSStaffAttribution?,
+                                  auth: POSStaffAuth?,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView

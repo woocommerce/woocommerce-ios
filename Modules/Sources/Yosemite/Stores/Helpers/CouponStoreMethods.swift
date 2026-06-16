@@ -24,7 +24,7 @@ internal protocol CouponStoreMethodsProtocol {
 
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
-                      additionalMetadata: [MetaData],
+                      auth: POSStaffAuth?,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void)
 
     func loadCouponReport(siteID: Int64,
@@ -179,11 +179,11 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone? = nil,
-                      additionalMetadata: [MetaData] = [],
+                      auth: POSStaffAuth? = nil,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
         remote.createCoupon(coupon,
                             siteTimezone: siteTimezone,
-                            additionalMetadata: additionalMetadata) { [weak self] result in
+                            customHeaders: auth?.headers ?? [:]) { [weak self] result in
             guard let self else { return }
             switch result {
             case .failure(let error):

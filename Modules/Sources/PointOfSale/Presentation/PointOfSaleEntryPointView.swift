@@ -55,6 +55,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let staffSettingsMode: POSStaffSettingsMode?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -86,9 +87,11 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
+         staffSettingsMode: POSStaffSettingsMode? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
+        self.staffSettingsMode = staffSettingsMode
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
             featureFlags: services.featureFlags,
@@ -231,6 +234,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
         .environment(\.posFeatureFlags, services.featureFlags)
+        .environment(\.posStaffSettingsMode, staffSettingsMode)
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)

@@ -176,6 +176,23 @@ final class POSTabCoordinator {
 }
 
 private extension POSTabCoordinator {
+    /// Builds the staff-settings mode for the POS settings screen when the POS roles feature flag
+    /// is on: `loadStaff` fetches the latest staff snapshot, `manageURL` deep-links to the
+    /// wp-admin staff management page. Returns `nil` when roles are disabled so the Staff card
+    /// (and its entry point) stay hidden.
+    func makeStaffSettingsMode(siteID: Int64, staffFetcher: POSStaffFetching) -> POSStaffSettingsMode? {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else {
+            return nil
+        }
+        let siteURL = storesManager.sessionManager.defaultSite?.url ?? ""
+        let manageURL = URL(string: "\(siteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")
+            ?? URL(string: "about:blank")!
+        return POSStaffSettingsMode(
+            loadStaff: { try await staffFetcher.fetchStaff(siteID: siteID) },
+            manageURL: manageURL
+        )
+    }
+
     func setPOSHasBeenOpened() {
         Task { @MainActor in
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
@@ -353,6 +370,7 @@ private extension POSTabCoordinator {
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,
+                    staffSettingsMode: makeStaffSettingsMode(siteID: siteID, staffFetcher: staffFetcher),
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

@@ -4,6 +4,7 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAccessSession) private var session
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -101,12 +102,28 @@ private extension POSFloatingControlView {
                     )
                 }
             }
+
+            if isRolesEnabled {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
+                    )
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
         }
     }
 
     private var isPhoneLayout: Bool {
         horizontalSizeClass == .compact &&
         featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+    }
+
+    private var isRolesEnabled: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)
     }
 }
 
@@ -147,6 +164,12 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.orders.button.title",
             value: "Orders",
             comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
+        )
+
+        static let lockPOS = NSLocalizedString(
+            "pointOfSale.floatingButtons.lock.button.title",
+            value: "Lock POS",
+            comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
         )
 
         static let exitPointOfSale = NSLocalizedString(

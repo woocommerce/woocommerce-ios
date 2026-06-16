@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
+    @Environment(\.posStaffSettingsMode) private var staffSettingsMode
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -155,7 +156,17 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            POSSettingsView(settingsController: posModel.settingsController)
+            // The staff-settings mode is supplied by the host (POSTabCoordinator) when POS roles
+            // are enabled. When absent, fall back to an empty mode so the settings sheet stays
+            // buildable — the Staff card itself is gated off by the same feature flag inside
+            // `POSSettingsView`.
+            POSSettingsView(
+                settingsController: posModel.settingsController,
+                staffSettingsMode: staffSettingsMode ?? POSStaffSettingsMode(
+                    loadStaff: { [] },
+                    manageURL: URL(string: "about:blank")!
+                )
+            )
         }
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)

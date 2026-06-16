@@ -96,6 +96,25 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
+    public func tapBackToProductSelectorFromCheckout() -> Self {
+        let backButton = app.buttons["pos-cart-back-button"]
+
+        XCTAssertTrue(backButton.waitForIsHittable(timeout: 15), "POS cart back button should be tappable from checkout.")
+
+        backButton.tap()
+        return self
+    }
+
+    @discardableResult
+    public func verifyVariationSelectorVisible(variationID: Int) -> Self {
+        let variationButton = app.buttons["pos-variation-card-\(variationID)"]
+
+        XCTAssertTrue(variationButton.waitForExistence(timeout: 15), "POS variation selector should remain visible when returning to edit the cart.")
+
+        return self
+    }
+
+    @discardableResult
     public func tapCardReaderPayment() -> Self {
         let cardReaderButton = app.buttons["pos-card-reader-button"]
         if cardReaderButton.waitForIsHittable(timeout: 2) {

@@ -500,9 +500,10 @@ final class OrderStoreTests: XCTestCase {
     func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-auto-draft-status")
+        let requestedOrderID = sampleOrderID + 1
+        network.simulateResponse(requestUrlSuffix: "orders/\(requestedOrderID)", filename: "order-auto-draft-status")
 
-        let existingOrder = sampleOrder().copy(status: .autoDraft)
+        let existingOrder = sampleOrder().copy(orderID: requestedOrderID, status: .autoDraft)
         storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
         viewStorage.saveIfNeeded()
 
@@ -510,7 +511,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: requestedOrderID) { result in
                 promise(result)
             })
         }
@@ -518,7 +519,7 @@ final class OrderStoreTests: XCTestCase {
         // Then
         let retrievedOrder = try XCTUnwrap(result.get())
         XCTAssertEqual(retrievedOrder.status, .autoDraft)
-        XCTAssertNil(viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID))
+        XCTAssertNil(viewStorage.loadOrder(siteID: sampleSiteID, orderID: requestedOrderID))
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 

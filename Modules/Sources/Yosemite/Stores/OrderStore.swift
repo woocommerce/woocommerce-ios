@@ -292,7 +292,7 @@ private extension OrderStore {
             }
 
             guard order.status != .autoDraft else {
-                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
                     onCompletion(order, nil)
                 }
                 return

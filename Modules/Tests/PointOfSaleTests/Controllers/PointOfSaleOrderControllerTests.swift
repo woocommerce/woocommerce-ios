@@ -99,6 +99,21 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.spySyncOrderCurrency == .AUD)
     }
 
+    @Test func syncOrder_when_staff_provider_returns_user_id_passes_staff_user_id_to_order_service() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics(),
+                                             staffUserIDProvider: { 55 })
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        #expect(mockOrderService.spySyncOrderStaffUserID == 55)
+    }
+
     @Test func syncOrder_with_changes_from_previous_order_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

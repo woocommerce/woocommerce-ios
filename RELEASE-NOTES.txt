@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
+- [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
 
 
 25.0

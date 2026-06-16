@@ -396,8 +396,8 @@ struct OrderForm: View {
         .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
             bannerWidth = newWidth
         }
-        .safeAreaInset(edge: .bottom) {
-            VStack {
+        .safeAreaInset(edge: .bottom, spacing: .zero) {
+            VStack(spacing: .zero) {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
@@ -417,7 +417,7 @@ struct OrderForm: View {
                             .padding([.leading], Layout.dividerLeadingPadding)
 
                         completedButton
-                            .padding()
+                            .padding([.top, .horizontal])
                     }
                 } expandableContent: {
                     OrderPaymentSection(

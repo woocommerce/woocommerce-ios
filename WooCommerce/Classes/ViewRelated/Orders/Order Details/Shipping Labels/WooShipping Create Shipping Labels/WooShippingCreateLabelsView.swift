@@ -72,7 +72,7 @@ struct WooShippingCreateLabelsView: View {
                     missingDataState
                 }
             }
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: .zero) {
                 if viewModel.state == .ready && viewModel.hazmatNotice == nil {
                     expandableBottomSheet
                 }

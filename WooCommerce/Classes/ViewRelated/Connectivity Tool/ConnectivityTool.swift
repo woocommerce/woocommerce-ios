@@ -33,10 +33,12 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         super.viewDidLoad()
 
         // Bind cards to view
-        viewModel.$cards.sink { [weak self] cards in
-            self?.rootView.cards = cards
-        }
-        .store(in: &subscriptions)
+        viewModel.$cards
+            .receive(on: RunLoop.main)
+            .sink { [weak self] cards in
+                self?.rootView.cards = cards
+            }
+            .store(in: &subscriptions)
 
         // Bind chat button visibility
         viewModel.$showChatButton.sink { [weak self] show in

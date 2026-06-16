@@ -84,6 +84,7 @@ final class OrderDetailsViewController: UIViewController {
         configureTopLoaderView()
         configureTableView()
         configureStackView()
+        configureLiquidGlassTabBarUnderlap()
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
@@ -145,6 +146,17 @@ private extension OrderDetailsViewController {
         tableView.accessibilityIdentifier = "order-details-table-view"
     }
 
+    func configureLiquidGlassTabBarUnderlap() {
+        guard Bundle.main.isLiquidGlassDesignEnabled else {
+            return
+        }
+
+        // This details table is one of the Orders panes adapted for Liquid Glass; registering it lets
+        // the native tab bar underlap this screen without changing unrelated tab roots.
+        setContentScrollView(tableView, for: .bottom)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+    }
+
     func configureStackView() {
         stackView.layer.borderWidth = Constants.borderWidth
         stackView.layer.borderColor = UIColor.border.cgColor
@@ -182,8 +194,11 @@ private extension OrderDetailsViewController {
             action: #selector(loadPreviousOrder)
         )
 
-        // The buttons are too far apart when setting them to rightBarButtonItems, let's adjust the inset to provide better visuals
-        upArrowButon.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        // The buttons are too far apart when setting them to rightBarButtonItems, let's adjust the inset to provide better visuals.
+        // Liquid Glass adds native button chrome around each bar button item, so custom image insets make the symbol look off-center.
+        if !Bundle.main.isLiquidGlassDesignEnabled {
+            upArrowButon.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        }
         upArrowButon.isEnabled = viewModels[safe: currentIndex - 1] != nil
 
         let downArrowButon = UIBarButtonItem(

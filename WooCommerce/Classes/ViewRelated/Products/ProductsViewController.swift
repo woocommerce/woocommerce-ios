@@ -92,7 +92,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private lazy var filterButton = UIButton(frame: .zero)
 
     private var usesLargeTitleWorkaround: Bool {
-        !Bundle.main.isLiquidGlassDesignEnabled
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
     }
 
     private var headerBackgroundColor: UIColor {
@@ -100,7 +104,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 
     private var toolbarBackgroundColor: UIColor {
-        Bundle.main.isLiquidGlassDesignEnabled ? .clear : headerBackgroundColor
+        if #available(iOS 26.0, *) {
+            return .clear
+        } else {
+            return headerBackgroundColor
+        }
     }
 
     /// The bulk edit CTA in the navbar.
@@ -288,7 +296,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.displayGhostContent(over: tableView)
         }
 
-        if !Bundle.main.isLiquidGlassDesignEnabled {
+        if #unavailable(iOS 26.0) {
             navigationController?.navigationBar.removeShadow()
         }
 
@@ -739,11 +747,17 @@ private extension ProductsViewController {
         installRefreshControl()
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : headerBackgroundColor
+        if #available(iOS 26.0, *) {
+            headerContainer.backgroundColor = .clear
+        } else {
+            headerContainer.backgroundColor = headerBackgroundColor
+        }
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
-        bottomBorderView.isHidden = Bundle.main.isLiquidGlassDesignEnabled
+        if #available(iOS 26.0, *) {
+            bottomBorderView.isHidden = true
+        }
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
             bottomBorderView.constrainToSuperview(attribute: .leading),
@@ -757,7 +771,7 @@ private extension ProductsViewController {
     }
 
     private func installRefreshControl() {
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             tableView.refreshControl = refreshControl
         } else {
             tableView.addSubview(refreshControl)
@@ -765,7 +779,7 @@ private extension ProductsViewController {
     }
 
     private func uninstallRefreshControl() {
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             tableView.refreshControl = nil
         } else {
             refreshControl.removeFromSuperview()
@@ -773,7 +787,7 @@ private extension ProductsViewController {
     }
 
     private func configureLiquidGlassTabBarUnderlap() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 
@@ -781,7 +795,7 @@ private extension ProductsViewController {
     }
 
     private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 
@@ -834,12 +848,16 @@ private extension ProductsViewController {
         toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        toolbarBottomSeparator.backgroundColor = Bundle.main.isLiquidGlassDesignEnabled ? .clear : .systemColor(.separator)
+        if #available(iOS 26.0, *) {
+            toolbarBottomSeparator.backgroundColor = .clear
+        } else {
+            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        }
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
     }
 
     private func configureLiquidGlassHeaderOverlay() {
-        guard Bundle.main.isLiquidGlassDesignEnabled,
+        guard #available(iOS 26.0, *),
               !hasConfiguredLiquidGlassHeaderOverlay,
               let stackView = toolbar.superview as? UIStackView,
               toolbarBottomSeparator.superview === stackView else {
@@ -877,7 +895,7 @@ private extension ProductsViewController {
     }
 
     private func updateLiquidGlassHeaderOverlayLayout() {
-        guard Bundle.main.isLiquidGlassDesignEnabled,
+        guard #available(iOS 26.0, *),
               hasConfiguredLiquidGlassHeaderOverlay else {
             return
         }
@@ -905,7 +923,7 @@ private extension ProductsViewController {
     }
 
     private func updateLiquidGlassHeaderVisibility() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 

@@ -725,7 +725,7 @@ private extension ProductFormViewController {
     }
 
     func configureLiquidGlassTabBarUnderlap() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 

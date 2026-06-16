@@ -222,9 +222,12 @@ private extension DashboardView {
     }
 
     func shouldDisplayDashboardCardsInTwoColumns(availableWidth: CGFloat) -> Bool {
-        let hasRegularWidth = Bundle.main.isLiquidGlassDesignEnabled
-            ? availableWidth >= NarrowWindowLayout.compactLayoutThreshold
-            : horizontalSizeClass == .regular
+        let hasRegularWidth: Bool
+        if #available(iOS 26.0, *) {
+            hasRegularWidth = availableWidth >= NarrowWindowLayout.compactLayoutThreshold
+        } else {
+            hasRegularWidth = horizontalSizeClass == .regular
+        }
 
         return hasRegularWidth &&
             !dynamicTypeSize.isAccessibilitySize &&

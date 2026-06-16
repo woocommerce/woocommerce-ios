@@ -208,9 +208,11 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func verifyReadyForNewOrder(previousProductID: Int? = nil, previousVariationID: Int? = nil) -> Self {
         let phoneCartButton = app.buttons["pos-phone-cart-button"]
+
+        XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
+
         if phoneCartButton.waitForIsHittable(timeout: 1) {
             // Phone uses a collapsed cart button; tablet keeps the cart pane visible.
-            XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
             XCTAssertTrue(phoneCartButton.label.contains("0"), "Phone cart button should show an empty cart for a new order.")
         } else {
             XCTAssertTrue(cartViewGetter(app).waitForExistence(timeout: 10), "POS cart should be visible for a new order.")

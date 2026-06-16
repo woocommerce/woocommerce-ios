@@ -67,8 +67,7 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         return OrderListCellViewModel(order: model,
-                                      currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: false)
+                                      currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Synchronizes the Orders matching a given Keyword

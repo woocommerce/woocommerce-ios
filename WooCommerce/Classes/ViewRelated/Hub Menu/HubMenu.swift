@@ -130,8 +130,6 @@ private extension HubMenu {
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:
-                // Note: On CIAB sites, WC Admin is opened in a Safari sheet instead (see handleTap).
-                // This in-app webview path is only used for non-CIAB sites.
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,
                         shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)

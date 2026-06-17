@@ -4,7 +4,6 @@
 25.1
 -----
 - [*] Fixed a crash that could occur when picking an image from the device library while editing a product. [https://github.com/woocommerce/woocommerce-ios/pull/17369]
-- [*] Login: Fixed the dead "Need more help?" link on the pre-login "Find your store address" screen so it opens Help & Support [https://github.com/woocommerce/woocommerce-ios/pull/17372]
 - [*] Login: Fixed the dead "Need more help?" links on the site-address help and login error dialogs so they open support as intended [https://github.com/woocommerce/woocommerce-ios/pull/17372]
 - [*] Shipping Labels: Clearer notice when the origin (Ship from) address is missing a phone number or email [https://github.com/woocommerce/woocommerce-ios/pull/17339]
 - [*] Add support for Liquid Glass on iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/17337]

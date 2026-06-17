@@ -28,12 +28,8 @@ extension FancyAlertViewController {
         onDismiss: (() -> Void)? = nil) -> FancyAlertViewController {
 
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            // Capture the presenter before dismissing; the legacy app-delegate window lookup is nil in this scene-based app.
-            let presenter = controller.presentingViewController
-            controller.dismiss(animated: true) {
-                guard WordPressAuthenticator.shared.delegate?.supportEnabled == true,
-                    let presenter
-                else {
+            controller.dismissAndPresent { presenter in
+                guard WordPressAuthenticator.shared.delegate?.supportEnabled == true else {
                     return
                 }
 
@@ -118,12 +114,8 @@ extension FancyAlertViewController {
     ///
     private static func alertForGenericErrorMessage(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            // Capture the presenter before dismissing; the legacy app-delegate window lookup is nil in this scene-based app.
-            let presenter = controller.presentingViewController
-            controller.dismiss(animated: true) {
-                guard let presenter,
-                    let authDelegate = WordPressAuthenticator.shared.delegate
-                else {
+            controller.dismissAndPresent { presenter in
+                guard let authDelegate = WordPressAuthenticator.shared.delegate else {
                     return
                 }
 
@@ -164,13 +156,9 @@ extension FancyAlertViewController {
             WPAuthenticatorLogInfo("Error Alert: Support not enabled. Hiding Help button.")
         } else {
             moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-                // Capture the presenter before dismissing; the legacy app-delegate window lookup is nil in this scene-based app.
-                let presenter = controller.presentingViewController
-                controller.dismiss(animated: true) {
-                    guard let presenter,
-                        WordPressAuthenticator.shared.delegate?.supportEnabled == true
-                        else {
-                            return
+                controller.dismissAndPresent { presenter in
+                    guard WordPressAuthenticator.shared.delegate?.supportEnabled == true else {
+                        return
                     }
 
                     WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: presenter, sourceTag: sourceTag)
@@ -197,13 +185,9 @@ extension FancyAlertViewController {
     ///
     private static func alertForBadURL(with message: String) -> FancyAlertViewController {
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            // Capture the presenter before dismissing; the legacy app-delegate window lookup is nil in this scene-based app.
-            let presenter = controller.presentingViewController
-            controller.dismiss(animated: true) {
-                guard let presenter,
-                    let url = URL(string: "https://apps.wordpress.org/support/#faq-ios-3")
-                    else {
-                        return
+            controller.dismissAndPresent { presenter in
+                guard let url = URL(string: "https://apps.wordpress.org/support/#faq-ios-3") else {
+                    return
                 }
 
                 let safariViewController = SFSafariViewController(url: url)
@@ -222,5 +206,23 @@ extension FancyAlertViewController {
                                                      titleAccessoryButton: nil,
                                                      dismissAction: nil)
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
+    }
+}
+
+private extension FancyAlertViewController {
+    /// Dismisses the alert and then runs `presentAction` with the view controller that presented it.
+    ///
+    /// The presenter is captured before dismissing because resolving it afterwards via
+    /// `UIApplication.shared.delegate?.window` returns nil in this scene-based app, which is
+    /// what previously left the "Need more help?" buttons dead (the modal would just close).
+    func dismissAndPresent(_ presentAction: @escaping (_ presenter: UIViewController) -> Void) {
+        let presenter = presentingViewController
+        dismiss(animated: true) {
+            guard let presenter else {
+                return
+            }
+
+            presentAction(presenter)
+        }
     }
 }

@@ -14,7 +14,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         super.setUp()
 
         storageManager = MockStorageManager()
-        sampleSite = Site.fake().copy(siteID: sampleSiteID, isGarden: false)
+        sampleSite = Site.fake().copy(siteID: sampleSiteID)
         storageManager.insertSampleSite(readOnlySite: sampleSite)
     }
 

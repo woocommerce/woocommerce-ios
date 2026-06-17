@@ -640,10 +640,7 @@ extension NetworkingCore.Site {
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
             hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake(),
-            isGarden: .fake(),
-            gardenName: .fake(),
-            gardenPartner: .fake()
+            applicationPasswordAvailable: .fake()
         )
     }
 }

@@ -23,8 +23,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
         let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)

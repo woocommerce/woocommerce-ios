@@ -87,8 +87,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !buildConfig.isProduction
         case .pointOfSaleCatalogAPI:
             return true
-        case .pointOfSaleRefundsi1:
-            return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:

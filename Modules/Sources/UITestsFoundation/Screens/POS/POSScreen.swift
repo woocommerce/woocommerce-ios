@@ -93,8 +93,12 @@ public final class POSScreen: ScreenObject {
         customAmountEntryRow.tap()
 
         let amountField = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-amount-field").firstMatch
-        XCTAssertTrue(waitForVisibleElement(amountField, timeout: 10), "Custom amount amount field should be visible.")
-        amountField.tap()
+        if amountField.waitForIsHittable(timeout: 5) {
+            amountField.tap()
+        } else {
+            XCTAssertTrue(waitForVisibleElement(amountField, timeout: 5), "Custom amount amount field should be visible.")
+            amountField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        }
         if let firstDigit = amount.first {
             XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
             RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))

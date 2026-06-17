@@ -542,7 +542,7 @@ extension ProductFormViewModel {
         }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
                                                       trialPeriod: trialPeriod,
-                                                      oneTimeShipping: oneTimeShipping ?? nil)
+                                                      oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 

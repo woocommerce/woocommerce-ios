@@ -161,12 +161,14 @@ private extension AddProductCoordinator {
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(
             subtitle: subtitle,
-            accessibilityIdentifier: Accessibility.createProductSheetIdentifier
+            accessibilityIdentifier: Accessibility.createProductSheetIdentifier,
+            backgroundColor: .basicBackground
         )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            siteCIABEligibilityChecker: siteCIABEligibilityChecker,
+            backgroundColor: .basicBackground
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation

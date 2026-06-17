@@ -197,9 +197,21 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
-    @Published var shouldShowUPSTermsAndConditions = false
+    @Published var shouldShowUPSTermsAndConditions = false {
+        didSet {
+            if shouldShowUPSTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .upsdap, state: .shown))
+            }
+        }
+    }
 
-    @Published var shouldShowFedExTermsAndConditions = false
+    @Published var shouldShowFedExTermsAndConditions = false {
+        didSet {
+            if shouldShowFedExTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .fedex, state: .shown))
+            }
+        }
+    }
 
     var upsTermsViewModel: UPSTermsViewModel? {
         guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
@@ -364,6 +376,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     func updateShipments(_ shipments: [Shipment]) {
         self.selectedShipmentIndex = 0
         self.shipments = shipments
+    }
+
+    /// Tracks that the merchant accepted the carrier Terms of Service.
+    func trackCarrierTermsAccepted(_ carrier: WooAnalyticsEvent.WooShipping.Carrier) {
+        analytics.track(event: .WooShipping.carrierTermsOfService(carrier: carrier, state: .accepted))
     }
 
     func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {

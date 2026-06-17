@@ -53,7 +53,7 @@ private extension POSLockScreenModel {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
         case .rateLimited(let until): .lockout(until: until)
-        case .permanentlyLocked, .unknown: .error(kind: .generic)
+        case .permanentlyLocked, .unknown, .staffFetchFailed: .error(kind: .generic)
         }
     }
 }

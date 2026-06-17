@@ -3,7 +3,7 @@ import Yosemite
 
 /// Controller to wrap the products split view
 ///
-final class ProductsSplitViewWrapperController: UIViewController {
+final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
     private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
@@ -58,6 +58,7 @@ private extension ProductsSplitViewWrapperController {
 
 private extension ProductsSplitViewWrapperController {
     func configureTabBarItem() {
+        title = Localization.tabTitle
         tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .productImage
         tabBarItem.accessibilityIdentifier = "tab-bar-products-item"

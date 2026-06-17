@@ -1,6 +1,14 @@
 import UIKit
 
 extension UIView {
+    static func makePinnedHeaderBackgroundView(color: UIColor) -> UIView {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = color
+        backgroundView.isUserInteractionEnabled = false
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        return backgroundView
+    }
+
     @discardableResult
     public func constrainToSuperview(attribute: NSLayoutConstraint.Attribute,
                                      relatedBy relation: UIKit.NSLayoutConstraint.Relation = .equal,

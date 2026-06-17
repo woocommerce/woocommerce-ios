@@ -55,6 +55,10 @@ final class QRLoginCoordinator {
     /// deliver a second result — it must be replaced, not reused.
     private weak var prologueViewController: UIViewController?
 
+    /// Held weakly so `dropConsumedScanner()` can remove this scanner from the
+    /// stack once it has delivered a payload. (WOOMOB-3136)
+    private weak var scannerViewController: UIViewController?
+
     init(mode: Mode = .camera,
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
@@ -162,21 +166,6 @@ private extension QRLoginCoordinator {
         }
     }
 
-    func showScanner() {
-        analytics.trackStep(.qrScan)
-        let view = QRLoginScannerView(
-            onScannedPayload: { [weak self] payload in
-                guard let self else { return }
-                let parsed = self.parser.parse(payload)
-                self.handleScanned(payload: parsed)
-            },
-            onCancel: { [weak self] in self?.popScanner() }
-        )
-        // The scanner is full-bleed camera UI with its own in-view chrome, so it
-        // keeps the navigation bar hidden and does not use the toolbar Help item.
-        pushScreen(view, navigationBarStyle: .hidden, showsHelpButton: false)
-    }
-
     func popScanner() {
         navigationController.popViewController(animated: true)
     }
@@ -195,11 +184,36 @@ private extension QRLoginCoordinator {
     }
 }
 
+// MARK: - Scanner presentation
+
+extension QRLoginCoordinator {
+    /// Pushes the QR scanner and records it for `dropConsumedScanner()`. Internal
+    /// (not private) so navigation tests can place a scanner on the stack without
+    /// the async camera-permission flow. (WOOMOB-3136)
+    func showScanner() {
+        analytics.trackStep(.qrScan)
+        let view = QRLoginScannerView(
+            onScannedPayload: { [weak self] payload in
+                guard let self else { return }
+                let parsed = self.parser.parse(payload)
+                self.handleScanned(payload: parsed)
+            },
+            onCancel: { [weak self] in self?.popScanner() }
+        )
+        // The scanner is full-bleed camera UI with its own in-view chrome, so it
+        // keeps the navigation bar hidden and does not use the toolbar Help item.
+        scannerViewController = pushScreen(view, navigationBarStyle: .hidden, showsHelpButton: false)
+    }
+}
+
 // MARK: - Live flow
 
 private extension QRLoginCoordinator {
 
     func handleScanned(payload: QRLoginPayload) {
+        // Drop the consumed scanner so no Back/Cancel can return to it. (WOOMOB-3136)
+        dropConsumedScanner()
+
         switch payload {
         case let .selfHosted(token, siteURL):
             let strategy = SelfHostedQRLoginStrategy(token: token, siteURL: siteURL)
@@ -318,9 +332,9 @@ private extension QRLoginCoordinator {
         pushScreen(host)
     }
 
-    /// Merchant cancelled from the number-match screen. In camera mode the
-    /// merchant gets the scanner back; in deep-link mode there's no scanner to
-    /// fall back to, so popping the host view exits the QR-login surface.
+    /// Merchant cancelled from the number-match screen. In camera mode popping the
+    /// host lands on the prologue (the consumed scanner was already dropped); in
+    /// deep-link mode there's no scanner, so it exits the QR-login surface.
     func handleHostCancelled() {
         navigationController.popViewController(animated: true)
         finishIfDeepLink()
@@ -372,10 +386,8 @@ private extension QRLoginCoordinator {
     /// The merchant dismissed the magic-link auth sheet without finishing
     /// sign-in. Unwind the QR surface so they can retry.
     ///
-    /// In camera mode this unwinds to the prologue rather than the scanner: the
-    /// scanner keeps the camera live (the merchant may still be pointing at a
-    /// QR code, so it could capture another) and landing there re-enters the
-    /// scan step. Deep-link mode has no prologue, so it pops the host view and
+    /// In camera mode this pops to the prologue (the consumed scanner was already
+    /// dropped). Deep-link mode has no prologue, so it pops the host view and
     /// exits the QR surface.
     func handleMagicLinkCancelled() {
         if let prologueViewController {
@@ -384,6 +396,20 @@ private extension QRLoginCoordinator {
             navigationController.popViewController(animated: false)
         }
         finishIfDeepLink()
+    }
+
+    /// Removes the consumed scanner from the navigation stack so Back/Cancel can't
+    /// return to it — a scanner is single-use and won't deliver again. Camera mode
+    /// only; deep-link mode never pushes a scanner. (WOOMOB-3136)
+    func dropConsumedScanner() {
+        guard case .camera = mode, let scanner = scannerViewController else {
+            return
+        }
+        let remaining = navigationController.viewControllers.filter { $0 !== scanner }
+        if remaining.count != navigationController.viewControllers.count {
+            navigationController.setViewControllers(remaining, animated: false)
+        }
+        scannerViewController = nil
     }
 
     /// Fires `onFinished` exactly once so the owner can release this coordinator.

@@ -136,7 +136,7 @@ private struct CartHeaderView: View {
             return .init(state: state, action: {
                 analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
-            })
+            }, accessibilityIdentifier: "pos-cart-back-button")
         }
     }
 

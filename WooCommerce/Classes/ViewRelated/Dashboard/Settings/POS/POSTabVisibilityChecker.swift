@@ -49,15 +49,22 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
     func checkInitialVisibility() -> Bool {
-        eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
+        guard userInterfaceIdiom != .phone else {
+            return false
+        }
+        return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
     /// Checks the initial visibility without the `POSTabVisibilityChecker` instance
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
+        userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        guard userInterfaceIdiom != .phone else {
+            return false
+        }
         return eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
     }
 
@@ -106,6 +113,10 @@ private extension POSTabVisibilityChecker {
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
+
+        guard userInterfaceIdiom != .phone || countryCode == .GB else {
+            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+        }
 
         // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
         // validating, so the country/currency check reflects the latest remote feature

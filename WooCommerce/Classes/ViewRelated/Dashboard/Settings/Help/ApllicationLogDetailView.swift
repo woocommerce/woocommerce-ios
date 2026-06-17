@@ -1,4 +1,5 @@
 import SwiftUI
+import enum WooFoundation.BuildConfiguration
 
 /// Hosting controller that wraps an `ApplicationLogDetailView`
 ///
@@ -18,7 +19,8 @@ struct ApplicationLogDetailView: View {
 
     var body: some View {
         ScrollViewReader { scrollProxy in
-            List(viewModel.lines) { line in
+            let filteredLines = viewModel.filteredLines
+            List(filteredLines) { line in
                 VStack(alignment: .leading, spacing: 6) {
                     if let dateText = line.dateText {
                         Text(dateText)
@@ -27,12 +29,14 @@ struct ApplicationLogDetailView: View {
                     Text(line.text)
                         .bodyStyle()
                 }
-                .storeVisibleStatus(on: $viewModel.lastCellIsVisible, if: viewModel.isLastLine(line))
+                .storeVisibleStatus(on: $viewModel.lastCellIsVisible, if: line.id == filteredLines.last?.id)
             }
             .overlay(
                 scrollToBottomButton {
                     withAnimation(.easeInOut(duration: 0.1)) {
-                        scrollProxy.scrollTo(viewModel.lastLineID)
+                        if let lastLineID = filteredLines.last?.id {
+                            scrollProxy.scrollTo(lastLineID)
+                        }
                     }
                 },
                 alignment: .bottomTrailing)
@@ -54,6 +58,7 @@ struct ApplicationLogDetailView: View {
             }
         }
         .wooNavigationBarStyle()
+        .searchableInNonProductionBuilds(text: $viewModel.searchText)
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
@@ -75,6 +80,21 @@ struct ApplicationLogDetailView: View {
 }
 
 private extension View {
+    /// Adds a search field for filtering log lines, but only in non-production builds.
+    /// The search field is a developer convenience and must never appear in App Store builds,
+    /// so the prompt is intentionally not localized.
+    ///
+    @ViewBuilder
+    func searchableInNonProductionBuilds(text: Binding<String>) -> some View {
+        if BuildConfiguration.current.isProduction {
+            self
+        } else {
+            self.searchable(text: text,
+                            placement: .navigationBarDrawer(displayMode: .always),
+                            prompt: "Search logs")
+        }
+    }
+
     /// Monitors the view's appearance by watching the `onAppear`/ `onDisappear` modifiers and stores the state in the given binding
     ///
     /// - Parameters:

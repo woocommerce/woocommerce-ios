@@ -213,19 +213,20 @@ private var mockVariationItems: [POSItem] {
     ]
 }
 
+@MainActor
 struct POSPreviewHelpers {
     @MainActor
     static func makePreviewAggregateModel(
-        itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        itemsController: PointOfSaleItemsControllerProtocol? = nil,
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+        couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+        couponsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
-        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        orderController: PointOfSaleOrderControllerProtocol? = nil,
         settingsController: POSSettingsControllerProtocol = POSSettingsPreviewController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
-        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        popularItemsController: PointOfSaleItemsControllerProtocol? = nil,
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
         receiptSender: POSReceiptSending = POSReceiptSenderPreview(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
@@ -234,6 +235,13 @@ struct POSPreviewHelpers {
         isLocalCatalogEligible: Bool = false,
         sunsetWarningChecker: POSSunsetWarningChecking? = nil
     ) -> PointOfSaleAggregateModel {
+        let itemsController = itemsController ?? PointOfSalePreviewItemsController()
+        let purchasableItemsSearchController = purchasableItemsSearchController ?? PointOfSalePreviewItemsController()
+        let couponsController = couponsController ?? PointOfSalePreviewCouponsController()
+        let couponsSearchController = couponsSearchController ?? PointOfSalePreviewCouponsController()
+        let orderController = orderController ?? PointOfSalePreviewOrderController()
+        let popularItemsController = popularItemsController ?? PointOfSalePreviewItemsController()
+
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
@@ -652,7 +660,7 @@ final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
     func trackNextPageLoaded(pageNumber: Int) {}
 
     func loadOrder(orderID: Int64) async throws -> POSOrder {
-        POSPreviewHelpers.makePreviewOrder()
+        await POSPreviewHelpers.makePreviewOrder()
     }
 
     var supportsCaching: Bool = true

@@ -1,5 +1,4 @@
 import Testing
-import Observation
 import Foundation
 
 @testable import PointOfSale
@@ -18,6 +17,7 @@ import enum Networking.DotcomError
 import enum Networking.NetworkError
 import struct Yosemite.POSItemIdentifier
 
+@MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -129,35 +129,21 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
+
+        #expect(sut.orderState == .idle)
+        await confirmation { syncingStateObserved in
+            mockOrderService.onSyncOrderCalled = {
+                #expect(sut.orderState == .syncing)
+                syncingStateObserved()
             }
-            observeOrderState()
 
             // When
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
         }
 
-        await orderStateAppendTask?.value
-
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0),
-                    fakeOrder)
-        ])
+        #expect(sut.orderState == .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0),
+                                          fakeOrder))
     }
 
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
@@ -168,34 +154,19 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
+        #expect(sut.orderState == .idle)
+        await confirmation { syncingStateObserved in
+            mockOrderService.onSyncOrderCalled = {
+                #expect(sut.orderState == .syncing)
+                syncingStateObserved()
             }
-            observeOrderState()
 
             // When
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
         }
 
-        await orderStateAppendTask?.value
-
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
-        ])
+        #expect(sut.orderState == .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {}))
     }
 
     @Test func syncOrder_when_order_does_not_match_cart_then_sets_orderDoesNotMatchCart_error() async throws {
@@ -206,34 +177,19 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
+        #expect(sut.orderState == .idle)
+        await confirmation { syncingStateObserved in
+            mockOrderService.onSyncOrderCalled = {
+                #expect(sut.orderState == .syncing)
+                syncingStateObserved()
             }
-            observeOrderState()
 
             // When
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
         }
 
-        await orderStateAppendTask?.value
-
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.orderDoesNotMatchCart, {})
-        ])
+        #expect(sut.orderState == .error(.orderDoesNotMatchCart, {}))
     }
 
     @Test func sendReceipt_when_there_is_no_order_then_throws_noOrder_error() async throws {
@@ -652,21 +608,12 @@ struct PointOfSaleOrderControllerTests {
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage, data: nil)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
+        #expect(sut.orderState == .idle)
+        await confirmation { syncingStateObserved in
+            mockOrderService.onSyncOrderCalled = {
+                #expect(sut.orderState == .syncing)
+                syncingStateObserved()
             }
-            observeOrderState()
 
             // When
             await sut.syncOrder(
@@ -678,14 +625,8 @@ struct PointOfSaleOrderControllerTests {
             )
         }
 
-        await orderStateAppendTask?.value
-
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
@@ -704,21 +645,12 @@ struct PointOfSaleOrderControllerTests {
         let errorData = errorJSON.data(using: .utf8)!
         mockOrderService.errorToReturn = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
+        #expect(sut.orderState == .idle)
+        await confirmation { syncingStateObserved in
+            mockOrderService.onSyncOrderCalled = {
+                #expect(sut.orderState == .syncing)
+                syncingStateObserved()
             }
-            observeOrderState()
 
             // When
             await sut.syncOrder(
@@ -730,14 +662,8 @@ struct PointOfSaleOrderControllerTests {
             )
         }
 
-        await orderStateAppendTask?.value
-
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_fails_sets_order_to_nil() async throws {

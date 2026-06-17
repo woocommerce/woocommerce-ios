@@ -102,20 +102,27 @@ private func makeProductItem() -> POSItem {
 @MainActor
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
-    itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
-    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
-    couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
-    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
+    itemsController: PointOfSaleItemsControllerProtocol? = nil,
+    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+    couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
-    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
+    orderController: PointOfSaleOrderControllerProtocol? = nil,
     settingsController: POSSettingsControllerProtocol = MockPOSSettingsController(),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
-    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol? = nil,
     barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
 ) -> PointOfSaleAggregateModel {
-    PointOfSaleAggregateModel(
+    let itemsController = itemsController ?? MockPointOfSaleItemsController()
+    let purchasableItemsSearchController = purchasableItemsSearchController ?? MockPointOfSalePurchasableItemsSearchController()
+    let couponsController = couponsController ?? MockPointOfSaleCouponsController()
+    let couponsSearchController = couponsSearchController ?? MockPointOfSaleCouponsController()
+    let orderController = orderController ?? MockPointOfSaleOrderController()
+    let popularPurchasableItemsController = popularPurchasableItemsController ?? MockPointOfSaleItemsController()
+
+    return PointOfSaleAggregateModel(
         entryPointController: entryPointController,
         itemsController: itemsController,
         purchasableItemsSearchController: purchasableItemsSearchController,

@@ -10,6 +10,7 @@ import class WooFoundation.CurrencySettings
 /// updated `POSItem` values so the cart can reflect current prices.
 ///
 /// Caches the observed IDs internally — calling `observe` with the same IDs is a no-op.
+@MainActor
 public protocol POSCartProductObserving {
     /// Starts observing the given product and variation IDs in GRDB.
     /// Publishes updated `POSItem` values through the `items` publisher whenever the underlying rows change.

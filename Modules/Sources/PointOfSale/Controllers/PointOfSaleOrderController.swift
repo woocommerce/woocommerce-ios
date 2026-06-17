@@ -34,6 +34,7 @@ enum SyncOrderStateError: Error {
     case syncFailure
 }
 
+@MainActor
 protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 

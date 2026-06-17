@@ -13,6 +13,7 @@ import enum Yosemite.POSItemType
 import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.SearchDebounceStrategy
 
+@MainActor
 protocol PointOfSaleItemsControllerProtocol {
     ///
     var itemsViewState: ItemsViewState { get }
@@ -24,6 +25,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 }
 
+@MainActor
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async

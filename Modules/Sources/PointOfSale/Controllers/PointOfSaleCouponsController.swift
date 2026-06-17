@@ -9,6 +9,7 @@ import protocol Yosemite.PointOfSaleCouponFetchStrategy
 import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.SearchDebounceStrategy
 
+@MainActor
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled

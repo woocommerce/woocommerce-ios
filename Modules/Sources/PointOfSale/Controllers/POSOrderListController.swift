@@ -19,6 +19,7 @@ enum StartRefundFlowResult {
     case failed
 }
 
+@MainActor
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
@@ -44,6 +45,7 @@ protocol POSOrderListControllerProtocol {
     func loadOrderRefunds() async
 }
 
+@MainActor
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()

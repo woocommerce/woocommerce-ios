@@ -12,6 +12,7 @@ private enum AnalyticsKeys {
     static let productType = "product_type"
 }
 
+@MainActor
 struct POSItemActionHandlerFactoryTests {
     @Test func products_list_tracks_correct_analytics() async throws {
         // Given

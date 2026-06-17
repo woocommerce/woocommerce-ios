@@ -4,6 +4,7 @@ import Foundation
 import class WooFoundation.CurrencySettings
 import Yosemite
 
+@MainActor
 struct PointOfSaleCouponsControllerTests {
     private let fetchStrategyFactory: MockPointOfSaleCouponFetchStrategyFactory
 

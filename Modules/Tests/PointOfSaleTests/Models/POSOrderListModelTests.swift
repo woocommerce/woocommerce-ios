@@ -4,6 +4,7 @@ import Foundation
 import struct Yosemite.POSOrder
 import enum NetworkingCore.OrderStatusEnum
 
+@MainActor
 final class POSOrderListModelTests {
     private let mockOrdersController = MockPOSOrderListController()
     private let mockReceiptSender = MockPOSReceiptSender()

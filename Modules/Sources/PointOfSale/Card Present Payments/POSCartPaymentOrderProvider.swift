@@ -5,7 +5,7 @@ struct POSCartPaymentOrderProvider: POSPaymentOrderProviding {
     let orderController: PointOfSaleOrderControllerProtocol
 
     func provideOrder() async throws -> POSPaymentOrder {
-        guard case let .loaded(totals, order) = orderController.orderState else {
+        guard case let .loaded(totals, order) = await orderController.orderState else {
             throw POSPaymentError.noOrder
         }
         return POSPaymentOrder(order: order,
@@ -17,7 +17,7 @@ struct POSCartPaymentOrderProvider: POSPaymentOrderProviding {
     /// Promotes the order to `.pending` so the backend populates `paymentURL`, then returns
     /// the refreshed order for scan-to-pay rendering.
     func provideOrderForScanToPay() async throws -> POSPaymentOrder {
-        guard case let .loaded(totals, _) = orderController.orderState else {
+        guard case let .loaded(totals, _) = await orderController.orderState else {
             throw POSPaymentError.noOrder
         }
         let promoted = try await orderController.promoteCurrentOrderToPending()

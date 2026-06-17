@@ -23,6 +23,7 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 
+@MainActor
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
     func addToCart(_ item: POSItem)
@@ -30,6 +31,7 @@ protocol PointOfSaleAggregateModelProtocol {
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
 }
 
+@MainActor
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
     private var checkoutGeneration = 0
@@ -62,7 +64,7 @@ protocol PointOfSaleAggregateModelProtocol {
     /// by the items list view as a navigation push and doesn't go through this state.
     var editingCustomAmount: POSCustomAmount?
 
-    var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
+    @MainActor var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
     let entryPointController: POSEntryPointController
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -527,7 +529,9 @@ extension PointOfSaleAggregateModel {
             }
         } onChange: { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async(execute: setupReaderReconnectionObservation)
+            Task { @MainActor in
+                self.setupReaderReconnectionObservation()
+            }
         }
     }
 }
@@ -562,6 +566,7 @@ extension PointOfSaleAggregateModel {
 
     /// Triggers an incremental catalog sync if the order response indicates product prices have changed.
     /// The sync updates GRDB, which the cart product observer picks up to update cart item prices reactively.
+    @MainActor
     private func triggerIncrementalSyncIfPriceChanged() {
         guard case .loaded(_, let order) = orderController.orderState else { return }
         guard POSOrderPriceChangeDetector().detectsPriceChange(cart: cart, order: order) else { return }
@@ -586,6 +591,7 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Cart product observation
 private extension PointOfSaleAggregateModel {
+    @MainActor
     func subscribeToCartProductUpdates() {
         cartProductObserver?.items
             .receive(on: DispatchQueue.main)
@@ -595,6 +601,7 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
     }
 
+    @MainActor
     func rebuildCartProductObservation() {
         guard let cartProductObserver else { return }
 
@@ -616,6 +623,7 @@ private extension PointOfSaleAggregateModel {
         cartProductObserver.observe(productIDs: productIDs, variationIDs: variationIDs)
     }
 
+    @MainActor
     func applyProductUpdatesToCart(_ observedItems: [POSItem]) {
         let observedOrderables: [POSOrderableItem] = observedItems.compactMap { item in
             switch item {
@@ -684,7 +692,9 @@ private extension PointOfSaleAggregateModel {
             }
         } onChange: { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async(execute: setupPaymentSuccessObservation)
+            Task { @MainActor in
+                self.setupPaymentSuccessObservation()
+            }
         }
     }
 

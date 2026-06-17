@@ -9,7 +9,7 @@
 - [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
 - [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
 - [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
-- [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
+- [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
 
 25.0
 -----

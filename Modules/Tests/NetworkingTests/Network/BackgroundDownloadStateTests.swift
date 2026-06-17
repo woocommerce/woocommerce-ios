@@ -13,9 +13,11 @@ struct BackgroundDownloadStateTests {
 
     @Test func save_persists_state_to_userdefaults() {
         // Given
+        let downloadStartedAt = Date(timeIntervalSince1970: 123)
         let state = BackgroundDownloadState(
             sessionIdentifier: "test.session.123",
-            siteID: 456
+            siteID: 456,
+            downloadStartedAt: downloadStartedAt
         )
 
         // When
@@ -25,6 +27,7 @@ struct BackgroundDownloadStateTests {
         let loaded = store.load(for: "test.session.123")
         #expect(loaded?.sessionIdentifier == "test.session.123")
         #expect(loaded?.siteID == 456)
+        #expect(loaded?.downloadStartedAt == downloadStartedAt)
     }
 
     @Test func load_returns_nil_for_nonexistent_session() {
@@ -89,5 +92,18 @@ struct BackgroundDownloadStateTests {
         #expect(loadedFirst == nil) // First session is overwritten
         #expect(loadedSecond?.sessionIdentifier == "session.2")
         #expect(loadedSecond?.siteID == 200)
+    }
+
+    @Test func decoding_legacy_state_without_downloadStartedAt_defaults_to_distantPast() throws {
+        // Given
+        let legacyJSON = Data(#"{"sessionIdentifier":"legacy.session","siteID":987}"#.utf8)
+
+        // When
+        let decoded = try JSONDecoder().decode(BackgroundDownloadState.self, from: legacyJSON)
+
+        // Then
+        #expect(decoded.sessionIdentifier == "legacy.session")
+        #expect(decoded.siteID == 987)
+        #expect(decoded.downloadStartedAt == .distantPast)
     }
 }

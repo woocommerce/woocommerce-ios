@@ -790,6 +790,39 @@ struct POSCatalogSyncRemoteTests {
         #expect(catalog.variations.isEmpty)
     }
 
+    @Test func downloadCatalog_when_item_has_null_data_then_skips_it_without_failing() async throws {
+        // Given: an item whose `data` payload is null is a benign skip (decodeIfPresent -> nil)
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+        let json = """
+        [
+          {
+            "type": "simple",
+            "data": {
+              "id": 1, "sku": "valid", "global_unique_id": "", "name": "Valid Product",
+              "short_description": "", "description": "", "stock_status": "instock",
+              "manage_stock": false, "stock_quantity": null, "price": 10, "images": [],
+              "parent_id": 0, "attributes": [], "downloadable": false, "status": "publish", "type": "simple"
+            }
+          },
+          {
+            "type": "simple",
+            "data": null
+          }
+        ]
+        """
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: json)
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then: the null-data item is skipped, the valid product is parsed
+        #expect(catalog.products.count == 1)
+        #expect(catalog.products.first?.productID == 1)
+        #expect(catalog.variations.isEmpty)
+    }
+
     @Test func downloadCatalog_handles_empty_catalog() async throws {
         // Given
         let remote = createRemote()

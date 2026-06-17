@@ -160,13 +160,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 await downloadCoordinator.handleBackgroundSessionEvent(
                     sessionIdentifier: identifier,
                     completionHandler: completionHandler,
-                    parseHandler: { fileURL, siteID in
+                    parseHandler: { fileURL, siteID, snapshotDate in
                         // Use the POS catalog sync coordinator to parse and persist
                         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
                             throw NSError(domain: "com.woocommerce.pos", code: -1,
                                          userInfo: [NSLocalizedDescriptionKey: "POS catalog coordinator not available"])
                         }
-                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID)
+                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID, snapshotDate: snapshotDate)
                     }
                 )
             }

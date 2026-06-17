@@ -1,5 +1,6 @@
 // periphery:ignore:all
 import Foundation
+import CocoaLumberjackSwift
 import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
@@ -550,7 +551,7 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
-    /// Items with malformed data that fail to decode are skipped during parsing
+    /// Items with malformed data that fail to decode are skipped during parsing, and logged
     case unsupported
 
     private enum CodingKeys: String, CodingKey {
@@ -566,12 +567,14 @@ public enum POSCatalogItem: Decodable {
             do {
                 self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         } else {
             do {
                 self = .product(try container.decode(POSProduct.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         }

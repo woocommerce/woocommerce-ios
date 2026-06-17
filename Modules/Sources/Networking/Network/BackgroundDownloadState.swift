@@ -5,6 +5,24 @@ import Foundation
 public struct BackgroundDownloadState: Codable {
     let sessionIdentifier: String
     let siteID: Int64
+    let downloadStartedAt: Date
+
+    public init(sessionIdentifier: String, siteID: Int64, downloadStartedAt: Date = Date()) {
+        self.sessionIdentifier = sessionIdentifier
+        self.siteID = siteID
+        self.downloadStartedAt = downloadStartedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case sessionIdentifier, siteID, downloadStartedAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        sessionIdentifier = try container.decode(String.self, forKey: .sessionIdentifier)
+        siteID = try container.decode(Int64.self, forKey: .siteID)
+        downloadStartedAt = try container.decodeIfPresent(Date.self, forKey: .downloadStartedAt) ?? .distantPast
+    }
 }
 
 /// Persists `BackgroundDownloadState` to `UserDefaults`.

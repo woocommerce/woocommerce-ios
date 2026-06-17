@@ -35,7 +35,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         await coordinator.handleBackgroundSessionEvent(
             sessionIdentifier: sessionIdentifier,
             completionHandler: { },
-            parseHandler: { fileURL, siteID in
+            parseHandler: { fileURL, siteID, _ in
                 parsedFileURL = fileURL
                 parsedSiteID = siteID
             }
@@ -44,6 +44,34 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Then
         #expect(parsedSiteID == siteID)
         #expect(parsedFileURL?.path == "/tmp/test.json")
+    }
+
+    @Test func handleBackgroundSessionEvent_passes_download_start_date_to_parse_handler() async {
+        // Given
+        let sessionIdentifier = "com.woocommerce.pos.catalog.download.snapshot-date"
+        let downloadStartedAt = Date(timeIntervalSince1970: 1_000)
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: 456,
+                                      downloadStartedAt: downloadStartedAt))
+
+        let mockDownloader = MockBackgroundDownloader()
+        mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/test.json")
+        let coordinator = makeCoordinator(downloader: mockDownloader)
+
+        var parsedSnapshotDate: Date?
+
+        // When
+        await coordinator.handleBackgroundSessionEvent(
+            sessionIdentifier: sessionIdentifier,
+            completionHandler: { },
+            parseHandler: { _, _, snapshotDate in
+                parsedSnapshotDate = snapshotDate
+            }
+        )
+
+        // Then — the parse handler receives when the download started, not the current time,
+        // so the persisted sync watermark reflects the snapshot's real age
+        #expect(parsedSnapshotDate == downloadStartedAt)
     }
 
     @Test func handleBackgroundSessionEvent_calls_completion_handler_when_no_state() async {
@@ -61,7 +89,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             completionHandler: {
                 completionCalled = true
             },
-            parseHandler: { _, _ in
+            parseHandler: { _, _, _ in
                 parseCalled = true
             }
         )
@@ -88,7 +116,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         await coordinator.handleBackgroundSessionEvent(
             sessionIdentifier: sessionIdentifier,
             completionHandler: { },
-            parseHandler: { _, _ in }
+            parseHandler: { _, _, _ in }
         )
 
         // Then - state should be cleared
@@ -113,7 +141,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         await coordinator.handleBackgroundSessionEvent(
             sessionIdentifier: sessionIdentifier,
             completionHandler: { },
-            parseHandler: { _, _ in }
+            parseHandler: { _, _, _ in }
         )
 
         // Then
@@ -138,7 +166,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         await coordinator.handleBackgroundSessionEvent(
             sessionIdentifier: sessionIdentifier,
             completionHandler: { },
-            parseHandler: { url, _ in
+            parseHandler: { url, _, _ in
                 stagedPath = url.path
             }
         )
@@ -155,7 +183,10 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.fail"
         let siteID: Int64 = 222
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        let downloadStartedAt = Date(timeIntervalSince1970: 1_000)
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: siteID,
+                                      downloadStartedAt: downloadStartedAt))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -169,7 +200,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         await coordinator.handleBackgroundSessionEvent(
             sessionIdentifier: sessionIdentifier,
             completionHandler: { },
-            parseHandler: { url, _ in
+            parseHandler: { url, _, _ in
                 stagedPath = url.path
                 throw ParseError()
             }
@@ -179,6 +210,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         #expect(downloadStateStore.load(for: sessionIdentifier) == nil) // session state always cleared
         let pending = try #require(pendingFileStore.load())
         #expect(pending.siteID == siteID)
+        #expect(pending.createdAt == downloadStartedAt)
         let staged = try #require(stagedPath)
         #expect(pending.filePath == staged)
         #expect(fileManager.fileExists(atPath: staged) == true)
@@ -195,7 +227,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parseCalled = false
 
         // When
-        await coordinator.resumePendingParseIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _, _ in
             parseCalled = true
         }
 
@@ -211,7 +243,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parseCalled = false
 
         // When
-        await coordinator.resumePendingParseIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _, _ in
             parseCalled = true
         }
 
@@ -229,7 +261,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         var parsedSiteID: Int64?
 
         // When
-        await coordinator.resumePendingParseIfNeeded { url, siteID in
+        await coordinator.resumePendingParseIfNeeded { url, siteID, _ in
             #expect(url.path == downloadedFile.path)
             parsedSiteID = siteID
         }
@@ -249,7 +281,7 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         struct ParseError: Error {}
 
         // When
-        await coordinator.resumePendingParseIfNeeded { _, _ in
+        await coordinator.resumePendingParseIfNeeded { _, _, _ in
             throw ParseError()
         }
 
@@ -260,6 +292,128 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         // Cleanup
         try? fileManager.removeItem(at: downloadedFile)
+    }
+
+    @Test func handleBackgroundSessionEvent_when_old_pending_file_exists_and_new_file_stages_then_replaces_pending_record() async throws {
+        // Given — an orphaned pending file from a prior session
+        let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
+        pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
+
+        // ...and a fresh wake event
+        let sessionIdentifier = "com.woocommerce.pos.catalog.download.supersede"
+        let newSiteID: Int64 = 999
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: newSiteID))
+
+        let newDownloadedFile = try makeDownloadedFile(named: "new-download.json")
+        let mockDownloader = MockBackgroundDownloader()
+        mockDownloader.mockFileURL = newDownloadedFile
+        let coordinator = makeCoordinator(downloader: mockDownloader)
+
+        // When
+        await coordinator.handleBackgroundSessionEvent(
+            sessionIdentifier: sessionIdentifier,
+            completionHandler: { },
+            parseHandler: { _, _, _ in }
+        )
+
+        // Then — old staged file gone, new flow completed normally
+        #expect(fileManager.fileExists(atPath: oldStagedFile.path) == false)
+        #expect(downloadStateStore.load(for: sessionIdentifier) == nil)
+    }
+
+    @Test func handleBackgroundSessionEvent_when_staging_new_file_fails_then_keeps_existing_pending_record() async throws {
+        // Given — a recoverable pending file from a prior session
+        let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
+        pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
+
+        let sessionIdentifier = "com.woocommerce.pos.catalog.download.stage-fails"
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: 999))
+
+        let mockDownloader = MockBackgroundDownloader()
+        mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/missing-new-download-\(UUID().uuidString).json")
+        let coordinator = makeCoordinator(downloader: mockDownloader)
+
+        // When
+        await coordinator.handleBackgroundSessionEvent(
+            sessionIdentifier: sessionIdentifier,
+            completionHandler: { },
+            parseHandler: { _, _, _ in }
+        )
+
+        // Then — the old pending file remains recoverable because no durable replacement exists
+        let pending = try #require(pendingFileStore.load())
+        #expect(pending.filePath == oldStagedFile.path)
+        #expect(fileManager.fileExists(atPath: oldStagedFile.path) == true)
+
+        // Cleanup
+        try? fileManager.removeItem(at: oldStagedFile)
+    }
+
+    @Test func resumePendingParseIfNeeded_passes_created_at_to_parse_handler() async throws {
+        // Given — a pending file staged at a known moment in the past
+        let stagedFile = try makeDownloadedFile(named: "pending.json")
+        let createdAt = Date(timeIntervalSince1970: 1_000)
+        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444, createdAt: createdAt))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        var parsedSnapshotDate: Date?
+
+        // When
+        await coordinator.resumePendingParseIfNeeded { _, _, snapshotDate in
+            parsedSnapshotDate = snapshotDate
+        }
+
+        // Then — the parse handler receives the snapshot's own staging date, not the current
+        // time, so the persisted sync watermark reflects the data's real age and the next
+        // incremental sync refetches everything modified since then
+        #expect(parsedSnapshotDate == createdAt)
+        #expect(pendingFileStore.load() == nil)
+    }
+
+    // MARK: - discardPendingParse
+
+    @Test func discardPendingParse_when_pending_record_matches_site_then_deletes_file_and_clears_record() async throws {
+        // Given
+        let stagedFile = try makeDownloadedFile(named: "superseded.json")
+        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When — a full sync for the same site persisted successfully
+        coordinator.discardPendingParse(for: 444)
+
+        // Then — the staged snapshot is superseded, so it is removed
+        #expect(pendingFileStore.load() == nil)
+        #expect(fileManager.fileExists(atPath: stagedFile.path) == false)
+    }
+
+    @Test func discardPendingParse_when_pending_record_is_for_other_site_then_keeps_it() async throws {
+        // Given
+        let stagedFile = try makeDownloadedFile(named: "other-site.json")
+        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When — a full sync for a different site persisted
+        coordinator.discardPendingParse(for: 555)
+
+        // Then — the other site's pending retry is still valid, so it is untouched
+        let pending = pendingFileStore.load()
+        #expect(pending?.siteID == 444)
+        #expect(fileManager.fileExists(atPath: stagedFile.path) == true)
+
+        // Cleanup
+        try? fileManager.removeItem(at: stagedFile)
+    }
+
+    @Test func discardPendingParse_when_no_pending_record_then_does_nothing() async {
+        // Given
+        pendingFileStore.clear()
+        let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
+
+        // When
+        coordinator.discardPendingParse(for: 444)
+
+        // Then
+        #expect(pendingFileStore.load() == nil)
     }
 
     // MARK: - PendingCatalogFile round-trips
@@ -301,6 +455,30 @@ struct BackgroundCatalogDownloadCoordinatorTests {
             // Given fresh isolated suite
             // Then
             #expect(store.load() == nil)
+        }
+
+        @Test func save_then_load_round_trips_created_at() {
+            // Given
+            let createdAt = Date(timeIntervalSince1970: 12_345)
+
+            // When
+            store.save(.init(filePath: "/tmp/catalog.json", siteID: 7, createdAt: createdAt))
+
+            // Then
+            #expect(store.load()?.createdAt == createdAt)
+        }
+
+        @Test func decoding_legacy_record_without_createdAt_defaults_to_distantPast() throws {
+            // Given — a record written before `createdAt` existed
+            let legacyJSON = Data(#"{"filePath":"/tmp/legacy.json","siteID":9}"#.utf8)
+
+            // When
+            let decoded = try JSONDecoder().decode(PendingCatalogFile.self, from: legacyJSON)
+
+            // Then — treated as maximally stale so it is discarded rather than re-applied
+            #expect(decoded.filePath == "/tmp/legacy.json")
+            #expect(decoded.siteID == 9)
+            #expect(decoded.createdAt == .distantPast)
         }
     }
 

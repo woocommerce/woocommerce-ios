@@ -30,8 +30,11 @@ public protocol POSCatalogFullSyncServiceProtocol {
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
+    ///   - snapshotDate: When the snapshot's download started. Used as the persisted sync
+    ///     watermark so a resumed snapshot doesn't claim to be current,
+    ///     keeping the next smart/incremental sync able to refetch everything since then.
     /// - Returns: The parsed catalog
-    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog
 }
 
 /// Metadata from file-based catalog sync, used for analytics tracking.
@@ -170,16 +173,15 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         return catalog
     }
 
-    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {
         DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
 
-        let syncStartDate = Date.now
         let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
 
         let catalog = POSCatalog(
             products: catalogResponse.products,
             variations: catalogResponse.variations,
-            syncDate: syncStartDate
+            syncDate: snapshotDate
         )
 
         DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")

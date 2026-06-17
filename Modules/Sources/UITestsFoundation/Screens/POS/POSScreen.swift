@@ -240,10 +240,17 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
-    public func verifyVariationSelectorVisible(variationID: Int) -> Self {
-        let variationButton = app.buttons["pos-variation-card-\(variationID)"]
+    public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
+        let phoneCartButton = app.buttons["pos-phone-cart-button"]
+        if phoneCartButton.exists {
+            XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15),
+                          "POS product list should be visible when returning to edit the cart on phone.")
+            return self
+        }
 
-        XCTAssertTrue(waitForVisibleElement(variationButton, timeout: 15), "POS variation selector should remain visible when returning to edit the cart.")
+        let variationButton = app.buttons["pos-variation-card-\(variationID)"]
+        XCTAssertTrue(waitForVisibleElement(variationButton, timeout: 15),
+                      "POS variation selector should remain visible when returning to edit the cart on tablet.")
 
         return self
     }

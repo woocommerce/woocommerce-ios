@@ -15,7 +15,9 @@ final class POSTests: XCTestCase {
         "-ui_testing",
         // APIMocks does not stub mobile/feature-flags; override the remote POS flag to keep launch deterministic.
         "-com.woocommerce.featureflag.override.remote.pointOfSale",
-        "YES"
+        "YES",
+        // Keep POS UI tests focused on POS behavior instead of rollout country/tab visibility gates.
+        "bypass-pos-tab-visibility-checks"
     ]
 
     private static let checkoutLaunchArguments = [
@@ -52,7 +54,7 @@ final class POSTests: XCTestCase {
     func test_POS_eligible_site_can_complete_cash_payment_and_start_new_order() throws {
         try beginTwoProductCheckout()
             .tapBackToProductSelectorFromCheckout()
-            .verifyVariationSelectorVisible(variationID: ProductIDs.variation)
+            .verifyReturnedFromCheckoutToProductSelector(variationID: ProductIDs.variation)
             .tapCheckout()
             .waitForTotalsLoaded()
             .tapCashPayment()

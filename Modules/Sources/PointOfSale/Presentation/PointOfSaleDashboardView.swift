@@ -319,7 +319,8 @@ struct PointOfSaleDashboardView: View {
                     title: Localization.phoneCheckoutTitle,
                     backButtonConfiguration: .init(
                         state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                        action: { posModel.addMoreToCart() }
+                        action: { posModel.addMoreToCart() },
+                        accessibilityIdentifier: "pos-cart-back-button"
                     )
                 )
             }

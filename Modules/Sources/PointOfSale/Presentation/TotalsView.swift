@@ -192,11 +192,10 @@ struct TotalsView: View {
         }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
-                // Hide the Card reader row when a reader is already connected — its
-                // "Connect a Bluetooth reader…" subtitle would contradict the BT
-                // reader status the merchant is already looking at. In the
-                // TTP-hero scenario (no reader connected) the row remains visible.
-                isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
+                // Keep the Card reader row visible even when Bluetooth is
+                // already active, but disable it so the merchant understands
+                // the option is temporarily unavailable rather than missing.
+                isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
@@ -803,9 +802,8 @@ private extension TotalsView {
     ///   Scan to Pay, Mark as Paid). Mirrors samiuelson #15825.
     /// - **TTP-available + BT reader connected**: the BT reader is the active
     ///   path showing "Ready for payment" up top, and the strip lets the
-    ///   merchant either take cash or step out via the sheet (which now
-    ///   includes Tap to Pay on iPhone since reader-is-connected means the
-    ///   sheet's Card reader row is hidden).
+    ///   merchant either take cash or step out via the sheet (where the
+    ///   Card reader row remains visible but disabled).
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
@@ -862,23 +860,23 @@ private extension TotalsView {
         )
     }
 
-    /// True when the Card reader row should appear inside the Other Payment
-    /// Methods sheet. Hidden only when the merchant is currently using BT —
-    /// re-listing it there would be a no-op contradiction. Visible everywhere
-    /// else, including during a TTP collection (lets the merchant switch back
-    /// to a BT reader mid-flow).
+    /// True when the Card reader row should be selectable inside the Other
+    /// Payment Methods sheet. Disabled only when the merchant is currently
+    /// using BT — re-selecting it there would be a no-op contradiction.
+    /// Selectable everywhere else, including during a TTP collection (lets the
+    /// merchant switch back to a BT reader mid-flow).
     ///
     /// Uses `currentPaymentMethod` instead of `cardReaderConnectionStatus`
     /// because the silent TTP pre-connect also reports the reader as
     /// `.connected` — only `currentPaymentMethod` distinguishes
     /// "merchant committed to BT" from "TTP reader is warm."
-    var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
+    var isCardReaderRowEnabledInOtherMethodsSheet: Bool {
         // One-shot Bluetooth re-introduction model:
         //   - From the TTP hero (no active session): Card reader is offered as
         //     an explicit opt-in.
         //   - During a Bluetooth collection (`currentPaymentMethod == .bluetooth`):
-        //     Card reader is hidden (no re-pick mid-flow, no method-switch
-        //     state-machine complexity).
+        //     Card reader is visible but disabled (no re-pick mid-flow, no
+        //     method-switch state-machine complexity).
         // After a Bluetooth session ends (success or abandonment), the next
         // `startPayment()` invocation disconnects the BT reader and pre-
         // connects TTP, returning the merchant to the TTP hero. The Card

@@ -138,8 +138,8 @@ steps:
   - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
-    # Run on `trunk` and `release/*`, and on PRs when run-ui-tests.sh detects the `run ui tests` label.
-    if: build.pull_request.id != null || build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:
@@ -157,8 +157,8 @@ steps:
   - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
-    # Run on `trunk` and `release/*`, and on PRs when run-ui-tests.sh detects the `run ui tests` label.
-    if: build.pull_request.id != null || build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:

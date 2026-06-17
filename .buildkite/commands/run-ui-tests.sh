@@ -1,49 +1,6 @@
 #!/bin/bash -eu
 
-UI_TEST_PR_LABEL="${UI_TEST_PR_LABEL:-run ui tests}"
-
-pr_has_label() {
-  local pr_number="$1"
-  local expected_label="$2"
-
-  ruby -rjson -rnet/http -ruri -e '
-    repo = ENV.fetch("GITHUB_REPO", "woocommerce/woocommerce-ios")
-    pr_number = ARGV.fetch(0)
-    expected_label = ARGV.fetch(1).downcase
-
-    uri = URI("https://api.github.com/repos/#{repo}/issues/#{pr_number}/labels")
-    request = Net::HTTP::Get.new(uri)
-    request["Accept"] = "application/vnd.github+json"
-
-    token = ENV.fetch("GITHUB_TOKEN", "")
-    request["Authorization"] = "Bearer #{token}" unless token.empty?
-
-    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
-    unless response.is_a?(Net::HTTPSuccess)
-      warn "Could not fetch labels for PR ##{pr_number}: #{response.code} #{response.message}"
-      exit 2
-    end
-
-    labels = JSON.parse(response.body).map { |label| label.fetch("name", "") }
-    exit(labels.any? { |label| label.downcase == expected_label } ? 0 : 1)
-  ' "$pr_number" "$expected_label"
-}
-
-# PR UI tests are opt-in, mirroring the `generate screenshots` GitHub Actions label gate.
-# Add the `run ui tests` label before the CI run to execute these jobs on a PR.
-if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
-  if pr_has_label "$BUILDKITE_PULL_REQUEST" "$UI_TEST_PR_LABEL"; then
-    echo "--- :label: Running UI tests because PR #$BUILDKITE_PULL_REQUEST has the '$UI_TEST_PR_LABEL' label"
-  else
-    label_status=$?
-    if [[ "$label_status" -eq 2 ]]; then
-      echo "--- :warning: Skipping — unable to verify PR labels for UI test opt-in"
-    else
-      echo "--- :fast_forward: Skipping — add the '$UI_TEST_PR_LABEL' label to run UI tests on this PR"
-    fi
-    exit 0
-  fi
-elif .buildkite/commands/should-skip-job.sh --job-type validation; then
+if .buildkite/commands/should-skip-job.sh --job-type validation; then
   exit 0
 fi
 
@@ -56,8 +13,7 @@ echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-SCRIPT_PATH="${BASH_SOURCE[0]:-$0}"
-"$(dirname "$SCRIPT_PATH")/shared-set-up.sh"
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true

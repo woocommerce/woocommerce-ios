@@ -8,6 +8,7 @@ struct POSCatalogSyncRemoteTests {
     private let mockBackgroundDownloader = MockBackgroundDownloader()
     private let mockFileManager = MockFileManager()
     private let sampleSiteID: Int64 = 1234
+    private let sampleSnapshotDate = Date(timeIntervalSince1970: 1_700_000_000)
     private let backgroundDownloadStateStore: BackgroundDownloadStateStore
 
     init() {
@@ -120,6 +121,36 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         #expect(pagedProducts.totalItems == expectedTotalItems)
+    }
+
+    @Test func loadProducts_parses_server_date_from_http_date_header() async throws {
+        // Given - an HTTP `Date` response header as the server sends it
+        let remote = createRemote()
+        network.responseHeaders = ["Date": "Tue, 15 Jun 2026 10:30:00 GMT"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let pagedProducts = try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+
+        // Then - the header is parsed (UTC) into serverDate
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        #expect(pagedProducts.serverDate == formatter.date(from: "2026-06-15T10:30:00"))
+    }
+
+    @Test func loadProducts_returns_nil_server_date_when_header_missing() async throws {
+        // Given
+        let remote = createRemote()
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let pagedProducts = try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+
+        // Then
+        #expect(pagedProducts.serverDate == nil)
     }
 
     @Test func loadProducts_returns_nil_total_items_when_header_missing() async throws {
@@ -693,7 +724,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then
         #expect(catalog.products.count == 2)
@@ -759,7 +790,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then: subscription_variation (id: 99) is decoded as a variation with its original typeKey
         #expect(catalog.products.count == 2)
@@ -782,7 +813,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then: malformed items are skipped, valid item is parsed
         #expect(catalog.products.count == 1)
@@ -815,7 +846,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then: the null-data item is skipped, the valid product is parsed
         #expect(catalog.products.count == 1)
@@ -833,7 +864,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then
         #expect(catalog.products.isEmpty)
@@ -847,7 +878,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.invalidURL) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL, allowCellular: true)
+            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         }
     }
 
@@ -860,7 +891,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             if case let POSCatalogFileError.downloadFailed(statusCode, contentType) = error {
@@ -881,7 +912,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             if case let POSCatalogFileError.downloadFailed(statusCode, contentType) = error {
@@ -902,7 +933,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             #expect((error as? URLError)?.code == expectedError.code)
@@ -918,7 +949,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             if case let POSCatalogFileError.invalidResponse(statusCode, contentType, hasHTMLBody, _) = error {
@@ -940,7 +971,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             if case let POSCatalogFileError.invalidResponse(statusCode, contentType, hasHTMLBody, underlyingError) = error {
@@ -999,7 +1030,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then
         #expect(mockBackgroundDownloader.downloadCallCount == 1)
@@ -1015,12 +1046,12 @@ struct POSCatalogSyncRemoteTests {
         // When - make two downloads with separate mock files
         let mockFileURL1 = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL1)
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         let firstSessionId = mockBackgroundDownloader.lastSessionIdentifier
 
         let mockFileURL2 = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL2)
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         let secondSessionId = mockBackgroundDownloader.lastSessionIdentifier
 
         // Then
@@ -1040,7 +1071,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         do {
-            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             Issue.record("Expected error to be thrown")
         } catch {
             #expect(error is BackgroundDownloadError)
@@ -1078,7 +1109,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: documentsFileURL)
 
         // When
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then - verify file cleanup was called
         #expect(mockFileManager.removeItemCallCount == 1)
@@ -1104,7 +1135,7 @@ struct POSCatalogSyncRemoteTests {
         mockFileManager.mockFileExists = true
 
         // When
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then - temporary files should NOT be cleaned up (no removal call)
         #expect(mockFileManager.removeItemCallCount == 0)
@@ -1122,7 +1153,7 @@ struct POSCatalogSyncRemoteTests {
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When
-        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: allowCellular)
+        _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: allowCellular, snapshotDate: sampleSnapshotDate)
 
         // Then
         #expect(mockBackgroundDownloader.lastAllowCellular == allowCellular)
@@ -1249,7 +1280,7 @@ extension POSCatalogSyncRemoteTests {
             }
 
             Task {
-                _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+                _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             }
         }
 
@@ -1257,6 +1288,7 @@ extension POSCatalogSyncRemoteTests {
         #expect(savedState != nil)
         #expect(savedState?.siteID == sampleSiteID)
         #expect(savedState?.sessionIdentifier == mockBackgroundDownloader.lastSessionIdentifier)
+        #expect(savedState?.downloadStartedAt == sampleSnapshotDate)
 
         // Cleanup
         try? FileManager.default.removeItem(at: mockFileURL)
@@ -1271,7 +1303,7 @@ extension POSCatalogSyncRemoteTests {
         let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
         network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
-        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
 
         // Then - state should be cleared after successful completion
         let savedState = backgroundDownloadStateStore.load(for: mockBackgroundDownloader.lastSessionIdentifier ?? "")
@@ -1289,10 +1321,10 @@ extension POSCatalogSyncRemoteTests {
         network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-download")
 
         // When - download twice
-        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         let firstSessionID = mockBackgroundDownloader.lastSessionIdentifier
 
-        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+        _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         let secondSessionID = mockBackgroundDownloader.lastSessionIdentifier
 
         // Then - session IDs should be different

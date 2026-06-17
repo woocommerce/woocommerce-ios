@@ -4,6 +4,7 @@ import Testing
 
 struct BackgroundDownloadStateTests {
     private let store: BackgroundDownloadStateStore
+    private let sampleDownloadStartedAt = Date(timeIntervalSince1970: 123)
 
     init() {
         // Create isolated UserDefaults suite for this test
@@ -42,7 +43,8 @@ struct BackgroundDownloadStateTests {
         // Given
         let state = BackgroundDownloadState(
             sessionIdentifier: "session.A",
-            siteID: 123
+            siteID: 123,
+            downloadStartedAt: sampleDownloadStartedAt
         )
         store.save(state)
 
@@ -57,7 +59,8 @@ struct BackgroundDownloadStateTests {
         // Given
         let state = BackgroundDownloadState(
             sessionIdentifier: "test.session",
-            siteID: 789
+            siteID: 789,
+            downloadStartedAt: sampleDownloadStartedAt
         )
         store.save(state)
 
@@ -73,13 +76,15 @@ struct BackgroundDownloadStateTests {
         // Given
         let firstState = BackgroundDownloadState(
             sessionIdentifier: "session.1",
-            siteID: 100
+            siteID: 100,
+            downloadStartedAt: sampleDownloadStartedAt
         )
         store.save(firstState)
 
         let secondState = BackgroundDownloadState(
             sessionIdentifier: "session.2",
-            siteID: 200
+            siteID: 200,
+            downloadStartedAt: sampleDownloadStartedAt
         )
 
         // When

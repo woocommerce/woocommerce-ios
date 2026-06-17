@@ -7,7 +7,7 @@ public struct BackgroundDownloadState: Codable {
     let siteID: Int64
     let downloadStartedAt: Date
 
-    public init(sessionIdentifier: String, siteID: Int64, downloadStartedAt: Date = Date()) {
+    public init(sessionIdentifier: String, siteID: Int64, downloadStartedAt: Date) {
         self.sessionIdentifier = sessionIdentifier
         self.siteID = siteID
         self.downloadStartedAt = downloadStartedAt

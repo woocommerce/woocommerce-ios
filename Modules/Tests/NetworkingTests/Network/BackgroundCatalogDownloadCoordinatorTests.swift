@@ -20,7 +20,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let siteID: Int64 = 456
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID
+            siteID: siteID,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -104,7 +105,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.789"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 111
+            siteID: 111,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -129,7 +131,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.reconnect"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 222
+            siteID: 222,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -153,7 +156,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.ok"
         let siteID: Int64 = 111
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: siteID,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -237,7 +242,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
     @Test func resumePendingParseIfNeeded_when_pending_record_but_file_missing_then_clears_record() async {
         // Given
-        pendingFileStore.save(.init(filePath: "/does/not/exist/catalog.json", siteID: 333))
+        pendingFileStore.save(.init(filePath: "/does/not/exist/catalog.json",
+                                    siteID: 333,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         var parseCalled = false
@@ -255,7 +262,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func resumePendingParseIfNeeded_when_file_exists_and_parse_succeeds_then_deletes_file_and_clears_record() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
-        pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 444))
+        pendingFileStore.save(.init(filePath: downloadedFile.path,
+                                    siteID: 444,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         var parsedSiteID: Int64?
@@ -275,7 +284,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func resumePendingParseIfNeeded_when_parse_throws_then_leaves_file_for_next_retry() async throws {
         // Given
         let downloadedFile = try makeDownloadedFile(named: "pending.json")
-        pendingFileStore.save(.init(filePath: downloadedFile.path, siteID: 555))
+        pendingFileStore.save(.init(filePath: downloadedFile.path,
+                                    siteID: 555,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         struct ParseError: Error {}
@@ -297,12 +308,16 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func handleBackgroundSessionEvent_when_old_pending_file_exists_and_new_file_stages_then_replaces_pending_record() async throws {
         // Given — an orphaned pending file from a prior session
         let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
-        pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
+        pendingFileStore.save(.init(filePath: oldStagedFile.path,
+                                    siteID: 888,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
 
         // ...and a fresh wake event
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.supersede"
         let newSiteID: Int64 = 999
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: newSiteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: newSiteID,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let newDownloadedFile = try makeDownloadedFile(named: "new-download.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -324,10 +339,14 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func handleBackgroundSessionEvent_when_staging_new_file_fails_then_keeps_existing_pending_record() async throws {
         // Given — a recoverable pending file from a prior session
         let oldStagedFile = try makeDownloadedFile(named: "old-staged.json")
-        pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
+        pendingFileStore.save(.init(filePath: oldStagedFile.path,
+                                    siteID: 888,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
 
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.stage-fails"
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: 999))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: 999,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/missing-new-download-\(UUID().uuidString).json")
@@ -375,7 +394,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func discardPendingParse_when_pending_record_matches_site_then_deletes_file_and_clears_record() async throws {
         // Given
         let stagedFile = try makeDownloadedFile(named: "superseded.json")
-        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        pendingFileStore.save(.init(filePath: stagedFile.path,
+                                    siteID: 444,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         // When — a full sync for the same site persisted successfully
@@ -389,7 +410,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
     @Test func discardPendingParse_when_pending_record_is_for_other_site_then_keeps_it() async throws {
         // Given
         let stagedFile = try makeDownloadedFile(named: "other-site.json")
-        pendingFileStore.save(.init(filePath: stagedFile.path, siteID: 444))
+        pendingFileStore.save(.init(filePath: stagedFile.path,
+                                    siteID: 444,
+                                    createdAt: Date(timeIntervalSince1970: 1_000)))
         let coordinator = makeCoordinator(downloader: MockBackgroundDownloader())
 
         // When — a full sync for a different site persisted
@@ -429,7 +452,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         @Test func save_then_load_round_trips_the_value() {
             // Given
-            let pending = PendingCatalogFile(filePath: "/tmp/catalog.json", siteID: 42)
+            let pending = PendingCatalogFile(filePath: "/tmp/catalog.json",
+                                             siteID: 42,
+                                             createdAt: Date(timeIntervalSince1970: 1_000))
 
             // When
             store.save(pending)
@@ -442,7 +467,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
 
         @Test func clear_removes_the_stored_value() {
             // Given
-            store.save(.init(filePath: "/tmp/x", siteID: 1))
+            store.save(.init(filePath: "/tmp/x",
+                             siteID: 1,
+                             createdAt: Date(timeIntervalSince1970: 1_000)))
 
             // When
             store.clear()

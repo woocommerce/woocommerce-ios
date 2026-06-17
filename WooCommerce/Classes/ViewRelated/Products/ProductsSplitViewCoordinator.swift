@@ -41,8 +41,8 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
     func start() {
-        configureSplitView()
         autoSelectProductOnInitialDataLoad()
+        configureSplitView()
     }
 
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
@@ -57,16 +57,17 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
-        if contentTypes.isEmpty {
+        if shouldAutoSelectProductInExpandedLayout() {
             showEmptyViewOrFirstProduct()
+        } else if contentTypes.isEmpty {
+            showEmptyView()
         } else {
             refreshSelectedProductRow()
         }
     }
 
     func refreshExpandedLayoutIfNeeded() {
-        guard !splitViewController.isCollapsed,
-              splitViewController.traitCollection.horizontalSizeClass == .regular else {
+        guard !splitViewController.isCollapsed else {
             return
         }
         didExpand()
@@ -116,6 +117,24 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
+    func shouldAutoSelectProductInExpandedLayout() -> Bool {
+        guard isShowingRegularExpandedLayout() else {
+            return false
+        }
+
+        if contentTypes.isEmpty {
+            return true
+        }
+
+        return contentTypes.last == .empty &&
+            (primaryNavigationController.topViewController as? ProductsViewController)?.hasFirstProductAvailable() == true
+    }
+
+    func isShowingRegularExpandedLayout() -> Bool {
+        !splitViewController.isCollapsed &&
+            splitViewController.view.bounds.width >= Constants.narrowWindowCompactLayoutThreshold
+    }
+
     func showEmptyView() {
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyViewMessage),
@@ -223,9 +242,6 @@ private extension ProductsSplitViewCoordinator {
         showEmptyView()
         switch primaryNavigationController.topViewController {
             case let productsViewController as ProductsViewController:
-                guard productsViewController.isViewLoaded else {
-                    return
-                }
                 productsViewController.selectFirstProductIfAvailable()
             case let productSearchViewController as SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>:
                 productSearchViewController.selectFirstObjectIfAvailable()
@@ -238,6 +254,10 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
+    enum Constants {
+        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
+    }
+
     func configureSplitView() {
         primaryNavigationController.viewControllers = [productsViewController]
         splitViewController.setViewController(primaryNavigationController, for: .primary)
@@ -256,8 +276,7 @@ private extension ProductsSplitViewCoordinator {
                     return false
                 }
                 return selectedProduct == nil &&
-                    !splitViewController.isCollapsed &&
-                    splitViewController.traitCollection.horizontalSizeClass == .regular
+                    isShowingRegularExpandedLayout()
             })
             .sink { [weak self] _, _ in
                 self?.productsViewController.selectFirstProductIfAvailable()

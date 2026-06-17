@@ -1,9 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
 25.1
 -----
+- [*] Add support for Liquid Glass on iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/17337]
+- [*] Order Creation: fixed visual issues with screen layout [https://github.com/woocommerce/woocommerce-ios/pull/17346]
 - [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
-
 
 25.0
 -----

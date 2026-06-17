@@ -131,6 +131,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     private var showsSeparator: Bool = true
 
+    private var defaultCellBackgroundColor: UIColor = .listForeground(modal: false)
+
     private var cancellable: AnyCancellable?
 
     override func awakeFromNib() {
@@ -146,11 +148,13 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         cancellable = nil
+        defaultCellBackgroundColor = .listForeground(modal: false)
+        configureDefaultBackgroundConfiguration()
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
-        updateDefaultBackgroundConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state, backgroundColor: defaultCellBackgroundColor)
     }
 
     override func layoutMarginsDidChange() {
@@ -210,6 +214,12 @@ extension ImageAndTitleAndTextTableViewCell {
             hideSeparator()
         }
         showsSeparator = viewModel.showsSeparator
+    }
+
+    func updateBackgroundColor(_ color: UIColor) {
+        defaultCellBackgroundColor = color
+        contentView.backgroundColor = color
+        configureDefaultBackgroundConfiguration(backgroundColor: color)
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {

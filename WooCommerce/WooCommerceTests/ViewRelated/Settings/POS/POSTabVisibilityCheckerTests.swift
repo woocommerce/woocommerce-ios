@@ -289,11 +289,12 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled() async throws {
+    @Test(arguments: phoneSupportedCountries)
+    func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
-        setupCountry(country: .us)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .phone,
@@ -306,6 +307,68 @@ struct POSTabVisibilityCheckerTests {
 
         // Then
         #expect(result == true)
+    }
+
+    @Test(arguments: [
+        (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.pr, currency: CurrencyCode.USD),
+        (country: Country.ca, currency: CurrencyCode.CAD)
+    ])
+    func is_invisible_when_device_is_phone_and_store_is_supported_non_uk_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func is_invisible_when_device_is_phone_and_store_is_expansion_country() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: .nl, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_phonePrototype_flag_disabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
     }
 
     @Test func checkVisibility_returns_expected_result_after_site_settings_available() async throws {
@@ -344,7 +407,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
 
         // When
@@ -356,7 +422,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
 
         // When
@@ -368,7 +437,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: nil)
 
         // When
@@ -377,9 +449,54 @@ struct POSTabVisibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func checkInitialVisibility_returns_false_on_phone_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func static_checkInitialVisibility_returns_true_on_iPad_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .pad,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func static_checkInitialVisibility_returns_false_on_phone_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .phone,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == false)
+    }
 }
 
-private extension POSTabVisibilityCheckerTests {
+extension POSTabVisibilityCheckerTests {
+    nonisolated static let phoneSupportedCountries: [(country: Country, currency: CurrencyCode)] = [
+        (country: .gb, currency: .GBP)
+    ]
+
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
         let countrySetting = mockCountrySetting(country: country)
         let currencySetting = mockCurrencySetting(currency: currency)

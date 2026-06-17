@@ -453,7 +453,9 @@ struct POSCatalogFullSyncServiceTests {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        #expect(result.syncDate == formatter.date(from: "2026-01-23T08:30:25"))
+        let expectedSnapshotDate = formatter.date(from: "2026-01-23T08:30:25")
+        #expect(result.syncDate == expectedSnapshotDate)
+        #expect(mockSyncRemote.lastCatalogDownloadSnapshotDate == expectedSnapshotDate)
     }
 
     @Test func startFullSync_when_server_omits_timestamps_then_generationDurationMs_is_nil() async throws {

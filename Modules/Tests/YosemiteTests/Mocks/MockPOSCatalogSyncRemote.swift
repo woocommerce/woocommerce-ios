@@ -31,6 +31,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     let includeStatusTracker = IncludeStatusTracker()
     private(set) var lastCatalogRequestForceGeneration: Bool?
     private(set) var lastCatalogDownloadAllowCellular: Bool?
+    private(set) var lastCatalogDownloadSnapshotDate: Date?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
@@ -220,8 +221,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    func downloadCatalog(for siteID: Int64, downloadURL: String, allowCellular: Bool) async throws -> POSCatalogResponse {
+    func downloadCatalog(for siteID: Int64, downloadURL: String, allowCellular: Bool, snapshotDate: Date) async throws -> POSCatalogResponse {
         lastCatalogDownloadAllowCellular = allowCellular
+        lastCatalogDownloadSnapshotDate = snapshotDate
         switch catalogDownloadResult {
         case .success(let response):
             return response

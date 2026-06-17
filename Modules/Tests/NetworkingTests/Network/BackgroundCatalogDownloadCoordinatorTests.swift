@@ -20,7 +20,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let siteID: Int64 = 456
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID
+            siteID: siteID,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -104,7 +105,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.789"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 111
+            siteID: 111,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -129,7 +131,8 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.reconnect"
         let state = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: 222
+            siteID: 222,
+            downloadStartedAt: Date(timeIntervalSince1970: 1_000)
         )
         downloadStateStore.save(state)
 
@@ -153,7 +156,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // Given
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.ok"
         let siteID: Int64 = 111
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: siteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: siteID,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let downloadedFile = try makeDownloadedFile(named: "catalog.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -302,7 +307,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         // ...and a fresh wake event
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.supersede"
         let newSiteID: Int64 = 999
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: newSiteID))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: newSiteID,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let newDownloadedFile = try makeDownloadedFile(named: "new-download.json")
         let mockDownloader = MockBackgroundDownloader()
@@ -327,7 +334,9 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         pendingFileStore.save(.init(filePath: oldStagedFile.path, siteID: 888))
 
         let sessionIdentifier = "com.woocommerce.pos.catalog.download.stage-fails"
-        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier, siteID: 999))
+        downloadStateStore.save(.init(sessionIdentifier: sessionIdentifier,
+                                      siteID: 999,
+                                      downloadStartedAt: Date(timeIntervalSince1970: 1_000)))
 
         let mockDownloader = MockBackgroundDownloader()
         mockDownloader.mockFileURL = URL(fileURLWithPath: "/tmp/missing-new-download-\(UUID().uuidString).json")

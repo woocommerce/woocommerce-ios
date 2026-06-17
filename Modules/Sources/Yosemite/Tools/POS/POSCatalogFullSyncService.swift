@@ -235,11 +235,11 @@ private extension POSCatalogFullSyncService {
                                    allowCellular: Bool,
                                    maxAttempts: Int) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
-        let (catalog, pollingResult) = try await downloadCatalog(for: siteID,
-                                                                 syncRemote: syncRemote,
-                                                                 regenerateCatalog: regenerateCatalog,
-                                                                 allowCellular: allowCellular,
-                                                                 maxAttempts: maxAttempts)
+        let (catalog, pollingResult, snapshotDate) = try await downloadCatalog(for: siteID,
+                                                                               syncRemote: syncRemote,
+                                                                               regenerateCatalog: regenerateCatalog,
+                                                                               allowCellular: allowCellular,
+                                                                               maxAttempts: maxAttempts)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
         DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
@@ -253,9 +253,7 @@ private extension POSCatalogFullSyncService {
         // only safe lower bound for the next incremental's `modified_after` cursor — anything modified
         // during generation is then re-fetched rather than skipped. Falls back to the device clock if
         // the server omitted/garbled the timestamp.
-        let syncDate = pollingResult.scheduledAt.flatMap(Self.parseISO8601) ?? Date()
-
-        return .init(products: catalog.products, variations: catalog.variations, syncDate: syncDate, syncMetadata: metadata)
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: snapshotDate, syncMetadata: metadata)
     }
 
     /// Computes server-side generation duration in milliseconds from ISO8601 timestamp strings.
@@ -301,7 +299,7 @@ private extension POSCatalogFullSyncService {
                          syncRemote: POSCatalogSyncRemoteProtocol,
                          regenerateCatalog: Bool,
                          allowCellular: Bool,
-                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult) {
+                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult, Date) {
         DDLogInfo("🟣 Starting catalog request...")
 
         // 1. Requests catalog until download URL is available.
@@ -322,8 +320,12 @@ private extension POSCatalogFullSyncService {
 
         // 3. Downloads catalog using the provided URL.
         DDLogInfo("🟣 Catalog ready for download: \(pollingResult.downloadURL)")
-        let catalog = try await syncRemote.downloadCatalog(for: siteID, downloadURL: pollingResult.downloadURL, allowCellular: allowCellular)
-        return (catalog, pollingResult)
+        let snapshotDate = pollingResult.scheduledAt.flatMap(Self.parseISO8601) ?? Date()
+        let catalog = try await syncRemote.downloadCatalog(for: siteID,
+                                                           downloadURL: pollingResult.downloadURL,
+                                                           allowCellular: allowCellular,
+                                                           snapshotDate: snapshotDate)
+        return (catalog, pollingResult, snapshotDate)
     }
 
     /// Polls for catalog generation completion using exponential backoff.

@@ -80,9 +80,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             guard let status else {
                 return Localization.anyStatusCase
             }
-            if status == .custom(CIABOrderStatusMapper.openSlug) {
-                return CIABOrderStatusMapper.displayName(for: status)
-            }
             return status.description
         }
     }
@@ -98,9 +95,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     var status: String {
         guard let selectedOrderStatus else {
             return Localization.anyStatusCase
-        }
-        if selectedOrderStatus == .custom(CIABOrderStatusMapper.openSlug) {
-            return CIABOrderStatusMapper.displayName(for: selectedOrderStatus)
         }
         return selectedOrderStatus.description
     }

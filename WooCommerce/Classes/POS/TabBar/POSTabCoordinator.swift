@@ -322,6 +322,18 @@ private extension POSTabCoordinator {
                 let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
                     .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
 
+                // Present staff settings only when POS roles are enabled (nil hides the Staff card).
+                // The wp-admin URL is derived from the site, like `receiptSettingsAdminURL` above.
+                let staffSettingsService: POSStaffSettingsService?
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) {
+                    let manageStaffURL = storesManager.sessionManager.defaultSite?.posStaffManagementAdminURL ?? ""
+                    staffSettingsService = DefaultPOSStaffSettingsService(staffFetcher: staffFetcher,
+                                                                          siteID: siteID,
+                                                                          manageStaffURL: manageStaffURL)
+                } else {
+                    staffSettingsService = nil
+                }
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -362,6 +374,7 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,
                     receiptPrinter: receiptPrinter,
+                    staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

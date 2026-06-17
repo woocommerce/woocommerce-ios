@@ -141,8 +141,7 @@ final class OrderListViewModel {
         self.featureFlagService = featureFlagService
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
-                                                                                                    filters: filters,
-                                                                                                    isCIAB: false))
+                                                                                                    filters: filters))
     }
 
     deinit {
@@ -228,13 +227,11 @@ final class OrderListViewModel {
     }
 
     private static func createQuery(siteID: Int64,
-                                     filters: FilterOrderListViewModel.Filters?,
-                                     isCIAB: Bool) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+                                     filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { statuses in
-                let resolved = isCIAB ? CIABOrderStatusMapper.resolveFilterStatuses(statuses) : statuses
-                return NSPredicate(format: "statusKey IN %@", resolved.map { $0.rawValue })
+                return NSPredicate(format: "statusKey IN %@", statuses.map { $0.rawValue })
             }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }

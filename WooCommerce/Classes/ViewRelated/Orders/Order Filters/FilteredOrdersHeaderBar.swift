@@ -86,8 +86,13 @@ extension FilteredOrdersHeaderBar {
 // MARK: - Setup
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-        bottomBorder.backgroundColor = UIColor.divider.cgColor
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+            bottomBorder.backgroundColor = UIColor.clear.cgColor
+        } else {
+            backgroundColor = .listForeground(modal: false)
+            bottomBorder.backgroundColor = UIColor.divider.cgColor
+        }
         layer.addSublayer(bottomBorder)
     }
 

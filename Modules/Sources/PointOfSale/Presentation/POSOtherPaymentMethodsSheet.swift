@@ -1,23 +1,9 @@
 import SwiftUI
 
-/// Bottom sheet shown when the merchant taps "Other payment methods" on the phone
-/// POS checkout. Lists the non-primary payment methods available to the merchant
-/// for the current screen state:
-///
-/// - On the TTP-available + no-reader-connected screen (paired with the TTP hero),
-///   this lists Card reader, Scan to Pay, and Mark order as paid.
-/// - On the TTP-available + BT-reader-active screen, the Card reader row remains
-///   visible but disabled so the merchant can see that option is already in use.
-///
-/// The iOS phone POS uses a one-shot Bluetooth model: the BT session must finish
-/// (success / cancel / abandonment) before the merchant returns to the TTP hero
-/// where Tap to Pay is the primary CTA again. Tap to Pay is therefore never
-/// surfaced as a sheet row — deliberately diverging from Android (samiuelson
-/// #15842 / #15825), which offers Tap to Pay as a sheet row during a BT session
-/// to let the merchant switch mid-flow.
+/// Bottom sheet shown when the merchant taps "Other payment methods" on phone POS checkout.
+/// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
-    /// True when the Card reader row can be selected. Pass false when Bluetooth
-    /// reader connection/payment is already active.
+    /// False while Bluetooth is already active for this payment.
     var isCardReaderEnabled: Bool = true
     let onCardReader: () -> Void
     var isScanToPayAvailable: Bool = false

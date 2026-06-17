@@ -42,8 +42,6 @@ struct ProductSelectorView: View {
 
     @State private var showingFilters: Bool = false
 
-    @State private var searchHeaderisBeingEdited = false
-
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
@@ -335,18 +333,15 @@ private extension ProductSelectorView {
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
         GeometryReader { geometry in
             HStack {
-                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                    searchHeaderisBeingEdited = isEditing
-                })
-                .submitLabel(.done)
-                .accessibilityIdentifier("product-selector-search-bar")
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
+                    .submitLabel(.done)
+                    .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
                 }
                 .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
                 .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
                 .padding(.trailing)
-                .renderedIf(searchHeaderisBeingEdited)
             }
         }
         // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,

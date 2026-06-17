@@ -60,12 +60,12 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
             return "\(Path.chat)/\(botSlug)"
         }()
 
-        var parameters: RequestParameterDictionary = [ParameterKey.message: .string(message)]
+        var parameters: RequestParameterConvertibleDictionary = [ParameterKey.message: message]
         if let context {
-            parameters[ParameterKey.context] = .dictionary(context)
+            parameters[ParameterKey.context] = context
         }
         if let sessionID {
-            parameters[ParameterKey.sessionID] = .string(sessionID)
+            parameters[ParameterKey.sessionID] = sessionID
         }
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
@@ -81,9 +81,9 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
                           chatID: Int64,
                           sessionID: String?) async throws -> SupportChatResponse {
         let path = "\(Path.chat)/\(botSlug)/\(chatID)"
-        var parameters: RequestParameterDictionary = [:]
+        var parameters: RequestParameterConvertibleDictionary = [:]
         if let sessionID {
-            parameters[ParameterKey.sessionID] = .string(sessionID)
+            parameters[ParameterKey.sessionID] = sessionID
         }
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,

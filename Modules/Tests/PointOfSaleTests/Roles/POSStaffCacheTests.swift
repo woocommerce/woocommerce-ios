@@ -178,4 +178,8 @@ private final class InMemoryPOSStaffStorage: POSStaffKeyValueStorage, @unchecked
     func setString(_ value: String?, forKey key: String) {
         store[key] = value
     }
+
+    func removeAll() {
+        store.removeAll()
+    }
 }

@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
-
+- [***] Phone POS available for UK-based stores [https://github.com/woocommerce/woocommerce-ios/pull/17325]
 
 25.0
 -----

@@ -161,12 +161,14 @@ private extension AddProductCoordinator {
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(
             subtitle: subtitle,
-            accessibilityIdentifier: Accessibility.createProductSheetIdentifier
+            accessibilityIdentifier: Accessibility.createProductSheetIdentifier,
+            backgroundColor: .basicBackground
         )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            siteCIABEligibilityChecker: siteCIABEligibilityChecker,
+            backgroundColor: .basicBackground
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation
@@ -303,20 +305,21 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+        let navigationController = navigationController
+        return BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
 
             // Sets detents for the sheet.
-            // Skips large detent if the device is iPad.
-            let traitCollection = UIScreen.main.traitCollection
-            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
-            if isIPad {
+            // Skips large detent when the current window has enough room.
+            let traitCollection = navigationController.topmostPresentedViewController.traitCollection
+            let isRegularWindow = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if isRegularWindow {
                 sheet.detents = [.medium()]
             } else {
                 sheet.detents = [.large(), .medium()]
             }
-            sheet.prefersGrabberVisible = !isIPad
+            sheet.prefersGrabberVisible = !isRegularWindow
         })
     }
 }

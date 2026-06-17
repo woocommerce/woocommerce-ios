@@ -127,7 +127,7 @@ class WebKitViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [
             progressView,
             webView
-            ])
+        ])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)

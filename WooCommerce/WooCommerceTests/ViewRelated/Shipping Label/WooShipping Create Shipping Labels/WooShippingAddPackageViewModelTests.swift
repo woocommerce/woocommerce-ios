@@ -514,7 +514,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
             .fake().copy(id: "Custom1"),
             .fake().copy(id: "Custom2"),
             .fake().copy(id: "Custom3"),
-           ]
+        ]
         let allPredefinedOptions = [sampleCarrierPredefinedOptions()]
         let savedPredefinedPackages: [WooShippingSavedPredefinedPackage] = [
             .init(groupTitle: "pri_flat_boxes",

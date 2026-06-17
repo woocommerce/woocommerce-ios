@@ -117,8 +117,11 @@ struct ItemListView: View {
     /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
     @State private var isAddingCustomAmount: Bool = false
 
+    @State private var navigationResetID: Int = 0
+
     var body: some View {
         navigationContainer
+            .id(navigationResetID)
             // The phone cart button and the iPad floating control are suppressed while the
             // add-custom-amount form is pushed. Emit that request from this always-present view,
             // keyed on the push flag, so it reverts the instant the form is popped: a preference
@@ -190,6 +193,13 @@ struct ItemListView: View {
         .onChange(of: posModel.orderStage) { _, stage in
             guard stage != .building else { return }
             isAddingCustomAmount = false
+        }
+        // The left pane also owns product drill-down navigation. Only reset that navigation after a
+        // completed checkout starts a fresh empty cart. Returning to edit the current cart should
+        // preserve the merchant's place in the selector.
+        .onChange(of: posModel.orderStage) { oldStage, newStage in
+            guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
+            navigationResetID += 1
         }
     }
 

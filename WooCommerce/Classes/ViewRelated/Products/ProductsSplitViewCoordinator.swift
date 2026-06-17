@@ -41,8 +41,8 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
     func start() {
-        configureSplitView()
         autoSelectProductOnInitialDataLoad()
+        configureSplitView()
     }
 
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
@@ -57,9 +57,20 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
         // Auto-selects the first product if there is no content to be shown.
-        if contentTypes.isEmpty {
+        if shouldAutoSelectProductInExpandedLayout() {
             showEmptyViewOrFirstProduct()
+        } else if contentTypes.isEmpty {
+            showEmptyView()
+        } else {
+            refreshSelectedProductRow()
         }
+    }
+
+    func refreshExpandedLayoutIfNeeded() {
+        guard !splitViewController.isCollapsed else {
+            return
+        }
+        didExpand()
     }
 
     func startProductCreation() {
@@ -106,6 +117,24 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
+    func shouldAutoSelectProductInExpandedLayout() -> Bool {
+        guard isShowingRegularExpandedLayout() else {
+            return false
+        }
+
+        if contentTypes.isEmpty {
+            return true
+        }
+
+        return contentTypes.last == .empty &&
+            (primaryNavigationController.topViewController as? ProductsViewController)?.hasFirstProductAvailable() == true
+    }
+
+    func isShowingRegularExpandedLayout() -> Bool {
+        !splitViewController.isCollapsed &&
+            splitViewController.view.bounds.width >= Constants.narrowWindowCompactLayoutThreshold
+    }
+
     func showEmptyView() {
         let config = EmptyStateViewController.Config.simple(
             message: .init(string: Localization.emptyViewMessage),
@@ -225,6 +254,10 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
+    enum Constants {
+        static let narrowWindowCompactLayoutThreshold: CGFloat = 700
+    }
+
     func configureSplitView() {
         primaryNavigationController.viewControllers = [productsViewController]
         splitViewController.setViewController(primaryNavigationController, for: .primary)
@@ -243,8 +276,7 @@ private extension ProductsSplitViewCoordinator {
                     return false
                 }
                 return selectedProduct == nil &&
-                    !splitViewController.isCollapsed &&
-                    splitViewController.traitCollection.horizontalSizeClass == .regular
+                    isShowingRegularExpandedLayout()
             })
             .sink { [weak self] _, _ in
                 self?.productsViewController.selectFirstProductIfAvailable()
@@ -255,12 +287,11 @@ private extension ProductsSplitViewCoordinator {
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController) {
-            if let contentType = contentTypes.last, case let .productForm(product) = contentType, let product {
-                didDismissProductForm(product: product)
+        if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
+            let dismissedProduct = productShownInSecondaryContent()
+            DispatchQueue.main.async { [weak self] in
+                self?.clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
             }
-            contentTypes = []
-            secondaryNavigationController.viewControllers = []
             return
         }
 
@@ -291,12 +322,49 @@ private extension ProductsSplitViewCoordinator {
     /// - The navigation controller that did show a view controller is the primary one
     /// - The current content types state is still non-empty, i.e. some secondary content is currently shown
     /// - The view controller to show in the primary navigation stack is the product list
+    /// - The navigation is animated, which distinguishes a user navigation from split-view column changes during window resizing
     func didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
-                                                                                    didShow viewController: UIViewController) -> Bool {
+                                                                                    didShow viewController: UIViewController,
+                                                                                    animated: Bool) -> Bool {
         let isNavigatingToProductList = viewController == productsViewController ||
         viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
-        return splitViewController.isCollapsed && navigationController == primaryNavigationController
+        return animated && splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
+    }
+
+    func clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: Product?) {
+        guard splitViewController.isCollapsed,
+              isShowingProductListInPrimaryNavigationController(),
+              contentTypes.isNotEmpty else {
+            return
+        }
+
+        if let dismissedProduct {
+            didDismissProductForm(product: dismissedProduct)
+        }
+        contentTypes = []
+        secondaryNavigationController.viewControllers = []
+    }
+
+    func isShowingProductListInPrimaryNavigationController() -> Bool {
+        let viewController = primaryNavigationController.topViewController
+        return viewController == productsViewController ||
+            viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+    }
+
+    func productShownInSecondaryContent() -> Product? {
+        guard let contentType = contentTypes.last,
+              case let .productForm(product) = contentType else {
+            return nil
+        }
+        return product
+    }
+
+    func refreshSelectedProductRow() {
+        guard productShownInSecondaryContent() != nil else {
+            return
+        }
+        contentTypes = contentTypes
     }
 
     func didDismissProductForm(product: Product) {

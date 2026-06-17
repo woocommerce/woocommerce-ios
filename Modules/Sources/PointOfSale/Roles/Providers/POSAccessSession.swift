@@ -18,7 +18,8 @@ protocol POSAccessSession: AnyObject {
     func checkLockoutState() throws(POSAuthError)
     func refreshPINStatus() async
 
-    /// Wipes the persisted staff cache for the current site. Called on logout and site-switch
-    /// so stale credentials do not survive across sessions.
+    /// Clears the staff cache for the current site on a live session, dropping any in-flight
+    /// refresh's write so a clear that lands mid-fetch can't resurrect stale staff. Logout — where
+    /// no session is alive — wipes the persisted cache through `POSRolesPersistence` instead.
     func clearStaffCache()
 }

@@ -154,7 +154,8 @@ private extension ChildItemList {
                             parentProductName: parentProduct.name
                         )
                     )
-                ], hasMoreItems: false)])
+                ], hasMoreItems: false)
+        ])
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: itemsStack)
 
     return ChildItemList(parentItem: parentItem,

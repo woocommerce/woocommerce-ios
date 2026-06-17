@@ -28,16 +28,25 @@ extension FancyAlertViewController {
         onDismiss: (() -> Void)? = nil) -> FancyAlertViewController {
 
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
+            // Capture the presenter before dismissing. Resolving the presenter via
+            // `UIApplication.shared.delegate?.window` returns nil in this scene-based app,
+            // which previously left the button dead (the modal would just close).
+            let presenter = controller.presentingViewController
             controller.dismiss(animated: true) {
-                // Find the topmost view controller that we can present from
-                guard WordPressAuthenticator.shared.delegate?.supportEnabled == true,
-                    let viewController = UIApplication.shared.delegate?.window??.topmostPresentedViewController
+                guard let presenter,
+                    let authDelegate = WordPressAuthenticator.shared.delegate
                 else {
                     return
                 }
 
                 moreHelpTapped?()
-                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
+                let state = AuthenticatorAnalyticsTracker.shared.state
+                let siteAddress = loginFields.siteAddress.isEmpty ? nil : loginFields.siteAddress
+                authDelegate.presentSupport(from: presenter,
+                                            sourceTag: sourceTag,
+                                            lastStep: state.lastStep,
+                                            lastFlow: state.lastFlow,
+                                            siteURL: siteAddress)
             }
         }
 

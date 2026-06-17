@@ -152,6 +152,34 @@ final class RESTRequestTests: XCTestCase {
         }
     }
 
+    func test_asURLRequest_when_parameters_contain_non_finite_number_then_throws_error() {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .post,
+                                  path: sampleRPC,
+                                  parameters: ["value": Double.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
+    }
+
+    func test_asURLRequest_when_parameters_contain_non_finite_decimal_then_throws_error() {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .post,
+                                  path: sampleRPC,
+                                  parameters: ["value": Decimal.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
+    }
+
     // MARK: - Cache-Based URL Tests
 
     func test_request_url_uses_cached_wp_json_root() throws {

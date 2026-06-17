@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.1
 -----
-
+- [*] Order creation product search: the Products/SKU filter is now always visible, so SKU search is discoverable without first tapping the search bar. [WOOMOB-3291]
 
 25.0
 -----

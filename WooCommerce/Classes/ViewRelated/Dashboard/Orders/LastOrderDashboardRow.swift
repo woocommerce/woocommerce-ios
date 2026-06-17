@@ -49,15 +49,6 @@ struct LastOrderDashboardRow: View {
                                 .padding(.vertical, Layout.Status.vPadding)
                                 .background(data.statusBackgroundColor)
                                 .cornerRadius(Layout.Status.cornerRadius)
-                            if let fulfillmentText = data.fulfillmentBadgeText {
-                                Text(fulfillmentText)
-                                    .foregroundStyle(.black)
-                                    .footnoteStyle()
-                                    .padding(.horizontal, Layout.Status.hPadding)
-                                    .padding(.vertical, Layout.Status.vPadding)
-                                    .background(data.fulfillmentBadgeBackgroundColor ?? .clear)
-                                    .cornerRadius(Layout.Status.cornerRadius)
-                            }
                             if let salesChannelText = data.salesChannelText {
                                 Text(salesChannelText)
                                     .foregroundStyle(Color(uiColor: Layout.salesChannelLabelTextColor))
@@ -97,8 +88,6 @@ extension LastOrderDashboardRow {
         let total: String
         let statusDescription: String
         let statusBackgroundColor: Color
-        let fulfillmentBadgeText: String?
-        let fulfillmentBadgeBackgroundColor: Color?
         let salesChannelText: String?
     }
 }
@@ -138,8 +127,6 @@ struct LastOrderDashboardRowViewModel {
             total: total,
             statusDescription: statusDescription,
             statusBackgroundColor: statusBackgroundColor,
-            fulfillmentBadgeText: nil,
-            fulfillmentBadgeBackgroundColor: nil,
             salesChannelText: shouldShowSalesChannel ? salesChannelText : nil
         )
     }

@@ -180,8 +180,6 @@ struct AIAssistantExternalViewsAdaptor: AssistantExternalViewProviding {
             total: total,
             statusDescription: statusEnum.description,
             statusBackgroundColor: Color(uiColor: statusEnum.backgroundColor),
-            fulfillmentBadgeText: nil,
-            fulfillmentBadgeBackgroundColor: nil,
             salesChannelText: nil
         )
     }

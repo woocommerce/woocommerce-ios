@@ -306,13 +306,13 @@ private extension WooShippingCreateLabelsView {
                 .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
-                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                    // Unverified notice for origin address
-                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                if let originAddressNoticeLabel = viewModel.originAddressNoticeLabel {
+                    // Notice for origin address status (missing phone/email or unverified)
+                    verificationNotice(with: originAddressNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                            viewModel.originAddressNoticeLabel = nil
                         }
                     },
                                        onTap: {

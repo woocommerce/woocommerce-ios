@@ -1439,6 +1439,81 @@ struct POSPaymentModelTests {
         // Alert should be shown
         #expect(sut.cardPresentPaymentAlertViewModel != nil)
     }
+
+    @Test("Phone POS: explicit card reader selection shows connection failures")
+    @MainActor
+    func startPaymentWithMethod_whenTTPPreferredAndBluetoothSelected_thenConnectionFailureAlertIsShown() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay)
+
+        // When
+        await sut.startPaymentWithMethod(.bluetooth)
+        service.paymentEvent = .show(eventDetails: .connectingFailed(
+            error: NSError(domain: "test", code: 1),
+            retrySearch: {},
+            endSearch: {}))
+
+        // Then
+        guard case .connectingFailed = sut.cardPresentPaymentAlertViewModel else {
+            Issue.record("Expected the explicit phone Bluetooth connection failure to be shown.")
+            return
+        }
+
+        // When a residual failure arrives after the explicit failure was handled, it is suppressed again.
+        sut.cardPresentPaymentAlertViewModel = nil
+        service.paymentEvent = .show(eventDetails: .connectingFailed(
+            error: NSError(domain: "test", code: 2),
+            retrySearch: {},
+            endSearch: {}))
+
+        // Then
+        #expect(sut.cardPresentPaymentAlertViewModel == nil)
+    }
+
+    @Test("Phone POS: implicit Tap to Pay connection failures remain suppressed")
+    @MainActor
+    func connectionFailure_whenTTPPreferredAndNoExplicitBluetoothSelection_thenAlertIsSuppressed() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay)
+
+        // When
+        service.paymentEvent = .show(eventDetails: .connectingFailed(
+            error: NSError(domain: "test", code: 1),
+            retrySearch: {},
+            endSearch: {}))
+
+        // Then
+        #expect(sut.cardPresentPaymentAlertViewModel == nil)
+    }
+
+    @Test("Default Bluetooth POS still shows connection failures")
+    @MainActor
+    func connectionFailure_whenBluetoothPreferred_thenAlertIsShown() {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .bluetooth)
+
+        // When
+        service.paymentEvent = .show(eventDetails: .connectingFailed(
+            error: NSError(domain: "test", code: 1),
+            retrySearch: {},
+            endSearch: {}))
+
+        // Then
+        guard case .connectingFailed = sut.cardPresentPaymentAlertViewModel else {
+            Issue.record("Expected default Bluetooth POS to keep showing connection failures.")
+            return
+        }
+    }
+
     // MARK: - Connect Card Reader Concurrency
 
     @Test("connectCardReader called twice only triggers one connectReader call on the service")

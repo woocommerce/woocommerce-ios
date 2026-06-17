@@ -101,6 +101,7 @@ final class POSPaymentModel {
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
     private var connectCardReaderTask: Task<Void, Never>?
+    private var isExplicitBluetoothPaymentConnectionInProgress = false
 
     /// On the TTP path, payment state should only advance when the merchant has
     /// explicitly tapped a method (hero CTA or Other payment methods sheet row).
@@ -273,6 +274,8 @@ extension POSPaymentModel {
             DDLogInfo("🃏 [CardPayment] BT pick waiting for in-flight TTP pre-connect to finish")
             _ = await task.value
         }
+
+        markExplicitBluetoothPaymentConnectionIfNeeded(for: method)
 
         if method == .tapToPay {
             analytics.track(.pointOfSaleCheckoutTapToPayTapped)
@@ -547,6 +550,7 @@ extension POSPaymentModel {
 
         DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
+        clearExplicitBluetoothPaymentConnection()
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -608,6 +612,7 @@ extension POSPaymentModel {
 
         DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card)")
         analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped)
+        clearExplicitBluetoothPaymentConnection()
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -780,6 +785,7 @@ extension POSPaymentModel {
 
         DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
         analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
+        clearExplicitBluetoothPaymentConnection()
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -918,6 +924,7 @@ extension POSPaymentModel {
         // will keep it true on the TTP path until the merchant taps a method again.
         isAwaitingExplicitPaymentStart = true
         currentPaymentMethod = nil
+        clearExplicitBluetoothPaymentConnection()
         cancelReaderPreparation()
     }
 
@@ -1056,6 +1063,14 @@ private extension POSPaymentModel {
                     return nil
                 }
 
+                let isExplicitConnectInProgress = connectCardReaderTask != nil || isExplicitBluetoothPaymentConnectionInProgress
+                let shouldClearExplicitBluetoothIntent = shouldClearExplicitBluetoothPaymentConnection(for: eventDetails)
+                defer {
+                    if shouldClearExplicitBluetoothIntent {
+                        clearExplicitBluetoothPaymentConnection()
+                    }
+                }
+
                 // Filter connection success alerts when we're immediately starting a payment
                 if case .connectionSuccess = eventDetails,
                    startPaymentOnCardReaderConnection != nil {
@@ -1081,8 +1096,6 @@ private extension POSPaymentModel {
                 // merchant *wants* to see the scan / foundReader / connect
                 // / failure modals, so neither suppression block below
                 // applies — Settings drives its UI off them.
-                let isExplicitConnectInProgress = connectCardReaderTask != nil
-
                 let isInTransparentTapToPayFlow = !isExplicitConnectInProgress
                     && (currentPaymentMethod == .tapToPay
                         || (currentPaymentMethod == nil && preferredConnectionMethod == .tapToPay))
@@ -1318,6 +1331,29 @@ private extension POSPaymentModel {
     var shouldPropagatePaymentEvent: Bool {
         guard preferredConnectionMethod == .tapToPay else { return true }
         return !isAwaitingExplicitPaymentStart
+    }
+
+    private func markExplicitBluetoothPaymentConnectionIfNeeded(for method: CardReaderConnectionMethod) {
+        isExplicitBluetoothPaymentConnectionInProgress = preferredConnectionMethod == .tapToPay && method == .bluetooth
+    }
+
+    private func clearExplicitBluetoothPaymentConnection() {
+        isExplicitBluetoothPaymentConnectionInProgress = false
+    }
+
+    private func shouldClearExplicitBluetoothPaymentConnection(for eventDetails: CardPresentPaymentEventDetails) -> Bool {
+        guard isExplicitBluetoothPaymentConnectionInProgress else {
+            return false
+        }
+        switch eventDetails {
+        case .connectionSuccess,
+                .connectingFailed,
+                .connectingFailedNonRetryable,
+                .scanningFailed:
+            return true
+        default:
+            return false
+        }
     }
 
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {

@@ -16,7 +16,7 @@ public protocol SupportChatRemoteProtocol {
                      message: String,
                      chatID: Int64?,
                      sessionID: String?,
-                     context: [String: Any]?) async throws -> SupportChatResponse
+                     context: RequestParameterDictionary?) async throws -> SupportChatResponse
 
     /// Fetches an existing chat thread by id, returning every turn (user + bot).
     ///
@@ -52,7 +52,7 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
                             message: String,
                             chatID: Int64?,
                             sessionID: String?,
-                            context: [String: Any]?) async throws -> SupportChatResponse {
+                            context: RequestParameterDictionary?) async throws -> SupportChatResponse {
         let path: String = {
             if let chatID {
                 return "\(Path.chat)/\(botSlug)/\(chatID)"
@@ -60,12 +60,12 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
             return "\(Path.chat)/\(botSlug)"
         }()
 
-        var parameters: [String: Any] = [ParameterKey.message: message]
+        var parameters: RequestParameterDictionary = [ParameterKey.message: .string(message)]
         if let context {
-            parameters[ParameterKey.context] = context
+            parameters[ParameterKey.context] = .dictionary(context)
         }
         if let sessionID {
-            parameters[ParameterKey.sessionID] = sessionID
+            parameters[ParameterKey.sessionID] = .string(sessionID)
         }
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
@@ -81,9 +81,9 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
                           chatID: Int64,
                           sessionID: String?) async throws -> SupportChatResponse {
         let path = "\(Path.chat)/\(botSlug)/\(chatID)"
-        var parameters: [String: Any] = [:]
+        var parameters: RequestParameterDictionary = [:]
         if let sessionID {
-            parameters[ParameterKey.sessionID] = sessionID
+            parameters[ParameterKey.sessionID] = .string(sessionID)
         }
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .get,
@@ -99,7 +99,7 @@ public final class SupportChatRemote: Remote, SupportChatRemoteProtocol {
                                sessionID: String,
                                upvoted: Bool) async throws {
         let path = "\(Path.chat)/\(botSlug)/\(chatID)/\(messageID)/feedback"
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.sessionID: sessionID,
             ParameterKey.ratingValue: upvoted ? 1 : -1
         ]

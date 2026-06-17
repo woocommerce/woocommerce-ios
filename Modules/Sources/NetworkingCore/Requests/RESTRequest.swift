@@ -199,7 +199,7 @@ public struct RESTRequest: Request {
         request.allowsCellularAccess = allowsCellularAccess
         let parameters = try requestParameters.validatedAlamofireParameters()
         switch method {
-        case .post, .put:
+        case .post, .put, .patch:
             return try JSONEncoding.default.encode(request, with: parameters)
         default:
             return try URLEncoding.default.encode(request, with: parameters)

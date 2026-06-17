@@ -16,7 +16,7 @@ public struct PendingCatalogFile: Codable {
     /// See `BackgroundCatalogDownloadCoordinator.resumePendingParseIfNeeded`.
     public let createdAt: Date
 
-    public init(filePath: String, siteID: Int64, createdAt: Date = Date()) {
+    public init(filePath: String, siteID: Int64, createdAt: Date) {
         self.filePath = filePath
         self.siteID = siteID
         self.createdAt = createdAt

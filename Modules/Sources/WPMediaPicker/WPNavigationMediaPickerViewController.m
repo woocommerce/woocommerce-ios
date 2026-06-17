@@ -206,7 +206,14 @@ static NSString *const ArrowDown = @"\u25be";
 {
     [self.mediaPicker setGroup:group];
     self.mediaPicker.title = group.name;
-    [self.internalNavigationController pushViewController:self.mediaPicker animated:YES];
+
+    // Defensive code to address the crash https://github.com/wordpress-mobile/WordPress-iOS/issues/20890.
+    // `UITableView/didSelectRowAt` can be called twice under certain circumstances, which would push the same
+    // `mediaPicker` instance more than once and crash. Adapted from the (unmerged, upstream-archived) fix in
+    // https://github.com/wordpress-mobile/MediaPicker-iOS/pull/411.
+    if (self.internalNavigationController.topViewController != self.mediaPicker) {
+        [self.internalNavigationController pushViewController:self.mediaPicker animated:YES];
+    }
 }
 
 - (void)mediaGroupPickerViewControllerDidCancel:(WPMediaGroupPickerViewController *)picker

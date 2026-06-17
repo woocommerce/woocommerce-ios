@@ -196,9 +196,3 @@ private extension DefaultPOSPINAuthenticatorTests {
                                          hash: Data(derived).base64EncodedString())
     }
 }
-
-private final class InMemoryStaffStorage: POSStaffKeyValueStorage, @unchecked Sendable {
-    private var store: [String: String] = [:]
-    func string(forKey key: String) -> String? { store[key] }
-    func setString(_ value: String?, forKey key: String) { store[key] = value }
-}

@@ -24,6 +24,14 @@ final class OrdersRootViewController: UIViewController {
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
+    private var usesLargeTitleWorkaround: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     private let siteID: Int64
 
     private let analytics = ServiceLocator.analytics
@@ -40,6 +48,8 @@ final class OrdersRootViewController: UIViewController {
         let filteredOrdersBar = FilteredOrdersHeaderBar.instantiateFromNib()
         return filteredOrdersBar
     }()
+
+    private var liquidGlassHeaderBackgroundView: UIView?
 
     private var filters = FilterOrderListViewModel.Filters() {
         didSet {
@@ -105,6 +115,7 @@ final class OrdersRootViewController: UIViewController {
         configureNavigationButtons()
         configureFiltersBar()
         configureChildViewController()
+        configureLiquidGlassTabBarUnderlap()
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
@@ -113,6 +124,12 @@ final class OrdersRootViewController: UIViewController {
             guard let self else { return }
             self.configureStatusResultsController()
         }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -360,21 +377,98 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        // Display the filtered orders bar
-        stackView.addArrangedSubview(filtersBar)
+        if #available(iOS 26.0, *) {
+            configureLiquidGlassHeaderOverlay()
+        } else {
+            // Display the filtered orders bar
+            stackView.addArrangedSubview(filtersBar)
+        }
+
         filtersBar.onAction = { [weak self] in
             self?.filterButtonTapped()
         }
     }
 
+    func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: .listBackground)
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+
+        filtersBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(filtersBar)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: filtersBar.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
+            filtersBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            filtersBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filtersBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
+    func updateLiquidGlassHeaderOverlayLayout() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let height = filtersBar.systemLayoutSizeFitting(targetSize,
+                                                       withHorizontalFittingPriority: .required,
+                                                       verticalFittingPriority: .fittingSizeLevel).height
+
+        guard height > 0 else {
+            return
+        }
+
+        guard let tableView = ordersViewController.tableView else {
+            return
+        }
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            if previousTopInset == 0,
+               !tableView.isTracking,
+               !tableView.isDragging,
+               !tableView.isDecelerating {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
+        }
+
+        var scrollIndicatorInsets = tableView.scrollIndicatorInsets
+        scrollIndicatorInsets.top = height
+        tableView.scrollIndicatorInsets = scrollIndicatorInsets
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        // The list table lives in a child controller, so register it from the root
+        // controller that owns the navigation item for native large title tracking.
+        setContentScrollView(ordersViewController.tableView, for: .top)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+    }
+
     func configureChildViewController() {
-        // Configure large title using the `hiddenScrollView` trick.
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-        view.addSubview(hiddenScrollView)
-        view.sendSubviewToBack(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        if usesLargeTitleWorkaround {
+            // Configure large title using the `hiddenScrollView` trick.
+            hiddenScrollView.configureForLargeTitleWorkaround()
+            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+            view.addSubview(hiddenScrollView)
+            view.sendSubviewToBack(hiddenScrollView)
+            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        }
         ordersViewController.delegate = self
 
         // Add contentView to stackview
@@ -430,6 +524,12 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateFiltersBarOverscrollPosition(from: scrollView)
+
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
@@ -447,6 +547,17 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
         let dateFormatter = syncTimestamp.isSameDay(as: Date.now) ? DateFormatter.timeFormatter : DateFormatter.dateAndTimeFormatter
         filtersBar.setLastUpdatedTime(dateFormatter.string(from: syncTimestamp))
+    }
+
+    /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
+    private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        liquidGlassHeaderBackgroundView?.transform = transform
+        filtersBar.transform = transform
     }
 }
 

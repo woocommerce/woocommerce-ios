@@ -2003,6 +2003,81 @@ private extension WooShippingCreateLabelsViewModelTests {
     }
 }
 
+// MARK: - Carrier Terms of Service tracking
+extension WooShippingCreateLabelsViewModelTests {
+    func test_carrier_tos_shown_event_is_tracked_when_UPS_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_tracked_when_FedEx_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowFedExTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_not_tracked_when_terms_are_dismissed() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        viewModel.shouldShowUPSTermsAndConditions = true
+        analyticsProvider.clearEvents()
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = false
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("wcs_carrier_tos"))
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_UPS() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.upsdap)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "accepted"])
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_FedEx() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.fedex)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "accepted"])
+    }
+}
+
 private extension WooShippingAccountSettings {
     static func fake() -> WooShippingAccountSettings {
         .init(storeOptions: .init(currencySymbol: "$", dimensionUnit: "in", weightUnit: "lbs", originCountry: "US"),

@@ -243,6 +243,8 @@ public final class POSScreen: ScreenObject {
     public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
         let phoneCartButton = app.buttons["pos-phone-cart-button"]
         if phoneCartButton.exists {
+            // Phone swaps ItemListView out while checkout is shown, so returning to edit
+            // rebuilds the selector at the root. Tablet keeps the item pane alive off-screen.
             XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15),
                           "POS product list should be visible when returning to edit the cart on phone.")
             return self

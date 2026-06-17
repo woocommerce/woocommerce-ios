@@ -4,6 +4,24 @@ if .buildkite/commands/should-skip-job.sh --job-type validation; then
   exit 0
 fi
 
+UI_TEST_CHANGE_PATTERNS=(
+  'WooCommerce/WooCommerceUITests/**'
+  'Modules/Sources/UITestsFoundation/**'
+  'Modules/Sources/APIMocks/**'
+  'API-Mocks/**'
+  '.buildkite/commands/run-ui-tests.sh'
+  '.buildkite/pipeline.yml'
+)
+
+# On PR builds, run UI tests only when the PR changes the UI test suite or its test-only support files.
+# Non-PR trunk/release builds remain eligible through pipeline.yml and are not filtered by this PR-only check.
+if [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]; then
+  if ! pr_changed_files --any-match "${UI_TEST_CHANGE_PATTERNS[@]}"; then
+    echo "--- :fast_forward: Skipping — no UI test changes in this PR"
+    exit 0
+  fi
+fi
+
 TEST_NAME=$1
 DEVICE=$2
 

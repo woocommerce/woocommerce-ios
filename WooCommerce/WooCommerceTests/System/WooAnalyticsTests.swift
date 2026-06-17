@@ -24,6 +24,10 @@ class WooAnalyticsTests: XCTestCase {
     ///
     private var userDefaults: UserDefaults!
 
+    /// Suite name backing `userDefaults`, retained so the persistent domain can be cleared in tearDown.
+    ///
+    private var userDefaultsSuiteName: String!
+
     private let sampleSiteID: Int64 = 12345
 
     private let sampleSiteURL: String = "https://example.com"
@@ -39,12 +43,15 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaultsSuiteName = UUID().uuidString
+        userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
         analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults)
     }
 
     override func tearDown() {
+        userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
         userDefaults = nil
+        userDefaultsSuiteName = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
     }

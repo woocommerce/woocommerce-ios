@@ -6,7 +6,7 @@ let package = Package(
     name: "Modules",
     platforms: [
         // Keep in sync with Common.xcconfig
-        .iOS(.v17),
+        .iOS("18.0"),
         .macOS(.v10_14),
         .watchOS(.v9),
     ],

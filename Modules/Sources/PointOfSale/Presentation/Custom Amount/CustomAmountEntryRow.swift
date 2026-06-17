@@ -17,8 +17,7 @@ struct CustomAmountEntryRow: View {
                     Color.posSurfaceDim
 
                     // Composite of `tag` + a `plus.circle.fill` badge to convey "add a custom amount".
-                    // Avoids `tag.badge.plus`, which is iOS 18+ only (SF Symbols 6) and renders blank
-                    // on our iOS 17 floor.
+                    // Keeps the existing custom layout instead of switching to the SF Symbols badge variant.
                     Image(systemName: "tag")
                         .font(.posButtonSymbolMedium)
                         .foregroundColor(.posOnSurface)

@@ -19,6 +19,15 @@ extension RESTRequest {
     }
 }
 
+extension Request {
+    var jsonBodyParameters: [String: Any]? {
+        guard let body = try? asURLRequest().httpBody else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: body) as? [String: Any]
+    }
+}
+
 private extension RequestParameters {
     var testAnyDictionary: [String: Any]? {
         dictionary.map(Self.anyDictionary)

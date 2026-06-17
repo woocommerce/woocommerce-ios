@@ -56,7 +56,8 @@ echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
+SCRIPT_PATH="${BASH_SOURCE[0]:-$0}"
+"$(dirname "$SCRIPT_PATH")/shared-set-up.sh"
 
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true

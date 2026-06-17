@@ -47,7 +47,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         )
     }
 
-    /// Checks the initial visibility of the POS tab without dependance on network requests.
+    /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true

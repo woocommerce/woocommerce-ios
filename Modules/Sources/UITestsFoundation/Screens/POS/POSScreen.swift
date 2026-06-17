@@ -151,7 +151,7 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func removeProductFromCart(productID: Int, remainingCartItemCount: Int) -> Self {
         showPhoneCartIfNeeded()
-        let cartItem = app.buttons.matching(identifier: "pos-cart-item-product-\(productID)").firstMatch
+        let cartItem = app.descendants(matching: .any).matching(identifier: "pos-cart-item-product-\(productID)").firstMatch
         cartItem.scrollIntoView(app: app)
         XCTAssertTrue(waitForVisibleElement(cartItem, timeout: 10), "Product \(productID) cart row should be visible.")
         tapTrailingRemoveAffordance(in: cartItem)

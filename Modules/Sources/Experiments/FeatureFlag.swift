@@ -267,4 +267,12 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables smarter (AI-powered) push notifications.
     ///
     case smarterNotifications
+
+    /// Enables Star Micronics receipt printer support in Point of Sale.
+    /// Gates the feature's runtime behavior (printer setup and printing from the
+    /// order-complete screen) while it lands across stacked PRs. The StarIO10 SDK is
+    /// linked unconditionally; this flag only controls whether the feature is reachable.
+    /// Off by default until the stack is ready to enable for internal builds.
+    ///
+    case starReceiptPrinterSupport
 }

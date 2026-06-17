@@ -123,6 +123,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .smarterNotifications:
             return true
+        case .starReceiptPrinterSupport:
+            return false
         default:
             return true
         }

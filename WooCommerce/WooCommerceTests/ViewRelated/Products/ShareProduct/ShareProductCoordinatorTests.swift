@@ -3,25 +3,31 @@ import XCTest
 
 final class ShareProductCoordinatorTests: XCTestCase {
 
+    private var window: UIWindow!
+    private var rootViewController: UIViewController!
     private var navigationController: UINavigationController!
     private let productPath = "https://example.com"
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override func setUp() {
-        navigationController = UINavigationController()
+        super.setUp()
+        rootViewController = UIViewController()
+        navigationController = UINavigationController(rootViewController: rootViewController)
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = UIViewController()
-        window.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = navigationController
+        window.makeKeyAndVisible()
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        super.setUp()
     }
 
     override func tearDown() {
+        navigationController.dismiss(animated: false)
+        window.isHidden = true
+        window = nil
+        rootViewController = nil
         navigationController = nil
         analytics = nil
         analyticsProvider = nil
@@ -35,7 +41,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
@@ -55,7 +61,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController)
 
@@ -75,7 +81,7 @@ final class ShareProductCoordinatorTests: XCTestCase {
                                                   productURL: try XCTUnwrap(URL(string: productPath)),
                                                   productName: "Test",
                                                   productDescription: "Test description",
-                                                  shareSheetAnchorItem: UIBarButtonItem(systemItem: .done),
+                                                  shareSheetAnchorItem: makeShareSheetAnchorItem(),
                                                   eligibilityChecker: checker,
                                                   navigationController: navigationController,
                                                   analytics: analytics)
@@ -89,5 +95,11 @@ final class ShareProductCoordinatorTests: XCTestCase {
         // Then
         let firstEvent = try XCTUnwrap(analyticsProvider.receivedEvents.first)
         XCTAssertEqual(firstEvent, "product_sharing_ai_displayed")
+    }
+
+    private func makeShareSheetAnchorItem() -> UIBarButtonItem {
+        let item = UIBarButtonItem(systemItem: .done)
+        rootViewController.navigationItem.rightBarButtonItem = item
+        return item
     }
 }

@@ -32,16 +32,13 @@ class SharingHelper {
         }
 
         if UIDevice.isPad() {
-            // Use a popover for iPads
             avc.modalPresentationStyle = .popover
-            viewController.present(avc, animated: true)
+        }
 
-            if let presentationController = avc.popoverPresentationController {
-                presentationController.permittedArrowDirections = .any
-                presentationController.sourceView = anchorView
-                presentationController.sourceRect = anchorView.bounds
-            }
-            return
+        if let presentationController = avc.popoverPresentationController {
+            presentationController.permittedArrowDirections = .any
+            presentationController.sourceView = anchorView
+            presentationController.sourceRect = anchorView.bounds
         }
 
         viewController.present(avc, animated: true)
@@ -62,6 +59,10 @@ class SharingHelper {
                          onCompletion: Completion? = nil) {
         guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
             return
+        }
+
+        if UIDevice.isPad() {
+            avc.modalPresentationStyle = .popover
         }
 
         let popoverController = avc.popoverPresentationController

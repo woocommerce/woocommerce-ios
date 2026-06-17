@@ -75,7 +75,7 @@ private extension POSManagerOverrideHandler {
     func state(for error: POSAuthError) -> POSPINEntryState {
         switch error {
         case .invalidPIN: .error(kind: .invalidPIN)
-        case .rateLimited, .permanentlyLocked, .unknown: .error(kind: .generic)
+        case .rateLimited, .permanentlyLocked, .unknown, .staffFetchFailed: .error(kind: .generic)
         }
     }
 }

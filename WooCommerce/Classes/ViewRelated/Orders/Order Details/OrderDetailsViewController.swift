@@ -147,7 +147,7 @@ private extension OrderDetailsViewController {
     }
 
     func configureLiquidGlassTabBarUnderlap() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 
@@ -196,7 +196,7 @@ private extension OrderDetailsViewController {
 
         // The buttons are too far apart when setting them to rightBarButtonItems, let's adjust the inset to provide better visuals.
         // Liquid Glass adds native button chrome around each bar button item, so custom image insets make the symbol look off-center.
-        if !Bundle.main.isLiquidGlassDesignEnabled {
+        if #unavailable(iOS 26.0) {
             upArrowButon.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
         }
         upArrowButon.isEnabled = viewModels[safe: currentIndex - 1] != nil

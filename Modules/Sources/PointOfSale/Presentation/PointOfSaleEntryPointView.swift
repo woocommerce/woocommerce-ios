@@ -85,12 +85,14 @@ public struct PointOfSaleEntryPointView: View {
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         staffFetcher: POSStaffFetching,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
-            featureFlags: services.featureFlags
+            featureFlags: services.featureFlags,
+            fetcher: staffFetcher
         ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -267,6 +269,8 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
+import struct Yosemite.POSStaffMember
+
 #Preview {
     PointOfSaleEntryPointView(
         siteID: 1,
@@ -293,8 +297,13 @@ public struct PointOfSaleEntryPointView: View {
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
+        staffFetcher: POSPreviewStaffFetcher(),
         services: POSPreviewServices()
     )
+}
+
+private struct POSPreviewStaffFetcher: POSStaffFetching {
+    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] { [] }
 }
 
 #endif

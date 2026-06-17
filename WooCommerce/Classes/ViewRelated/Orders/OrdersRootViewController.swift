@@ -25,7 +25,11 @@ final class OrdersRootViewController: UIViewController {
     private let hiddenScrollView = UIScrollView()
 
     private var usesLargeTitleWorkaround: Bool {
-        !Bundle.main.isLiquidGlassDesignEnabled
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
     }
 
     private let siteID: Int64
@@ -373,7 +377,7 @@ private extension OrdersRootViewController {
     }
 
     func configureFiltersBar() {
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             configureLiquidGlassHeaderOverlay()
         } else {
             // Display the filtered orders bar
@@ -386,6 +390,10 @@ private extension OrdersRootViewController {
     }
 
     func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
         let backgroundView = UIView.makePinnedHeaderBackgroundView(color: .listBackground)
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
@@ -405,7 +413,7 @@ private extension OrdersRootViewController {
     }
 
     func updateLiquidGlassHeaderOverlayLayout() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 
@@ -441,7 +449,7 @@ private extension OrdersRootViewController {
     }
 
     func configureLiquidGlassTabBarUnderlap() {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 
@@ -543,7 +551,7 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
     /// Mirrors the list's top overscroll so the overlaid filters bar and header background stay visually attached to the orders content.
     private func updateFiltersBarOverscrollPosition(from scrollView: UIScrollView) {
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             return
         }
 

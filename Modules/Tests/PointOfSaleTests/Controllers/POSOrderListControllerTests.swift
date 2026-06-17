@@ -385,6 +385,18 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func refundActionAvailability_when_completed_order_selected_then_available() async throws {
+        // Given
+        let order = makeOrder(id: 1)
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.refundActionAvailability == .available)
+    }
+
+    @MainActor
     @Test func refundActionAvailability_when_no_selected_order_then_unavailable() async throws {
         // When / Then
         #expect(sut.refundActionAvailability == .unavailable)
@@ -1690,6 +1702,29 @@ final class POSOrderListControllerTests {
         #expect(sut.displayedCustomAmounts.first?.id == 777)
     }
 
+    @MainActor
+    @Test func test_displayedCustomAmounts_when_order_has_no_refunds_then_returns_all_custom_amounts() async throws {
+        // Given
+        let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = makeOrder(lineItems: [], customAmounts: [customAmount])
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+    }
+
+    @MainActor
+    @Test func test_displayedLineItems_when_no_items_refunded_then_returns_all_items() async throws {
+        // Given
+        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+
+        // When/Then — all items returned regardless of refunds
+        #expect(sut.displayedLineItems.count == 2)
+    }
 }
 
 private extension POSOrderListControllerTests {

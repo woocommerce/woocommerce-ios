@@ -1,4 +1,6 @@
 import Foundation
+import class Networking.UserAgent
+import protocol NetworkingCore.URLSessionProtocol
 
 protocol SiteCredentialLoginProtocol {
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
@@ -111,22 +113,27 @@ enum SiteCredentialLoginError: LocalizedError {
 
 /// This use case handles site credential login without the need to use XMLRPC API.
 /// Steps for login:
-/// - Make a request to the site wp-login.php with a redirect to the nonce retrieval URL.
-/// - If the redirect succeeds with a nonce in the response, login is successful.
-/// - If the request does not redirect or the redirect fails, login fails.
+/// - Post to `wp-login.php` with a redirect target for the rest nonce endpoint.
+/// - Prevent the HTTP stack from automatically following that redirect.
+/// - Validate the redirect target and then issue an explicit nonce GET using the same cookie store.
 /// Ref: pe5sF9-1iQ-p2
 ///
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let siteURL: String
     private let cookieJar: HTTPCookieStorage
+    private let session: URLSessionProtocol
+    private let loginSession: URLSessionProtocol
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError) -> Void)?
-    private lazy var session = URLSession(configuration: .default)
 
     init(siteURL: String,
-         cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared) {
+         cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared,
+         session: URLSessionProtocol? = nil,
+         loginSession: URLSessionProtocol? = nil) {
         self.siteURL = siteURL
         self.cookieJar = cookieJar
+        self.session = session ?? Self.makeSession(cookieJar: cookieJar)
+        self.loginSession = loginSession ?? Self.makeRedirectBlockingSession(cookieJar: cookieJar)
         super.init()
     }
 
@@ -169,7 +176,7 @@ private extension SiteCredentialLoginUseCase {
     func startLogin(with loginRequest: URLRequest) async throws {
         try await detectBasicAuthProbe()
 
-        let (data, response): (Data, URLResponse) = try await session.data(for: loginRequest)
+        let (data, response): (Data, URLResponse) = try await loginSession.data(for: loginRequest)
 
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.invalidLoginResponse
@@ -179,25 +186,15 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.basicAuthenticationRequired
         }
 
-        /// The login request comes with a redirect header to nonce retrieval URL.
-        /// If we get a response from this URL, that means the redirect is successful.
-        /// We need to check the result of this redirect first to determine if login is successful.
-        let isNonceUrl = response.url?.absoluteString.hasSuffix(Constants.wporgNoncePath) == true
-
-        switch (isNonceUrl, response.statusCode) {
-        case (true, 200):
-            if let nonceString = String(data: data, encoding: .utf8),
-               nonceString.isValidNonce() {
-                // success!
-                return
-            } else {
+        switch response.statusCode {
+        case 300..<400:
+            guard let nonceRequest = buildNonceRequest(from: response) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
-        case (true, 404):
-            throw SiteCredentialLoginError.inaccessibleAdminPage
-        case (false, 404):
+            try await retrieveNonce(with: nonceRequest)
+        case 404:
             throw SiteCredentialLoginError.inaccessibleLoginPage
-        case (false, 200):
+        case 200:
             // 200 for the login URL, which means a failure
             guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
@@ -228,6 +225,7 @@ private extension SiteCredentialLoginUseCase {
 
         request.httpMethod = "POST"
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         var parameters = [URLQueryItem]()
         parameters.append(URLQueryItem(name: "log", value: username))
@@ -243,6 +241,17 @@ private extension SiteCredentialLoginUseCase {
         return request
     }
 
+    func buildNonceRequest(from response: HTTPURLResponse) -> URLRequest? {
+        guard let nonceURL = nonceURL(from: response) else {
+            return nil
+        }
+
+        var request = URLRequest(url: nonceURL)
+        request.httpMethod = "GET"
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
+        return request
+    }
+
     /// Issues a lightweight GET to detect Basic Auth without engaging URLSession auth challenge flow.
     func detectBasicAuthProbe() async throws {
         guard let loginURL = URL(string: siteURL + Constants.loginPath) else {
@@ -254,6 +263,7 @@ private extension SiteCredentialLoginUseCase {
             timeoutInterval: 8
         )
         request.httpMethod = "GET"
+        request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         let (_, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { return }
@@ -261,14 +271,79 @@ private extension SiteCredentialLoginUseCase {
             throw SiteCredentialLoginError.basicAuthenticationRequired
         }
     }
+
+    func retrieveNonce(with request: URLRequest) async throws {
+        let (data, response) = try await session.data(for: request)
+
+        guard let response = response as? HTTPURLResponse else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+
+        if response.containsHTTPBasicAuthenticationChallenge {
+            throw SiteCredentialLoginError.basicAuthenticationRequired
+        }
+
+        switch response.statusCode {
+        case 200:
+            guard let nonceString = String(data: data, encoding: .utf8),
+                  nonceString.isValidNonce() else {
+                throw SiteCredentialLoginError.invalidLoginResponse
+            }
+        case 404:
+            throw SiteCredentialLoginError.inaccessibleAdminPage
+        default:
+            throw SiteCredentialLoginError.unacceptableStatusCode(code: response.statusCode)
+        }
+    }
+
+    func nonceURL(from response: HTTPURLResponse) -> URL? {
+        guard let location = response.value(forHTTPHeaderField: "Location"),
+              let resolvedURL = URL(string: location, relativeTo: response.url)?.absoluteURL,
+              resolvedURL.isExpectedRestNonceURL(for: siteURL) else {
+            return nil
+        }
+        return resolvedURL
+    }
+
+    static func makeSession(cookieJar: HTTPCookieStorage) -> URLSession {
+        URLSession(configuration: makeSessionConfiguration(cookieJar: cookieJar))
+    }
+
+    static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {
+        return URLSession(configuration: makeSessionConfiguration(cookieJar: cookieJar),
+                          delegate: RedirectBlockingURLSessionDelegate(),
+                          delegateQueue: nil)
+    }
 }
 
 extension SiteCredentialLoginUseCase {
+    static func makeSessionConfiguration(cookieJar: HTTPCookieStorage,
+                                         baseConfiguration: URLSessionConfiguration = .default) -> URLSessionConfiguration {
+        let configuration = baseConfiguration
+        configuration.httpCookieStorage = cookieJar
+        configuration.httpShouldSetCookies = true
+        // This login flow depends on handling the redirect itself and should not be intercepted by debug URLProtocol handlers.
+        configuration.protocolClasses = []
+        return configuration
+    }
+
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin"
         static let wporgNoncePath = "/admin-ajax.php?action=rest-nonce"
+        static let wporgNonceEndpointPath = adminPath + "/admin-ajax.php"
+        static let restNonceActionParameter = "action"
+        static let restNonceAction = "rest-nonce"
         static let captchaText = "captcha"
+    }
+}
+
+private final class RedirectBlockingURLSessionDelegate: NSObject, URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest) async -> URLRequest? {
+        nil
     }
 }
 
@@ -283,6 +358,72 @@ extension HTTPURLResponse {
         }
         return value(forHTTPHeaderField: "WWW-Authenticate")?
             .localizedCaseInsensitiveContains("basic") == true
+    }
+}
+
+private extension URL {
+    func isExpectedRestNonceURL(for siteURLString: String) -> Bool {
+        guard let resolvedComponents = URLComponents(url: self, resolvingAgainstBaseURL: true),
+              let siteURL = URL(string: siteURLString),
+              let siteComponents = URLComponents(url: siteURL, resolvingAgainstBaseURL: true),
+              resolvedComponents.isRestNonceURL else {
+            return false
+        }
+
+        return resolvedComponents.isOnExpectedSite(as: siteComponents)
+    }
+}
+
+private extension URLComponents {
+    var isRestNonceURL: Bool {
+        let action = queryItems?.first(where: { $0.name == SiteCredentialLoginUseCase.Constants.restNonceActionParameter })?.value
+        return path.hasSuffix(SiteCredentialLoginUseCase.Constants.wporgNonceEndpointPath) &&
+            action == SiteCredentialLoginUseCase.Constants.restNonceAction
+    }
+
+    func isOnExpectedSite(as siteComponents: URLComponents) -> Bool {
+        guard let scheme = scheme?.lowercased(),
+              let siteScheme = siteComponents.scheme?.lowercased(),
+              let host = host?.lowercased(),
+              let siteHost = siteComponents.host?.lowercased() else {
+            return false
+        }
+
+        if scheme == siteScheme {
+            return host == siteHost && effectivePort == siteComponents.effectivePort
+        }
+
+        return isHTTPSUpgrade(from: siteComponents, redirectScheme: scheme, redirectHost: host, siteHost: siteHost)
+    }
+
+    var effectivePort: Int? {
+        if let port {
+            return port
+        }
+
+        switch scheme?.lowercased() {
+        case "http":
+            return 80
+        case "https":
+            return 443
+        default:
+            return nil
+        }
+    }
+
+    func isHTTPSUpgrade(from siteComponents: URLComponents,
+                        redirectScheme: String,
+                        redirectHost: String,
+                        siteHost: String) -> Bool {
+        guard siteComponents.scheme?.lowercased() == "http",
+              redirectScheme == "https",
+              redirectHost == siteHost else {
+            return false
+        }
+
+        let usesDefaultUpgradePorts = (siteComponents.port == nil || siteComponents.port == 80) &&
+            (port == nil || port == 443)
+        return usesDefaultUpgradePorts || siteComponents.port == port
     }
 }
 

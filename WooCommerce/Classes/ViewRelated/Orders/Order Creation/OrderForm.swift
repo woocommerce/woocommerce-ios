@@ -650,7 +650,11 @@ private struct ProductsSection: View {
                         scanProductButton
 
                         if let presentProductSelector {
-                            OrderFormAddProductIconButton(action: presentProductSelector)
+                            Button(action: presentProductSelector) {
+                                Image(uiImage: .plusImage)
+                            }
+                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
+                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                                 .id(addProductButton)
                         }
                     }
@@ -795,18 +799,6 @@ private extension ProductsSection {
         }, content: {
             scannerViewContent()
         })
-    }
-}
-
-struct OrderFormAddProductIconButton: View {
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(uiImage: .plusImage)
-        }
-        .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
     }
 }
 

@@ -1455,6 +1455,8 @@ private extension EditableOrderViewModel {
     /// - Parameters:
     ///   - products: Selected products
     ///   - variations: Selected product variations
+    ///   - consumingPendingBundleConfigurations: When `true`, clears the pending bundle configuration queue after building the inputs.
+    ///     Keep this `false` for preview checks like `isSyncRequired`, otherwise evaluating the Recalculate state can discard the configuration before sync.
     /// - Returns: [OrderSyncProductInput]
     ///
     func productInputAdditionsToSync(products: [Product],

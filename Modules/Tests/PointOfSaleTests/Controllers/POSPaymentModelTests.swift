@@ -2311,11 +2311,16 @@ struct POSPaymentModelTests {
         await sut.selectCardPaymentRail(.bluetoothReader)
 
         // When
-        sut.startCashPayment()
-        await Task.yield()
+        await withCheckedContinuation { continuation in
+            service.onCancelPaymentCalled = {
+                continuation.resume()
+            }
+            sut.startCashPayment()
+        }
 
         // Then
         #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.cash == .collectingCash)
         #expect(service.cancelPaymentCalled == true)
     }
 

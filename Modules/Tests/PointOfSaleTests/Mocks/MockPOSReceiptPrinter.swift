@@ -1,14 +1,16 @@
 import Combine
 import Foundation
+import struct Yosemite.ReceiptPrinterDevice
+import enum Yosemite.ReceiptPrinterConnectionStatus
 @testable import PointOfSale
 
 final class MockPOSReceiptPrinter: POSReceiptPrinterProviding {
     // MARK: - Stubs
 
-    @Published var connectionStatus: PrinterConnectionStatus = .disconnected
+    @Published var connectionStatus: ReceiptPrinterConnectionStatus = .idle
 
     /// Devices emitted by `discover()`.
-    var discoveredDevices: [PrinterDevice] = []
+    var discoveredDevices: [ReceiptPrinterDevice] = []
 
     /// Error thrown by `connect(to:)`, if any.
     var connectError: Error?
@@ -17,16 +19,16 @@ final class MockPOSReceiptPrinter: POSReceiptPrinterProviding {
 
     private(set) var discoverCallCount = 0
     private(set) var stopDiscoveryCallCount = 0
-    private(set) var connectedDevices: [PrinterDevice] = []
+    private(set) var connectedDevices: [ReceiptPrinterDevice] = []
     private(set) var disconnectCallCount = 0
 
     // MARK: - POSReceiptPrinterProviding
 
-    var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
+    var connectionStatusPublisher: AnyPublisher<ReceiptPrinterConnectionStatus, Never> {
         $connectionStatus.eraseToAnyPublisher()
     }
 
-    func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
+    func discover() -> AsyncThrowingStream<ReceiptPrinterDevice, Error> {
         discoverCallCount += 1
         let devices = discoveredDevices
         return AsyncThrowingStream { continuation in
@@ -41,7 +43,7 @@ final class MockPOSReceiptPrinter: POSReceiptPrinterProviding {
         stopDiscoveryCallCount += 1
     }
 
-    func connect(to printer: PrinterDevice) async throws {
+    func connect(to printer: ReceiptPrinterDevice) async throws {
         connectedDevices.append(printer)
         if let connectError {
             throw connectError

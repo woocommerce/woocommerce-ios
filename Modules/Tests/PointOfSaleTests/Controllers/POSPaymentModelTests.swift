@@ -1549,20 +1549,16 @@ struct POSPaymentModelTests {
         // Then: gate is open — `currentPaymentMethod` reflects the explicit pick.
         #expect(sut.currentPaymentMethod == .tapToPay)
 
-        // And a terminal payment-success event now propagates through the
-        // open gate to `paymentState.card`. (Intermediate states like
-        // `.acceptingCard` would be suppressed by the TTP filter — see
-        // `subscribeToPaymentSessionEvents`. Only terminal states reach
-        // `paymentState.card` on the TTP path.)
-        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
-        #expect(sut.paymentState.card == .cardPaymentSuccessful)
-
-        // And the TTP intermediate-state filter is active: a subsequent
-        // `acceptingCard` event does not roll state backward.
+        // And the active "present card" state now propagates through the open
+        // gate so POS can replace the checkout hero with payment instructions.
         service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
             inputMethods: [.tap, .swipe, .insert],
             cancelPayment: {}))
-        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+        #expect(sut.paymentState.card == .acceptingCard)
+        guard case .tapSwipeOrInsertCard = sut.cardPresentPaymentInlineMessage else {
+            Issue.record("Expected Tap to Pay present-card instructions to be shown.")
+            return
+        }
     }
 
     @Test("TTP: cancelledOnReader resets card state to idle and re-arms the gate")

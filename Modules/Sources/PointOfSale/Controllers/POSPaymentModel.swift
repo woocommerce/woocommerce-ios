@@ -57,7 +57,7 @@ final class POSPaymentModel {
     /// session's default): the merchant can pick BT via the "Other payment
     /// methods" sheet on a TTP-default device, in which case the active
     /// session is `.bluetooth` even though preferred remains `.tapToPay`.
-    /// This is the field that gates the intermediate-state filter and the
+    /// This is the field that drives method-specific event handling and the
     /// model-side re-entry guard.
     private(set) var currentPaymentMethod: CardReaderConnectionMethod?
 
@@ -267,12 +267,9 @@ extension POSPaymentModel {
             selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
 
-        // Same-method re-entry guard. Two different shapes:
-        // - BT: card state moves out of `.idle` during collection, so the
-        //   currentPaymentMethod check catches re-entry too.
-        // - TTP: we suppress intermediate card states so `paymentState.card`
-        //   stays `.idle` for the whole session — `currentPaymentMethod` is
-        //   the canonical "in flight" check.
+        // Same-method re-entry guard. `currentPaymentMethod` is the canonical
+        // "in flight" check, including the early Tap to Pay window before the
+        // first payment-state event arrives.
         if currentPaymentMethod == method {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
             return
@@ -319,8 +316,8 @@ extension POSPaymentModel {
 
         subscribeToPaymentSessionEvents()
         // Merchant explicitly chose a method — track it as the active session
-        // method (drives the intermediate-state filter) and open the gate so
-        // subsequent Stripe Terminal events drive the state machine.
+        // method and open the gate so subsequent Stripe Terminal events drive
+        // the state machine.
         currentPaymentMethod = method
         isAwaitingExplicitPaymentStart = false
 
@@ -1296,45 +1293,6 @@ private extension POSPaymentModel {
 
                 if case .processingPayment = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
-                }
-
-                // On the TTP path Apple's modal owns the merchant's UX between
-                // "Pay with Tap to pay" and a terminal event. Letting the
-                // intermediate card states (validatingOrder / preparingReader /
-                // acceptingCard / cardInserted / processingPayment) drive our
-                // own card state is invisible while the modal is on screen,
-                // but on cancel the modal dismisses faster than the
-                // `cancelledOnReader` event arrives, and the merchant sees
-                // our underlying "Tap card" / "Ready for payment" UI flash
-                // for a frame. Suppress intermediates here — terminal states
-                // (cardPaymentSuccessful / paymentError) still come through.
-                // The cancel-on-reader path is handled by its dedicated
-                // synchronous reset above. Gated on the *current session's*
-                // method — when the merchant picks BT via the sheet on a
-                // TTP-default device, BT events should drive the UI normally.
-                if self.currentPaymentMethod == .tapToPay,
-                   let state = newCardPaymentState {
-                    switch state {
-                    case .validatingOrder,
-                            .preparingReader,
-                            .acceptingCard,
-                            .cardInserted:
-                        return nil
-                    case .processingPayment,
-                            .idle,
-                            .cardPaymentSuccessful,
-                            .paymentError,
-                            .validatingOrderError,
-                            .paymentIntentCreationError:
-                        // `.processingPayment` is intentionally let through on
-                        // TTP so the brief window between Apple's modal closing
-                        // and the success card rendering shows the inline
-                        // "Processing payment" message via `PaymentViewContent`
-                        // — matches what the BT reader path does, and avoids
-                        // the merchant seeing the hero with its spinner-in-
-                        // button as the "back to checkout" intermediate.
-                        break
-                    }
                 }
 
                 return newCardPaymentState

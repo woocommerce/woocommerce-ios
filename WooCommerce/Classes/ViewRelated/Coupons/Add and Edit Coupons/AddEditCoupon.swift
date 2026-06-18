@@ -262,27 +262,22 @@ struct AddEditCoupon: View {
                         .padding(.horizontal, Constants.margin)
                         .padding([.top, .bottom], Constants.verticalSpacing)
                         .disabled(!viewModel.hasChangesMade)
-
-                        LazyNavigationLink(destination: FullScreenTextView(title: Localization.titleEditDescriptionView,
-                                                                           text: $viewModel.descriptionField,
-                                                                           placeholder: Localization.addDescriptionPlaceholder),
-                                           isActive: $showingEditDescription) {
-                            EmptyView()
-                        }
-
-                        LazyNavigationLink(destination: CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
-                                                                             isRemovalEnabled: viewModel.expiryDateField != nil,
-                                                                             timezone: viewModel.timezone,
-                                                                             onCompletion: { updatedExpiryDate in
+                    }
+                    .navigationDestination(isPresented: $showingEditDescription) {
+                        FullScreenTextView(title: Localization.titleEditDescriptionView,
+                                           text: $viewModel.descriptionField,
+                                           placeholder: Localization.addDescriptionPlaceholder)
+                    }
+                    .navigationDestination(isPresented: $showingCouponExpiryDate) {
+                        CouponExpiryDateView(date: viewModel.expiryDateField ?? Date(),
+                                             isRemovalEnabled: viewModel.expiryDateField != nil,
+                                             timezone: viewModel.timezone,
+                                             onCompletion: { updatedExpiryDate in
                             viewModel.expiryDateField = updatedExpiryDate
-                        }), isActive: $showingCouponExpiryDate) {
-                            EmptyView()
-                        }
-
-                        LazyNavigationLink(destination: CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel),
-                                           isActive: $showingCouponRestrictions) {
-                            EmptyView()
-                        }
+                        })
+                    }
+                    .navigationDestination(isPresented: $showingCouponRestrictions) {
+                        CouponRestrictions(viewModel: viewModel.couponRestrictionsViewModel)
                     }
                 }
                 .scrollDismissesKeyboard(.immediately)

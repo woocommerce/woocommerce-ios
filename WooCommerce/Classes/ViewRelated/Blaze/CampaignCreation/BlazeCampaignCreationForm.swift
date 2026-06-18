@@ -261,12 +261,22 @@ struct BlazeCampaignCreationForm: View {
         .task {
             await viewModel.onLoad()
         }
-        if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
-            LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel),
-                               isActive: $viewModel.isShowingPaymentInfo) {
-                EmptyView()
+        .navigationDestination(isPresented: isShowingPaymentInfo) {
+            if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
+                BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel)
             }
         }
+    }
+
+    private var isShowingPaymentInfo: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.isShowingPaymentInfo && viewModel.confirmPaymentViewModel != nil
+            },
+            set: { isPresented in
+                viewModel.setPaymentInfoPresented(isPresented)
+            }
+        )
     }
 
     private var tosCheckboxToggle: some View {

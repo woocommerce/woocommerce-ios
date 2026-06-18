@@ -917,9 +917,9 @@ private extension ProductsViewController {
             }
         }
 
-        var scrollIndicatorInsets = tableView.scrollIndicatorInsets
-        scrollIndicatorInsets.top = height
-        tableView.scrollIndicatorInsets = scrollIndicatorInsets
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
     }
 
     private func updateLiquidGlassHeaderVisibility() {

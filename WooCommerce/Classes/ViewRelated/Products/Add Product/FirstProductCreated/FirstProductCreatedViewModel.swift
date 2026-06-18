@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class FirstProductCreatedViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
     @Published var isShareSheetPresented = false
@@ -21,7 +22,7 @@ final class FirstProductCreatedViewModel: ObservableObject {
     init(productURL: URL,
          productName: String,
          showShareProductButton: Bool,
-         isPad: Bool = UIDevice.isPad(),
+         isPad: Bool? = nil,
          eligibilityChecker: ShareProductAIEligibilityChecker = DefaultShareProductAIEligibilityChecker(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.productURL = productURL
@@ -32,7 +33,7 @@ final class FirstProductCreatedViewModel: ObservableObject {
         self.canGenerateShareProductMessageUsingAI = eligibilityChecker.canGenerateShareProductMessageUsingAI
 
         self.analytics = analytics
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         self.shareSheet = ShareSheet(activityItems: [productName, productURL])
     }
 

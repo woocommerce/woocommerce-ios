@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import TestKit
 
+@MainActor
 final class FirstProductCreatedViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!

@@ -52,12 +52,12 @@ private extension StarReceiptTextBuilder {
     func headerLines(content: ReceiptContent, storeInformation: ReceiptStoreInformation) -> [String] {
         var lines: [String] = []
         if let storeName = storeInformation.storeName ?? content.parameters.storeName, storeName.isEmpty == false {
-            lines.append(storeName)
+            lines.append(centered(storeName))
         }
         [storeInformation.storeAddress, storeInformation.phone, storeInformation.email]
             .compactMap { $0 }
             .filter { $0.isEmpty == false }
-            .forEach { lines.append($0) }
+            .forEach { lines.append(centered($0)) }
         return lines
     }
 
@@ -66,6 +66,10 @@ private extension StarReceiptTextBuilder {
             Localization.datePaid,
             dateFormatter.string(from: content.parameters.date)
         ]
+
+        if let orderID = content.parameters.orderID {
+            lines.append(String.localizedStringWithFormat(Localization.orderNumber, String(orderID)))
+        }
 
         if let cardDetails {
             let brand = cardDetails.brand.rawValue.capitalized
@@ -106,6 +110,11 @@ private extension StarReceiptTextBuilder {
         return left + String(repeating: " ", count: padding) + right
     }
 
+    func centered(_ text: String) -> String {
+        let padding = max((lineWidth - text.count) / 2, 0)
+        return String(repeating: " ", count: padding) + text
+    }
+
     var separator: String {
         String(repeating: "-", count: lineWidth)
     }
@@ -131,6 +140,11 @@ private extension StarReceiptTextBuilder {
             "hardware.receipt.datePaid",
             value: "Date Paid",
             comment: "Label above the payment date on a printed receipt.")
+
+        static let orderNumber = NSLocalizedString(
+            "hardware.receipt.orderNumber",
+            value: "Order #%1$@",
+            comment: "Order number line on a printed receipt. %1$@ is the order ID.")
 
         static let paymentMethod = NSLocalizedString(
             "hardware.receipt.paymentMethod",

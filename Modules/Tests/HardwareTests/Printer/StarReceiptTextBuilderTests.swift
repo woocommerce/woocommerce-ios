@@ -28,9 +28,10 @@ struct StarReceiptTextBuilderTests {
         #expect(receipt.contains("123 Main St"))
         #expect(receipt.contains("555-1234"))
         #expect(receipt.contains("shop@example.com"))
-        // Date
+        // Date + order number
         #expect(receipt.contains("Date Paid"))
         #expect(receipt.contains("2023-11-14"))
+        #expect(receipt.contains("Order #42"))
         // Line item + total
         #expect(receipt.contains("T-Shirt"))
         #expect(receipt.contains("$25.00"))
@@ -58,10 +59,11 @@ struct StarReceiptTextBuilderTests {
         let receipt = builder.makeReceiptText(content: content, storeInformation: storeInformation, cardDetails: nil)
 
         // Then
-        // Common content still renders.
+        // Common content still renders (order number is payment-method independent).
         #expect(receipt.contains("My Store"))
         #expect(receipt.contains("T-Shirt"))
         #expect(receipt.contains("Total"))
+        #expect(receipt.contains("Order #42"))
         // No card / EMV block, and no dangling separators or empty values.
         #expect(receipt.contains("Payment Method") == false)
         #expect(receipt.contains("Application Name") == false)

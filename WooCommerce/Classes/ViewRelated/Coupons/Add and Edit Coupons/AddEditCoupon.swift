@@ -83,7 +83,7 @@ struct AddEditCoupon: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             GeometryReader { _ in
                 ScrollView {
                     VStack (alignment: .leading, spacing: 0) {
@@ -317,7 +317,6 @@ struct AddEditCoupon: View {
             .navigationBarTitleDisplayMode(.large)
             .wooNavigationBarStyle()
         }
-        .navigationViewStyle(.stack)
         .onDisappear {
             onDisappear()
         }

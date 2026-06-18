@@ -41,7 +41,7 @@ struct OrderCustomerSection: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.showsAddressForm) {
-            NavigationView {
+            NavigationStack {
                 EditOrderAddressForm(dismiss: { _ in
                     viewModel.showsAddressForm.toggle()
                 },

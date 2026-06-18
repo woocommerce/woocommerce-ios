@@ -554,7 +554,7 @@ struct EditAddressForm_Previews: PreviewProvider {
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }

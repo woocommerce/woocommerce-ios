@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:57:49+0000 */
+/* Translation-Revision-Date: 2026-06-16 09:55:15+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "評価してください";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "トラブルシューティングのヒントを参照";
 
@@ -8614,6 +8611,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "メトリック";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "分析データが更新されるタイミングを選択します。";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "これはストア全体の設定で、WooCommerce Admin 分析設定の「更新」オプションもコントロールします。%1$@。";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "新しいデータが利用可能になり次第、更新されます。";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "すぐに";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "さらに詳しく";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "12時間ごとに自動更新されます。\n注文量の多いストアにおすすめです。";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "予約済み";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "アナリティクス更新";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "設定を更新できませんでした。 もう一度お試しください。";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "OK";
 
@@ -10059,9 +10086,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "新規注文を見逃さない";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "サポートとチャット";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "接続のトラブルシューティング";
 
@@ -10503,6 +10527,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "自分のストア";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "さらに詳しく";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "統計情報は最大12時間遅れる場合があります。";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
 
@@ -10921,17 +10951,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "検出により返されたリーダーには IP アドレスがないため、接続できません。";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "AI アシスタントのサポートを受ける";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "サポートとチャット";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "過去のサポート会話に再アクセス";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "チャットの履歴";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "アプリまたはストアの問題に関するサポートを受ける";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "サイトでアプリが機能するかをテストします";
@@ -12357,6 +12384,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "この注文を支払い済みとしてマークできませんでした。 もう一度お試しください。";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "この注文を作成する際に問題が発生しました。項目が選択内容と一致しません。 お買い物カゴの中身を確認し、もう一度お試しください。";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "1つ以上の商品";
 
@@ -12804,6 +12834,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "バーコードスキャナーでスキャンするコードの画像。";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "閉じる";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "商品のスキャンを開始する準備ができました。 次回スキャナーを接続する場合は、電源を入れるだけで自動的に再接続されます。";
 
@@ -12980,6 +13013,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "読み込めません";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "ホスティングサービスにブロックされているため、POS が商品情報を含むファイルにアクセスできません。\nPOS の正常な機能を維持するため、アクセス許可を依頼してください。";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "ストアでのアクションが必要です";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "ネットワーク接続を確認して、もう一度お試しください。";
@@ -13172,6 +13211,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "注文を読み込めません";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "もう一度試す";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "再読み込み";
@@ -13687,8 +13729,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "現金での支払い";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "カスタム金額";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "割引合計";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "注文を編集";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "この注文を作成する際に問題が発生しました。項目が選択内容と一致しません。 お買い物カゴの中身を確認し、もう一度お試しください。";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "チェックアウトできませんでした";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "他の支払い方法";
@@ -13701,12 +13755,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "合計";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "画面の分割を調整して、販売時点管理のスペースを拡大してください。";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "販売時点管理は、この画面幅ではサポートされていません。";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "さらに詳しく";
@@ -13851,9 +13899,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "サポートとチャット";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "サポートに連絡";
@@ -14338,6 +14383,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "在庫なし";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "ログインしています…";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "キャンセル";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "カメラへのアクセスを許可しなくても、ストアアドレスを入力してログインできます。";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "カメラへのアクセスを許可する";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "カメラへのアクセスが必要です";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "設定でカメラへのアクセスを有効にするか、キャンセルしてストアアドレスでログインしてください。";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "パーミッション設定を開く";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "カメラへのアクセスが無効になっています";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "このログインはすでに別の端末で完了しています。 再試行する必要がある場合は、新しいコードを生成してください。";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "すでに別の場所でログインしています";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "コードはすでにスキャンされています。 ストアで新しいコードを生成してください。";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "使用済みコード";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "コードの有効期限が切れているか、すでに使用されています。 ストアで新しいコードを生成してください。";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "コードの期限切れ";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "代わりにサイト URL を入力する";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "アプリはすでにインストールされています。この QR コードでインストールします。 wp-admin で、「アプリがインストールされました」ボタンをタップしてログイン QR コードを表示します。 または、コンピューターで woo.com\/mobilelogin にアクセスしてください。";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "こちらはインストール QR コードです";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "この QR コードは WooCommerce のログインコードではありません。 ストアから新しいコードを生成して、もう一度お試しください。";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "WooCommerce コードではありません";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "接続を確認して、もう一度お試しください。";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "ストアにアクセスできませんでした";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "このサイトには WooCommerce がインストールされていません。";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "WooCommerce ストアではありません";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "数分後にもう一度お試しください。";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "試行回数が多すぎます";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "新しいコードをスキャン";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "QR コードを読み取れませんでした。 もう一度お試しください。";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "コードを読み取れませんでした";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "セキュリティのため、このログイン試行はキャンセルされました。 ストアで新しいコードを生成して再度お試しください。";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "ログインが拒否されました";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "ログインが中断されました。 ストアで新しいコードを生成して再度お試しください。";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "ログインが中断されました";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "時間内に確認が行われませんでした。 ストアで新しいコードを生成して再度お試しください。";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "ログインがタイムアウトしました";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "ストアを認証できませんでした。 もう一度お試しください。";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "ログインに失敗しました";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "お使いの WooCommerce プラグインは、QR コードでのログインに対応していません。 ストアの WooCommerce を更新してもう一度お試しいただくか、サイトの URL を入力してログインしてください。";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "このストアでは QR コードでのログインを完了できません";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "もう一度試す";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "ストアから予期しないエラーを返されました。 しばらくしてから再度お試しください。";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "エラーが発生しました";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "ご利用のアカウントに、このストアのアプリを使用するパーミッションがありません。";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "必要なパーミッション";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "ヘルプ";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "キャンセル";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "有効期限まで %1$d ";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "ログインを完了するには、両方の画面に同じ番号が表示されている必要があります。";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "ログイン先:";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "次のユーザーとしてログインしています:";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "コンピューターでこの数字をタップして完了します。";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "ログインを確認";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "戻る";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "コンピューターがありませんか ? サイトアドレスでログイン";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "ヘルプ";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "QR コードをスキャン";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "次に、表示される QR コードをスキャンします。";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "コンピューターでこちらにアクセスします:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "スキャンしてログインする";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "URL をクリップボードにコピーします。";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "リンクをコピーしました。";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "キャンセル";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "QR コードをフレームの中央に配置します";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "woo.com\/mobilelogin にアクセス";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "続行すると、現在のセッションからサインアウトし、新しいログインを開始します。";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "キャンセル";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "続行してサインアウト";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "すでにログインしています";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "完了";
 
@@ -14615,6 +14861,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "合計";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "統計情報は最大12時間遅れる場合があります";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "スキャンしてログインする";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "ストアのパフォーマンスを表示できません";
 
@@ -14826,9 +15078,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "チャットの履歴";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "サポートとチャット";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "WooCommerce を更新してください";
 
@@ -14883,11 +15132,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "このチャットのサポートチケットが作成されました。 メールで返信いたします。";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "サポートとチャット";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "サポートに連絡";
+"supportChatView.toolbar.humanSupport" = "サポートスタッフにお問い合わせください";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "解決済みとしてマーク";
@@ -15293,6 +15539,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "上位パフォーマンスを非表示";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "統計情報は最大12時間遅れる場合があります";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "スキャンしてログインする";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "ストアのパフォーマンス上位を表示できません";

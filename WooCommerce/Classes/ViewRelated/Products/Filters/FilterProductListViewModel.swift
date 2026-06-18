@@ -120,11 +120,11 @@ final class FilterProductListViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
-        let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
-        let promotableProductType = productTypeFilterViewModel.selectedValue as? PromotableProductType ?? nil
-        let productCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory ?? nil
-        let favoriteProduct = productFavoriteFilterViewModel.selectedValue as? FavoriteProductsFilter ?? nil
+        let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus
+        let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus
+        let promotableProductType = productTypeFilterViewModel.selectedValue as? PromotableProductType
+        let productCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory
+        let favoriteProduct = productFavoriteFilterViewModel.selectedValue as? FavoriteProductsFilter
 
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 

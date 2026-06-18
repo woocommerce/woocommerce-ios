@@ -27,6 +27,7 @@ struct ItemRowView: View {
             .padding(.horizontal, Constants.horizontalPadding)
             .geometryGroup()
             .accessibilityLabel(accessibilityLabel)
+            .accessibilityIdentifier(accessibilityIdentifier)
     }
 
     @ViewBuilder
@@ -118,6 +119,18 @@ struct ItemRowView: View {
             [cartItem.title, cartItem.subtitle, cartItem.formattedPrice]
                 .compactMap { $0 }
                 .joined(separator: ",")
+        }
+    }
+
+    private var accessibilityIdentifier: String {
+        let identifier = cartItem.posItemIdentifier
+        switch identifier.underlyingType {
+        case .product:
+            return "pos-cart-item-product-\(identifier.itemID)"
+        case .variation:
+            return "pos-cart-item-variation-\(identifier.itemID)"
+        case .coupon, .loading, .error:
+            return "pos-cart-item-\(identifier.itemID)"
         }
     }
 }

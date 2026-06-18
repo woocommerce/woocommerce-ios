@@ -114,8 +114,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
     }
 
-    /// This property can be set to display a notice with the provided label about the origin address status.
-    @Published var originAddressUnverifiedNoticeLabel: String?
+    /// This property can be set to display a notice with the provided label about the origin address status
+    /// (e.g. a missing phone number, missing email, or an unverified address).
+    @Published var originAddressNoticeLabel: String?
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
@@ -197,9 +198,21 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
-    @Published var shouldShowUPSTermsAndConditions = false
+    @Published var shouldShowUPSTermsAndConditions = false {
+        didSet {
+            if shouldShowUPSTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .upsdap, state: .shown))
+            }
+        }
+    }
 
-    @Published var shouldShowFedExTermsAndConditions = false
+    @Published var shouldShowFedExTermsAndConditions = false {
+        didSet {
+            if shouldShowFedExTermsAndConditions {
+                analytics.track(event: .WooShipping.carrierTermsOfService(carrier: .fedex, state: .shown))
+            }
+        }
+    }
 
     var upsTermsViewModel: UPSTermsViewModel? {
         guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
@@ -364,6 +377,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     func updateShipments(_ shipments: [Shipment]) {
         self.selectedShipmentIndex = 0
         self.shipments = shipments
+    }
+
+    /// Tracks that the merchant accepted the carrier Terms of Service.
+    func trackCarrierTermsAccepted(_ carrier: WooAnalyticsEvent.WooShipping.Carrier) {
+        analytics.track(event: .WooShipping.carrierTermsOfService(carrier: carrier, state: .accepted))
     }
 
     func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {
@@ -701,8 +719,21 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
-                originAddressUnverifiedNoticeLabel = {
-                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                originAddressNoticeLabel = {
+                    guard let selectedOriginAddress else {
+                        return nil
+                    }
+                    // A missing phone number or email is the only origin input that reliably fails rate loading,
+                    // so surface the specific missing field before falling back to the generic unverified notice.
+                    // Use the digit-based check (matching the destination phone notice) so whitespace/punctuation-only
+                    // phones, which the backend also rejects as empty, are treated as missing.
+                    if selectedOriginAddress.toWooShippingAddress().phoneDigits.isEmpty {
+                        return Localization.OriginAddress.missingPhone
+                    }
+                    if selectedOriginAddress.email.isEmpty {
+                        return Localization.OriginAddress.missingEmail
+                    }
+                    if !selectedOriginAddress.isVerified {
                         return Localization.OriginAddressStatus.unverified
                     }
                     return nil
@@ -912,6 +943,19 @@ private extension WooShippingCreateLabelsViewModel {
                 "wooShipping.createLabels.addressVerification.originUnverified",
                 value: "Origin address unverified",
                 comment: "Notice when a origin address is unverified on the shipping label creation screen"
+            )
+        }
+
+        enum OriginAddress {
+            static let missingPhone = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingPhone",
+                value: "Phone number is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen"
+            )
+            static let missingEmail = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingEmail",
+                value: "Email is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing an email on the shipping label creation screen"
             )
         }
 

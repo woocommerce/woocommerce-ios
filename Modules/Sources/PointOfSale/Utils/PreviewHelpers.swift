@@ -746,7 +746,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         // Preview implementation - no-op
     }
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         // no-op
     }
 

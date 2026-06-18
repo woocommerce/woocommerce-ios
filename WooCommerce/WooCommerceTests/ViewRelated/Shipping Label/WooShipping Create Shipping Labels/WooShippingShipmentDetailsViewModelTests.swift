@@ -223,7 +223,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
     @MainActor
     func test_purchaseLabel_sets_hazmat_category_correctly() async throws {
         // Given
-        var encodedHazmat: [String: Any]?
+        var encodedHazmat: RequestParameterDictionary?
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
@@ -257,9 +257,11 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         let index = "shipment_" + viewModel.shipment.index.description
-        let shipmentDetails = encodedHazmat?[index] as? [String: Any]
-        XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
-        XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
+        guard case let .dictionary(shipmentDetails)? = encodedHazmat?[index] else {
+            return XCTFail("Expected hazmat details for shipment")
+        }
+        XCTAssertEqual(shipmentDetails["isHazmat"], .bool(true))
+        XCTAssertEqual(shipmentDetails["category"], .string(ShippingLabelHazmatCategory.class3.rawValue))
     }
 
     @MainActor

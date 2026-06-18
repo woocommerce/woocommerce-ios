@@ -72,7 +72,7 @@ struct WooShippingCreateLabelsView: View {
                     missingDataState
                 }
             }
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: .zero) {
                 if viewModel.state == .ready && viewModel.hazmatNotice == nil {
                     expandableBottomSheet
                 }
@@ -128,6 +128,7 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
                     UPSTermsView(viewModel: termsViewModel, onConfirmation: {
+                        viewModel.trackCarrierTermsAccepted(.upsdap)
                         viewModel.shouldShowUPSTermsAndConditions = false
                         Task { @MainActor in
                             await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
@@ -139,6 +140,7 @@ struct WooShippingCreateLabelsView: View {
             }
             .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
                 FedExTermsView(viewModel: viewModel.fedExTermsViewModel, onConfirmation: {
+                    viewModel.trackCarrierTermsAccepted(.fedex)
                     viewModel.shouldShowFedExTermsAndConditions = false
                     Task { @MainActor in
                         await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
@@ -304,13 +306,13 @@ private extension WooShippingCreateLabelsView {
                 .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
-                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
-                    // Unverified notice for origin address
-                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                if let originAddressNoticeLabel = viewModel.originAddressNoticeLabel {
+                    // Notice for origin address status (missing phone/email or unverified)
+                    verificationNotice(with: originAddressNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
                         withAnimation {
-                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                            viewModel.originAddressNoticeLabel = nil
                         }
                     },
                                        onTap: {

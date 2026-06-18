@@ -288,7 +288,8 @@ final class AccountRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
 
-        let actualParam = try XCTUnwrap(request.parameters?["blogs"] as? [[String: Any]])
+        let parameters = try XCTUnwrap(request.jsonBodyParameters)
+        let actualParam = try XCTUnwrap(parameters["blogs"] as? [[String: Any]])
         XCTAssertEqual(actualParam.count, 1)
         XCTAssertEqual(actualParam.first?["blog_id"] as? Int64, 194373765)
 

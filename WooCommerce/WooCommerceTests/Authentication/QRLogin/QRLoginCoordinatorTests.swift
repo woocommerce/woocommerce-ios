@@ -165,6 +165,34 @@ struct QRLoginCoordinatorTests {
         #expect(nav.viewControllers.count == 2)
         #expect(spy.finishedCount == 0)
     }
+
+    @Test func camera_scan_installQR_then_drops_scanner_so_back_returns_to_prologue() {
+        // Given — a camera scanner on top of the prologue.
+        let (nav, spy, coordinator, scanner) = makeCameraCoordinatorWithScanner()
+
+        // When — an install-app QR is scanned, routing to the error screen.
+        coordinator.presentDeepLink(payload: .installQR)
+
+        // Then — the consumed scanner is dropped and the error sits on the
+        // prologue, so Back returns to the prologue, not a frozen scanner. (WOOMOB-3136)
+        #expect(nav.viewControllers.count == 2)
+        #expect(nav.viewControllers.contains { $0 === scanner } == false)
+        #expect(spy.analytics.steps.last == .qrError)
+    }
+
+    @Test func camera_scan_validQR_then_drops_scanner_so_cancel_returns_to_prologue() {
+        // Given — a camera scanner on top of the prologue.
+        let (nav, _, coordinator, scanner) = makeCameraCoordinatorWithScanner()
+
+        // When — a valid self-hosted QR is scanned, routing to the number-match host.
+        coordinator.presentDeepLink(payload: .selfHosted(token: Self.selfHostedToken,
+                                                         siteURL: URL(string: "https://example.com")!))
+
+        // Then — the consumed scanner is dropped, so cancelling the host returns
+        // to the prologue, not a frozen scanner. (WOOMOB-3136)
+        #expect(nav.viewControllers.count == 2)
+        #expect(nav.viewControllers.contains { $0 === scanner } == false)
+    }
 }
 
 // MARK: - Helpers
@@ -173,6 +201,19 @@ private extension QRLoginCoordinatorTests {
 
     /// A 64-char alphanumeric token, the minimum the self-hosted parser accepts.
     static let selfHostedToken = String(repeating: "a", count: 64)
+
+    /// Camera-mode coordinator with the prologue and a live scanner already
+    /// pushed — the starting point for the "drop the consumed scanner" tests.
+    func makeCameraCoordinatorWithScanner()
+    -> (nav: UINavigationController, spy: Spies, coordinator: QRLoginCoordinator, scanner: UIViewController?) {
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        coordinator.showScanner()
+        #expect(nav.viewControllers.count == 2)
+        return (nav, spy, coordinator, nav.viewControllers.last)
+    }
 
     /// Bundles the injected coordinator callbacks + analytics so tests can spy
     /// on lifecycle and tracking without reaching into the coordinator.

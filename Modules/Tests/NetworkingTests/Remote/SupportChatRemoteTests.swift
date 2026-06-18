@@ -62,7 +62,7 @@ struct SupportChatRemoteTests {
     @Test func sendMessage_when_context_provided_then_context_is_in_request_parameters() async throws {
         // Given
         let remote = SupportChatRemote(network: network)
-        let context: [String: Any] = [
+        let context: RequestParameterDictionary = [
             "selectedSiteId": 220224716,
             "pathname": "/home/example.com"
         ]

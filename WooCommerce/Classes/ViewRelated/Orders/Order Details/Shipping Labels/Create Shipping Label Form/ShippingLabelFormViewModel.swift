@@ -454,7 +454,7 @@ final class ShippingLabelFormViewModel {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let discount = currencyFormatter.formatAmount(Decimal(discountValue)) ?? nil
+        let discount = currencyFormatter.formatAmount(Decimal(discountValue))
 
         return discount
     }

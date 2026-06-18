@@ -143,14 +143,18 @@ extension ConnectivityToolViewModel {
         let updatedSettings = settings.copy(blogs: updatedBlogs)
 
         let action = AccountAction.updateNotificationSettings(notificationSettings: updatedSettings) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                DDLogInfo("Connectivity Tool: ✅ Order notifications enabled successfully")
-                self.updateCardState(for: .notifications, state: .success)
-            case .failure(let error):
-                DDLogError("Connectivity Tool: ❌ Failed to enable order notifications\n\(error)")
-                self.restoreNotificationsCardActions(settings: settings)
+            // `AccountStore` resumes this completion off the main thread, so hop back to the
+            // main actor before mutating `cards` (via `updateCardState`).
+            Task { @MainActor in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    DDLogInfo("Connectivity Tool: ✅ Order notifications enabled successfully")
+                    self.updateCardState(for: .notifications, state: .success)
+                case .failure(let error):
+                    DDLogError("Connectivity Tool: ❌ Failed to enable order notifications\n\(error)")
+                    self.restoreNotificationsCardActions(settings: settings)
+                }
             }
         }
         stores.dispatch(action)

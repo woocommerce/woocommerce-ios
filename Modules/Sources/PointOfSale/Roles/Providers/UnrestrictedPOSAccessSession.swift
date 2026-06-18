@@ -12,4 +12,5 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     func lock() {}
     func checkLockoutState() throws(POSAuthError) {}
     func refreshPINStatus() async {}
+    func clearStaffCache() {}
 }

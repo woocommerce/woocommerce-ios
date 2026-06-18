@@ -55,6 +55,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let receiptPrinter: POSReceiptPrinterProviding?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -85,6 +86,7 @@ public struct PointOfSaleEntryPointView: View {
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         receiptPrinter: POSReceiptPrinterProviding? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -179,6 +181,7 @@ public struct PointOfSaleEntryPointView: View {
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.receiptPrinter = receiptPrinter
     }
 
     public var body: some View {
@@ -224,6 +227,7 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
+                receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod)
         }
         .environment(\.posAnalytics, services.analytics)

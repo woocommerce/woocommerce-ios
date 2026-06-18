@@ -306,6 +306,9 @@ private extension POSTabCoordinator {
                                                                            storageManager: storageManager,
                                                                            currencySettings: currencySettings)
 
+                let receiptPrinter: POSReceiptPrinterProviding? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? POSReceiptPrinterService(stores: storesManager) : nil
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -344,6 +347,7 @@ private extension POSTabCoordinator {
                     sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
+                    receiptPrinter: receiptPrinter,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

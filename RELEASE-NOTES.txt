@@ -3,6 +3,8 @@
 
 25.1
 -----
+- [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/17359]
+
 - [*] Fixed a crash that could occur when picking an image from the device library while editing a product. [https://github.com/woocommerce/woocommerce-ios/pull/17369]
 - [*] Login: Fixed the dead "Need more help?" links on the site-address help and login error dialogs so they open support as intended [https://github.com/woocommerce/woocommerce-ios/pull/17372]
 - [*] Shipping Labels: Clearer notice when the origin (Ship from) address is missing a phone number or email [https://github.com/woocommerce/woocommerce-ios/pull/17339]

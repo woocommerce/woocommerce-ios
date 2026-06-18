@@ -139,9 +139,10 @@ struct OrderFormPresentationWrapper: View {
             },
             secondaryView: { isShowingProductSelector in
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorNavigationView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
                                         isPresented: isShowingProductSelector,
                                         viewModel: productSelectorViewModel)
+                    .wooNavigationBarStyle()
                     .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
                         ConfigurableBundleProductView(viewModel: viewModel)
                     }
@@ -395,8 +396,8 @@ struct OrderForm: View {
         .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
             bannerWidth = newWidth
         }
-        .safeAreaInset(edge: .bottom) {
-            VStack {
+        .safeAreaInset(edge: .bottom, spacing: .zero) {
+            VStack(spacing: .zero) {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
@@ -416,7 +417,7 @@ struct OrderForm: View {
                             .padding([.leading], Layout.dividerLeadingPadding)
 
                         completedButton
-                            .padding()
+                            .padding([.top, .horizontal])
                     }
                 } expandableContent: {
                     OrderPaymentSection(

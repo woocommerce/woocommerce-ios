@@ -302,10 +302,10 @@ extension CustomFieldsListViewModel {
                                        deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
         }
 
-        func asDictionary() -> [[String: Any?]] {
+        func asDictionary() -> [RequestParameterDictionary] {
             return editedFields.map { $0.asDictionary() } +
                 addedFields.map { $0.asDictionary() } +
-                deletedFieldIds.map { ["id": $0, "value": nil] }
+                deletedFieldIds.map { ["id": .int64($0), "value": .null] }
         }
     }
 }

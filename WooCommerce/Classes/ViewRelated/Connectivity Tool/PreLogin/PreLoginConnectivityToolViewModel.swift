@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import Yosemite
 import class Networking.UserAgent
 import struct NetworkingCore.WordPressAPIDiscovery
 import protocol NetworkingCore.URLSessionProtocol
@@ -185,13 +186,13 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
-        var context: [String: Any] = [:]
+        var context: RequestParameterDictionary = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshootingResults"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
-        context["site_url"] = siteURL.absoluteString
+        context["site_url"] = .string(siteURL.absoluteString)
 
         return SupportChatViewModel(
             entryPoint: .preLogin,

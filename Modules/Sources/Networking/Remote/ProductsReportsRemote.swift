@@ -22,7 +22,7 @@ public class ProductsReportsRemote: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.quantity: String(quantity),

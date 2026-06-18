@@ -22,7 +22,8 @@ final class MockPOSAccessSession: POSAccessSession {
          isLocked: Bool = false,
          hasAnyPINs: Bool = true,
          signInResult: Result<POSStaff, POSAuthError> = .success(
-            POSStaff(userID: 1, displayName: "Maya", preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+            POSStaff(userID: 1, displayName: "Maya",
+                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          managerApprovalResult: Result<Void, POSAuthError> = .success(()),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
@@ -79,6 +80,7 @@ final class MockPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {}
+    func clearStaffCache() {}
 }
 
 #endif

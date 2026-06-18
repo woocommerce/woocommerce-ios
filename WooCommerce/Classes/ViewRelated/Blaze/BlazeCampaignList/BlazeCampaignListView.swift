@@ -94,7 +94,7 @@ struct BlazeCampaignListHostingControllerRepresentable: UIViewControllerRepresen
     func makeUIViewController(context: Context) -> BlazeCampaignListHostingController {
 
         let viewModel = BlazeCampaignListViewModel(siteID: siteID,
-                                                   selectedCampaignID: selectedCampaignID ?? nil)
+                                                   selectedCampaignID: selectedCampaignID)
         return BlazeCampaignListHostingController(viewModel: viewModel,
                                                   startsCampaignCreationOnAppear: startsCampaignCreationOnAppear)
     }

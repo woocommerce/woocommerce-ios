@@ -1,12 +1,23 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
 25.1
 -----
 - [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/17359]
 
+- [*] Fixed a crash that could occur when picking an image from the device library while editing a product. [https://github.com/woocommerce/woocommerce-ios/pull/17369]
+- [*] Login: Fixed the dead "Need more help?" links on the site-address help and login error dialogs so they open support as intended [https://github.com/woocommerce/woocommerce-ios/pull/17372]
+- [*] Shipping Labels: Clearer notice when the origin (Ship from) address is missing a phone number or email [https://github.com/woocommerce/woocommerce-ios/pull/17339]
+- [*] Add support for Liquid Glass on iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/17337]
+- [*] Order Creation: fixed visual issues with screen layout [https://github.com/woocommerce/woocommerce-ios/pull/17346]
+- [internal] Make API request parameters Sendable [https://github.com/woocommerce/woocommerce-ios/pull/17370]
+- [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
+- [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
+- [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
 
 25.0
 -----
+- [*] Fixed a crash that could occur when using the Connectivity Tool to troubleshoot connection issues. [https://github.com/woocommerce/woocommerce-ios/pull/17361]
 - [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]
 - [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]
 - [*] Fixed refunds for orders with multiple shipping lines so all shipping lines can be refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17312]

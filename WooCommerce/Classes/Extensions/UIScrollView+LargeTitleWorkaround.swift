@@ -4,6 +4,10 @@ import UIKit
 // This is a workaround for a screen with multiple scroll views in parallel (like in a tab design in Dashboard and Orders tab).
 // Reference: issue 3 in p91TBi-45c-p2
 extension UIScrollView {
+    var topOverscrollDistance: CGFloat {
+        max(0, -(contentOffset.y + adjustedContentInset.top))
+    }
+
     /// Configures a scroll view to be hidden and used to relay scroll action from any of the multiple scroll views in the view hierarchy below.
     func configureForLargeTitleWorkaround() {
         contentInsetAdjustmentBehavior = .never

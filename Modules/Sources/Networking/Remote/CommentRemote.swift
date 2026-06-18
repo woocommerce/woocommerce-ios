@@ -72,7 +72,7 @@ public class CommentRemote: Remote {
                                content: String,
                                completion: @escaping (Result<CommentStatus, Error>) -> Void) {
         let path = "sites/\(siteID)/\(Paths.comments)"
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.content: content,
             ParameterKeys.parent: commentID,
             ParameterKeys.post: productID

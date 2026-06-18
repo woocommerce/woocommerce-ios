@@ -154,13 +154,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    func setPaymentInfoPresented(_ isPresented: Bool) {
-        isShowingPaymentInfo = isPresented && confirmPaymentViewModel != nil
-        if !isPresented {
-            confirmPaymentViewModel = nil
-        }
-    }
-
     private(set) lazy var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
@@ -231,7 +224,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
-    @Published var isShowingPaymentInfo = false
     /// ResultController to get the product for the given product ID
     ///
     private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
@@ -408,7 +400,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return
         }
         self.confirmPaymentViewModel = confirmPaymentViewModel
-        isShowingPaymentInfo = true
     }
 }
 

@@ -1,8 +1,10 @@
+import Combine
 import SwiftUI
 
 /// Hosting controller for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
     private let viewModel: BlazeCampaignCreationFormViewModel
+    private var subscriptions = Set<AnyCancellable>()
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -10,6 +12,7 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
         self.viewModel.onEditAd = { [weak self] in
             self?.navigateToEditAd()
         }
+        bindViewModel()
     }
 
     @available(*, unavailable)
@@ -36,6 +39,16 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 }
 
 private extension BlazeCampaignCreationFormHostingController {
+    func bindViewModel() {
+        viewModel.$confirmPaymentViewModel
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+                self?.navigateToConfirmPayment(viewModel: viewModel)
+            }
+            .store(in: &subscriptions)
+    }
+
     func configureNavigation() {
         title = Localization.title
     }
@@ -43,6 +56,15 @@ private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
         let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
+    }
+
+    func navigateToConfirmPayment(viewModel: BlazeConfirmPaymentViewModel) {
+        guard navigationController?.topViewController === self else {
+            return
+        }
+
+        let vc = UIHostingController(rootView: BlazeConfirmPaymentView(viewModel: viewModel))
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -261,22 +283,6 @@ struct BlazeCampaignCreationForm: View {
         .task {
             await viewModel.onLoad()
         }
-        .navigationDestination(isPresented: isShowingPaymentInfo) {
-            if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
-                BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel)
-            }
-        }
-    }
-
-    private var isShowingPaymentInfo: Binding<Bool> {
-        Binding(
-            get: {
-                viewModel.isShowingPaymentInfo && viewModel.confirmPaymentViewModel != nil
-            },
-            set: { isPresented in
-                viewModel.setPaymentInfoPresented(isPresented)
-            }
-        )
     }
 
     private var tosCheckboxToggle: some View {

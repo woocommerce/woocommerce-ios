@@ -1457,19 +1457,22 @@ private extension EditableOrderViewModel {
     ///   - variations: Selected product variations
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputAdditionsToSync(products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
+    func productInputAdditionsToSync(products: [Product],
+                                     variations: [ProductVariation],
+                                     consumingPendingBundleConfigurations: Bool = false) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
+        var pendingBundleConfigurationsByProductID = productSelectorBundleConfigurationsByProductID
 
         let itemsInOrder = syncExistingSelectedProductsInOrder()
 
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
-                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
+                || pendingBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
                 switch product.productType {
                     case .bundle:
-                        if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {
+                        if let bundleConfiguration = pendingBundleConfigurationsByProductID[product.productID]?.popFirst() {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, bundleConfiguration: bundleConfiguration))
                         } else {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
@@ -1479,7 +1482,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-        productSelectorBundleConfigurationsByProductID = [:]
+        if consumingPendingBundleConfigurations {
+            productSelectorBundleConfigurationsByProductID = [:]
+        }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
@@ -1531,7 +1536,9 @@ private extension EditableOrderViewModel {
     func syncOrderItems(products: [Product], variations: [ProductVariation]) {
         // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
         // otherwise may ignore the subsequent values that are sent
-        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let addedItemsToSync = productInputAdditionsToSync(products: products,
+                                                           variations: variations,
+                                                           consumingPendingBundleConfigurations: true)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
 
         guard (addedItemsToSync + removedItemsToSync).isNotEmpty else {

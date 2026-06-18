@@ -3082,6 +3082,53 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(secondNewBundleOrderItem.quantity, 1)
     }
 
+    func test_when_selecting_bundle_with_recalculate_sync_then_bundle_configuration_is_preserved() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Product of the bundled item.
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
+        let bundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 5, isOptionalAndSelected: false)
+        ]
+
+        // When selecting and configuring a bundle product, then tapping recalculate
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: bundleConfiguration,
+                                            viewModel: viewModel)
+
+        XCTAssertTrue(viewModel.syncRequired)
+
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(order))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.onRecalculateTapped()
+        }
+
+        // Then order to be updated remotely contains the bundle product configuration
+        XCTAssertEqual(orderToUpdate.items.count, 1)
+
+        let newBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(newBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(newBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
+        XCTAssertEqual(newBundleOrderItem.quantity, 1)
+    }
+
     // No existing items —> select bundle A and configure in product selector -> close product selector
     // —> select bundle A and configure in product selector
     // —> order items to update remotely: bundle A with the latest bundle configuration

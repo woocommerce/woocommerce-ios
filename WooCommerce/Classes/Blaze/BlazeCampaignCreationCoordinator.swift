@@ -23,7 +23,6 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         case campaignForm(productID: Int64) // Blaze Campaign form requires a product ID to promote.
         case noProductAvailable
     }
-    private lazy var blazeNavigationController = WooNavigationController()
     private var blazeCreationEntryDestination: CreateCampaignDestination = .noProductAvailable
 
     /// Product ResultsController.
@@ -166,54 +165,40 @@ private extension BlazeCampaignCreationCoordinator {
 
     /// Handles navigation to the native Blaze creation
     func navigateToNativeCampaignCreation(productID: Int64) {
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: siteID,
-                                                           productID: productID,
-                                                           storage: storageManager,
-                                                           onCompletion: { [weak self] in
-            Task { @MainActor [weak self] in
-                await self?.restoreBlazeOnDashboardIfNeeded()
-                self?.cancelAbandonedCampaignCreationNotification()
-                self?.dismissCampaignCreation()
-                self?.onCampaignCreated()
-            }
+        let viewModel = makeCampaignCreationFlowViewModel(root: .campaignForm(productID: productID))
+        let controller = BlazeCampaignCreationFlowHostingController(viewModel: viewModel, onDismiss: { [weak self] in
+            self?.dismissAbandonedCampaignCreationFlow()
         })
-        let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
         controller.hidesBottomBarWhenPushed = true
 
-        // This function can be called from navigateToBlazeProductSelector(), in which case we need to show the
-        // Campaign Creation Form from blazeNavigationController.
-        // Otherwise, we show it from the current navigation controller.
-        if blazeNavigationController.presentingViewController != nil {
-            blazeNavigationController.show(controller, sender: self)
-        } else {
-            navigationController.show(controller, sender: self)
-        }
+        navigationController.show(controller, sender: self)
     }
 
     /// Handles navigation to the Blaze product selector view
     func navigateToBlazeProductSelector() {
-        let controller: ProductSelectorViewController = {
-            let productSelectorViewModel = ProductSelectorViewModel(
-                siteID: siteID,
-                source: .blaze,
-                onProductSelectionStateChanged: { [weak self] product, _ in
-                    guard let self else { return }
-
-                    // Navigate to Campaign Creation Form once any type of product is selected.
-                    navigateToNativeCampaignCreation(productID: product.productID)
-                },
-                onCloseButtonTapped: { [weak self] in
-                    guard let self else { return }
-                    scheduleAbandonedCampaignCreationNotification()
-                    navigationController.dismiss(animated: true, completion: nil)
+        let viewModel = makeCampaignCreationFlowViewModel(root: .productSelector)
+        let productSelectorViewModel = ProductSelectorViewModel(
+            siteID: siteID,
+            source: .blaze,
+            onProductSelectionStateChanged: { [weak viewModel] product, selected in
+                guard selected else {
+                    return
                 }
-            )
-            return ProductSelectorViewController(configuration: .configurationForBlaze,
-                                                 viewModel: productSelectorViewModel)
-        }()
 
-        blazeNavigationController.viewControllers = [controller]
-        navigationController.present(blazeNavigationController, animated: true, completion: nil)
+                // Navigate to Campaign Creation Form once any type of product is selected.
+                viewModel?.showCampaignForm(productID: product.productID)
+            },
+            onCloseButtonTapped: { [weak self] in
+                self?.dismissAbandonedCampaignCreationFlow()
+            }
+        )
+        viewModel.productSelectorViewModel = productSelectorViewModel
+
+        let controller = BlazeCampaignCreationFlowHostingController(viewModel: viewModel, onDismiss: { [weak self] in
+            self?.dismissAbandonedCampaignCreationFlow()
+        })
+
+        navigationController.present(controller, animated: true, completion: nil)
     }
 
     func presentNoProductAlert() {
@@ -242,11 +227,37 @@ private extension BlazeCampaignCreationCoordinator {
     }
 }
 
+private extension BlazeCampaignCreationCoordinator {
+    func makeCampaignCreationFlowViewModel(root: BlazeCampaignCreationFlowViewModel.Root) -> BlazeCampaignCreationFlowViewModel {
+        BlazeCampaignCreationFlowViewModel(siteID: siteID, root: root) { [weak self, storageManager, siteID] productID in
+            BlazeCampaignCreationFormViewModel(siteID: siteID,
+                                               productID: productID,
+                                               storage: storageManager,
+                                               onCompletion: { [weak self] in
+                Task { @MainActor [weak self] in
+                    await self?.restoreBlazeOnDashboardIfNeeded()
+                    self?.cancelAbandonedCampaignCreationNotification()
+                    self?.currentCampaignCreationFlowController?.shouldScheduleAbandonedCreationReminder = false
+                    self?.dismissCampaignCreation()
+                    self?.onCampaignCreated()
+                }
+            })
+        }
+    }
+
+    var currentCampaignCreationFlowController: BlazeCampaignCreationFlowHostingController? {
+        if let controller = navigationController.presentedViewController as? BlazeCampaignCreationFlowHostingController {
+            return controller
+        }
+        return navigationController.viewControllers.first { $0 is BlazeCampaignCreationFlowHostingController } as? BlazeCampaignCreationFlowHostingController
+    }
+}
+
 // MARK: - Completion handler
 private extension BlazeCampaignCreationCoordinator {
     func dismissCampaignCreation() {
         // Checks if we are presenting or pushing the creation flow to dismiss accordingly.
-        if blazeNavigationController.presentingViewController != nil {
+        if navigationController.presentedViewController is BlazeCampaignCreationFlowHostingController {
             navigationController.dismiss(animated: true) { [weak self] in
                 self?.showSuccessView()
             }
@@ -256,13 +267,21 @@ private extension BlazeCampaignCreationCoordinator {
             navigationController.dismiss(animated: true) { [weak self] in
                 guard let self else { return }
                 let viewControllerStack = navigationController.viewControllers
-                guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFormHostingController }),
+                guard let index = viewControllerStack.lastIndex(where: { $0 is BlazeCampaignCreationFlowHostingController }),
                       let originController = viewControllerStack[safe: index - 1] else {
                     return
                 }
                 navigationController.popToViewController(originController, animated: true)
                 showSuccessView()
             }
+        }
+    }
+
+    func dismissAbandonedCampaignCreationFlow() {
+        if navigationController.presentedViewController is BlazeCampaignCreationFlowHostingController {
+            navigationController.dismiss(animated: true)
+        } else {
+            navigationController.popViewController(animated: true)
         }
     }
 
@@ -339,13 +358,6 @@ private extension BlazeCampaignCreationCoordinator {
 // MARK: - Abandoned campaign creation
 //
 private extension BlazeCampaignCreationCoordinator {
-    func scheduleAbandonedCampaignCreationNotification() {
-        Task { @MainActor in
-            let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)
-            await scheduler.scheduleAbandonedCreationReminder()
-        }
-    }
-
     func cancelAbandonedCampaignCreationNotification() {
         Task { @MainActor in
             let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.siteID)

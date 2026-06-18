@@ -1,18 +1,72 @@
-import Combine
 import SwiftUI
 
-/// Hosting controller for `BlazeCampaignCreationForm`
-final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
-    private let viewModel: BlazeCampaignCreationFormViewModel
-    private var subscriptions = Set<AnyCancellable>()
+final class BlazeCampaignCreationFlowViewModel: ObservableObject {
+    enum Root {
+        case productSelector
+        case campaignForm(productID: Int64)
+    }
 
-    init(viewModel: BlazeCampaignCreationFormViewModel) {
-        self.viewModel = viewModel
-        super.init(rootView: BlazeCampaignCreationForm(viewModel: viewModel))
-        self.viewModel.onEditAd = { [weak self] in
-            self?.navigateToEditAd()
+    enum Route: Hashable {
+        case campaignForm(productID: Int64)
+    }
+
+    let siteID: Int64
+    let root: Root
+    var onEditAd: ((BlazeEditAdViewModel) -> Void)?
+
+    @Published var productSelectorViewModel: ProductSelectorViewModel?
+    @Published var path: [Route] = []
+
+    private let makeCampaignFormViewModel: (Int64) -> BlazeCampaignCreationFormViewModel
+    private var campaignFormViewModels: [Int64: BlazeCampaignCreationFormViewModel] = [:]
+
+    init(siteID: Int64,
+         root: Root,
+         makeCampaignFormViewModel: @escaping (Int64) -> BlazeCampaignCreationFormViewModel) {
+        self.siteID = siteID
+        self.root = root
+        self.makeCampaignFormViewModel = makeCampaignFormViewModel
+
+        if case let .campaignForm(productID) = root {
+            _ = campaignFormViewModel(for: productID)
         }
-        bindViewModel()
+    }
+
+    func showCampaignForm(productID: Int64) {
+        _ = campaignFormViewModel(for: productID)
+        path.append(.campaignForm(productID: productID))
+    }
+
+    func campaignFormViewModel(for productID: Int64) -> BlazeCampaignCreationFormViewModel {
+        if let viewModel = campaignFormViewModels[productID] {
+            return viewModel
+        }
+
+        let viewModel = makeCampaignFormViewModel(productID)
+        viewModel.onEditAd = { [weak self, weak viewModel] in
+            guard let editAdViewModel = viewModel?.editAdViewModel else {
+                return
+            }
+            self?.onEditAd?(editAdViewModel)
+        }
+        campaignFormViewModels[productID] = viewModel
+        return viewModel
+    }
+}
+
+/// Hosting controller for the Blaze campaign creation SwiftUI flow.
+final class BlazeCampaignCreationFlowHostingController: UIHostingController<BlazeCampaignCreationFlowView> {
+    private let viewModel: BlazeCampaignCreationFlowViewModel
+    private var previousNavigationBarHidden: Bool?
+
+    var shouldScheduleAbandonedCreationReminder = true
+
+    init(viewModel: BlazeCampaignCreationFlowViewModel, onDismiss: @escaping () -> Void) {
+        self.viewModel = viewModel
+        super.init(rootView: BlazeCampaignCreationFlowView(viewModel: viewModel, onDismiss: onDismiss))
+        self.viewModel.onEditAd = { [weak self] editAdViewModel in
+            self?.navigateToEditAd(viewModel: editAdViewModel)
+        }
     }
 
     @available(*, unavailable)
@@ -22,14 +76,28 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigation()
         view.backgroundColor = .listBackground
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if previousNavigationBarHidden == nil {
+            previousNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+        }
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         if isBeingDismissedInAnyWay {
+            navigationController?.setNavigationBarHidden(previousNavigationBarHidden ?? false, animated: animated)
+
+            guard shouldScheduleAbandonedCreationReminder else {
+                return
+            }
+
             Task { @MainActor in
                 let scheduler = DefaultBlazeLocalNotificationScheduler(siteID: self.viewModel.siteID)
                 await scheduler.scheduleAbandonedCreationReminder()
@@ -38,47 +106,68 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
     }
 }
 
-private extension BlazeCampaignCreationFormHostingController {
-    func bindViewModel() {
-        viewModel.$confirmPaymentViewModel
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] viewModel in
-                self?.navigateToConfirmPayment(viewModel: viewModel)
-            }
-            .store(in: &subscriptions)
-    }
-
-    func configureNavigation() {
-        title = Localization.title
-    }
-
-    func navigateToEditAd() {
-        let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
+private extension BlazeCampaignCreationFlowHostingController {
+    func navigateToEditAd(viewModel: BlazeEditAdViewModel) {
+        let vc = BlazeEditAdHostingController(viewModel: viewModel)
         present(vc, animated: true)
-    }
-
-    func navigateToConfirmPayment(viewModel: BlazeConfirmPaymentViewModel) {
-        guard navigationController?.topViewController === self else {
-            return
-        }
-
-        let vc = UIHostingController(rootView: BlazeConfirmPaymentView(viewModel: viewModel))
-        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
-extension BlazeCampaignCreationFormHostingController {
-    enum Localization {
-        static let title = NSLocalizedString(
-            "blazeCampaignCreationForm.title",
-            value: "Preview",
-            comment: "Title of the Blaze campaign creation screen"
-        )
+struct BlazeCampaignCreationFlowView: View {
+    @ObservedObject var viewModel: BlazeCampaignCreationFlowViewModel
+    let onDismiss: () -> Void
+
+    var body: some View {
+        NavigationStack(path: $viewModel.path) {
+            rootView
+                .navigationDestination(for: BlazeCampaignCreationFlowViewModel.Route.self) { route in
+                    switch route {
+                    case let .campaignForm(productID):
+                        campaignForm(viewModel: viewModel.campaignFormViewModel(for: productID),
+                                     showsDismissButton: false)
+                    }
+                }
+        }
     }
 
-    private enum Constants {
-        static let supportTag = "origin:blaze-native-campaign-creation"
+    @ViewBuilder private var rootView: some View {
+        switch viewModel.root {
+        case .productSelector:
+            if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                ProductSelectorView(configuration: .configurationForBlaze,
+                                    isPresented: .constant(true),
+                                    viewModel: productSelectorViewModel)
+            } else {
+                EmptyView()
+            }
+        case let .campaignForm(productID):
+            campaignForm(viewModel: viewModel.campaignFormViewModel(for: productID),
+                         showsDismissButton: true)
+        }
+    }
+
+    private func campaignForm(viewModel: BlazeCampaignCreationFormViewModel,
+                              showsDismissButton: Bool) -> some View {
+        BlazeCampaignCreationForm(viewModel: viewModel)
+            .toolbar {
+                if showsDismissButton {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: onDismiss) {
+                            Label(Localization.back, systemImage: "chevron.backward")
+                        }
+                    }
+                }
+            }
+    }
+}
+
+private extension BlazeCampaignCreationFlowView {
+    enum Localization {
+        static let back = NSLocalizedString(
+            "blazeCampaignCreationFlowView.back",
+            value: "Back",
+            comment: "Button to return from Blaze campaign creation form to the previous screen."
+        )
     }
 }
 
@@ -200,7 +289,7 @@ struct BlazeCampaignCreationForm: View {
             .padding(.horizontal, Layout.contentPadding)
         }
         .background(Constants.backgroundViewColor)
-        .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
+        .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(Localization.help) {
@@ -283,6 +372,22 @@ struct BlazeCampaignCreationForm: View {
         .task {
             await viewModel.onLoad()
         }
+        .navigationDestination(isPresented: isShowingPaymentInfo) {
+            if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
+                BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel)
+            }
+        }
+    }
+
+    private var isShowingPaymentInfo: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.isShowingPaymentInfo && viewModel.confirmPaymentViewModel != nil
+            },
+            set: { isPresented in
+                viewModel.setPaymentInfoPresented(isPresented)
+            }
+        )
     }
 
     private var tosCheckboxToggle: some View {

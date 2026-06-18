@@ -69,7 +69,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         sut.start()
 
         // Then
-        XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFormHostingController)
+        XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFlowHostingController)
     }
 
     func test_when_no_product_id_supplied_and_there_is_one_eligible_product_then_navigate_to_creation_form() {
@@ -91,7 +91,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         sut.start()
 
         // Then
-        XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFormHostingController)
+        XCTAssertTrue(sut.navigationController.viewControllers.first is BlazeCampaignCreationFlowHostingController)
     }
 
     func test_when_no_product_id_supplied_and_there_are_multiple_eligible_products_then_navigate_to_product_selector() throws {
@@ -117,11 +117,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         sut.start()
 
         // Then
-        // The Product Selector is shown using a WooNavigationController
-        // The Product Selector is the first view controller in the presented WooNavigationController
-        let presentedNavigationController = try XCTUnwrap(sut.navigationController.presentedViewController as? WooNavigationController)
-        let viewController = try XCTUnwrap(presentedNavigationController.viewControllers.first)
-        XCTAssertTrue(viewController is ProductSelectorViewController)
+        XCTAssertTrue(sut.navigationController.presentedViewController is BlazeCampaignCreationFlowHostingController)
     }
 
     func test_error_alert_is_displayed_if_no_published_product_is_found() throws {

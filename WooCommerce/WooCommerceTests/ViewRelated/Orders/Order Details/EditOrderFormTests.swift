@@ -36,7 +36,7 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(text: "Products"))
         XCTAssertNotNil(try? sut.find(text: "Order total"))
 
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Add product"))
+        XCTAssertNotNil(try? sut.find(OrderFormAddProductIconButton.self))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
         XCTAssertNotNil(try? sut.find(button: "Add Shipping"))
         XCTAssertNotNil(try? sut.find(button: "Add Coupon"))
@@ -56,7 +56,7 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(text: "Custom Amounts"))
         XCTAssertNotNil(try? sut.find(text: "Order total"))
 
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit amount"))
+        XCTAssertNotNil(try? sut.find(CustomAmountRowView.self).find(PencilEditButton.self))
         XCTAssertNotNil(try? sut.find(button: "Add Shipping"))
         XCTAssertNotNil(try? sut.find(button: "Add Customer Details"))
         XCTAssertNotNil(try? sut.find(button: "Add Note"))
@@ -75,8 +75,8 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(text: "Customer"))
         XCTAssertNotNil(try? sut.find(text: "Order total"))
 
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit shipping"))
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit Customer Details"))
+        XCTAssertNotNil(try? sut.find(ShippingLineRowView.self).find(PencilEditButton.self))
+        XCTAssertNotNil(try? sut.find(LegacyOrderCustomerSection.self).find(PencilEditButton.self))
 
         XCTAssertNotNil(try? sut.find(button: "Add Products"))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))
@@ -95,7 +95,7 @@ final class EditOrderFormTests: XCTestCase {
         XCTAssertNotNil(try? sut.find(text: "Customer Note"))
         XCTAssertNotNil(try? sut.find(text: "Order total"))
 
-        XCTAssertNotNil(try? sut.find(viewWithAccessibilityLabel: "Edit customer note"))
+        XCTAssertNotNil(try? sut.find(CustomerNoteSection.self).find(PencilEditButton.self))
 
         XCTAssertNotNil(try? sut.find(button: "Add Products"))
         XCTAssertNotNil(try? sut.find(button: "Add Custom Amount"))

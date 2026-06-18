@@ -213,8 +213,12 @@ extension POSPaymentModel {
                 currentPaymentMethod = nil
                 return
             case .bluetoothReader:
-                currentPaymentMethod = .bluetooth
                 isAwaitingExplicitPaymentStart = false
+                if case .connected = cardReaderConnectionStatus {
+                    currentPaymentMethod = .bluetooth
+                } else {
+                    currentPaymentMethod = nil
+                }
                 await startPaymentFlow(using: .bluetooth)
                 return
             }
@@ -271,8 +275,13 @@ extension POSPaymentModel {
         // "in flight" check, including the early Tap to Pay window before the
         // first payment-state event arrives.
         if currentPaymentMethod == method {
-            DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
-            return
+            if method == .bluetooth,
+               case .disconnected = cardReaderConnectionStatus {
+                DDLogInfo("🃏 [CardPayment] allowing \(method) re-entry while reader is disconnected")
+            } else {
+                DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
+                return
+            }
         }
         // Block re-entry while non-idle if there's no active method to switch
         // *from* (stray closure / SwiftUI re-render after a terminal state).
@@ -294,6 +303,7 @@ extension POSPaymentModel {
             } catch {
                 DDLogError("🃏 [CardPayment] cancelPayment on method switch failed: \(error)")
             }
+            currentPaymentMethod = nil
         }
 
         // When switching to Bluetooth from a TTP-pre-connect-in-flight state
@@ -318,7 +328,13 @@ extension POSPaymentModel {
         // Merchant explicitly chose a method — track it as the active session
         // method and open the gate so subsequent Stripe Terminal events drive
         // the state machine.
-        currentPaymentMethod = method
+        if method == .bluetooth,
+           isCompactCardPaymentSelectionEnabled,
+           case .disconnected = cardReaderConnectionStatus {
+            currentPaymentMethod = nil
+        } else {
+            currentPaymentMethod = method
+        }
         isAwaitingExplicitPaymentStart = false
 
         // If a reader is connected via a *different* method than the one the
@@ -348,8 +364,12 @@ extension POSPaymentModel {
             // appears. We let the existing pre-connect Task drive the connect;
             // `startPaymentFlow` will subscribe to `.connected` and collect as
             // soon as the pre-connect Task completes.
+            await startPaymentFlow(using: method)
+
             if method == .tapToPay, tapToPayConnectTask != nil {
                 DDLogInfo("🃏 [CardPayment] tap during pre-connect — letting existing pre-connect drive the connect")
+            } else if method == .bluetooth, isCompactCardPaymentSelectionEnabled {
+                connectCardReader()
             } else {
                 Task { @MainActor [weak self] in
                     do {
@@ -360,6 +380,7 @@ extension POSPaymentModel {
                     }
                 }
             }
+            return
         }
 
         await startPaymentFlow(using: method)
@@ -496,6 +517,8 @@ extension POSPaymentModel {
         }
 
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
+        currentPaymentMethod = method
+        isAwaitingExplicitPaymentStart = false
         await collectCardPayment(using: method)
     }
 

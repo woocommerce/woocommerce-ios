@@ -738,7 +738,16 @@ private extension TotalsView {
         case .tapToPay:
             handleTapToPayTapped()
         case .cardReader:
-            paymentModel.connectCardReader()
+            guard paymentModel.isCompactCardPaymentSelectionEnabled else {
+                paymentModel.connectCardReader()
+                return
+            }
+            guard !isStartingPayment else { return }
+            isStartingPayment = true
+            Task { @MainActor in
+                await paymentModel.selectCardPaymentRail(.bluetoothReader)
+                await paymentModel.startSelectedCardPayment()
+            }
         case .cashPayment:
             paymentModel.startCashPayment()
         }
@@ -852,7 +861,7 @@ private extension TotalsView {
     }
 
     var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        !paymentModel.isBluetoothReaderSelected
+        true
     }
 
     var isCardReaderRowEnabledInOtherMethodsSheet: Bool {

@@ -2319,6 +2319,59 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
     }
 
+    @Test("compact mode with Bluetooth selected waits for a reader without marking Bluetooth active")
+    @MainActor
+    func test_startPayment_when_compact_mode_and_BT_selected_but_disconnected_then_waits_without_active_method() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.connectReaderCallCount == 0)
+        #expect(service.collectPaymentWasCalled == false)
+    }
+
+    @Test("compact mode explicit Bluetooth selection connects and collects when disconnected")
+    @MainActor
+    func test_startPaymentWithMethod_when_compact_mode_and_BT_disconnected_then_connects_and_collects() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // When
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = { continuation.resume() }
+            Task { @MainActor in await sut.startPaymentWithMethod(.bluetooth) }
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(service.connectReaderCallCount == 1)
+        #expect(service.collectPaymentWasCalled == true)
+        #expect(sut.currentPaymentMethod == .bluetooth)
+    }
+
     @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
     @MainActor
     func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {

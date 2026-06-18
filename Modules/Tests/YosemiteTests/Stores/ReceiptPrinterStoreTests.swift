@@ -137,6 +137,30 @@ struct ReceiptPrinterStoreTests {
         // Then
         #expect(printerDiscoveryService.disconnectWasCalled)
     }
+
+    @Test func test_printReceipt_forwards_arguments_to_service_and_completes_with_result() async {
+        // Given
+        let store = makeStore()
+        let content = ReceiptContent(parameters: .fake(), lineItems: [], cartTotals: [], orderNote: nil)
+        let storeInformation = ReceiptStoreInformation.empty
+
+        // When
+        let result: PrintingResult = await withCheckedContinuation { continuation in
+            store.onAction(ReceiptPrinterAction.printReceipt(content: content,
+                                                             storeInformation: storeInformation,
+                                                             cardDetails: nil) { result in
+                continuation.resume(returning: result)
+            })
+        }
+
+        // Then
+        #expect(printerDiscoveryService.printedContent != nil)
+        #expect(printerDiscoveryService.printedStoreInformation == storeInformation)
+        #expect(printerDiscoveryService.printedCardDetails == nil)
+        if case .success = result {} else {
+            Issue.record("Expected a successful print result")
+        }
+    }
 }
 
 private extension ReceiptPrinterStoreTests {

@@ -40,6 +40,11 @@ public final class ReceiptPrinterStore: Store {
             connect(to: printer, completion: completion)
         case let .disconnect(completion):
             disconnect(completion: completion)
+        case let .printReceipt(content, storeInformation, cardDetails, completion):
+            printerDiscoveryService.printReceipt(content: content,
+                                                 storeInformation: storeInformation,
+                                                 cardDetails: cardDetails,
+                                                 completion: completion)
         }
     }
 }

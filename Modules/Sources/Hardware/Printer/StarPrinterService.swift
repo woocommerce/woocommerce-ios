@@ -15,6 +15,8 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
     private var printer: StarPrinter?
 
+    private let receiptTextBuilder = StarReceiptTextBuilder()
+
     /// The in-flight discovery session, if any. A session uses identity (`===`) to tell whether it is
     /// still current, so a superseded or cancelled session never mistakes itself for the active one.
     private var activeSession: DiscoverySession?
@@ -82,6 +84,28 @@ public final class StarPrinterService: PrinterDiscoveryService {
         await printer?.close()
         printer = nil
         connectionStatusSubject.send(.disconnected)
+    }
+
+    public func printReceipt(content: ReceiptContent,
+                             storeInformation: ReceiptStoreInformation,
+                             cardDetails: CardPresentTransactionDetails?,
+                             completion: @escaping (PrintingResult) -> Void) {
+        guard let printer else {
+            DDLogError("🖨️ Cannot print: no printer connected")
+            return completion(.failure(StarPrinterError.printerNotConnected))
+        }
+
+        let command = printCommand(content: content, storeInformation: storeInformation, cardDetails: cardDetails)
+        Task {
+            do {
+                try await printer.print(command: command)
+                DDLogInfo("🖨️ Receipt printed")
+                completion(.success)
+            } catch {
+                DDLogError("🖨️ Receipt printing failed: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
     }
 }
 
@@ -176,6 +200,22 @@ private extension StarPrinterService {
         discoveredPrinters[device.id] = starPrinter
         lock.unlock()
     }
+
+    /// Wraps the rendered receipt text into a StarXpand print command.
+    func printCommand(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) -> String {
+        let text = receiptTextBuilder.makeReceiptText(content: content,
+                                                      storeInformation: storeInformation,
+                                                      cardDetails: cardDetails)
+        let printerBuilder = StarXpandCommand.PrinterBuilder()
+            .actionPrintText(text)
+            .actionFeedLine(2)
+            .actionCut(.partial)
+        return StarXpandCommand.StarXpandCommandBuilder()
+            .addDocument(StarXpandCommand.DocumentBuilder().addPrinter(printerBuilder))
+            .getCommands()
+    }
 }
 
 /// Bundles the state for a single `discover()` call, so a session's manager, delegate, and stream
@@ -254,4 +294,5 @@ extension StarPrinterService: PrinterDelegate {
 enum StarPrinterError: Error {
     case discoveryFailure
     case printerNotFound
+    case printerNotConnected
 }

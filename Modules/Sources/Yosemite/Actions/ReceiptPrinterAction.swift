@@ -23,4 +23,14 @@ public enum ReceiptPrinterAction: Action {
     /// Disconnects from the currently connected printer, if any.
     ///
     case disconnect(completion: () -> Void)
+
+    /// Prints a receipt on the connected printer.
+    ///
+    /// `cardDetails` are included in the printed card/EMV block when present; pass `nil` for
+    /// cash and other payment methods so the receipt prints without card fields.
+    ///
+    case printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?,
+                      completion: (PrintingResult) -> Void)
 }

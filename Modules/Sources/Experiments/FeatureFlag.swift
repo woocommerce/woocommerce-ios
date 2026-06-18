@@ -195,10 +195,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCatalogAPI
 
-    /// Enables the refunds functionality within POS
-    ///
-    case pointOfSaleRefundsi1
-
     /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
     case pointOfSaleRoles

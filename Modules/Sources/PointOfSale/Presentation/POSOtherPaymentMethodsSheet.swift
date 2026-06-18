@@ -3,6 +3,9 @@ import SwiftUI
 /// Bottom sheet shown when the merchant taps "Other payment methods" on phone POS checkout.
 /// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
+    var isTapToPayAvailable: Bool = false
+    var onTapToPay: (() -> Void)?
+    var isCardReaderAvailable: Bool = true
     /// False while Bluetooth is already active for this payment.
     var isCardReaderEnabled: Bool = true
     let onCardReader: () -> Void
@@ -22,13 +25,25 @@ struct POSOtherPaymentMethodsSheet: View {
                 .padding(.top, POSPadding.large)
                 .padding(.bottom, POSPadding.medium)
 
-            row(systemImage: "creditcard",
-                title: Localization.cardReaderTitle,
-                subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
-                accessibilityIdentifier: "pos-other-payments-card-reader",
-                isEnabled: isCardReaderEnabled) {
-                dismiss()
-                onCardReader()
+            if isTapToPayAvailable, let onTapToPay {
+                row(systemImage: "iphone.gen3.radiowaves.left.and.right",
+                    title: Localization.tapToPayTitle,
+                    subtitle: Localization.tapToPaySubtitle,
+                    accessibilityIdentifier: "pos-other-payments-tap-to-pay") {
+                    dismiss()
+                    onTapToPay()
+                }
+            }
+
+            if isCardReaderAvailable {
+                row(systemImage: "creditcard",
+                    title: Localization.cardReaderTitle,
+                    subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-card-reader",
+                    isEnabled: isCardReaderEnabled) {
+                    dismiss()
+                    onCardReader()
+                }
             }
 
             if isScanToPayAvailable, let onScanToPay {
@@ -113,6 +128,16 @@ private extension POSOtherPaymentMethodsSheet {
             value: "Card reader",
             comment: "Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader."
         )
+        static let tapToPayTitle = NSLocalizedString(
+            "pos.otherPaymentMethods.tapToPay.title",
+            value: "Tap to Pay",
+            comment: "Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay."
+        )
+        static let tapToPaySubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.tapToPay.subtitle",
+            value: "Use this iPhone to take card payments.",
+            comment: "Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay."
+        )
         static let cardReaderSubtitle = NSLocalizedString(
             "pos.otherPaymentMethods.cardReader.subtitle",
             value: "Connect a Bluetooth reader to take card payments.",
@@ -153,6 +178,8 @@ private extension POSOtherPaymentMethodsSheet {
 
 #Preview("All methods enabled") {
     POSOtherPaymentMethodsSheet(
+        isTapToPayAvailable: true,
+        onTapToPay: {},
         onCardReader: {},
         isScanToPayAvailable: true,
         onScanToPay: {},

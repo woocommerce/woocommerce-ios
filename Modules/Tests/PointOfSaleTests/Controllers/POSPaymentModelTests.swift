@@ -2233,6 +2233,96 @@ struct POSPaymentModelTests {
         #expect(sut.currentPaymentMethod == nil)
     }
 
+    @Test("compact mode starts with Tap to Pay selected when Tap to Pay is preferred")
+    @MainActor
+    func test_init_when_compact_mode_and_TTP_preferred_then_selected_rail_is_TTP() async {
+        // Given / When
+        let sut = makePaymentController(
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.isCompactCardPaymentSelectionEnabled == true)
+    }
+
+    @Test("compact mode keeps connected Bluetooth selected when checkout starts")
+    @MainActor
+    func test_startPayment_when_compact_mode_and_BT_selected_then_does_not_disconnect_reader_for_TTP() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            sut.connectCardReader()
+        }
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(service.disconnectReaderCallCount == 0)
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.currentPaymentMethod == .bluetooth)
+    }
+
+    @Test("compact mode disconnecting Bluetooth switches back to Tap to Pay when available")
+    @MainActor
+    func test_disconnectCardReader_when_compact_mode_and_TTP_available_then_selected_rail_returns_to_TTP() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = .init(name: "BT Reader", batteryLevel: 0.85)
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = { continuation.resume() }
+            sut.connectCardReader()
+        }
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+
+        // When
+        await withCheckedContinuation { continuation in
+            service.onDisconnectReaderCalled = { continuation.resume() }
+            sut.disconnectCardReader()
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+    }
+
+    @Test("compact mode secondary payments preserve selected card rail")
+    @MainActor
+    func test_startCashPayment_when_compact_mode_and_BT_selected_then_selected_rail_is_preserved() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        sut.startCashPayment()
+        await Task.yield()
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(service.cancelPaymentCalled == true)
+    }
+
     @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
     @MainActor
     func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {
@@ -2326,6 +2416,7 @@ private func makePaymentController(
     celebration: PaymentCaptureCelebrationProtocol = MockPaymentCaptureCelebration(),
     scanToPayPollInterval: TimeInterval = 3,
     preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+    cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
     POSPaymentModel(
@@ -2343,5 +2434,6 @@ private func makePaymentController(
         celebration: celebration,
         scanToPayPollInterval: scanToPayPollInterval,
         preferredConnectionMethod: preferredConnectionMethod,
+        cardPaymentSelectionMode: cardPaymentSelectionMode,
         paymentState: paymentState)
 }

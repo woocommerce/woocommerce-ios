@@ -34,6 +34,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
 
+    /// Observes invalid application password notification
+    ///
+    private var invalidApplicationPasswordNotificationObserver: NSObjectProtocol?
+
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
@@ -169,6 +173,8 @@ class DefaultStoresManager: StoresManager {
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
             startObservingNetworkNotifications()
+        } else if isLoggedIn {
+            listenToApplicationPasswordInvalidatedNotification()
         }
     }
 
@@ -205,10 +211,12 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {
+            stopObservingApplicationPasswordInvalidation()
             listenToWPCOMInvalidWPCOMTokenNotification()
             startObservingNetworkNotifications()
         } else {
             invalidWPCOMTokenNotificationObserver = nil
+            listenToApplicationPasswordInvalidatedNotification()
             stopObservingNetworkNotifications()
         }
 
@@ -223,6 +231,28 @@ class DefaultStoresManager: StoresManager {
                                                                                queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
+    }
+
+    /// De-authenticates upon receiving `ApplicationPasswordInvalidated` notification for non-WP.com sessions.
+    ///
+    func listenToApplicationPasswordInvalidatedNotification() {
+        stopObservingApplicationPasswordInvalidation()
+        invalidApplicationPasswordNotificationObserver = notificationCenter.addObserver(forName: .ApplicationPasswordInvalidated,
+                                                                                        object: nil,
+                                                                                        queue: .main) { [weak self] _ in
+            guard self?.isAuthenticatedWithoutWPCom == true else {
+                return
+            }
+            _ = self?.deauthenticate()
+        }
+    }
+
+    func stopObservingApplicationPasswordInvalidation() {
+        guard let invalidApplicationPasswordNotificationObserver else {
+            return
+        }
+        notificationCenter.removeObserver(invalidApplicationPasswordNotificationObserver)
+        self.invalidApplicationPasswordNotificationObserver = nil
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -292,6 +322,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         invalidWPCOMTokenNotificationObserver = nil
+        stopObservingApplicationPasswordInvalidation()
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
 

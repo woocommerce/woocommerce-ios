@@ -18,6 +18,11 @@ public enum ApplicationPasswordUseCaseError: Error {
     case notSupported
 }
 
+public enum ApplicationPasswordValidationResult {
+    case valid
+    case invalid(Error)
+}
+
 public protocol ApplicationPasswordUseCase {
     /// Returns the locally saved ApplicationPassword if available
     ///
@@ -26,11 +31,19 @@ public protocol ApplicationPasswordUseCase {
     /// Whether the use case is capable of re-generating password
     var canRegenerateApplicationPassword: Bool { get }
 
+    /// Whether the use case is capable of validating the stored password with the site.
+    ///
+    var canValidateApplicationPassword: Bool { get }
+
     /// Generates new ApplicationPassword
     ///
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     func generateNewPassword() async throws -> ApplicationPassword
+
+    /// Validates the stored application password with the site.
+    ///
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult
 
     /// Deletes the application password
     ///
@@ -38,6 +51,14 @@ public protocol ApplicationPasswordUseCase {
     /// or only sends an API request to delete it from the site.
     ///
     func deletePassword(locally: Bool) async throws
+}
+
+public extension ApplicationPasswordUseCase {
+    var canValidateApplicationPassword: Bool { false }
+
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        throw ApplicationPasswordUseCaseError.notSupported
+    }
 }
 
 public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {

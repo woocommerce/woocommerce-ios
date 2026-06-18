@@ -539,6 +539,44 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    func test_it_deauthenticates_non_wpcom_session_upon_receiving_application_password_invalidated_notification() {
+        // Given
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
+
+    func test_it_does_not_deauthenticate_wpcom_session_upon_receiving_application_password_invalidated_notification() {
+        // Given
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
+    }
+
     /// Verifies that default store is reset when initialized in an unexpected state: deauthenticated state with default store set.
     ///
     func test_it_resets_default_store_when_initialized_with_deauthenticated_state_and_default_store_set() {

@@ -16,6 +16,11 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     /// Whether the use case is capable of re-generating password
     public var canRegenerateApplicationPassword: Bool { false }
 
+    /// Whether the use case is capable of validating the stored password with the site.
+    public var canValidateApplicationPassword: Bool {
+        applicationPassword != nil
+    }
+
     private let siteAddress: String
     private let session: URLSessionProtocol
     private let storage: ApplicationPasswordStorageType
@@ -46,6 +51,29 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         throw ApplicationPasswordUseCaseError.notSupported
     }
 
+    public func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        guard applicationPassword != nil else {
+            throw ApplicationPasswordUseCaseError.notSupported
+        }
+
+        let discoveredRoot = await discovery(siteAddress)
+        let (data, response) = try await fetchIntrospectionResponse(discoveredRoot: discoveredRoot)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidURL
+        }
+
+        guard !Constants.successStatusCodes.contains(httpResponse.statusCode) else {
+            return .valid
+        }
+
+        let error = networkError(statusCode: httpResponse.statusCode, response: data)
+        if isCredentialInvalid(error) {
+            return .invalid(error)
+        }
+        throw error
+    }
+
     public func deletePassword(locally: Bool) async throws {
         /// Always fetch UUID because the one in storage was generated locally only.
         /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
@@ -68,13 +96,10 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
 private extension OneTimeApplicationPasswordUseCase {
     func fetchApplicationPasswordUUID(discoveredRoot: String?) async throws -> String? {
-        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
+        guard restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) != nil else {
             return nil
         }
-
-        let request = try URLRequest(url: url, method: .get)
-        let authenticatedRequest = authenticateRequest(request: request)
-        let (data, _) = try await session.data(for: authenticatedRequest)
+        let (data, _) = try await fetchIntrospectionResponse(discoveredRoot: discoveredRoot)
 
         let decoder = JSONDecoder()
         if let username = applicationPassword?.wpOrgUsername {
@@ -85,6 +110,16 @@ private extension OneTimeApplicationPasswordUseCase {
 
         let password = try decoder.decode(ApplicationPassword.self, from: data)
         return password.uuid
+    }
+
+    func fetchIntrospectionResponse(discoveredRoot: String?) async throws -> (Data, URLResponse) {
+        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
+            throw NetworkError.invalidURL
+        }
+
+        let request = try URLRequest(url: url, method: .get)
+        let authenticatedRequest = authenticateRequest(request: request)
+        return try await session.data(for: authenticatedRequest)
     }
 
     func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
@@ -114,5 +149,28 @@ private extension OneTimeApplicationPasswordUseCase {
         authenticatedRequest.httpShouldHandleCookies = false
 
         return authenticatedRequest
+    }
+
+    func networkError(statusCode: Int, response: Data?) -> NetworkError {
+        NetworkError(responseData: response, statusCode: statusCode) ?? .unacceptableStatusCode(statusCode: statusCode, response: response)
+    }
+
+    func isCredentialInvalid(_ error: NetworkError) -> Bool {
+        if let responseCode = error.responseCode,
+           Constants.credentialInvalidStatusCodes.contains(responseCode) {
+            return true
+        }
+
+        if let errorCode = error.errorCode,
+           Constants.credentialInvalidErrorCodes.contains(errorCode) {
+            return true
+        }
+        return false
+    }
+
+    enum Constants {
+        static let successStatusCodes = 200..<300
+        static let credentialInvalidStatusCodes = [401, 403]
+        static let credentialInvalidErrorCodes = ["incorrect_password"]
     }
 }

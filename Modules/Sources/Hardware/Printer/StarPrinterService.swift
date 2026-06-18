@@ -18,9 +18,17 @@ public final class StarPrinterService: PrinterDiscoveryService {
     // swiftlint:disable:next weak_delegate
     private var discoveryDelegate: StarDiscoveryDelegate?
 
+    /// Identifies the active discovery session. A stream only tears down the session it started, so a
+    /// stale stream finishing can never clear a session that a later `discover()` call replaced it with.
+    private var discoverySessionID = 0
+
     /// Maps a discovered device's identifier to its underlying `StarPrinter`,
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
+
+    /// Serialises access to the discovery-session state and `discoveredPrinters`, which are touched from
+    /// both StarIO10 callbacks and the discovery/connection methods. Mirrors `StripeCardReaderService`.
+    private let lock = NSLock()
 
     private let connectionStatusSubject = CurrentValueSubject<PrinterConnectionStatus, Never>(.idle)
     public var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
@@ -29,10 +37,13 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
     public func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
         AsyncThrowingStream { [weak self] continuation in
+            guard let self else {
+                continuation.finish()
+                return
+            }
             Task {
                 do {
                     let discovery = try StarDeviceDiscoveryManagerFactory.create(interfaceTypes: [.bluetooth, .bluetoothLE])
-                    self?.discoveryManager = discovery
 
                     let delegate = StarDiscoveryDelegate(
                         onFind: { [weak self] starPrinter in
@@ -40,23 +51,24 @@ public final class StarPrinterService: PrinterDiscoveryService {
                                 id: starPrinter.connectionSettings.identifier,
                                 name: starPrinter.connectionSettings.identifier
                             )
-                            self?.discoveredPrinters[device.id] = starPrinter
+                            self?.storeDiscoveredPrinter(starPrinter, for: device)
                             continuation.yield(device)
                         },
                         onFinish: {
                             continuation.finish()
                         }
                     )
-                    self?.discoveryDelegate = delegate
                     discovery.delegate = delegate
-
                     discovery.discoveryTime = Constants.discoveryTimeInMilliseconds
-                    try discovery.startDiscovery()
 
+                    // Register (taking over from any in-flight session) before starting discovery, so the
+                    // termination handler also tears down state if `startDiscovery()` throws.
+                    let sessionID = self.beginDiscoverySession(manager: discovery, delegate: delegate)
                     continuation.onTermination = { [weak self] _ in
-                        discovery.stopDiscovery()
-                        self?.discoveryDelegate = nil
+                        self?.endDiscoverySession(sessionID)
                     }
+
+                    try discovery.startDiscovery()
                 } catch {
                     DDLogError("🖨️ Printer discovery failed: \(error.localizedDescription)")
                     continuation.finish(throwing: StarPrinterError.discoveryFailure)
@@ -66,11 +78,18 @@ public final class StarPrinterService: PrinterDiscoveryService {
     }
 
     public func stopDiscovery() {
-        discoveryManager?.stopDiscovery()
+        lock.lock()
+        let manager = discoveryManager
+        lock.unlock()
+        manager?.stopDiscovery()
     }
 
     public func connect(to device: PrinterDevice) async throws {
-        guard let starPrinter = discoveredPrinters[device.id] else {
+        lock.lock()
+        let discoveredPrinter = discoveredPrinters[device.id]
+        lock.unlock()
+
+        guard let starPrinter = discoveredPrinter else {
             DDLogError("🖨️ No discovered printer matches device id \(device.id)")
             throw StarPrinterError.printerNotFound
         }
@@ -100,6 +119,47 @@ public final class StarPrinterService: PrinterDiscoveryService {
 private extension StarPrinterService {
     enum Constants {
         static let discoveryTimeInMilliseconds = 30000
+    }
+
+    func storeDiscoveredPrinter(_ starPrinter: StarPrinter, for device: PrinterDevice) {
+        lock.lock()
+        discoveredPrinters[device.id] = starPrinter
+        lock.unlock()
+    }
+
+    /// Registers a new discovery session, stopping any in-flight one, and returns its identifier.
+    func beginDiscoverySession(manager: StarDeviceDiscoveryManager, delegate: StarDiscoveryDelegate) -> Int {
+        lock.lock()
+        let previousManager = discoveryManager
+        let previousDelegate = discoveryDelegate
+        discoverySessionID += 1
+        let sessionID = discoverySessionID
+        discoveryManager = manager
+        discoveryDelegate = delegate
+        lock.unlock()
+
+        // Keep the previous delegate alive while stopping its manager, then release it outside the lock.
+        // StarIO10 holds the manager's delegate weakly, so releasing it under the lock could deallocate it
+        // and re-enter the lock via its stream's termination handler, deadlocking a non-recursive `NSLock`.
+        withExtendedLifetime(previousDelegate) {
+            previousManager?.stopDiscovery()
+        }
+        return sessionID
+    }
+
+    /// Tears down a discovery session, but only while it is still the active one.
+    func endDiscoverySession(_ sessionID: Int) {
+        lock.lock()
+        guard sessionID == discoverySessionID else {
+            lock.unlock()
+            return
+        }
+        let manager = discoveryManager
+        discoveryManager = nil
+        discoveryDelegate = nil
+        lock.unlock()
+
+        manager?.stopDiscovery()
     }
 }
 

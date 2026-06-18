@@ -60,6 +60,22 @@ struct ReceiptPrinterStoreTests {
         #expect(printerDiscoveryService.discoverWasCalled)
     }
 
+    @Test func test_discover_when_service_stream_throws_then_propagates_error() async throws {
+        // Given
+        let store = makeStore()
+        printerDiscoveryService.discoveryError = SampleError.connectionFailed
+
+        // When
+        var stream: AsyncThrowingStream<PrinterDevice, Error>?
+        store.onAction(ReceiptPrinterAction.discover { stream = $0 })
+
+        // Then
+        let unwrappedStream = try #require(stream)
+        await #expect(throws: SampleError.connectionFailed) {
+            for try await _ in unwrappedStream {}
+        }
+    }
+
     @Test func test_stopDiscovery_calls_service() {
         // Given
         let store = makeStore()

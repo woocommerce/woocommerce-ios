@@ -23,8 +23,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    /// Serialises access to `activeSession` and `discoveredPrinters`, which are touched from both
-    /// StarIO10 callbacks and the discovery/connection methods. Mirrors `StripeCardReaderService`.
+    /// Guards reads and writes of `activeSession` and `discoveredPrinters`, which are touched from both
+    /// StarIO10 callback threads and the discovery/connection methods. Held only for the field access:
+    /// the lock is non-recursive, so call-outs to the SDK (and finishing a stream, which can re-enter via
+    /// a termination handler) are always done after unlocking.
     private let lock = NSLock()
 
     private let connectionStatusSubject = CurrentValueSubject<PrinterConnectionStatus, Never>(.idle)

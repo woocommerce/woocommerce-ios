@@ -88,12 +88,8 @@ private struct ShareSheetModifier: ViewModifier {
         content
             .background(ShareSheetAnchorView(sourceView: $sourceView))
             .sheet(isPresented: $isPresented) {
-                if #available(iOS 16.0, *) {
-                    ShareSheetView(shareSheet: shareSheet(), sourceView: sourceView)
-                        .presentationDetents([.medium, .large])
-                } else {
-                    ShareSheetView(shareSheet: shareSheet(), sourceView: sourceView)
-                }
+                ShareSheetView(shareSheet: shareSheet(), sourceView: sourceView)
+                    .presentationDetents([.medium, .large])
             }
     }
 }

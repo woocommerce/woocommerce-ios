@@ -96,11 +96,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSalePhonePrototype:
             return true
         case .pointOfSaleScanToPay:
-            // Temporary out
-            return false
+            return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
-            // Temporary out
-            return false
+            return buildConfig == .localDeveloper
         case .pointOfSaleTapToPay:
             // Behind the flag while the TTP integration lands. localDeveloper-only so
             // alpha and beta keep showing only Cash + Card reader for now.

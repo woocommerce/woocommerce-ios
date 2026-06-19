@@ -267,10 +267,6 @@ extension POSPaymentModel {
         logInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), " +
                 "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
-        if isCompactCardPaymentSelectionEnabled {
-            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
-        }
-
         // Same-method re-entry guard. `currentPaymentMethod` is the canonical
         // "in flight" check, including the early Tap to Pay window before the
         // first payment-state event arrives.
@@ -287,6 +283,10 @@ extension POSPaymentModel {
         if paymentState.card != .idle, currentPaymentMethod == nil {
             DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — non-idle card state with no active method")
             return
+        }
+
+        if isCompactCardPaymentSelectionEnabled {
+            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
 
         // Method-switch path: the merchant is switching from one active

@@ -2377,6 +2377,27 @@ struct POSPaymentModelTests {
         #expect(sut.currentPaymentMethod == .bluetooth)
     }
 
+    @Test("compact mode ignored card start request does not change selected rail")
+    @MainActor
+    func test_startPaymentWithMethod_when_compact_mode_and_card_state_is_non_idle_then_selected_rail_is_preserved() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact,
+            paymentState: .init(card: .processingPayment, cash: .idle))
+
+        // When
+        await sut.startPaymentWithMethod(.bluetooth)
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.connectReaderCallCount == 0)
+        #expect(service.collectPaymentWasCalled == false)
+    }
+
     @Test("startPaymentWithMethod ignores re-entry of the same method during an active session")
     @MainActor
     func test_startPaymentWithMethod_when_called_again_with_same_method_then_ignored() async {

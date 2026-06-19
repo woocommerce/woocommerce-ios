@@ -3,6 +3,7 @@
 
 25.1
 -----
+- [***] Phone POS available for UK-based stores [https://github.com/woocommerce/woocommerce-ios/pull/17325]
 - [*] Login: show the specific reason when signing in fails with a blocked WordPress.com account, instead of an incorrect-password message. [https://github.com/woocommerce/woocommerce-ios/pull/17378]
 - [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/17359]
 - [*] Fixed a crash that could occur when picking an image from the device library while editing a product. [https://github.com/woocommerce/woocommerce-ios/pull/17369]

@@ -121,7 +121,13 @@ open class Remote: NSObject {
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
     ///
+    /// - Parameter parseInBackground: When `true`, the response is parsed on a background queue and
+    ///   `completion` is delivered back on the main queue. Use this for endpoints whose payloads are
+    ///   large enough that parsing on the main thread would block it (e.g. the REST root route map
+    ///   fetched by `SiteAPIRemote`). Defaults to `false`, preserving the existing main-thread parsing.
+    ///   See WOOMOB-3314.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
+                            parseInBackground: Bool = false,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.responseData(for: request) { [weak self] result in
             guard let self else {
@@ -130,16 +136,39 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                do {
-                    let validator = request.responseDataValidator()
-                    try validator.validate(data: data)
-                    let parsed = try mapper.map(response: data)
-                    completion(.success(parsed))
-                } catch {
-                    self.handleResponseError(error: error, for: request)
-                    self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                    DDLogError("<> Mapping Error: \(error)")
-                    completion(.failure(error))
+                if parseInBackground {
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        guard let self else {
+                            return
+                        }
+                        do {
+                            let validator = request.responseDataValidator()
+                            try validator.validate(data: data)
+                            let parsed = try mapper.map(response: data)
+                            DispatchQueue.main.async {
+                                completion(.success(parsed))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                self.handleResponseError(error: error, for: request)
+                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                                DDLogError("<> Mapping Error: \(error)")
+                                completion(.failure(error))
+                            }
+                        }
+                    }
+                } else {
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        let parsed = try mapper.map(response: data)
+                        completion(.success(parsed))
+                    } catch {
+                        self.handleResponseError(error: error, for: request)
+                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                        DDLogError("<> Mapping Error: \(error)")
+                        completion(.failure(error))
+                    }
                 }
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))

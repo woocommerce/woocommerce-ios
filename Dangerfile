@@ -2,9 +2,6 @@
 
 github.dismiss_out_of_range_messages
 
-# `files: []` forces rubocop to scan all files, not just the ones modified in the PR
-rubocop.lint(files: [], force_exclusion: true, inline_comment: true, fail_on_inline_comment: true, include_cop_names: true)
-
 manifest_pr_checker.check_all_manifest_lock_updated
 
 ios_release_checker.check_core_data_model_changed

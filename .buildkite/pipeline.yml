@@ -105,6 +105,15 @@ steps:
         agents:
           queue: linter
 
+      - label: ":rubocop: RuboCop"
+        command: rubocop
+        key: rubocop
+        if: build.pull_request.id != null
+        agents:
+          queue: linter
+        notify:
+          - github_commit_status:
+              context: RuboCop
 
       - label: 🧹 Lint Translations
         command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot

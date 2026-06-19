@@ -193,6 +193,7 @@ struct TotalsView: View {
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
+                isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
                 onTapToPay: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
@@ -845,13 +846,17 @@ private extension TotalsView {
         )
     }
 
-    /// Card reader is disabled only while Bluetooth is the active payment method.
-    /// `cardReaderConnectionStatus` is not enough because Tap to Pay pre-connects can also report `.connected`.
     var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
-        paymentModel.isBluetoothReaderSelected &&
         posModel.tapToPayAvailabilityController?.state.isAvailable == true
     }
 
+    var isTapToPayRowEnabledInOtherMethodsSheet: Bool {
+        guard paymentModel.isCompactCardPaymentSelectionEnabled else { return true }
+        return paymentModel.selectedCardPaymentRail != .tapToPay
+    }
+
+    /// Card reader is disabled only while Bluetooth is the active payment method.
+    /// `cardReaderConnectionStatus` is not enough because Tap to Pay pre-connects can also report `.connected`.
     var isCardReaderRowEnabledInOtherMethodsSheet: Bool {
         paymentModel.currentPaymentMethod != .bluetooth
     }

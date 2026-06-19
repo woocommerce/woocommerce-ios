@@ -4,6 +4,7 @@ import SwiftUI
 /// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
     var isTapToPayAvailable: Bool = false
+    var isTapToPayEnabled: Bool = true
     var onTapToPay: (() -> Void)?
     /// False while Bluetooth is already active for this payment.
     var isCardReaderEnabled: Bool = true
@@ -27,8 +28,9 @@ struct POSOtherPaymentMethodsSheet: View {
             if isTapToPayAvailable, let onTapToPay {
                 row(systemImage: "wave.3.right.circle",
                     title: Localization.tapToPayTitle,
-                    subtitle: Localization.tapToPaySubtitle,
-                    accessibilityIdentifier: "pos-other-payments-tap-to-pay") {
+                    subtitle: isTapToPayEnabled ? Localization.tapToPaySubtitle : Localization.tapToPayDisabledSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-tap-to-pay",
+                    isEnabled: isTapToPayEnabled) {
                     dismiss()
                     onTapToPay()
                 }
@@ -134,6 +136,11 @@ private extension POSOtherPaymentMethodsSheet {
             "pos.otherPaymentMethods.tapToPay.subtitle",
             value: "Use this iPhone to take card payments.",
             comment: "Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay."
+        )
+        static let tapToPayDisabledSubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.tapToPay.disabled.subtitle",
+            value: "Tap to Pay is already selected for this payment.",
+            comment: "Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected."
         )
         static let cardReaderSubtitle = NSLocalizedString(
             "pos.otherPaymentMethods.cardReader.subtitle",

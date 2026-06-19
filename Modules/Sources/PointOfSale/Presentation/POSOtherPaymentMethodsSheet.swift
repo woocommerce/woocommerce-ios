@@ -1,26 +1,10 @@
 import SwiftUI
 
-/// Bottom sheet shown when the merchant taps "Other payment methods" on the phone
-/// POS checkout. Lists the non-primary payment methods available to the merchant
-/// for the current screen state:
-///
-/// - On the TTP-available + no-reader-connected screen (paired with the TTP hero),
-///   this lists Card reader, Scan to Pay, and Mark order as paid.
-/// - On the TTP-available + BT-reader-connected screen, this lists only Scan to Pay
-///   and Mark order as paid. The Card reader row is hidden because a reader is
-///   already connected.
-///
-/// The iOS phone POS uses a one-shot Bluetooth model: the BT session must finish
-/// (success / cancel / abandonment) before the merchant returns to the TTP hero
-/// where Tap to Pay is the primary CTA again. Tap to Pay is therefore never
-/// surfaced as a sheet row — deliberately diverging from Android (samiuelson
-/// #15842 / #15825), which offers Tap to Pay as a sheet row during a BT session
-/// to let the merchant switch mid-flow.
+/// Bottom sheet shown when the merchant taps "Other payment methods" on phone POS checkout.
+/// Lists secondary payment methods, keeping Card reader visible but disabled while Bluetooth is active.
 struct POSOtherPaymentMethodsSheet: View {
-    /// True when the Card reader row should appear. Pass false when a reader is
-    /// already connected — the "Connect a Bluetooth reader…" subtitle would
-    /// mislead the merchant in that case.
-    var isCardReaderAvailable: Bool = true
+    /// False while Bluetooth is already active for this payment.
+    var isCardReaderEnabled: Bool = true
     let onCardReader: () -> Void
     var isScanToPayAvailable: Bool = false
     var onScanToPay: (() -> Void)?
@@ -38,14 +22,13 @@ struct POSOtherPaymentMethodsSheet: View {
                 .padding(.top, POSPadding.large)
                 .padding(.bottom, POSPadding.medium)
 
-            if isCardReaderAvailable {
-                row(systemImage: "creditcard",
-                    title: Localization.cardReaderTitle,
-                    subtitle: Localization.cardReaderSubtitle,
-                    accessibilityIdentifier: "pos-other-payments-card-reader") {
-                    dismiss()
-                    onCardReader()
-                }
+            row(systemImage: "creditcard",
+                title: Localization.cardReaderTitle,
+                subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
+                accessibilityIdentifier: "pos-other-payments-card-reader",
+                isEnabled: isCardReaderEnabled) {
+                dismiss()
+                onCardReader()
             }
 
             if isScanToPayAvailable, let onScanToPay {
@@ -79,21 +62,22 @@ struct POSOtherPaymentMethodsSheet: View {
                      title: String,
                      subtitle: String,
                      accessibilityIdentifier: String,
+                     isEnabled: Bool = true,
                      action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(alignment: .center, spacing: POSSpacing.medium) {
                 Image(systemName: systemImage)
                     .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posPrimary)
+                    .foregroundStyle(isEnabled ? Color.posPrimary : Color.posOnSurfaceVariantLowest)
                     .frame(width: Constants.iconFrameWidth)
 
                 VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(title)
                         .font(.posBodyMediumBold)
-                        .foregroundStyle(Color.posOnSurface)
+                        .foregroundStyle(isEnabled ? Color.posOnSurface : Color.posOnSurfaceVariantLowest)
                     Text(subtitle)
                         .font(.posBodySmallRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .foregroundStyle(isEnabled ? Color.posOnSurfaceVariantHighest : Color.posOnSurfaceVariantLowest)
                         .multilineTextAlignment(.leading)
                 }
 
@@ -104,6 +88,7 @@ struct POSOtherPaymentMethodsSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(!isEnabled)
         .accessibilityIdentifier(accessibilityIdentifier)
         .accessibilityElement(children: .combine)
         .accessibilityHint(subtitle)
@@ -132,6 +117,11 @@ private extension POSOtherPaymentMethodsSheet {
             "pos.otherPaymentMethods.cardReader.subtitle",
             value: "Connect a Bluetooth reader to take card payments.",
             comment: "Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader."
+        )
+        static let cardReaderDisabledSubtitle = NSLocalizedString(
+            "pos.otherPaymentMethods.cardReader.disabled.subtitle",
+            value: "Card reader is already selected for this payment.",
+            comment: "Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active."
         )
         static let scanToPayTitle = NSLocalizedString(
             "pos.otherPaymentMethods.scanToPay.title",
@@ -163,6 +153,17 @@ private extension POSOtherPaymentMethodsSheet {
 
 #Preview("All methods enabled") {
     POSOtherPaymentMethodsSheet(
+        onCardReader: {},
+        isScanToPayAvailable: true,
+        onScanToPay: {},
+        isMarkOrderAsPaidAvailable: true,
+        onMarkOrderAsPaid: {}
+    )
+}
+
+#Preview("Card reader disabled") {
+    POSOtherPaymentMethodsSheet(
+        isCardReaderEnabled: false,
         onCardReader: {},
         isScanToPayAvailable: true,
         onScanToPay: {},

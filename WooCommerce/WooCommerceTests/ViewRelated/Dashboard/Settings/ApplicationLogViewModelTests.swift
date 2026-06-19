@@ -1,5 +1,4 @@
 import XCTest
-import TestKit
 @testable import WooCommerce
 
 class ApplicationLogViewModelTests: XCTestCase {

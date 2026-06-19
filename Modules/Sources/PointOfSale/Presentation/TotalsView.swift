@@ -192,12 +192,21 @@ struct TotalsView: View {
         }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
+                isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
+                isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
+                onTapToPay: {
+                    guard !isStartingPayment else { return }
+                    isStartingPayment = true
+                    Task { @MainActor in
+                        await paymentModel.startCardPayment(with: .tapToPay)
+                    }
+                },
                 isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        await paymentModel.startPaymentWithMethod(.bluetooth)
+                        await paymentModel.startCardPayment(with: .bluetoothReader)
                     }
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
@@ -723,7 +732,15 @@ private extension TotalsView {
         case .tapToPay:
             handleTapToPayTapped()
         case .cardReader:
-            paymentModel.connectCardReader()
+            guard paymentModel.isCompactCardPaymentSelectionEnabled else {
+                paymentModel.connectCardReader()
+                return
+            }
+            guard !isStartingPayment else { return }
+            isStartingPayment = true
+            Task { @MainActor in
+                await paymentModel.startCardPayment(with: .bluetoothReader)
+            }
         case .cashPayment:
             paymentModel.startCashPayment()
         }
@@ -757,6 +774,9 @@ private extension TotalsView {
     /// Shows the Tap to Pay hero when Tap to Pay is available and no payment is in progress.
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
+        if paymentModel.isCompactCardPaymentSelectionEnabled {
+            guard paymentModel.selectedCardPaymentRail == .tapToPay else { return false }
+        }
         // Keep method-specific success UI visible instead of returning to the hero.
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
         guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
@@ -805,6 +825,13 @@ private extension TotalsView {
     /// or when Bluetooth is active while Tap to Pay is also available.
     var useCashAndOtherMethodsBottomStrip: Bool {
         if useTapToPayHeroLayout { return true }
+        if paymentModel.isBluetoothReaderSelected {
+            return totalsViewHelper.shouldShowCollectCashPaymentButton(
+                orderState: posModel.orderState,
+                paymentState: displayPaymentState,
+                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus
+            )
+        }
         // Bluetooth active: use the strip only when Tap to Pay would otherwise be an extra primary option.
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
@@ -819,6 +846,15 @@ private extension TotalsView {
         )
     }
 
+    var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
+        posModel.tapToPayAvailabilityController?.state.isAvailable == true
+    }
+
+    var isTapToPayRowEnabledInOtherMethodsSheet: Bool {
+        guard paymentModel.isCompactCardPaymentSelectionEnabled else { return true }
+        return paymentModel.selectedCardPaymentRail != .tapToPay
+    }
+
     /// Card reader is disabled only while Bluetooth is the active payment method.
     /// `cardReaderConnectionStatus` is not enough because Tap to Pay pre-connects can also report `.connected`.
     var isCardReaderRowEnabledInOtherMethodsSheet: Bool {
@@ -829,7 +865,7 @@ private extension TotalsView {
         guard !isStartingPayment else { return }
         isStartingPayment = true
         Task { @MainActor in
-            await paymentModel.startPaymentWithMethod(.tapToPay)
+            await paymentModel.startCardPayment(with: .tapToPay)
         }
     }
 

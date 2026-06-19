@@ -225,7 +225,8 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
-                preferredConnectionMethod: preferredConnectionMethod)
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

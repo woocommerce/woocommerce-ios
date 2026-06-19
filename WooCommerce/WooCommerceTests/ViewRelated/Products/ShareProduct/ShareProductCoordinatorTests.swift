@@ -54,6 +54,38 @@ final class ShareProductCoordinatorTests: XCTestCase {
         }
     }
 
+    func test_sharing_helper_configures_bar_button_item_as_share_popover_source() throws {
+        // Given
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad)
+        let url = try XCTUnwrap(URL(string: productPath))
+        let anchorItem = makeShareSheetAnchorItem()
+
+        // When
+        let activityViewController = try XCTUnwrap(SharingHelper.makeActivityViewController(url: url,
+                                                                                            title: "Test",
+                                                                                            from: anchorItem))
+
+        // Then
+        let popoverController = try XCTUnwrap(activityViewController.popoverPresentationController)
+        XCTAssertIdentical(popoverController.sourceItem as? UIBarButtonItem, anchorItem)
+    }
+
+    func test_sharing_helper_configures_view_as_share_popover_source() throws {
+        // Given
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad)
+        let url = try XCTUnwrap(URL(string: productPath))
+        let anchorView = UIView()
+
+        // When
+        let activityViewController = try XCTUnwrap(SharingHelper.makeActivityViewController(url: url,
+                                                                                            title: "Test",
+                                                                                            from: anchorView))
+
+        // Then
+        let popoverController = try XCTUnwrap(activityViewController.popoverPresentationController)
+        XCTAssertIdentical(popoverController.sourceItem as? UIView, anchorView)
+    }
+
     func test_AI_sheet_is_displayed_when_AI_is_available() throws {
         // Given
         let checker = MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true)

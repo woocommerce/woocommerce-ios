@@ -27,18 +27,8 @@ class SharingHelper {
                          from anchorView: UIView,
                          in viewController: UIViewController,
                          onCompletion: Completion? = nil) {
-        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
+        guard let avc = makeActivityViewController(url: url, title: title, from: anchorView, onCompletion: onCompletion) else {
             return
-        }
-
-        if UIDevice.isPad() {
-            avc.modalPresentationStyle = .popover
-        }
-
-        if let presentationController = avc.popoverPresentationController {
-            presentationController.permittedArrowDirections = .any
-            presentationController.sourceView = anchorView
-            presentationController.sourceRect = anchorView.bounds
         }
 
         viewController.present(avc, animated: true)
@@ -57,17 +47,35 @@ class SharingHelper {
                          from item: UIBarButtonItem,
                          in viewController: UIViewController,
                          onCompletion: Completion? = nil) {
-        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
+        guard let avc = makeActivityViewController(url: url, title: title, from: item, onCompletion: onCompletion) else {
             return
         }
 
-        if UIDevice.isPad() {
-            avc.modalPresentationStyle = .popover
+        viewController.present(avc, animated: true)
+    }
+
+    static func makeActivityViewController(url: URL,
+                                           title: String? = nil,
+                                           from anchorView: UIView,
+                                           onCompletion: Completion? = nil) -> UIActivityViewController? {
+        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
+            return nil
         }
 
-        let popoverController = avc.popoverPresentationController
-        popoverController?.barButtonItem = item
-        viewController.present(avc, animated: true)
+        configurePresentation(for: avc, sourceView: anchorView)
+        return avc
+    }
+
+    static func makeActivityViewController(url: URL,
+                                           title: String? = nil,
+                                           from item: UIBarButtonItem,
+                                           onCompletion: Completion? = nil) -> UIActivityViewController? {
+        guard let avc = createActivityVC(title: title, url: url, onCompletion: onCompletion) else {
+            return nil
+        }
+
+        configurePresentation(for: avc, sourceItem: item)
+        return avc
     }
 
     /// List all activity types.
@@ -116,5 +124,13 @@ private extension SharingHelper {
         let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         activityController.completionWithItemsHandler = onCompletion
         return activityController
+    }
+
+    static func configurePresentation(for activityViewController: UIActivityViewController, sourceView: UIView) {
+        activityViewController.popoverPresentationController?.sourceItem = sourceView
+    }
+
+    static func configurePresentation(for activityViewController: UIActivityViewController, sourceItem: UIBarButtonItem) {
+        activityViewController.popoverPresentationController?.sourceItem = sourceItem
     }
 }

@@ -6,58 +6,27 @@ struct ShareSheet {
     typealias Completion = (UIActivity.ActivityType?, Bool, [Any]?, Error?) -> Void
     let activityItems: [Any]
     let excludedActivityTypes: [UIActivity.ActivityType]?
+    let permittedArrowDirections: UIPopoverArrowDirection?
     let completion: Completion?
 
-    init(activityItems: [Any], excludedActivityTypes: [UIActivity.ActivityType]? = nil, completion: Completion? = nil) {
+    init(activityItems: [Any],
+         excludedActivityTypes: [UIActivity.ActivityType]? = nil,
+         permittedArrowDirections: UIPopoverArrowDirection? = nil,
+         completion: Completion? = nil) {
         self.activityItems = activityItems
         self.excludedActivityTypes = excludedActivityTypes
+        self.permittedArrowDirections = permittedArrowDirections
         self.completion = completion
     }
 }
 
-private struct ShareSheetView: UIViewControllerRepresentable {
-    let shareSheet: ShareSheet
-    let sourceView: UIView?
+private struct ShareSheetPresenterView: UIViewRepresentable {
+    @Binding var isPresented: Bool
+    let shareSheet: () -> ShareSheet
 
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(
-            activityItems: shareSheet.activityItems, applicationActivities: nil)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            controller.modalPresentationStyle = .popover
-        }
-        controller.excludedActivityTypes = shareSheet.excludedActivityTypes
-        controller.completionWithItemsHandler = { activityType, completed, items, error in
-            shareSheet.completion?(activityType, completed, items, error)
-        }
-        configurePopover(for: controller)
-        return controller
+    func makeCoordinator() -> Coordinator {
+        Coordinator(isPresented: $isPresented)
     }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
-        configurePopover(for: uiViewController)
-    }
-
-    private func configurePopover(for controller: UIActivityViewController) {
-        guard let popoverController = controller.popoverPresentationController else {
-            return
-        }
-
-        controller.loadViewIfNeeded()
-        guard let anchorView = sourceView ?? controller.view else {
-            return
-        }
-
-        popoverController.sourceView = anchorView
-        popoverController.sourceRect = anchorView.bounds
-
-        if self.sourceView == nil {
-            popoverController.permittedArrowDirections = []
-        }
-    }
-}
-
-private struct ShareSheetAnchorView: UIViewRepresentable {
-    @Binding var sourceView: UIView?
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
@@ -67,54 +36,111 @@ private struct ShareSheetAnchorView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        guard sourceView !== uiView else {
-            return
-        }
+        context.coordinator.isPresented = $isPresented
 
-        let sourceViewBinding = $sourceView
-        DispatchQueue.main.async {
-            sourceViewBinding.wrappedValue = uiView
+        if isPresented {
+            context.coordinator.present(shareSheet(), from: uiView)
+        } else {
+            context.coordinator.dismissPresentedShareSheet()
         }
     }
 }
 
-private struct ShareSheetModifier: ViewModifier {
-    @Binding var isPresented: Bool
-    let shareSheet: () -> ShareSheet
+private extension ShareSheetPresenterView {
+    final class Coordinator: NSObject, UIAdaptivePresentationControllerDelegate {
+        var isPresented: Binding<Bool>
+        private weak var presentedController: UIActivityViewController?
 
-    @State private var sourceView: UIView?
+        init(isPresented: Binding<Bool>) {
+            self.isPresented = isPresented
+        }
 
-    func body(content: Content) -> some View {
-        content
-            .background(ShareSheetAnchorView(sourceView: $sourceView))
-            .sheet(isPresented: $isPresented) {
-                ShareSheetView(shareSheet: shareSheet(), sourceView: sourceView)
-                    .presentationDetents([.medium, .large])
+        func present(_ shareSheet: ShareSheet, from sourceView: UIView) {
+            guard presentedController == nil,
+                  sourceView.window != nil,
+                  let presentingController = sourceView.nearestViewController?.topmostViewControllerForShareSheet else {
+                return
             }
+
+            let controller = UIActivityViewController(activityItems: shareSheet.activityItems, applicationActivities: nil)
+            controller.excludedActivityTypes = shareSheet.excludedActivityTypes
+            controller.completionWithItemsHandler = { [weak self] activityType, completed, items, error in
+                shareSheet.completion?(activityType, completed, items, error)
+                self?.presentedController = nil
+                self?.isPresented.wrappedValue = false
+            }
+            configurePresentation(for: controller, sourceView: sourceView, shareSheet: shareSheet)
+            controller.presentationController?.delegate = self
+
+            presentedController = controller
+            presentingController.present(controller, animated: true)
+        }
+
+        func dismissPresentedShareSheet() {
+            presentedController?.dismiss(animated: true)
+            presentedController = nil
+        }
+
+        func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+            presentedController = nil
+            isPresented.wrappedValue = false
+        }
+
+        private func configurePresentation(for controller: UIActivityViewController, sourceView: UIView, shareSheet: ShareSheet) {
+            if let popoverController = controller.popoverPresentationController {
+                popoverController.sourceItem = sourceView
+                if let permittedArrowDirections = shareSheet.permittedArrowDirections {
+                    popoverController.permittedArrowDirections = permittedArrowDirections
+                }
+            }
+        }
     }
 }
 
-private struct SharePopoverModifier: ViewModifier {
+private extension UIView {
+    var nearestViewController: UIViewController? {
+        var responder: UIResponder? = self
+        while let nextResponder = responder?.next {
+            if let viewController = nextResponder as? UIViewController {
+                return viewController
+            }
+            responder = nextResponder
+        }
+        return nil
+    }
+}
+
+private extension UIViewController {
+    var topmostViewControllerForShareSheet: UIViewController {
+        if let presentedViewController {
+            return presentedViewController.topmostViewControllerForShareSheet
+        }
+
+        if let navigationController = self as? UINavigationController,
+           let visibleViewController = navigationController.visibleViewController {
+            return visibleViewController.topmostViewControllerForShareSheet
+        }
+
+        if let tabBarController = self as? UITabBarController,
+           let selectedViewController = tabBarController.selectedViewController {
+            return selectedViewController.topmostViewControllerForShareSheet
+        }
+
+        return self
+    }
+}
+
+private struct ShareViewModifier: ViewModifier {
     @Binding var isPresented: Bool
     let shareSheet: () -> ShareSheet
 
-    @State private var sourceView: UIView?
-
     func body(content: Content) -> some View {
-        content
-            .background(ShareSheetAnchorView(sourceView: $sourceView))
-            .popover(isPresented: $isPresented) {
-                ShareSheetView(shareSheet: shareSheet(), sourceView: sourceView)
-            }
+        content.background(ShareSheetPresenterView(isPresented: $isPresented, shareSheet: shareSheet))
     }
 }
 
 extension View {
-    func shareSheet(isPresented: Binding<Bool>, content: @escaping () -> ShareSheet) -> some View {
-        modifier(ShareSheetModifier(isPresented: isPresented, shareSheet: content))
-    }
-
-    func sharePopover(isPresented: Binding<Bool>, content: @escaping () -> ShareSheet) -> some View {
-        modifier(SharePopoverModifier(isPresented: isPresented, shareSheet: content))
+    func shareView(isPresented: Binding<Bool>, content: @escaping () -> ShareSheet) -> some View {
+        modifier(ShareViewModifier(isPresented: isPresented, shareSheet: content))
     }
 }

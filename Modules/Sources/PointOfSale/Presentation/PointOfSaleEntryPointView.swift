@@ -230,7 +230,8 @@ public struct PointOfSaleEntryPointView: View {
                                                       analytics: services.analytics)
                 },
                 receiptPrinter: receiptPrinter,
-                preferredConnectionMethod: preferredConnectionMethod)
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

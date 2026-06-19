@@ -1,5 +1,4 @@
 import SwiftUI
-import enum WooFoundation.BuildConfiguration
 
 /// Hosting controller that wraps an `ApplicationLogDetailView`
 ///
@@ -58,7 +57,9 @@ struct ApplicationLogDetailView: View {
             }
         }
         .wooNavigationBarStyle()
-        .searchableInNonProductionBuilds(text: $viewModel.searchText)
+        .searchable(text: $viewModel.searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: Localization.searchPrompt)
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
@@ -79,22 +80,17 @@ struct ApplicationLogDetailView: View {
     }
 }
 
-private extension View {
-    /// Adds a search field for filtering log lines, but only in non-production builds.
-    /// The search field is a developer convenience and must never appear in App Store builds,
-    /// so the prompt is intentionally not localized.
-    ///
-    @ViewBuilder
-    func searchableInNonProductionBuilds(text: Binding<String>) -> some View {
-        if BuildConfiguration.current.isProduction {
-            self
-        } else {
-            self.searchable(text: text,
-                            placement: .navigationBarDrawer(displayMode: .always),
-                            prompt: "Search logs")
-        }
+private extension ApplicationLogDetailView {
+    enum Localization {
+        static let searchPrompt = NSLocalizedString(
+            "applicationLogDetail.searchPrompt",
+            value: "Search logs",
+            comment: "Placeholder text for the search field on the application log detail screen."
+        )
     }
+}
 
+private extension View {
     /// Monitors the view's appearance by watching the `onAppear`/ `onDisappear` modifiers and stores the state in the given binding
     ///
     /// - Parameters:

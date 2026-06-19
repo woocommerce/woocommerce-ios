@@ -15,6 +15,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
     private var printer: StarPrinter?
 
+    /// Whether a `connect(to:)` call is currently in flight. Set while a connection is being established so
+    /// overlapping `connect` calls are rejected, keeping us the delegate of at most one printer at a time.
+    private var isConnecting = false
+
     /// The in-flight discovery session, if any. A session uses identity (`===`) to tell whether it is
     /// still current, so a superseded or cancelled session never mistakes itself for the active one.
     private var activeSession: DiscoverySession?
@@ -23,9 +27,9 @@ public final class StarPrinterService: PrinterDiscoveryService {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    /// Guards reads and writes of `activeSession`, `discoveredPrinters`, and `printer`, which are touched
-    /// from both StarIO10 callback threads and the discovery/connection methods. Held only for the field
-    /// access: the lock is non-recursive, so call-outs to the SDK (and finishing a stream, which can
+    /// Guards reads and writes of `activeSession`, `discoveredPrinters`, `printer`, and `isConnecting`, which
+    /// are touched from both StarIO10 callback threads and the discovery/connection methods. Held only for the
+    /// field access: the lock is non-recursive, so call-outs to the SDK (and finishing a stream, which can
     /// re-enter via a termination handler) are always done after unlocking.
     private let lock = NSLock()
 
@@ -55,12 +59,31 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
     public func connect(to device: PrinterDevice) async throws {
         lock.lock()
+        if isConnecting {
+            lock.unlock()
+            DDLogError("🖨️ A connection is already in progress; ignoring connect for \(device.id)")
+            throw PrinterError.connectionInProgress
+        }
+        isConnecting = true
         let discoveredPrinter = discoveredPrinters[device.id]
+        let existing = printer
         lock.unlock()
+
+        defer {
+            lock.lock()
+            isConnecting = false
+            lock.unlock()
+        }
 
         guard let starPrinter = discoveredPrinter else {
             DDLogError("🖨️ No discovered printer matches device id \(device.id)")
             throw PrinterError.printerNotFound
+        }
+
+        // Tear down any current connection to a different printer first, so we never leave a second printer
+        // open with us still set as its delegate.
+        if let existing, existing !== starPrinter {
+            await teardown(existing)
         }
 
         connectionStatusSubject.send(.connecting)
@@ -86,6 +109,7 @@ public final class StarPrinterService: PrinterDiscoveryService {
         lock.unlock()
 
         connectionStatusSubject.send(.disconnecting)
+        current?.printerDelegate = nil
         await current?.close()
         connectionStatusSubject.send(.disconnected)
     }
@@ -94,6 +118,18 @@ public final class StarPrinterService: PrinterDiscoveryService {
 private extension StarPrinterService {
     enum Constants {
         static let discoveryTimeInMilliseconds = 30000
+    }
+
+    /// Closes `existing` and drops it as the active printer, releasing the delegate. Used while switching to a
+    /// new printer, so it stays quiet about connection status, which the in-flight `connect(to:)` then drives.
+    func teardown(_ existing: StarPrinter) async {
+        existing.printerDelegate = nil
+        await existing.close()
+        lock.lock()
+        if printer === existing {
+            printer = nil
+        }
+        lock.unlock()
     }
 
     func startDiscovery(streaming continuation: AsyncThrowingStream<PrinterDevice, Error>.Continuation) {

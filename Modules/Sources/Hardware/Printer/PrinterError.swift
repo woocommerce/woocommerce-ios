@@ -4,4 +4,5 @@ import Foundation
 public enum PrinterError: Error {
     case discoveryFailure
     case printerNotFound
+    case connectionInProgress
 }

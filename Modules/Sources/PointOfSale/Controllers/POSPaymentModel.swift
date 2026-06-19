@@ -275,8 +275,7 @@ extension POSPaymentModel {
         // "in flight" check, including the early Tap to Pay window before the
         // first payment-state event arrives.
         if currentPaymentMethod == method {
-            if method == .bluetooth,
-               case .disconnected = cardReaderConnectionStatus {
+            if shouldAllowSameMethodCardPaymentRetry(for: method) {
                 DDLogInfo("🃏 [CardPayment] allowing \(method) re-entry while reader is disconnected")
             } else {
                 DDLogInfo("🃏 [CardPayment] startPaymentWithMethod ignored — \(method) session already active")
@@ -1146,6 +1145,12 @@ private extension POSPaymentModel {
             return selectedCardPaymentRail.connectionMethod
         }
         return preferredConnectionMethod
+    }
+
+    func shouldAllowSameMethodCardPaymentRetry(for method: CardReaderConnectionMethod) -> Bool {
+        guard method == .bluetooth else { return false }
+        guard case .disconnected = cardReaderConnectionStatus else { return false }
+        return true
     }
 
     /// Always-on subscriptions for reader connection alerts and onboarding.

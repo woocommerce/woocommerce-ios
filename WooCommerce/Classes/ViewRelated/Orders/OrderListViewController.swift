@@ -183,6 +183,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         registerTableViewHeadersAndCells()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -351,6 +352,15 @@ private extension OrderListViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.allowsFocus = supportsFocus()
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        setContentScrollView(tableView, for: .bottom)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 
     /// Registers all of the available table view cells and headers
@@ -992,12 +1002,14 @@ private extension OrderListViewController {
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
         static let createTestOrderDetail = NSLocalizedString(
-            "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.",
-            comment: "Message shown in Orders → All Orders tab if the list is empty and the site has been launched"
+            "orderList.createTestOrder.emptyStateDetail",
+            value: "Run an order to ensure your WooCommerce process delivers a seamless customer experience.",
+            comment: "Message shown in the Orders empty state inviting the merchant to place their first order."
         )
         static let tryTestOrder = NSLocalizedString(
-            "Try a Test Order",
-            comment: "Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched"
+            "orderList.createTestOrder.emptyStateButton",
+            value: "Place your first order",
+            comment: "Button title in the Orders empty state that opens the place-an-order screen."
         )
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")

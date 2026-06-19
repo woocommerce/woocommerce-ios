@@ -56,12 +56,12 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                   type: [InboxNotesRemote.NoteType]? = nil,
                                   status: [InboxNotesRemote.Status]? = nil,
                                   completion: @escaping (Result<[InboxNote], Error>) -> ()) {
-        var parameters = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.orderBy: orderBy.rawValue,
             ParameterKey.page: pageNumber,
             ParameterKey.pageSize: pageSize,
             ParameterKey.fields: ParameterValue.noteFields
-        ] as [String: Any]
+        ]
 
         if let type {
             let stringOfTypes = type.map { $0.rawValue }
@@ -130,12 +130,12 @@ public final class InboxNotesRemote: Remote, InboxNotesRemoteProtocol {
                                      type: [InboxNotesRemote.NoteType]?,
                                      status: [InboxNotesRemote.Status]?,
                                      completion: @escaping (Result<[InboxNote], Error>) -> ()) {
-        var parameters = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.orderBy: orderBy.rawValue,
             ParameterKey.page: pageNumber,
             ParameterKey.pageSize: pageSize,
             ParameterKey.fields: ParameterValue.noteFields
-        ] as [String: Any]
+        ]
 
         if let type {
             let stringOfTypes = type.map { $0.rawValue }

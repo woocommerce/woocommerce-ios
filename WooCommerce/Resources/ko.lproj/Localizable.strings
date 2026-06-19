@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "평가하기";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "문제 해결 팁 읽기";
 
@@ -10059,9 +10056,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "새 주문 놓치지 않기";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "지원팀과 채팅";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "연결 문제 해결";
 
@@ -10920,12 +10914,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "검색에서 반환된 리더에 IP 주소가 없으며 연결할 수 없습니다.";
-
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "AI 도우미의 도움을 받기";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "지원팀과 채팅";
 
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "이전 지원 대화 다시 보기";
@@ -13699,12 +13687,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for total amount field */
 "pos.totalsView.total" = "합계";
 
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "판매 지점을 위해 더 많은 공간을 확보할 수 있도록 화면 분할을 조정해 주세요.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "이 화면 폭에서는 판매 지점이 지원되지 않습니다.";
-
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "더 알아보기";
 
@@ -13848,9 +13830,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "워드프레스 REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "지원팀과 채팅";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "지원 문의";
@@ -14823,9 +14802,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "채팅 기록";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "지원팀과 채팅";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "우커머스 업데이트";
 
@@ -14879,12 +14855,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "이 채팅에 대한 지원 티켓이 생성되었습니다. 이메일을 통해 응답하겠습니다.";
-
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "지원팀과 채팅";
-
-/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "지원 문의";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "해결됨으로 표시";

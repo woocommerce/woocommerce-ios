@@ -162,8 +162,11 @@ private extension StarPrinterService {
 
             try manager.startDiscovery()
 
-            // If the session was superseded or cancelled while starting up, stop the manager we just
-            // started so it does not keep scanning untracked.
+            // `startDiscovery()` can take a moment, and during it a newer `discover()` (or a cancel) may have
+            // superseded this session, already finishing its stream. If so, stop the manager we just started so
+            // it does not keep scanning untracked, and finish (a no-op if already finished). Supersession is a
+            // normal lifecycle event rather than a failure, so we finish without an error here, unlike a real
+            // SDK failure, which finishes with `.discoveryFailure` in the catch below.
             if !isActive(session) {
                 manager.stopDiscovery()
                 continuation.finish()

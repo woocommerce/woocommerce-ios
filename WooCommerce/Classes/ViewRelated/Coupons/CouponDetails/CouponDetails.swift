@@ -176,14 +176,14 @@ struct CouponDetails: View {
                     .confirmationDialog(Localization.manageCoupon, isPresented: $showingActionSheet, actions: {
                         actionSheetContent
                     })
+                    .shareView(isPresented: $showingShareSheet) {
+                        ShareSheet(activityItems: [viewModel.shareMessage], permittedArrowDirections: [])
+                    }
                 }
             }
         }
         .navigationTitle(viewModel.coupon.code)
         .wooNavigationBarStyle()
-        .shareSheet(isPresented: $showingShareSheet) {
-            ShareSheet(activityItems: [viewModel.shareMessage])
-        }
     }
 
     private var summarySection: some View {

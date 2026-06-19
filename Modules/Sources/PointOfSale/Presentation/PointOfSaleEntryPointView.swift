@@ -20,6 +20,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -55,7 +56,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
-    private let receiptPrinter: POSReceiptPrinterProviding?
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -87,7 +88,7 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
-         receiptPrinter: POSReceiptPrinterProviding? = nil,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -229,7 +230,8 @@ public struct PointOfSaleEntryPointView: View {
                                                       analytics: services.analytics)
                 },
                 receiptPrinter: receiptPrinter,
-                preferredConnectionMethod: preferredConnectionMethod)
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

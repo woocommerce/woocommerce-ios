@@ -22,6 +22,7 @@ import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -97,7 +98,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     /// Receipt-printer backend for POS. Optional so existing callers (previews, tests)
     /// keep working — when nil POS behaves as if receipt printing is not available.
-    private(set) var receiptPrinter: POSReceiptPrinterProviding?
+    private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -151,8 +152,9 @@ protocol PointOfSaleAggregateModelProtocol {
          isLocalCatalogEligible: Bool = false,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
-         receiptPrinter: POSReceiptPrinterProviding? = nil,
-         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -196,6 +198,7 @@ protocol PointOfSaleAggregateModelProtocol {
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             preferredConnectionMethod: preferredConnectionMethod,
+            cardPaymentSelectionMode: cardPaymentSelectionMode,
             paymentState: paymentState)
         weakSelf = self
 

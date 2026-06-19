@@ -1,13 +1,13 @@
 import Combine
 @testable import Hardware
 
-/// Supports tests for ReceiptPrinterStore.
+/// Supports tests for ReceiptPrinterService.
 final class MockPrinterDiscoveryService: PrinterDiscoveryService {
     // Configuration
     var devicesToDiscover: [PrinterDevice] = []
     var discoveryError: Error?
     var connectError: Error?
-    var printResult: PrintingResult = .success
+    var printError: Error?
 
     // Spy properties
     private(set) var discoverWasCalled = false
@@ -54,11 +54,12 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
 
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?,
-                      completion: @escaping (PrintingResult) -> Void) {
+                      cardDetails: CardPresentTransactionDetails?) async throws {
         printedContent = content
         printedStoreInformation = storeInformation
         printedCardDetails = cardDetails
-        completion(printResult)
+        if let printError {
+            throw printError
+        }
     }
 }

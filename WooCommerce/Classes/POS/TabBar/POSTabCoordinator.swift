@@ -319,8 +319,8 @@ private extension POSTabCoordinator {
                     return
                 }
 
-                let receiptPrinter: POSReceiptPrinterProviding? = ServiceLocator.featureFlagService
-                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? POSReceiptPrinterService(stores: storesManager) : nil
+                let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,

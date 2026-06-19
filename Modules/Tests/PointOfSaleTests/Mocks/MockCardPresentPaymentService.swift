@@ -48,6 +48,12 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         connectReaderCallCount += 1
+        switch connectReaderResult {
+        case .connected(let reader):
+            connectedReader = reader
+        case .canceled:
+            connectedReader = nil
+        }
         onConnectReaderCalled?()
         return connectReaderResult
     }

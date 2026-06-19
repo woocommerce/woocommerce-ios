@@ -26,6 +26,5 @@ public protocol PrinterDiscoveryService: AnyObject {
     /// cash and other payment methods so the receipt prints without card fields.
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?,
-                      completion: @escaping (PrintingResult) -> Void)
+                      cardDetails: CardPresentTransactionDetails?) async throws
 }

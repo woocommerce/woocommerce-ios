@@ -187,10 +187,14 @@ private extension StarPrinterService {
         guard let previous else {
             return
         }
-        // Finish the superseded stream explicitly rather than relying on the SDK to deliver a final
-        // callback. Keep its delegate alive only while stopping its manager, then release it outside the
-        // lock: StarIO10 holds the delegate weakly, so releasing it under the lock could deallocate it and
-        // re-enter the lock via its termination handler, deadlocking a non-recursive `NSLock`.
+        // `previous` is a local snapshot taken under the lock and all its fields are immutable, so the work
+        // below touches no shared mutable state and is deliberately done unlocked. It must be unlocked too:
+        // finishing the stream can re-enter via its termination handler (`endSession`), which takes the lock,
+        // so holding a non-recursive `NSLock` here would deadlock.
+        //
+        // Finish the superseded stream explicitly rather than relying on the SDK to deliver a final callback.
+        // Keep the delegate alive only while stopping its manager, then release it: StarIO10 holds the delegate
+        // weakly, so releasing it under the lock could deallocate it and re-enter via the same handler.
         previous.continuation.finish()
         withExtendedLifetime(previous.delegate) {
             previous.manager.stopDiscovery()

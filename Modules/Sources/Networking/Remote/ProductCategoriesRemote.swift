@@ -155,7 +155,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
     /// - Parameter category: Details to be updated for a category.
     ///
     public func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.name: category.name,
             ParameterKey.parent: category.parentID
         ]

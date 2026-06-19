@@ -159,8 +159,7 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor,
-                                                      featureFlags: services.featureFlags)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)
@@ -226,7 +225,8 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
-                preferredConnectionMethod: preferredConnectionMethod)
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

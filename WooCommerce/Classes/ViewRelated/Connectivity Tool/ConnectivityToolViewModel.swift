@@ -217,15 +217,15 @@ final class ConnectivityToolViewModel {
     ///
     @MainActor
     func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
-        var context: [String: Any] = [:]
+        var context: RequestParameterDictionary = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshootingResults"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["selectedSiteID"] = site.siteID
-            context["site_url"] = site.url
+            context["selectedSiteID"] = .int64(site.siteID)
+            context["site_url"] = .string(site.url)
         }
 
         return SupportChatViewModel(

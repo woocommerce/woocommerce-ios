@@ -111,7 +111,7 @@ public class SiteSettingsRemote: Remote {
                               settingID: String,
                               value: String,
                               completion: @escaping (Result<SiteSetting, Error>) -> Void) {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -163,7 +163,7 @@ public class SiteSettingsRemote: Remote {
     ///
     public func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         let value = enabled ? Constants.featureEnabledValue : Constants.featureDisabledValue
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup + "/woocommerce_feature_\(feature.rawValue)_enabled"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -210,7 +210,7 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -249,7 +249,7 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func updateAnalyticsScheduledImport(for siteID: Int64, value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsScheduledImportSettingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,

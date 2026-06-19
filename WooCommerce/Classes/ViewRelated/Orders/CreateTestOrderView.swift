@@ -67,9 +67,19 @@ struct CreateTestOrderView: View {
                                         .foregroundColor(.init(uiColor: UIColor(light: .systemGroupedBackground,
                                                                                 dark: .secondarySystemGroupedBackground)))
                                 )
-                            Text(content)
-                                .font(.subheadline)
-                                .foregroundColor(.init(uiColor: .text))
+                            if index == instructions.count - 1 {
+                                /// Last step embeds a tappable link to the non-refundable fees documentation,
+                                /// while keeping the same base font and color as the other steps.
+                                CreateTestOrderInstructionWithLink(
+                                    format: content,
+                                    linkText: Localization.feesNotRefundable,
+                                    url: WooConstants.URLs.wooPaymentsFeesNotRefundable.asURL()
+                                )
+                            } else {
+                                Text(content)
+                                    .font(.subheadline)
+                                    .foregroundColor(.init(uiColor: .text))
+                            }
                         }
                     }
                     .padding(.horizontal, Layout.instructionMargin)
@@ -88,6 +98,41 @@ struct CreateTestOrderView: View {
     }
 }
 
+/// An instruction step whose base text matches the other steps (`.subheadline`, `.text`),
+/// with a single tappable substring that opens the given URL in an in-app Safari sheet.
+private struct CreateTestOrderInstructionWithLink: View {
+    private let attributedText: AttributedString
+    @State private var safariURL: URL?
+
+    /// - Parameters:
+    ///   - format: A format string with a single `%1$@` placeholder for the tappable text.
+    ///   - linkText: The tappable substring that opens the Safari sheet.
+    ///   - url: The URL to display in the Safari sheet when the link is tapped.
+    init(format: String, linkText: String, url: URL) {
+        attributedText = {
+            var text = AttributedString(.init(format: format, linkText))
+            text.font = .subheadline
+            text.foregroundColor = .init(uiColor: .text)
+
+            if let range = text.range(of: linkText) {
+                text[range].link = url
+                text[range].foregroundColor = .init(uiColor: .accent)
+                text[range].underlineStyle = .single
+            }
+            return text
+        }()
+    }
+
+    var body: some View {
+        Text(attributedText)
+            .environment(\.openURL, OpenURLAction { url in
+                safariURL = url
+                return .handled
+            })
+            .safariSheet(url: $safariURL)
+    }
+}
+
 private extension CreateTestOrderView {
     enum Layout {
         static let instructionMargin: CGFloat = 24
@@ -97,24 +142,41 @@ private extension CreateTestOrderView {
         static let blockSpacing: CGFloat = 32
     }
     enum Localization {
-        static let title = NSLocalizedString("Try a test order", comment: "Title shown on the test order screen")
+        static let title = NSLocalizedString(
+            "orderList.createTestOrder.title",
+            value: "Place your first order",
+            comment: "Title shown on the place-an-order screen opened from the Orders empty state."
+        )
         static let instruction1 = NSLocalizedString(
             "Tap the button below to be redirected to your online store via a web browser.",
             comment: "First instruction on the test order screen"
         )
         static let instruction2 = NSLocalizedString(
-            "Select your test product, add to cart, and complete checkout on that web store as a real customer.",
-            comment: "Second instruction on the test order screen"
+            "orderList.createTestOrder.instruction2",
+            value: "Select your product, add to cart, and complete checkout on that web store as a real customer.",
+            comment: "Second instruction on the place-an-order screen."
         )
         static let instruction3 = NSLocalizedString(
             "Complete the payment and await a push notification about the order on your WooCommerce app.",
             comment: "Third instruction on the test order screen"
         )
         static let instruction4 = NSLocalizedString(
-            "Use the app to process the refund for the test order.",
-            comment: "Fourth instruction on the test order screen"
+            "orderList.createTestOrder.instruction4",
+            value: "Use the app to process the refund for the order. %1$@",
+            comment: "Fourth instruction on the place-an-order screen. %1$@ is a placeholder for the tappable " +
+                "'Processing fees aren't refundable' link text."
         )
-        static let startAction = NSLocalizedString("Start Test order", comment: "Title on the action button on the test order screen")
+        static let feesNotRefundable = NSLocalizedString(
+            "orderList.createTestOrder.feesNotRefundable",
+            value: "Processing fees aren't refundable",
+            comment: "Tappable link text in the fourth instruction; opens documentation explaining that payment " +
+                "processing fees are not refundable."
+        )
+        static let startAction = NSLocalizedString(
+            "orderList.createTestOrder.startAction",
+            value: "Place order",
+            comment: "Title on the action button on the place-an-order screen."
+        )
     }
 }
 

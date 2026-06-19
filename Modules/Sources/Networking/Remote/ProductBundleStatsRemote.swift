@@ -26,7 +26,7 @@ public final class ProductBundleStatsRemote: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.interval: unit.rawValue,
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
@@ -67,7 +67,7 @@ public final class ProductBundleStatsRemote: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.quantity: String(quantity),

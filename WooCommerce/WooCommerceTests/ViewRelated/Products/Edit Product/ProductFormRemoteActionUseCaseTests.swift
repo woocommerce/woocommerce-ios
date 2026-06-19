@@ -486,7 +486,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         mockAddProduct(result: .success(duplicatedProduct))
 
         var receivedParentItemID: Int64?
-        var receivedMetadata: [[String: Any?]]?
+        var receivedMetadata: [RequestParameterDictionary]?
         storesManager.whenReceivingAction(ofType: MetaDataAction.self) { action in
             if case let MetaDataAction.updateMetaData(_, parentItemID, _, metadata, onCompletion) = action {
                 receivedParentItemID = parentItemID
@@ -504,10 +504,10 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(receivedParentItemID, 99)
         XCTAssertEqual(receivedMetadata?.count, 2)
-        XCTAssertEqual(receivedMetadata?[0]["key"] as? String, "color")
-        XCTAssertEqual(receivedMetadata?[0]["value"] as? String, "red")
-        XCTAssertEqual(receivedMetadata?[1]["key"] as? String, "size")
-        XCTAssertEqual(receivedMetadata?[1]["value"] as? String, "large")
+        XCTAssertEqual(receivedMetadata?[0]["key"], .string("color"))
+        XCTAssertEqual(receivedMetadata?[0]["value"], .string("red"))
+        XCTAssertEqual(receivedMetadata?[1]["key"], .string("size"))
+        XCTAssertEqual(receivedMetadata?[1]["value"], .string("large"))
 
         // Verify the returned product optimistically includes custom fields
         let returnedProduct = try XCTUnwrap(result?.get().product)

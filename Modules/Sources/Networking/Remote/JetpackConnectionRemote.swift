@@ -26,7 +26,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Installs Jetpack the plugin to the current site.
     ///
     public func installJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        let parameters: [String: Any] = [Field.slug.rawValue: Constants.jetpackPluginSlug]
+        let parameters: RequestParameterConvertibleDictionary = [Field.slug.rawValue: Constants.jetpackPluginSlug]
         let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.plugins, parameters: parameters, availableAsRESTRequest: true)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -36,7 +36,7 @@ public final class JetpackConnectionRemote: Remote {
     ///
     public func activateJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
-        let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
+        let parameters: RequestParameterConvertibleDictionary = [Field.status.rawValue: Constants.activeStatus]
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .post,
                                      siteID: siteID,

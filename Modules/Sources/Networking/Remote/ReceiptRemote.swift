@@ -55,7 +55,7 @@ public final class ReceiptRemote: Remote {
     ///   - orderID: ID of the order that the receipt is associated to.
     public func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String, templateID: String?) async throws {
         let sendEmailPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_email"
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.email: emailAddress,
             ParameterKeys.forceEmailUpdate: true
         ]

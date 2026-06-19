@@ -5,4 +5,5 @@ enum POSAuthError: Error, Equatable {
     case rateLimited(until: Date)
     case permanentlyLocked
     case unknown
+    case staffFetchFailed(POSStaffFetchError)
 }

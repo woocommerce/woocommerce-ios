@@ -71,6 +71,8 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     }
 
     private func configureNavigation() {
+        title = Localization.title
+
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
                                           target: self,
@@ -161,5 +163,13 @@ extension ReceiptViewController {
         static let maximumReceiptContentHeight = CGFloat(11 * pointsPerInch)
         static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
         static let margin: CGFloat = 16
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "receiptViewController.title",
+            value: "Receipt",
+            comment: "Title of the view containing a receipt preview."
+        )
     }
 }

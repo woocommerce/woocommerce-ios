@@ -261,8 +261,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
                                                    orderBy: OrderKey = .name,
-                                                   order: Order = .ascending) -> [String: any Hashable] {
-        let parameters: [String: any Hashable] = [
+                                                   order: Order = .ascending) -> RequestParameterConvertibleDictionary {
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: productsPerPage,
             // When both productType and productTypes are provided, the productType is ignored in WC versions 9.6+.
@@ -281,7 +281,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
                                                      pageNumber: Int,
-                                                     parameters: [String: any Hashable]) async throws -> PagedItems<POSProduct> {
+                                                     parameters: RequestParameterConvertibleDictionary) async throws -> PagedItems<POSProduct> {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
@@ -341,7 +341,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64,
                                                        globalUniqueID: String) async throws -> POSProduct {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.globalUniqueID: globalUniqueID,
             ParameterKey.page: "1",
             ParameterKey.perPage: "1",
@@ -369,7 +369,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     /// - Throws: Error if the product is not found or if there's a network error
     ///
     public func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
             ParameterKey.posProductsOnly: String(true)
         ]
@@ -461,7 +461,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.exclude: stringOfExcludedProductIDs
         ].filter({ $0.value.isEmpty == false })
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.search: keyword,
@@ -582,12 +582,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     public func updateProducts(siteID: Int64, products: [Product], completion: @escaping (Result<[Product], Error>) -> Void) {
         do {
             let parameters = try products.map { try $0.toDictionary() }
+            let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
             let path = "\(Path.products)/batch"
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
-                                         parameters: ["update": parameters],
+                                         parameters: requestParameters,
                                          availableAsRESTRequest: true)
             let mapper = ProductsBulkUpdateMapper(siteID: siteID)
 
@@ -639,7 +640,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                           pageSize: Int,
                           order: ProductsRemote.Order) async throws -> [ProductStock] {
         let path = Path.stockReports
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.type: stockType,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -667,7 +668,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
         let path = Path.productReports
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.products: productIDs,
             ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
@@ -700,7 +701,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
         let path = Path.variationReports
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.products: productIDs,
             ParameterKey.variations: variationIDs,
             ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),

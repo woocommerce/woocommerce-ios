@@ -228,6 +228,9 @@ private extension StarPrinterService {
 private final class DiscoverySession {
     let id = UUID()
     let manager: StarDeviceDiscoveryManager
+    // `StarDeviceDiscoveryManager` holds its delegate weakly, so the session owns it strongly to keep it alive
+    // for the discovery's lifetime; without this, the delegate would deallocate and discovery callbacks would
+    // never fire.
     // swiftlint:disable:next weak_delegate
     let delegate: StarDiscoveryDelegate
     let continuation: AsyncThrowingStream<PrinterDevice, Error>.Continuation

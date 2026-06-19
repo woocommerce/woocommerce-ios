@@ -5,7 +5,6 @@ import SwiftUI
 struct POSOtherPaymentMethodsSheet: View {
     var isTapToPayAvailable: Bool = false
     var onTapToPay: (() -> Void)?
-    var isCardReaderAvailable: Bool = true
     /// False while Bluetooth is already active for this payment.
     var isCardReaderEnabled: Bool = true
     let onCardReader: () -> Void
@@ -35,15 +34,13 @@ struct POSOtherPaymentMethodsSheet: View {
                 }
             }
 
-            if isCardReaderAvailable {
-                row(systemImage: "creditcard",
-                    title: Localization.cardReaderTitle,
-                    subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
-                    accessibilityIdentifier: "pos-other-payments-card-reader",
-                    isEnabled: isCardReaderEnabled) {
-                    dismiss()
-                    onCardReader()
-                }
+            row(systemImage: "creditcard",
+                title: Localization.cardReaderTitle,
+                subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
+                accessibilityIdentifier: "pos-other-payments-card-reader",
+                isEnabled: isCardReaderEnabled) {
+                dismiss()
+                onCardReader()
             }
 
             if isScanToPayAvailable, let onScanToPay {

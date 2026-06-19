@@ -200,7 +200,6 @@ struct TotalsView: View {
                         await paymentModel.startCardPayment(with: .tapToPay)
                     }
                 },
-                isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
                 isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
                     guard !isStartingPayment else { return }
@@ -851,10 +850,6 @@ private extension TotalsView {
     var isTapToPayRowAvailableInOtherMethodsSheet: Bool {
         paymentModel.isBluetoothReaderSelected &&
         posModel.tapToPayAvailabilityController?.state.isAvailable == true
-    }
-
-    var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        true
     }
 
     var isCardReaderRowEnabledInOtherMethodsSheet: Bool {

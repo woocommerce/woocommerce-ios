@@ -338,6 +338,8 @@ extension WooConstants {
 
         case wooPaymentsPayoutSchedule = "https://woocommerce.com/document/woopayments/payouts/payout-schedule/"
 
+        case wooPaymentsFeesNotRefundable = "https://woocommerce.com/document/woopayments/fees/why-arent-fees-refunded/"
+
         /// URL to learn more about Jetpack Stats
         ///
         case jetpackStats = "https://jetpack.com/stats/"

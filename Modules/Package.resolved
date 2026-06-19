@@ -1,5 +1,5 @@
 {
-  "originHash" : "ec9cd3ba0557d92d70422d7b171708735229ff51688dc59b98efa29e1a14843a",
+  "originHash" : "e1e44a3374272cf4704a4ec421d71800bc3709e46abc34864c576591f25de250",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -240,6 +240,15 @@
       "state" : {
         "revision" : "990135f0881e56ac6b39404de0f5b0cd0dcf2131",
         "version" : "9.6.0"
+      }
+    },
+    {
+      "identity" : "starxpand-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/star-micronics/StarXpand-SDK-iOS",
+      "state" : {
+        "revision" : "37ead35af06789f03ffb34cbf08557be519edfd3",
+        "version" : "2.12.1"
       }
     },
     {

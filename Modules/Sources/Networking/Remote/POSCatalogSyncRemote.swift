@@ -202,7 +202,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
         let path = "catalog/create"
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.catalogProductFields: POSProduct.requestFields.joined(separator: ","),
             ParameterKey.catalogVariationFields: POSProductVariation.requestFields.joined(separator: ",")
         ]

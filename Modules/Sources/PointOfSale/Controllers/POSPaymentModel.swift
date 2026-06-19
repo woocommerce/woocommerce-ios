@@ -106,7 +106,7 @@ final class POSPaymentModel {
     /// `startPayment()` waits for any BT reader to come up and collects via that.
     /// `.tapToPay` (phone with TTP eligibility) only pre-connects the built-in
     /// reader on checkout — collection is gated behind an explicit method tap
-    /// from the buttons row / hero via `startPaymentWithMethod(_:)`, so the
+    /// from the buttons row / hero via `startCardPayment(with:)`, so the
     /// merchant's selection drives which method actually runs.
     private let preferredConnectionMethod: CardReaderConnectionMethod
 
@@ -199,7 +199,7 @@ extension POSPaymentModel {
     /// — wait for any reader to come up, then collect via that.
     ///
     /// Tap to Pay path: only pre-connects the built-in reader. Collection is gated
-    /// behind an explicit `startPaymentWithMethod(.tapToPay)` from the hero CTA so
+    /// behind an explicit `startCardPayment(with: .tapToPay)` from the hero CTA so
     /// the merchant's selection drives the actual flow — no auto-collect to race.
     func startPayment() async {
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
@@ -408,12 +408,8 @@ extension POSPaymentModel {
         }
     }
 
-    func startSelectedCardPayment() async {
-        guard isCompactCardPaymentSelectionEnabled else {
-            await startPaymentWithMethod(preferredConnectionMethod)
-            return
-        }
-        await startPaymentWithMethod(selectedCardPaymentRail.connectionMethod)
+    func startCardPayment(with rail: POSCardPaymentRail) async {
+        await startPaymentWithMethod(rail.connectionMethod)
     }
 
     /// Pre-connects the built-in Tap to Pay reader without starting collection.

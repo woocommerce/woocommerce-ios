@@ -197,8 +197,7 @@ struct TotalsView: View {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        await paymentModel.selectCardPaymentRail(.tapToPay)
-                        await paymentModel.startSelectedCardPayment()
+                        await paymentModel.startCardPayment(with: .tapToPay)
                     }
                 },
                 isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
@@ -207,12 +206,7 @@ struct TotalsView: View {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        if paymentModel.isCompactCardPaymentSelectionEnabled {
-                            await paymentModel.selectCardPaymentRail(.bluetoothReader)
-                            await paymentModel.startSelectedCardPayment()
-                        } else {
-                            await paymentModel.startPaymentWithMethod(.bluetooth)
-                        }
+                        await paymentModel.startCardPayment(with: .bluetoothReader)
                     }
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
@@ -745,8 +739,7 @@ private extension TotalsView {
             guard !isStartingPayment else { return }
             isStartingPayment = true
             Task { @MainActor in
-                await paymentModel.selectCardPaymentRail(.bluetoothReader)
-                await paymentModel.startSelectedCardPayment()
+                await paymentModel.startCardPayment(with: .bluetoothReader)
             }
         case .cashPayment:
             paymentModel.startCashPayment()
@@ -872,11 +865,7 @@ private extension TotalsView {
         guard !isStartingPayment else { return }
         isStartingPayment = true
         Task { @MainActor in
-            if paymentModel.isCompactCardPaymentSelectionEnabled {
-                await paymentModel.startSelectedCardPayment()
-            } else {
-                await paymentModel.startPaymentWithMethod(.tapToPay)
-            }
+            await paymentModel.startCardPayment(with: .tapToPay)
         }
     }
 

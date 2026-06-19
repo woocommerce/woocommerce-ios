@@ -2352,7 +2352,7 @@ struct POSPaymentModelTests {
 
     @Test("compact mode explicit Bluetooth selection connects and collects when disconnected")
     @MainActor
-    func test_startPaymentWithMethod_when_compact_mode_and_BT_disconnected_then_connects_and_collects() async {
+    func test_startCardPayment_when_compact_mode_and_BT_disconnected_then_connects_and_collects() async {
         // Given
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
@@ -2367,7 +2367,7 @@ struct POSPaymentModelTests {
         // When
         await withCheckedContinuation { continuation in
             service.onCollectPaymentCalled = { continuation.resume() }
-            Task { @MainActor in await sut.startPaymentWithMethod(.bluetooth) }
+            Task { @MainActor in await sut.startCardPayment(with: .bluetoothReader) }
         }
 
         // Then
@@ -2379,7 +2379,7 @@ struct POSPaymentModelTests {
 
     @Test("compact mode ignored card start request does not change selected rail")
     @MainActor
-    func test_startPaymentWithMethod_when_compact_mode_and_card_state_is_non_idle_then_selected_rail_is_preserved() async {
+    func test_startCardPayment_when_compact_mode_and_card_state_is_non_idle_then_selected_rail_is_preserved() async {
         // Given
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(
@@ -2389,7 +2389,7 @@ struct POSPaymentModelTests {
             paymentState: .init(card: .processingPayment, cash: .idle))
 
         // When
-        await sut.startPaymentWithMethod(.bluetooth)
+        await sut.startCardPayment(with: .bluetoothReader)
 
         // Then
         #expect(sut.selectedCardPaymentRail == .tapToPay)

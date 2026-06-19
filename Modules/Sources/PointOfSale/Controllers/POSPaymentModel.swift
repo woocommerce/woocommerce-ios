@@ -327,9 +327,8 @@ extension POSPaymentModel {
         // Merchant explicitly chose a method — track it as the active session
         // method and open the gate so subsequent Stripe Terminal events drive
         // the state machine.
-        if method == .bluetooth,
-           isCompactCardPaymentSelectionEnabled,
-           case .disconnected = cardReaderConnectionStatus {
+        if isCompactCardPaymentSelectionEnabled,
+           shouldAllowSameMethodCardPaymentRetry(for: method) {
             currentPaymentMethod = nil
         } else {
             currentPaymentMethod = method

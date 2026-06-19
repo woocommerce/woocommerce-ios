@@ -1,7 +1,7 @@
 import Combine
 @testable import Hardware
 
-/// Supports tests for ReceiptPrinterStore.
+/// Supports tests for ReceiptPrinterService.
 final class MockPrinterDiscoveryService: PrinterDiscoveryService {
     // Configuration
     var devicesToDiscover: [PrinterDevice] = []

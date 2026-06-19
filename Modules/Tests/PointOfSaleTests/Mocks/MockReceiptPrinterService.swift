@@ -2,9 +2,10 @@ import Combine
 import Foundation
 import struct Yosemite.PrinterDevice
 import enum Yosemite.PrinterConnectionStatus
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 @testable import PointOfSale
 
-final class MockPOSReceiptPrinter: POSReceiptPrinterProviding {
+final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     // MARK: - Stubs
 
     @Published var connectionStatus: PrinterConnectionStatus = .idle
@@ -22,7 +23,7 @@ final class MockPOSReceiptPrinter: POSReceiptPrinterProviding {
     private(set) var connectedDevices: [PrinterDevice] = []
     private(set) var disconnectCallCount = 0
 
-    // MARK: - POSReceiptPrinterProviding
+    // MARK: - ReceiptPrinterServiceProtocol
 
     var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
         $connectionStatus.eraseToAnyPublisher()

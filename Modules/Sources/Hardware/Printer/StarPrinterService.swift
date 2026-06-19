@@ -23,10 +23,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
     /// so we can connect by `PrinterDevice` without exposing StarIO10 types.
     private var discoveredPrinters: [String: StarPrinter] = [:]
 
-    /// Guards reads and writes of `activeSession` and `discoveredPrinters`, which are touched from both
-    /// StarIO10 callback threads and the discovery/connection methods. Held only for the field access:
-    /// the lock is non-recursive, so call-outs to the SDK (and finishing a stream, which can re-enter via
-    /// a termination handler) are always done after unlocking.
+    /// Guards reads and writes of `activeSession`, `discoveredPrinters`, and `printer`, which are touched
+    /// from both StarIO10 callback threads and the discovery/connection methods. Held only for the field
+    /// access: the lock is non-recursive, so call-outs to the SDK (and finishing a stream, which can
+    /// re-enter via a termination handler) are always done after unlocking.
     private let lock = NSLock()
 
     private let connectionStatusSubject = CurrentValueSubject<PrinterConnectionStatus, Never>(.idle)
@@ -60,14 +60,16 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
         guard let starPrinter = discoveredPrinter else {
             DDLogError("🖨️ No discovered printer matches device id \(device.id)")
-            throw StarPrinterError.printerNotFound
+            throw PrinterError.printerNotFound
         }
 
         connectionStatusSubject.send(.connecting)
         do {
             starPrinter.printerDelegate = self
             try await starPrinter.open()
+            lock.lock()
             printer = starPrinter
+            lock.unlock()
             connectionStatusSubject.send(.connected)
             DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
@@ -78,9 +80,13 @@ public final class StarPrinterService: PrinterDiscoveryService {
     }
 
     public func disconnect() async {
-        connectionStatusSubject.send(.disconnecting)
-        await printer?.close()
+        lock.lock()
+        let current = printer
         printer = nil
+        lock.unlock()
+
+        connectionStatusSubject.send(.disconnecting)
+        await current?.close()
         connectionStatusSubject.send(.disconnected)
     }
 }
@@ -128,7 +134,7 @@ private extension StarPrinterService {
             }
         } catch {
             DDLogError("🖨️ Printer discovery failed: \(error.localizedDescription)")
-            continuation.finish(throwing: StarPrinterError.discoveryFailure)
+            continuation.finish(throwing: PrinterError.discoveryFailure)
         }
     }
 
@@ -249,9 +255,4 @@ extension StarPrinterService: PrinterDelegate {
     public func printerIsCoverClose(_ printer: StarPrinter) {
         DDLogInfo("🖨️ Printer cover is closed")
     }
-}
-
-enum StarPrinterError: Error {
-    case discoveryFailure
-    case printerNotFound
 }

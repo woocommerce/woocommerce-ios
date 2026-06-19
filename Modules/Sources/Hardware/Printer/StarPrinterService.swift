@@ -217,6 +217,7 @@ private extension StarPrinterService {
     func isActive(_ session: DiscoverySession) -> Bool {
         lock.lock()
         defer { lock.unlock() }
+        // We hold the instance, so identity is the cheapest correct check (`endSession` matches by id to avoid retaining the session).
         return activeSession === session
     }
 

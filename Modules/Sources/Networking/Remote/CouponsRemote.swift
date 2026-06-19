@@ -287,7 +287,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         let dateFormatter = ISO8601DateFormatter()
         let formattedTime = dateFormatter.string(from: startDate)
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.coupons: [couponID],
             ParameterKey.after: formattedTime
         ]
@@ -331,8 +331,8 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                       from startDate: Date,
                                       to endDate: Date,
                                       completion: @escaping (Result<[CouponReport], Error>) -> Void) {
-        let parameters: [String: Any] = {
-            var params = [
+        let parameters: RequestParameterConvertibleDictionary = {
+            var params: RequestParameterConvertibleDictionary = [
                 ParameterKey.page: 1,
                 ParameterKey.perPage: numberOfCouponsToLoad,
                 ParameterKey.order: ParameterValue.desc,

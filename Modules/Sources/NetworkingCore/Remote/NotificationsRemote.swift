@@ -65,7 +65,7 @@ public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
 
         // Parameters: [.counts: [Payload]]
         //
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.counts: payload
         ]
 

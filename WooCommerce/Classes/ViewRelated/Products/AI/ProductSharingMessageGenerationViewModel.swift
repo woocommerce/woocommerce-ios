@@ -40,7 +40,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let productName: String
     private let productDescription: String
     private let stores: StoresManager
-    private let isPad: Bool
+    private let isPad: Bool?
     private let analytics: Analytics
     private let delayBeforeDismissingFeedbackBanner: TimeInterval
 
@@ -56,7 +56,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
          url: String,
          productName: String,
          productDescription: String,
-         isPad: Bool = UIDevice.isPad(),
+         isPad: Bool? = nil,
          delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -96,8 +96,9 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         generationInProgress = false
     }
 
+    @MainActor
     func didTapShare() {
-        if isPad {
+        if isPad ?? UIDevice.isPad() {
             isSharePopoverPresented = true
         } else {
             isShareSheetPresented = true

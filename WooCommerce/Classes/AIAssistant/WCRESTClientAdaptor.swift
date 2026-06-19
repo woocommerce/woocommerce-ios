@@ -1,10 +1,6 @@
 import Foundation
 import Networking
-import struct NetworkingCore.JetpackRequest
-import protocol NetworkingCore.Mapper
-import enum NetworkingCore.NetworkError
-import enum NetworkingCore.WooAPIVersion
-import protocol NetworkingCore.Network
+import NetworkingCore
 import struct Alamofire.HTTPMethod
 import enum WooAIAssistant.HTTPStatusClassification
 import struct WooAIAssistant.WCRESTResponse
@@ -79,21 +75,19 @@ struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
 
     private func parameters(forMethod method: HTTPMethod,
                             query: [String: String]?,
-                            body: Data?) -> [String: Any]? {
+                            body: Data?) -> RequestParameterDictionary? {
         switch method {
         case .post, .put, .patch:
             guard let body, !body.isEmpty else { return nil }
             do {
-                return try JSONSerialization.jsonObject(with: body) as? [String: Any]
+                return try (JSONSerialization.jsonObject(with: body) as? [String: Any])?.requestParameterDictionaryFromJSONObject()
             } catch {
                 DDLogError("⛔️ WCRESTClientAdaptor failed to deserialize request body as JSON: \(error)")
                 return nil
             }
         default:
             guard let query, !query.isEmpty else { return nil }
-            return query.reduce(into: [String: Any]()) { dict, pair in
-                dict[pair.key] = pair.value
-            }
+            return query.requestParameterDictionary
         }
     }
 }

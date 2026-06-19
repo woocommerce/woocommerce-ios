@@ -22,7 +22,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
-    var isPointOfSaleRefundsi1Enabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -42,8 +41,7 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false,
-         isPointOfSaleRefundsi1Enabled: Bool = false) {
+         isCIABBookingsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -63,7 +61,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.isPointOfSaleRefundsi1Enabled = isPointOfSaleRefundsi1Enabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -112,8 +109,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
-        case .pointOfSaleRefundsi1:
-            return isPointOfSaleRefundsi1Enabled
         default:
             return false
         }

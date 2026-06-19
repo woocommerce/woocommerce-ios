@@ -137,6 +137,10 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         super.init()
     }
 
+    deinit {
+        (loginSession as? URLSession)?.finishTasksAndInvalidate()
+    }
+
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
                        onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
         self.successHandler = onLoginSuccess

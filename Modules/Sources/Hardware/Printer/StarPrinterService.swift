@@ -155,9 +155,12 @@ private extension StarPrinterService {
             // Install (superseding any in-flight session) before starting, so the termination handler also
             // tears the session down if `startDiscovery()` throws.
             install(session)
-            let sessionID = session.id
-            continuation.onTermination = { [weak self] _ in
-                self?.endSession(matching: sessionID)
+            // Capture the session weakly: it owns the continuation, so a strong capture here would be a
+            // retain cycle. While a session is still current it stays alive through `activeSession`, so the
+            // handler can always reach a session it still needs to tear down.
+            continuation.onTermination = { [weak self, weak session] _ in
+                guard let session else { return }
+                self?.endSession(session)
             }
 
             try manager.startDiscovery()
@@ -201,10 +204,10 @@ private extension StarPrinterService {
         }
     }
 
-    /// Tears down the session with this id, but only while it is still the active one.
-    func endSession(matching id: UUID) {
+    /// Tears down `session`, but only while it is still the active one.
+    func endSession(_ session: DiscoverySession) {
         lock.lock()
-        guard let session = activeSession, session.id == id else {
+        guard activeSession === session else {
             lock.unlock()
             return
         }
@@ -217,7 +220,6 @@ private extension StarPrinterService {
     func isActive(_ session: DiscoverySession) -> Bool {
         lock.lock()
         defer { lock.unlock() }
-        // We hold the instance, so identity is the cheapest correct check (`endSession` matches by id to avoid retaining the session).
         return activeSession === session
     }
 
@@ -231,7 +233,6 @@ private extension StarPrinterService {
 /// Bundles the state for a single `discover()` call, so a session's manager, delegate, and stream
 /// continuation stay together and the session can be compared by identity.
 private final class DiscoverySession {
-    let id = UUID()
     let manager: StarDeviceDiscoveryManager
     // `StarDeviceDiscoveryManager` holds its delegate weakly, so the session owns it strongly to keep it alive
     // for the discovery's lifetime; without this, the delegate would deallocate and discovery callbacks would

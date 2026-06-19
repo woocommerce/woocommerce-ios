@@ -26,7 +26,7 @@ struct POSOtherPaymentMethodsSheet: View {
                 .padding(.bottom, POSPadding.medium)
 
             if isTapToPayAvailable, let onTapToPay {
-                row(systemImage: "iphone.gen3.radiowaves.left.and.right",
+                row(systemImage: "wave.3.right.circle",
                     title: Localization.tapToPayTitle,
                     subtitle: Localization.tapToPaySubtitle,
                     accessibilityIdentifier: "pos-other-payments-tap-to-pay") {

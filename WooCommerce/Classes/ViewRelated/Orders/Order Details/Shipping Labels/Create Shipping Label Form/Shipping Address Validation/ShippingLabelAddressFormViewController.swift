@@ -69,6 +69,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
             let popoverController = actionSheet.popoverPresentationController
             popoverController?.sourceView = sourceView
+            popoverController?.sourceRect = sourceView.bounds
 
             self.present(actionSheet, animated: true)
         }

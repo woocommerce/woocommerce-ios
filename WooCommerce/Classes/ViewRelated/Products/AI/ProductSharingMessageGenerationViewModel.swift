@@ -5,8 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `ProductSharingMessageGenerationView`
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
-    @Published var isSharePopoverPresented = false
-    @Published var isShareSheetPresented = false
+    @Published var isShareViewPresented = false
 
     /// Whether feedback banner for the generated text should be displayed.
     @Published private(set) var shouldShowFeedbackView = false
@@ -40,7 +39,6 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     private let productName: String
     private let productDescription: String
     private let stores: StoresManager
-    private let isPad: Bool?
     private let analytics: Analytics
     private let delayBeforeDismissingFeedbackBanner: TimeInterval
 
@@ -56,7 +54,6 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
          url: String,
          productName: String,
          productDescription: String,
-         isPad: Bool? = nil,
          delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -64,7 +61,6 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
         self.url = url
         self.productName = productName
         self.productDescription = productDescription
-        self.isPad = isPad
         self.stores = stores
         self.analytics = analytics
         self.viewTitle = String.localizedStringWithFormat(Localization.title, productName)
@@ -98,11 +94,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
 
     @MainActor
     func didTapShare() {
-        if isPad ?? UIDevice.isPad() {
-            isSharePopoverPresented = true
-        } else {
-            isShareSheetPresented = true
-        }
+        isShareViewPresented = true
         analytics.track(event: .ProductSharingAI.shareButtonTapped(withMessage: messageContent.isNotEmpty))
     }
 

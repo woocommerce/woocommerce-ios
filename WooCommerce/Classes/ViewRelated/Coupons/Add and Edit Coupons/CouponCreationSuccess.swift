@@ -39,7 +39,7 @@ struct CouponCreationSuccess: View {
                     ServiceLocator.analytics.track(.couponCreationSuccessShareTapped)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .shareSheet(isPresented: $showingShareSheet) {
+                .shareView(isPresented: $showingShareSheet) {
                     ShareSheet(activityItems: [shareMessage])
                 }
 

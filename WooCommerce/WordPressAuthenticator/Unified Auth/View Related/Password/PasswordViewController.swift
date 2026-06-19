@@ -140,10 +140,6 @@ class PasswordViewController: LoginViewController {
         }
 
         if let oauthError = error as? WordPressComOAuthError, oauthError.authenticationFailureKind == .invalidRequest {
-            // WordPress.com returns several distinct failures under `invalid_request` (wrong credentials,
-            // exceeded login limit, blocked account, …). Surface the backend message verbatim instead of
-            // inferring the reason from its (localized) text, so a blocked account whose message mentions
-            // "reset your password" is no longer mis-shown as a wrong password. See WOOMOB-3205.
             displayError(message: oauthError.loginErrorMessage, moveVoiceOverFocus: true)
         } else {
             displayError(error, sourceTag: sourceTag)

@@ -10,14 +10,6 @@ public extension WordPressComOAuthError {
         return nil
     }
 
-    /// User-facing message for a failed WordPress.com password sign-in.
-    ///
-    /// WordPress.com returns several distinct failures under the `invalid_request` error code
-    /// (wrong credentials, exceeded login limit, blocked account, …), each with its own localized
-    /// `error_description`. We surface that backend message verbatim rather than inferring the reason
-    /// from its text, so account-specific guidance (e.g. a blocked account that must reset its
-    /// password) is never masked. Falls back to the standard error description when the backend sends
-    /// no message. See WOOMOB-3205.
     var loginErrorMessage: String {
         guard case let .endpointError(failure) = self,
               let serverMessage = failure.localizedErrorMessage,

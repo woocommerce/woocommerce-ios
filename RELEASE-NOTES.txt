@@ -19,6 +19,7 @@
 - [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
+- [*] Help & Support: Fixed the main tab bar remaining visible on the System Status Report screen. [https://github.com/woocommerce/woocommerce-ios/pull/17394]
 
 25.0
 -----

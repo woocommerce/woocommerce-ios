@@ -19,6 +19,39 @@ final class SystemStatusReportHostingController: UIHostingController<SystemStatu
     func setDismissAction(_ dismissAction: @escaping () -> Void) {
         rootView.dismissAction = dismissAction
     }
+
+    // This screen is pushed inside the Menu tab's SwiftUI `NavigationStack`, whose navigation controller
+    // is not a direct child of the tab bar controller, so `hidesBottomBarWhenPushed` is ignored and the
+    // tab bar stays visible (WOOMOB-3199). Hide the ancestor tab bar manually while on screen and
+    // restore it when leaving.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setAncestorTabBarHidden(true)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Restore the tab bar when leaving, but keep it hidden if an interactive pop is cancelled.
+        guard let transitionCoordinator else {
+            setAncestorTabBarHidden(false)
+            return
+        }
+        transitionCoordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.setAncestorTabBarHidden(false)
+        }, completion: { [weak self] context in
+            if context.isCancelled {
+                self?.setAncestorTabBarHidden(true)
+            }
+        })
+    }
+
+    private func setAncestorTabBarHidden(_ hidden: Bool) {
+        guard let tabBar = tabBarController?.tabBar, tabBar.isHidden != hidden else {
+            return
+        }
+        tabBar.isHidden = hidden
+    }
 }
 
 /// Displays system status report

@@ -100,9 +100,20 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 
-    func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_and_put() throws {
+    func test_it_uses_JSON_encoding_for_patch_method() throws {
         // Given
-        let methods: [HTTPMethod] = [.options, .get, .head, .patch, .delete, .trace, .connect]
+        let request = RESTRequest(siteURL: sampleSiteAddress, wooApiVersion: sampleWooApiVersion, method: .patch, path: sampleRPC, parameters: sampleParameters)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+
+        // Then
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
+    }
+
+    func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_put_and_patch() throws {
+        // Given
+        let methods: [HTTPMethod] = [.options, .get, .head, .delete, .trace, .connect]
         for method in methods {
             let request = RESTRequest(siteURL: sampleSiteAddress,
                                       wooApiVersion: sampleWooApiVersion,
@@ -120,7 +131,7 @@ final class RESTRequestTests: XCTestCase {
 
     func test_request_body_is_empty_if_parameter_is_nil() throws {
         // Given
-        let methods: [HTTPMethod] = [.post, .put]
+        let methods: [HTTPMethod] = [.post, .put, .patch]
         for method in methods {
             let request = RESTRequest(siteURL: sampleSiteAddress,
                                       wooApiVersion: sampleWooApiVersion,
@@ -137,7 +148,7 @@ final class RESTRequestTests: XCTestCase {
 
     func test_request_body_is_not_empty_if_parameters_is_not_nil() throws {
         // Given
-        let methods: [HTTPMethod] = [.post, .put]
+        let methods: [HTTPMethod] = [.post, .put, .patch]
         for method in methods {
             let request = RESTRequest(siteURL: sampleSiteAddress,
                                       wooApiVersion: sampleWooApiVersion,
@@ -149,6 +160,34 @@ final class RESTRequestTests: XCTestCase {
 
             // Then
             XCTAssertNotNil(urlRequest.httpBody)
+        }
+    }
+
+    func test_asURLRequest_when_parameters_contain_non_finite_number_then_throws_error() {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .post,
+                                  path: sampleRPC,
+                                  parameters: ["value": Double.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
+    }
+
+    func test_asURLRequest_when_parameters_contain_non_finite_decimal_then_throws_error() {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .post,
+                                  path: sampleRPC,
+                                  parameters: ["value": Decimal.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
         }
     }
 

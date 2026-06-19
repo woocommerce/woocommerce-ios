@@ -30,9 +30,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     public let path: String
 
-    /// Jetpack-Tunneled Parameters
-    ///
-    let parameters: [String: Any]
+    let requestParameters: RequestParameters
 
     /// Whether this request should be transformed to a REST request if application password is available.
     ///
@@ -42,6 +40,26 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     private let allowsCellularAccess: Bool
 
+    private init(wooApiVersion: WooAPIVersion,
+                 method: HTTPMethod,
+                 siteID: Int64,
+                 locale: String? = nil,
+                 path: String,
+                 requestParameters: RequestParameters,
+                 availableAsRESTRequest: Bool = false,
+                 allowsCellularAccess: Bool = true) {
+        if [.mark1, .mark2].contains(wooApiVersion) {
+            DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
+        }
+        self.wooApiVersion = wooApiVersion
+        self.method = method
+        self.siteID = siteID
+        self.locale = locale
+        self.path = path
+        self.requestParameters = requestParameters
+        self.availableAsRESTRequest = availableAsRESTRequest
+        self.allowsCellularAccess = allowsCellularAccess
+    }
 
     /// Designated Initializer.
     ///
@@ -59,20 +77,53 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          siteID: Int64,
          locale: String? = nil,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
-        if [.mark1, .mark2].contains(wooApiVersion) {
-            DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
-        }
-        self.wooApiVersion = wooApiVersion
-        self.method = method
-        self.siteID = siteID
-        self.locale = locale
-        self.path = path
-        self.parameters = parameters ?? [:]
-        self.availableAsRESTRequest = availableAsRESTRequest
-        self.allowsCellularAccess = allowsCellularAccess
+        self.init(wooApiVersion: wooApiVersion,
+                  method: method,
+                  siteID: siteID,
+                  locale: locale,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  availableAsRESTRequest: availableAsRESTRequest,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    public init<Value: RequestParameterValueConvertible>(wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         siteID: Int64,
+         locale: String? = nil,
+         path: String,
+         parameters: [String: Value],
+         availableAsRESTRequest: Bool = false,
+         allowsCellularAccess: Bool = true) {
+        self.init(wooApiVersion: wooApiVersion,
+                  method: method,
+                  siteID: siteID,
+                  locale: locale,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  availableAsRESTRequest: availableAsRESTRequest,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    public init(wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         siteID: Int64,
+         locale: String? = nil,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         availableAsRESTRequest: Bool = false,
+         allowsCellularAccess: Bool = true) {
+        self.init(wooApiVersion: wooApiVersion,
+                  method: method,
+                  siteID: siteID,
+                  locale: locale,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  availableAsRESTRequest: availableAsRESTRequest,
+                  allowsCellularAccess: allowsCellularAccess)
     }
 
 
@@ -83,7 +134,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         var dotcomRequest = try dotcomEndpoint.asURLRequest()
         dotcomRequest.allowsCellularAccess = allowsCellularAccess
 
-        return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+        return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams())
     }
 
     public func responseDataValidator() -> ResponseDataValidator {
@@ -94,11 +145,12 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         guard availableAsRESTRequest else {
             return nil
         }
+
         return RESTRequest(siteURL: siteURL,
                            wooApiVersion: wooApiVersion,
                            method: method,
                            path: path,
-                           parameters: parameters,
+                           parameters: requestParameters.dictionary,
                            allowsCellularAccess: allowsCellularAccess)
     }
 }
@@ -137,7 +189,7 @@ private extension JetpackRequest {
 
     /// Returns the WordPress.com Parameters
     ///
-    var dotcomParams: [String: String] {
+    func dotcomParams() throws -> [String: String] {
         var output = [
             "json": "true",
             "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
@@ -147,11 +199,11 @@ private extension JetpackRequest {
             output["locale"] = locale
         }
 
-        if let jetpackQueryParams {
+        if let jetpackQueryParams = try jetpackQueryParams() {
             output["query"] = jetpackQueryParams
         }
 
-        if let jetpackBodyParams {
+        if let jetpackBodyParams = try jetpackBodyParams() {
             output["body"] = jetpackBodyParams
         }
 
@@ -178,21 +230,21 @@ private extension JetpackRequest {
 
     /// Returns the Jetpack-Tunneled-Request's Parameters
     ///
-    var jetpackQueryParams: String? {
-        guard jetpackEncodesParametersInQuery, parameters.isEmpty == false else {
+    func jetpackQueryParams() throws -> String? {
+        guard jetpackEncodesParametersInQuery, requestParameters.isEmpty == false else {
             return nil
         }
 
-        return parameters.toJSONEncoded()
+        return try requestParameters.validatedDictionaryOrEmpty().toJSONEncoded()
     }
 
     /// Returns the Jetpack-Tunneled-Request's Body parameters
     ///
-    var jetpackBodyParams: String? {
+    func jetpackBodyParams() throws -> String? {
         guard jetpackEncodesParametersInQuery == false else {
             return nil
         }
 
-        return parameters.toJSONEncoded()
+        return try requestParameters.validatedDictionaryOrEmpty().toJSONEncoded()
     }
 }

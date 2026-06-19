@@ -68,7 +68,7 @@ private extension SupportChatStore {
                      message: String,
                      chatID: Int64?,
                      sessionID: String?,
-                     context: [String: Any]?,
+                     context: RequestParameterDictionary?,
                      completion: @escaping (Result<SupportChatResponse, Error>) -> Void) {
         Task {
             let result = await Result {

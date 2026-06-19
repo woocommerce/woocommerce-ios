@@ -169,7 +169,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
                               clientID: String,
                               clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
         let path = Path.accountCreation
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             "client_id": clientID,
             "client_secret": clientSecret,
             "signup_flow_name": "mobile-ios",

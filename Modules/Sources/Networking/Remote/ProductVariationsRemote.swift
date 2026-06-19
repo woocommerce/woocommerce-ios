@@ -206,12 +206,13 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
+            let requestParameters: RequestParameterConvertibleDictionary = ["create": parameters]
             let path = "\(Path.products)/\(productID)/variations/batch"
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
-                                         parameters: ["create": parameters],
+                                         parameters: requestParameters,
                                          availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkCreateMapper(siteID: siteID, productID: productID)
 
@@ -292,12 +293,13 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
+            let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
             let path = "\(Path.products)/\(productID)/variations/batch"
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
-                                         parameters: ["update": parameters],
+                                         parameters: requestParameters,
                                          availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
 

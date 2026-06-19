@@ -16,7 +16,7 @@ public enum SupportChatAction: Action {
                      message: String,
                      chatID: Int64?,
                      sessionID: String?,
-                     context: [String: Any]?,
+                     context: RequestParameterDictionary?,
                      completion: (Result<SupportChatResponse, Error>) -> Void)
 
     /// Fetches the full transcript of an existing chat so the UI can rehydrate a resumed session.

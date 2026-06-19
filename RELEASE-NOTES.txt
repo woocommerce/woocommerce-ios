@@ -15,8 +15,10 @@
 - [internal] Make API request parameters Sendable [https://github.com/woocommerce/woocommerce-ios/pull/17370]
 - [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
 - [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
+- [Internal] Improved site-credential login nonce retrieval by handling redirects explicitly, reducing HTTP 429 failures during login. [https://github.com/woocommerce/woocommerce-ios/pull/17376]
 - [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
 - [*] Require iOS 18.0+ and remove deprecated code paths [https://github.com/woocommerce/woocommerce-ios/pull/17380]
+- [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
 
 25.0

@@ -18,7 +18,8 @@ struct ApplicationLogDetailView: View {
 
     var body: some View {
         ScrollViewReader { scrollProxy in
-            List(viewModel.lines) { line in
+            let filteredLines = viewModel.filteredLines
+            List(filteredLines) { line in
                 VStack(alignment: .leading, spacing: 6) {
                     if let dateText = line.dateText {
                         Text(dateText)
@@ -27,12 +28,14 @@ struct ApplicationLogDetailView: View {
                     Text(line.text)
                         .bodyStyle()
                 }
-                .storeVisibleStatus(on: $viewModel.lastCellIsVisible, if: viewModel.isLastLine(line))
+                .storeVisibleStatus(on: $viewModel.lastCellIsVisible, if: line.id == filteredLines.last?.id)
             }
             .overlay(
                 scrollToBottomButton {
                     withAnimation(.easeInOut(duration: 0.1)) {
-                        scrollProxy.scrollTo(viewModel.lastLineID)
+                        if let lastLineID = filteredLines.last?.id {
+                            scrollProxy.scrollTo(lastLineID)
+                        }
                     }
                 },
                 alignment: .bottomTrailing)
@@ -54,6 +57,9 @@ struct ApplicationLogDetailView: View {
             }
         }
         .wooNavigationBarStyle()
+        .searchable(text: $viewModel.searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: Localization.searchPrompt)
     }
 
     func scrollToBottomButton(_ action: @escaping () -> Void) -> some View {
@@ -71,6 +77,16 @@ struct ApplicationLogDetailView: View {
                 .transition(.move(edge: .bottom))
             }
         }
+    }
+}
+
+private extension ApplicationLogDetailView {
+    enum Localization {
+        static let searchPrompt = NSLocalizedString(
+            "applicationLogDetail.searchPrompt",
+            value: "Search logs",
+            comment: "Placeholder text for the search field on the application log detail screen."
+        )
     }
 }
 

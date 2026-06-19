@@ -241,7 +241,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 
 ## Testing
 
-- **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
+- **New test files should only use Swift Testing** (`@Test`, `#expect()`). If this is not possible for any reason, share explicitly what the limitation is.
 - When adding to existing XCTest classes, follow that class's framework
 - **Naming**: snake_case — `test_<operation>_when_<condition>_then_<expected_result>()`
 - **Structure**: Given / When / Then blocks with comments

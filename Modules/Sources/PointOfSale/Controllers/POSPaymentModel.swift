@@ -24,10 +24,6 @@ final class POSPaymentModel {
         cardPaymentSelectionMode == .compact
     }
 
-    var isTapToPaySelected: Bool {
-        isCompactCardPaymentSelectionEnabled && selectedCardPaymentRail == .tapToPay
-    }
-
     var isBluetoothReaderSelected: Bool {
         isCompactCardPaymentSelectionEnabled && selectedCardPaymentRail == .bluetoothReader
     }

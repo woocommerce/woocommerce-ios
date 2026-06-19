@@ -141,14 +141,21 @@ private extension POSCatalogIncrementalSyncService {
         )
 
         // Find products hidden from POS: present in "all" but missing from "POS"
-        let hiddenProductIDs = findHiddenProductIDs(posProducts: posProducts, allProducts: allProducts)
+        let hiddenProductIDs = findHiddenProductIDs(posProducts: posProducts.items, allProducts: allProducts.items)
 
         // Aggregate regular and trashed products before persist them
-        let productsToSync = posProducts + trashedProducts
+        let productsToSync = posProducts.items + trashedProducts.items
+
+        // Prefer the server's clock as the next `modified_after` cursor (the earliest across all
+        // responses, to avoid skipping changes between requests). Fall back to the device clock only
+        // if no response carried a `Date` header.
+        let serverDates = [posProducts.serverDate, allProducts.serverDate,
+                           trashedProducts.serverDate, posVariations.serverDate].compactMap { $0 }
+        let syncDate = serverDates.min() ?? syncStartDate
 
         return POSCatalog(products: productsToSync,
-                          variations: posVariations,
-                          syncDate: syncStartDate,
+                          variations: posVariations.items,
+                          syncDate: syncDate,
                           productsToRemove: hiddenProductIDs)
     }
 }

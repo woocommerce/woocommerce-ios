@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Bizi değerlendirin";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Zor sorulara yanıt verilmesine yardımcı olabilecek mutluluk mühendislerimize ulaşın";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Sorun Giderme İpuçlarımızı okuyun";
 
@@ -10056,9 +10053,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Yeni bir siparişi asla kaçırmayın";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "Destek ile sohbet edin";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Bağlantı Sorununu Giderin";
 
@@ -10917,12 +10911,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Keşiften döndürülen okuyucunun IP adresi yok ve bu okuyucuya bağlanılamıyor.";
-
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "Yapay zeka yardımcımızdan yardım alın";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "Destek ile sohbet edin";
 
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "Geçmiş destek konuşmalarını yeniden ziyaret edin";
@@ -13699,12 +13687,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for total amount field */
 "pos.totalsView.total" = "Toplam";
 
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Lütfen Satış Noktası'na daha fazla alan sağlamak için ekranınızın bölünmesini ayarlayın.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Satış Noktası bu ekran genişliğinde desteklenmiyor.";
-
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "Daha fazla bilgi edinin";
 
@@ -13848,9 +13830,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress.com REST API’si";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "Destek ile sohbet edin";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "Desteğe Başvurun";
@@ -14823,9 +14802,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Sohbet Geçmişi";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "Destek ile sohbet edin";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "WooCommerce'i güncelle";
 
@@ -14879,12 +14855,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "Bu sohbet için bir destek bileti oluşturuldu. E-postayla yanıt vereceğiz.";
-
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "Destek ile sohbet edin";
-
-/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "Desteğe Başvurun";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Çözüldü Olarak İşaretle";

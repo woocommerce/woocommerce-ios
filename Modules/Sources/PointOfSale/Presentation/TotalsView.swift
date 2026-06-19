@@ -192,11 +192,7 @@ struct TotalsView: View {
         }
         .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
-                // Hide the Card reader row when a reader is already connected — its
-                // "Connect a Bluetooth reader…" subtitle would contradict the BT
-                // reader status the merchant is already looking at. In the
-                // TTP-hero scenario (no reader connected) the row remains visible.
-                isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
+                isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
@@ -733,7 +729,6 @@ private extension TotalsView {
         }
     }
 
-    /// True when the merchant should see the Android-style Tap to Pay hero +
     /// True when the card payment has reached a state that should take over
     /// the hero immediately: a terminal state (success / error), or the
     /// `.processingPayment` window between Apple's TTP modal closing and the
@@ -759,35 +754,15 @@ private extension TotalsView {
         }
     }
 
-    /// bottom-strip layout: TTP availability has resolved `.available`, no
-    /// payment is currently in progress (idle card + idle cash), and the order
-    /// has a real non-zero total to charge. When a TTP payment kicks off,
-    /// `paymentState.card` transitions out of `.idle` and the existing
-    /// `PaymentViewContent` flow takes over (preparing / accepting /
-    /// processing / success / error).
+    /// Shows the Tap to Pay hero when Tap to Pay is available and no payment is in progress.
     var useTapToPayHeroLayout: Bool {
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
-        // Idle-state gates — same as before. After a successful payment via
-        // any non-card method the totals view renders that method's success
-        // UI via `PaymentViewContent`; the hero must not show on top of it.
+        // Keep method-specific success UI visible instead of returning to the hero.
         guard displayPaymentState.card == .idle && displayPaymentState.cash == .idle else { return false }
         guard displayPaymentState.scanToPay == .idle && displayPaymentState.markAsPaid == .idle else { return false }
         guard case .loaded(let totals) = posModel.orderState else { return false }
         guard !totals.orderTotalDecimal.isZero else { return false }
-        // Suppress the TTP hero only when **BT is currently `.connected`**.
-        // That covers the BT-ready / BT-collecting scenarios where the
-        // merchant has explicitly picked Card reader from the sheet and we
-        // want the BT screen (`PaymentViewContent`) on top, not the TTP
-        // hero. In every other reader state — `.disconnected`, `.reconnecting`,
-        // `.disconnecting`, `.cancellingConnection` — BT is unreachable and
-        // the merchant should see the TTP hero.
-        //
-        // The one-shot BT model relies on this: a BT drop mid-flow (status
-        // → `.reconnecting` or `.disconnected`) naturally exposes the TTP
-        // hero as the alternative path. When the merchant taps Done after a
-        // BT success, the next `startPayment()` invocation disconnects the
-        // BT reader and pre-connects TTP, returning the merchant to the TTP
-        // hero for the next order.
+        // Hide the hero only while Bluetooth is the active connected path.
         if case .connected = paymentModel.cardReaderConnectionStatus,
            paymentModel.currentPaymentMethod == .bluetooth || paymentModel.lastConnectedMethod == .bluetooth {
             return false
@@ -795,17 +770,8 @@ private extension TotalsView {
         return true
     }
 
-    /// Cash + Other payment methods stacked outlined buttons rendered below the
-    /// totals. Used in two scenarios:
-    ///
-    /// - **TTP hero layout**: TTP is the primary CTA at the top, the strip
-    ///   carries Cash and the "Other payment methods" sheet (Card reader,
-    ///   Scan to Pay, Mark as Paid). Mirrors samiuelson #15825.
-    /// - **TTP-available + BT reader connected**: the BT reader is the active
-    ///   path showing "Ready for payment" up top, and the strip lets the
-    ///   merchant either take cash or step out via the sheet (which now
-    ///   includes Tap to Pay on iPhone since reader-is-connected means the
-    ///   sheet's Card reader row is hidden).
+    /// Cash + Other payment methods buttons shown below the totals for the Tap to Pay hero
+    /// and active Bluetooth reader layouts.
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
@@ -835,20 +801,11 @@ private extension TotalsView {
         }
     }
 
-    /// True whenever the bottom of the totals view should render the
-    /// `cashAndOtherMethodsBottomStrip` instead of `POSCheckoutPaymentButtonsRow`.
-    /// Covers both the TTP-hero case (no reader connected) and the
-    /// TTP-available + BT-reader-connected case. In the BT-connected case the
-    /// strip renders Cash + Other payment methods (with Scan to Pay and
-    /// Mark as Paid inside the sheet); the row's TTP-as-primary CTA would
-    /// contradict the reader-ready screen, so it's collapsed into the strip
-    /// shape used by the hero.
+    /// Uses the compact Cash + Other payment methods strip when Tap to Pay is primary
+    /// or when Bluetooth is active while Tap to Pay is also available.
     var useCashAndOtherMethodsBottomStrip: Bool {
         if useTapToPayHeroLayout { return true }
-        // Reader-connected case: only fold into the strip when TTP would
-        // otherwise have crowded the row as a redundant primary CTA. If TTP
-        // isn't available we don't need the sheet at all — the row already
-        // does the right thing (just Cash).
+        // Bluetooth active: use the strip only when Tap to Pay would otherwise be an extra primary option.
         guard posModel.tapToPayAvailabilityController?.state.isAvailable == true else { return false }
         let isReaderDisconnected = viewHelper.shouldShowDisconnectedMessage(
             readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
@@ -862,28 +819,9 @@ private extension TotalsView {
         )
     }
 
-    /// True when the Card reader row should appear inside the Other Payment
-    /// Methods sheet. Hidden only when the merchant is currently using BT —
-    /// re-listing it there would be a no-op contradiction. Visible everywhere
-    /// else, including during a TTP collection (lets the merchant switch back
-    /// to a BT reader mid-flow).
-    ///
-    /// Uses `currentPaymentMethod` instead of `cardReaderConnectionStatus`
-    /// because the silent TTP pre-connect also reports the reader as
-    /// `.connected` — only `currentPaymentMethod` distinguishes
-    /// "merchant committed to BT" from "TTP reader is warm."
-    var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
-        // One-shot Bluetooth re-introduction model:
-        //   - From the TTP hero (no active session): Card reader is offered as
-        //     an explicit opt-in.
-        //   - During a Bluetooth collection (`currentPaymentMethod == .bluetooth`):
-        //     Card reader is hidden (no re-pick mid-flow, no method-switch
-        //     state-machine complexity).
-        // After a Bluetooth session ends (success or abandonment), the next
-        // `startPayment()` invocation disconnects the BT reader and pre-
-        // connects TTP, returning the merchant to the TTP hero. The Card
-        // reader option reappears there for the next order if they want
-        // Bluetooth again.
+    /// Card reader is disabled only while Bluetooth is the active payment method.
+    /// `cardReaderConnectionStatus` is not enough because Tap to Pay pre-connects can also report `.connected`.
+    var isCardReaderRowEnabledInOtherMethodsSheet: Bool {
         paymentModel.currentPaymentMethod != .bluetooth
     }
 

@@ -380,7 +380,7 @@ struct PointOfSaleDashboardView: View {
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
-        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 
     private var phoneOverflowMenuConstrainedSize: CGFloat {
@@ -419,7 +419,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         }
-        .accessibilityIdentifier("pos-phone-cart-button")
+        .accessibilityIdentifier("pos-compact-cart-button")
     }
 
     private var phoneCartSheetView: some View {

@@ -187,7 +187,7 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func showCompactCartIfNeeded() -> Self {
         // Regular layouts keep the cart pane visible; compact layouts expose it through a collapsed cart button.
-        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        let compactCartButton = app.buttons["pos-compact-cart-button"]
         if waitForVisibleElement(cartViewGetter(app), timeout: 1), !compactCartButton.isHittable {
             return self
         }
@@ -200,7 +200,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func dismissCompactCartIfNeeded() -> Self {
-        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        let compactCartButton = app.buttons["pos-compact-cart-button"]
         guard compactCartButton.exists, waitForVisibleElement(cartViewGetter(app), timeout: 1) else {
             return self
         }
@@ -245,7 +245,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
-        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        let compactCartButton = app.buttons["pos-compact-cart-button"]
         if compactCartButton.exists {
             // Compact layouts swap ItemListView out while checkout is shown, so returning to edit
             // rebuilds the selector at the root. Regular layouts keep the item pane alive off-screen.
@@ -373,7 +373,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReadyForNewOrder(previousProductID: Int? = nil, previousVariationID: Int? = nil) -> Self {
-        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        let compactCartButton = app.buttons["pos-compact-cart-button"]
 
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
 
@@ -402,7 +402,7 @@ public final class POSScreen: ScreenObject {
             return self
         }
 
-        let compactOverflowMenu = app.buttons["pos-phone-overflow-menu"]
+        let compactOverflowMenu = app.buttons["pos-compact-overflow-menu"]
         XCTAssertTrue(compactOverflowMenu.waitForIsHittable(timeout: 10), "POS menu button should be tappable.")
         compactOverflowMenu.tap()
         return self

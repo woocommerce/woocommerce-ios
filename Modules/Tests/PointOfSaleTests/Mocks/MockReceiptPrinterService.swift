@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import struct Yosemite.PrinterDevice
 import enum Yosemite.PrinterConnectionStatus
@@ -8,7 +7,8 @@ import protocol Yosemite.ReceiptPrinterServiceProtocol
 final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     // MARK: - Stubs
 
-    @Published var connectionStatus: PrinterConnectionStatus = .idle
+    private(set) var connectionStatus: PrinterConnectionStatus = .idle
+    private var statusObservers: [AsyncStream<PrinterConnectionStatus>.Continuation] = []
 
     /// Devices emitted by `discover()`.
     var discoveredDevices: [PrinterDevice] = []
@@ -25,8 +25,19 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     // MARK: - ReceiptPrinterServiceProtocol
 
-    var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
-        $connectionStatus.eraseToAnyPublisher()
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { continuation in
+            continuation.yield(connectionStatus)
+            statusObservers.append(continuation)
+        }
+    }
+
+    /// Updates the current status and forwards it to every active `connectionStatusUpdates()` stream.
+    func emitConnectionStatus(_ status: PrinterConnectionStatus) {
+        connectionStatus = status
+        for continuation in statusObservers {
+            continuation.yield(status)
+        }
     }
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
@@ -49,11 +60,11 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         if let connectError {
             throw connectError
         }
-        connectionStatus = .connected
+        emitConnectionStatus(.connected)
     }
 
     func disconnect() async {
         disconnectCallCount += 1
-        connectionStatus = .disconnected
+        emitConnectionStatus(.disconnected)
     }
 }

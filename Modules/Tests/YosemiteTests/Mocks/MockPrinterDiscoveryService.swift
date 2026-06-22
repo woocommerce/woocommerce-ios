@@ -1,4 +1,4 @@
-import Combine
+import Foundation
 @testable import Hardware
 
 /// Supports tests for ReceiptPrinterService.
@@ -14,9 +14,22 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
     private(set) var connectedDevice: PrinterDevice?
     private(set) var disconnectWasCalled = false
 
-    let connectionStatusSubject = CurrentValueSubject<PrinterConnectionStatus, Never>(.idle)
-    var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
-        connectionStatusSubject.eraseToAnyPublisher()
+    private(set) var connectionStatus: PrinterConnectionStatus = .idle
+    private var statusObservers: [AsyncStream<PrinterConnectionStatus>.Continuation] = []
+
+    /// Updates the current status and forwards it to every active `connectionStatusUpdates()` stream.
+    func emitConnectionStatus(_ status: PrinterConnectionStatus) {
+        connectionStatus = status
+        for continuation in statusObservers {
+            continuation.yield(status)
+        }
+    }
+
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { continuation in
+            continuation.yield(connectionStatus)
+            statusObservers.append(continuation)
+        }
     }
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {

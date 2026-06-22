@@ -1,5 +1,4 @@
 import Testing
-import Combine
 @testable import Yosemite
 @testable import Hardware
 
@@ -12,18 +11,20 @@ struct ReceiptPrinterServiceTests {
         printerDiscoveryService = MockPrinterDiscoveryService()
     }
 
-    @Test func test_connectionStatusPublisher_forwards_service_publisher() {
+    @Test func test_connectionStatusUpdates_forwards_service_stream() async {
         // Given
         let sut = makeService()
-        printerDiscoveryService.connectionStatusSubject.send(.connected)
+        printerDiscoveryService.emitConnectionStatus(.connected)
 
         // When
         var status: PrinterConnectionStatus?
-        let cancellable = sut.connectionStatusPublisher.sink { status = $0 }
+        for await update in sut.connectionStatusUpdates() {
+            status = update
+            break
+        }
 
         // Then
         #expect(status == .connected)
-        cancellable.cancel()
     }
 
     @Test func test_discover_forwards_service_stream_yielding_devices() async throws {

@@ -1,7 +1,6 @@
 import CocoaLumberjackSwift
 import SwiftUI
 import WooFoundation
-import WooFoundationCore
 import Experiments
 
 struct TotalsView: View {
@@ -11,7 +10,6 @@ struct TotalsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAccessSession) private var session
-    @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -70,10 +68,7 @@ struct TotalsView: View {
                             orderState: posModel.orderState,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: {
-                                trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
-                                paymentModel.connectCardReader()
-                            },
+                            connectCardReaderAction: paymentModel.connectCardReader,
                             cancelReconnectionAction: posModel.cancelReconnection
                         )
                     } else if useTapToPayHeroLayout {
@@ -88,10 +83,7 @@ struct TotalsView: View {
                             orderState: posModel.orderState,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: {
-                                trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
-                                paymentModel.connectCardReader()
-                            },
+                            connectCardReaderAction: paymentModel.connectCardReader,
                             cancelReconnectionAction: posModel.cancelReconnection
                         )
                     }
@@ -205,7 +197,6 @@ struct TotalsView: View {
                 onTapToPay: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
-                    trackPaymentEntry(.pointOfSaleCheckoutTapToPayTapped)
                     Task { @MainActor in
                         await paymentModel.startCardPayment(with: .tapToPay)
                     }
@@ -214,7 +205,6 @@ struct TotalsView: View {
                 onCardReader: {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
-                    trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
                     Task { @MainActor in
                         await paymentModel.startCardPayment(with: .bluetoothReader)
                     }
@@ -227,7 +217,6 @@ struct TotalsView: View {
                     // out of `.idle` could fire `startScanToPayPayment()` twice.
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
-                    trackPaymentEntry(.pointOfSaleCheckoutScanToPayPaymentTapped)
                     Task { @MainActor in
                         await paymentModel.startScanToPayPayment()
                     }
@@ -239,7 +228,6 @@ struct TotalsView: View {
                     // by tapping the row a second time during the same render frame.
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
-                    trackPaymentEntry(.pointOfSaleCheckoutMarkAsPaidTapped)
                     paymentModel.startMarkAsPaidPayment()
                 }
             )
@@ -745,18 +733,15 @@ private extension TotalsView {
             handleTapToPayTapped()
         case .cardReader:
             guard paymentModel.isCompactCardPaymentSelectionEnabled else {
-                trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
                 paymentModel.connectCardReader()
                 return
             }
             guard !isStartingPayment else { return }
             isStartingPayment = true
-            trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
             Task { @MainActor in
                 await paymentModel.startCardPayment(with: .bluetoothReader)
             }
         case .cashPayment:
-            trackPaymentEntry(.pointOfSaleCheckoutCashPaymentTapped)
             paymentModel.startCashPayment()
         }
     }
@@ -879,7 +864,6 @@ private extension TotalsView {
     func handleTapToPayTapped() {
         guard !isStartingPayment else { return }
         isStartingPayment = true
-        trackPaymentEntry(.pointOfSaleCheckoutTapToPayTapped)
         Task { @MainActor in
             await paymentModel.startCardPayment(with: .tapToPay)
         }
@@ -888,17 +872,11 @@ private extension TotalsView {
     func handleCashPaymentTapped() {
         guard !isStartingPayment else { return }
         isStartingPayment = true
-        trackPaymentEntry(.pointOfSaleCheckoutCashPaymentTapped)
         paymentModel.startCashPayment()
     }
 
     func handleOtherPaymentMethodsTapped() {
         isShowingOtherPaymentMethodsSheet = true
-    }
-
-    func trackPaymentEntry(_ stat: WooAnalyticsStat) {
-        let layout = posLayoutScale.analyticsLayout
-        analytics.track(stat, parameters: layout.analyticsProperties)
     }
 }
 

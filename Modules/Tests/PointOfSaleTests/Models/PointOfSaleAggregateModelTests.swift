@@ -1125,6 +1125,22 @@ struct PointOfSaleAggregateModelTests {
             #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
+        @Test func connectCardReader_when_tapped_then_tracks_event() {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            //When
+            sut.connectCardReader()
+
+            // Then
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_connection_tapped" }))
+        }
+
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -1188,6 +1204,17 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(analytics.events.contains(where: { $0.eventName == "back_to_checkout_from_cash" }))
+        }
+
+        @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
+
+            // When
+            sut.startCashPayment()
+
+            // Then
+            #expect(analytics.events.contains(where: { $0.eventName == "checkout_cash_payment_tapped" }))
         }
 
         @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {

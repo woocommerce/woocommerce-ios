@@ -26,12 +26,10 @@ struct POSCollectOrderPaymentAnalyticsTests {
             "card_reader_model",
             "country",
             "payment_method_type",
-            "plugin_slug",
-            "pos_layout"
+            "plugin_slug"
         ]
 
         // When
-        sut.setPOSLayoutForCurrentPayment(.compact)
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -39,6 +37,5 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(expectedProperties.allSatisfy { key in
             analytics.events.map(\.properties).contains(where: { $0.keys.contains(key) })
         })
-        #expect(analytics.events.first(where: { $0.eventName == expectedEvent })?.properties["pos_layout"] as? String == "compact")
     }
 }

@@ -14434,7 +14434,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a payment using your own card (and refund it when you're done.)" = "Try a payment using your own card (and refund it when you're done.)";
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "Try a Test Order";
 
 /* Title shown on the test order screen */
 "Try a test order" = "Try a test order";

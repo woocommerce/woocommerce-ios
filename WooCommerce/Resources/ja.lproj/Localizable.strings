@@ -7367,7 +7367,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a Payment" = "支払いを試す";
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "テスト注文を試す";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "ご自身のカードで支払いをお試しください (完了したら返金してください)。";

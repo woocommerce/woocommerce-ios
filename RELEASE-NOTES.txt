@@ -6,6 +6,7 @@
 
 25.0
 -----
+- [*] Fixed an app hang on launch on stores with large REST APIs (many plugins). [https://github.com/woocommerce/woocommerce-ios/pull/17396]
 - [*] Fixed a crash that could occur when using the Connectivity Tool to troubleshoot connection issues. [https://github.com/woocommerce/woocommerce-ios/pull/17361]
 - [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]
 - [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]

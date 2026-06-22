@@ -11,6 +11,7 @@ public struct StarReceiptTextBuilder {
 
     public init(lineWidth: Int = Constants.defaultLineWidth,
                 dateFormatter: DateFormatter = StarReceiptTextBuilder.makeDefaultDateFormatter()) {
+        precondition(lineWidth > 0, "lineWidth must be positive; the wrapping logic assumes at least one column.")
         self.lineWidth = lineWidth
         self.dateFormatter = dateFormatter
     }

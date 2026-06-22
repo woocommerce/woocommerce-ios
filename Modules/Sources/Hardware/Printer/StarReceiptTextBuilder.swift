@@ -81,7 +81,7 @@ private extension StarReceiptTextBuilder {
             }
         }
 
-        return lines
+        return lines.flatMap(wrap)
     }
 
     func emvLines(cardDetails: CardPresentTransactionDetails?) -> [String]? {
@@ -96,7 +96,7 @@ private extension StarReceiptTextBuilder {
         if let accountType = receipt.accountType, accountType.isEmpty == false {
             lines.append(String.localizedStringWithFormat(Localization.accountType, accountType))
         }
-        return lines
+        return lines.flatMap(wrap)
     }
 
     func itemLine(_ item: ReceiptLineItem) -> [String] {
@@ -140,7 +140,12 @@ private extension StarReceiptTextBuilder {
             if last.isEmpty == false {
                 lines.append(last)
             }
-            lines.append(rightAligned(right))
+            // A right column wider than the roll can't be right-aligned on one line, so wrap it too.
+            if right.count <= lineWidth {
+                lines.append(rightAligned(right))
+            } else {
+                lines.append(contentsOf: wrap(right))
+            }
         }
         return lines
     }

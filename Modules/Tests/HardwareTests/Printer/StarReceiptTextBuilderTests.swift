@@ -148,27 +148,20 @@ struct StarReceiptTextBuilderTests {
         #expect(receipt.contains("T-Shirt. Color Blue, Size M x2"))
     }
 
-    @Test func test_makeReceiptText_when_brand_is_dinersClub_then_renders_spaced_proper_name() {
+    @Test(arguments: zip(
+        [CardBrand.visa, .amex, .masterCard, .discover, .jcb, .dinersClub,
+         .interac, .unionPay, .eftposAu, .cartesBancaires, .girocard],
+        ["Visa", "American Express", "Mastercard", "Discover", "JCB", "Diners Club",
+         "Interac", "UnionPay", "eftpos", "Cartes Bancaires", "girocard"]))
+    func test_makeReceiptText_renders_canonical_card_brand_name(brand: CardBrand, expectedName: String) {
         // Given
-        let cardDetails = makeCardDetails(brand: .dinersClub, receipt: nil)
+        let cardDetails = makeCardDetails(brand: brand, receipt: nil)
 
         // When
         let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
 
         // Then
-        #expect(receipt.contains("Diners Club - 4242"))
-        #expect(receipt.contains("Dinersclub") == false)
-    }
-
-    @Test func test_makeReceiptText_when_brand_is_masterCard_then_renders_mastercard_branding() {
-        // Given
-        let cardDetails = makeCardDetails(brand: .masterCard, receipt: nil)
-
-        // When
-        let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
-
-        // Then
-        #expect(receipt.contains("Mastercard - 4242"))
+        #expect(receipt.contains("\(expectedName) - 4242"))
     }
 
     @Test func test_makeReceiptText_when_brand_is_unknown_then_shows_last4_without_separator() {
@@ -194,6 +187,42 @@ struct StarReceiptTextBuilderTests {
         // Then
         #expect(receipt.contains("My Store"))
         #expect(receipt.isEmpty == false)
+    }
+
+    @Test func test_makeReceiptText_when_emv_fields_are_long_then_every_line_stays_within_lineWidth() {
+        // Given
+        let longReceipt = ReceiptDetails(
+            applicationPreferredName: "Some Extremely Long Card Scheme Application Preferred Name For Testing",
+            dedicatedFileName: String(repeating: "A0000000031010", count: 4),
+            authorizationResponseCode: "00",
+            applicationCryptogram: "0102030405060708",
+            terminalVerificationResults: "0000000000",
+            transactionStatusInformation: "E800",
+            accountType: "A Very Long Account Type Description That Should Wrap Across Several Lines")
+        let cardDetails = makeCardDetails(receipt: longReceipt)
+
+        // When
+        let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
+
+        // Then
+        for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
+            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+        }
+    }
+
+    @Test func test_makeReceiptText_when_amount_exceeds_lineWidth_then_every_line_stays_within_lineWidth() {
+        // Given
+        let hugeAmount = String(repeating: "9", count: 60)
+        let content = makeContent(lineItems: [ReceiptLineItem(title: "Item", quantity: "1", amount: hugeAmount, attributes: [])],
+                                  cartTotals: [ReceiptTotalLine(description: "Total", amount: hugeAmount)])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
+            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+        }
     }
 }
 

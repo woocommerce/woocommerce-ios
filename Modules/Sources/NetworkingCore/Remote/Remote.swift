@@ -31,13 +31,17 @@ open class Remote: NSObject {
 
                 switch result {
                 case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        continuation.resume()
-                    } catch {
-                        self.handleResponseError(error: error, for: request)
-                        continuation.resume(throwing: error)
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        do {
+                            let validator = request.responseDataValidator()
+                            try validator.validate(data: data)
+                            continuation.resume()
+                        } catch {
+                            DispatchQueue.main.async {
+                                self?.handleResponseError(error: error, for: request)
+                                continuation.resume(throwing: error)
+                            }
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
@@ -57,15 +61,19 @@ open class Remote: NSObject {
 
                 switch result {
                 case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let document = try JSONDecoder().decode(T.self, from: data)
-                        continuation.resume(returning: document)
-                    } catch {
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(T.self)")
-                        continuation.resume(throwing: error)
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        do {
+                            let validator = request.responseDataValidator()
+                            try validator.validate(data: data)
+                            let document = try JSONDecoder().decode(T.self, from: data)
+                            continuation.resume(returning: document)
+                        } catch {
+                            DispatchQueue.main.async {
+                                self?.handleResponseError(error: error, for: request)
+                                self?.handleDecodingError(error: error, for: request, entityName: "\(T.self)")
+                                continuation.resume(throwing: error)
+                            }
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
@@ -97,16 +105,13 @@ open class Remote: NSObject {
                 return
             }
 
-            do {
-                let validator = request.responseDataValidator()
-                try validator.validate(data: data)
-                let parsed = try mapper.map(response: data)
-                completion(parsed, nil)
-            } catch {
-                self.handleResponseError(error: error, for: request)
-                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                DDLogError("<> Mapping Error: \(error)")
-                completion(nil, error)
+            self.parseResponseInBackground(data, request: request, mapper: mapper) { result in
+                switch result {
+                case .success(let parsed):
+                    completion(parsed, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
             }
         }
     }
@@ -119,10 +124,8 @@ open class Remote: NSObject {
     /// - Parameters:
     ///     - request: Request that should be performed.
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
-    ///     - parseInBackground: Parse the response off the main thread (completion still on main). Temporary; see WOOMOB-3314.
     ///     - completion: Closure to be executed upon completion.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
-                            parseInBackground: Bool = false,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.responseData(for: request) { [weak self] result in
             guard let self else {
@@ -131,40 +134,7 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                if parseInBackground {
-                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                        guard let self else {
-                            return
-                        }
-                        do {
-                            let validator = request.responseDataValidator()
-                            try validator.validate(data: data)
-                            let parsed = try mapper.map(response: data)
-                            DispatchQueue.main.async {
-                                completion(.success(parsed))
-                            }
-                        } catch {
-                            DispatchQueue.main.async {
-                                self.handleResponseError(error: error, for: request)
-                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                                DDLogError("<> Mapping Error: \(error)")
-                                completion(.failure(error))
-                            }
-                        }
-                    }
-                } else {
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        completion(.success(parsed))
-                    } catch {
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                        DDLogError("<> Mapping Error: \(error)")
-                        completion(.failure(error))
-                    }
-                }
+                self.parseResponseInBackground(data, request: request, mapper: mapper, completion: completion)
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))
             }
@@ -183,6 +153,7 @@ open class Remote: NSObject {
     /// - Returns: A publisher that emits result upon completion.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
         network.responseDataPublisher(for: request)
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
             .map { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
                 switch result {
                 case .success(let data):
@@ -199,6 +170,7 @@ open class Remote: NSObject {
                     return .failure(self?.mapNetworkError(error: error, for: request) ?? error)
                 }
             }
+            .receive(on: DispatchQueue.main)
             .handleEvents(receiveOutput: { [weak self] result in
                 if let dotcomError = result.failure as? DotcomError {
                     self?.handleResponseError(error: dotcomError, for: request)
@@ -236,17 +208,7 @@ open class Remote: NSObject {
                                                 return
                                             }
 
-                                            do {
-                                                let validator = request.responseDataValidator()
-                                                try validator.validate(data: data)
-                                                let parsed = try mapper.map(response: data)
-                                                completion(.success(parsed))
-                                            } catch {
-                                                self.handleResponseError(error: error, for: request)
-                                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                                                DDLogError("<> Mapping Error: \(error)")
-                                                completion(.failure(error))
-                                            }
+                                            self.parseResponseInBackground(data, request: request, mapper: mapper, completion: completion)
         }
     }
 
@@ -292,6 +254,37 @@ open class Remote: NSObject {
 }
 
 private extension Remote {
+    /// Validates and maps `data` on a background queue, then delivers the result — and any error
+    /// handling/notifications — back on the main queue. Used by every completion-based enqueue method
+    /// so response parsing never blocks the main thread.
+    ///
+    /// `completion` is captured strongly so it always fires even if the `Remote` is deallocated
+    /// mid-flight (only the error-notification handlers are skipped when `self` is gone).
+    func parseResponseInBackground<M: Mapper>(_ data: Data,
+                                              request: Request,
+                                              mapper: M,
+                                              completion: @escaping (Result<M.Output, Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let result: Result<M.Output, Error>
+            do {
+                let validator = request.responseDataValidator()
+                try validator.validate(data: data)
+                result = .success(try mapper.map(response: data))
+            } catch {
+                result = .failure(error)
+            }
+
+            DispatchQueue.main.async {
+                if case let .failure(error) = result {
+                    self?.handleResponseError(error: error, for: request)
+                    self?.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                    DDLogError("<> Mapping Error: \(error)")
+                }
+                completion(result)
+            }
+        }
+    }
+
     // Validation and parsing of the response data is separated so that the decoding error can be handled separately from network error.
     func validateAndParseData<M: Mapper>(_ data: Data, request: Request, validator: ResponseDataValidator, mapper: M) throws -> M.Output {
         do {

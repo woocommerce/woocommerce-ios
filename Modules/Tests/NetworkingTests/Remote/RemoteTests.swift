@@ -145,6 +145,54 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(mapper.input)
     }
 
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a successful result on the main thread,
+    /// even though validation and parsing now run on a background queue.
+    ///
+    func test_enqueue_with_result_when_parsing_succeeds_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
+    }
+
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a parsing failure on the main thread,
+    /// so the error-handling notifications keep firing on the main thread.
+    ///
+    func test_enqueue_with_result_when_parsing_fails_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
+    }
+
     /// Verifies that `enqueuePublisher` relays any received payload over to the Mapper.
     ///
     func test_enqueuePublisher_relays_received_payload_to_mapper() {
@@ -665,7 +713,7 @@ final class RemoteTests: XCTestCase {
             notification = returnedNotification
             return true
         })
-        let result: Result<Any, Error> = waitFor { promise in
+        let result: Result<Any, Error> = await waitForAsync { promise in
             remote.enqueueMultipartFormDataUpload(self.request, mapper: mapper, multipartFormData: { _ in }) { result in
                 promise(result)
             }

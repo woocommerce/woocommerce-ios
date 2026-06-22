@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-16 16:57:25+0000 */
+/* Translation-Revision-Date: 2026-06-17 15:59:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -10958,7 +10958,7 @@ which should be translated separately and considered part of this sentence. */
 "helpAndSupport.chatHistory.title" = "Chatverlauf";
 
 /* Subtitle for Contact Support */
-"helpAndSupport.contactSupport.subtitle" = "Hilfe bei Problemen mit der App oder dem Store erhalten";
+"helpAndSupport.contactSupport.subtitle" = "Hilfe bei Problemen mit der App oder dem Shop erhalten";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Teste, ob deine Website mit der App funktioniert";

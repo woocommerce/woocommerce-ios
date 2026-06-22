@@ -297,6 +297,8 @@ private extension Remote {
             publishJetpackTimeoutNotification(error: dotcomError)
         case .invalidToken:
             publishInvalidTokenNotification(error: dotcomError)
+        case .unknownBlog:
+            publishUnknownBlogNotification(error: dotcomError)
         default:
             break
         }
@@ -349,6 +351,12 @@ private extension Remote {
     ///
     private func publishInvalidTokenNotification(error: DotcomError) {
         NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+    }
+
+    /// Publishes an `Unknown Blog` Notification.
+    ///
+    private func publishUnknownBlogNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveUnknownBlogError, object: error, userInfo: nil)
     }
 
     /// Publishes a `JSON Parsing Error` Notification.
@@ -471,6 +479,10 @@ public extension NSNotification.Name {
     /// Posted whenever an Invalid Token Error is received.
     ///
     static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+
+    /// Posted whenever an Unknown Blog Error is received, indicating the selected site ID is no longer recognized.
+    ///
+    static let RemoteDidReceiveUnknownBlogError = NSNotification.Name(rawValue: "RemoteDidReceiveUnknownBlogError")
 
     /// Posted whenever a Jetpack Timeout is received.
     ///

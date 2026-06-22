@@ -319,7 +319,8 @@ struct PointOfSaleDashboardView: View {
                     title: Localization.phoneCheckoutTitle,
                     backButtonConfiguration: .init(
                         state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                        action: { posModel.addMoreToCart() }
+                        action: { posModel.addMoreToCart() },
+                        accessibilityIdentifier: "pos-cart-back-button"
                     )
                 )
             }
@@ -350,12 +351,14 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
+            .accessibilityIdentifier("pos-exit-menu-item")
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
+            .accessibilityIdentifier("pos-settings-menu-item")
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
@@ -377,7 +380,7 @@ struct PointOfSaleDashboardView: View {
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
-        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 
     private var phoneOverflowMenuConstrainedSize: CGFloat {
@@ -416,7 +419,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         }
-        .accessibilityIdentifier("pos-phone-cart-button")
+        .accessibilityIdentifier("pos-compact-cart-button")
     }
 
     private var phoneCartSheetView: some View {

@@ -25,16 +25,20 @@ final class WooAnalytics: Analytics {
 
     private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
 
+    /// Defaults database used to persist the analytics opt-in state
+    ///
+    private let userDefaults: UserDefaults
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
-            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
+            let optedIn: Bool? = userDefaults.object(forKey: .userOptedInAnalytics)
             return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
+            userDefaults.set(newValue, forKey: .userOptedInAnalytics)
         }
     }
 
@@ -43,8 +47,9 @@ final class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker, userDefaults: UserDefaults = .standard) {
         self.analyticsProvider = analyticsProvider
+        self.userDefaults = userDefaults
         WPAnalytics.register(analyticsProvider)
     }
 }

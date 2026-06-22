@@ -3,6 +3,7 @@
 
 25.1
 -----
+- [*] Fixed product titles being misaligned in the Linked Products cross-sells/upsells list when a product name wrapped to multiple lines. [https://github.com/woocommerce/woocommerce-ios/pull/17353]
 - [*] Fixed crashes that could occur when opening share and action sheets on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17382]
 - [***] Phone POS available for UK-based stores [https://github.com/woocommerce/woocommerce-ios/pull/17325]
 - [*] Login: show the specific reason when signing in fails with a blocked WordPress.com account, instead of an incorrect-password message. [https://github.com/woocommerce/woocommerce-ios/pull/17378]
@@ -17,11 +18,13 @@
 - [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
 - [Internal] Improved site-credential login nonce retrieval by handling redirects explicitly, reducing HTTP 429 failures during login. [https://github.com/woocommerce/woocommerce-ios/pull/17376]
 - [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
+- [*] Require iOS 18.0+ and remove deprecated code paths [https://github.com/woocommerce/woocommerce-ios/pull/17380]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
 
 25.0
 -----
+- [*] Fixed an app hang on launch on stores with large REST APIs (many plugins). [https://github.com/woocommerce/woocommerce-ios/pull/17396]
 - [*] Fixed a crash that could occur when using the Connectivity Tool to troubleshoot connection issues. [https://github.com/woocommerce/woocommerce-ios/pull/17361]
 - [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]
 - [*] Added age-eligibility verification to comply with App Store requirements [https://github.com/woocommerce/woocommerce-ios/pull/17321]

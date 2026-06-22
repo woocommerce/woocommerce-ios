@@ -1,4 +1,3 @@
-import Combine
 import Hardware
 
 /// Provides receipt-printer capabilities to callers: device discovery and the connection lifecycle.
@@ -6,14 +5,15 @@ import Hardware
 /// Manufacturer-agnostic. The concrete service owns the only reference to the printer SDK in the
 /// Yosemite layer, so the app target and the POS module reach printers without importing Hardware.
 public protocol ReceiptPrinterServiceProtocol: AnyObject {
-    /// Publishes the current printer connection status.
-    var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> { get }
+    /// Streams the printer connection status. Each call returns its own stream, which replays the
+    /// current status immediately on subscription and then emits every subsequent change.
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus>
 
     /// Starts discovering available printers, emitting each device as it is found.
     func discover() -> AsyncThrowingStream<PrinterDevice, Error>
 
     /// Stops the current printer discovery.
-    func stopDiscovery()
+    func stopDiscovery() async
 
     /// Connects to the given printer.
     func connect(to printer: PrinterDevice) async throws
@@ -38,16 +38,16 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
         self.printerDiscoveryService = printerDiscoveryService
     }
 
-    public var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
-        printerDiscoveryService.connectionStatusPublisher
+    public func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        printerDiscoveryService.connectionStatusUpdates()
     }
 
     public func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
         printerDiscoveryService.discover()
     }
 
-    public func stopDiscovery() {
-        printerDiscoveryService.stopDiscovery()
+    public func stopDiscovery() async {
+        await printerDiscoveryService.stopDiscovery()
     }
 
     public func connect(to printer: PrinterDevice) async throws {

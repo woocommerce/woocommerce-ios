@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 11:55:15+0000 */
+/* Translation-Revision-Date: 2026-06-17 15:56:15+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -8611,6 +8611,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Metrik";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "Analiz verilerinin ne zaman güncelleneceğini seçin.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Bu, mağaza genelinde kullanılan ve aynı zamanda WooCommerce yönetici analizleri ayarlarındaki \"Güncellemeler\" seçeneğini de kontrol eden bir ayardır. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "Yeni veriler hazır olur olmaz günceller.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "Hemen";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "Daha fazla bilgi edinin";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "Otomatik olarak her 12 saatte bir güncellenir.\nYüksek sipariş hacmine sahip mağazalar için önerilir";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "Zamanlandı";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "Analiz güncellemeleri";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "Ayar güncellenemedi. Lütfen tekrar deneyin.";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Anladım";
 
@@ -10494,6 +10524,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "Mağazam";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "Daha fazla bilgi edinin";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "İstatistikler 12 saate kadar gecikebilir.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "gün";
 
@@ -10917,6 +10953,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Sohbet Geçmişi";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "Uygulama veya mağaza sorunlarıyla ilgili yardım alın";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Sitenizin uygulama ile çalışıp çalışmadığını test edin";
@@ -12342,6 +12381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "Bu sipariş ödendi olarak işaretlenemedi. Tekrar deneyin.";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "Bu sipariş oluşturulurken bir sorun oluştu, öğeler seçiminizle eşleşmiyor. Sepet içeriğini kontrol edip tekrar deneyin.";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "Bir veya daha fazla ürün";
 
@@ -12789,6 +12831,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Bir barkod tarayıcısı tarafından taranacak olan kod görseli.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "Kapat";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "Ürün taramaya başlamaya hazırsınız. Tarayıcınızı bağlamanız gereken bir sonraki seferde açmanız yeterlidir; tarayıcı otomatik olarak yeniden bağlanacaktır.";
 
@@ -12965,6 +13010,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Yüklenemedi";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Barındırma sağlayıcınız tarafından engellendiğinden Satış Noktası, ürün bilgilerinizi içeren bir dosyaya erişemiyor.\nLütfen Satış Noktası'nın düzgün çalışmaya devam etmesi için erişim izni vermelerini isteyin.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "Mağazanızda eylem gerekli";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
@@ -13157,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Siparişler yüklenemiyor";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "Tekrar dene";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Yenile";
@@ -13672,8 +13726,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Nakit ödeme";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "Özel tutarlar";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "İndirim toplamı";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "Siparişi düzenle";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "Bu sipariş oluşturulurken bir sorun oluştu, öğeler seçiminizle eşleşmiyor. Sepet içeriğini kontrol edip tekrar deneyin.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "Ödeme yapılamadı";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Diğer ödeme seçenekleri";
@@ -14314,6 +14380,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Stokta yok";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "Oturumunuz açılıyor…";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "İptal Et";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "Kamera erişimi olmadan mağaza adresinizi girerek oturum açabilirsiniz.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "Kamera erişimine izin ver";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "Kamera erişimi gerekli";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "Ayarlar'da kamera erişimini etkinleştirin veya mağaza adresinizle oturum açmak için iptal edin.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "İzin Ayarlarını Aç";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "Kamera erişimi kapalı";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "Bu oturum açma başka bir cihazda zaten tamamlandı. Tekrar denemeniz gerekirse yeni bir kod oluşturun.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "Başka bir yerde zaten oturum açıldı";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "Bu kod zaten tarandı. Mağazanızda yeni bir tane oluşturun.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "Kod zaten kullanıldı";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "Bu kodun süresi dolmuş veya zaten kullanılmış. Mağazanızda yeni bir tane oluşturun.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "Kodun süresi doldu";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "Bunun yerine site URL'si girin";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "Uygulama zaten yüklendi — bu QR bunu kuruyor. WP Yöneticisi'nde oturum açma QR'ını görüntülemek için Uygulama yüklendi düğmesine tıklayın. Veya bilgisayarınızda woo.com\/mobilelogin adresini ziyaret edin.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "Bu QR kurulumu";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "Bu QR bir WooCommerce oturum açma kodu değil. Mağazanızdan yeni bir tane oluşturun ve tekrar deneyin.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "WooCommerce kodu değil";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "Bağlantınızı kontrol edip tekrar deneyin.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "Mağazanıza ulaşılamadı.";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "Bu sitede WooCommerce yüklü değil.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "WooCommerce mağazası değil";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "Lütfen birkaç dakika bekleyip tekrar deneyin.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "Çok fazla deneme";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "Yeni kod tara";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "QR kodunu okuyamadık. Lütfen tekrar deneyin.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "Kod okunamadı";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "Güvenliğiniz için bu oturum açma denemesi iptal edildi. Tekrar denemek için mağazanızda yeni bir kod oluşturun.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "Oturum açma reddedildi";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "Oturum açmanız kesintiye uğradı. Mağazanızda yeni bir kod oluşturun ve tekrar deneyin.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "Oturum açma işlemi kesintiye uğradı";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "Zamanında onaylamadınız. Mağazanızda yeni bir kod oluşturun ve tekrar deneyin.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "Oturum açma süresi doldu";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "Mağazanızla kimlik doğrulanamadı. Lütfen tekrar deneyin.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "Oturum açılamadı";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "WooCommerce eklentiniz QR girişini desteklemiyor. Lütfen mağazanızda WooCommerce'i güncelleyin ve tekrar deneyin veya site URL'nizi girerek oturum açın.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "Bu mağaza QR oturum açma işlemini tamamlayamıyor";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "Tekrar dene";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "Mağazanız beklenmeyen bir hata döndürdü. Lütfen birazdan tekrar deneyin.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "Bir sorun oluştu";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "Hesabınızın bu mağaza için uygulamayı kullanma izni yok.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "İzin gerekli";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "Yardım";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "İptal Et";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "%1$d s. içinde süresi dolacak";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "Oturum açmanın tamamlanması için her iki ekranda da aynı numara gösterilmelidir.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "Şurada oturum açıyorsunuz:";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "Şu olarak oturum açıyorsunuz:";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "Bitirmek için bilgisayarınızdaki bu numaraya dokunun.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "Oturum açmayı onaylayın";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "Geri";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "Bilgisayarınız yok mu? Site adresinizle oturum açın";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "Yardım";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "QR kodunu tarayın";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "Ardından, görünen QR kodunu tarayın.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "Bilgisayarınızda şurayı ziyaret edin:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "Oturum açmak için QR kodunu tarayın";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "URL'yi panoya kopyalar.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "Bağlantı kopyalandı!";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "İptal Et";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "QR kodunu çerçevede ortalayın";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "woo.com\/mobilelogin adresini ziyaret edin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "Devam ettiğinizde mevcut oturumunuz kapatılacak ve yeni bir oturum açılacaktır.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "İptal Et";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "Devam et ve oturumu kapat";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "Zaten oturum açtınız";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "Tamam";
 
@@ -14591,6 +14858,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "Toplam";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "İstatistikler 12 saate kadar gecikebilir";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "Analiz güncelleme ayrıntıları";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Mağazanızdaki en iyi performans görüntülenemiyor";
 
@@ -14855,6 +15128,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "Bu sohbet için bir destek bileti oluşturuldu. E-postayla yanıt vereceğiz.";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.humanSupport" = "Bir mutluluk mühendisine sorun";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Çözüldü Olarak İşaretle";
@@ -15260,6 +15536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "En Yüksek Performans Gösterenleri Gizle";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "İstatistikler 12 saate kadar gecikebilir";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "Analiz güncelleme ayrıntıları";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "Mağazanızdaki en iyi performans gösterenler görüntülenemiyor";

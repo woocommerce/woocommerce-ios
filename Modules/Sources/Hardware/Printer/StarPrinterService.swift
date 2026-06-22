@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 import StarIO10
 
 /// Concrete `PrinterDiscoveryService` backed by the Star Micronics StarIO10 SDK.
@@ -12,21 +11,27 @@ import StarIO10
 /// serializes access so callbacks and the discovery/connection methods can never race. This
 /// type is a thin façade that adapts the actor to the synchronous parts of the protocol.
 public final class StarPrinterService: PrinterDiscoveryService {
-    private let connectionStatusSubject = CurrentValueSubject<PrinterConnectionStatus, Never>(.idle)
-    private let coordinator: StarPrinterCoordinator
+    private let coordinator = StarPrinterCoordinator()
 
     public init() {
         // Opt out of StarIO10's diagnostic-info upload, which is enabled by default.
         StarIO10DiagInfoUpload.shared.isEnabled = false
-
-        let subject = connectionStatusSubject
-        coordinator = StarPrinterCoordinator { status in
-            subject.send(status)
-        }
     }
 
-    public var connectionStatusPublisher: AnyPublisher<PrinterConnectionStatus, Never> {
-        connectionStatusSubject.eraseToAnyPublisher()
+    public func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { [coordinator] continuation in
+            let id = UUID()
+            // Register the observer on the actor; it replays the current status immediately, then
+            // forwards every change. Registration is async, so it is hopped onto the actor here.
+            Task {
+                await coordinator.addStatusObserver(id: id, continuation: continuation)
+            }
+            // Drop the observer when the consumer stops listening, so the actor never yields into a
+            // dead continuation.
+            continuation.onTermination = { _ in
+                Task { await coordinator.removeStatusObserver(id: id) }
+            }
+        }
     }
 
     public func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
@@ -42,10 +47,8 @@ public final class StarPrinterService: PrinterDiscoveryService {
         }
     }
 
-    public func stopDiscovery() {
-        Task { [coordinator] in
-            await coordinator.stopDiscovery()
-        }
+    public func stopDiscovery() async {
+        await coordinator.stopDiscovery()
     }
 
     public func connect(to device: PrinterDevice) async throws {
@@ -94,10 +97,20 @@ private actor StarPrinterCoordinator {
     /// Renders receipt data into the plain text wrapped into a StarXpand print command. Stateless.
     private let receiptTextBuilder = StarReceiptTextBuilder()
 
-    private let emitStatus: (PrinterConnectionStatus) -> Void
+    /// The latest connection status, replayed to each new observer so it never starts out of sync.
+    private var connectionStatus: PrinterConnectionStatus = .idle
 
-    init(emitStatus: @escaping (PrinterConnectionStatus) -> Void) {
-        self.emitStatus = emitStatus
+    /// One continuation per active `connectionStatusUpdates()` subscriber, keyed so it can be removed
+    /// independently when that subscriber stops listening.
+    private var statusObservers: [UUID: AsyncStream<PrinterConnectionStatus>.Continuation] = [:]
+
+    func addStatusObserver(id: UUID, continuation: AsyncStream<PrinterConnectionStatus>.Continuation) {
+        statusObservers[id] = continuation
+        continuation.yield(connectionStatus)
+    }
+
+    func removeStatusObserver(id: UUID) {
+        statusObservers[id] = nil
     }
 
     func runDiscovery(emitting out: AsyncThrowingStream<PrinterDevice, Error>.Continuation) async {
@@ -171,18 +184,18 @@ private actor StarPrinterCoordinator {
             await teardown(existing)
         }
 
-        emitStatus(.connecting)
+        emit(.connecting)
         let delegate = StarConnectionDelegate()
         starPrinter.printerDelegate = delegate
         do {
             try await starPrinter.open()
             printer = starPrinter
             connectionDelegate = delegate
-            emitStatus(.connected)
+            emit(.connected)
             DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
             starPrinter.printerDelegate = nil
-            emitStatus(.disconnected)
+            emit(.disconnected)
             DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
             throw error
         }
@@ -193,10 +206,10 @@ private actor StarPrinterCoordinator {
         printer = nil
         connectionDelegate = nil
 
-        emitStatus(.disconnecting)
+        emit(.disconnecting)
         current?.printerDelegate = nil
         await current?.close()
-        emitStatus(.disconnected)
+        emit(.disconnected)
     }
 
     func printReceipt(content: ReceiptContent,
@@ -221,6 +234,15 @@ private actor StarPrinterCoordinator {
 private extension StarPrinterCoordinator {
     enum Constants {
         static let discoveryTimeInMilliseconds = 30000
+    }
+
+    /// Records the new status and forwards it to every active observer, so subscribers and the replayed
+    /// value the actor hands to new ones stay in lockstep.
+    func emit(_ status: PrinterConnectionStatus) {
+        connectionStatus = status
+        for continuation in statusObservers.values {
+            continuation.yield(status)
+        }
     }
 
     /// Closes `existing` and drops it as the active printer, releasing its delegate. Used while switching to a

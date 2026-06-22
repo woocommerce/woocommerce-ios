@@ -1,8 +1,11 @@
 import SwiftUI
+import WooFoundationCore
 
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posLayoutScale) private var posLayoutScale
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.isEnabled) var isEnabled
     @State private var isCancellingReconnection = false
@@ -42,6 +45,7 @@ struct CardReaderConnectionStatusView: View {
                 progressIndicatingCardReaderStatus(title: Localization.pleaseWait)
             case .disconnected:
                 Button {
+                    trackCardReaderConnectionTapped()
                     posModel.connectCardReader()
                 } label: {
                     HStack(spacing: Constants.buttonImageAndTextSpacing) {
@@ -85,6 +89,10 @@ struct CardReaderConnectionStatusView: View {
 }
 
 private extension CardReaderConnectionStatusView {
+    func trackCardReaderConnectionTapped() {
+        analytics.track(.pointOfSaleCardReaderConnectionTapped, parameters: posLayoutScale.analyticsLayout.analyticsProperties)
+    }
+
     @ViewBuilder
     func progressIndicatingCardReaderStatus(title: String) -> some View {
         HStack(spacing: Constants.buttonImageAndTextSpacing) {

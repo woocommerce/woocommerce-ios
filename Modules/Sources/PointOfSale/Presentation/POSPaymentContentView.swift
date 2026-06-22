@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundationCore
 
 // MARK: - Shared Payment Content View
 
@@ -15,7 +16,9 @@ struct POSPaymentContentView: View {
     let onDismiss: (() -> Void)?
 
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
@@ -126,7 +129,10 @@ struct POSPaymentContentView: View {
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                 paymentState: displayPaymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                connectCardReaderAction: paymentModel.connectCardReader,
+                connectCardReaderAction: {
+                    trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
+                    paymentModel.connectCardReader()
+                },
                 cancelReconnectionAction: paymentModel.cancelReconnection,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
         }
@@ -214,6 +220,7 @@ struct POSPaymentContentView: View {
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
             isZeroTotal: paymentModel.isZeroTotal) {
             Button(action: {
+                trackPaymentEntry(.pointOfSaleCheckoutCashPaymentTapped)
                 paymentModel.startCashPayment()
             }) {
                 Text(Localization.cashPaymentButton)
@@ -223,6 +230,10 @@ struct POSPaymentContentView: View {
             .padding(.horizontal, POSPadding.medium)
             .safeAreaPadding(.bottom, POSPadding.medium)
         }
+    }
+
+    private func trackPaymentEntry(_ stat: WooAnalyticsStat) {
+        analytics.track(stat, parameters: posLayoutScale.analyticsLayout.analyticsProperties)
     }
 }
 

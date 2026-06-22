@@ -1758,25 +1758,6 @@ struct POSPaymentModelTests {
         #expect(sut.scanToPayURL == expectedURL)
     }
 
-    @Test("startScanToPayPayment tracks checkout scan-to-pay tapped analytics")
-    @MainActor
-    func startScanToPayPayment_tracks_analytics() async {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let orderProvider = MockPOSPaymentOrderProvider()
-        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
-
-        let sut = makePaymentController(orderProvider: orderProvider, analytics: analytics)
-
-        // When
-        await sut.startScanToPayPayment()
-
-        // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue
-        })
-    }
-
     @Test("startScanToPayPayment is a no-op when already in scan-to-pay flow")
     @MainActor
     func startScanToPayPayment_when_alreadyShowingQRCode_then_noOp() async {

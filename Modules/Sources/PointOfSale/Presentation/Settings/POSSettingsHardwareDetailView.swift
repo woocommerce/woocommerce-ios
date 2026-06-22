@@ -1,9 +1,11 @@
 import SwiftUI
+import WooFoundationCore
 import struct WooFoundation.SafariView
 
 struct POSSettingsHardwareDetailView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posLayoutScale) private var posLayoutScale
     @Environment(\.posExternalViews) private var externalViews
 
     let settingsController: POSSettingsControllerProtocol
@@ -115,6 +117,10 @@ struct POSSettingsHardwareDetailView: View {
 
 // MARK: - Views
 private extension POSSettingsHardwareDetailView {
+    func trackCardReaderConnectionTapped() {
+        analytics.track(.pointOfSaleCardReaderConnectionTapped, parameters: posLayoutScale.analyticsLayout.analyticsProperties)
+    }
+
     func paymentsOnboardingView(from onboardingViewContainer: CardPresentPaymentOnboardingViewContainer) -> some View {
         onboardingViewContainer.configuration.showSupport = {
             posModel.cancelCardPaymentsOnboarding()
@@ -241,6 +247,7 @@ private extension POSSettingsHardwareDetailView {
                         POSSettingsCard(title: Localization.cardReaderConnectTitle,
                                         subtitle: Localization.cardReaderConnectSubtitle,
                                         action: {
+                            trackCardReaderConnectionTapped()
                             posModel.connectCardReader()
                         })
                     }

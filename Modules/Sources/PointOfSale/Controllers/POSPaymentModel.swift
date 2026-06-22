@@ -315,10 +315,6 @@ extension POSPaymentModel {
             _ = await task.value
         }
 
-        if method == .tapToPay {
-            analytics.track(.pointOfSaleCheckoutTapToPayTapped)
-        }
-
         subscribeToPaymentSessionEvents()
         // Merchant explicitly chose a method — track it as the active session
         // method and open the gate so subsequent Stripe Terminal events drive
@@ -554,7 +550,6 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
@@ -634,7 +629,6 @@ extension POSPaymentModel {
         guard paymentState.allowsCashPayment else { return }
 
         DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
-        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -695,7 +689,6 @@ extension POSPaymentModel {
         guard paymentState.allowsScanToPayPayment else { return }
 
         DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card)")
-        analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -867,7 +860,6 @@ extension POSPaymentModel {
         guard paymentState.allowsMarkAsPaidPayment else { return }
 
         DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
-        analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil

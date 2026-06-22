@@ -144,7 +144,7 @@ final class HubMenuViewModel: ObservableObject {
              BookingsTabEligibilityChecker(site: site)
          },
          // Injected for mocking in tests.
-         isPad: Bool = UIDevice.isPad(),
+         isPad: Bool? = nil,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -159,7 +159,7 @@ final class HubMenuViewModel: ObservableObject {
         self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.posEligibilityService = posEligibilityService
         self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.analytics = analytics
         observeSiteForUIUpdates()

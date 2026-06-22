@@ -9,6 +9,7 @@ import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
+import enum PointOfSale.POSRolesPersistence
 
 // MARK: - DefaultStoresManager
 //
@@ -310,6 +311,11 @@ class DefaultStoresManager: StoresManager {
                 await syncCoordinator?.stopOngoingSyncs(for: siteID)
             }
         }
+
+        // Purge all persisted POS roles state (staff caches + lock flags for every site visited this
+        // session) so a different user signing in on this device can't inherit cached staff PINs or
+        // land on a previous store's lock screen.
+        POSRolesPersistence.clearAll()
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()

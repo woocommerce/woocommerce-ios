@@ -467,8 +467,8 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
-        let initialContext: [String: Any]? = loginSiteURL.map {
-            ["site_url": $0.absoluteString]
+        let initialContext: RequestParameterDictionary? = loginSiteURL.map {
+            ["site_url": .string($0.absoluteString)]
         }
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(

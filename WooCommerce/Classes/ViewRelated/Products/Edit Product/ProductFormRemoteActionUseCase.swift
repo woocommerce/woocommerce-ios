@@ -365,7 +365,9 @@ private extension ProductFormRemoteActionUseCase {
                            toProductID newProductID: Int64,
                            siteID: Int64) {
         if customFields.isEmpty { return }
-        let metadata: [[String: Any?]] = customFields.map { ["key": $0.key, "value": $0.value.stringValue] }
+        let metadata: [RequestParameterDictionary] = customFields.map {
+            ["key": .string($0.key), "value": .string($0.value.stringValue)]
+        }
         let action = MetaDataAction.updateMetaData(
             siteID: siteID,
             parentItemID: newProductID,

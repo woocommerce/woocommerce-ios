@@ -195,7 +195,7 @@ final class MainTabBarController: UITabBarController {
           bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
           userDefaults: UserDefaults = .standard,
           // Injected for mocking in tests.
-          isPad: Bool = UIDevice.isPad()) {
+          isPad: Bool? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -209,7 +209,7 @@ final class MainTabBarController: UITabBarController {
             BookingsTabEligibilityChecker(site: site)
         }
         self.userDefaults = userDefaults
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         super.init(coder: coder)
     }
 
@@ -372,7 +372,7 @@ final class MainTabBarController: UITabBarController {
             return
         }
 
-        if Bundle.main.isLiquidGlassDesignEnabled {
+        if #available(iOS 26.0, *) {
             configureLiquidGlassTabBarLayoutOnIpad()
             return
         }
@@ -395,9 +395,8 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func configureLiquidGlassTabBarLayoutOnIpad() {
-        guard #available(iOS 18.0, *),
-              UIDevice.current.userInterfaceIdiom == .pad,
-              Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *),
+              UIDevice.current.userInterfaceIdiom == .pad else {
             return
         }
 
@@ -408,8 +407,8 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func refreshLiquidGlassTabBarAppearanceOnIpad() {
-        guard UIDevice.current.userInterfaceIdiom == .pad,
-              Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *),
+              UIDevice.current.userInterfaceIdiom == .pad else {
             return
         }
 
@@ -1129,7 +1128,7 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        guard Bundle.main.isLiquidGlassDesignEnabled else {
+        guard #available(iOS 26.0, *) else {
             let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
             notificationsBadge.updateBadge(with: input)
             return

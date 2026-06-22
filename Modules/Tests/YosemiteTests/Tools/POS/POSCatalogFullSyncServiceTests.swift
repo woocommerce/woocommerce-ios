@@ -430,6 +430,34 @@ struct POSCatalogFullSyncServiceTests {
         #expect(result.syncMetadata?.generationDurationMs == 50_000)
     }
 
+    @Test func startFullSync_when_catalogAPI_then_uses_server_scheduledAt_as_syncDate() async throws {
+        // Given - file-based sync with a server scheduled_at timestamp (UTC, no tz suffix)
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,
+                                                             downloadURL: "https://example.com/catalog.json",
+                                                             scheduledAt: "2026-01-23T08:30:25",
+                                                             completedAt: "2026-01-23T08:30:55"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+
+        // Then - the watermark is the server's scheduled_at, not the device clock
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let expectedSnapshotDate = formatter.date(from: "2026-01-23T08:30:25")
+        #expect(result.syncDate == expectedSnapshotDate)
+        #expect(mockSyncRemote.lastCatalogDownloadSnapshotDate == expectedSnapshotDate)
+    }
+
     @Test func startFullSync_when_server_omits_timestamps_then_generationDurationMs_is_nil() async throws {
         // Given - Completed response with no scheduledAt / completedAt
         mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,

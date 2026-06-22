@@ -46,6 +46,10 @@ final class POSTests: XCTestCase {
 
     func test_POS_eligible_site_can_complete_cash_payment_and_start_new_order() throws {
         try beginTwoProductCheckout()
+            .tapBackToProductSelectorFromCheckout()
+            .verifyVariationSelectorVisible(variationID: ProductIDs.variation)
+            .tapCheckout()
+            .waitForTotalsLoaded()
             .tapCashPayment()
             .tapMarkPaymentComplete()
             .waitForPaymentSuccess()

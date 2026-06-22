@@ -82,11 +82,34 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var toolbarBottomSeparator: UIView!
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
+    private var hasConfiguredLiquidGlassHeaderOverlay = false
+    private var liquidGlassHeaderBackgroundView: UIView?
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
     private lazy var filterButton = UIButton(frame: .zero)
+
+    private var usesLargeTitleWorkaround: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private var headerBackgroundColor: UIColor {
+        .listBackground
+    }
+
+    private var toolbarBackgroundColor: UIColor {
+        if #available(iOS 26.0, *) {
+            return .clear
+        } else {
+            return headerBackgroundColor
+        }
+    }
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -245,6 +268,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()
+        configureLiquidGlassTabBarUnderlap()
         configureScrollWatcher()
         configurePaginationTracker()
         registerTableViewCells()
@@ -272,7 +296,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.displayGhostContent(over: tableView)
         }
 
-        navigationController?.navigationBar.removeShadow()
+        if #unavailable(iOS 26.0) {
+            navigationController?.navigationBar.removeShadow()
+        }
 
         reloadFavoriteProductsIfNeeded()
     }
@@ -287,6 +313,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewDidLayoutSubviews()
 
         updateTableHeaderViewHeight()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -295,13 +322,16 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard isViewLoaded else {
-            return
-        }
+        loadViewIfNeeded()
         guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
+    }
+
+    func hasFirstProductAvailable() -> Bool {
+        loadViewIfNeeded()
+        return resultsController.safeObject(at: IndexPath(row: 0, section: 0)) != nil
     }
 
     func startProductCreation() {
@@ -426,7 +456,7 @@ private extension ProductsViewController {
         tableView.setEditing(true, animated: true)
 
         // Disable pull-to-refresh while editing
-        refreshControl.removeFromSuperview()
+        uninstallRefreshControl()
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
@@ -444,7 +474,7 @@ private extension ProductsViewController {
         bulkEditButton.isEnabled = false
 
         // Enable pull-to-refresh
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         configureNavigationBar()
         showOrHideToolbar()
@@ -714,16 +744,20 @@ private extension ProductsViewController {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.accessibilityIdentifier = "products-table-view"
 
-        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
-        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
-        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        if #available(iOS 26.0, *) {
+            headerContainer.backgroundColor = .clear
+        } else {
+            headerContainer.backgroundColor = headerBackgroundColor
+        }
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
+        if #available(iOS 26.0, *) {
+            bottomBorderView.isHidden = true
+        }
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
             bottomBorderView.constrainToSuperview(attribute: .leading),
@@ -736,7 +770,46 @@ private extension ProductsViewController {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
+    private func installRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
+    }
+
+    private func uninstallRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = nil
+        } else {
+            refreshControl.removeFromSuperview()
+        }
+    }
+
+    private func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        setContentScrollView(tableView, for: [.top, .bottom])
+    }
+
+    private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        liquidGlassHeaderBackgroundView?.transform = transform
+        toolbar.transform = transform
+        toolbarBottomSeparator.transform = transform
+    }
+
     private func configureHiddenScrollView() {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
         // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
@@ -751,6 +824,7 @@ private extension ProductsViewController {
     private func configureToolbar() {
         setupToolbar()
         showOrHideToolbar()
+        configureLiquidGlassHeaderOverlay()
     }
 
     private func setupToolbar() {
@@ -771,11 +845,90 @@ private extension ProductsViewController {
             $0.configuration = configuration
         }
 
-        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        if #available(iOS 26.0, *) {
+            toolbarBottomSeparator.backgroundColor = .clear
+        } else {
+            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        }
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
+    }
+
+    private func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *),
+              !hasConfiguredLiquidGlassHeaderOverlay,
+              let stackView = toolbar.superview as? UIStackView,
+              toolbarBottomSeparator.superview === stackView else {
+            return
+        }
+
+        hasConfiguredLiquidGlassHeaderOverlay = true
+
+        stackView.removeArrangedSubview(toolbar)
+        toolbar.removeFromSuperview()
+        stackView.removeArrangedSubview(toolbarBottomSeparator)
+        toolbarBottomSeparator.removeFromSuperview()
+
+        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: headerBackgroundColor)
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+        view.addSubview(toolbar)
+        view.addSubview(toolbarBottomSeparator)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: toolbar.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
+            toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbarBottomSeparator.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)
+        ])
+
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
+    }
+
+    private func updateLiquidGlassHeaderOverlayLayout() {
+        guard #available(iOS 26.0, *),
+              hasConfiguredLiquidGlassHeaderOverlay else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.systemLayoutSizeFitting(targetSize,
+                                                                                   withHorizontalFittingPriority: .required,
+                                                                                   verticalFittingPriority: .fittingSizeLevel).height
+        let separatorHeight = toolbar.isHidden ? 0 : toolbarBottomSeparatorHeightConstraint.constant
+        let height = toolbarHeight + separatorHeight
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
+        }
+
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+    }
+
+    private func updateLiquidGlassHeaderVisibility() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        toolbarBottomSeparator.isHidden = toolbar.isHidden
+        liquidGlassHeaderBackgroundView?.isHidden = toolbar.isHidden
     }
 
     func configureScrollWatcher() {
@@ -803,10 +956,14 @@ private extension ProductsViewController {
     func showOrHideToolbar() {
         guard !tableView.isEditing else {
             toolbar.isHidden = true
+            updateLiquidGlassHeaderVisibility()
+            updateLiquidGlassHeaderOverlayLayout()
             return
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 }
 
@@ -1194,6 +1351,12 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateToolbarOverscrollPosition(from: scrollView)
+
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 

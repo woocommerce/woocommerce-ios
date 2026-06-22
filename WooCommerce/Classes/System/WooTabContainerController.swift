@@ -85,7 +85,7 @@ private extension TabContainerController {
     }
 
     func effectiveHorizontalSizeClassForWrappedController() -> UIUserInterfaceSizeClass {
-        guard Bundle.main.isLiquidGlassDesignEnabled,
+        guard #available(iOS 26.0, *),
               wrappedController is UsesCompactLayoutInNarrowWindow,
               view.bounds.width < NarrowWindowLayout.compactLayoutThreshold else {
             return traitCollection.horizontalSizeClass

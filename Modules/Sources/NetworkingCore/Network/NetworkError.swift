@@ -107,21 +107,21 @@ extension NetworkError: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .notFound(responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.notFound",
                 value: "Sorry, we couldn't find what you were looking for. Please try again. Response: %1$@",
                 comment: "Error message when we receive not found error")
             return String.localizedStringWithFormat(format, response ?? "")
         case let .timeout(responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.timeout",
                 value: "Sorry, the request took too long to process. Please try again later. Response: %1$@",
                 comment: "Error message when a request times out.")
             return String.localizedStringWithFormat(format, response ?? "")
         case let .unacceptableStatusCode(statusCode, responseData):
-            let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+            let response: String? = responseData.flatMap { String(data: $0, encoding: .utf8) }
             let format = NSLocalizedString(
                 "NetworkError.unacceptableStatusCode",
                 value: "Sorry, there was an issue with the server. Please try again later. (Error code: %1$d). Response: %2$@",

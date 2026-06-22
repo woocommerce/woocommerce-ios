@@ -4,6 +4,10 @@ import protocol WooFoundation.WooAnalyticsEventPropertyType
 public enum POSAnalyticsLayout: String {
     case regular
     case compact
+
+    var analyticsProperties: [String: WooAnalyticsEventPropertyType] {
+        ["pos_layout": rawValue]
+    }
 }
 
 enum POSLayoutScale {
@@ -17,16 +21,6 @@ enum POSLayoutScale {
         case .phone:
             return .compact
         }
-    }
-}
-
-extension Optional where Wrapped == POSLayoutScale {
-    var analyticsLayout: POSAnalyticsLayout {
-        self?.analyticsLayout ?? .regular
-    }
-
-    var analyticsProperties: [String: WooAnalyticsEventPropertyType] {
-        ["pos_layout": analyticsLayout.rawValue]
     }
 }
 

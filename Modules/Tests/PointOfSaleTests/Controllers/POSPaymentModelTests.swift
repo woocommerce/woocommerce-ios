@@ -153,25 +153,19 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
     }
 
-    @Test("startCashPayment tracks POS layout analytics")
+    @Test("setPOSLayoutForCurrentPayment updates collect payment analytics layout")
     @MainActor
-    func startCashPayment_when_posLayoutProvided_tracks_layout() {
+    func setPOSLayoutForCurrentPayment_updates_collect_payment_analytics_layout() {
         // Given
-        let analytics = MockPOSAnalytics()
         let collectOrderPaymentAnalyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
         let sut = makePaymentController(
-            analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
 
         // When
-        sut.startCashPayment(posLayout: .tablet)
+        sut.setPOSLayoutForCurrentPayment(.compact)
 
         // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped.rawValue &&
-            $0.properties["pos_layout"] as? String == "regular"
-        })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .regular)
+        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("idle card event is dropped during cash flow")
@@ -427,27 +421,6 @@ struct POSPaymentModelTests {
         // Then: no extra "tapped" analytics fired and no state churn.
         #expect(analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped.rawValue } == false)
         #expect(sut.paymentState.markAsPaid == .confirming)
-    }
-
-    @Test("startMarkAsPaidPayment tracks POS layout analytics")
-    @MainActor
-    func startMarkAsPaidPayment_when_posLayoutProvided_tracks_layout() {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let collectOrderPaymentAnalyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-        let sut = makePaymentController(
-            analytics: analytics,
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-
-        // When
-        sut.startMarkAsPaidPayment(posLayout: .phone)
-
-        // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped.rawValue &&
-            $0.properties["pos_layout"] as? String == "compact"
-        })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("cancelMarkAsPaidPayment resets to idle")
@@ -1763,23 +1736,6 @@ struct POSPaymentModelTests {
         #expect(service.connectReaderCallCount == 1)
     }
 
-    @Test("connectCardReader tracks POS layout analytics")
-    @MainActor
-    func connectCardReader_when_posLayoutProvided_tracks_layout() {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let sut = makePaymentController(analytics: analytics)
-
-        // When
-        sut.connectCardReader(posLayout: .tablet)
-
-        // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped.rawValue &&
-            $0.properties["pos_layout"] as? String == "regular"
-        })
-    }
-
     // MARK: - Scan to Pay
 
     @Test("startScanToPayPayment transitions scanToPay to showingQRCode")
@@ -1815,52 +1771,6 @@ struct POSPaymentModelTests {
 
         // Then
         #expect(sut.scanToPayURL == expectedURL)
-    }
-
-    @Test("startScanToPayPayment tracks checkout scan-to-pay tapped analytics")
-    @MainActor
-    func startScanToPayPayment_tracks_analytics() async {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let collectOrderPaymentAnalyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-        let orderProvider = MockPOSPaymentOrderProvider()
-        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
-
-        let sut = makePaymentController(
-            orderProvider: orderProvider,
-            analytics: analytics,
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-
-        // When
-        await sut.startScanToPayPayment(posLayout: .phone)
-
-        // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue &&
-            $0.properties["pos_layout"] as? String == "compact"
-        })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
-    }
-
-    @Test("startPaymentWithMethod tracks Tap to Pay layout analytics")
-    @MainActor
-    func startPaymentWithMethod_when_tapToPayAndPosLayoutProvided_tracks_layout() async {
-        // Given
-        let analytics = MockPOSAnalytics()
-        let collectOrderPaymentAnalyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-        let sut = makePaymentController(
-            analytics: analytics,
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-
-        // When
-        await sut.startPaymentWithMethod(.tapToPay, posLayout: .phone)
-
-        // Then
-        #expect(analytics.events.contains {
-            $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped.rawValue &&
-            $0.properties["pos_layout"] as? String == "compact"
-        })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("startScanToPayPayment is a no-op when already in scan-to-pay flow")

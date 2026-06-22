@@ -35,12 +35,6 @@ struct POSFontStyleTests {
         #expect(POSAnalyticsLayout.compact.rawValue == "compact")
     }
 
-    @Test func test_POSLayoutScale_optionalAnalyticsLayout_when_nil_maps_to_regular() {
-        let layoutScale: POSLayoutScale? = nil
-
-        #expect(layoutScale.analyticsLayout == .regular)
-    }
-
     // MARK: - baseSize: tablet returns original iPad design sizes
 
     @Test func test_baseSize_when_tablet_then_posHeadingBold_returns_36() {

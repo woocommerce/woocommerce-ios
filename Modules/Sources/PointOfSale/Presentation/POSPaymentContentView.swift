@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundationCore
 
 // MARK: - Shared Payment Content View
 
@@ -15,6 +16,7 @@ struct POSPaymentContentView: View {
     let onDismiss: (() -> Void)?
 
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = POSPaymentViewHelper()
@@ -127,7 +129,10 @@ struct POSPaymentContentView: View {
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                 paymentState: displayPaymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                connectCardReaderAction: { paymentModel.connectCardReader(posLayout: posLayoutScale) },
+                connectCardReaderAction: {
+                    trackPaymentEntry(.pointOfSaleCardReaderConnectionTapped)
+                    paymentModel.connectCardReader()
+                },
                 cancelReconnectionAction: paymentModel.cancelReconnection,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
         }
@@ -215,7 +220,8 @@ struct POSPaymentContentView: View {
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
             isZeroTotal: paymentModel.isZeroTotal) {
             Button(action: {
-                paymentModel.startCashPayment(posLayout: posLayoutScale)
+                trackPaymentEntry(.pointOfSaleCheckoutCashPaymentTapped)
+                paymentModel.startCashPayment()
             }) {
                 Text(Localization.cashPaymentButton)
                     .font(POSFontStyle.posBodyLargeBold)
@@ -224,6 +230,12 @@ struct POSPaymentContentView: View {
             .padding(.horizontal, POSPadding.medium)
             .safeAreaPadding(.bottom, POSPadding.medium)
         }
+    }
+
+    private func trackPaymentEntry(_ stat: WooAnalyticsStat) {
+        let layout = posLayoutScale.analyticsLayout
+        paymentModel.setPOSLayoutForCurrentPayment(layout)
+        analytics.track(stat, parameters: layout.analyticsProperties)
     }
 }
 

@@ -24,14 +24,14 @@ public struct StarReceiptTextBuilder {
         lines.append(separator)
         lines.append(contentsOf: paymentLines(content: content, cardDetails: cardDetails))
         lines.append(separator)
-        lines.append(contentsOf: content.lineItems.map(itemLine))
+        lines.append(contentsOf: content.lineItems.flatMap(itemLine))
         lines.append(separator)
-        lines.append(contentsOf: content.cartTotals.map(totalLine))
+        lines.append(contentsOf: content.cartTotals.flatMap(totalLine))
 
         if let note = content.orderNote, note.isEmpty == false {
             lines.append(separator)
             lines.append(Localization.notes)
-            lines.append(note)
+            lines.append(contentsOf: wrap(note))
         }
 
         if let emvBlock = emvLines(cardDetails: cardDetails) {
@@ -41,7 +41,7 @@ public struct StarReceiptTextBuilder {
 
         if let policy = storeInformation.refundReturnsPolicy, policy.isEmpty == false {
             lines.append(separator)
-            lines.append(policy)
+            lines.append(contentsOf: wrap(policy))
         }
 
         return lines.joined(separator: "\n") + "\n"
@@ -52,12 +52,12 @@ private extension StarReceiptTextBuilder {
     func headerLines(content: ReceiptContent, storeInformation: ReceiptStoreInformation) -> [String] {
         var lines: [String] = []
         if let storeName = storeInformation.storeName ?? content.parameters.storeName, storeName.isEmpty == false {
-            lines.append(centered(storeName))
+            lines.append(contentsOf: centeredLines(storeName))
         }
         [storeInformation.storeAddress, storeInformation.phone, storeInformation.email]
             .compactMap { $0 }
             .filter { $0.isEmpty == false }
-            .forEach { lines.append(centered($0)) }
+            .forEach { lines.append(contentsOf: centeredLines($0)) }
         return lines
     }
 
@@ -72,9 +72,13 @@ private extension StarReceiptTextBuilder {
         }
 
         if let cardDetails {
-            let brand = cardDetails.brand.rawValue.capitalized
             lines.append(Localization.paymentMethod)
-            lines.append(String.localizedStringWithFormat(Localization.cardBrandAndLast4, brand, cardDetails.last4))
+            let brand = cardDetails.brand.displayName
+            if brand.isEmpty {
+                lines.append(cardDetails.last4)
+            } else {
+                lines.append(String.localizedStringWithFormat(Localization.cardBrandAndLast4, brand, cardDetails.last4))
+            }
         }
 
         return lines
@@ -95,24 +99,94 @@ private extension StarReceiptTextBuilder {
         return lines
     }
 
-    func itemLine(_ item: ReceiptLineItem) -> String {
-        twoColumns(left: String.localizedStringWithFormat(Localization.itemTitleAndQuantity, item.title, item.quantity),
-                   right: item.amount)
+    func itemLine(_ item: ReceiptLineItem) -> [String] {
+        twoColumns(left: itemTitle(item), right: item.amount)
     }
 
-    func totalLine(_ total: ReceiptTotalLine) -> String {
+    func totalLine(_ total: ReceiptTotalLine) -> [String] {
         twoColumns(left: total.description, right: total.amount)
     }
 
-    /// Lays `left` and `right` on a single line, padding the gap so `right` ends at `lineWidth`.
-    func twoColumns(left: String, right: String) -> String {
-        let padding = max(lineWidth - left.count - right.count, 1)
-        return left + String(repeating: " ", count: padding) + right
+    /// Builds the left column for a line item: title plus quantity, with any product attributes
+    /// (e.g. variations) appended after the title to match the AirPrint receipt format.
+    func itemTitle(_ item: ReceiptLineItem) -> String {
+        var title = item.title
+        let variations = item.attributes
+            .map { "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces) }
+            .filter { $0.isEmpty == false }
+            .joined(separator: ", ")
+        if variations.isEmpty == false {
+            title = String.localizedStringWithFormat(Localization.itemTitleWithAttributes, title, variations)
+        }
+        return String.localizedStringWithFormat(Localization.itemTitleAndQuantity, title, item.quantity)
+    }
+
+    /// Lays `left` and `right` across one or more lines, none wider than `lineWidth`.
+    ///
+    /// When both fit together, `right` is padded so it ends at `lineWidth`. Otherwise `left` is
+    /// word-wrapped and `right` is appended to the last line if it fits there, or right-aligned on
+    /// its own line. This keeps the amount column intact instead of letting the printer wrap or
+    /// truncate it unpredictably.
+    func twoColumns(left: String, right: String) -> [String] {
+        if left.count + right.count + 1 <= lineWidth {
+            return [left + String(repeating: " ", count: lineWidth - left.count - right.count) + right]
+        }
+
+        var lines = wrap(left)
+        let last = lines.popLast() ?? ""
+        if last.count + right.count + 1 <= lineWidth {
+            lines.append(last + String(repeating: " ", count: lineWidth - last.count - right.count) + right)
+        } else {
+            if last.isEmpty == false {
+                lines.append(last)
+            }
+            lines.append(rightAligned(right))
+        }
+        return lines
+    }
+
+    /// Greedily word-wraps `text` into lines no wider than `lineWidth`, hard-splitting any single
+    /// word that is itself wider than `lineWidth`. Always returns at least one (possibly empty) line.
+    func wrap(_ text: String) -> [String] {
+        var lines: [String] = []
+        var current = ""
+
+        for rawWord in text.split(separator: " ", omittingEmptySubsequences: true) {
+            var word = String(rawWord)
+            while word.count > lineWidth {
+                if current.isEmpty == false {
+                    lines.append(current)
+                    current = ""
+                }
+                lines.append(String(word.prefix(lineWidth)))
+                word.removeFirst(lineWidth)
+            }
+            if current.isEmpty {
+                current = word
+            } else if current.count + 1 + word.count <= lineWidth {
+                current += " " + word
+            } else {
+                lines.append(current)
+                current = word
+            }
+        }
+        if current.isEmpty == false {
+            lines.append(current)
+        }
+        return lines.isEmpty ? [""] : lines
+    }
+
+    func centeredLines(_ text: String) -> [String] {
+        wrap(text).map(centered)
     }
 
     func centered(_ text: String) -> String {
         let padding = max((lineWidth - text.count) / 2, 0)
         return String(repeating: " ", count: padding) + text
+    }
+
+    func rightAligned(_ text: String) -> String {
+        String(repeating: " ", count: max(lineWidth - text.count, 0)) + text
     }
 
     var separator: String {
@@ -180,5 +254,11 @@ private extension StarReceiptTextBuilder {
             "hardware.receipt.itemTitleAndQuantity",
             value: "%1$@ x%2$@",
             comment: "A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity.")
+
+        static let itemTitleWithAttributes = NSLocalizedString(
+            "hardware.receipt.itemTitleWithAttributes",
+            value: "%1$@. %2$@",
+            comment: "A line item title with its product attributes on a printed receipt. "
+                + "%1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations).")
     }
 }

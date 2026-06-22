@@ -89,10 +89,119 @@ struct StarReceiptTextBuilderTests {
         #expect(receipt.contains("AID:") == false)
         #expect(receipt.contains("Account Type") == false)
     }
+
+    @Test func test_makeReceiptText_when_content_is_long_then_every_line_stays_within_lineWidth() {
+        // Given
+        let content = makeContent(
+            orderNote: "Please leave the package at the back door near the blue recycling bins, thanks so much for the help",
+            lineItems: [
+                ReceiptLineItem(title: "Hand-Thrown Stoneware Dinner Plate Set of Six",
+                                quantity: "2",
+                                amount: "$249.00",
+                                attributes: [ReceiptLineAttribute(name: "Color", value: "Midnight Blue"),
+                                             ReceiptLineAttribute(name: "Finish", value: "Matte Glaze")])
+            ])
+        let storeInformation = makeStoreInformation()
+        let cardDetails = makeCardDetails(receipt: makeReceiptDetails())
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: storeInformation, cardDetails: cardDetails)
+
+        // Then
+        for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
+            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+        }
+    }
+
+    @Test func test_makeReceiptText_when_item_too_wide_then_wraps_title_and_keeps_amount_column() {
+        // Given
+        let content = makeContent(lineItems: [
+            ReceiptLineItem(title: "Extra Large Premium Organic Cotton Hooded Sweatshirt",
+                            quantity: "1",
+                            amount: "$89.00",
+                            attributes: [])
+        ])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        let lines = receipt.split(separator: "\n").map(String.init)
+        #expect(receipt.contains("Extra Large Premium Organic Cotton"))
+        #expect(lines.contains { $0.hasSuffix("$89.00") && $0.count <= StarReceiptTextBuilder.Constants.defaultLineWidth })
+    }
+
+    @Test func test_makeReceiptText_renders_line_item_attributes_after_title() {
+        // Given
+        let content = makeContent(lineItems: [
+            ReceiptLineItem(title: "T-Shirt",
+                            quantity: "2",
+                            amount: "$50.00",
+                            attributes: [ReceiptLineAttribute(name: "Color", value: "Blue"),
+                                         ReceiptLineAttribute(name: "Size", value: "M")])
+        ])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        #expect(receipt.contains("T-Shirt. Color Blue, Size M x2"))
+    }
+
+    @Test func test_makeReceiptText_when_brand_is_dinersClub_then_renders_spaced_proper_name() {
+        // Given
+        let cardDetails = makeCardDetails(brand: .dinersClub, receipt: nil)
+
+        // When
+        let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
+
+        // Then
+        #expect(receipt.contains("Diners Club - 4242"))
+        #expect(receipt.contains("Dinersclub") == false)
+    }
+
+    @Test func test_makeReceiptText_when_brand_is_masterCard_then_renders_mastercard_branding() {
+        // Given
+        let cardDetails = makeCardDetails(brand: .masterCard, receipt: nil)
+
+        // When
+        let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
+
+        // Then
+        #expect(receipt.contains("Mastercard - 4242"))
+    }
+
+    @Test func test_makeReceiptText_when_brand_is_unknown_then_shows_last4_without_separator() {
+        // Given
+        let cardDetails = makeCardDetails(brand: .unknown, receipt: nil)
+
+        // When
+        let receipt = builder.makeReceiptText(content: makeContent(), storeInformation: makeStoreInformation(), cardDetails: cardDetails)
+
+        // Then
+        #expect(receipt.contains("Payment Method"))
+        #expect(receipt.contains("4242"))
+        #expect(receipt.contains(" - 4242") == false)
+    }
+
+    @Test func test_makeReceiptText_when_no_line_items_or_totals_then_still_renders_header() {
+        // Given
+        let content = makeContent(lineItems: [], cartTotals: [])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        #expect(receipt.contains("My Store"))
+        #expect(receipt.isEmpty == false)
+    }
 }
 
 private extension StarReceiptTextBuilderTests {
-    func makeContent(orderNote: String?) -> ReceiptContent {
+    func makeContent(orderNote: String? = nil,
+                     lineItems: [ReceiptLineItem] = [ReceiptLineItem(title: "T-Shirt", quantity: "1", amount: "$25.00", attributes: [])],
+                     cartTotals: [ReceiptTotalLine] = [ReceiptTotalLine(description: "Subtotal", amount: "$25.00"),
+                                                       ReceiptTotalLine(description: "Total", amount: "$27.50")]) -> ReceiptContent {
         ReceiptContent(
             parameters: CardPresentReceiptParameters(amount: 2750,
                                                      formattedAmount: "$27.50",
@@ -101,13 +210,8 @@ private extension StarReceiptTextBuilderTests {
                                                      storeName: "My Store",
                                                      cardDetails: makeCardDetails(receipt: nil),
                                                      orderID: 42),
-            lineItems: [
-                ReceiptLineItem(title: "T-Shirt", quantity: "1", amount: "$25.00", attributes: [])
-            ],
-            cartTotals: [
-                ReceiptTotalLine(description: "Subtotal", amount: "$25.00"),
-                ReceiptTotalLine(description: "Total", amount: "$27.50")
-            ],
+            lineItems: lineItems,
+            cartTotals: cartTotals,
             orderNote: orderNote
         )
     }
@@ -120,12 +224,12 @@ private extension StarReceiptTextBuilderTests {
                                 refundReturnsPolicy: "Returns accepted within 30 days")
     }
 
-    func makeCardDetails(receipt: ReceiptDetails?) -> CardPresentTransactionDetails {
+    func makeCardDetails(brand: CardBrand = .visa, receipt: ReceiptDetails?) -> CardPresentTransactionDetails {
         CardPresentTransactionDetails(last4: "4242",
                                       expMonth: 12,
                                       expYear: 2030,
                                       cardholderName: "Jane Doe",
-                                      brand: .visa,
+                                      brand: brand,
                                       availableNetworks: nil,
                                       generatedCard: nil,
                                       receipt: receipt,

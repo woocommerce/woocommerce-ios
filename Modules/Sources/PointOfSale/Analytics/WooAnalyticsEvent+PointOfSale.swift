@@ -234,13 +234,13 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int, posLayout: String) -> WooAnalyticsEvent {
+        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleCheckoutTapped,
                 properties: [
                     Key.productsInCart: purchasableItemsInCart,
                     Key.couponsInCart: couponsInCart,
-                    Key.posLayout: posLayout
+                    Key.posLayout: posLayout.rawValue
                 ]
             )
         }
@@ -261,7 +261,7 @@ extension WooAnalyticsEvent {
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
                                                      checkoutTapCount: Int,
-                                                     posLayout: String) -> WooAnalyticsEvent {
+                                                     posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
@@ -272,7 +272,7 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)",
-                Key.posLayout: posLayout
+                Key.posLayout: posLayout.rawValue
             ])
         }
 
@@ -287,21 +287,21 @@ extension WooAnalyticsEvent {
             }
         }
 
-        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: String) -> WooAnalyticsEvent {
+        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: collectPaymentProperties(
                 millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
                 posLayout: posLayout
             ))
         }
 
-        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: String) -> WooAnalyticsEvent {
+        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: collectPaymentProperties(
                 millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
                 posLayout: posLayout
             ))
         }
 
-        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: String) -> WooAnalyticsEvent {
+        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: collectPaymentProperties(
                 millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
                 posLayout: posLayout
@@ -309,10 +309,10 @@ extension WooAnalyticsEvent {
         }
 
         private static func collectPaymentProperties(millisecondsSinceCustomerIteractionStarted: Double,
-                                                     posLayout: String) -> [String: WooAnalyticsEventPropertyType] {
+                                                     posLayout: POSAnalyticsLayout) -> [String: WooAnalyticsEventPropertyType] {
             [
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-                Key.posLayout: posLayout
+                Key.posLayout: posLayout.rawValue
             ]
         }
 

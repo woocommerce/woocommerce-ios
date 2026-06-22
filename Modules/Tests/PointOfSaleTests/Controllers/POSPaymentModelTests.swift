@@ -171,7 +171,7 @@ struct POSPaymentModelTests {
             $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped.rawValue &&
             $0.properties["pos_layout"] as? String == "regular"
         })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == "regular")
+        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .regular)
     }
 
     @Test("idle card event is dropped during cash flow")
@@ -447,7 +447,7 @@ struct POSPaymentModelTests {
             $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped.rawValue &&
             $0.properties["pos_layout"] as? String == "compact"
         })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == "compact")
+        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("cancelMarkAsPaidPayment resets to idle")
@@ -1839,7 +1839,7 @@ struct POSPaymentModelTests {
             $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped.rawValue &&
             $0.properties["pos_layout"] as? String == "compact"
         })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == "compact")
+        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("startPaymentWithMethod tracks Tap to Pay layout analytics")
@@ -1860,7 +1860,7 @@ struct POSPaymentModelTests {
             $0.eventName == WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped.rawValue &&
             $0.properties["pos_layout"] as? String == "compact"
         })
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == "compact")
+        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
     }
 
     @Test("startScanToPayPayment is a no-op when already in scan-to-pay flow")

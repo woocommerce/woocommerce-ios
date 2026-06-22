@@ -19,22 +19,26 @@ struct POSFontStyleTests {
         #expect(tablet != phone)
     }
 
-    @Test func test_POSLayoutScale_analyticsValue_maps_tablet_to_regular() {
-        #expect(POSLayoutScale.tablet.analyticsValue == "regular")
+    @Test func test_POSLayoutScale_analyticsLayout_maps_tablet_to_regular() {
+        #expect(POSLayoutScale.tablet.analyticsLayout == .regular)
     }
 
-    @Test func test_POSLayoutScale_analyticsValue_maps_phone_to_compact() {
-        #expect(POSLayoutScale.phone.analyticsValue == "compact")
+    @Test func test_POSLayoutScale_analyticsLayout_maps_phone_to_compact() {
+        #expect(POSLayoutScale.phone.analyticsLayout == .compact)
     }
 
-    @Test func test_POSLayoutScale_defaultAnalyticsValue_maps_to_regular() {
-        #expect(POSLayoutScale.defaultAnalyticsValue == "regular")
+    @Test func test_POSAnalyticsLayout_regular_maps_to_expected_tracks_value() {
+        #expect(POSAnalyticsLayout.regular.rawValue == "regular")
     }
 
-    @Test func test_POSLayoutScale_optionalAnalyticsValue_when_nil_maps_to_regular() {
+    @Test func test_POSAnalyticsLayout_compact_maps_to_expected_tracks_value() {
+        #expect(POSAnalyticsLayout.compact.rawValue == "compact")
+    }
+
+    @Test func test_POSLayoutScale_optionalAnalyticsLayout_when_nil_maps_to_regular() {
         let layoutScale: POSLayoutScale? = nil
 
-        #expect(layoutScale.analyticsValue == "regular")
+        #expect(layoutScale.analyticsLayout == .regular)
     }
 
     // MARK: - baseSize: tablet returns original iPad design sizes

@@ -6,15 +6,13 @@ import PointOfSale
 /// Overrides the default event tracking for card present payments on IPP in Order Creation flow
 ///
 final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
-    private static let defaultPOSLayout = "regular"
-
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
-    private var posLayoutForCurrentPayment = POSCollectOrderPaymentAnalyticsAdaptor.defaultPOSLayout
+    private var posLayoutForCurrentPayment = POSAnalyticsLayout.regular
 
     private let analytics: POSAnalyticsProviding
 
@@ -46,7 +44,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
-    func setPOSLayoutForCurrentPayment(_ posLayout: String) {
+    func setPOSLayoutForCurrentPayment(_ posLayout: POSAnalyticsLayout) {
         posLayoutForCurrentPayment = posLayout
     }
 
@@ -188,6 +186,6 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
     }
 
     private func resetPOSLayoutForCurrentPayment() {
-        posLayoutForCurrentPayment = Self.defaultPOSLayout
+        posLayoutForCurrentPayment = .regular
     }
 }

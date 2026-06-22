@@ -1,29 +1,32 @@
 import SwiftUI
 import protocol WooFoundation.WooAnalyticsEventPropertyType
 
+public enum POSAnalyticsLayout: String {
+    case regular
+    case compact
+}
+
 enum POSLayoutScale {
     case tablet
     case phone
 
-    static let defaultAnalyticsValue = "regular"
-
-    var analyticsValue: String {
+    var analyticsLayout: POSAnalyticsLayout {
         switch self {
         case .tablet:
-            return Self.defaultAnalyticsValue
+            return .regular
         case .phone:
-            return "compact"
+            return .compact
         }
     }
 }
 
 extension Optional where Wrapped == POSLayoutScale {
-    var analyticsValue: String {
-        self?.analyticsValue ?? POSLayoutScale.defaultAnalyticsValue
+    var analyticsLayout: POSAnalyticsLayout {
+        self?.analyticsLayout ?? .regular
     }
 
     var analyticsProperties: [String: WooAnalyticsEventPropertyType] {
-        ["pos_layout": analyticsValue]
+        ["pos_layout": analyticsLayout.rawValue]
     }
 }
 

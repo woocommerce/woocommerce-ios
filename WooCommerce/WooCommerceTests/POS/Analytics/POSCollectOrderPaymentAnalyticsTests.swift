@@ -31,7 +31,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         ]
 
         // When
-        sut.setPOSLayoutForCurrentPayment("compact")
+        sut.setPOSLayoutForCurrentPayment(.compact)
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then

@@ -1,5 +1,5 @@
 public protocol POSCollectOrderPaymentAnalyticsTracking {
-    func setPOSLayoutForCurrentPayment(_ posLayout: String)
+    func setPOSLayoutForCurrentPayment(_ posLayout: POSAnalyticsLayout)
     func trackCustomerInteractionStarted()
     func trackOrderSyncSuccess()
     func trackCardReaderReady()

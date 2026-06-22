@@ -9,7 +9,7 @@ struct WooAnalyticsEventPointOfSaleTests {
         let event = WooAnalyticsEvent.PointOfSale.checkoutTapped(
             purchasableItemsInCart: 2,
             couponsInCart: 1,
-            posLayout: "compact"
+            posLayout: .compact
         )
 
         // Then

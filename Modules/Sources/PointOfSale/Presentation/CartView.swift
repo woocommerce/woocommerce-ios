@@ -576,7 +576,7 @@ private extension CartView {
             event: .PointOfSale.checkoutTapped(
                 purchasableItemsInCart: purchasableItems,
                 couponsInCart: coupons,
-                posLayout: posLayoutScale.analyticsValue
+                posLayout: posLayoutScale.analyticsLayout
             )
         )
     }

@@ -284,7 +284,7 @@ extension POSPaymentModel {
         if isCompactCardPaymentSelectionEnabled {
             selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
-        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsValue)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsLayout)
 
         // Method-switch path: the merchant is switching from one active
         // method to another (e.g. picking Tap to Pay from the Other Payment
@@ -636,7 +636,7 @@ extension POSPaymentModel {
 
         DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         analytics.track(.pointOfSaleCheckoutCashPaymentTapped, parameters: posLayout.analyticsProperties)
-        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsValue)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsLayout)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -698,7 +698,7 @@ extension POSPaymentModel {
 
         DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card)")
         analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped, parameters: posLayout.analyticsProperties)
-        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsValue)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsLayout)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -871,7 +871,7 @@ extension POSPaymentModel {
 
         DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
         analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped, parameters: posLayout.analyticsProperties)
-        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsValue)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout.analyticsLayout)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil

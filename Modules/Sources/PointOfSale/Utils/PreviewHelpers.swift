@@ -53,6 +53,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -233,7 +234,7 @@ struct POSPreviewHelpers {
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
-        receiptPrinter: POSReceiptPrinterProviding? = nil
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),

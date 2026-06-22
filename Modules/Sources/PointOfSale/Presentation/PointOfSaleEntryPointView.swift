@@ -20,6 +20,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -55,6 +56,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -86,6 +88,7 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -180,6 +183,7 @@ public struct PointOfSaleEntryPointView: View {
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.receiptPrinter = receiptPrinter
     }
 
     public var body: some View {
@@ -225,6 +229,7 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
+                receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }

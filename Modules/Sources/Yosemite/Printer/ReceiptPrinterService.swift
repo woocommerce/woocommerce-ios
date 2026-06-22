@@ -13,7 +13,7 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     func discover() -> AsyncThrowingStream<PrinterDevice, Error>
 
     /// Stops the current printer discovery.
-    func stopDiscovery()
+    func stopDiscovery() async
 
     /// Connects to the given printer.
     func connect(to printer: PrinterDevice) async throws
@@ -38,8 +38,8 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
         printerDiscoveryService.discover()
     }
 
-    public func stopDiscovery() {
-        printerDiscoveryService.stopDiscovery()
+    public func stopDiscovery() async {
+        await printerDiscoveryService.stopDiscovery()
     }
 
     public func connect(to printer: PrinterDevice) async throws {

@@ -11,7 +11,7 @@ public protocol PrinterDiscoveryService: AnyObject {
     func discover() -> AsyncThrowingStream<PrinterDevice, Error>
 
     /// Stops the current printer discovery.
-    func stopDiscovery()
+    func stopDiscovery() async
 
     /// Connects to the given printer.
     func connect(to device: PrinterDevice) async throws

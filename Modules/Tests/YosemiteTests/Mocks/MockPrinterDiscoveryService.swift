@@ -46,7 +46,7 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
         }
     }
 
-    func stopDiscovery() {
+    func stopDiscovery() async {
         stopDiscoveryWasCalled = true
     }
 

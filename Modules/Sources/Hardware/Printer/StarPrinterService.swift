@@ -47,10 +47,8 @@ public final class StarPrinterService: PrinterDiscoveryService {
         }
     }
 
-    public func stopDiscovery() {
-        Task { [coordinator] in
-            await coordinator.stopDiscovery()
-        }
+    public func stopDiscovery() async {
+        await coordinator.stopDiscovery()
     }
 
     public func connect(to device: PrinterDevice) async throws {

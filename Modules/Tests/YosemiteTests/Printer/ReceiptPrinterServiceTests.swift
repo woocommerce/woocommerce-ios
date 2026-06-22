@@ -56,12 +56,12 @@ struct ReceiptPrinterServiceTests {
         }
     }
 
-    @Test func test_stopDiscovery_forwards_to_service() {
+    @Test func test_stopDiscovery_forwards_to_service() async {
         // Given
         let sut = makeService()
 
         // When
-        sut.stopDiscovery()
+        await sut.stopDiscovery()
 
         // Then
         #expect(printerDiscoveryService.stopDiscoveryWasCalled)

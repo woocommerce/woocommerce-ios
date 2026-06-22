@@ -51,7 +51,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         }
     }
 
-    func stopDiscovery() {
+    func stopDiscovery() async {
         stopDiscoveryCallCount += 1
     }
 

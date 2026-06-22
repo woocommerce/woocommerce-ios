@@ -1,5 +1,6 @@
 // periphery:ignore:all
 import Foundation
+import CocoaLumberjackSwift
 import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
@@ -44,10 +45,12 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - snapshotDate: Server-derived snapshot date to persist for background resume handling.
     /// - Returns: List of products and variations in the POS catalog.
     func downloadCatalog(for siteID: Int64,
                          downloadURL: String,
-                         allowCellular: Bool) async throws -> POSCatalogResponse
+                         allowCellular: Bool,
+                         snapshotDate: Date) async throws -> POSCatalogResponse
 
     /// Parses a downloaded catalog file.
     /// Used for processing background downloads after app wake.
@@ -224,11 +227,13 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - snapshotDate: Server-derived snapshot date to persist for background resume handling.
     /// - Returns: List of products and variations in the POS catalog.
     /// - Note: Uses background download with URLSessionConfiguration.background to support app suspension.
     public func downloadCatalog(for siteID: Int64,
                                 downloadURL: String,
-                                allowCellular: Bool) async throws -> POSCatalogResponse {
+                                allowCellular: Bool,
+                                snapshotDate: Date) async throws -> POSCatalogResponse {
         guard let url = URL(string: downloadURL) else {
             throw NetworkError.invalidURL
         }
@@ -238,7 +243,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         // Save download state so we can resume if app is terminated
         let downloadState = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID
+            siteID: siteID,
+            downloadStartedAt: snapshotDate
         )
         backgroundDownloadStateStore.save(downloadState)
 
@@ -550,7 +556,7 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
-    /// Items with malformed data that fail to decode are skipped during parsing
+    /// Items with malformed data that fail to decode are skipped during parsing, and logged
     case unsupported
 
     private enum CodingKeys: String, CodingKey {
@@ -566,12 +572,14 @@ public enum POSCatalogItem: Decodable {
             do {
                 self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         } else {
             do {
                 self = .product(try container.decode(POSProduct.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         }

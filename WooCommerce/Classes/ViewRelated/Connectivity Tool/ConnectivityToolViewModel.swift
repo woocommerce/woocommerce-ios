@@ -14,6 +14,7 @@ import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
 import protocol Experiments.FeatureFlagService
 
+@MainActor
 final class ConnectivityToolViewModel {
 
     /// Cards to be rendered by the view.

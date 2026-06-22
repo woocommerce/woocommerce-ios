@@ -151,8 +151,10 @@ private extension ProductsTabProductTableViewCell {
                                                                          bottom: Constants.stackViewInset,
                                                                          right: Constants.stackViewInset))
 
-        // Not initially enabled, saved for possible compact icon case
-        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+        // Not initially enabled, saved for the draggable (compact icon) case.
+        // Uses a fixed size rather than matching the row height so that taller rows (e.g. wrapping
+        // product names) don't widen the square icon and push the title to the right.
+        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalToConstant: Constants.draggableIconLength)
 
         // Assigning a minimum default height to the labels might be helpful (e.g for the ghosting placeholder animation)
         nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.nameLabelDefaultMinimumHeight).isActive = true
@@ -281,6 +283,8 @@ private extension ProductsTabProductTableViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
         static let stackViewInset = CGFloat(16)
+        /// Fixed side length for the square drag-handle icon shown in draggable cells.
+        static let draggableIconLength = CGFloat(40)
         static let nameLabelDefaultMinimumHeight = CGFloat(20)
         static let detailsLabelDefaultMinimumHeight = CGFloat(16)
     }

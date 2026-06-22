@@ -87,10 +87,7 @@ struct FirstProductCreatedView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal)
                 .renderedIf(viewModel.showShareProductButton)
-                .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
-                    viewModel.shareSheet
-                }
-                .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
+                .shareView(isPresented: $viewModel.isShareViewPresented) {
                     viewModel.shareSheet
                 }
 

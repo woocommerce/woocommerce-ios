@@ -372,10 +372,15 @@ public struct PagedItems<T> {
     /// Number of items available, across all pages, whether loaded or not
     public let totalItems: Int?
 
-    public init(items: [T], hasMorePages: Bool, totalItems: Int?) {
+    /// The server's clock at the moment it served this page, parsed from the HTTP `Date` response
+    /// header. `nil` if the header is absent or unparseable.
+    public let serverDate: Date?
+
+    public init(items: [T], hasMorePages: Bool, totalItems: Int?, serverDate: Date? = nil) {
         self.items = items
         self.hasMorePages = hasMorePages
         self.totalItems = totalItems
+        self.serverDate = serverDate
     }
 }
 
@@ -401,7 +406,10 @@ public extension Remote {
 
         let totalItems = totalItemsCount(from: responseHeaders)
 
-        return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalItems)
+        return PagedItems(items: items,
+                          hasMorePages: hasMorePages,
+                          totalItems: totalItems,
+                          serverDate: serverDate(from: responseHeaders))
     }
 
     func totalItemsCount(from responseHeaders: [String: String]?) -> Int? {
@@ -410,6 +418,28 @@ public extension Remote {
             $0.key.lowercased() == PaginationHeaderKey.totalCount.lowercased()
         }).flatMap { Int($0.value) }
     }
+
+    /// Parses the HTTP `Date` response header (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`) into a `Date`.
+    /// Returns `nil` if the header is absent or doesn't match the format we expect from the server.
+    func serverDate(from responseHeaders: [String: String]?) -> Date? {
+        responseHeaders?.first(where: {
+            $0.key.lowercased() == PaginationHeaderKey.serverDate.lowercased()
+        }).flatMap { Self.httpDateFormatter.date(from: $0.value) }
+    }
+}
+
+private extension Remote {
+    /// Formatter for the HTTP `Date` header as the server currently sends it
+    /// (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`). Fixed `en_US_POSIX` locale + GMT so parsing does not
+    /// depend on the device's locale or time zone. If the server's date format changes, update the
+    /// format string to match what we actually receive.
+    static let httpDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "GMT")
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        return formatter
+    }()
 }
 
 // MARK: - Constants!
@@ -423,6 +453,8 @@ public extension Remote {
     enum PaginationHeaderKey {
         public static let totalPagesCount = "x-wp-totalpages"
         public static let totalCount = "x-wp-total"
+        /// Standard HTTP `Date` response header — the server's clock when it served the response.
+        public static let serverDate = "date"
     }
 
     enum JSONParsingErrorUserInfoKey {

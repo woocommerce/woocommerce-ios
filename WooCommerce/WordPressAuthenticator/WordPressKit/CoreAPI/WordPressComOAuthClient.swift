@@ -9,6 +9,15 @@ public extension WordPressComOAuthError {
         }
         return nil
     }
+
+    var loginErrorMessage: String {
+        guard case let .endpointError(failure) = self,
+              let serverMessage = failure.localizedErrorMessage,
+              !serverMessage.isEmpty else {
+            return localizedDescription
+        }
+        return serverMessage
+    }
 }
 
 public struct AuthenticationFailure: LocalizedError {

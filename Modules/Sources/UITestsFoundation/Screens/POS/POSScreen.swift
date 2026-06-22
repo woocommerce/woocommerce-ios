@@ -122,7 +122,7 @@ public final class POSScreen: ScreenObject {
             submitButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
 
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         XCTAssertTrue(app.descendants(matching: .any)["pos-custom-amount-row"].waitForExistence(timeout: 10),
                       "Custom amount should be visible in the POS cart.")
         return self
@@ -130,7 +130,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyCartContainsProduct(productID: Int) -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let cartItem = app.descendants(matching: .any)["pos-cart-item-product-\(productID)"]
         XCTAssertTrue(cartItem.waitForExistence(timeout: 10), "Product \(productID) should be visible in the POS cart.")
         return self
@@ -138,7 +138,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyCartContainsVariation(variationID: Int) -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let cartItem = app.descendants(matching: .any)["pos-cart-item-variation-\(variationID)"]
         XCTAssertTrue(cartItem.waitForExistence(timeout: 10), "Variation \(variationID) should be visible in the POS cart.")
         return self
@@ -146,7 +146,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyCartItemCount(_ count: Int) -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let itemCountLabel = count == 1 ? "1 item" : "\(count) items"
         XCTAssertTrue(app.staticTexts[itemCountLabel].waitForExistence(timeout: 10), "POS cart should show \(itemCountLabel).")
         return self
@@ -154,7 +154,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func removeProductFromCart(productID: Int, remainingCartItemCount: Int) -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let cartItem = app.descendants(matching: .any).matching(identifier: "pos-cart-item-product-\(productID)").firstMatch
         cartItem.scrollIntoView(app: app)
         XCTAssertTrue(waitForVisibleElement(cartItem, timeout: 10), "Product \(productID) cart row should be visible.")
@@ -165,7 +165,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyCartContainsCustomAmount(named name: String? = nil) -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let customAmountRow = app.descendants(matching: .any)["pos-custom-amount-row"]
         XCTAssertTrue(customAmountRow.waitForExistence(timeout: 10), "Custom amount row should be visible in the POS cart.")
         if let name {
@@ -176,7 +176,7 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func removeCustomAmountFromCart() -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let customAmountRow = app.descendants(matching: .any).matching(identifier: "pos-custom-amount-row").firstMatch
         XCTAssertTrue(waitForVisibleElement(customAmountRow, timeout: 10), "Custom amount row should be visible.")
         tapTrailingRemoveAffordance(in: customAmountRow)
@@ -185,35 +185,35 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
-    public func showPhoneCartIfNeeded() -> Self {
-        // Tablet keeps the cart pane visible; phone exposes it through a collapsed cart button.
-        let phoneCartButton = app.buttons["pos-phone-cart-button"]
-        if waitForVisibleElement(cartViewGetter(app), timeout: 1), !phoneCartButton.isHittable {
+    public func showCompactCartIfNeeded() -> Self {
+        // Regular layouts keep the cart pane visible; compact layouts expose it through a collapsed cart button.
+        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        if waitForVisibleElement(cartViewGetter(app), timeout: 1), !compactCartButton.isHittable {
             return self
         }
 
-        XCTAssertTrue(phoneCartButton.waitForIsHittable(timeout: 10), "POS cart should be visible or available from the phone cart button.")
-        phoneCartButton.tap()
-        XCTAssertTrue(waitForVisibleElement(cartViewGetter(app), timeout: 10), "POS cart should be visible after tapping the phone cart button.")
+        XCTAssertTrue(compactCartButton.waitForIsHittable(timeout: 10), "POS cart should be visible or available from the compact cart button.")
+        compactCartButton.tap()
+        XCTAssertTrue(waitForVisibleElement(cartViewGetter(app), timeout: 10), "POS cart should be visible after tapping the compact cart button.")
         return self
     }
 
     @discardableResult
-    public func dismissPhoneCartIfNeeded() -> Self {
-        let phoneCartButton = app.buttons["pos-phone-cart-button"]
-        guard phoneCartButton.exists, waitForVisibleElement(cartViewGetter(app), timeout: 1) else {
+    public func dismissCompactCartIfNeeded() -> Self {
+        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        guard compactCartButton.exists, waitForVisibleElement(cartViewGetter(app), timeout: 1) else {
             return self
         }
 
         app.swipeDown()
-        XCTAssertTrue(phoneCartButton.waitForIsHittable(timeout: 10), "Phone cart should be dismissed.")
-        XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 10), "POS product list should be visible after dismissing the phone cart.")
+        XCTAssertTrue(compactCartButton.waitForIsHittable(timeout: 10), "Compact cart should be dismissed.")
+        XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 10), "POS product list should be visible after dismissing the compact cart.")
         return self
     }
 
     @discardableResult
     public func tapCheckout() -> Self {
-        showPhoneCartIfNeeded()
+        showCompactCartIfNeeded()
         let checkoutButton = app.buttons["pos-checkout-button"]
 
         XCTAssertTrue(checkoutButton.waitForIsHittable(timeout: 15), "POS checkout button should be tappable.")
@@ -245,12 +245,12 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
-        let phoneCartButton = app.buttons["pos-phone-cart-button"]
-        if phoneCartButton.exists {
-            // Phone swaps ItemListView out while checkout is shown, so returning to edit
-            // rebuilds the selector at the root. Tablet keeps the item pane alive off-screen.
+        let compactCartButton = app.buttons["pos-phone-cart-button"]
+        if compactCartButton.exists {
+            // Compact layouts swap ItemListView out while checkout is shown, so returning to edit
+            // rebuilds the selector at the root. Regular layouts keep the item pane alive off-screen.
             XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15),
-                          "POS product list should be visible when returning to edit the cart on phone.")
+                          "POS product list should be visible when returning to edit the cart in compact layout.")
             return self
         }
 
@@ -373,13 +373,13 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReadyForNewOrder(previousProductID: Int? = nil, previousVariationID: Int? = nil) -> Self {
-        let phoneCartButton = app.buttons["pos-phone-cart-button"]
+        let compactCartButton = app.buttons["pos-phone-cart-button"]
 
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
 
-        if phoneCartButton.waitForIsHittable(timeout: 1) {
-            // Phone uses a collapsed cart button; tablet keeps the cart pane visible.
-            XCTAssertTrue(phoneCartButton.label.contains("0"), "Phone cart button should show an empty cart for a new order.")
+        if compactCartButton.waitForIsHittable(timeout: 1) {
+            // Compact layouts use a collapsed cart button; regular layouts keep the cart pane visible.
+            XCTAssertTrue(compactCartButton.label.contains("0"), "Compact cart button should show an empty cart for a new order.")
         } else {
             XCTAssertTrue(cartViewGetter(app).waitForExistence(timeout: 10), "POS cart should be visible for a new order.")
             if let previousProductID {
@@ -402,9 +402,9 @@ public final class POSScreen: ScreenObject {
             return self
         }
 
-        let phoneOverflowMenu = app.buttons["pos-phone-overflow-menu"]
-        XCTAssertTrue(phoneOverflowMenu.waitForIsHittable(timeout: 10), "POS menu button should be tappable.")
-        phoneOverflowMenu.tap()
+        let compactOverflowMenu = app.buttons["pos-phone-overflow-menu"]
+        XCTAssertTrue(compactOverflowMenu.waitForIsHittable(timeout: 10), "POS menu button should be tappable.")
+        compactOverflowMenu.tap()
         return self
     }
 

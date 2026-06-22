@@ -185,10 +185,6 @@ final class POSPaymentModel {
         publishCardReaderUpdateState()
         subscribeToAlwaysOnPaymentEvents()
     }
-
-    func setPOSLayoutForCurrentPayment(_ layout: POSAnalyticsLayout) {
-        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(layout)
-    }
 }
 
 // MARK: - Card Payment Methods

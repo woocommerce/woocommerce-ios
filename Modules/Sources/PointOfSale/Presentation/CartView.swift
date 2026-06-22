@@ -572,12 +572,16 @@ private extension CartView {
     func trackCheckoutTapped() {
         let purchasableItems = posModel.cart.purchasableItems.count
         let coupons = posModel.cart.coupons.count
+        let event = WooAnalyticsEvent.PointOfSale.checkoutTapped(
+            purchasableItemsInCart: purchasableItems,
+            couponsInCart: coupons
+        )
+        let parameters = event.properties.merging(posLayoutScale.analyticsLayout.analyticsProperties) { current, _ in
+            current
+        }
         analytics.track(
-            event: .PointOfSale.checkoutTapped(
-                purchasableItemsInCart: purchasableItems,
-                couponsInCart: coupons,
-                posLayout: posLayoutScale.analyticsLayout
-            )
+            event.statName,
+            parameters: parameters
         )
     }
 }

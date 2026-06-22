@@ -898,7 +898,6 @@ private extension TotalsView {
 
     func trackPaymentEntry(_ stat: WooAnalyticsStat) {
         let layout = posLayoutScale.analyticsLayout
-        paymentModel.setPOSLayoutForCurrentPayment(layout)
         analytics.track(stat, parameters: layout.analyticsProperties)
     }
 }

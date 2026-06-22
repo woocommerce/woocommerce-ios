@@ -561,8 +561,6 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
-    func setPOSLayoutForCurrentPayment(_ posLayout: POSAnalyticsLayout) {}
-
     func trackCustomerInteractionStarted() {}
 
     func trackOrderSyncSuccess() {}

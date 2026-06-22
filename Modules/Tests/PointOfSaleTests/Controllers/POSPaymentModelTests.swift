@@ -153,21 +153,6 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
     }
 
-    @Test("setPOSLayoutForCurrentPayment updates collect payment analytics layout")
-    @MainActor
-    func setPOSLayoutForCurrentPayment_updates_collect_payment_analytics_layout() {
-        // Given
-        let collectOrderPaymentAnalyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-        let sut = makePaymentController(
-            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-
-        // When
-        sut.setPOSLayoutForCurrentPayment(.compact)
-
-        // Then
-        #expect(collectOrderPaymentAnalyticsTracker.posLayoutForCurrentPayment == .compact)
-    }
-
     @Test("idle card event is dropped during cash flow")
     @MainActor
     func cardIdleEvent_during_cashFlow_isDropped() async {

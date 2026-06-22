@@ -7,7 +7,6 @@ import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
 import enum Yosemite.PaymentMethod
 import struct WooFoundation.WooAnalyticsEvent
-import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
     public enum PointOfSale {
@@ -56,7 +55,6 @@ extension WooAnalyticsEvent {
             static let action = "action"
             static let mode = "mode"
             static let isTaxable = "is_taxable"
-            static let posLayout = "pos_layout"
         }
 
         /// Source of the event where the event is triggered
@@ -234,13 +232,12 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
+        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleCheckoutTapped,
                 properties: [
                     Key.productsInCart: purchasableItemsInCart,
-                    Key.couponsInCart: couponsInCart,
-                    Key.posLayout: posLayout.rawValue
+                    Key.couponsInCart: couponsInCart
                 ]
             )
         }
@@ -260,8 +257,7 @@ extension WooAnalyticsEvent {
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
-                                                     checkoutTapCount: Int,
-                                                     posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
+                                                     checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
@@ -271,8 +267,7 @@ extension WooAnalyticsEvent {
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
-                Key.checkoutTapCount: "\(checkoutTapCount)",
-                Key.posLayout: posLayout.rawValue
+                Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
         }
 
@@ -287,33 +282,22 @@ extension WooAnalyticsEvent {
             }
         }
 
-        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: collectPaymentProperties(
-                millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
-                posLayout: posLayout
-            ))
-        }
-
-        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: collectPaymentProperties(
-                millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
-                posLayout: posLayout
-            ))
-        }
-
-        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double, posLayout: POSAnalyticsLayout) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: collectPaymentProperties(
-                millisecondsSinceCustomerIteractionStarted: millisecondsSinceCustomerIteractionStarted,
-                posLayout: posLayout
-            ))
-        }
-
-        private static func collectPaymentProperties(millisecondsSinceCustomerIteractionStarted: Double,
-                                                     posLayout: POSAnalyticsLayout) -> [String: WooAnalyticsEventPropertyType] {
-            [
+        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: [
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-                Key.posLayout: posLayout.rawValue
-            ]
+            ])
+        }
+
+        public static func scanToPayCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: [
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+            ])
+        }
+
+        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: [
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+            ])
         }
 
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {

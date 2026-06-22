@@ -24,7 +24,7 @@ final class BlazeForecastedImpressionsInputEncoderTests: XCTestCase {
                                                     isEvergreen: true)
 
         // When
-        let parameters = try input.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+        let parameters = try input.toJSONObjectDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
 
         // Then
         XCTAssertEqual(parameters["start_date"] as? String, "2023-12-05")

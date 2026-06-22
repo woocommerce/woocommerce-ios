@@ -94,7 +94,19 @@ private extension WooAboutScreenConfiguration {
         ]
 
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityViewController.popoverPresentationController?.sourceView = sourceView
+        activityViewController.modalPresentationStyle = .popover
+        if let popoverController = activityViewController.popoverPresentationController {
+            viewController.loadViewIfNeeded()
+            guard let anchorView = sourceView ?? viewController.view else {
+                return
+            }
+
+            popoverController.sourceItem = anchorView
+
+            if sourceView == nil {
+                popoverController.permittedArrowDirections = []
+            }
+        }
         viewController.present(activityViewController, animated: true, completion: nil)
     }
 

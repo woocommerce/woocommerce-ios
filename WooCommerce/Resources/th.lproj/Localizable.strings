@@ -16105,7 +16105,788 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 คืนเงินสินค้าเรียบร้อยแล้ว";
 
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "เรียนรู้เพิ่มเติม";
 
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "กำหนดเวลาแล้ว";
+
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "เรียนรู้เพิ่มเติม";
+
+/* Title of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.title" = "เปิดใช้งานการแจ้งเตือน";
+
+/* Placeholder for the order-total threshold text field. */
+"newOrderNotificationPreferencesDetailView.threshold.placeholder" = "จำนวนเงิน";
+
+/* Title of the new-order push notification preferences detail screen. */
+"newOrderNotificationPreferencesDetailView.title" = "คำสั่งซื้อใหม่";
+
+/* Title of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.title" = "เปิดใช้งานการแจ้งเตือน";
+
+/* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.title" = "สต็อกต่ำ";
+
+/* Title of the toggle row that enables notifications when a product is backordered. */
+"newStockNotificationPreferencesDetailView.onBackorder.title" = "อยู่ในรายการสั่งจอง";
+
+/* Title of the toggle row that enables notifications when a product reaches the no-stock amount. */
+"newStockNotificationPreferencesDetailView.outOfStock.title" = "สินค้าหมด";
+
+/* Title of the stock push notification preferences detail screen. */
+"newStockNotificationPreferencesDetailView.title" = "สต็อก";
+
+/* VoiceOver label for the back button on a push notification preferences detail screen. */
+"notificationDetailHostingController.back" = "กลับ";
+
+/* Title of the Save bar button on a push notification preferences detail screen. */
+"notificationDetailHostingController.save" = "บันทึก";
+
+/* Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.noteKeyboardDone" = "เสร็จสิ้น";
+
+/* VoiceOver label for the phone-only Point of Sale overflow menu button. */
+"pointOfSaleDashboard.phone.menu.accessibilityLabel" = "ตัวเลือกเพิ่มเติม";
+
+/* Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab. */
+"pointOfSaleDashboard.phone.menu.createCoupon" = "สร้างคูปอง";
+
+/* Phone-only overflow menu item to exit Point of Sale. */
+"pointOfSaleDashboard.phone.menu.exit" = "ออกจาก POS";
+
+/* Phone-only overflow menu item to open the historical orders view. */
+"pointOfSaleDashboard.phone.menu.orders" = "คำสั่งซื้อ";
+
+/* Phone-only overflow menu item to open Point of Sale settings. */
+"pointOfSaleDashboard.phone.menu.settings" = "การตั้งค่า";
+
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "ปิด";
+
+/* Title for the cash-payment button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.cashPayment" = "ชำระเป็นเงินสด";
+
+/* Title for the Tap to Pay button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
+
+/* Accessibility label for dismissing the POS manager approval screen. */
+"pos.managerOverride.close" = "ปิด";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "ลองอีกครั้ง";
+
+/* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.title" = "ทำเครื่องหมายคำสั่งซื้อว่าชำระแล้ว";
+
+/* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.subtitle" = "แสดงคิวอาร์โค้ดให้ลูกค้าชำระเงินจากโทรศัพท์ของพวกเขา";
+
+/* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
+"pos.otherPaymentMethods.sheet.title" = "วิธีการชำระเงินอื่น";
+
+/* Accessibility label for the delete key on the POS PIN numpad */
+"pos.pinEntry.delete.accessibilityLabel" = "ลบ";
+
+/* Message shown in POS when a card has been inserted for a refund. */
+"pos.refundCardPresent.cardInserted.message" = "ใส่บัตรแล้ว";
+
+/* Button shown in POS to dismiss a card reader refund message. */
+"pos.refundCardPresent.close.button.title" = "ปิด";
+
+/* Title shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.gettingReady.title" = "กำลังเตรียมการ";
+
+/* Instruction shown in POS when a card should be inserted for a refund. */
+"pos.refundCardPresent.insert.message" = "ใส่บัตรเพื่อคืนเงิน";
+
+/* Message shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.pleaseWait.message" = "โปรดรอ";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.presentCard.message" = "แสดงบัตรเพื่อคืนเงิน";
+
+/* Title shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.processingRefund.title" = "กำลังประมวลผลการคืนเงิน";
+
+/* Title shown in POS when a card reader refund fails. */
+"pos.refundCardPresent.refundFailed.title" = "การคืนเงินล้มเหลว";
+
+/* Instruction shown in POS when a card should be tapped for a refund. */
+"pos.refundCardPresent.tap.message" = "แตะบัตรเพื่อคืนเงิน";
+
+/* Instruction shown in POS when a card should be tapped or inserted for a refund. */
+"pos.refundCardPresent.tapInsert.message" = "แตะหรือเสียบบัตรเพื่อคืนเงิน";
+
+/* Accessibility label for the back button on the refund confirmation screen */
+"pos.refundConfirmationView.backButton.accessibilityLabel" = "กลับ";
+
+/* Button to cancel and dismiss the refund confirmation screen */
+"pos.refundConfirmationView.cancelButton" = "ยกเลิก";
+
+/* Title shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderTitle" = "กำลังเตรียมเครื่องอ่าน";
+
+/* Title shown when an in-person refund fails. */
+"pos.refundConfirmationView.readerErrorTitle" = "การคืนเงินล้มเหลว";
+
+/* Accessibility label for the back button on the refund error screen */
+"pos.refundErrorView.backButton.accessibilityLabel" = "กลับ";
+
+/* Accessibility label for the back button on the refund items selection screen */
+"pos.refundItemsSelectionView.backButton.accessibilityLabel" = "กลับ";
+
+/* Accessibility label for the back button on the refund loading screen */
+"pos.refundLoadingView.backButton.accessibilityLabel" = "กลับ";
+
+/* Accessibility label for the back button on the nothing to refund screen */
+"pos.refundNothingToRefundView.backButton.accessibilityLabel" = "กลับ";
+
+/* Accessibility label for the back button shown before connecting a card reader for a refund. */
+"pos.refundReaderDisconnectedView.backButton.accessibilityLabel" = "กลับ";
+
+/* Button to cancel a refund when no card reader is connected. */
+"pos.refundReaderDisconnectedView.cancelButton.title" = "ยกเลิก";
+
+/* Button to connect to a card reader before processing an in-person refund. */
+"pos.refundReaderDisconnectedView.connectButton.title" = "เชื่อมต่อเครื่องอ่านของคุณ";
+
+/* Title shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.title" = "เครื่องอ่านไม่ได้เชื่อมต่อ";
+
+/* Button to go back from the refund review screen to refund item selection */
+"pos.refundReviewView.backButton" = "กลับ";
+
+/* Accessibility label for the back button on the refund review screen */
+"pos.refundReviewView.backButton.accessibilityLabel" = "กลับ";
+
+/* Fallback name for a custom amount fee line in POS refunds. */
+"pos.refundSubmissionAdaptor.defaultFeeName" = "จำนวนเงินกำหนดเอง";
+
+/* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
+"pos.tapToPay.hero.title.v2" = "Tap to Pay on iPhone";
+
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "จำนวนเงินกำหนดเอง";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "แก้ไขคำสั่งซื้อ";
+
+/* Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications. */
+"pushNotificationPreferencesView.enableNotificationsCTA" = "เปิดใช้งานการแจ้งเตือน";
+
+/* Title of the row that toggles new-order push notifications. */
+"pushNotificationPreferencesView.newOrders.title" = "คำสั่งซื้อใหม่";
+
+/* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
+"pushNotificationPreferencesView.notificationsDisabled" = "ปิดการแจ้งเตือนสำหรับ Woo";
+
+/* Label indicating notifications are enabled, shown at the top of the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsEnabled" = "เปิดการแจ้งเตือน";
+
+/* Footer of the notifications-enabled section on the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsFooter" = "รวมถึงการเตือนความจำและการแจ้งเตือนแบบพุชระยะไกล";
+
+/* Detail text shown on a notification row when notifications are disabled. */
+"pushNotificationPreferencesView.off" = "ปิด";
+
+/* Button on the error state to retry loading push notification preferences. */
+"pushNotificationPreferencesView.retry" = "ลองอีกครั้ง";
+
+/* Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app. */
+"pushNotificationPreferencesView.settingsAppCTA" = "เปลี่ยน";
+
+/* Title of the row that toggles stock push notifications. */
+"pushNotificationPreferencesView.stock.title" = "สต็อก";
+
+/* Title of the push notification preferences screen. */
+"pushNotificationPreferencesView.title" = "การแจ้งเตือนแบบพุช";
+
+/* Message of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeMessage" = "โปรดลองอีกครั้ง";
+
+/* Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.lowStock" = "สต็อกต่ำ";
+
+/* Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.onBackorder" = "อยู่ในรายการสั่งจอง";
+
+/* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "สินค้าหมด";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "ยกเลิก";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "อนุญาตการเข้าถึงกล้อง";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "ลองอีกครั้ง";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "มีบางอย่างผิดพลาด";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "ความช่วยเหลือ";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "ยกเลิก";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "กลับ";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "ความช่วยเหลือ";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "ยกเลิก";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "ยกเลิก";
+
+/* Navigates to the Push Notifications preferences screen */
+"settingsViewController.pushNotifications" = "การแจ้งเตือนแบบพุช";
+
+/* Title of the web view to update WooCommerce plugin from support chat */
+"supportChatHostingController.updateWooCommerce" = "อัปเดต WooCommerce";
+
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.aiChatConnectionErrorMessage" = "ไม่สามารถเชื่อมต่อกับแชท AI ได้ในขณะนี้";
+
+/* Action button to update the WooCommerce plugin */
+"supportDiagnosticsService.action.updateWooCommercePlugin" = "อัปเดต WooCommerce";
+
+/* Button on the transcript consent alert that dismisses without taking action */
+"supportEscalationCoordinator.cancel" = "ยกเลิก";
+
+/* Error shown when the chat client needs a WPCOM token but the merchant signed in with an application password or wp-org credentials. */
+"aiAssistant.token.error.missingWPCOMCredentials" = "AI Assistant ต้องใช้ข้อมูลรับรอง WPCOM";
+
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "เลือกเวลาที่จะอัปเดตข้อมูลวิเคราะห์";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "นี่เป็นการตั้งค่าทั้งร้าน ซึ่งควบคุมตัวเลือก \"อัปเดต\" ในการตั้งค่าการวิเคราะห์ของผู้ดูแล WooCommerce ด้วย %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "อัปเดตทันทีเมื่อมีข้อมูลใหม่";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "ทันที";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "อัปเดตอัตโนมัติทุก 12 ชั่วโมง\nแนะนำสำหรับร้านค้าที่มีปริมาณคำสั่งซื้อสูง";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "การอัปเดตการวิเคราะห์";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "อัปเดตการตั้งค่าไม่ได้ โปรดลองอีกครั้ง";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "สถิติอาจล่าช้าสูงสุด 12 ชั่วโมง";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "รับความช่วยเหลือเกี่ยวกับปัญหาแอปหรือร้านค้า";
+
+/* Subtitle of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "แจ้งเตือนทุกคำสั่งซื้อ ไม่ว่ามูลค่าเท่าใด";
+
+/* Title of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "คำสั่งซื้อใหม่ทั้งหมด";
+
+/* Subtitle of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.subtitle" = "รับการแจ้งเตือนเมื่อมีคำสั่งซื้อในร้านค้าของคุณ";
+
+/* Subtitle of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "กรองเฉพาะคำสั่งซื้อที่เกินเกณฑ์ของคุณ";
+
+/* Title of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.title" = "เฉพาะคำสั่งซื้อมูลค่าสูง";
+
+/* Section header for new-order notification customization options. */
+"newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "แจ้งเตือนสำหรับ";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "มูลค่าขั้นต่ำ (%1$@)";
+
+/* Subtitle of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "แจ้งเตือนทุกรีวิว";
+
+/* Title of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "รีวิวใหม่ทั้งหมด";
+
+/* Subtitle of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "รับการแจ้งเตือนเมื่อมีรีวิวในร้านค้าของคุณ";
+
+/* Subtitle of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "กรองเฉพาะรีวิวที่มีคะแนนเท่ากับหรือต่ำกว่าคะแนนที่เลือก";
+
+/* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "เฉพาะรีวิวคะแนนต่ำ";
+
+/* Section header for new-review notification customization options. */
+"newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "แจ้งเตือนสำหรับ";
+
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "%1$@ ดาว";
+
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@ ดาว";
+
+/* Title of the new-review push notification preferences detail screen. */
+"newReviewNotificationPreferencesDetailView.title" = "รีวิวใหม่";
+
+/* Subtitle of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.subtitle" = "รับการแจ้งเตือนเมื่อการเปลี่ยนแปลงสต็อกสินค้าต้องการความสนใจ";
+
+/* Title of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.title" = "เปิดใช้งานการแจ้งเตือนสต็อก";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "แก้ไขเกณฑ์ทั่วทั้งร้าน";
+
+/* Subtitle of the low-stock toggle row. */
+"newStockNotificationPreferencesDetailView.lowStock.subtitle" = "เมื่อรุ่นสินค้าถึงเกณฑ์สต็อกต่ำ";
+
+/* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "สินค้าสามารถใช้เกณฑ์ของตนเองหรือเกณฑ์ทั่วทั้งร้านได้ %1$@ เพื่อดูค่าปัจจุบัน";
+
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "สินค้าสามารถใช้เกณฑ์ของตนเองหรือเกณฑ์ทั่วทั้งร้านที่\u{00A0}%1$@ ได้ %2$@";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "ดูเกณฑ์ทั่วทั้งร้าน";
+
+/* Section header for stock notification customization options. */
+"newStockNotificationPreferencesDetailView.notifyMeFor.header" = "แจ้งเตือนสำหรับ";
+
+/* Subtitle of the on-backorder toggle row. */
+"newStockNotificationPreferencesDetailView.onBackorder.subtitle" = "เมื่อลูกค้าสั่งสินค้าที่ขณะนี้ไม่มีในสต็อก";
+
+/* Subtitle of the out-of-stock toggle row. */
+"newStockNotificationPreferencesDetailView.outOfStock.subtitle" = "เมื่อรุ่นสินค้ามีจำนวนเป็นศูนย์";
+
+/* Title of the authenticated webview shown when the merchant taps 'Edit store-wide threshold' under the Low stock toggle. */
+"newStockNotificationPreferencesHostingController.editThreshold.webTitle" = "เกณฑ์สต็อกต่ำ";
+
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "มีปัญหาในการสร้างคำสั่งซื้อนี้ รายการไม่ตรงกับที่คุณเลือก ตรวจสอบเนื้อหาในตะกร้าแล้วลองอีกครั้ง";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "ผ่าน %1$@";
+
+/* Phone-only header title shown above the totals view during checkout. */
+"pointOfSaleDashboard.phone.checkoutTitle" = "ชำระเงิน";
+
+/* Navigation title for the web view used to edit POS receipt information. */
+"pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle" = "การตั้งค่าใบเสร็จ";
+
+/* Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected. */
+"pos.checkout.paymentMethod.cardReader" = "เครื่องอ่านบัตร";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Point of Sale ไม่สามารถเข้าถึงไฟล์ข้อมูลสินค้าของคุณได้ เนื่องจากผู้ให้บริการโฮสติ้งกำลังบล็อกไฟล์นี้\nโปรดขอให้อนุญาตการเข้าถึงไฟล์นี้เพื่อให้ Point of Sale ทำงานได้ต่อไป";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "ต้องดำเนินการกับร้านค้าของคุณ";
+
+/* Title shown on the POS lock screen. */
+"pos.lockScreen.enterYourPIN.title" = "ป้อน PIN ของคุณ";
+
+/* Title shown on the POS manager approval modal. */
+"pos.managerOverride.approvalRequired.title" = "ต้องได้รับการอนุมัติ";
+
+/* Button to cancel the current POS refund selection and select another order. */
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "ยกเลิกการคืนเงิน";
+
+/* Button to keep editing the current POS refund selection instead of selecting another order. */
+"pos.ordersView.cancelRefundAlert.keepEditing.button" = "แก้ไขต่อ";
+
+/* Message for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.message" = "การเลือกคืนเงินปัจจุบันของคุณจะถูกละทิ้ง";
+
+/* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.title" = "ยกเลิกการคืนเงินนี้ไหม";
+
+/* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.subtitle" = "เชื่อมต่อเครื่องอ่าน Bluetooth เพื่อรับชำระเงินด้วยบัตร";
+
+/* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.title" = "เครื่องอ่านบัตร";
+
+/* Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.subtitle" = "บันทึกการชำระเงินที่เก็บนอกอุปกรณ์นี้";
+
+/* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.title" = "สแกนเพื่อชำระเงิน";
+
+/* Accessibility label for the PIN dots on the POS PIN numpad */
+"pos.pinEntry.dots.accessibilityLabel" = "การป้อน PIN";
+
+/* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
+"pos.pinEntry.dots.accessibilityValue" = "ป้อนแล้ว %1$d จาก %2$d หลัก";
+
+/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+"pos.pinEntry.error.generic" = "มีบางอย่างผิดพลาด ลองอีกครั้ง";
+
+/* VoiceOver announcement when an entered POS PIN is incorrect. */
+"pos.pinEntry.error.invalidPIN" = "PIN ไม่ถูกต้อง ลองอีกครั้ง";
+
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
+"pos.pinEntry.lockout.countdown" = "พยายามหลายครั้งเกินไป ลองอีกครั้งใน %1$@";
+
+/* Error shown when POS tries to process a second refund while another refund is in progress. */
+"pos.refund.processing.error.alreadyInProgress" = "กำลังดำเนินการคืนเงินอยู่ โปรดรอให้เสร็จสิ้น";
+
+/* Error shown when POS tries to process a refund without selected refund items. */
+"pos.refund.processing.error.emptySelection" = "เลือกอย่างน้อยหนึ่งรายการเพื่อคืนเงิน";
+
+/* Error shown when POS tries to process a refund without prepared order refund data. */
+"pos.refund.processing.error.missingPreparation" = "ไม่สามารถเตรียมการคืนเงินได้ โปรดลองอีกครั้ง";
+
+/* Button shown in POS to return to refund review after a card reader refund is canceled. */
+"pos.refundCardPresent.backToRefund.button.title" = "กลับไปที่การคืนเงิน";
+
+/* Title shown in POS when a refund is canceled on the card reader. */
+"pos.refundCardPresent.cancelledOnReader.title" = "การคืนเงินถูกยกเลิกบนเครื่องอ่าน";
+
+/* Button shown in POS to cancel a failed card reader refund. */
+"pos.refundCardPresent.cancelRefund.button.title" = "ยกเลิกการคืนเงิน";
+
+/* Message shown in POS while validating a refund before using a card reader. */
+"pos.refundCardPresent.checkingRefund.message" = "กำลังตรวจสอบการคืนเงิน";
+
+/* Message shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.preparingReader.message" = "กำลังเตรียมเครื่องอ่านสำหรับคืนเงิน";
+
+/* Title shown in POS when the card reader is ready to process a refund. */
+"pos.refundCardPresent.readyForRefund.title" = "พร้อมคืนเงิน";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.tapSwipeInsert.message" = "แตะ รูด หรือเสียบบัตรเพื่อคืนเงิน";
+
+/* Button shown in POS to retry a failed card reader refund. */
+"pos.refundCardPresent.tryRefundAgain.button.title" = "ลองคืนเงินอีกครั้ง";
+
+/* Warning shown on the refund confirmation screen. */
+"pos.refundConfirmationView.actionCannotBeUndone" = "การดำเนินการนี้ไม่สามารถยกเลิกได้";
+
+/* Error shown when POS cannot confirm whether a card reader refund succeeded. */
+"pos.refundConfirmationView.cardPresent.unableToConfirmRefund" = "เราไม่สามารถยืนยันได้ว่าการคืนเงินสำเร็จ ตรวจสอบคำสั่งซื้อก่อนลองอีกครั้ง";
+
+/* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationQuestionFormat" = "แน่ใจหรือไม่ว่าต้องการคืนเงิน %1$@ %2$@";
+
+/* Message shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderMessage" = "กำลังเตรียมเครื่องอ่านสำหรับคืนเงิน";
+
+/* Title shown while loading refund information */
+"pos.refundLoadingView.loadingTitle" = "กำลังเตรียมการคืนเงิน";
+
+/* Button to leave the card-present refund error screen and return to the order. */
+"pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "กลับไปที่คำสั่งซื้อ";
+
+/* Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.subtitle" = "กลับไปที่คำสั่งซื้อและตรวจสอบก่อนลองอีกครั้ง";
+
+/* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.title" = "ยืนยันการคืนเงินไม่ได้";
+
+/* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.instruction" = "หากต้องการดำเนินการคืนเงินนี้ โปรดเชื่อมต่อเครื่องอ่านของคุณ";
+
+/* Error shown when POS tries to submit a refund without prepared refund data. */
+"pos.refundSubmissionAdaptor.error.missingPreparedRefund" = "ไม่สามารถเตรียมการคืนเงินได้ โปรดลองอีกครั้ง";
+
+/* Error shown when POS tries to submit a second refund while another refund is in progress. */
+"pos.refundSubmissionAdaptor.error.refundAlreadyInProgress" = "กำลังดำเนินการคืนเงินอยู่ โปรดรอให้เสร็จสิ้น";
+
+/* Fallback payment method description for POS refunds when no payment method title is available. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "การชำระเงินด้วยตนเอง";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "ผ่าน %1$@ %2$@";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "ผ่าน %1$@";
+
+/* Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. The full product name \"Tap to Pay on iPhone\" appears in the hero title above, so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines permit this once the full name has been shown on the same screen. */
+"pos.tapToPay.hero.payButton.v2" = "ชำระเงินด้วย Tap to Pay";
+
+/* Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout. */
+"pos.tapToPay.hero.subtitle" = "ใช้อุปกรณ์นี้เพื่อรับชำระเงินแบบไร้สัมผัส";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "มีปัญหาในการสร้างคำสั่งซื้อนี้ รายการไม่ตรงกับที่คุณเลือก ตรวจสอบเนื้อหาในตะกร้าแล้วลองอีกครั้ง";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "ชำระเงินไม่สำเร็จ";
+
+/* Message shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.message" = "ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง";
+
+/* Title shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.title" = "โหลดการตั้งค่าการแจ้งเตือนไม่ได้";
+
+/* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newOrders.accessibilityHint" = "ปรับแต่งการแจ้งเตือนคำสั่งซื้อใหม่";
+
+/* VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newReviews.accessibilityHint" = "ปรับแต่งการแจ้งเตือนรีวิวใหม่";
+
+/* Title of the row that toggles new-review push notifications. */
+"pushNotificationPreferencesView.newReviews.title" = "รีวิวใหม่";
+
+/* VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.stock.accessibilityHint" = "ปรับแต่งการแจ้งเตือนสต็อก";
+
+/* Title of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeTitle" = "อัปเดตการตั้งค่าการแจ้งเตือนไม่ได้";
+
+/* Detail text for the New orders row when notifications fire for every order. */
+"pushNotificationPreferencesViewModel.storeOrder.allOrders" = "คำสั่งซื้อทั้งหมด";
+
+/* Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500. */
+"pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "คำสั่งซื้อเกิน %1$@";
+
+/* Detail text for the New reviews row when notifications fire for every review. */
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "รีวิวทั้งหมด";
+
+/* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "%1$@ ดาวหรือต่ำกว่า";
+
+/* Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular" = "%1$@ ดาวหรือต่ำกว่า";
+
+/* Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.all" = "การแจ้งเตือนสต็อกทั้งหมด";
+
+/* Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.none" = "ไม่มีการแจ้งเตือน";
+
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "กำลังลงชื่อเข้าใช้…";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "หากไม่มีสิทธิ์เข้าถึงกล้อง คุณยังสามารถเข้าสู่ระบบโดยป้อนที่อยู่ร้านค้า";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "ต้องเข้าถึงกล้อง";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "เปิดการเข้าถึงกล้องในการตั้งค่า หรือยกเลิกเพื่อเข้าสู่ระบบด้วยที่อยู่ร้านค้าแทน";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "เปิดการตั้งค่าสิทธิ์";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "ปิดการเข้าถึงกล้องอยู่";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "การลงชื่อเข้านี้เสร็จสมบูรณ์บนอุปกรณ์อื่นแล้ว สร้างรหัสใหม่หากต้องการลองอีกครั้ง";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "ลงชื่อเข้าใช้ที่อื่นแล้ว";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "รหัสนั้นถูกสแกนแล้ว สร้างรหัสใหม่ในร้านค้าของคุณ";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "ใช้รหัสแล้ว";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "รหัสนั้นหมดอายุหรือถูกใช้แล้ว สร้างรหัสใหม่ในร้านค้าของคุณ";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "รหัสหมดอายุ";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "ป้อน URL เว็บไซต์แทน";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "แอปติดตั้งแล้ว — QR นี้ใช้ติดตั้งแอป ใน wp-admin ให้แตะปุ่ม App is installed เพื่อแสดง QR สำหรับลงชื่อเข้าใช้ หรือไปที่ woo.com/mobilelogin บนคอมพิวเตอร์ของคุณ";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "นี่คือ QR สำหรับติดตั้ง";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "QR นี้ไม่ใช่รหัสเข้าสู่ระบบ WooCommerce สร้างรหัสใหม่จากร้านค้าแล้วลองอีกครั้ง";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "ไม่ใช่รหัส WooCommerce";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "เข้าถึงร้านค้าของคุณไม่ได้";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "ไซต์นี้ไม่ได้ติดตั้ง WooCommerce";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "ไม่ใช่ร้านค้า WooCommerce";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "โปรดรอสักครู่แล้วลองอีกครั้ง";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "พยายามหลายครั้งเกินไป";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "เราอ่าน QR code นั้นไม่ได้ โปรดลองอีกครั้ง";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "อ่านรหัสนั้นไม่ได้";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "สแกนรหัสใหม่";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "เพื่อความปลอดภัยของคุณ ความพยายามลงชื่อเข้านี้ถูกยกเลิก สร้างรหัสใหม่ในร้านค้าของคุณเพื่อลองอีกครั้ง";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "การลงชื่อเข้าถูกปฏิเสธ";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "การลงชื่อเข้าของคุณถูกขัดจังหวะ สร้างรหัสใหม่ในร้านค้าของคุณแล้วลองอีกครั้ง";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "การลงชื่อเข้าถูกขัดจังหวะ";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "คุณไม่ได้ยืนยันภายในเวลา สร้างรหัสใหม่ในร้านค้าของคุณแล้วลองอีกครั้ง";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "การลงชื่อเข้าหมดเวลา";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "เราไม่สามารถตรวจสอบสิทธิ์กับร้านค้าของคุณได้ โปรดลองอีกครั้ง";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "ลงชื่อเข้าใช้ไม่สำเร็จ";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "ปลั๊กอิน WooCommerce ของคุณไม่รองรับการเข้าสู่ระบบด้วย QR โปรดอัปเดต WooCommerce บนร้านค้าของคุณแล้วลองอีกครั้ง หรือเข้าสู่ระบบโดยป้อน URL เว็บไซต์ของคุณ";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "ร้านค้านี้ทำการเข้าสู่ระบบด้วย QR ไม่ได้";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "ร้านค้าของคุณส่งข้อผิดพลาดที่ไม่คาดคิด โปรดลองอีกครั้งในอีกสักครู่";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "บัญชีของคุณไม่มีสิทธิ์ใช้แอปสำหรับร้านค้านี้";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "ต้องมีสิทธิ์";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "หมดอายุใน %1$d วินาที";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "ทั้งสองหน้าจอต้องแสดงหมายเลขเดียวกันเพื่อให้ลงชื่อเข้าใช้เสร็จสมบูรณ์";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "คุณกำลังลงชื่อเข้าใช้";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "คุณกำลังลงชื่อเข้าใช้เป็น";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "แตะหมายเลขนี้บนคอมพิวเตอร์เพื่อเสร็จสิ้น";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "ยืนยันการลงชื่อเข้าใช้";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "ไม่มีคอมพิวเตอร์? เข้าสู่ระบบด้วยที่อยู่เว็บไซต์";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "สแกน QR code";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "จากนั้นสแกน QR code ที่ปรากฏ";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "บนคอมพิวเตอร์ ให้ไปที่:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "สแกนเพื่อเข้าสู่ระบบ";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "คัดลอก URL ไปยังคลิปบอร์ด";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "คัดลอกลิงก์แล้ว!";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "วาง QR code ให้อยู่กลางกรอบ";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "ไปที่ woo.com/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "การดำเนินการต่อจะลงชื่อออกจากเซสชันปัจจุบันและเริ่มการลงชื่อเข้าใช้ใหม่";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "ดำเนินการต่อและลงชื่อออก";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "คุณลงชื่อเข้าใช้อยู่แล้ว";
+
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "สถิติอาจล่าช้าสูงสุด 12 ชั่วโมง";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "รายละเอียดการอัปเดต Analytics";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.stats.description" = "สถิติร้านค้า WooCommerce";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.stats.displayName" = "สถิติ";
+
+/* Title label when the home-screen stats widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetchStats" = "ดึงสถิติไม่ได้";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.humanSupport" = "ถาม Happiness Engineer";
+
+/* Action button to open the store push notification preferences screen */
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "การตั้งค่าการแจ้งเตือน";
+
+/* Message when some store push notification preferences are disabled */
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "การตั้งค่าการแจ้งเตือนแบบพุชบางรายการถูกปิดสำหรับร้านค้านี้\n\nเปิดการตั้งค่าของคุณเพื่อเลือกการแจ้งเตือนที่ต้องการรับ";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "ปลั๊กอิน WooCommerce ของคุณต้องได้รับการอัปเดตเพื่อเปิดใช้งานการแจ้งเตือนแบบพุช\n\nอัปเดต WooCommerce เป็นเวอร์ชัน %1$@ หรือใหม่กว่า แล้วลองลงทะเบียนอีกครั้ง";
+
+/* Button on the transcript consent alert that opens the support contact form */
+"supportEscalationCoordinator.contactForm" = "แบบฟอร์มติดต่อ";
+
+/* Button on the transcript consent alert that sends the chat transcript as a support request */
+"supportEscalationCoordinator.sendTicket" = "ส่งคำขอ";
+
+/* Message for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentMessage" = "เราสามารถสร้างคำขอรับการสนับสนุนโดยใช้บันทึกแชทนี้ หรือคุณเปิดแบบฟอร์มติดต่อและป้อนรายละเอียดเองได้";
+
+/* Title for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentTitle" = "ส่งแชทนี้ให้ฝ่ายสนับสนุนไหม";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "สถิติอาจล่าช้าสูงสุด 12 ชั่วโมง";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "รายละเอียดการอัปเดต Analytics";
+
+/* Warning text when the customs item description is too long for USPS domestic mail shipments */
+"wooShipping.customsItems.descriptionLengthWarning" = "คำอธิบายต้องไม่เกิน 30 อักขระ";
 /* MARK: - InfoPlist.strings */
 
 /* A message that tells the user why the app is requesting access to the device’s camera. */

@@ -16069,3 +16069,786 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for Payments home screen action */
 "infoplist.CollectPaymentAction.Title" = "Είσπραξη πληρωμής";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "Μάθε περισσότερα";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "Προγραμματισμένη";
+
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "Μάθε περισσότερα";
+
+/* Title of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.title" = "Ενεργοποίηση ειδοποιήσεων";
+
+/* Placeholder for the order-total threshold text field. */
+"newOrderNotificationPreferencesDetailView.threshold.placeholder" = "Ποσό";
+
+/* Title of the new-order push notification preferences detail screen. */
+"newOrderNotificationPreferencesDetailView.title" = "Νέες παραγγελίες";
+
+/* Title of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.title" = "Ενεργοποίηση ειδοποιήσεων";
+
+/* Title of the toggle row that enables notifications when a product crosses the low-stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.title" = "Χαμηλό απόθεμα";
+
+/* Title of the toggle row that enables notifications when a product is backordered. */
+"newStockNotificationPreferencesDetailView.onBackorder.title" = "Σε προπαραγγελία";
+
+/* Title of the toggle row that enables notifications when a product reaches the no-stock amount. */
+"newStockNotificationPreferencesDetailView.outOfStock.title" = "Εξαντλημένο";
+
+/* Title of the stock push notification preferences detail screen. */
+"newStockNotificationPreferencesDetailView.title" = "Απόθεμα";
+
+/* VoiceOver label for the back button on a push notification preferences detail screen. */
+"notificationDetailHostingController.back" = "Πίσω";
+
+/* Title of the Save bar button on a push notification preferences detail screen. */
+"notificationDetailHostingController.save" = "Αποθήκευση";
+
+/* Keyboard toolbar button that dismisses the optional note text field on the Point of Sale Mark as paid confirmation. */
+"pointOfSale.markAsPaid.confirmation.noteKeyboardDone" = "Έγινε";
+
+/* VoiceOver label for the phone-only Point of Sale overflow menu button. */
+"pointOfSaleDashboard.phone.menu.accessibilityLabel" = "Περισσότερες επιλογές";
+
+/* Phone-only overflow menu item to create a new coupon, shown when the merchant is on the Coupons tab. */
+"pointOfSaleDashboard.phone.menu.createCoupon" = "Δημιουργία κουπονιού";
+
+/* Phone-only overflow menu item to exit Point of Sale. */
+"pointOfSaleDashboard.phone.menu.exit" = "Έξοδος από POS";
+
+/* Phone-only overflow menu item to open the historical orders view. */
+"pointOfSaleDashboard.phone.menu.orders" = "Παραγγελίες";
+
+/* Phone-only overflow menu item to open Point of Sale settings. */
+"pointOfSaleDashboard.phone.menu.settings" = "Ρυθμίσεις";
+
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "Κλείσιμο";
+
+/* Title for the cash-payment button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.cashPayment" = "Πληρωμή μετρητοίς";
+
+/* Title for the Tap to Pay button in the POS checkout payment-method row. */
+"pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
+
+/* Accessibility label for dismissing the POS manager approval screen. */
+"pos.managerOverride.close" = "Κλείσιμο";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "Δοκιμάστε ξανά";
+
+/* Row title in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.title" = "Σήμανση παραγγελίας ως πληρωμένη";
+
+/* Row subtitle in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.subtitle" = "Δείξε κωδικό QR για να πληρώσει ο πελάτης από το κινητό του.";
+
+/* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
+"pos.otherPaymentMethods.sheet.title" = "Άλλες μέθοδοι πληρωμής";
+
+/* Accessibility label for the delete key on the POS PIN numpad */
+"pos.pinEntry.delete.accessibilityLabel" = "Διαγραφή";
+
+/* Message shown in POS when a card has been inserted for a refund. */
+"pos.refundCardPresent.cardInserted.message" = "Η κάρτα εισήχθη";
+
+/* Button shown in POS to dismiss a card reader refund message. */
+"pos.refundCardPresent.close.button.title" = "Κλείσιμο";
+
+/* Title shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.gettingReady.title" = "Προετοιμασία";
+
+/* Instruction shown in POS when a card should be inserted for a refund. */
+"pos.refundCardPresent.insert.message" = "Εισήγαγε κάρτα για επιστροφή χρημάτων";
+
+/* Message shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.pleaseWait.message" = "Περιμένετε";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.presentCard.message" = "Παρουσίασε κάρτα για επιστροφή χρημάτων";
+
+/* Title shown in POS while a card reader refund is processing. */
+"pos.refundCardPresent.processingRefund.title" = "Επεξεργασία επιστροφής χρημάτων";
+
+/* Title shown in POS when a card reader refund fails. */
+"pos.refundCardPresent.refundFailed.title" = "Η επιστροφή χρημάτων απέτυχε";
+
+/* Instruction shown in POS when a card should be tapped for a refund. */
+"pos.refundCardPresent.tap.message" = "Άγγιξε την κάρτα για επιστροφή χρημάτων";
+
+/* Instruction shown in POS when a card should be tapped or inserted for a refund. */
+"pos.refundCardPresent.tapInsert.message" = "Άγγιξε ή εισήγαγε την κάρτα για επιστροφή χρημάτων";
+
+/* Accessibility label for the back button on the refund confirmation screen */
+"pos.refundConfirmationView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Button to cancel and dismiss the refund confirmation screen */
+"pos.refundConfirmationView.cancelButton" = "Ακύρωση";
+
+/* Title shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderTitle" = "Προετοιμασία συσκευής ανάγνωσης";
+
+/* Title shown when an in-person refund fails. */
+"pos.refundConfirmationView.readerErrorTitle" = "Η επιστροφή χρημάτων απέτυχε";
+
+/* Accessibility label for the back button on the refund error screen */
+"pos.refundErrorView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Accessibility label for the back button on the refund items selection screen */
+"pos.refundItemsSelectionView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Accessibility label for the back button on the refund loading screen */
+"pos.refundLoadingView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Accessibility label for the back button on the nothing to refund screen */
+"pos.refundNothingToRefundView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Accessibility label for the back button shown before connecting a card reader for a refund. */
+"pos.refundReaderDisconnectedView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Button to cancel a refund when no card reader is connected. */
+"pos.refundReaderDisconnectedView.cancelButton.title" = "Ακύρωση";
+
+/* Button to connect to a card reader before processing an in-person refund. */
+"pos.refundReaderDisconnectedView.connectButton.title" = "Σύνδεσε τον reader σου";
+
+/* Title shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.title" = "Ο reader δεν είναι συνδεδεμένος";
+
+/* Button to go back from the refund review screen to refund item selection */
+"pos.refundReviewView.backButton" = "Πίσω";
+
+/* Accessibility label for the back button on the refund review screen */
+"pos.refundReviewView.backButton.accessibilityLabel" = "Πίσω";
+
+/* Fallback name for a custom amount fee line in POS refunds. */
+"pos.refundSubmissionAdaptor.defaultFeeName" = "Προσαρμοσμένο ποσό";
+
+/* Title shown in the Tap to Pay on iPhone hero on the POS checkout. \"Tap to Pay on iPhone\" is Apple's product name and must be capitalised exactly as shown. */
+"pos.tapToPay.hero.title.v2" = "Tap to Pay on iPhone";
+
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "Προσαρμοσμένα ποσά";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "Επεξεργασία παραγγελίας";
+
+/* Primary button on the push notification preferences empty state that opens the iOS Settings app to enable notifications. */
+"pushNotificationPreferencesView.enableNotificationsCTA" = "Ενεργοποίηση ειδοποιήσεων";
+
+/* Title of the row that toggles new-order push notifications. */
+"pushNotificationPreferencesView.newOrders.title" = "Νέες παραγγελίες";
+
+/* Empty state title shown on the push notification preferences screen when iOS notifications are disabled for Woo. */
+"pushNotificationPreferencesView.notificationsDisabled" = "Οι ειδοποιήσεις είναι απενεργοποιημένες για το Woo";
+
+/* Label indicating notifications are enabled, shown at the top of the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsEnabled" = "Ειδοποιήσεις ενεργοποιημένες";
+
+/* Footer of the notifications-enabled section on the push notification preferences screen. */
+"pushNotificationPreferencesView.notificationsFooter" = "Περιλαμβάνει υπενθυμίσεις και απομακρυσμένες push ειδοποιήσεις.";
+
+/* Detail text shown on a notification row when notifications are disabled. */
+"pushNotificationPreferencesView.off" = "Ανενεργό";
+
+/* Button on the error state to retry loading push notification preferences. */
+"pushNotificationPreferencesView.retry" = "Δοκιμή ξανά";
+
+/* Button on the push notification preferences screen that opens the app's notification settings in the iOS Settings app. */
+"pushNotificationPreferencesView.settingsAppCTA" = "Αλλαγή";
+
+/* Title of the row that toggles stock push notifications. */
+"pushNotificationPreferencesView.stock.title" = "Απόθεμα";
+
+/* Title of the push notification preferences screen. */
+"pushNotificationPreferencesView.title" = "Ειδοποιήσεις push";
+
+/* Message of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeMessage" = "Δοκιμάστε ξανά.";
+
+/* Name of the low-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.lowStock" = "Χαμηλό απόθεμα";
+
+/* Name of the on-backorder alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.onBackorder" = "Σε προπαραγγελία";
+
+/* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Εξαντλημένο";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "Ακύρωση";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "Επίτρεψε πρόσβαση στην κάμερα";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "Δοκιμάστε ξανά";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "Κάτι πήγε στραβά";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "Βοήθεια";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "Ακύρωση";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "Πίσω";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "Βοήθεια";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "Ακύρωση";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "Ακύρωση";
+
+/* Navigates to the Push Notifications preferences screen */
+"settingsViewController.pushNotifications" = "Ειδοποιήσεις push";
+
+/* Title of the web view to update WooCommerce plugin from support chat */
+"supportChatHostingController.updateWooCommerce" = "Ενημέρωση WooCommerce";
+
+/* Generic error message shown when an AI support chat request fails */
+"supportChatViewModel.aiChatConnectionErrorMessage" = "Δεν μπορέσαμε να συνδεθούμε με τη συνομιλία AI αυτή τη στιγμή.";
+
+/* Action button to update the WooCommerce plugin */
+"supportDiagnosticsService.action.updateWooCommercePlugin" = "Ενημέρωση WooCommerce";
+
+/* Button on the transcript consent alert that dismisses without taking action */
+"supportEscalationCoordinator.cancel" = "Ακύρωση";
+
+/* Error shown when the chat client needs a WPCOM token but the merchant signed in with an application password or wp-org credentials. */
+"aiAssistant.token.error.missingWPCOMCredentials" = "Το AI Assistant απαιτεί διαπιστευτήρια WPCOM.";
+
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "Επίλεξε πότε ενημερώνονται τα αναλυτικά δεδομένα.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Αυτή είναι μια ρύθμιση για όλο το κατάστημα, η οποία ελέγχει επίσης την επιλογή \"Updates\" στις ρυθμίσεις αναλυτικών του διαχειριστή WooCommerce. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "Ενημερώνεται μόλις υπάρχουν νέα δεδομένα.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "Άμεσα";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "Ενημερώνεται αυτόματα κάθε 12 ώρες.\nΣυνιστάται για καταστήματα με μεγάλο όγκο παραγγελιών.";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "Ενημερώσεις αναλυτικών";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "Δεν ήταν δυνατή η ενημέρωση της ρύθμισης. Δοκίμασε ξανά.";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "Τα στατιστικά μπορεί να καθυστερούν έως και 12 ώρες.";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "Λάβε βοήθεια για προβλήματα εφαρμογής ή καταστήματος";
+
+/* Subtitle of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.subtitle" = "Ειδοποίηση για κάθε παραγγελία, ανεξάρτητα από την αξία.";
+
+/* Title of the radio row that enables notifications for every new order. */
+"newOrderNotificationPreferencesDetailView.allOrders.title" = "Όλες οι νέες παραγγελίες";
+
+/* Subtitle of the master toggle for new-order push notifications. */
+"newOrderNotificationPreferencesDetailView.enable.subtitle" = "Λάβε ειδοποίηση όταν γίνεται παραγγελία στο κατάστημά σου.";
+
+/* Subtitle of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.subtitle" = "Φιλτράρισμα σε παραγγελίες πάνω από το όριό σου.";
+
+/* Title of the radio row that filters notifications to orders above a threshold. */
+"newOrderNotificationPreferencesDetailView.highValue.title" = "Μόνο παραγγελίες υψηλής αξίας";
+
+/* Section header for new-order notification customization options. */
+"newOrderNotificationPreferencesDetailView.notifyMeFor.header" = "Ειδοποίησέ με για";
+
+/* Label for the order-total threshold text field. %1$@ is the active site's currency symbol, e.g. $. */
+"newOrderNotificationPreferencesDetailView.threshold.labelFormat" = "Ελάχιστη αξία (%1$@)";
+
+/* Subtitle of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.subtitle" = "Ειδοποίηση για κάθε αξιολόγηση.";
+
+/* Title of the radio row that enables notifications for every new review. */
+"newReviewNotificationPreferencesDetailView.allReviews.title" = "Όλες οι νέες αξιολογήσεις";
+
+/* Subtitle of the master toggle for new-review push notifications. */
+"newReviewNotificationPreferencesDetailView.enable.subtitle" = "Λάβε ειδοποίηση όταν αφήνεται αξιολόγηση για το κατάστημά σου.";
+
+/* Subtitle of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.subtitle" = "Φιλτράρισμα σε αξιολογήσεις με την επιλεγμένη βαθμολογία ή χαμηλότερη.";
+
+/* Title of the radio row that filters notifications to reviews at or below a chosen rating. */
+"newReviewNotificationPreferencesDetailView.lowRated.title" = "Μόνο αξιολογήσεις χαμηλής βαθμολογίας";
+
+/* Section header for new-review notification customization options. */
+"newReviewNotificationPreferencesDetailView.notifyMeFor.header" = "Ειδοποίησέ με για";
+
+/* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "%1$@ αστέρια";
+
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@ αστέρι";
+
+/* Title of the new-review push notification preferences detail screen. */
+"newReviewNotificationPreferencesDetailView.title" = "Νέες αξιολογήσεις";
+
+/* Subtitle of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.subtitle" = "Λάβε ειδοποίηση όταν αλλαγές στο απόθεμα προϊόντων χρειάζονται την προσοχή σου.";
+
+/* Title of the master toggle for stock push notifications. */
+"newStockNotificationPreferencesDetailView.enable.title" = "Ενεργοποίηση ειδοποιήσεων αποθέματος";
+
+/* Tappable link that opens wp-admin to edit the store-wide low stock threshold. */
+"newStockNotificationPreferencesDetailView.lowStock.editStoreWideThresholdLink" = "Επεξεργασία ορίου για όλο το κατάστημα";
+
+/* Subtitle of the low-stock toggle row. */
+"newStockNotificationPreferencesDetailView.lowStock.subtitle" = "Όταν μια παραλλαγή προϊόντος φτάσει το όριο χαμηλού αποθέματος.";
+
+/* Sentence shown under the Low stock toggle when the store-wide threshold value is unavailable. %1$@ is the tappable 'View store-wide threshold' link text. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat" = "Τα προϊόντα μπορούν να χρησιμοποιούν το δικό τους όριο ή το όριο για όλο το κατάστημα. %1$@ για να δεις την τρέχουσα τιμή.";
+
+/* Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; %2$@ is the tappable 'Edit store-wide threshold' link text. The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line. */
+"newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat" = "Τα προϊόντα μπορούν να χρησιμοποιούν το δικό τους όριο ή το όριο για όλο το κατάστημα των %1$@. %2$@";
+
+/* Tappable link that opens wp-admin to view the store-wide low stock threshold when its value is unavailable. */
+"newStockNotificationPreferencesDetailView.lowStock.viewStoreWideThresholdLink" = "Προβολή ορίου για όλο το κατάστημα";
+
+/* Section header for stock notification customization options. */
+"newStockNotificationPreferencesDetailView.notifyMeFor.header" = "Ειδοποίησέ με για";
+
+/* Subtitle of the on-backorder toggle row. */
+"newStockNotificationPreferencesDetailView.onBackorder.subtitle" = "Όταν ένας πελάτης παραγγέλνει ένα είδος που είναι αυτήν τη στιγμή εκτός αποθέματος.";
+
+/* Subtitle of the out-of-stock toggle row. */
+"newStockNotificationPreferencesDetailView.outOfStock.subtitle" = "Όταν μια παραλλαγή προϊόντος φτάσει στο μηδέν.";
+
+/* Title of the authenticated webview shown when the merchant taps 'Edit store-wide threshold' under the Low stock toggle. */
+"newStockNotificationPreferencesHostingController.editThreshold.webTitle" = "Όριο χαμηλού αποθέματος";
+
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "Παρουσιάστηκε πρόβλημα κατά τη δημιουργία αυτής της παραγγελίας. Τα είδη δεν ταιριάζουν με την επιλογή σου. Έλεγξε τα περιεχόμενα του καλαθιού και δοκίμασε ξανά.";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "μέσω %1$@";
+
+/* Phone-only header title shown above the totals view during checkout. */
+"pointOfSaleDashboard.phone.checkoutTitle" = "Ολοκλήρωση αγοράς";
+
+/* Navigation title for the web view used to edit POS receipt information. */
+"pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle" = "Ρυθμίσεις απόδειξης";
+
+/* Title for the card-reader button in the POS checkout payment-method row. Tapping it starts the connect-reader flow when no reader is connected. */
+"pos.checkout.paymentMethod.cardReader" = "Αναγνώστης καρτών";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Το Point of Sale δεν μπορεί να αποκτήσει πρόσβαση σε αρχείο με τις πληροφορίες προϊόντων σου, επειδή ο πάροχος φιλοξενίας σου το μπλοκάρει.\nΖήτησέ του να επιτρέψει την πρόσβαση, ώστε το Point of Sale να συνεχίσει να λειτουργεί σωστά.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "Απαιτείται ενέργεια στο κατάστημά σου";
+
+/* Title shown on the POS lock screen. */
+"pos.lockScreen.enterYourPIN.title" = "Πληκτρολόγησε το PIN σου";
+
+/* Title shown on the POS manager approval modal. */
+"pos.managerOverride.approvalRequired.title" = "Απαιτείται έγκριση";
+
+/* Button to cancel the current POS refund selection and select another order. */
+"pos.ordersView.cancelRefundAlert.cancelRefund.button" = "Ακύρωση επιστροφής χρημάτων";
+
+/* Button to keep editing the current POS refund selection instead of selecting another order. */
+"pos.ordersView.cancelRefundAlert.keepEditing.button" = "Συνέχεια επεξεργασίας";
+
+/* Message for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.message" = "Η τρέχουσα επιλογή επιστροφής χρημάτων θα απορριφθεί.";
+
+/* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
+"pos.ordersView.cancelRefundAlert.title" = "Να ακυρωθεί αυτή η επιστροφή χρημάτων;";
+
+/* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.subtitle" = "Σύνδεσε έναν αναγνώστη Bluetooth για να δέχεσαι πληρωμές με κάρτα.";
+
+/* Row title in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
+"pos.otherPaymentMethods.cardReader.title" = "Αναγνώστης καρτών";
+
+/* Row subtitle in the Other Payment Methods sheet for marking the order paid out-of-band. */
+"pos.otherPaymentMethods.markAsPaid.subtitle" = "Καταγραφή πληρωμής που εισπράχθηκε εκτός αυτής της συσκευής.";
+
+/* Row title in the Other Payment Methods sheet for collecting payment via a QR code the customer scans. */
+"pos.otherPaymentMethods.scanToPay.title" = "Scan to Pay";
+
+/* Accessibility label for the PIN dots on the POS PIN numpad */
+"pos.pinEntry.dots.accessibilityLabel" = "Εισαγωγή PIN";
+
+/* Accessibility value for the PIN dots. %1$d is the entered count, %2$d the total. */
+"pos.pinEntry.dots.accessibilityValue" = "Έχουν εισαχθεί %1$d από %2$d ψηφία";
+
+/* VoiceOver announcement when validating the entered POS PIN fails unexpectedly. */
+"pos.pinEntry.error.generic" = "Κάτι πήγε στραβά. Δοκίμασε ξανά.";
+
+/* VoiceOver announcement when an entered POS PIN is incorrect. */
+"pos.pinEntry.error.invalidPIN" = "Λανθασμένο PIN. Δοκίμασε ξανά.";
+
+/* Lock-out message on the POS PIN numpad. %1$@ is a localized duration such as 30s or 1m 30s. */
+"pos.pinEntry.lockout.countdown" = "Πάρα πολλές προσπάθειες. Δοκίμασε ξανά σε %1$@.";
+
+/* Error shown when POS tries to process a second refund while another refund is in progress. */
+"pos.refund.processing.error.alreadyInProgress" = "Μια επιστροφή χρημάτων βρίσκεται ήδη σε εξέλιξη. Περίμενε να ολοκληρωθεί.";
+
+/* Error shown when POS tries to process a refund without selected refund items. */
+"pos.refund.processing.error.emptySelection" = "Επίλεξε τουλάχιστον ένα είδος για επιστροφή χρημάτων.";
+
+/* Error shown when POS tries to process a refund without prepared order refund data. */
+"pos.refund.processing.error.missingPreparation" = "Δεν ήταν δυνατή η προετοιμασία της επιστροφής χρημάτων. Δοκίμασε ξανά.";
+
+/* Button shown in POS to return to refund review after a card reader refund is canceled. */
+"pos.refundCardPresent.backToRefund.button.title" = "Πίσω στην επιστροφή χρημάτων";
+
+/* Title shown in POS when a refund is canceled on the card reader. */
+"pos.refundCardPresent.cancelledOnReader.title" = "Η επιστροφή χρημάτων ακυρώθηκε στον αναγνώστη";
+
+/* Button shown in POS to cancel a failed card reader refund. */
+"pos.refundCardPresent.cancelRefund.button.title" = "Ακύρωση επιστροφής χρημάτων";
+
+/* Message shown in POS while validating a refund before using a card reader. */
+"pos.refundCardPresent.checkingRefund.message" = "Έλεγχος επιστροφής χρημάτων";
+
+/* Message shown in POS while preparing a card reader for a refund. */
+"pos.refundCardPresent.preparingReader.message" = "Προετοιμασία αναγνώστη για επιστροφή χρημάτων";
+
+/* Title shown in POS when the card reader is ready to process a refund. */
+"pos.refundCardPresent.readyForRefund.title" = "Έτοιμο για επιστροφή χρημάτων";
+
+/* Instruction shown in POS when a card should be presented for a refund. */
+"pos.refundCardPresent.tapSwipeInsert.message" = "Άγγιξε, πέρασε ή εισήγαγε την κάρτα για επιστροφή χρημάτων";
+
+/* Button shown in POS to retry a failed card reader refund. */
+"pos.refundCardPresent.tryRefundAgain.button.title" = "Δοκίμασε ξανά την επιστροφή χρημάτων";
+
+/* Warning shown on the refund confirmation screen. */
+"pos.refundConfirmationView.actionCannotBeUndone" = "Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.";
+
+/* Error shown when POS cannot confirm whether a card reader refund succeeded. */
+"pos.refundConfirmationView.cardPresent.unableToConfirmRefund" = "Δεν μπορούμε να επιβεβαιώσουμε ότι η επιστροφή χρημάτων πέτυχε. Έλεγξε την παραγγελία πριν δοκιμάσεις ξανά.";
+
+/* Confirmation question for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationQuestionFormat" = "Σίγουρα θέλεις να επιστρέψεις %1$@ %2$@;";
+
+/* Message shown while preparing a card reader for an in-person refund. */
+"pos.refundConfirmationView.preparingReaderMessage" = "Προετοιμασία αναγνώστη για επιστροφή χρημάτων";
+
+/* Title shown while loading refund information */
+"pos.refundLoadingView.loadingTitle" = "Προετοιμασία επιστροφής χρημάτων";
+
+/* Button to leave the card-present refund error screen and return to the order. */
+"pos.refundModalContentView.cardPresentCreateError.backToOrderButton" = "Πίσω στην παραγγελία";
+
+/* Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.subtitle" = "Επίστρεψε στην παραγγελία και έλεγξέ την πριν δοκιμάσεις ξανά.";
+
+/* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
+"pos.refundModalContentView.cardPresentCreateError.title" = "Δεν ήταν δυνατή η επιβεβαίωση της επιστροφής χρημάτων";
+
+/* Instruction shown when an in-person refund needs a card reader, but no reader is connected. */
+"pos.refundReaderDisconnectedView.instruction" = "Για να επεξεργαστείς αυτήν την επιστροφή χρημάτων, σύνδεσε τον αναγνώστη σου.";
+
+/* Error shown when POS tries to submit a refund without prepared refund data. */
+"pos.refundSubmissionAdaptor.error.missingPreparedRefund" = "Δεν ήταν δυνατή η προετοιμασία της επιστροφής χρημάτων. Δοκίμασε ξανά.";
+
+/* Error shown when POS tries to submit a second refund while another refund is in progress. */
+"pos.refundSubmissionAdaptor.error.refundAlreadyInProgress" = "Μια επιστροφή χρημάτων βρίσκεται ήδη σε εξέλιξη. Περίμενε να ολοκληρωθεί.";
+
+/* Fallback payment method description for POS refunds when no payment method title is available. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.manualPaymentMethod" = "χειροκίνητη πληρωμή";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "μέσω %1$@ %2$@";
+
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "μέσω %1$@";
+
+/* Primary CTA shown in the Tap to Pay on iPhone hero on the POS checkout. The full product name \"Tap to Pay on iPhone\" appears in the hero title above, so the CTA uses the shortened form \"Tap to Pay\" — Apple's branding guidelines permit this once the full name has been shown on the same screen. */
+"pos.tapToPay.hero.payButton.v2" = "Πληρωμή με Tap to Pay";
+
+/* Subtitle shown in the Tap to Pay on iPhone hero on the POS checkout. */
+"pos.tapToPay.hero.subtitle" = "Χρησιμοποίησε αυτήν τη συσκευή για να δέχεσαι ανέπαφες πληρωμές με κάρτα.";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "Παρουσιάστηκε πρόβλημα κατά τη δημιουργία αυτής της παραγγελίας. Τα είδη δεν ταιριάζουν με την επιλογή σου. Έλεγξε τα περιεχόμενα του καλαθιού και δοκίμασε ξανά.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "Δεν ήταν δυνατή η ολοκλήρωση αγοράς";
+
+/* Message shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.message" = "Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.";
+
+/* Title shown when the push notification preferences fail to load. */
+"pushNotificationPreferencesView.error.title" = "Δεν ήταν δυνατή η φόρτωση των προτιμήσεων ειδοποιήσεων";
+
+/* VoiceOver hint announced when focused on the New orders row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newOrders.accessibilityHint" = "Προσαρμογή ειδοποιήσεων νέων παραγγελιών";
+
+/* VoiceOver hint announced when focused on the New reviews row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.newReviews.accessibilityHint" = "Προσαρμογή ειδοποιήσεων νέων αξιολογήσεων";
+
+/* Title of the row that toggles new-review push notifications. */
+"pushNotificationPreferencesView.newReviews.title" = "Νέες αξιολογήσεις";
+
+/* VoiceOver hint announced when focused on the Stock row, describing that it opens a detail screen. */
+"pushNotificationPreferencesView.stock.accessibilityHint" = "Προσαρμογή ειδοποιήσεων αποθέματος";
+
+/* Title of the notice shown when saving push notification preferences fails. */
+"pushNotificationPreferencesViewModel.errorNoticeTitle" = "Δεν ήταν δυνατή η ενημέρωση των προτιμήσεων ειδοποιήσεων";
+
+/* Detail text for the New orders row when notifications fire for every order. */
+"pushNotificationPreferencesViewModel.storeOrder.allOrders" = "Όλες οι παραγγελίες";
+
+/* Detail text for the New orders row when a threshold is set. %1$@ is the formatted currency amount, e.g. $500. */
+"pushNotificationPreferencesViewModel.storeOrder.ordersOverFormat" = "Παραγγελίες πάνω από %1$@";
+
+/* Detail text for the New reviews row when notifications fire for every review. */
+"pushNotificationPreferencesViewModel.storeReview.allReviews" = "Όλες οι αξιολογήσεις";
+
+/* Detail text for the New reviews row when the maximum rating is 2-5. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.plural" = "%1$@ αστέρια και κάτω";
+
+/* Detail text for the New reviews row when the maximum rating is 1. %1$@ is the formatted star count. */
+"pushNotificationPreferencesViewModel.storeReview.reviewsBelowFormat.singular" = "%1$@ αστέρι και κάτω";
+
+/* Detail text for the Stock row when all three stock sub-toggles (low, out of stock, on backorder) are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.all" = "Όλες οι ειδοποιήσεις αποθέματος";
+
+/* Detail text for the Stock row when the master toggle is on but none of the sub-toggles are enabled. */
+"pushNotificationPreferencesViewModel.storeStock.detail.none" = "Καμία ειδοποίηση";
+
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "Σε συνδέουμε…";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "Χωρίς πρόσβαση στην κάμερα, μπορείς ακόμα να συνδεθείς εισάγοντας τη διεύθυνση του καταστήματός σου.";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "Απαιτείται πρόσβαση στην κάμερα";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "Ενεργοποίησε την πρόσβαση στην κάμερα στις Ρυθμίσεις ή ακύρωσε για να συνδεθείς με τη διεύθυνση του καταστήματός σου.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "Άνοιγμα ρυθμίσεων δικαιωμάτων";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "Η πρόσβαση στην κάμερα είναι απενεργοποιημένη";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "Αυτή η σύνδεση ολοκληρώθηκε ήδη σε άλλη συσκευή. Δημιούργησε νέο κωδικό αν χρειάζεται να δοκιμάσεις ξανά.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "Ήδη συνδεδεμένος αλλού";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "Αυτός ο κωδικός έχει ήδη σαρωθεί. Δημιούργησε νέο στο κατάστημά σου.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "Ο κωδικός χρησιμοποιήθηκε ήδη";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "Αυτός ο κωδικός έληξε ή έχει ήδη χρησιμοποιηθεί. Δημιούργησε νέο στο κατάστημά σου.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "Ο κωδικός έληξε";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "Εισαγωγή URL ιστότοπου αντί για αυτό";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "Η εφαρμογή είναι ήδη εγκατεστημένη — αυτό το QR την εγκαθιστά. Στο wp-admin, πάτησε το κουμπί Η εφαρμογή είναι εγκατεστημένη για να εμφανιστεί το QR σύνδεσης. Ή επισκέψου το woo.com/mobilelogin στον υπολογιστή σου.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "Αυτό είναι το QR εγκατάστασης";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "Αυτό το QR δεν είναι κωδικός σύνδεσης WooCommerce. Δημιούργησε νέο από το κατάστημά σου και δοκίμασε ξανά.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "Δεν είναι κωδικός WooCommerce";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "Δεν ήταν δυνατή η πρόσβαση στο κατάστημά σου";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "Αυτός ο ιστότοπος δεν έχει εγκατεστημένο το WooCommerce.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "Δεν είναι κατάστημα WooCommerce";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "Περίμενε λίγα λεπτά και δοκίμασε ξανά.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "Πάρα πολλές προσπάθειες";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "Δεν μπορέσαμε να διαβάσουμε αυτόν τον κωδικό QR. Δοκίμασε ξανά.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "Δεν ήταν δυνατή η ανάγνωση αυτού του κωδικού";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "Σάρωση νέου κωδικού";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "Για την ασφάλειά σου, αυτή η προσπάθεια σύνδεσης ακυρώθηκε. Δημιούργησε νέο κωδικό στο κατάστημά σου για να δοκιμάσεις ξανά.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "Η σύνδεση απορρίφθηκε";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "Η σύνδεσή σου διακόπηκε. Δημιούργησε νέο κωδικό στο κατάστημά σου και δοκίμασε ξανά.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "Η σύνδεση διακόπηκε";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "Δεν επιβεβαίωσες εγκαίρως. Δημιούργησε νέο κωδικό στο κατάστημά σου και δοκίμασε ξανά.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "Η σύνδεση έληξε";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "Δεν μπορέσαμε να κάνουμε έλεγχο ταυτότητας με το κατάστημά σου. Δοκίμασε ξανά.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "Η σύνδεση απέτυχε";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "Το πρόσθετο WooCommerce δεν υποστηρίζει σύνδεση QR. Ενημέρωσε το WooCommerce στο κατάστημά σου και δοκίμασε ξανά ή συνδέσου εισάγοντας το URL του ιστότοπού σου.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "Αυτό το κατάστημα δεν μπορεί να ολοκληρώσει τη σύνδεση QR";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "Το κατάστημά σου επέστρεψε ένα απρόσμενο σφάλμα. Δοκίμασε ξανά σε λίγο.";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "Ο λογαριασμός σου δεν έχει άδεια να χρησιμοποιήσει την εφαρμογή για αυτό το κατάστημα.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "Απαιτείται άδεια";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "Λήγει σε %1$ds";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "Και οι δύο οθόνες πρέπει να εμφανίζουν τον ίδιο αριθμό για να ολοκληρωθεί η σύνδεση.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "Συνδέεσαι στο";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "Συνδέεσαι ως";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "Πάτησε αυτόν τον αριθμό στον υπολογιστή σου για να ολοκληρώσεις.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "Επιβεβαίωση σύνδεσης";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "Δεν έχεις υπολογιστή; Συνδέσου με διεύθυνση ιστότοπου";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "Σάρωση κωδικού QR";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "Έπειτα σάρωσε τον κωδικό QR που εμφανίζεται.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "Στον υπολογιστή σου, επισκέψου:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "Σάρωση για σύνδεση";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "Αντιγράφει το URL στο πρόχειρο.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "Ο σύνδεσμος αντιγράφηκε!";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "Κεντράρισε τον κωδικό QR στο πλαίσιο";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "Επισκέψου το woo.com/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "Αν συνεχίσεις, θα αποσυνδεθείς από την τρέχουσα περίοδο λειτουργίας και θα ξεκινήσει νέα σύνδεση.";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "Συνέχεια και αποσύνδεση";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "Είσαι ήδη συνδεδεμένος";
+
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "Τα στατιστικά μπορεί να καθυστερούν έως και 12 ώρες";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "Λεπτομέρειες ενημέρωσης αναλυτικών";
+
+/* Widget description, displayed when selecting which widget to add */
+"storeWidgets.stats.description" = "Στατιστικά καταστήματος WooCommerce";
+
+/* Widget title, displayed when selecting which widget to add */
+"storeWidgets.stats.displayName" = "Στατιστικά";
+
+/* Title label when the home-screen stats widget can't fetch data. */
+"storeWidgets.unableToFetchView.unableToFetchStats" = "Δεν είναι δυνατή η λήψη στατιστικών";
+
+/* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
+"supportChatView.toolbar.humanSupport" = "Ρώτησε έναν happiness engineer";
+
+/* Action button to open the store push notification preferences screen */
+"supportDiagnosticsService.action.openPushNotificationPreferences" = "Προτιμήσεις ειδοποιήσεων";
+
+/* Message when some store push notification preferences are disabled */
+"supportDiagnosticsService.error.pushNotificationPreferencesDisabled" = "Ορισμένες προτιμήσεις ειδοποιήσεων push είναι απενεργοποιημένες για αυτό το κατάστημα.\n\nΆνοιξε τις προτιμήσεις σου για να επιλέξεις ποιες ειδοποιήσεις θέλεις να λαμβάνεις.";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "Το πρόσθετο WooCommerce πρέπει να ενημερωθεί για να ενεργοποιηθούν οι ειδοποιήσεις push.\n\nΕνημέρωσε το WooCommerce στην έκδοση %1$@ ή νεότερη και έπειτα δοκίμασε να εγγραφείς ξανά.";
+
+/* Button on the transcript consent alert that opens the support contact form */
+"supportEscalationCoordinator.contactForm" = "Φόρμα επικοινωνίας";
+
+/* Button on the transcript consent alert that sends the chat transcript as a support request */
+"supportEscalationCoordinator.sendTicket" = "Αποστολή αιτήματος";
+
+/* Message for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentMessage" = "Μπορούμε να δημιουργήσουμε ένα αίτημα υποστήριξης χρησιμοποιώντας αυτό το αντίγραφο συνομιλίας ή μπορείς να ανοίξεις τη φόρμα επικοινωνίας και να εισαγάγεις τις λεπτομέρειες μόνος/η σου.";
+
+/* Title for the alert asking consent to send an AI chat transcript to support */
+"supportEscalationCoordinator.transcriptConsentTitle" = "Να σταλεί αυτή η συνομιλία στην υποστήριξη;";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "Τα στατιστικά μπορεί να καθυστερούν έως και 12 ώρες";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "Λεπτομέρειες ενημέρωσης αναλυτικών";
+
+/* Warning text when the customs item description is too long for USPS domestic mail shipments */
+"wooShipping.customsItems.descriptionLengthWarning" = "Η περιγραφή πρέπει να έχει 30 χαρακτήρες ή λιγότερους.";

@@ -119,13 +119,8 @@ open class Remote: NSObject {
     /// - Parameters:
     ///     - request: Request that should be performed.
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
+    ///     - parseInBackground: Parse the response off the main thread (completion still on main). Temporary; see WOOMOB-3314.
     ///     - completion: Closure to be executed upon completion.
-    ///
-    /// - Parameter parseInBackground: When `true`, the response is parsed on a background queue and
-    ///   `completion` is delivered back on the main queue. Use this for endpoints whose payloads are
-    ///   large enough that parsing on the main thread would block it (e.g. the REST root route map
-    ///   fetched by `SiteAPIRemote`). Defaults to `false`, preserving the existing main-thread parsing.
-    ///   See WOOMOB-3314.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
                             parseInBackground: Bool = false,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {

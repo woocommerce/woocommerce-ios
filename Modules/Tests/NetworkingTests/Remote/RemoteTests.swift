@@ -187,6 +187,26 @@ final class RemoteTests: XCTestCase {
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `enqueue:` posts a `RemoteDidReceiveUnknownBlogError` Notification whenever the backend returns an
+    /// `unknown_blog` error.
+    ///
+    func test_enqueue_posts_unknown_blog_notification_when_the_response_contains_unknown_blog_error() async throws {
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveUnknownBlogError, object: nil, handler: nil)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        do {
+            let _: String = try await remote.enqueue(request)
+        } catch {
+            let error = try XCTUnwrap(error as? DotcomError)
+            XCTAssertEqual(error, .unknownBlog())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///

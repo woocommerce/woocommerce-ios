@@ -39,5 +39,6 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(expectedProperties.allSatisfy { key in
             analytics.events.map(\.properties).contains(where: { $0.keys.contains(key) })
         })
+        #expect(analytics.events.first(where: { $0.eventName == expectedEvent })?.properties["pos_layout"] as? String == "compact")
     }
 }

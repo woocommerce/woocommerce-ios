@@ -5,10 +5,12 @@ enum POSLayoutScale {
     case tablet
     case phone
 
+    static let defaultAnalyticsValue = "regular"
+
     var analyticsValue: String {
         switch self {
         case .tablet:
-            return "regular"
+            return Self.defaultAnalyticsValue
         case .phone:
             return "compact"
         }
@@ -16,11 +18,12 @@ enum POSLayoutScale {
 }
 
 extension Optional where Wrapped == POSLayoutScale {
+    var analyticsValue: String {
+        self?.analyticsValue ?? POSLayoutScale.defaultAnalyticsValue
+    }
+
     var analyticsProperties: [String: WooAnalyticsEventPropertyType] {
-        guard let self else {
-            return [:]
-        }
-        return ["pos_layout": self.analyticsValue]
+        ["pos_layout": analyticsValue]
     }
 }
 

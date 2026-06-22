@@ -3,9 +3,9 @@ import struct Yosemite.PaymentIntent
 
 final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking {
     var didCallTrackCheckoutTapped = false
-    var posLayoutForCurrentPayment: String?
+    var posLayoutForCurrentPayment = POSLayoutScale.defaultAnalyticsValue
 
-    func setPOSLayoutForCurrentPayment(_ posLayout: String?) {
+    func setPOSLayoutForCurrentPayment(_ posLayout: String) {
         posLayoutForCurrentPayment = posLayout
     }
 

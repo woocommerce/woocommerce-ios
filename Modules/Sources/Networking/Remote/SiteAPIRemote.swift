@@ -23,8 +23,6 @@ public class SiteAPIRemote: Remote {
                                      availableAsRESTRequest: false)
         let mapper = SiteAPIMapper(siteID: siteID)
 
-        // Parse off the main thread: the root endpoint's `routes` map can be several MB on
-        // plugin-heavy stores, and decoding it on the main thread hangs the app at launch (WOOMOB-3314).
         enqueue(request, mapper: mapper, parseInBackground: true, completion: completion)
     }
 }

@@ -12,6 +12,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     private var cardReaderTapped: Double = 0
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
+    private var posLayoutForCurrentPayment: String?
 
     private let analytics: POSAnalyticsProviding
 
@@ -43,6 +44,10 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
+    func setPOSLayoutForCurrentPayment(_ posLayout: String?) {
+        posLayoutForCurrentPayment = posLayout
+    }
+
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         // Property: milliseconds_since_customer_interaction_started
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
@@ -65,38 +70,46 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
             millisecondsSinceCardTapped: elapsedTimeSinceCardTapped,
-            checkoutTapCount: checkoutTapCount
+            checkoutTapCount: checkoutTapCount,
+            posLayout: posLayoutForCurrentPayment
         ))
 
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
+        resetPOSLayoutForCurrentPayment()
     }
 
     func trackSuccessfulCashPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
-            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
+            posLayout: posLayoutForCurrentPayment
         ))
         resetCheckoutTapCountTracker()
+        resetPOSLayoutForCurrentPayment()
     }
 
     func trackSuccessfulScanToPayPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
-            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
+            posLayout: posLayoutForCurrentPayment
         ))
         resetCheckoutTapCountTracker()
+        resetPOSLayoutForCurrentPayment()
     }
 
     func trackSuccessfulMarkAsPaidPayment() {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.markAsPaidSuccess(
-            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
+            posLayout: posLayoutForCurrentPayment
         ))
         resetCheckoutTapCountTracker()
+        resetPOSLayoutForCurrentPayment()
     }
 
     func trackPaymentFailure(with error: any Error) { }
@@ -169,5 +182,10 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
         cardReaderTapped = 0
         resetCheckoutTapCountTracker()
         resetProcessingPaymentTracking()
+        resetPOSLayoutForCurrentPayment()
+    }
+
+    private func resetPOSLayoutForCurrentPayment() {
+        posLayoutForCurrentPayment = nil
     }
 }

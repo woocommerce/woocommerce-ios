@@ -16,6 +16,7 @@ struct POSPaymentContentView: View {
 
     @Environment(POSPaymentModel.self) private var paymentModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = POSPaymentViewHelper()
     @Namespace private var paymentMessageNamespace
 
@@ -126,7 +127,7 @@ struct POSPaymentContentView: View {
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                 paymentState: displayPaymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                connectCardReaderAction: paymentModel.connectCardReader,
+                connectCardReaderAction: { paymentModel.connectCardReader(posLayout: posLayoutScale) },
                 cancelReconnectionAction: paymentModel.cancelReconnection,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
         }
@@ -214,7 +215,7 @@ struct POSPaymentContentView: View {
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
             isZeroTotal: paymentModel.isZeroTotal) {
             Button(action: {
-                paymentModel.startCashPayment()
+                paymentModel.startCashPayment(posLayout: posLayoutScale)
             }) {
                 Text(Localization.cashPaymentButton)
                     .font(POSFontStyle.posBodyLargeBold)

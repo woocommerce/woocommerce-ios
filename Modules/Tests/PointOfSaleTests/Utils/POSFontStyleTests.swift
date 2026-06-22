@@ -19,6 +19,14 @@ struct POSFontStyleTests {
         #expect(tablet != phone)
     }
 
+    @Test func test_POSLayoutScale_analyticsValue_maps_tablet_to_regular() {
+        #expect(POSLayoutScale.tablet.analyticsValue == "regular")
+    }
+
+    @Test func test_POSLayoutScale_analyticsValue_maps_phone_to_compact() {
+        #expect(POSLayoutScale.phone.analyticsValue == "compact")
+    }
+
     // MARK: - baseSize: tablet returns original iPad design sizes
 
     @Test func test_baseSize_when_tablet_then_posHeadingBold_returns_36() {

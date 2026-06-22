@@ -1,8 +1,27 @@
 import SwiftUI
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 enum POSLayoutScale {
     case tablet
     case phone
+
+    var analyticsValue: String {
+        switch self {
+        case .tablet:
+            return "regular"
+        case .phone:
+            return "compact"
+        }
+    }
+}
+
+extension Optional where Wrapped == POSLayoutScale {
+    var analyticsProperties: [String: WooAnalyticsEventPropertyType] {
+        guard let self else {
+            return [:]
+        }
+        return ["pos_layout": self.analyticsValue]
+    }
 }
 
 private struct POSLayoutScaleKey: EnvironmentKey {

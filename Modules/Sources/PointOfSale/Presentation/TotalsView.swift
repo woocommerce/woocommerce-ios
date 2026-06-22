@@ -10,6 +10,7 @@ struct TotalsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAccessSession) private var session
+    @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = POSPaymentViewHelper()
     private let totalsViewHelper = TotalsViewHelper()
 
@@ -68,7 +69,7 @@ struct TotalsView: View {
                             orderState: posModel.orderState,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
+                            connectCardReaderAction: { paymentModel.connectCardReader(posLayout: posLayoutScale) },
                             cancelReconnectionAction: posModel.cancelReconnection
                         )
                     } else if useTapToPayHeroLayout {
@@ -83,7 +84,7 @@ struct TotalsView: View {
                             orderState: posModel.orderState,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader,
+                            connectCardReaderAction: { paymentModel.connectCardReader(posLayout: posLayoutScale) },
                             cancelReconnectionAction: posModel.cancelReconnection
                         )
                     }
@@ -198,7 +199,7 @@ struct TotalsView: View {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        await paymentModel.startCardPayment(with: .tapToPay)
+                        await paymentModel.startCardPayment(with: .tapToPay, posLayout: posLayoutScale)
                     }
                 },
                 isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
@@ -206,7 +207,7 @@ struct TotalsView: View {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        await paymentModel.startCardPayment(with: .bluetoothReader)
+                        await paymentModel.startCardPayment(with: .bluetoothReader, posLayout: posLayoutScale)
                     }
                 },
                 isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
@@ -218,7 +219,7 @@ struct TotalsView: View {
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
                     Task { @MainActor in
-                        await paymentModel.startScanToPayPayment()
+                        await paymentModel.startScanToPayPayment(posLayout: posLayoutScale)
                     }
                 },
                 isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
@@ -228,7 +229,7 @@ struct TotalsView: View {
                     // by tapping the row a second time during the same render frame.
                     guard !isStartingPayment else { return }
                     isStartingPayment = true
-                    paymentModel.startMarkAsPaidPayment()
+                    paymentModel.startMarkAsPaidPayment(posLayout: posLayoutScale)
                 }
             )
             .presentationDetents([.medium])
@@ -733,16 +734,16 @@ private extension TotalsView {
             handleTapToPayTapped()
         case .cardReader:
             guard paymentModel.isCompactCardPaymentSelectionEnabled else {
-                paymentModel.connectCardReader()
+                paymentModel.connectCardReader(posLayout: posLayoutScale)
                 return
             }
             guard !isStartingPayment else { return }
             isStartingPayment = true
             Task { @MainActor in
-                await paymentModel.startCardPayment(with: .bluetoothReader)
+                await paymentModel.startCardPayment(with: .bluetoothReader, posLayout: posLayoutScale)
             }
         case .cashPayment:
-            paymentModel.startCashPayment()
+            paymentModel.startCashPayment(posLayout: posLayoutScale)
         }
     }
 
@@ -865,14 +866,14 @@ private extension TotalsView {
         guard !isStartingPayment else { return }
         isStartingPayment = true
         Task { @MainActor in
-            await paymentModel.startCardPayment(with: .tapToPay)
+            await paymentModel.startCardPayment(with: .tapToPay, posLayout: posLayoutScale)
         }
     }
 
     func handleCashPaymentTapped() {
         guard !isStartingPayment else { return }
         isStartingPayment = true
-        paymentModel.startCashPayment()
+        paymentModel.startCashPayment(posLayout: posLayoutScale)
     }
 
     func handleOtherPaymentMethodsTapped() {

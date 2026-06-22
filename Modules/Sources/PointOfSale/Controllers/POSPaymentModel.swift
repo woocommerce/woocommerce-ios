@@ -259,7 +259,7 @@ extension POSPaymentModel {
     /// disconnected, then runs the same auto-collect-on-connect flow Bluetooth uses
     /// — but threaded through with the explicit method so the eventual collect
     /// targets the reader that's actually coming up.
-    func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
+    func startPaymentWithMethod(_ method: CardReaderConnectionMethod, posLayout: POSLayoutScale? = nil) async {
         logInfo("🃏 [CardPayment] startPaymentWithMethod \(method) — status: \(cardReaderConnectionStatus), " +
                 "currentPaymentMethod: \(String(describing: currentPaymentMethod))")
 
@@ -284,6 +284,7 @@ extension POSPaymentModel {
         if isCompactCardPaymentSelectionEnabled {
             selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
         }
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout?.analyticsValue)
 
         // Method-switch path: the merchant is switching from one active
         // method to another (e.g. picking Tap to Pay from the Other Payment
@@ -316,7 +317,7 @@ extension POSPaymentModel {
         }
 
         if method == .tapToPay {
-            analytics.track(.pointOfSaleCheckoutTapToPayTapped)
+            analytics.track(.pointOfSaleCheckoutTapToPayTapped, parameters: posLayout.analyticsProperties)
         }
 
         subscribeToPaymentSessionEvents()
@@ -363,7 +364,7 @@ extension POSPaymentModel {
             if method == .tapToPay, tapToPayConnectTask != nil {
                 DDLogInfo("🃏 [CardPayment] tap during pre-connect — letting existing pre-connect drive the connect")
             } else if method == .bluetooth, isCompactCardPaymentSelectionEnabled {
-                connectCardReader()
+                connectCardReader(posLayout: posLayout)
             } else {
                 Task { @MainActor [weak self] in
                     do {
@@ -404,8 +405,8 @@ extension POSPaymentModel {
         }
     }
 
-    func startCardPayment(with rail: POSCardPaymentRail) async {
-        await startPaymentWithMethod(rail.connectionMethod)
+    func startCardPayment(with rail: POSCardPaymentRail, posLayout: POSLayoutScale? = nil) async {
+        await startPaymentWithMethod(rail.connectionMethod, posLayout: posLayout)
     }
 
     /// Pre-connects the built-in Tap to Pay reader without starting collection.
@@ -553,8 +554,8 @@ extension POSPaymentModel {
         await collectCardPayment(using: activeCardPaymentConnectionMethod)
     }
 
-    func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
+    func connectCardReader(posLayout: POSLayoutScale? = nil) {
+        analytics.track(.pointOfSaleCardReaderConnectionTapped, parameters: posLayout.analyticsProperties)
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
@@ -629,12 +630,13 @@ extension POSPaymentModel {
 
 // MARK: - Cash Payment Methods
 extension POSPaymentModel {
-    func startCashPayment() {
+    func startCashPayment(posLayout: POSLayoutScale? = nil) {
         guard paymentState.cash == .idle else { return }
         guard paymentState.allowsCashPayment else { return }
 
         DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
-        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
+        analytics.track(.pointOfSaleCheckoutCashPaymentTapped, parameters: posLayout.analyticsProperties)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout?.analyticsValue)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -690,12 +692,13 @@ extension POSPaymentModel {
     /// destination pushes the QR screen now (the view shows a loading spinner while the
     /// promote network call is in flight). When the call returns, `scanToPayURL` is
     /// populated and polling begins.
-    func startScanToPayPayment() async {
+    func startScanToPayPayment(posLayout: POSLayoutScale? = nil) async {
         guard paymentState.scanToPay == .idle else { return }
         guard paymentState.allowsScanToPayPayment else { return }
 
         DDLogInfo("📲 [ScanToPay] startScanToPayPayment called - card state: \(paymentState.card)")
-        analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped)
+        analytics.track(.pointOfSaleCheckoutScanToPayPaymentTapped, parameters: posLayout.analyticsProperties)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout?.analyticsValue)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil
@@ -862,12 +865,13 @@ extension POSPaymentModel {
     /// Stage 1: merchant tapped "Mark order as paid" — show the confirmation alert.
     /// The actual order update happens in `confirmMarkAsPaidPayment()`; this just transitions
     /// state so the dashboard can present the alert and we can cancel any in-flight card payment.
-    func startMarkAsPaidPayment() {
+    func startMarkAsPaidPayment(posLayout: POSLayoutScale? = nil) {
         guard paymentState.markAsPaid == .idle else { return }
         guard paymentState.allowsMarkAsPaidPayment else { return }
 
         DDLogInfo("🪙 [MarkAsPaid] startMarkAsPaidPayment called - card state: \(paymentState.card)")
-        analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped)
+        analytics.track(.pointOfSaleCheckoutMarkAsPaidTapped, parameters: posLayout.analyticsProperties)
+        collectOrderPaymentAnalyticsTracker.setPOSLayoutForCurrentPayment(posLayout?.analyticsValue)
 
         startPaymentOnCardReaderConnection?.cancel()
         startPaymentOnCardReaderConnection = nil

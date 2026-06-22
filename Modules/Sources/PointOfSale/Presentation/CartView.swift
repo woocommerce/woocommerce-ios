@@ -7,6 +7,7 @@ struct CartView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posLayoutScale) private var posLayoutScale
     private let viewHelper = CartViewHelper()
 
     /// Optional override for triggering the barcode-scanner setup from outside CartView.
@@ -574,7 +575,8 @@ private extension CartView {
         analytics.track(
             event: .PointOfSale.checkoutTapped(
                 purchasableItemsInCart: purchasableItems,
-                couponsInCart: coupons
+                couponsInCart: coupons,
+                posLayout: posLayoutScale.analyticsValue
             )
         )
     }

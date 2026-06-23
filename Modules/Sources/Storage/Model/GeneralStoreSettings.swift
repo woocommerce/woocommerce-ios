@@ -102,6 +102,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
+    /// Whether the POS catalog file was blocked by the host during a previous sync attempt.
+    ///
+    public var posCatalogFileBlockedByHost: Bool
+
     /// The last time the sunset warning banner was dismissed for this store.
     /// Used to throttle the banner to once every 14 days.
     ///
@@ -137,6 +141,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
+                posCatalogFileBlockedByHost: Bool = false,
                 lastSunsetWarningDismissedDate: Date? = nil,
                 isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
         self.storeID = storeID
@@ -163,6 +168,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.posCatalogFileBlockedByHost = posCatalogFileBlockedByHost
         self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
         self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
     }
@@ -190,6 +196,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              isPOSTabVisible: isPOSTabVisible,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+                             posCatalogFileBlockedByHost: posCatalogFileBlockedByHost,
                              lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
                              isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
     }
@@ -230,6 +237,7 @@ extension GeneralStoreSettings {
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.posCatalogFileBlockedByHost = try container.decodeIfPresent(Bool.self, forKey: .posCatalogFileBlockedByHost) ?? false
         self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
         self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
             Bool.self,

@@ -21,6 +21,8 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     // POS local catalog cellular data
     func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool)
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool
+    func setPOSCatalogFileBlockedByHost(siteID: Int64, blocked: Bool)
+    func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool
 
     // POS sunset warning
     func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date?
@@ -149,6 +151,16 @@ extension SiteSpecificAppSettingsStoreMethods {
 
     public func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
         getStoreSettings(for: siteID).syncPOSCatalogOverCellular
+    }
+
+    public func setPOSCatalogFileBlockedByHost(siteID: Int64, blocked: Bool) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(posCatalogFileBlockedByHost: blocked)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    public func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool {
+        getStoreSettings(for: siteID).posCatalogFileBlockedByHost
     }
 }
 

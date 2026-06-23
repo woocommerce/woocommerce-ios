@@ -7367,6 +7367,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a Payment" = "محاولة سداد دفعة";
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Try a Test Order" = "تجربة طلب الاختبار";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "جرّب سداد دفعة باستخدام بطاقتك الخاصة (واستردها عند الانتهاء). ";

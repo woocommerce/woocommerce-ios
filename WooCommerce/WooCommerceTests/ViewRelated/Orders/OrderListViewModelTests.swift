@@ -361,7 +361,6 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
-
 }
 
 // MARK: - Helpers

@@ -17,7 +17,7 @@ final class OrderListViewControllerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_noOrdersAvailableConfig_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state() throws {
+    func test_empty_state_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state() throws {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
@@ -34,17 +34,35 @@ final class OrderListViewControllerTests: XCTestCase {
                                                      switchDetailsHandler: { _, _, _, _ in })
 
         // When
-        let config = viewController.noOrdersAvailableConfig()
+        viewController.loadViewIfNeeded()
 
         // Then
-        guard case let .withLink(message, image, details, linkTitle, linkURL, _) = config else {
-            XCTFail("Expected the first-order empty state link config.")
-            return
-        }
-        XCTAssertEqual(message.string, "Waiting for your first order")
-        XCTAssertEqual(image, .boxesImage)
-        XCTAssertEqual(details, "Explore how you can increase your store sales.")
-        XCTAssertEqual(linkTitle, "Learn more")
-        XCTAssertEqual(linkURL, WooConstants.URLs.blog.asURL())
+        let emptyStateViewController = try XCTUnwrap(viewController.children.compactMap { $0 as? EmptyStateViewController }.first)
+        let mirror = try mirror(of: emptyStateViewController)
+
+        XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Waiting for your first order"))
+        XCTAssertEqual(mirror.imageView.image, .boxesImage)
+        XCTAssertEqual(mirror.detailsLabel.text, "Explore how you can increase your store sales.")
+        XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Learn more")
+    }
+}
+
+private extension OrderListViewControllerTests {
+    struct EmptyStateViewControllerMirror {
+        let messageLabel: UILabel
+        let imageView: UIImageView
+        let detailsLabel: UILabel
+        let actionButton: UIButton
+    }
+
+    func mirror(of viewController: EmptyStateViewController) throws -> EmptyStateViewControllerMirror {
+        let mirror = Mirror(reflecting: viewController)
+
+        return EmptyStateViewControllerMirror(
+            messageLabel: try XCTUnwrap(mirror.descendant("messageLabel") as? UILabel),
+            imageView: try XCTUnwrap(mirror.descendant("imageView") as? UIImageView),
+            detailsLabel: try XCTUnwrap(mirror.descendant("detailsLabel") as? UILabel),
+            actionButton: try XCTUnwrap(mirror.descendant("actionButton") as? UIButton)
+        )
     }
 }

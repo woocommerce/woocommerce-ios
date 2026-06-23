@@ -1,0 +1,1 @@
+Artık bir QR koduyla kolayca oturum açabilirsiniz. Bir ürünü çoğaltmak yeni kopyayı açar ve orijinal resimleri korur. Birden fazla gönderim satırı veya yinelenen satır öğesi içeren siparişler için para iadeleri artık yapmaları gereken şekilde çalışır. POS kataloğunuz daha hızlı indirilir ve iPad'de uygulamanın daha sorunsuz şekilde yeniden boyutlandırıldığını görürsünüz.

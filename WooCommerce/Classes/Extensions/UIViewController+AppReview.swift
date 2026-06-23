@@ -18,7 +18,7 @@ extension UIViewController {
         // Note: Optimistically assuming our prompting succeeds since we try to stay
         // in line and not prompt more than two times a year
         AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview(in: scene)
+        AppStore.requestReview(in: scene)
     }
 }
 

@@ -1,0 +1,1 @@
+Ahora puedes acceder fácilmente con un código QR. Al duplicar un producto, se abre la nueva copia y se conservan las imágenes originales. Los reembolsos de pedidos con varias líneas de envío o partidas duplicadas ahora funcionan como deberían. Tu catálogo de puntos de venta se descarga más rápido, y el cambio de tamaño de la aplicación en el iPad es más fluido.

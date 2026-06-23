@@ -12,6 +12,7 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.POSItemType
 import enum WooFoundationCore.WooAnalyticsStat
 import Combine
@@ -1462,7 +1463,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func receiptPrinter_exposes_the_injected_backend() async {
             // Given
-            let printer = MockPOSReceiptPrinter()
+            let printer = MockReceiptPrinterService()
 
             // When
             let sut = makePointOfSaleAggregateModel(receiptPrinter: printer)
@@ -1522,7 +1523,7 @@ private func makePointOfSaleAggregateModel(
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
     isLocalCatalogEligible: Bool = false,
     sunsetWarningChecker: POSSunsetWarningChecking? = nil,
-    receiptPrinter: POSReceiptPrinterProviding? = nil
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,

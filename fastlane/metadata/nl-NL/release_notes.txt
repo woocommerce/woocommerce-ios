@@ -1,0 +1,1 @@
+Je kan nu eenvoudig inloggen met een QR-code. Door een product te dupliceren, wordt de nieuwe kopie geopend en blijven de oorspronkelijke afbeeldingen behouden. Restituties voor bestellingen met meerdere verzendregels of dubbele regelitems werken nu zoals ze zouden moeten. Je POS-catalogus wordt sneller gedownload en je ziet een soepeler formaat van de app op iPad.

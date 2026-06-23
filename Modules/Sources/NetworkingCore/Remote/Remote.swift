@@ -152,34 +152,36 @@ open class Remote: NSObject {
     ///
     /// - Returns: A publisher that emits result upon completion.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
-        network.responseDataPublisher(for: request)
-            .receive(on: DispatchQueue.global(qos: .userInitiated))
-            .map { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
-                switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        return .success(parsed)
-                    } catch {
-                        DDLogError("<> Mapping Error: \(error)")
-                        return .failure(error)
+        // Delivered via GCD (parseResponseInBackground + main) rather than Combine schedulers:
+        // chaining `.receive(on:)` hops could drop the emitted value under heavy concurrency.
+        Deferred {
+            Future { [weak self] promise in
+                guard let self else {
+                    return
+                }
+                self.network.responseData(for: request) { [weak self] (result: Swift.Result<Data, Error>) in
+                    guard let self else {
+                        return
                     }
-                case .failure(let error):
-                    return .failure(self?.mapNetworkError(error: error, for: request) ?? error)
+
+                    switch result {
+                    case .success(let data):
+                        self.parseResponseInBackground(data, request: request, mapper: mapper) { parsed in
+                            promise(.success(parsed))
+                        }
+                    case .failure(let error):
+                        let mappedError = self.mapNetworkError(error: error, for: request)
+                        DispatchQueue.main.async {
+                            if let dotcomError = mappedError as? DotcomError {
+                                self.handleResponseError(error: dotcomError, for: request)
+                            }
+                            promise(.success(.failure(mappedError)))
+                        }
+                    }
                 }
             }
-            .receive(on: DispatchQueue.main)
-            .handleEvents(receiveOutput: { [weak self] result in
-                if let dotcomError = result.failure as? DotcomError {
-                    self?.handleResponseError(error: dotcomError, for: request)
-                }
-                if let decodingError = result.failure as? DecodingError {
-                    self?.handleDecodingError(error: decodingError, for: request, entityName: "\(M.Output.self)")
-                }
-            })
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     /// Enqueues the specified Network Request for upload with multipart form data encoding.

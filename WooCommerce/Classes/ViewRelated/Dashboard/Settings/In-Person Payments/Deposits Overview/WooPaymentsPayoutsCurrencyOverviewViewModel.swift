@@ -28,7 +28,7 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
     }
 
     private func setupProperties() {
-        pendingBalance = formatAmount(overview.pendingBalanceAmount)
+        totalBalance = formatAmount(overview.availableBalance.adding(overview.pendingBalanceAmount))
         lastPayoutAmount = formatAmount(overview.lastPayout?.amount ?? NSDecimalNumber(value: 0))
         lastPayoutDate = formatDate(overview.lastPayout?.date) ?? Localization.noDateString
         lastPayoutStatus = overview.lastPayout?.status ?? .unknown
@@ -37,7 +37,7 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
         balanceTypeHint = balanceTypeHintText()
     }
 
-    @Published var pendingBalance: String = ""
+    @Published var totalBalance: String = ""
     @Published var lastPayoutAmount: String = ""
     @Published var lastPayoutDate: String = ""
     @Published var lastPayoutStatus: WooPaymentsPayoutStatus = .unknown

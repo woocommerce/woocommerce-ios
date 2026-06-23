@@ -123,7 +123,7 @@ private extension DefaultPOSPINAuthenticator {
         return POSStaff(
             userID: member.userID,
             displayName: member.displayName,
-            preset: member.preset,
+            preset: member.preset.rawValue,
             capabilities: posCaps
         )
     }

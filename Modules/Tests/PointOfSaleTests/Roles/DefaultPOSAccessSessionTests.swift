@@ -449,7 +449,7 @@ private extension DefaultPOSAccessSessionTests {
     func makeStaffMember(userID: Int64 = 1, hasPIN: Bool) -> POSStaffMember {
         POSStaffMember(userID: userID,
                        displayName: "Staff",
-                       preset: "pos_cashier",
+                       preset: .cashier,
                        capabilities: ["pos_process_sales": true],
                        pin: hasPIN ? .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                            salt: "c2FsdA==", hash: "aGFzaA==") : nil)

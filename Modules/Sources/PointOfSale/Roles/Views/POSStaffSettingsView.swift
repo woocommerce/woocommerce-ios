@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Networking.POSStaffMember
+import enum Networking.POSStaffPreset
 
 struct POSStaffSettingsView: View {
     @Environment(\.posExternalViews) private var externalViews
@@ -118,20 +119,15 @@ private extension POSStaffSettingsView {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Maps the server preset slug (`pos_admin` / `pos_manager` / `pos_cashier`, with the older
-    /// `administrator` / `shop_manager` kept for resilience) to a display label.
-    static func displayName(for preset: String) -> String {
+    /// Maps the role preset to a display label.
+    static func displayName(for preset: POSStaffPreset) -> String {
         switch preset {
-        case "pos_admin", "administrator":
+        case .admin:
             return Localization.roleAdmin
-        case "shop_manager":
-            return Localization.roleShopManager
-        case "pos_manager":
+        case .manager:
             return Localization.rolePOSManager
-        case "pos_cashier":
+        case .cashier:
             return Localization.rolePOSCashier
-        default:
-            return preset
         }
     }
 
@@ -268,12 +264,6 @@ private enum Localization {
         comment: "Display name for the administrator role in the POS staff list."
     )
 
-    static let roleShopManager = NSLocalizedString(
-        "posStaffSettingsView.role.shopManager",
-        value: "Shop Manager",
-        comment: "Display name for the shop manager role in the POS staff list."
-    )
-
     static let rolePOSManager = NSLocalizedString(
         "posStaffSettingsView.role.posManager",
         value: "POS Manager",
@@ -313,13 +303,13 @@ private struct PreviewPOSStaffSettingsService: POSStaffSettingsService {
         [
             POSStaffMember(userID: 1,
                            displayName: "Maya Patel",
-                           preset: "pos_manager",
+                           preset: .manager,
                            capabilities: [:],
                            pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                       salt: "c2FsdA==", hash: "aGFzaA==")),
             POSStaffMember(userID: 2,
                            displayName: "Sam Lee",
-                           preset: "pos_cashier",
+                           preset: .cashier,
                            capabilities: [:],
                            pin: nil)
         ]

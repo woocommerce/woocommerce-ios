@@ -223,6 +223,13 @@ extension WooAnalyticsEvent {
     static func ordersListLoadError(_ error: Error) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .ordersListLoadError, properties: [:], error: error)
     }
+
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error,
+    /// routing the user to the store picker.
+    ///
+    static func selectedSiteResetDueToUnknownBlog() -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .selectedSiteResetDueToUnknownBlog, properties: [:])
+    }
 }
 
 

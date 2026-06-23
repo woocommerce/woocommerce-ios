@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPathPattern": "/rest/v1.1/jetpack-blogs/[0-9]+/rest-api/",
+        "queryParameters": {
+            "path": { "contains": "/wc/v3/orders" },
+            "query": { "contains": "unknownblog" }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "error": "unknown_blog",
+            "message": "Unknown blog"
+        },
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}

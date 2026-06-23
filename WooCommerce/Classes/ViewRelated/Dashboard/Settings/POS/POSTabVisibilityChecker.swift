@@ -52,8 +52,11 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         )
     }
 
-    /// Checks the initial visibility of the POS tab without dependance on network requests.
+    /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         guard userInterfaceIdiom != .phone else {
             return false
         }
@@ -67,6 +70,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         guard userInterfaceIdiom != .phone else {
             return false
         }
@@ -75,6 +81,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
             return false

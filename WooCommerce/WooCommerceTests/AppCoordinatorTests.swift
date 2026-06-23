@@ -206,6 +206,34 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    func test_resetting_selected_site_while_on_tabbar_presents_store_picker() throws {
+        // Given
+        // App is logged in with a selected site, so the root is the main tab bar.
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let AppSettingsAction.loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            // any failure except `.insufficientRole` will be treated as having an eligible status.
+            completion(.failure(SampleError.first))
+        }
+        let site = Site.fake().copy(siteID: 134, isWooCommerceActive: true)
+        storageManager.insertSampleSite(readOnlySite: site)
+        sessionManager.defaultStoreID = 134
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        appCoordinator.start()
+        assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+
+        // When
+        // The selected site is reset while the app is running, e.g. after an `unknown_blog` response.
+        sessionManager.defaultStoreID = nil
+
+        // Then
+        // The store picker is presented and the user stays logged in (not deauthenticated).
+        let storePickerNavigationController = try XCTUnwrap(window.rootViewController?.presentedViewController as? UINavigationController)
+        assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
+    }
+
     func test_starting_app_logged_in_with_wporg_credentials_and_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wporgCredentials)

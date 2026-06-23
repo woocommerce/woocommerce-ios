@@ -82,9 +82,9 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         XCTAssertEqual(firstEvent, "first_created_product_share_tapped")
     }
 
-    // MARK: `isSharePopoverPresented`
+    // MARK: `isShareViewPresented`
 
-    func test_popover_is_presented_when_on_ipad_and_AI_not_eligible() throws {
+    func test_share_view_is_presented_when_AI_not_eligible() throws {
         // Given
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
@@ -92,19 +92,18 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
                                                      showShareProductButton: showShareProductButton,
-                                                     isPad: true,
                                                      eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false))
 
-        XCTAssertFalse(viewModel.isSharePopoverPresented)
+        XCTAssertFalse(viewModel.isShareViewPresented)
 
         // When
         viewModel.didTapShareProduct()
 
         // Then
-        XCTAssertTrue(viewModel.isSharePopoverPresented)
+        XCTAssertTrue(viewModel.isShareViewPresented)
     }
 
-    func test_popover_is_not_presented_when_on_ipad_and_AI_eligible() throws {
+    func test_share_view_is_not_presented_when_AI_eligible() throws {
         // Given
         let productURL = try XCTUnwrap(Expectations.productURL)
         let productName = Expectations.productName
@@ -112,58 +111,15 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
                                                      showShareProductButton: showShareProductButton,
-                                                     isPad: true,
                                                      eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true))
 
-        XCTAssertFalse(viewModel.isSharePopoverPresented)
+        XCTAssertFalse(viewModel.isShareViewPresented)
 
         // When
         viewModel.didTapShareProduct()
 
         // Then
-        XCTAssertFalse(viewModel.isSharePopoverPresented)
-    }
-
-    // MARK: `isShareSheetPresented`
-
-    func test_sheet_is_presented_when_not_on_ipad_and_AI_not_eligible() throws {
-        // Given
-        let productURL = try XCTUnwrap(Expectations.productURL)
-        let productName = Expectations.productName
-        let showShareProductButton = Expectations.showShareProductButton
-        let viewModel = FirstProductCreatedViewModel(productURL: productURL,
-                                                     productName: productName,
-                                                     showShareProductButton: showShareProductButton,
-                                                     isPad: false,
-                                                     eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: false))
-
-        XCTAssertFalse(viewModel.isShareSheetPresented)
-
-        // When
-        viewModel.didTapShareProduct()
-
-        // Then
-        XCTAssertTrue(viewModel.isShareSheetPresented)
-    }
-
-    func test_sheet_is_not_presented_when_not_on_ipad_and_AI_eligible() throws {
-        // Given
-        let productURL = try XCTUnwrap(Expectations.productURL)
-        let productName = Expectations.productName
-        let showShareProductButton = Expectations.showShareProductButton
-        let viewModel = FirstProductCreatedViewModel(productURL: productURL,
-                                                     productName: productName,
-                                                     showShareProductButton: showShareProductButton,
-                                                     isPad: false,
-                                                     eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true))
-
-        XCTAssertFalse(viewModel.isShareSheetPresented)
-
-        // When
-        viewModel.didTapShareProduct()
-
-        // Then
-        XCTAssertFalse(viewModel.isShareSheetPresented)
+        XCTAssertFalse(viewModel.isShareViewPresented)
     }
 
     // MARK: `launchAISharingFlow`
@@ -197,7 +153,6 @@ final class FirstProductCreatedViewModelTests: XCTestCase {
         let viewModel = FirstProductCreatedViewModel(productURL: productURL,
                                                      productName: productName,
                                                      showShareProductButton: showShareProductButton,
-                                                     isPad: true,
                                                      eligibilityChecker: MockShareProductAIEligibilityChecker(canGenerateShareProductMessageUsingAI: true))
         var launchAISharingFlowCalled = false
         viewModel.launchAISharingFlow = {

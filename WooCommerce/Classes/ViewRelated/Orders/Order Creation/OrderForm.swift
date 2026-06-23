@@ -650,14 +650,12 @@ private struct ProductsSection: View {
                         scanProductButton
 
                         if let presentProductSelector {
-                            Button(action: {
-                                presentProductSelector()
-                            }) {
+                            Button(action: presentProductSelector) {
                                 Image(uiImage: .plusImage)
                             }
                             .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-                            .id(addProductButton)
                             .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                                .id(addProductButton)
                         }
                     }
                     .scaledToFit()

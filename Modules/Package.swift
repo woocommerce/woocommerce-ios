@@ -6,7 +6,7 @@ let package = Package(
     name: "Modules",
     platforms: [
         // Keep in sync with Common.xcconfig
-        .iOS(.v17),
+        .iOS("18.0"),
         .macOS(.v10_14),
         .watchOS(.v9),
     ],
@@ -112,7 +112,6 @@ let package = Package(
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
-        .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.0"),
         .package(url: "https://github.com/onevcat/Kingfisher", from: "7.6.2"),
         .package(url: "https://github.com/pmusolino/Wormholy", from: "2.0.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
@@ -521,7 +520,6 @@ enum XcodeSupport {
                     "YosemiteTestHelpers",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
-                    .product(name: "ViewInspector", package: "ViewInspector"),
                     .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]

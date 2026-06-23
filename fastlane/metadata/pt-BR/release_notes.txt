@@ -1,0 +1,1 @@
+Agora você pode fazer login facilmente com um código QR. A duplicação de um produto abre a nova cópia e preserva as imagens originais. Os reembolsos de pedidos com várias linhas de entrega, ou itens de linha duplicados, agora funcionam como deveriam. Seu catálogo de PDV é baixado mais rapidamente, e você verá um redimensionamento mais fluido do aplicativo no iPad.

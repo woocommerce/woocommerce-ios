@@ -319,6 +319,9 @@ private extension POSTabCoordinator {
                     return
                 }
 
+                let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -358,6 +361,7 @@ private extension POSTabCoordinator {
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,
+                    receiptPrinter: receiptPrinter,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

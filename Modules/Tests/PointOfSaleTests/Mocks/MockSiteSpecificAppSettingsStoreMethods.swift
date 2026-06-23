@@ -11,6 +11,7 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var getPOSLocalCatalogCellularDataAllowedCalled = false
     var setPOSLocalCatalogCellularDataAllowedCalled = false
     var mockPOSLocalCatalogCellularDataAllowed: Bool?
+    var mockPOSCatalogFileBlockedByHost = false
 
     // Implement only the methods we actually use
     func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool) {
@@ -21,6 +22,14 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
         getPOSLocalCatalogCellularDataAllowedCalled = true
         return mockPOSLocalCatalogCellularDataAllowed ?? false
+    }
+
+    func setPOSCatalogFileBlockedByHost(siteID: Int64, blocked: Bool) {
+        mockPOSCatalogFileBlockedByHost = blocked
+    }
+
+    func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool {
+        mockPOSCatalogFileBlockedByHost
     }
 
     // Protocol requirements - minimal implementations

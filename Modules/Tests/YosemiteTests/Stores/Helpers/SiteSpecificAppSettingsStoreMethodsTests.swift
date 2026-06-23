@@ -298,6 +298,75 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(savedData.storeSettingsBySite[otherSiteID]?.syncPOSCatalogOverCellular == true)
     }
 
+    // MARK: - POS Catalog File Blocked Tests
+
+    @Test func isPOSCatalogFileBlockedByHost_returns_false_by_default() {
+        // When
+        let isBlocked = sut.isPOSCatalogFileBlockedByHost(siteID: siteID)
+
+        // Then
+        #expect(isBlocked == false)
+    }
+
+    @Test func isPOSCatalogFileBlockedByHost_returns_saved_value() throws {
+        // Given
+        let storeSettings = GeneralStoreSettings(posCatalogFileBlockedByHost: true)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let isBlocked = sut.isPOSCatalogFileBlockedByHost(siteID: siteID)
+
+        // Then
+        #expect(isBlocked == true)
+    }
+
+    @Test func setPOSCatalogFileBlockedByHost_saves_value_successfully() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingSettings, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSCatalogFileBlockedByHost(siteID: siteID, blocked: true)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posCatalogFileBlockedByHost == true)
+    }
+
+    @Test func setPOSCatalogFileBlockedByHost_preserves_existing_settings() throws {
+        // Given
+        let existingStoreID = "existing-store-id"
+        let existingSettings = GeneralStoreSettings(storeID: existingStoreID, syncPOSCatalogOverCellular: false)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: existingSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSCatalogFileBlockedByHost(siteID: siteID, blocked: true)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posCatalogFileBlockedByHost == true)
+        #expect(savedData.storeSettingsBySite[siteID]?.storeID == existingStoreID)
+        #expect(savedData.storeSettingsBySite[siteID]?.syncPOSCatalogOverCellular == false)
+    }
+
+    @Test func setPOSCatalogFileBlockedByHost_preserves_settings_for_other_sites() throws {
+        // Given
+        let otherSiteID: Int64 = 456
+        let otherSiteSettings = GeneralStoreSettings(posCatalogFileBlockedByHost: false)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [otherSiteID: otherSiteSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSCatalogFileBlockedByHost(siteID: siteID, blocked: true)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posCatalogFileBlockedByHost == true)
+        #expect(savedData.storeSettingsBySite[otherSiteID]?.posCatalogFileBlockedByHost == false)
+    }
+
     // MARK: - Sunset Warning Tests
 
     @Test func getSunsetWarningLastDismissedDate_returns_nil_when_no_date_set() {

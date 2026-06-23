@@ -261,6 +261,10 @@ public class MockStoresManager: StoresManager {
         // no-op
     }
 
+    public func listenToUnknownBlogNotification() {
+        // no-op
+    }
+
     public func shouldAuthenticateAdminPage(for site: Site) -> Bool {
         return false
     }

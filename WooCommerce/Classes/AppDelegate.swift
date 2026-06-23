@@ -419,6 +419,7 @@ extension AppDelegate {
         let stores = ServiceLocator.stores
         if stores.isAuthenticatedWithoutWPCom == false {
             stores.listenToWPCOMInvalidWPCOMTokenNotification()
+            stores.listenToUnknownBlogNotification()
         }
     }
 

@@ -246,6 +246,9 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
+    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+
     // MARK: Site creation
     //
     case siteCreated = "login_woocommerce_site_created"

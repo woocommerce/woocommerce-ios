@@ -8,6 +8,7 @@
 - [***] Phone POS available for UK-based stores [https://github.com/woocommerce/woocommerce-ios/pull/17325]
 - [*] Login: show the specific reason when signing in fails with a blocked WordPress.com account, instead of an incorrect-password message. [https://github.com/woocommerce/woocommerce-ios/pull/17378]
 - [*] Removed the misleading "test" wording from the place-an-order flow and clarified that processing fees aren't refundable. [https://github.com/woocommerce/woocommerce-ios/pull/17359]
+- [*] Login: Recover automatically when a selected store can no longer be reached (e.g. disconnected or removed) by returning you to the store picker instead of failing silently. [https://github.com/woocommerce/woocommerce-ios/pull/17401]
 - [*] Fixed a crash that could occur when picking an image from the device library while editing a product. [https://github.com/woocommerce/woocommerce-ios/pull/17369]
 - [*] Login: Fixed the dead "Need more help?" links on the site-address help and login error dialogs so they open support as intended [https://github.com/woocommerce/woocommerce-ios/pull/17372]
 - [*] Shipping Labels: Clearer notice when the origin (Ship from) address is missing a phone number or email [https://github.com/woocommerce/woocommerce-ios/pull/17339]
@@ -19,6 +20,7 @@
 - [Internal] Improved site-credential login nonce retrieval by handling redirects explicitly, reducing HTTP 429 failures during login. [https://github.com/woocommerce/woocommerce-ios/pull/17376]
 - [Internal] QR login: fixed the scanner not detecting after navigating back from a scanned code. [https://github.com/woocommerce/woocommerce-ios/pull/17352]
 - [*] Require iOS 18.0+ and remove deprecated code paths [https://github.com/woocommerce/woocommerce-ios/pull/17380]
+- [*] Order creation: fixed bundled product configuration on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17381]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
 

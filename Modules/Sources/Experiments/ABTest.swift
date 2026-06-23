@@ -44,8 +44,7 @@ public extension ABTest {
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.genuineCases.filter { $0.context == context }
 
-        // Strongly capture `ExPlat.shared` so it can't be released on a background thread (when Tracks
-        // switches users) while `refresh` forms its `[weak self]`, which would crash (WOOMOB-3320).
+        // Strongly capture `ExPlat.shared` so it can't be released on a background thread.
         guard !experiments.isEmpty, let explat = ExPlat.shared else {
             return
         }

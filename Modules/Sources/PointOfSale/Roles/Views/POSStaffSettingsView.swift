@@ -329,8 +329,6 @@ private struct PreviewPOSStaffSettingsService: POSStaffSettingsService {
 }
 
 #Preview {
-//    POSStaffSettingsView(service: PreviewPOSStaffSettingsService())
-    Text("Preview unavailable in this environment")
-
+    POSStaffSettingsView(service: PreviewPOSStaffSettingsService())
 }
 #endif

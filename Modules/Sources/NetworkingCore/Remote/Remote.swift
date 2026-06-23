@@ -255,11 +255,7 @@ open class Remote: NSObject {
 
 private extension Remote {
     /// Validates and maps `data` on a background queue, then delivers the result — and any error
-    /// handling/notifications — back on the main queue. Used by every completion-based enqueue method
-    /// so response parsing never blocks the main thread.
-    ///
-    /// `completion` is captured strongly so it always fires even if the `Remote` is deallocated
-    /// mid-flight (only the error-notification handlers are skipped when `self` is gone).
+    /// handling/notifications — back on the main queue.
     func parseResponseInBackground<M: Mapper>(_ data: Data,
                                               request: Request,
                                               mapper: M,

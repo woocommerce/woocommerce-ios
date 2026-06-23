@@ -1,3 +1,25 @@
 /WooCommerce/UITestsFoundation/ @woocommerce/mobile-ui-testing-squad
 /WooCommerce/WooCommerceUITests/ @woocommerce/mobile-ui-testing-squad
 /WooCommerce/WooCommerceScreenshots/ @woocommerce/mobile-ui-testing-squad
+
+# Ruby dependency surface
+Gemfile*              @woocommerce/apps-infra-tooling
+.bundle/              @woocommerce/apps-infra-tooling
+.rubocop*.yml         @woocommerce/apps-infra-tooling
+fastlane/             @woocommerce/apps-infra-tooling
+# Store-listing localization is content, not infra.
+fastlane/metadata/
+
+# CI and automation
+.buildkite/           @woocommerce/apps-infra-tooling
+.github/workflows/    @woocommerce/apps-infra-tooling
+.github/dependabot.yml @woocommerce/apps-infra-tooling
+Dangerfile*           @woocommerce/apps-infra-tooling
+
+# Toolchain and environment pins
+.ruby-version         @woocommerce/apps-infra-tooling
+.xcode-version        @woocommerce/apps-infra-tooling
+.nvmrc                @woocommerce/apps-infra-tooling
+
+# Secrets
+.configure-files/     @woocommerce/apps-infra-tooling

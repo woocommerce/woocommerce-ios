@@ -246,6 +246,9 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
+    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+
     // MARK: Site creation
     //
     case siteCreated = "login_woocommerce_site_created"
@@ -1415,6 +1418,7 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+    case wooShippingCarrierTermsOfService = "wcs_carrier_tos"
 
     // MARK: Support Chat events
     case supportChatEntryPointTapped = "support_chat_entry_point_tapped"

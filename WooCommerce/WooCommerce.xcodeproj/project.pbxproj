@@ -451,13 +451,6 @@
 			);
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 		};
-		3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WooCommerceTest.storekit,
-			);
-			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
-		};
 		3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -504,7 +497,7 @@
 		3F985FE02F29B06300924231 /* StoreWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FFC2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F9860002F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFD2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFE2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFF2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Entitlements, ); path = StoreWidgets; sourceTree = "<group>"; };
 		3F9DC43D2F7A39590039E4FB /* Credentials */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {ApiCredentials.tpl = sourcecode.swift; }; explicitFolders = (); path = Credentials; sourceTree = "<group>"; };
 		3FA611E72F306A0D00F48C4E /* WooCommerceUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA611F82F306A0D00F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceUITests; sourceTree = "<group>"; };
-		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
+		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FBE6D7B2FA879B800E5E6DE /* config */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = config; path = ../config; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
 		3FDA4E362F440D3900CC3259 /* docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = docs; path = ../docs; sourceTree = "<group>"; };
@@ -2403,7 +2396,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2441,7 +2434,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2477,7 +2470,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Automattic. All rights reserved.";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

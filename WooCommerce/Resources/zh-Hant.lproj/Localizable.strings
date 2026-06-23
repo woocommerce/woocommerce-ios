@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:54:27+0000 */
+/* Translation-Revision-Date: 2026-06-17 09:56:57+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "幫我們評分";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決疑難問題。";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "閱讀疑難排解秘訣";
 
@@ -8614,6 +8611,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "指標";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "選擇更新分析資料的時間。";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "這是全店設定，也會控制 WooCommerce 管理員分析設定中的「更新」選項。%1$@。";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "有新資料可用時立即更新。";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "立即";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "深入瞭解";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "每 12 小時自動更新。\n建議用於大量訂單的商店。";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "已排程";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "分析更新";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "無法更新設定。 請再試一次。";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "知道了";
 
@@ -10056,9 +10083,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "絕不錯過新訂單";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "與支援團隊交談";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "對連結進行疑難排解";
 
@@ -10500,6 +10524,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "我的商店";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "深入瞭解";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "統計資料最多可能延遲 12 小時。";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "天";
 
@@ -10918,17 +10948,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "取得 AI 助理的協助";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "與支援團隊交談";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "重新檢視過去的支援對話";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "聊天記錄";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "取得應用程式或商店問題的協助";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "測試網站是否可搭配應用程式使用";
@@ -12354,6 +12381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "無法將此訂單標示為已付款。 再試一次。";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "建立此訂單時發生問題，商品不符合你的選取項目。 請檢查購物車內容，然後再試一次。";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "一或多個商品";
 
@@ -12801,6 +12831,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "圖片：條碼掃描器掃描條碼。";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "關閉";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "你可以開始掃描商品了。 之後要連結掃描器時，只要開啟掃描器，即會自動重新連結。";
 
@@ -12977,6 +13010,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "無法載入";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "你的主機服務提供者封鎖了包含商品資訊的檔案，因此銷售時點情報系統無法進行存取。\n請要求他們允許存取該檔案，使銷售時點情報系統可繼續正常運作。";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "需要對商店採取行動";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "請檢查你的網際網路連線並再試一次。";
@@ -13169,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "無法載入訂單";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "再試一次";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "重新整理";
@@ -13684,8 +13726,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "現金付款";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "自訂金額";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "折扣總計";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "編輯訂單";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "建立此訂單時發生問題，商品不符合你的選取項目。 請檢查購物車內容，然後再試一次。";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "無法結帳";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "其他付款方式";
@@ -13698,12 +13752,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "總計";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "請調整分割畫面，以便騰出更多空間。";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "銷售時點情報系統不支援目前的畫面寬度。";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "深入了解";
@@ -13848,9 +13896,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress.com REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "與支援團隊對談";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "聯絡支援團隊";
@@ -14335,6 +14380,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "沒有庫存";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "正在登入...";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "取消";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "若你沒有相機存取權，仍可輸入商店地址登入。";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "允許存取相機";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "需要相機存取權";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "在「設定」中啟用相機存取權，或取消以改用你的商店地址登入。";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "開啟權限設定";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "相機存取權已關閉";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "你已在其他裝置上完成此登入。 若你需要再試一次，請產生新的條碼。";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "已在其他地方登入";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "你已掃描過該條碼。 請在你的商店中產生新的條碼。";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "條碼已使用";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "該條碼已過期或已使用。 請在你的商店中產生新的條碼。";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "條碼已過期";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "改為輸入網站 URL";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "應用程式已安裝：你已透過此 QR 碼安裝。 在 wp-admin 中，點選「應用程式已安裝」按鈕以顯示登入 QR 碼。 或在電腦上造訪 woo.com\/mobilelogin。";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "這是安裝 QR 碼";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "此 QR 碼不是 WooCommerce 登入條碼。 請在你的商店中產生新的條碼，然後再試一次。";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "不是 WooCommerce 條碼";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "請檢查你的連線，然後再試一次。";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "無法連結至你的商店。";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "此網站未安裝 WooCommerce。";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "不是 WooCommerce 商店";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "請稍候幾分鐘，然後再試一次。";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "嘗試次數過多";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "掃描新的條碼";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "我們無法讀取該 QR 碼。 請再試一次。";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "無法讀取該條碼";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "為了安全起見，系統已取消此登入嘗試。 請在你的商店中產生新的條碼，然後再試一次。";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "登入遭拒";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "你的登入已中斷。 請在你的商店中產生新的條碼，然後再試一次。";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "登入已中斷";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "你並未及時確認。 請在你的商店中產生新的條碼，然後再試一次。";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "登入逾時";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "我們無法透過你的商店進行驗證。 請再試一次。";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "登入失敗";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "你的 WooCommerce 外掛程式不支援 QR 碼登入。 請更新商店的 WooCommerce，然後再試一次，或輸入網站 URL 登入。";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "此商店無法完成 QR 碼登入";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "再試一次";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "你的商店傳回未預期的錯誤。 請稍後再試。";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "發生錯誤";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "你的帳號沒有使用此商店之應用程式的權限。";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "需要權限";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "說明";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "取消";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "將於 %1$d 秒後過期";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "兩個畫面必須顯示相同的數字才能完成登入。";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "你登入的主機";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "你登入的帳號";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "在電腦上點選此號碼以完成登入。";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "確認登入";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "返回";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "沒有電腦嗎？ 使用網站地址登入";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "說明";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "掃描 QR 碼";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "然後掃描系統顯示的 QR 碼。";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "在電腦上造訪：";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "掃描以登入";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "將 URL 複製到剪貼簿。";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "已複製連結！";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "取消";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "將此 QR 碼置於畫面中央";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "造訪 woo.com\/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "若你繼續操作，系統會將你從目前的工作階段登出，並開始新的登入。";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "取消";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "繼續並登出";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "你已登入";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "完成";
 
@@ -14612,6 +14858,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "總計";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "統計資料最多可能延遲 12 小時";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "分析更新詳細資料";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "無法顯示你的商店績效";
 
@@ -14823,9 +15075,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "聊天記錄";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "與支援團隊交談";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "更新 WooCommerce";
 
@@ -14880,11 +15129,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "已建立此對談的客服支援單。 我們會透過電子郵件回覆你。";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "與支援團隊交談";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "聯絡支援團隊";
+"supportChatView.toolbar.humanSupport" = "詢問 Happiness Engineer";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "標示為已解決";
@@ -15290,6 +15536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "統計資料最多可能延遲 12 小時";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "分析更新詳細資料";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "無法顯示商店的熱門商品";

@@ -20,6 +20,14 @@ class WooAnalyticsTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    /// Isolated defaults database so tests don't depend on the host's persisted analytics opt-in state.
+    ///
+    private var userDefaults: UserDefaults!
+
+    /// Suite name backing `userDefaults`, retained so the persistent domain can be cleared in tearDown.
+    ///
+    private var userDefaultsSuiteName: String!
+
     private let sampleSiteID: Int64 = 12345
 
     private let sampleSiteURL: String = "https://example.com"
@@ -35,10 +43,15 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
+        userDefaultsSuiteName = UUID().uuidString
+        userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults)
     }
 
     override func tearDown() {
+        userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
+        userDefaults = nil
+        userDefaultsSuiteName = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
     }
@@ -174,7 +187,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -212,7 +225,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -250,7 +263,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -271,7 +284,7 @@ class WooAnalyticsTests: XCTestCase {
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 17:57:30+0000 */
+/* Translation-Revision-Date: 2026-06-16 19:56:06+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Оцените нас";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Просмотрите советы по устранению неполадок";
 
@@ -8614,6 +8611,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Критерии";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "Укажите, когда следует обновлять аналитические данные.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Это настройка уровня магазина, которая также управляет параметром «Обновления» в настройках аналитики администратора WooCommerce. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "Обновляется по мере поступления новых данных.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "Сразу же";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "Подробнее";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "Автоматически обновляется каждые 12 часов.\nРекомендуется для крупных магазинов.";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "По графику";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "Обновления аналитики";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "Не удалось обновить настройку. Повторите попытку.";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Понятно";
 
@@ -10059,9 +10086,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Не пропускайте новые заказы";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "Чат со службой поддержки";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Устранение неполадок при подключении";
 
@@ -10503,6 +10527,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "Мой магазин";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "Подробнее";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "Статистика может отображаться с задержкой до 12 часов.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "день";
 
@@ -10921,17 +10951,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "Найденный платёжный терминал не имеет IP-адреса и не может быть подключён.";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "Получить подсказку от помощника на базе ИИ";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "Чат со службой поддержки";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "Просмотреть предыдущие беседы в службе поддержки";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "История чата";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "Помощь при возникновении проблем с приложением или магазином";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Проверьте, работает ли ваш сайт с приложением";
@@ -12357,6 +12384,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "Не удалось пометить этот заказ как оплаченный. Повторите попытку.";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "При создании этого заказа возникла проблема. Товары не совпадают с выбранными. Проверьте содержимое корзины и повторите попытку.";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "Один или несколько товаров";
 
@@ -12804,6 +12834,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Изображение: код для чтения сканером штрихкодов.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "Закрыть";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "Вы можете начинать сканировать товары. В следующий раз, когда вам потребуется сканер, просто включите его и он подключится автоматически.";
 
@@ -12980,6 +13013,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Не удалось загрузить";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Point of Sale не может загрузить файл сведений о товаре, так как ваш хостинг-провайдер блокирует его.\nОтправьте запрос на разрешение доступа, чтобы Point of Sale работал корректно.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "Требуется принять меры в магазине";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Проверьте подключение к Интернету и повторите попытку.";
@@ -13172,6 +13211,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Не удалось загрузить заказы";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "Повторите попытку.";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Обновить";
@@ -13687,8 +13729,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Оплата наличными";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "Индивидуальные суммы";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Итоговая скидка";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "Изменить заказ";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "При создании этого заказа возникла проблема. Товары не совпадают с выбранными. Проверьте содержимое корзины и повторите попытку.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "Не удалось оформить заказ";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Другие способы оплаты";
@@ -13701,12 +13755,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Итого";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Настройте разделённый экран, чтобы места для режима «Пункт продажи» было больше.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Режим «Пункт продажи» не поддерживается при данной ширине экрана.";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "Подробнее";
@@ -13851,9 +13899,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "Чат со службой поддержки";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "Поддержка";
@@ -14338,6 +14383,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Нет в наличии";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "Вход...";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "Отмена";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "Без доступа к камере вы можете войти, введя адрес магазина.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "Разрешить доступ к камере";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "Требуется доступ к камере";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "Включите доступ к камере в настройках или нажмите «Отменить», чтобы войти по адресу магазина.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "Открыть настройки разрешений";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "Доступ к камере отключён";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "Вход уже выполнен на другом устройстве. Сгенерируйте новый код, если вам необходимо повторить вход.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "Вход уже выполнен в другом месте";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "Этот код уже был отсканирован. Сгенерируйте новый в магазине.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "Код уже использован";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "Срок действия этого кода истёк или он уже был использован. Сгенерируйте новый в магазине.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "Срок действия кода истёк";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "Вместо этого введите URL-адрес сайта";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "Приложение уже установлено, это QR-код для установки приложения. В консоли wp-admin нажмите кнопку «Приложение установлено», чтобы открыть QR-код для входа. Или откройте woo.com\/mobilelogin на своём компьютере.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "Это QR-код для установки";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "Это не QR-код для входа в WooCommerce. Сгенерируйте новый код в магазине и повторите вход.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "Это не код WooCommerce";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "Проверьте подключение и повторите попытку.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "Не удалось подключиться к магазину";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "На этом сайте не установлено расширение WooCommerce.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "Это не магазин WooCommerce";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "Подождите несколько минут и повторите попытку.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "Слишком много попыток.";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "Сканировать новый код";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "Не удалось прочесть QR-код. Повторите попытку.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "Не удалось прочесть код.";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "Из соображений безопасности попытка входа отменена. Сгенерируйте новый код в магазине, чтобы повторить вход.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "Вход запрещён";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "Вход прерван. Сгенерируйте новый код в магазине и повторите вход.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "Вход прерван.";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "Вы не подтвердили вовремя. Сгенерируйте новый код в магазине и повторите вход.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "Время входа истекло.";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "Не удалось выполнить аутентификацию в вашем магазине. Повторите попытку.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "Не удалось выполнить вход.";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "Ваш плагин WooCommerce не поддерживает вход по QR-коду. Обновите WooCommerce в магазине и повторите попытку или войдите, указав URL-адрес вашего сайта.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "В этот магазин нельзя войти по QR-коду";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "Повторите попытку.";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "Магазин вернул непредвиденную ошибку. Повторите попытку через несколько минут.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "Что-то пошло не так";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "У вашей учётной записи нет прав на использование приложения в этом магазине.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "Необходимо разрешение";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "Справка";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "Отмена";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "Истекает через %1$d с";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "Чтобы вход был выполнен, на обоих экранах должно быть одно и то же число.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "Вы входите в";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "Вы входите как";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "Нажмите на это число на компьютере, чтобы завершить вход.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "Подтвердить вход";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "Назад";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "Нет компьютера? Войти по адресу магазина";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "Справка";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "Сканировать QR-код";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "Затем отсканируйте появившийся QR-код.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "На компьютере перейдите по ссылке:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "Отсканировать для входа";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "Копирует URL-адрес в буфер обмена.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "Ссылка скопирована";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "Отмена";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "Поместить QR-код в центр кадра";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "Перейти на woo.com\/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "Продолжая, вы выйдете из сеанса и выполните вход повторно.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "Отмена";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "Продолжить и выйти";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "Вход в систему уже выполнен";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "Готово";
 
@@ -14615,6 +14861,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "Итого";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "Статистика может отображаться с задержкой до 12 часов";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "Сведения об обновлении аналитики";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Не удалось отобразить результаты работы вашего магазина";
 
@@ -14826,9 +15078,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "История чата";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "Чат со службой поддержки";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "Обновить WooCommerce";
 
@@ -14883,11 +15132,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "По этому чату создан запрос в службу поддержки. Вы получите ответ по электронной почте.";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "Чат со службой поддержки";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "Поддержка";
+"supportChatView.toolbar.humanSupport" = "Спросите инженера поддержки";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Отметить как решённый";
@@ -15293,6 +15539,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Скрыть самые продаваемые";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "Статистика может отображаться с задержкой до 12 часов";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "Сведения об обновлении аналитики";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "Не удалось отобразить самые популярные товары в вашем магазине";

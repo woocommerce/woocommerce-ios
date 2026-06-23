@@ -7,7 +7,8 @@ protocol RequestProcessorDelegate: AnyObject {
 
 /// Authenticates and retries requests
 ///
-final class RequestProcessor: RequestInterceptor {
+/// Alamofire can invoke interceptors from multiple queues; mutable retry state is synchronized by `RequestProcessorState`.
+final class RequestProcessor: RequestInterceptor, @unchecked Sendable {
     private let notificationCenter: NotificationCenter
 
     private let state: RequestProcessorState

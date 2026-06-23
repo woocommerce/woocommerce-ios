@@ -311,6 +311,17 @@ private extension POSTabCoordinator {
                                                                            storageManager: storageManager,
                                                                            currencySettings: currencySettings)
 
+                guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
+                                                         selectedSite: defaultSitePublisher,
+                                                         appPasswordSupportState: isAppPasswordSupported) else {
+                    DDLogError("⛔️ Could not start POS: POSStaffAdaptor unavailable (missing credentials)")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
+                let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -349,6 +360,8 @@ private extension POSTabCoordinator {
                     sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
+                    staffFetcher: staffFetcher,
+                    receiptPrinter: receiptPrinter,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )

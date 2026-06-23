@@ -133,6 +133,8 @@ struct AddCustomAmountView: View {
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))
             .contentShape(Rectangle())
             .onTapGesture { focusAmountField() }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("pos-custom-amount-amount-field")
         }
     }
 
@@ -173,6 +175,7 @@ struct AddCustomAmountView: View {
                 .submitLabel(.done)
                 .onSubmit(submit)
                 .padding(.vertical, POSPadding.small)
+                .accessibilityIdentifier("pos-custom-amount-name-field")
         }
     }
 

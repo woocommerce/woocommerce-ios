@@ -9,6 +9,7 @@ import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
+import enum PointOfSale.POSRolesPersistence
 
 // MARK: - DefaultStoresManager
 //
@@ -33,6 +34,10 @@ class DefaultStoresManager: StoresManager {
     /// Observes invalid WPCOM token notification
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
+
+    /// Observes unknown blog notification
+    ///
+    private var unknownBlogNotificationObserver: NSObjectProtocol?
 
     /// NotificationCenter
     ///
@@ -206,9 +211,10 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
+            listenToUnknownBlogNotification()
             startObservingNetworkNotifications()
         } else {
-            invalidWPCOMTokenNotificationObserver = nil
+            removeAuthenticationFailureObservers()
             stopObservingNetworkNotifications()
         }
 
@@ -218,11 +224,51 @@ class DefaultStoresManager: StoresManager {
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
+    }
+
+    /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification.
+    ///
+    /// WPCom no longer recognizes the selected site ID, so we clear it and route the user
+    /// to the store picker while keeping them authenticated.
+    ///
+    func listenToUnknownBlogNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveUnknownBlogError,
+                                                                         object: nil,
+                                                                         queue: .main) { [weak self] _ in
+            self?.resetSelectedStore()
+        }
+    }
+
+    /// Unregisters the WPCOM authentication-failure observers (invalid token and unknown blog).
+    ///
+    /// Block-based observers must be removed via `removeObserver`; setting the token to `nil` alone
+    /// leaves the registration live and firing.
+    ///
+    private func removeAuthenticationFailureObservers() {
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
+        invalidWPCOMTokenNotificationObserver = nil
+
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = nil
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -260,6 +306,33 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
     }
 
+    /// Resets the selected store while remaining authenticated, routing the user to the store picker.
+    ///
+    /// Triggered when WPCom returns an `unknown_blog` error, meaning the persisted site ID is no
+    /// longer recognized (stale state, Jetpack disconnect, or site deletion). Clearing
+    /// `defaultStoreID` makes `needsDefaultStore` emit `true`, which the `AppCoordinator` observes
+    /// to present the store picker.
+    ///
+    func resetSelectedStore() {
+        // Guard against repeated resets: many in-flight requests can fail with `unknown_blog`
+        // simultaneously, each posting a notification. Once the store is cleared, ignore the rest.
+        guard let siteID = sessionManager.defaultStoreID else {
+            return
+        }
+
+        ServiceLocator.analytics.track(event: .selectedSiteResetDueToUnknownBlog())
+
+        // Stop any ongoing catalog sync tasks for the site before clearing it.
+        Task {
+            await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+        }
+
+        removeDefaultStore()
+
+        sessionManager.defaultStoreID = nil
+        sessionManager.defaultSite = nil
+    }
+
     /// Fully deauthenticates the user, if needed.
     ///
     /// This handles the scenario where `DefaultStoresManager` can't be initialized
@@ -291,7 +364,7 @@ class DefaultStoresManager: StoresManager {
             _ = currentState
         }
 
-        invalidWPCOMTokenNotificationObserver = nil
+        removeAuthenticationFailureObservers()
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
 
@@ -310,6 +383,11 @@ class DefaultStoresManager: StoresManager {
                 await syncCoordinator?.stopOngoingSyncs(for: siteID)
             }
         }
+
+        // Purge all persisted POS roles state (staff caches + lock flags for every site visited this
+        // session) so a different user signing in on this device can't inherit cached staff PINs or
+        // land on a previous store's lock screen.
+        POSRolesPersistence.clearAll()
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()

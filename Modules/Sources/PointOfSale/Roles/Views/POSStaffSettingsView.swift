@@ -1,6 +1,6 @@
 import SwiftUI
-import struct Networking.POSStaffMember
-import enum Networking.POSStaffPreset
+import struct Yosemite.POSStaffMember
+import enum Yosemite.POSStaffPreset
 
 struct POSStaffSettingsView: View {
     @Environment(\.posExternalViews) private var externalViews
@@ -8,11 +8,15 @@ struct POSStaffSettingsView: View {
 
     let service: POSStaffSettingsService
 
-    @State private var staffMembers: [POSStaffMember] = []
-    @State private var isLoading: Bool = false
-    @State private var loadError: Error?
-    @State private var hasLoadedOnce = false
+    @State private var state: LoadState = .idle
     @State private var showsManageStaff: Bool = false
+
+    private enum LoadState {
+        case idle
+        case loading
+        case loaded([POSStaffMember])
+        case failed(Error)
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -22,16 +26,21 @@ struct POSStaffSettingsView: View {
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    if isLoading {
+                    switch state {
+                    case .idle, .loading:
                         ProgressView()
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, POSPadding.xLarge)
-                    } else if let loadError {
-                        staffLoadErrorView(error: loadError)
-                    } else if !staffMembers.isEmpty {
-                        staffListCard
+                    case .failed(let error):
+                        staffLoadErrorView(error: error)
+                    case .loaded(let staff):
+                        if !staff.isEmpty {
+                            staffListCard(staff: staff)
+                        }
                     }
-                    manageStaffCard
+                    if manageStaffURL != nil {
+                        manageStaffCard
+                    }
                     footerText
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -39,16 +48,10 @@ struct POSStaffSettingsView: View {
         }
         .background(Color.posSurface)
         .task {
-            // Load once. Presenting the full-screen Manage staff web view makes this view
-            // disappear, so `.task` re-fires on dismiss — without this guard that would re-show
-            // (and could strand) the spinner. Post-web changes are picked up by the silent refresh
-            // in the web view's completion below.
-            guard !hasLoadedOnce else { return }
-            hasLoadedOnce = true
-            await fetchStaff()
+            await loadStaffIfNeeded()
         }
         .posFullScreenCover(isPresented: $showsManageStaff) {
-            if let manageStaffURL = URL(string: service.manageStaffURL) {
+            if let manageStaffURL {
                 externalViews.createAuthenticatedWebView(
                     url: manageStaffURL,
                     title: Localization.manageStaffWebTitle,
@@ -67,13 +70,14 @@ struct POSStaffSettingsView: View {
 // MARK: - Subviews
 
 private extension POSStaffSettingsView {
-    var staffListCard: some View {
-        POSInformationCard {
+    func staffListCard(staff: [POSStaffMember]) -> some View {
+        let sortedStaff = sortedStaffMembers(staff)
+        return POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                ForEach(Array(sortedStaffMembers.enumerated()), id: \.element.userID) { index, member in
+                ForEach(Array(sortedStaff.enumerated()), id: \.element.userID) { index, member in
                     staffRow(member: member, isCurrentOperator: member.userID == currentOperatorID)
 
-                    if index < sortedStaffMembers.count - 1 {
+                    if index < sortedStaff.count - 1 {
                         Divider()
                             .padding(.vertical, POSPadding.small)
                     }
@@ -86,8 +90,8 @@ private extension POSStaffSettingsView {
         session.currentStaff?.userID
     }
 
-    var sortedStaffMembers: [POSStaffMember] {
-        staffMembers.sorted { lhs, rhs in
+    func sortedStaffMembers(_ staff: [POSStaffMember]) -> [POSStaffMember] {
+        staff.sorted { lhs, rhs in
             let lhsCurrent = lhs.userID == currentOperatorID
             let rhsCurrent = rhs.userID == currentOperatorID
             if lhsCurrent != rhsCurrent {
@@ -154,6 +158,12 @@ private extension POSStaffSettingsView {
         }
     }
 
+    /// The wp-admin staff-management URL, or `nil` when the host didn't supply a usable one. When
+    /// `nil` the manage-on-web button is hidden rather than opening an empty web view.
+    var manageStaffURL: URL? {
+        URL(string: service.manageStaffURL)
+    }
+
     var manageStaffCard: some View {
         Button {
             showsManageStaff = true
@@ -194,28 +204,36 @@ private extension POSStaffSettingsView {
 // MARK: - Logic
 
 private extension POSStaffSettingsView {
-    /// Loads the staff list. `showLoading` drives the full-screen spinner + error state for the
-    /// initial load and retries; pass `false` for a silent in-place refresh (e.g. after returning
-    /// from the Manage staff web view), which keeps the current list visible and never strands the
-    /// spinner.
+    /// Loads once on first appearance. Presenting the full-screen Manage staff web view makes this
+    /// view disappear, so `.task` re-fires on dismiss; the `.idle` guard keeps that from re-running
+    /// the initial load. Post-web changes are picked up by the silent refresh in the web view's
+    /// completion handler.
+    func loadStaffIfNeeded() async {
+        guard case .idle = state else { return }
+        await fetchStaff()
+    }
+
+    /// Loads the staff list. `showLoading` drives the spinner + error state for the initial load and
+    /// retries; pass `false` for a silent in-place refresh (e.g. after returning from the Manage
+    /// staff web view), which keeps the current list visible and never strands the spinner.
     func fetchStaff(showLoading: Bool = true) async {
         if showLoading {
-            isLoading = true
-            loadError = nil
+            state = .loading
         }
         do {
-            staffMembers = try await service.loadStaff()
-            // Keep the access session in sync so menu items like "Lock POS" pick up
-            // PIN changes made via the Manage staff web view without requiring a relaunch.
-            await session.refreshPINStatus()
-            // Clear any stale error so a successful silent refresh recovers the list.
-            loadError = nil
+            let staff = try await service.loadStaff()
+            // Keep the access session in sync so menu items like "Lock POS" pick up PIN changes made
+            // via the Manage staff web view — using the list we just fetched, so the staff endpoint
+            // isn't hit a second time.
+            await session.refreshPINStatus(using: staff)
+            state = .loaded(staff)
         } catch {
+            // Silent-refresh failures keep the current list on screen; only the initial load and
+            // retry surface the error state.
             if showLoading {
-                loadError = error
+                state = .failed(error)
             }
         }
-        isLoading = false
     }
 }
 

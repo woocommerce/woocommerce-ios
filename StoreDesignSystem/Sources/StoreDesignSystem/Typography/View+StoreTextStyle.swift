@@ -17,6 +17,9 @@ public extension View {
 private struct StoreTextStyleModifier: ViewModifier {
     private let style: StoreTextStyle
 
+    // Tracks the iOS "Bold Text" accessibility setting (.bold when enabled).
+    @Environment(\.legibilityWeight) private var legibilityWeight
+
     // @ScaledMetric scales each value with Dynamic Type relative to .body (uniform scaling
     // across the scale; switch to per-style references if the design needs distinct curves).
     @ScaledMetric private var scaledSize: CGFloat
@@ -38,8 +41,19 @@ private struct StoreTextStyleModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .font(.system(size: scaledSize, weight: style.weight))
+            .font(.system(size: scaledSize, weight: resolvedWeight))
             .tracking(scaledTracking)
             .lineSpacing(scaledLineSpacing)
+    }
+
+    /// When the user enables Bold Text (Settings → Accessibility → Bold Text), the design
+    /// shifts weights up: Medium → Semibold, Bold → Heavy (Regular stays Regular). Mirrors
+    /// the "iOS Extra bold" mode of the Figma Font theme. `Font.Weight` is a struct, not an
+    /// enum, so this compares with `==` rather than switching over cases.
+    private var resolvedWeight: Font.Weight {
+        guard legibilityWeight == .bold else { return style.weight }
+        if style.weight == .medium { return .semibold }
+        if style.weight == .bold { return .heavy }
+        return style.weight
     }
 }

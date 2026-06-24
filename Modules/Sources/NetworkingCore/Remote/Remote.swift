@@ -26,8 +26,6 @@ open class Remote: NSObject {
     ///
     public func enqueue(_ request: Request) async throws {
         do {
-            // `responseData` is a `nonisolated async` call, so validation runs on the cooperative
-            // pool (off the main thread) when it resumes.
             let data = try await network.responseData(for: request)
             try request.responseDataValidator().validate(data: data)
         } catch {
@@ -42,8 +40,6 @@ open class Remote: NSObject {
     /// - Returns: The result from the JSON parsed response for the expected type.
     public func enqueue<T: Decodable>(_ request: Request) async throws -> T {
         do {
-            // `responseData` is a `nonisolated async` call, so validation and decoding run on the
-            // cooperative pool (off the main thread) when it resumes.
             let data = try await network.responseData(for: request)
             try request.responseDataValidator().validate(data: data)
             return try JSONDecoder().decode(T.self, from: data)
@@ -223,8 +219,7 @@ open class Remote: NSObject {
 }
 
 private extension Remote {
-    /// Validates the response and maps it via the mapper. Shared by the off-main and the
-    /// header-returning parse paths so validation + mapping lives in one place.
+    /// Validates the response and maps it via the mapper.
     static func validateAndMap<M: Mapper>(_ data: Data, request: Request, mapper: M) throws -> M.Output {
         try request.responseDataValidator().validate(data: data)
         return try mapper.map(response: data)

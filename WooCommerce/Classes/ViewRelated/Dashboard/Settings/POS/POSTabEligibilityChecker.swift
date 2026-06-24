@@ -16,8 +16,10 @@ import class Yosemite.POSSiteSettingService
 import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
+import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSEligibilityState
+import enum PointOfSale.POSIneligibleReason
 import protocol WooFoundation.ConnectivityObserver
-import PointOfSale
 import enum Yosemite.POSCountryCurrencyValidator
 import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
 import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService

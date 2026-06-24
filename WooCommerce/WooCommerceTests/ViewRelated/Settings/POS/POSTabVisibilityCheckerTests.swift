@@ -192,7 +192,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios25)
+                                              isOperatingSystemAtLeast: { _ in false })
 
         // When
         let result = await checker.checkVisibility()
@@ -320,7 +320,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios26)
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -341,7 +341,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios25)
+                                              isOperatingSystemAtLeast: { _ in false })
 
         // When
         let result = await checker.checkVisibility()
@@ -366,7 +366,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios26)
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -386,7 +386,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios26)
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -406,7 +406,7 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
-                                              operatingSystemVersion: Self.ios26)
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -537,9 +537,6 @@ struct POSTabVisibilityCheckerTests {
 }
 
 extension POSTabVisibilityCheckerTests {
-    static let ios25 = OperatingSystemVersion(majorVersion: 25, minorVersion: 0, patchVersion: 0)
-    static let ios26 = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
-
     nonisolated static let phoneSupportedCountries: [(country: Country, currency: CurrencyCode)] = [
         (country: .gb, currency: .GBP)
     ]

@@ -25,7 +25,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
-    private let operatingSystemVersion: OperatingSystemVersion
+    private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
 
     private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
 
@@ -37,7 +37,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
          expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil,
-         operatingSystemVersion: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion) {
+         isOperatingSystemAtLeast: @escaping (OperatingSystemVersion) -> Bool = ProcessInfo.processInfo.isOperatingSystemAtLeast) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -45,7 +45,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.expansionEligibilityService = expansionEligibilityService
-        self.operatingSystemVersion = operatingSystemVersion
+        self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
         self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: expansionEligibilityService,
             remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
@@ -106,19 +106,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     }
 
     private var isPhoneOperatingSystemEligible: Bool {
-        operatingSystemVersion.isAtLeast(Self.minimumPhonePOSOperatingSystemVersion)
-    }
-}
-
-private extension OperatingSystemVersion {
-    func isAtLeast(_ minimum: OperatingSystemVersion) -> Bool {
-        if majorVersion != minimum.majorVersion {
-            return majorVersion > minimum.majorVersion
-        }
-        if minorVersion != minimum.minorVersion {
-            return minorVersion > minimum.minorVersion
-        }
-        return patchVersion >= minimum.patchVersion
+        isOperatingSystemAtLeast(Self.minimumPhonePOSOperatingSystemVersion)
     }
 }
 

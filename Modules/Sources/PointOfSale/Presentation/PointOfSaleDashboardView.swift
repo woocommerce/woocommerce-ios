@@ -16,6 +16,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
+    @State private var settingsOverrideHandler = POSManagerOverrideHandler()
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var navigationPath: [POSNavigationDestination] = []
@@ -110,7 +111,7 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings,
+                                   onSettings: requestSettingsPermission,
                                    onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
@@ -147,6 +148,7 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
+        .posManagerOverrideModal(handler: settingsOverrideHandler)
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -354,7 +356,7 @@ struct PointOfSaleDashboardView: View {
             .accessibilityIdentifier("pos-exit-menu-item")
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
+                requestSettingsPermission()
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
@@ -587,6 +589,16 @@ private extension PointOfSaleDashboardView {
         posModel.cancelInFlightCheckout()
         showOrders = true
     }
+
+    /// Gates opening the settings screen on `woocommerce_pos_view_settings`. When the operator already
+    /// holds it (e.g. a manager) settings opens immediately; otherwise the manager-override modal is
+    /// presented and settings opens once an authorized staff member approves. Opening settings is a
+    /// local unlock — no `POSStaffAuth` is sent, since it makes no order/refund mutation.
+    func requestSettingsPermission() {
+        settingsOverrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
+            showSettings = true
+        }
+    }
 }
 
 struct FloatingControlAreaSizeKey: EnvironmentKey {
@@ -637,6 +649,12 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
+        )
+        static let settingsOverrideDescription = NSLocalizedString(
+            "pointOfSaleDashboard.settings.overrideReason",
+            value: "Opening settings requires manager approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "view-settings permission tries to open Point of Sale settings."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

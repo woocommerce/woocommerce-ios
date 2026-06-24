@@ -11,7 +11,9 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
-    @Binding private var showSettings: Bool
+    /// Invoked when the Settings menu item is tapped. The host gates the action on
+    /// `woocommerce_pos_view_settings` before presenting the settings screen.
+    private let onSettings: () -> Void
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
@@ -19,12 +21,12 @@ struct POSFloatingControlView: View {
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>,
+         onSettings: @escaping () -> Void,
          onOrdersSelected: @escaping () -> Void) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
-        self._showSettings = showSettings
+        self.onSettings = onSettings
         self.onOrdersSelected = onOrdersSelected
     }
 
@@ -83,7 +85,7 @@ private extension POSFloatingControlView {
         if horizontalSizeClass == .regular || isPhoneLayout {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
+                onSettings()
             } label: {
                 Label(
                     title: { Text(Localization.settings) },
@@ -194,7 +196,7 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettings: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
@@ -209,7 +211,7 @@ private extension POSFloatingControlView {
     return POSFloatingControlView(showExitPOSModal: .constant(false),
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  showSettings: .constant(false),
+                                  onSettings: {},
                                   onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
@@ -219,7 +221,7 @@ private extension POSFloatingControlView {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettings: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())

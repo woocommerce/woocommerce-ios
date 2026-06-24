@@ -166,9 +166,6 @@ struct ItemListView: View {
             }
         })
         .posManagerOverrideModal(handler: couponOverrideHandler)
-        .onAppear {
-            couponOverrideHandler.configure(session: accessSession)
-        }
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
@@ -194,10 +191,7 @@ struct ItemListView: View {
     /// manager authorized it via override (that approval is a local gate, never sent). `nil` when
     /// no operator is signed in so the network boundary sends no POS headers.
     private func couponCreationAuth() -> POSStaffAuth? {
-        guard let staffUserID = accessSession.currentStaff?.userID else {
-            return nil
-        }
-        return POSStaffAuth(actorUserID: staffUserID)
+        POSStaffAttribution.operatorOnly(accessSession.currentStaff)
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -515,17 +509,11 @@ private extension ItemListView {
     /// is a local gate — the `POST /coupons` request is always attributed to the operator and
     /// carries no override-approver header.
     private func requestCouponCreationPermission() {
-        guard !accessSession.allows(.createCoupons) else {
+        // The approval is a local gate — the `POST /coupons` request is always attributed to the
+        // operator (see `couponCreationAuth()`), so the approver is intentionally ignored here.
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
             showCouponCreationModal = true
-            return
         }
-        couponOverrideHandler.requestApproval(
-            for: .createCoupons,
-            reason: Localization.couponOverrideDescription,
-            onApproved: { _ in
-                showCouponCreationModal = true
-            }
-        )
     }
 
     @ViewBuilder

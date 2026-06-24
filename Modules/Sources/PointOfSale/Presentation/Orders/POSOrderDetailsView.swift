@@ -188,7 +188,6 @@ struct POSOrderDetailsView: View {
             await orderListModel.ordersController.preloadRefundDetails()
         }
         .onAppear {
-            refundOverrideHandler.configure(session: accessSession)
             if autoStartNextRefundFlow {
                 autoStartNextRefundFlow = false
                 initiateRefundFlow()
@@ -612,33 +611,18 @@ private extension POSOrderDetailsView {
     /// is the initiator; otherwise the operator is the actor. Returns `nil` when no operator is
     /// signed in so the network boundary sends no POS headers — matching pre-roll-out behaviour.
     private func refundAuth() -> POSStaffAuth? {
-        guard let operatorUserID = accessSession.currentStaff?.userID else {
-            return nil
-        }
-        if let approverUserID = pendingOverrideApprover?.userID {
-            return POSStaffAuth(actorUserID: approverUserID, initiatorUserID: operatorUserID)
-        }
-        return POSStaffAuth(actorUserID: operatorUserID)
+        POSStaffAttribution.authorized(operator: accessSession.currentStaff, approver: pendingOverrideApprover)
     }
 
-    /// Gates the refund button through the manager-override flow. When the operator
-    /// already has `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the
-    /// PIN modal is presented and the refund proceeds once a manager approves. The
-    /// approving manager becomes the refund actor and the current operator becomes the initiator.
+    /// Gates the refund button through the manager-override flow. When the operator already has
+    /// `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the PIN modal is
+    /// presented and the refund proceeds once a manager approves. The approving manager becomes the
+    /// refund actor and the current operator the initiator (see `refundAuth()`).
     func requestRefundPermission() {
-        guard !accessSession.allows(.issueRefunds) else {
-            pendingOverrideApprover = nil
+        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { approver in
+            pendingOverrideApprover = approver
             initiateRefundFlow()
-            return
         }
-        refundOverrideHandler.requestApproval(
-            for: .issueRefunds,
-            reason: Localization.refundOverrideDescription(order.number),
-            onApproved: { approver in
-                pendingOverrideApprover = approver
-                initiateRefundFlow()
-            }
-        )
     }
 
     func initiateRefundFlow() {

@@ -20,37 +20,34 @@ public struct ReceiptTextRenderer {
     public func makeReceiptText(content: ReceiptContent,
                                 storeInformation: ReceiptStoreInformation,
                                 cardDetails: CardPresentTransactionDetails?) -> String {
-        var lines: [String] = []
+        renderReceipt {
+            headerLines(content: content, storeInformation: storeInformation)
+            paymentLines(content: content, cardDetails: cardDetails)
+            content.lineItems.flatMap(itemLine)
+            content.cartTotals.flatMap(totalLine)
 
-        lines.append(contentsOf: headerLines(content: content, storeInformation: storeInformation))
-        lines.append(separator)
-        lines.append(contentsOf: paymentLines(content: content, cardDetails: cardDetails))
-        lines.append(separator)
-        lines.append(contentsOf: content.lineItems.flatMap(itemLine))
-        lines.append(separator)
-        lines.append(contentsOf: content.cartTotals.flatMap(totalLine))
+            if let note = content.orderNote, note.isEmpty == false {
+                [Localization.notes] + wrap(note)
+            }
 
-        if let note = content.orderNote, note.isEmpty == false {
-            lines.append(separator)
-            lines.append(Localization.notes)
-            lines.append(contentsOf: wrap(note))
+            emvLines(cardDetails: cardDetails)
+
+            if let policy = storeInformation.refundReturnsPolicy, policy.isEmpty == false {
+                wrap(policy)
+            }
         }
-
-        if let emvBlock = emvLines(cardDetails: cardDetails) {
-            lines.append(separator)
-            lines.append(contentsOf: emvBlock)
-        }
-
-        if let policy = storeInformation.refundReturnsPolicy, policy.isEmpty == false {
-            lines.append(separator)
-            lines.append(contentsOf: wrap(policy))
-        }
-
-        return lines.joined(separator: "\n") + "\n"
     }
 }
 
 private extension ReceiptTextRenderer {
+    /// Joins each non-empty section with a separator rule between sections and ends the body with a
+    /// trailing newline. A section is a group of lines; empty groups are skipped by the builder.
+    func renderReceipt(@ReceiptSectionsBuilder sections: () -> [[String]]) -> String {
+        sections()
+            .map { $0.joined(separator: "\n") }
+            .joined(separator: "\n\(separator)\n") + "\n"
+    }
+
     func headerLines(content: ReceiptContent, storeInformation: ReceiptStoreInformation) -> [String] {
         var lines: [String] = []
         if let storeName = storeInformation.storeName ?? content.parameters.storeName, storeName.isEmpty == false {
@@ -267,5 +264,29 @@ private extension ReceiptTextRenderer {
             value: "%1$@. %2$@",
             comment: "A line item title with its product attributes on a printed receipt. "
                 + "%1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations).")
+    }
+}
+
+/// Assembles a receipt body from its sections. Each section is a group of lines (`[String]`);
+/// empty groups are omitted so the layout stays free of blank space and stray separators.
+@resultBuilder
+private enum ReceiptSectionsBuilder {
+    static func buildExpression(_ expression: [String]) -> [[String]] {
+        expression.isEmpty ? [] : [expression]
+    }
+
+    static func buildExpression(_ expression: [String]?) -> [[String]] {
+        guard let expression, expression.isEmpty == false else {
+            return []
+        }
+        return [expression]
+    }
+
+    static func buildBlock(_ components: [[String]]...) -> [[String]] {
+        components.flatMap { $0 }
+    }
+
+    static func buildOptional(_ component: [[String]]?) -> [[String]] {
+        component ?? []
     }
 }

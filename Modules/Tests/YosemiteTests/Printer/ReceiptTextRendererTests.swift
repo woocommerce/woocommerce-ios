@@ -190,6 +190,18 @@ struct ReceiptTextRendererTests {
         #expect(receipt.isEmpty == false)
     }
 
+    @Test func test_makeReceiptText_when_sections_are_empty_then_no_consecutive_separators() {
+        // Given
+        let content = makeContent(orderNote: nil, lineItems: [], cartTotals: [])
+
+        // When
+        let receipt = builder.makeReceiptText(content: content, storeInformation: makeStoreInformation(), cardDetails: nil)
+
+        // Then
+        let separator = String(repeating: "-", count: ReceiptTextRenderer.Constants.defaultLineWidth)
+        #expect(receipt.contains(separator + "\n" + separator) == false)
+    }
+
     @Test func test_makeReceiptText_when_emv_fields_are_long_then_every_line_stays_within_lineWidth() {
         // Given
         let longReceipt = ReceiptDetails(

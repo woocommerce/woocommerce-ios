@@ -25,12 +25,18 @@ open class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     ///
     public func enqueue(_ request: Request) async throws {
+        let data: Data
         do {
-            let data = try await network.responseData(for: request)
+            data = try await network.responseData(for: request)
+        } catch {
+            throw mapNetworkError(error: error, for: request)
+        }
+
+        do {
             try request.responseDataValidator().validate(data: data)
         } catch {
             handleResponseError(error: error, for: request)
-            throw mapNetworkError(error: error, for: request)
+            throw error
         }
     }
 
@@ -39,14 +45,20 @@ open class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
     public func enqueue<T: Decodable>(_ request: Request) async throws -> T {
+        let data: Data
         do {
-            let data = try await network.responseData(for: request)
+            data = try await network.responseData(for: request)
+        } catch {
+            throw mapNetworkError(error: error, for: request)
+        }
+
+        do {
             try request.responseDataValidator().validate(data: data)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             handleResponseError(error: error, for: request)
             handleDecodingError(error: error, for: request, entityName: "\(T.self)")
-            throw mapNetworkError(error: error, for: request)
+            throw error
         }
     }
 

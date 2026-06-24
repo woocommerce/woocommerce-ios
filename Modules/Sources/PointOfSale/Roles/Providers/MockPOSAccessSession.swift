@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Observation
+import struct Yosemite.POSStaffMember
 
 @Observable
 @MainActor
@@ -80,6 +81,7 @@ final class MockPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {}
+    func refreshPINStatus(using staff: [POSStaffMember]) async {}
     func clearStaffCache() {}
 }
 

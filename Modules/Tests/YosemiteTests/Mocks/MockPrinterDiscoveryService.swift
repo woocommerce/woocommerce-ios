@@ -14,9 +14,7 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
     private(set) var stopDiscoveryWasCalled = false
     private(set) var connectedDevice: PrinterDevice?
     private(set) var disconnectWasCalled = false
-    private(set) var printedContent: ReceiptContent?
-    private(set) var printedStoreInformation: ReceiptStoreInformation?
-    private(set) var printedCardDetails: CardPresentTransactionDetails?
+    private(set) var printedText: String?
 
     private(set) var connectionStatus: PrinterConnectionStatus = .idle
     private var statusObservers: [AsyncStream<PrinterConnectionStatus>.Continuation] = []
@@ -65,12 +63,8 @@ final class MockPrinterDiscoveryService: PrinterDiscoveryService {
         disconnectWasCalled = true
     }
 
-    func printReceipt(content: ReceiptContent,
-                      storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?) async throws {
-        printedContent = content
-        printedStoreInformation = storeInformation
-        printedCardDetails = cardDetails
+    func printReceipt(text: String) async throws {
+        printedText = text
         if let printError {
             throw printError
         }

@@ -1,16 +1,17 @@
 import Testing
 import Foundation
-@testable import Hardware
+@testable import Yosemite
+import Hardware
 
-struct StarReceiptTextBuilderTests {
-    private let builder: StarReceiptTextBuilder
+struct ReceiptTextRendererTests {
+    private let builder: ReceiptTextRenderer
 
     init() {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(identifier: "UTC")
         formatter.dateFormat = "yyyy-MM-dd"
-        builder = StarReceiptTextBuilder(dateFormatter: formatter)
+        builder = ReceiptTextRenderer(dateFormatter: formatter)
     }
 
     @Test func test_makeReceiptText_when_card_details_present_then_renders_store_items_totals_and_card_block() {
@@ -109,7 +110,7 @@ struct StarReceiptTextBuilderTests {
 
         // Then
         for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
-            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+            #expect(line.count <= ReceiptTextRenderer.Constants.defaultLineWidth)
         }
     }
 
@@ -128,7 +129,7 @@ struct StarReceiptTextBuilderTests {
         // Then
         let lines = receipt.split(separator: "\n").map(String.init)
         #expect(receipt.contains("Extra Large Premium Organic Cotton"))
-        #expect(lines.contains { $0.hasSuffix("$89.00") && $0.count <= StarReceiptTextBuilder.Constants.defaultLineWidth })
+        #expect(lines.contains { $0.hasSuffix("$89.00") && $0.count <= ReceiptTextRenderer.Constants.defaultLineWidth })
     }
 
     @Test func test_makeReceiptText_renders_line_item_attributes_after_title() {
@@ -206,7 +207,7 @@ struct StarReceiptTextBuilderTests {
 
         // Then
         for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
-            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+            #expect(line.count <= ReceiptTextRenderer.Constants.defaultLineWidth)
         }
     }
 
@@ -221,12 +222,12 @@ struct StarReceiptTextBuilderTests {
 
         // Then
         for line in receipt.split(separator: "\n", omittingEmptySubsequences: false) {
-            #expect(line.count <= StarReceiptTextBuilder.Constants.defaultLineWidth)
+            #expect(line.count <= ReceiptTextRenderer.Constants.defaultLineWidth)
         }
     }
 }
 
-private extension StarReceiptTextBuilderTests {
+private extension ReceiptTextRendererTests {
     func makeContent(orderNote: String? = nil,
                      lineItems: [ReceiptLineItem] = [ReceiptLineItem(title: "T-Shirt", quantity: "1", amount: "$25.00", attributes: [])],
                      cartTotals: [ReceiptTotalLine] = [ReceiptTotalLine(description: "Subtotal", amount: "$25.00"),

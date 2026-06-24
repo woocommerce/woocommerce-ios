@@ -31,11 +31,17 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
 }
 
 /// Default `ReceiptPrinterServiceProtocol`, backed by an injected Hardware discovery service.
+///
+/// Renders the receipt to text in this layer and hands the finished text to the Hardware backend,
+/// keeping all receipt content and layout out of the printer SDK.
 public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private let printerDiscoveryService: PrinterDiscoveryService
+    private let receiptTextRenderer: ReceiptTextRenderer
 
-    public init(printerDiscoveryService: PrinterDiscoveryService) {
+    public init(printerDiscoveryService: PrinterDiscoveryService,
+                receiptTextRenderer: ReceiptTextRenderer = ReceiptTextRenderer()) {
         self.printerDiscoveryService = printerDiscoveryService
+        self.receiptTextRenderer = receiptTextRenderer
     }
 
     public func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
@@ -61,8 +67,9 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     public func printReceipt(content: ReceiptContent,
                              storeInformation: ReceiptStoreInformation,
                              cardDetails: CardPresentTransactionDetails?) async throws {
-        try await printerDiscoveryService.printReceipt(content: content,
+        let text = receiptTextRenderer.makeReceiptText(content: content,
                                                        storeInformation: storeInformation,
                                                        cardDetails: cardDetails)
+        try await printerDiscoveryService.printReceipt(text: text)
     }
 }

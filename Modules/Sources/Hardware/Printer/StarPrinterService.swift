@@ -59,12 +59,8 @@ public final class StarPrinterService: PrinterDiscoveryService {
         await coordinator.disconnect()
     }
 
-    public func printReceipt(content: ReceiptContent,
-                             storeInformation: ReceiptStoreInformation,
-                             cardDetails: CardPresentTransactionDetails?) async throws {
-        try await coordinator.printReceipt(content: content,
-                                           storeInformation: storeInformation,
-                                           cardDetails: cardDetails)
+    public func printReceipt(text: String) async throws {
+        try await coordinator.printReceipt(text: text)
     }
 }
 
@@ -93,9 +89,6 @@ private actor StarPrinterCoordinator {
     /// most one printer at a time. The check-and-set is atomic here because the actor admits no other call
     /// between the guard and the assignment below (there is no suspension point between them).
     private var isConnecting = false
-
-    /// Renders receipt data into the plain text wrapped into a StarXpand print command. Stateless.
-    private let receiptTextBuilder = StarReceiptTextBuilder()
 
     /// The latest connection status, replayed to each new observer so it never starts out of sync.
     private var connectionStatus: PrinterConnectionStatus = .idle
@@ -212,15 +205,13 @@ private actor StarPrinterCoordinator {
         emit(.disconnected)
     }
 
-    func printReceipt(content: ReceiptContent,
-                      storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?) async throws {
+    func printReceipt(text: String) async throws {
         guard let printer else {
             DDLogError("🖨️ Cannot print: no printer connected")
             throw PrinterError.printerNotConnected
         }
 
-        let command = printCommand(content: content, storeInformation: storeInformation, cardDetails: cardDetails)
+        let command = printCommand(text: text)
         do {
             try await printer.print(command: command)
             DDLogInfo("🖨️ Receipt printed")
@@ -269,13 +260,8 @@ private extension StarPrinterCoordinator {
         previous.manager.stopDiscovery()
     }
 
-    /// Wraps the rendered receipt text into a StarXpand print command.
-    func printCommand(content: ReceiptContent,
-                      storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?) -> String {
-        let text = receiptTextBuilder.makeReceiptText(content: content,
-                                                      storeInformation: storeInformation,
-                                                      cardDetails: cardDetails)
+    /// Wraps the already-rendered receipt text into a StarXpand print command.
+    func printCommand(text: String) -> String {
         let printerBuilder = StarXpandCommand.PrinterBuilder()
             .actionPrintText(text)
             .actionFeedLine(2)

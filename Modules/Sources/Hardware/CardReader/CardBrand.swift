@@ -75,37 +75,4 @@ extension CardBrand {
             return "unknown"
         }
     }
-
-    /// Human-readable brand name for display on receipts.
-    ///
-    /// Deliberately not localized: these are proper nouns whose spelling and casing are set by the
-    /// card networks' branding requirements (e.g. "Mastercard", "eftpos"). `unknown` has no name to show.
-    var displayName: String {
-        switch self {
-        case .visa:
-            return "Visa"
-        case .amex:
-            return "American Express"
-        case .masterCard:
-            return "Mastercard"
-        case .discover:
-            return "Discover"
-        case .jcb:
-            return "JCB"
-        case .dinersClub:
-            return "Diners Club"
-        case .interac:
-            return "Interac"
-        case .unionPay:
-            return "UnionPay"
-        case .eftposAu:
-            return "eftpos"
-        case .cartesBancaires:
-            return "Cartes Bancaires"
-        case .girocard:
-            return "girocard"
-        case .unknown:
-            return ""
-        }
-    }
 }

@@ -103,19 +103,23 @@ struct ReceiptPrinterServiceTests {
         #expect(printerDiscoveryService.disconnectWasCalled)
     }
 
-    @Test func test_printReceipt_forwards_arguments_to_service() async throws {
+    @Test func test_printReceipt_renders_text_and_forwards_to_service() async throws {
         // Given
         let sut = makeService()
         let content = ReceiptContent(parameters: .fake(), lineItems: [], cartTotals: [], orderNote: nil)
-        let storeInformation = ReceiptStoreInformation.empty
+        let storeInformation = ReceiptStoreInformation(storeName: "My Store",
+                                                       storeAddress: nil,
+                                                       phone: nil,
+                                                       email: nil,
+                                                       refundReturnsPolicy: nil)
 
         // When
         try await sut.printReceipt(content: content, storeInformation: storeInformation, cardDetails: nil)
 
         // Then
-        #expect(printerDiscoveryService.printedContent != nil)
-        #expect(printerDiscoveryService.printedStoreInformation == storeInformation)
-        #expect(printerDiscoveryService.printedCardDetails == nil)
+        // The service renders the receipt to text in this layer, so the backend receives finished text
+        // (here including the store header) rather than receipt content.
+        #expect(printerDiscoveryService.printedText?.contains("My Store") == true)
     }
 
     @Test func test_printReceipt_when_service_throws_then_propagates_error() async {

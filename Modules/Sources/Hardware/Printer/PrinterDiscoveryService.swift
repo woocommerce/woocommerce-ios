@@ -19,11 +19,9 @@ public protocol PrinterDiscoveryService: AnyObject {
     /// Disconnects from the currently connected printer, if any.
     func disconnect() async
 
-    /// Prints a receipt on the connected printer.
+    /// Prints already-rendered receipt text on the connected printer.
     ///
-    /// `cardDetails` are included in the printed card/EMV block when present; pass `nil` for
-    /// cash and other payment methods so the receipt prints without card fields.
-    func printReceipt(content: ReceiptContent,
-                      storeInformation: ReceiptStoreInformation,
-                      cardDetails: CardPresentTransactionDetails?) async throws
+    /// The text is composed by the caller (Yosemite); this backend only wraps it into the
+    /// printer's own print command, so it stays agnostic of receipt content and layout.
+    func printReceipt(text: String) async throws
 }

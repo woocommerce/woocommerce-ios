@@ -1,16 +1,17 @@
 import Foundation
+import Hardware
 
 /// Renders receipt data into a plain-text body for thermal (text-only) printing.
 ///
-/// Pure and free of any printer SDK: it produces the human-readable receipt text that
-/// `StarPrinterService` wraps into a StarXpand print command. The card/EMV block is included
-/// only when card details are present, so cash and other payment methods render cleanly.
-public struct StarReceiptTextBuilder {
+/// Pure and printer-agnostic: it produces the human-readable receipt text that a printer
+/// backend wraps into its own print command. The card/EMV block is included only when card
+/// details are present, so cash and other payment methods render cleanly.
+public struct ReceiptTextRenderer {
     private let lineWidth: Int
     private let dateFormatter: DateFormatter
 
     public init(lineWidth: Int = Constants.defaultLineWidth,
-                dateFormatter: DateFormatter = StarReceiptTextBuilder.makeDefaultDateFormatter()) {
+                dateFormatter: DateFormatter = ReceiptTextRenderer.makeDefaultDateFormatter()) {
         precondition(lineWidth > 0, "lineWidth must be positive; the wrapping logic assumes at least one column.")
         self.lineWidth = lineWidth
         self.dateFormatter = dateFormatter
@@ -49,7 +50,7 @@ public struct StarReceiptTextBuilder {
     }
 }
 
-private extension StarReceiptTextBuilder {
+private extension ReceiptTextRenderer {
     func headerLines(content: ReceiptContent, storeInformation: ReceiptStoreInformation) -> [String] {
         var lines: [String] = []
         if let storeName = storeInformation.storeName ?? content.parameters.storeName, storeName.isEmpty == false {
@@ -200,7 +201,7 @@ private extension StarReceiptTextBuilder {
     }
 }
 
-public extension StarReceiptTextBuilder {
+public extension ReceiptTextRenderer {
     enum Constants {
         /// Characters per line for an 80mm thermal roll at the default font.
         public static let defaultLineWidth = 48
@@ -214,55 +215,55 @@ public extension StarReceiptTextBuilder {
     }
 }
 
-private extension StarReceiptTextBuilder {
+private extension ReceiptTextRenderer {
     enum Localization {
         static let datePaid = NSLocalizedString(
-            "hardware.receipt.datePaid",
+            "receipt.datePaid",
             value: "Date Paid",
             comment: "Label above the payment date on a printed receipt.")
 
         static let orderNumber = NSLocalizedString(
-            "hardware.receipt.orderNumber",
+            "receipt.orderNumber",
             value: "Order #%1$@",
             comment: "Order number line on a printed receipt. %1$@ is the order ID.")
 
         static let paymentMethod = NSLocalizedString(
-            "hardware.receipt.paymentMethod",
+            "receipt.paymentMethod",
             value: "Payment Method",
             comment: "Label above the card payment method on a printed receipt.")
 
         static let cardBrandAndLast4 = NSLocalizedString(
-            "hardware.receipt.cardBrandAndLast4",
+            "receipt.cardBrandAndLast4",
             value: "%1$@ - %2$@",
             comment: "Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits.")
 
         static let notes = NSLocalizedString(
-            "hardware.receipt.notes",
+            "receipt.notes",
             value: "Notes",
             comment: "Label above the order note on a printed receipt.")
 
         static let applicationName = NSLocalizedString(
-            "hardware.receipt.applicationName",
+            "receipt.applicationName",
             value: "Application Name: %1$@",
             comment: "EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name.")
 
         static let aid = NSLocalizedString(
-            "hardware.receipt.aid",
+            "receipt.aid",
             value: "AID: %1$@",
             comment: "EMV Application Identifier line on a printed receipt. %1$@ is the AID value.")
 
         static let accountType = NSLocalizedString(
-            "hardware.receipt.accountType",
+            "receipt.accountType",
             value: "Account Type: %1$@",
             comment: "EMV account type line on a printed receipt. %1$@ is the account type.")
 
         static let itemTitleAndQuantity = NSLocalizedString(
-            "hardware.receipt.itemTitleAndQuantity",
+            "receipt.itemTitleAndQuantity",
             value: "%1$@ x%2$@",
             comment: "A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity.")
 
         static let itemTitleWithAttributes = NSLocalizedString(
-            "hardware.receipt.itemTitleWithAttributes",
+            "receipt.itemTitleWithAttributes",
             value: "%1$@. %2$@",
             comment: "A line item title with its product attributes on a printed receipt. "
                 + "%1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations).")

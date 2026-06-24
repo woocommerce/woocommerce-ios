@@ -269,6 +269,7 @@ public typealias PrinterDevice = Hardware.PrinterDevice
 public typealias PrinterConnectionStatus = Hardware.PrinterConnectionStatus
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
 public typealias CardPresentTransactionDetails = Hardware.CardPresentTransactionDetails
+public typealias ReceiptContent = Hardware.ReceiptContent
 public typealias StripeAccount = Networking.StripeAccount
 public typealias WCPayAccount = Networking.WCPayAccount
 public typealias WCPayAccountStatusEnum = Networking.WCPayAccountStatusEnum

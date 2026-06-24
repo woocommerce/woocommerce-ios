@@ -24,7 +24,7 @@ struct DefaultPOSPINAuthenticatorTests {
         // Then
         #expect(staff.userID == 7)
         #expect(staff.displayName == "Manny")
-        #expect(staff.preset == "pos_manager")
+        #expect(staff.preset == .manager)
     }
 
     @MainActor

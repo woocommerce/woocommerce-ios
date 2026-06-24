@@ -110,10 +110,7 @@ private extension ReceiptTextRenderer {
     /// (e.g. variations) appended after the title to match the AirPrint receipt format.
     func itemTitle(_ item: ReceiptLineItem) -> String {
         var title = item.title
-        let variations = item.attributes
-            .map { "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces) }
-            .filter { $0.isEmpty == false }
-            .joined(separator: ", ")
+        let variations = item.attributesDescription
         if variations.isEmpty == false {
             title = String.localizedStringWithFormat(Localization.itemTitleWithAttributes, title, variations)
         }

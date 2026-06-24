@@ -1,57 +1,49 @@
 //  Color+StoreColorPalette.swift
 //
-//  GENERATED from the Mobile Design System Figma color tokens. Do not edit by hand.
-//  Regenerate via .context/gen_colors.py after a new color token export.
+//  GENERATED from the Mobile Design System Figma Semantic color layer. Do not edit by hand.
+//  Regenerate via .context/gen_colors.py after a new Semantic color export.
 //
-//  Semantic tokens only. Each color resolves to a 4-appearance asset
-//  (light / light high-contrast / dark / dark high-contrast).
+//  Role-based semantic colors (the layer components consume). Each token resolves to a
+//  Light/Dark colorset. High contrast is intentionally not modeled at this layer.
 
 import SwiftUI
 
 public extension Color {
-    // MARK: - Status
-    static var storeError: Color { Color("storeError", bundle: .module) }
-    static var storeOnError: Color { Color("storeOnError", bundle: .module) }
-    static var storeWarning: Color { Color("storeWarning", bundle: .module) }
-    static var storeOnWarning: Color { Color("storeOnWarning", bundle: .module) }
-    static var storeCaution: Color { Color("storeCaution", bundle: .module) }
-    static var storeOnCaution: Color { Color("storeOnCaution", bundle: .module) }
-    static var storeSuccess: Color { Color("storeSuccess", bundle: .module) }
-    static var storeOnSuccess: Color { Color("storeOnSuccess", bundle: .module) }
-    static var storeInfo: Color { Color("storeInfo", bundle: .module) }
-    static var storeOnInfo: Color { Color("storeOnInfo", bundle: .module) }
-    static var storeNeutral: Color { Color("storeNeutral", bundle: .module) }
-    static var storeOnNeutral: Color { Color("storeOnNeutral", bundle: .module) }
-    static var storeNeutralOutlined: Color { Color("storeNeutralOutlined", bundle: .module) }
-    static var storeOnNeutralOutlined: Color { Color("storeOnNeutralOutlined", bundle: .module) }
-    static var storePrimary: Color { Color("storePrimary", bundle: .module) }
-    static var storeOnPrimary: Color { Color("storeOnPrimary", bundle: .module) }
-    static var storeSecondary: Color { Color("storeSecondary", bundle: .module) }
-    static var storeOnSecondary: Color { Color("storeOnSecondary", bundle: .module) }
+    // MARK: - Interactive
+    static var storeInteractivePrimary: Color { Color("storeInteractivePrimary", bundle: .module) }
+    static var storeInteractiveDestructive: Color { Color("storeInteractiveDestructive", bundle: .module) }
+
+    // MARK: - Primary
+    static var storePrimaryPressed: Color { Color("storePrimaryPressed", bundle: .module) }
+
+    // MARK: - Text
+    static var storeTextPrimary: Color { Color("storeTextPrimary", bundle: .module) }
+    static var storeTextSecondary: Color { Color("storeTextSecondary", bundle: .module) }
+    static var storeTextTertiary: Color { Color("storeTextTertiary", bundle: .module) }
+    static var storeTextDisabled: Color { Color("storeTextDisabled", bundle: .module) }
+    static var storeTextOnPrimary: Color { Color("storeTextOnPrimary", bundle: .module) }
+
+    // MARK: - Icon
+    static var storeIconPrimary: Color { Color("storeIconPrimary", bundle: .module) }
 
     // MARK: - Surface
-    static var storeSurface: Color { Color("storeSurface", bundle: .module) }
-    static var storeOnSurface: Color { Color("storeOnSurface", bundle: .module) }
-    static var storeOnSurfaceVariant: Color { Color("storeOnSurfaceVariant", bundle: .module) }
-    static var storeOnSurfaceLowest: Color { Color("storeOnSurfaceLowest", bundle: .module) }
-    static var storeOnSurfaceHighest: Color { Color("storeOnSurfaceHighest", bundle: .module) }
-    static var storeInvertedSurface: Color { Color("storeInvertedSurface", bundle: .module) }
-    static var storeOnInvertedSurface: Color { Color("storeOnInvertedSurface", bundle: .module) }
-    static var storeOnInvertedSurfaceVariant: Color { Color("storeOnInvertedSurfaceVariant", bundle: .module) }
-    static var storeTooltip: Color { Color("storeTooltip", bundle: .module) }
-    static var storeOnTooltip: Color { Color("storeOnTooltip", bundle: .module) }
+    static var storeSurfacePrimary: Color { Color("storeSurfacePrimary", bundle: .module) }
+    static var storeSurfaceSecondary: Color { Color("storeSurfaceSecondary", bundle: .module) }
+    static var storeSurfaceOverlay: Color { Color("storeSurfaceOverlay", bundle: .module) }
 
-    // MARK: - Background
-    static var storeSectionBackground: Color { Color("storeSectionBackground", bundle: .module) }
-    static var storeOnSectionBackground: Color { Color("storeOnSectionBackground", bundle: .module) }
-    static var storeSectionBackgroundVariant: Color { Color("storeSectionBackgroundVariant", bundle: .module) }
-    static var storeOnSectionBackgroundVariant: Color { Color("storeOnSectionBackgroundVariant", bundle: .module) }
+    // MARK: - Border
+    static var storeBorderDefault: Color { Color("storeBorderDefault", bundle: .module) }
+    static var storeBorderFocused: Color { Color("storeBorderFocused", bundle: .module) }
 
-    // MARK: - Outline
-    static var storeOutline: Color { Color("storeOutline", bundle: .module) }
-    static var storeOutlineVariant: Color { Color("storeOutlineVariant", bundle: .module) }
+    // MARK: - Status
+    static var storeStatusSuccess: Color { Color("storeStatusSuccess", bundle: .module) }
+    static var storeStatusError: Color { Color("storeStatusError", bundle: .module) }
+    static var storeStatusWarning: Color { Color("storeStatusWarning", bundle: .module) }
 
-    // MARK: - Overlay
-    static var storeOverlay20: Color { Color("storeOverlay20", bundle: .module) }
-    static var storeOverlay50: Color { Color("storeOverlay50", bundle: .module) }
+    // MARK: - Label
+    static var storeLabelPrimary: Color { Color("storeLabelPrimary", bundle: .module) }
+    static var storeLabelSecondary: Color { Color("storeLabelSecondary", bundle: .module) }
+    static var storeLabelTertiary: Color { Color("storeLabelTertiary", bundle: .module) }
+    static var storeLabelDisabled: Color { Color("storeLabelDisabled", bundle: .module) }
+    static var storeLabelOnPrimary: Color { Color("storeLabelOnPrimary", bundle: .module) }
 }

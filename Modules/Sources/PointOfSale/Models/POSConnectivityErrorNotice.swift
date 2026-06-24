@@ -8,7 +8,7 @@ enum POSConnectivityErrorNotice {
     )
 
     static let subtitle = NSLocalizedString(
-        "pos.itemList.connectivityErrorSubtitle",
+        "pos.connectivity.subtitle",
         value: "Please check your internet connection and try again.",
         comment: "Subtitle appearing on error screens when there is a network connectivity error."
     )

@@ -17,10 +17,6 @@ let package = Package(
     targets: [
         .target(
             name: "StoreDesignSystem"
-        ),
-        .testTarget(
-            name: "StoreDesignSystemTests",
-            dependencies: ["StoreDesignSystem"]
         )
     ]
 )

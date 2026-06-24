@@ -16,9 +16,8 @@ import class Yosemite.POSSiteSettingService
 import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
-import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
-import enum PointOfSale.POSEligibilityState
-import enum PointOfSale.POSIneligibleReason
+import protocol WooFoundation.ConnectivityObserver
+import PointOfSale
 import enum Yosemite.POSCountryCurrencyValidator
 import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
 import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
@@ -31,16 +30,19 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
     private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+    private let connectivityObserver: ConnectivityObserver
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          stores: StoresManager = ServiceLocator.stores,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService()) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
+        self.connectivityObserver = connectivityObserver
         self.expansionEligibilityService = expansionEligibilityService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
@@ -65,6 +67,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         // Bypass eligibility checks for screenshot tests
         if ProcessConfiguration.shouldBypassPOSEligibilityChecks {
             return .eligible
+        }
+
+        guard connectivityObserver.currentStatus != .notReachable else {
+            return .ineligible(reason: .noInternetConnection)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
@@ -94,9 +100,12 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             } catch POSTabEligibilityCheckerError.selfDeallocated {
                 return .ineligible(reason: .selfDeallocated)
             } catch {
+                if error.isConnectivityError {
+                    return .ineligible(reason: .noInternetConnection)
+                }
                 throw error
             }
-        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
+        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .noInternetConnection:
             return await checkEligibility()
         case .featureSwitchDisabled:
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
@@ -128,6 +137,9 @@ private extension POSTabEligibilityChecker {
                 return isFeatureSwitchEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled)
             }
         } catch {
+            if error.isConnectivityError {
+                return .ineligible(reason: .noInternetConnection)
+            }
             return .ineligible(reason: .wooCommercePluginNotFound)
         }
     }

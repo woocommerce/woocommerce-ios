@@ -15,6 +15,7 @@ struct POSTabEligibilityCheckerTests {
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private var mockSiteSettingService: MockPOSSiteSettingService!
+    private var connectivityObserver: MockConnectivityObserver!
     private let site = Site.fake().copy(siteID: 2)
     private var siteID: Int64 { site.siteID }
     private let ineligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: false)
@@ -28,6 +29,9 @@ struct POSTabEligibilityCheckerTests {
         siteSettings = MockSelectedSiteSettings()
         mockSystemStatusService = MockPOSSystemStatusService()
         mockSiteSettingService = MockPOSSiteSettingService()
+        connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
+        ServiceLocator.setConnectivityObserver(connectivityObserver)
         setupWooCommerceVersion()
     }
 
@@ -226,6 +230,55 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
+    @Test func checkEligibility_returns_noInternetConnection_when_connectivity_is_not_reachable() async throws {
+        // Given
+        let offlineConnectivityObserver = MockConnectivityObserver()
+        offlineConnectivityObserver.setStatus(.notReachable)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService,
+                                               connectivityObserver: offlineConnectivityObserver)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_system_status_request_fails_with_connectivity_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(URLError(.notConnectedToInternet))
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_wooCommercePluginNotFound_when_system_status_request_fails_with_generic_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
+    }
+
     // MARK: - `refreshEligibility` Tests
 
     @Test(arguments: [
@@ -277,7 +330,7 @@ struct POSTabEligibilityCheckerTests {
             switch action {
             case .synchronizeGeneralSiteSettings(_, let completion):
                 syncCalled = true
-                completion(NSError(domain: "test", code: 500)) // Network error
+                completion(NSError(domain: "test", code: 500)) // Generic error
             default:
                 break
             }
@@ -287,12 +340,40 @@ struct POSTabEligibilityCheckerTests {
                                                siteSettings: siteSettings,
                                                stores: stores)
 
-        // When & Then - Should throw the network error
+        // When & Then - Should throw the generic error
         #expect(syncCalled == false) // Not called yet
         await #expect(throws: NSError.self) {
             try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
         }
         #expect(syncCalled == true) // Called during the attempt
+    }
+
+    @Test func refreshEligibility_returns_noInternetConnection_when_site_settings_sync_fails_with_connectivity_error() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0")
+
+        var syncCalled = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .synchronizeGeneralSiteSettings(_, let completion):
+                syncCalled = true
+                completion(URLError(.notConnectedToInternet))
+            default:
+                break
+            }
+        }
+
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .siteSettingsNotAvailable)
+
+        // Then
+        #expect(syncCalled == true)
+        #expect(result == .ineligible(reason: .noInternetConnection))
     }
 
     @Test func refreshEligibility_checks_eligibility_for_featureSwitchDisabled() async throws {
@@ -325,6 +406,23 @@ struct POSTabEligibilityCheckerTests {
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
+
+        // Then - Should check eligibility again (now eligible)
+        #expect(result == .eligible)
+    }
+
+    @Test func refreshEligibility_rechecks_eligibility_for_noInternetConnection() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
+
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .noInternetConnection)
 
         // Then - Should check eligibility again (now eligible)
         #expect(result == .eligible)

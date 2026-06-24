@@ -43,32 +43,32 @@ extension POSSettingsView {
 
             VStack(spacing: POSSpacing.small) {
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.store.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
-                                    isSelected: selection == .store,
-                                    action: {
+                                subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
+                                isSelected: selection == .store,
+                                action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                     selection = .store
                 })
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.hardware.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
-                                    isSelected: selection == .hardware,
-                                    action: {
+                                subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
+                                isSelected: selection == .hardware,
+                                action: {
                     analytics.track(.pointOfSaleSettingsHardwareTapped)
                     selection = .hardware
                 })
                 if settingsController.isLocalCatalogEligible {
                     POSSettingsCard(title: POSSettingsView.SidebarNavigation.localCatalog.title,
-                                        subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
-                                        isSelected: selection == .localCatalog,
-                                        action: {
+                                    subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
+                                    isSelected: selection == .localCatalog,
+                                    action: {
                         selection = .localCatalog
                     })
                 }
                 if isStaffSectionVisible {
                     POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
-                                        subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
-                                        isSelected: selection == .staff,
-                                        action: {
+                                    subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
+                                    isSelected: selection == .staff,
+                                    action: {
                         selection = .staff
                     })
                 }

@@ -563,8 +563,6 @@ final class ShipmentStoreTests: XCTestCase {
         let mockTrackingID = "f2e7783b40837b9e1ec503a149dab4a1"
         let mockDateShipped = "2019-04-01"
 
-        // The network response is now parsed off the main thread, so wait for the tracking to be
-        // added before asserting on storage.
         let addExpectation = self.expectation(description: "Add shipment tracking")
         shipmentStore.addTracking(siteID: sampleSiteID,
                                   orderID: sampleOrderID,

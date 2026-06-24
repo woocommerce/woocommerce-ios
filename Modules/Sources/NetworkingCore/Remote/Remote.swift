@@ -124,10 +124,6 @@ open class Remote: NSObject {
     ///
     /// - Returns: A publisher that emits result upon completion.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
-        // Delivered via GCD (parseResponseInBackground + main) rather than Combine schedulers:
-        // chaining `.receive(on:)` hops could drop the emitted value under heavy concurrency.
-        // A bare (eager) Future matches the previous publisher: the request is enqueued when the
-        // publisher is created and its single result is replayed to subscribers.
         Future { [weak self] promise in
             guard let self else {
                 return

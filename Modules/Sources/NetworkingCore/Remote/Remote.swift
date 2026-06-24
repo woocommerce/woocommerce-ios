@@ -136,12 +136,10 @@ open class Remote: NSObject {
                     }
                 case .failure(let error):
                     let mappedError = self.mapNetworkError(error: error, for: request)
-                    DispatchQueue.main.async {
-                        if let dotcomError = mappedError as? DotcomError {
-                            self.handleResponseError(error: dotcomError, for: request)
-                        }
-                        promise(.success(.failure(mappedError)))
+                    if let dotcomError = mappedError as? DotcomError {
+                        self.handleResponseError(error: dotcomError, for: request)
                     }
+                    promise(.success(.failure(mappedError)))
                 }
             }
         }

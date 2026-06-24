@@ -73,7 +73,7 @@ open class Remote: NSObject {
                 return
             }
 
-            self.parseResponseInBackground(data, request: request, mapper: mapper) { result in
+            self.parseResponse(data, request: request, mapper: mapper) { result in
                 switch result {
                 case .success(let parsed):
                     completion(parsed, nil)
@@ -102,7 +102,7 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                self.parseResponseInBackground(data, request: request, mapper: mapper, completion: completion)
+                self.parseResponse(data, request: request, mapper: mapper, completion: completion)
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))
             }
@@ -131,7 +131,7 @@ open class Remote: NSObject {
 
                 switch result {
                 case .success(let data):
-                    self.parseResponseInBackground(data, request: request, mapper: mapper) { parsed in
+                    self.parseResponse(data, request: request, mapper: mapper) { parsed in
                         promise(.success(parsed))
                     }
                 case .failure(let error):
@@ -174,7 +174,7 @@ open class Remote: NSObject {
                                                 return
                                             }
 
-                                            self.parseResponseInBackground(data, request: request, mapper: mapper, completion: completion)
+                                            self.parseResponse(data, request: request, mapper: mapper, completion: completion)
         }
     }
 
@@ -227,7 +227,7 @@ private extension Remote {
 
     /// Validates and maps `data` on a background queue, then delivers the result — and any error
     /// handling/notifications — back on the main queue.
-    func parseResponseInBackground<M: Mapper>(_ data: Data,
+    func parseResponse<M: Mapper>(_ data: Data,
                                               request: Request,
                                               mapper: M,
                                               completion: @escaping (Result<M.Output, Error>) -> Void) {

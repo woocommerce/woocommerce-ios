@@ -33,6 +33,12 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
+            #if DEBUG
+            NavigationLink(destination: DesignSystemGalleryView()) {
+                Text("Design System")
+            }
+            #endif
+
             Section("Announcements") {
                 Button("Fetch Test Announcement (v999.0)") {
                     fetchTestAnnouncement()

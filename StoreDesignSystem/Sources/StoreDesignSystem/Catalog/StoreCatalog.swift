@@ -58,4 +58,23 @@ public enum StoreTextStyleCatalog {
         StoreTextStyleToken(name: "bodySmall", style: .bodySmall)
     ]
 }
+
+// MARK: - Scalar catalogs (hand-maintained)
+
+public struct StoreScalarToken: Identifiable {
+    public let name: String
+    public let value: CGFloat
+    public var id: String { name }
+}
+
+public enum StoreIconSizeCatalog {
+    public static let all: [StoreScalarToken] = [
+        StoreScalarToken(name: "extraSmall", value: StoreIconSize.extraSmall),
+        StoreScalarToken(name: "small", value: StoreIconSize.small),
+        StoreScalarToken(name: "medium", value: StoreIconSize.medium),
+        StoreScalarToken(name: "large", value: StoreIconSize.large),
+        StoreScalarToken(name: "largeIncreased", value: StoreIconSize.largeIncreased),
+        StoreScalarToken(name: "extraLarge", value: StoreIconSize.extraLarge)
+    ]
+}
 #endif

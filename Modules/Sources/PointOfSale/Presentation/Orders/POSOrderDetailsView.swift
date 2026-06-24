@@ -26,7 +26,6 @@ struct POSOrderDetailsView: View {
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posAccessSession) private var accessSession
     @State private var isShowingEmailReceiptView = false
@@ -47,10 +46,6 @@ struct POSOrderDetailsView: View {
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
-    }
-
-    private var shouldShowDedicatedRefundsSection: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
     }
 
     private var dateFormatter: DateFormatter {
@@ -98,7 +93,7 @@ struct POSOrderDetailsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
-                    if shouldShowDedicatedRefundsSection && isLoadingOrderRefunds {
+                    if isLoadingOrderRefunds {
                         // Render skeletons for both sections while refund details load so
                         // the items don't get rearranged when filtering kicks in.
                         ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
@@ -110,7 +105,7 @@ struct POSOrderDetailsView: View {
                             itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
                         }
                         let refundedItems = order.refunds.flatMap { $0.items }
-                        if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                        if !refundedItems.isEmpty {
                             refundedProductsSection(refundedItems)
                         }
                     }
@@ -187,7 +182,6 @@ struct POSOrderDetailsView: View {
         }
         .posManagerOverrideModal(handler: refundOverrideHandler)
         .task {
-            guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()
         }
         .task {
@@ -538,14 +532,6 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            // The refund button is always visible when refunds are enabled. When the
-            // operator lacks `woocommerce_pos_issue_refunds`, tapping it pops a manager-override
-            // modal; an approver's PIN unlocks the action and their user id is sent as the
-            // refund's `X-WC-POS-Staff-Id` actor header (the cashier becomes the initiator).
-            guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
-                return .init(primary: email, secondary: [])
-            }
-
             switch orderListModel.ordersController.refundActionAvailability {
             case .available:
                 return .init(primary: .issueRefund, secondary: [email])

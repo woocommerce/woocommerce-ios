@@ -113,8 +113,11 @@ struct ItemListView: View {
     /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
     @State private var isAddingCustomAmount: Bool = false
 
+    @State private var navigationResetID: Int = 0
+
     var body: some View {
         navigationContainer
+            .id(navigationResetID)
             // The phone cart button and the iPad floating control are suppressed while the
             // add-custom-amount form is pushed. Emit that request from this always-present view,
             // keyed on the push flag, so it reverts the instant the form is popped: a preference
@@ -125,16 +128,8 @@ struct ItemListView: View {
 
     @ViewBuilder
     private var navigationContainer: some View {
-        if #available(iOS 18.0, *) {
-            NavigationStack {
-                content
-            }
-        } else {
-            // On iOS 17, NavigationStack causes memory leaks when the POS is closed, NavigationView is a fallback.
-            NavigationView {
-                content
-            }
-            .navigationViewStyle(.stack)
+        NavigationStack {
+            content
         }
     }
 
@@ -152,8 +147,6 @@ struct ItemListView: View {
             }
             .ignoresSafeArea(.container)
         }
-        // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
-        // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
         })
@@ -186,6 +179,13 @@ struct ItemListView: View {
         .onChange(of: posModel.orderStage) { _, stage in
             guard stage != .building else { return }
             isAddingCustomAmount = false
+        }
+        // The left pane also owns product drill-down navigation. Only reset that navigation after a
+        // completed checkout starts a fresh empty cart. Returning to edit the current cart should
+        // preserve the merchant's place in the selector.
+        .onChange(of: posModel.orderStage) { oldStage, newStage in
+            guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
+            navigationResetID += 1
         }
     }
 
@@ -362,7 +362,7 @@ struct ItemListView: View {
 
     @ViewBuilder
     func childListView(parentItem: POSItem) -> some View {
-        // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
+        // Keep this destination paired with the variable-product NavigationLink in ItemListRow.
         switch parentItem {
         case let .variableParentProduct(parentProduct):
             ChildItemList(
@@ -401,32 +401,14 @@ struct ItemListView: View {
     }
 }
 
-/// Pushes a destination from a `Bool` flag, with separate paths for iOS 18+ (`navigationDestination`)
-/// and iOS 17 (programmatic `NavigationLink` to avoid the `navigationDestination(for:)` runtime
-/// warnings reported on `NavigationView`).
+/// Pushes a destination from a `Bool` flag.
 private struct CustomAmountFormPushModifier<Destination: View>: ViewModifier {
     @Binding var isPresented: Bool
     let destination: () -> Destination
 
     func body(content: Content) -> some View {
-        if #available(iOS 18.0, *) {
-            content.navigationDestination(isPresented: $isPresented) {
-                destination()
-            }
-        } else {
-            // The `NavigationLink(destination:isActive:label:)` initializer is deprecated since
-            // iOS 16, but its replacement (`navigationDestination(isPresented:)`) doesn't work
-            // reliably under the `NavigationView` wrapper we still use on iOS 17 for the memory-leak
-            // workaround documented in `ItemList.swift`. Mirrors the variations push fallback.
-            content.background(
-                NavigationLink(
-                    destination: destination(),
-                    isActive: $isPresented,
-                    label: { EmptyView() }
-                )
-                .opacity(0)
-                .frame(width: 0, height: 0)
-            )
+        content.navigationDestination(isPresented: $isPresented) {
+            destination()
         }
     }
 }
@@ -462,6 +444,7 @@ private extension ItemListView {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
                         }
+                        .accessibilityIdentifier("pos-search-button")
                         .transition(.opacity.combined(with: .scale))
 
                         if let phoneHeaderAccessoryBuilder {

@@ -23,15 +23,13 @@ final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
     private let refundsService = MockPOSRefundsService()
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
-    private lazy var featureFlags = MockFeatureFlagService()
     private lazy var currencySettingsProvider = MockCurrencySettingsProvider()
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     private lazy var refundSubmissionProcessor = MockPOSRefundSubmissionProcessor(refundsService: refundsService,
                                                                                   currencyFormatter: currencyFormatter)
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
                                                    refundsService: refundsService,
-                                                   refundSubmissionProcessor: refundSubmissionProcessor,
-                                                   featureFlags: featureFlags)
+                                                   refundSubmissionProcessor: refundSubmissionProcessor)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -388,23 +386,19 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func refundActionAvailability_when_feature_flag_disabled_then_unavailable() async throws {
+    @Test func refundActionAvailability_when_completed_order_selected_then_available() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = false
-        let order = makeOrder(id: 1) // completed by default
+        let order = makeOrder(id: 1)
 
         // When
         sut.selectOrder(order)
 
         // Then
-        #expect(sut.refundActionAvailability == .unavailable)
+        #expect(sut.refundActionAvailability == .available)
     }
 
     @MainActor
     @Test func refundActionAvailability_when_no_selected_order_then_unavailable() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-
         // When / Then
         #expect(sut.refundActionAvailability == .unavailable)
     }
@@ -412,7 +406,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func refundActionAvailability_when_order_completed_then_available() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(id: 1, status: .completed)
 
         // When
@@ -425,7 +418,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func refundActionAvailability_when_order_not_completed_then_unavailable() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(id: 1, status: .processing)
 
         // When
@@ -440,7 +432,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func preloadRefundDetails_when_refund_is_available_then_preloads_without_opening_refund_flow() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(id: 1, status: .completed)
         sut.selectOrder(order)
 
@@ -459,7 +450,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func preloadRefundDetails_when_refund_is_unavailable_then_does_not_preload() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(id: 1, status: .processing)
         sut.selectOrder(order)
 
@@ -516,7 +506,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func startRefundFlow_when_item_partially_refunded_then_excludes_refunded_quantity() async throws {
         // Given: Order has 3 units of item, 1 was previously refunded
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
             isFullyRefunded: false,
@@ -538,7 +527,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func startRefundFlow_when_item_fully_refunded_then_excludes_item_entirely() async throws {
         // Given: Order has 2 units of item, both were previously refunded
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
             isFullyRefunded: false,
@@ -585,7 +573,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_startRefundFlow_when_custom_amount_already_refunded_then_excludes_fee() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 777, quantity: 0, name: "Discount Fee",
                                                      formattedPrice: "", formattedTotal: "", imageSrc: nil, isLumpSum: true)])],
@@ -663,7 +650,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func startRefundFlow_when_multiple_refunds_exist_then_aggregates_refunded_quantities() async throws {
         // Given: Order has 5 units of item, refunded across two separate refunds (2 + 2 = 4)
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [
                 POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)]),
@@ -1125,7 +1111,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_then_submits_refund_with_correct_order_id() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1150,7 +1135,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_then_submits_refund_with_selected_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1179,7 +1163,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_then_submits_refund_with_reason() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1203,7 +1186,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_successful_then_clears_selection() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1228,7 +1210,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_submission_throws_then_propagates_error() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1283,7 +1264,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_no_items_are_selected_then_throws_emptySelection() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1308,7 +1288,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_refund_is_already_in_progress_then_throws_refundAlreadyInProgress() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1346,7 +1325,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_then_converts_items_with_correct_properties() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1377,7 +1355,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_supportsAutomaticRefund_is_true_then_submits_refund_with_automatic_refund_true() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1401,7 +1378,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_supportsAutomaticRefund_is_false_then_submits_refund_with_automatic_refund_false() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1425,7 +1401,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_successful_then_updates_order() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
             isFullyRefunded: false,
@@ -1454,7 +1429,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_loadOrderRefunds_when_order_has_refunds_then_enriches_refunds_with_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
@@ -1523,7 +1497,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_selectOrder_then_new_order_has_no_refunded_items() async throws {
         // Given: Load some refunded products first
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
@@ -1549,7 +1522,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_loadOrderRefunds_when_selected_order_changes_during_fetch_then_discards_stale_result() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let orderA = makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         let orderB = makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
         sut.selectOrder(orderA)
@@ -1578,7 +1550,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_displayedLineItems_when_loading_refunds_then_returns_all_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
         let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
@@ -1598,7 +1569,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_displayedLineItems_when_refunds_loaded_then_filters_fully_refunded_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let items = [makePOSOrderItem(itemID: 1, quantity: 2), makePOSOrderItem(itemID: 2, quantity: 1)]
         let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
@@ -1624,7 +1594,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_displayedLineItems_when_partially_refunded_then_includes_item() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let items = [makePOSOrderItem(itemID: 1, quantity: 3)]
         let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
@@ -1650,7 +1619,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_displayedCustomAmounts_when_fee_fully_refunded_then_filters_it_out() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
         let order = makeOrder(
             lineItems: [],
@@ -1680,7 +1648,6 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_displayedCustomAmounts_when_other_fee_unrefunded_then_keeps_it() async throws {
         // Given - one fee refunded, another not
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(
             lineItems: [],
             customAmounts: [
@@ -1715,7 +1682,6 @@ final class POSOrderListControllerTests {
         // Given - simulates an older WooCommerce store whose refund response omits `fee_lines`,
         // so the loaded refund has no entry pointing back to the original fee id. The fee
         // can't be filtered out and stays visible (documented limitation).
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
         let order = makeOrder(
             lineItems: [],
@@ -1738,9 +1704,8 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func test_displayedCustomAmounts_when_feature_flag_disabled_then_returns_all_custom_amounts() async throws {
+    @Test func test_displayedCustomAmounts_when_order_has_no_refunds_then_returns_all_custom_amounts() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = false
         let customAmount = makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
         let order = makeOrder(lineItems: [], customAmounts: [customAmount])
 
@@ -1752,9 +1717,8 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func test_displayedLineItems_when_feature_flag_disabled_then_returns_all_items() async throws {
+    @Test func test_displayedLineItems_when_no_items_refunded_then_returns_all_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = false
         let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
         let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
@@ -1771,8 +1735,7 @@ private extension POSOrderListControllerTests {
             orderListFetchStrategyFactory: fetchStrategyFactory,
             refundsService: refundsService,
             refundSubmissionProcessor: MockPOSRefundSubmissionProcessor(refundsService: refundsService,
-                                                                        currencyFormatter: formatter),
-            featureFlags: featureFlags
+                                                                        currencyFormatter: formatter)
         )
     }
 

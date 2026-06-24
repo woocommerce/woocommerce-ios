@@ -21,7 +21,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
             POSStaff(
                 userID: 1,
                 displayName: "Maya",
-                preset: "pos_manager",
+                preset: .manager,
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
             )
          ),
@@ -29,7 +29,7 @@ final class MockPOSPINAuthenticator: POSPINAuthenticating {
             POSStaff(
                 userID: 2,
                 displayName: "Morgan",
-                preset: "pos_manager",
+                preset: .manager,
                 capabilities: Set(POSCapability.allCases.map(\.rawValue))
             )
          )) {

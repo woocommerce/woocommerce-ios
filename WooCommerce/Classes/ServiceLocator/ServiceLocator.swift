@@ -121,6 +121,10 @@ final class ServiceLocator {
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
 
+    /// Support for discovering and connecting to external receipt printers
+    ///
+    private static var _printerDiscovery: PrinterDiscoveryService = StarPrinterService()
+
     /// Observer for network connectivity
     ///
     private static var _connectivityObserver: ConnectivityObserver = DefaultConnectivityObserver()
@@ -349,6 +353,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ReceiptPrinterService protocol.
     static var receiptPrinterService: PrinterService {
         _receiptPrinter
+    }
+
+    /// Provides the access point to the receipt printer device service used to discover and connect to physical printers.
+    /// - Returns: An implementation of the ReceiptPrinterServiceProtocol protocol.
+    static var posReceiptPrinterService: ReceiptPrinterServiceProtocol {
+        ReceiptPrinterService(printerDiscoveryService: _printerDiscovery)
     }
 
     /// Provides access point to the ConnectivityObserver.

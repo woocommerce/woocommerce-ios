@@ -675,7 +675,8 @@ private extension ShippingLabelSinglePackageViewModelTests {
                                        isLetter: true,
                                        dimensions: "10 x 40 x 3",
                                        boxWeight: 7,
-                                       maxWeight: 10)]
+                                       maxWeight: 10)
+        ]
 
         let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS",
                                                                providerID: "USPS",

@@ -270,8 +270,8 @@ final class SupportChatViewModel {
     private let botSlug: String
     private let stores: StoresManager
     private let analytics: Analytics
-    private var diagnosticsContext: [String: Any]?
-    private let initialContext: [String: Any]?
+    private var diagnosticsContext: RequestParameterDictionary?
+    private let initialContext: RequestParameterDictionary?
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
@@ -294,7 +294,7 @@ final class SupportChatViewModel {
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         initialContext: [String: Any]? = nil,
+         initialContext: RequestParameterDictionary? = nil,
          diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
          sessionID: String? = nil,
@@ -625,15 +625,15 @@ final class SupportChatViewModel {
     ///
     func proceedToChat() {
         // Build context from diagnostic results
-        var context: [String: Any] = initialContext ?? [:]
+        var context: RequestParameterDictionary = initialContext ?? [:]
 
         if let troubleshootingDescription = SupportDiagnosticsService.troubleshootingDescription(from: diagnosticResults) {
-            context["troubleshootingResults"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["selectedSiteId"] = site.siteID
-            context["site_url"] = site.url
+            context["selectedSiteId"] = .int64(site.siteID)
+            context["site_url"] = .string(site.url)
         }
 
         diagnosticsContext = context
@@ -695,7 +695,7 @@ final class SupportChatViewModel {
         state = .sending
 
         // Use diagnostics context on first message, then nil for subsequent messages
-        let context: [String: Any]? = {
+        let context: RequestParameterDictionary? = {
             if chatID == nil {
                 return diagnosticsContext ?? initialContext
             }

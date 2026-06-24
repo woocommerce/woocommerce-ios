@@ -106,7 +106,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
-    private let featureFlags: POSFeatureFlagProviding
     private var isProcessingRefund = false
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -120,20 +119,17 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          refundSubmissionProcessor: POSRefundSubmissionProcessing,
-         featureFlags: POSFeatureFlagProviding,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
-        self.featureFlags = featureFlags
     }
 
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              let order = selectedOrder,
+        guard let order = selectedOrder,
               order.status == .completed else {
             return .unavailable
         }
@@ -151,8 +147,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     @MainActor
     var displayedLineItems: [POSOrderItem] {
         guard let order = selectedOrder else { return [] }
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              !isLoadingOrderRefunds else {
+        guard !isLoadingOrderRefunds else {
             return order.lineItems
         }
         let refundedQuantities = order.refunds.flatMap(\.items).refundedQuantitiesByItemID()
@@ -173,8 +168,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     @MainActor
     var displayedCustomAmounts: [POSOrderCustomAmount] {
         guard let order = selectedOrder else { return [] }
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              !isLoadingOrderRefunds else {
+        guard !isLoadingOrderRefunds else {
             return order.customAmounts
         }
         let refundedItemIDs: Set<Int64> = Set(order.refunds.flatMap(\.items).compactMap(\.refundedItemID))
@@ -453,7 +447,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     }
 
     func loadOrderRefunds() async {
-        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             return
         }

@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Observation
+import struct Yosemite.POSStaffMember
 
 @Observable
 @MainActor
@@ -23,11 +24,11 @@ final class MockPOSAccessSession: POSAccessSession {
          hasAnyPINs: Bool = true,
          signInResult: Result<POSStaff, POSAuthError> = .success(
             POSStaff(userID: 1, displayName: "Maya",
-                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+                     preset: .manager, capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          managerApprovalResult: Result<POSStaff?, POSAuthError> = .success(
             POSStaff(userID: 2, displayName: "Morgan",
-                     preset: "pos_manager", capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+                     preset: .manager, capabilities: Set(POSCapability.allCases.map(\.rawValue)))
          ),
          checkLockoutResult: Result<Void, POSAuthError> = .success(())) {
         self.currentStaff = currentStaff
@@ -83,6 +84,7 @@ final class MockPOSAccessSession: POSAccessSession {
     }
 
     func refreshPINStatus() async {}
+    func refreshPINStatus(using staff: [POSStaffMember]) async {}
     func clearStaffCache() {}
 }
 

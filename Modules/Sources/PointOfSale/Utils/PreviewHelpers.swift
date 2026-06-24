@@ -54,6 +54,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -233,7 +234,8 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil
+        sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -253,7 +255,8 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker
+            sunsetWarningChecker: sunsetWarningChecker,
+            receiptPrinter: receiptPrinter
         )
     }
 
@@ -744,7 +747,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         // Preview implementation - no-op
     }
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         // no-op
     }
 

@@ -172,8 +172,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel2.isOrderCompleted)
     }
 
-    func test_origin_unverified_state_is_correct() {
-        // Given
+    /// Builds a view model whose store returns a single origin address with the given phone/email/verification state.
+    private func makeViewModelLoadingOriginAddress(phone: String,
+                                                   email: String,
+                                                   isVerified: Bool = false) -> WooShippingCreateLabelsViewModel {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let originAddress = WooShippingOriginAddress(siteID: 123,
                                                      id: "default_address",
@@ -184,12 +186,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                      state: "NY",
                                                      postcode: "12883-1487",
                                                      country: "US",
-                                                     phone: "223-456-7890",
+                                                     phone: phone,
                                                      firstName: "JANE",
                                                      lastName: "DOE",
-                                                     email: "TEST@EXAMPLE.COM",
+                                                     email: email,
                                                      defaultAddress: true,
-                                                     isVerified: false)
+                                                     isVerified: isVerified)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -202,21 +204,68 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+        return WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                shippingSettingsService: MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil),
+                                                stores: stores)
+    }
 
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         stores: stores)
+    func test_origin_unverified_state_is_correct() {
+        // Given
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "TEST@EXAMPLE.COM")
         XCTAssertFalse(viewModel.isOriginAddressUnverified)
-        XCTAssertNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNil(viewModel.originAddressNoticeLabel)
 
         // Then
         waitUntil {
             viewModel.originAddress.isNotEmpty
         }
         XCTAssertTrue(viewModel.isOriginAddressUnverified)
-        XCTAssertNotNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNotNil(viewModel.originAddressNoticeLabel)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_is_empty() {
+        // Given
+        // A missing origin phone is surfaced specifically rather than the generic unverified notice.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_has_no_digits() {
+        // Given
+        // A phone with no digits (whitespace/punctuation only) is rejected by the backend as empty.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: " - ", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_email_when_origin_email_is_empty() {
+        // Given
+        // A present phone with a missing email surfaces the email notice (phone check takes precedence).
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingEmail",
+                                         value: "Email is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
     }
 
     func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
@@ -2000,6 +2049,81 @@ private extension WooShippingCreateLabelsViewModelTests {
         currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
 
         return viewModel
+    }
+}
+
+// MARK: - Carrier Terms of Service tracking
+extension WooShippingCreateLabelsViewModelTests {
+    func test_carrier_tos_shown_event_is_tracked_when_UPS_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_tracked_when_FedEx_terms_are_shown() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.shouldShowFedExTermsAndConditions = true
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "shown"])
+    }
+
+    func test_carrier_tos_shown_event_is_not_tracked_when_terms_are_dismissed() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        viewModel.shouldShowUPSTermsAndConditions = true
+        analyticsProvider.clearEvents()
+
+        // When
+        viewModel.shouldShowUPSTermsAndConditions = false
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("wcs_carrier_tos"))
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_UPS() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.upsdap)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "accepted"])
+    }
+
+    func test_carrier_tos_accepted_event_is_tracked_for_FedEx() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         stores: MockStoresManager(sessionManager: .testingInstance),
+                                                         analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        viewModel.trackCarrierTermsAccepted(.fedex)
+
+        // Then
+        analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "accepted"])
     }
 }
 

@@ -58,12 +58,12 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
     }
 
     public func createCart(siteID: Int64, productID: Int64) async throws {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             "products": [
-                [
+                RequestParameterValue.dictionary([
                     "product_id": productID,
                     "volume": 1
-                ]
+                ])
             ],
             // Necessary to create a persistent cart for later checkout, the default value is `true`.
             "temporary": false
@@ -76,7 +76,9 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
 }
 
 private extension PaymentRemote {
-    func createCart<T: Decodable>(siteID: Int64, parameters: [String: Any], encoding: ParameterEncoding = URLEncoding.default) async throws -> T {
+    func createCart<T: Decodable>(siteID: Int64,
+                                  parameters: RequestParameterConvertibleDictionary,
+                                  encoding: ParameterEncoding = URLEncoding.default) async throws -> T {
         let path = "\(Path.cartCreation)/\(siteID)"
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: encoding)
         return try await enqueue(request)

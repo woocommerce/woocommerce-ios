@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 15:58:41+0000 */
+/* Translation-Revision-Date: 2026-06-17 09:57:26+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -5410,9 +5410,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "Beoordeel ons";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "Neem contact op met onze Happiness Engineers, die alle lastige vragen kunnen beantwoorden";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Bekijk onze tips voor probleemoplossing";
 
@@ -8611,6 +8608,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Meetwaarde";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "Kies wanneer analysegegevens worden bijgewerkt.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "Dit is een winkelbrede instelling, die ook de optie 'Updates' beheert in de instellingen voor beheerdersanalyses van WooCommerce. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "Wordt bijgewerkt zodra er nieuwe gegevens beschikbaar zijn.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "verstuur meteen";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "Meer informatie";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "WooCommerce Analytics";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "Wordt automatisch elke 12 uur bijgewerkt.\nAanbevolen voor winkels met een hoog bestelvolume.";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "Gepland";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "Analyse-updates";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "Kon de instelling niet bijwerken. Probeer het nog eens.";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Ik snap het";
 
@@ -10056,9 +10083,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Nooit een nieuwe bestelling missen";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "Chat met het ondersteuningsteam";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Problemen met verbinding oplossen";
 
@@ -10500,6 +10524,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "Mijn winkel";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "Meer informatie";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "Statistieken kunnen tot 12 uur vertraging hebben.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
 
@@ -10918,17 +10948,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "De lezer heeft na ontdekking geen IP-adres gevonden en verbinding is niet mogelijk.";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "Krijg hulp van onze AI-assistent";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "Chat met het ondersteuningsteam";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "Bekijk eerdere ondersteuningsgesprekken opnieuw";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "Chatgeschiedenis";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "Ontvang hulp bij problemen met de app of winkel";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Test of je site werkt met de app";
@@ -12354,6 +12381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "Kan deze bestelling niet markeren als betaald. Probeer het opnieuw.";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "Er is een probleem opgetreden bij het aanmaken van deze bestelling. De artikelen komen niet overeen met je selectie. Controleer de inhoud van de winkelwagen en probeer het opnieuw.";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "Eén of meer producten";
 
@@ -12801,6 +12831,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Afbeelding van een code die gescand moet worden door een streepjescodescanner.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "Sluiten";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "Je bent klaar om producten te scannen. De volgende keer dat je je scanner moet aansluiten, hoef je hem alleen in te schakelen. Hij maakt dan automatisch opnieuw verbinding.";
 
@@ -12977,6 +13010,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Kan niet laden";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "Point of Sale heeft geen toegang tot een bestand met je productinformatie omdat je hostingprovider het blokkeert.\nVraag hen om toegang te verlenen, zodat Point of Sale goed blijft werken.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "Actie vereist voor je winkel";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
@@ -13169,6 +13208,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Kan bestelling niet laden";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "Opnieuw proberen";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "Vernieuwen";
@@ -13684,8 +13726,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "Contante betaling";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "Aangepaste bedragen";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "Totaal van kortingen";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "Bestelling bewerken";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "Er is een probleem opgetreden bij het aanmaken van deze bestelling. De artikelen komen niet overeen met je selectie. Controleer de inhoud van de winkelwagen en probeer het opnieuw.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "Kon niet afrekenen";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "Andere betaalmethoden";
@@ -13698,12 +13752,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "Totaal";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "Pas de splitsing van het scherm aan om Point of Sale meer ruimte te geven.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "Point of Sale wordt niet ondersteund op deze schermbreedte.";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "Meer informatie";
@@ -13848,9 +13896,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "WordPress REST API";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "Chat met het ondersteuningsteam";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "Neem contact op met de ondersteuning";
@@ -14335,6 +14380,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "Niet op voorraad";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "Aanmelden ...";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "Annuleren";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "Zonder cameratoegang kan je nog steeds inloggen door je winkeladres in te voeren.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "Camera-toegang toestaan";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "Toegang tot camera is vereist";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "Schakel cameratoegang in Instellingen in of annuleer om in plaats daarvan in te loggen met je winkeladres.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "Open toestemmingsinstellingen";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "Toegang tot camera is uitgeschakeld";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "Deze aanmelding is al voltooid op een ander apparaat. Genereer een nieuwe code als je het opnieuw moet proberen.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "Al ergens anders aangemeld";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "Deze code is al gescand. Genereer een nieuwe in je winkel.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "Code al gebruikt";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "Die code is verlopen of is al gebruikt. Genereer een nieuwe in je winkel.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "Code verlopen";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "Voer in plaats daarvan site-URL in";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "De app is al geïnstalleerd — deze QR installeert deze. Tik in wp-admin op de knop App is geïnstalleerd om de QR-aanmeldgegevens te bekijken. Of ga naar woo.com\/mobilelogin op je computer.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "Dat is de installatie-QR";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "Deze QR is geen WooCommerce inlogcode. Genereer een nieuwe vanuit je winkel en probeer het opnieuw.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "Geen WooCommerce-code";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "Controleer je netwerkverbinding en probeer het nogmaals.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "Kan je winkel niet bereiken";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "WooCommerce is niet geïnstalleerd op deze site.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "Geen WooCommerce-winkel";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "Wacht een aantal minuten en probeer het nogmaals.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "Te veel pogingen";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "Scan een nieuwe code";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "We konden die QR-code niet lezen. Probeer het nog eens.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "Code kon niet gelezen worden";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "Om veiligheidsredenen is deze aanmeldpoging geannuleerd. Genereer een nieuwe code in je winkel om het opnieuw te proberen.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "Aanmelding geweigerd";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "Je aanmelding is onderbroken. Genereer een nieuwe code in je winkel en probeer het opnieuw.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "Aanmelden onderbroken";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "Je hebt niet op tijd bevestigd. Genereer een nieuwe code in je winkel en probeer het opnieuw.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "Time-out bij aanmelden";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "We konden niet verifiëren met je winkel. Probeer het nog eens.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "Aanmelden mislukt";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "Je WooCommerce-plugin ondersteunt QR-login niet. Werk WooCommerce bij in je winkel en probeer het opnieuw, of meld je aan door de URL van je site in te voeren.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "Deze winkel kan de QR-login niet voltooien";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "Opnieuw proberen";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "Je winkel heeft een onverwachte fout veroorzaakt. Probeer het later opnieuw.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "Er is iets fout gegaan";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "Je account heeft geen toestemming om de app voor deze winkel te gebruiken.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "Toestemming vereist";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "Help";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "Annuleren";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "Verloopt over %1$d s";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "Beide schermen moeten hetzelfde nummer tonen om de aanmelding te voltooien.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "Je meldt je aan bij";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "Je meldt je aan als";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "Tik op dit nummer op je computer om het af te ronden.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "Bevestig aanmelding";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "Terug";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "Geen computer? Log in met je winkeladres";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "Help";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "QR-code scannen";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "Scan vervolgens de QR-code die verschijnt.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "Ga op je computer naar:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "Scan om in te loggen";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "Kopieert de URL naar het klembord.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "Link gekopieerd!";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "Annuleren";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "De QR-code in het frame centreren";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "Ga naar woo.com\/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "Als je doorgaat, wordt je uitgelogd van je huidige sessie en wordt er opnieuw ingelogd.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "Annuleren";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "Doorgaan en uitloggen";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "Je bent al aangemeld";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "Gereed";
 
@@ -14612,6 +14858,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "Totaal";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "Statistieken kunnen tot 12 uur vertraging hebben";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "Gegevens analyseupdate";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Kan de prestaties van je winkel niet weergeven";
 
@@ -14823,9 +15075,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "Chatgeschiedenis";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "Chat met het ondersteuningsteam";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "WooCommerce bijwerken";
 
@@ -14880,11 +15129,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "Er is een ondersteuningsticket aangemaakt voor deze chat. We reageren via e-mail.";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "Chat met het ondersteuningsteam";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "Neem contact op met de ondersteuning";
+"supportChatView.toolbar.humanSupport" = "Vraag een Happiness Engineer om hulp";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "Markeren als opgelost";
@@ -15290,6 +15536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Toppresteerders verbergen";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "Statistieken kunnen tot 12 uur vertraging hebben";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "Gegevens analyseupdate";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "Kan de toppresteerders van je winkel niet weergeven";

@@ -176,23 +176,6 @@ final class POSTabCoordinator {
 }
 
 private extension POSTabCoordinator {
-    /// Builds the staff-settings mode for the POS settings screen when the POS roles feature flag
-    /// is on: `loadStaff` fetches the latest staff snapshot, `manageURL` deep-links to the
-    /// wp-admin staff management page. Returns `nil` when roles are disabled so the Staff card
-    /// (and its entry point) stay hidden.
-    func makeStaffSettingsMode(siteID: Int64, staffFetcher: POSStaffFetching) -> POSStaffSettingsMode? {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else {
-            return nil
-        }
-        let siteURL = storesManager.sessionManager.defaultSite?.url ?? ""
-        let manageURL = URL(string: "\(siteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")
-            ?? URL(string: "about:blank")!
-        return POSStaffSettingsMode(
-            loadStaff: { try await staffFetcher.fetchStaff(siteID: siteID) },
-            manageURL: manageURL
-        )
-    }
-
     func setPOSHasBeenOpened() {
         Task { @MainActor in
             let action = AppSettingsAction.setHasPOSBeenOpenedAtLeastOnce { _ in }
@@ -246,7 +229,15 @@ private extension POSTabCoordinator {
 
             let cardPresentPaymentService: CardPresentPaymentFacade
             if ProcessConfiguration.shouldUseMockCardPresentPayment {
+                #if DEBUG
+                if ProcessConfiguration.shouldUsePOSUITestMocks {
+                    cardPresentPaymentService = CardPresentPaymentServiceUITestMock()
+                } else {
+                    cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+                }
+                #else
                 cardPresentPaymentService = CardPresentPaymentServiceScreenshotMock()
+                #endif
             } else {
                 cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
@@ -281,8 +272,8 @@ private extension POSTabCoordinator {
                                                       appPasswordSupportState: isAppPasswordSupported) {
 
                 let orderService: POSOrderServiceProtocol
-                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
-                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+                if let mockOrderService = makeMockPOSOrderService(currency: currencySettings.currencyCode.rawValue) {
+                    orderService = mockOrderService
                 } else if let posOrderService = POSOrderService(siteID: siteID,
                                                            credentials: credentials,
                                                            selectedSite: defaultSitePublisher,
@@ -294,10 +285,7 @@ private extension POSTabCoordinator {
                     return
                 }
 
-                var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
-                if ProcessConfiguration.shouldLoadMockedPOSProducts {
-                    itemProvider = PointOfSaleItemServiceScreenshotMock()
-                }
+                let itemProvider = makeMockPOSItemProvider()
 
                 let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
 
@@ -329,6 +317,21 @@ private extension POSTabCoordinator {
                     DDLogError("⛔️ Could not start POS: POSStaffAdaptor unavailable (missing credentials)")
                     await hostingController.dismiss(animated: true)
                     return
+                }
+
+                let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
+
+                // Present staff settings only when POS roles are enabled (nil hides the Staff card).
+                // The wp-admin URL is derived from the site, like `receiptSettingsAdminURL` above.
+                let staffSettingsService: POSStaffSettingsService?
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) {
+                    let manageStaffURL = storesManager.sessionManager.defaultSite?.posStaffManagementAdminURL ?? ""
+                    staffSettingsService = DefaultPOSStaffSettingsService(staffFetcher: staffFetcher,
+                                                                          siteID: siteID,
+                                                                          manageStaffURL: manageStaffURL)
+                } else {
+                    staffSettingsService = nil
                 }
 
                 let posView = PointOfSaleEntryPointView(
@@ -370,7 +373,8 @@ private extension POSTabCoordinator {
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,
-                    staffSettingsMode: makeStaffSettingsMode(siteID: siteID, staffFetcher: staffFetcher),
+                    receiptPrinter: receiptPrinter,
+                    staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
@@ -401,6 +405,34 @@ struct POSPresentationRootView: View {
 
 
 private extension POSTabCoordinator {
+    func makeMockPOSOrderService(currency: String) -> POSOrderServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return POSOrderServiceUITestMock()
+        }
+        #endif
+
+        if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+            return POSOrderServiceScreenshotMock(currency: currency)
+        }
+
+        return nil
+    }
+
+    func makeMockPOSItemProvider() -> Yosemite.PointOfSaleItemServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return PointOfSaleItemServiceUITestMock()
+        }
+        #endif
+
+        if ProcessConfiguration.shouldLoadMockedPOSProducts {
+            return PointOfSaleItemServiceScreenshotMock()
+        }
+
+        return nil
+    }
+
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
         updateTrackEventPrefix(isPointOfSaleActive)

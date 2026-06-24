@@ -449,30 +449,37 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        let lineItem = try XCTUnwrap((request.parameters["line_items"] as? [[String: AnyHashable]])?.first)
-        let received = try XCTUnwrap(lineItem["bundle_configuration"] as? [[String: AnyHashable]])
-        let expected: [[String: AnyHashable]] = [
-            [
-                "bundled_item_id": 20,
-                "product_id": 51,
-                "quantity": 3,
-                "optional_selected": true
-            ],
-            [
-                "bundled_item_id": 21,
-                "product_id": 52,
-                "quantity": 5,
-                "variation_id": 77,
-                "attributes": [
-                    [
-                        "id": 2,
-                        "name": "Color",
-                        "option": "Coral"
-                    ] as [String: AnyHashable]
-                ] as [AnyHashable]
-            ]
-        ]
-        assertEqual(expected, received)
+        let lineItemsValue = try XCTUnwrap(request.requestParameters.dictionary?["line_items"])
+        guard case .array(let lineItems) = lineItemsValue else {
+            return XCTFail("Expected line_items array")
+        }
+        let firstLineItem = try XCTUnwrap(lineItems.first)
+        guard case .dictionary(let lineItem) = firstLineItem else {
+            return XCTFail("Expected line item dictionary")
+        }
+        let received = try XCTUnwrap(lineItem["bundle_configuration"])
+        let expected: RequestParameterValue = .array([
+            .dictionary([
+                "bundled_item_id": .int(20),
+                "product_id": .int(51),
+                "quantity": .int(3),
+                "optional_selected": .bool(true)
+            ]),
+            .dictionary([
+                "bundled_item_id": .int(21),
+                "product_id": .int(52),
+                "quantity": .int(5),
+                "variation_id": .int(77),
+                "attributes": .array([
+                    .dictionary([
+                        "id": .int(2),
+                        "name": .string("Color"),
+                        "option": .string("Coral")
+                    ])
+                ])
+            ])
+        ])
+        XCTAssertEqual(expected, received)
     }
 
     func test_update_order_properly_encodes_coupon_lines() throws {
@@ -735,6 +742,41 @@ final class OrdersRemoteTests: XCTestCase {
             "quantity": expectedQuantity
         ]
         assertEqual(received, expected)
+    }
+
+    func test_create_order_jetpack_body_preserves_nested_parameter_arrays() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: 2)
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try request.asURLRequest()
+        let body = try encodedFormField(named: "body", in: urlRequest)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: Any])
+        assertOrderCreationPayloadPreservesNumericScalars(payload)
+    }
+
+    func test_create_order_rest_body_preserves_nested_parameter_arrays() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderItem = OrderItem.fake().copy(productID: 5, quantity: 2)
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.items]) { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let urlRequest = try request.asURLRequest()
+        let body = try XCTUnwrap(urlRequest.httpBody)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: body) as? [String: Any])
+        assertOrderCreationPayloadPreservesNumericScalars(payload)
     }
 
     func test_create_order_properly_encodes_addresses() throws {
@@ -1029,6 +1071,53 @@ final class OrdersRemoteTests: XCTestCase {
             // Then
             XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
+    }
+}
+
+private extension OrdersRemoteTests {
+    func encodedFormField(named name: String, in request: URLRequest) throws -> String {
+        let body = try XCTUnwrap(request.httpBody)
+        let query = try XCTUnwrap(String(data: body, encoding: .utf8))
+        let components = URLComponents(string: "https://example.com?\(query)")
+        return try XCTUnwrap(components?.queryItems?.first { $0.name == name }?.value)
+    }
+
+    func assertOrderCreationPayloadPreservesNumericScalars(_ payload: [String: Any]) {
+        guard let lineItem = (payload["line_items"] as? [[String: Any]])?.first else {
+            return XCTFail("Expected line_items in order creation payload")
+        }
+        XCTAssertEqual(number(lineItem["id"]), 0)
+        XCTAssertEqual(number(lineItem["product_id"]), 5)
+        XCTAssertEqual(number(lineItem["quantity"]), 2)
+        XCTAssertFalse(isBoolean(lineItem["id"]))
+        XCTAssertFalse(isBoolean(lineItem["product_id"]))
+        XCTAssertFalse(isBoolean(lineItem["quantity"]))
+
+        guard let metadata = (payload["meta_data"] as? [[String: Any]])?.first else {
+            return XCTFail("Expected meta_data in order creation payload")
+        }
+        XCTAssertEqual(number(metadata["id"]), 0)
+        XCTAssertFalse(isBoolean(metadata["id"]))
+    }
+
+    func number(_ value: Any?) -> Int64? {
+        switch value {
+        case let value as Int:
+            return Int64(value)
+        case let value as Int64:
+            return value
+        case let value as NSNumber where CFGetTypeID(value) != CFBooleanGetTypeID():
+            return value.int64Value
+        default:
+            return nil
+        }
+    }
+
+    func isBoolean(_ value: Any?) -> Bool {
+        guard let value = value as? NSNumber else {
+            return false
+        }
+        return CFGetTypeID(value) == CFBooleanGetTypeID()
     }
 }
 

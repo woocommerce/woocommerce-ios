@@ -1,35 +1,22 @@
 import SwiftUI
-import struct Networking.POSStaffMember
-
-// MARK: - Mode
-
-/// In M1 the staff settings view is read-only with a deep link to wp-admin.
-/// `loadStaff` returns the latest server snapshot (already PBKDF2-hashed by `GET /wc-pos/v1/staff`);
-/// `manageURL` opens an authenticated web view to wp-admin → Settings → Point of sale → Staff.
-public struct POSStaffSettingsMode {
-    public let loadStaff: () async throws -> [POSStaffMember]
-    public let manageURL: URL
-
-    public init(loadStaff: @escaping () async throws -> [POSStaffMember],
-                manageURL: URL) {
-        self.loadStaff = loadStaff
-        self.manageURL = manageURL
-    }
-}
-
-// MARK: - View
+import struct Yosemite.POSStaffMember
+import enum Yosemite.POSStaffPreset
 
 struct POSStaffSettingsView: View {
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posAccessSession) private var session
 
-    let mode: POSStaffSettingsMode
+    let service: POSStaffSettingsService
 
-    @State private var staffMembers: [POSStaffMember] = []
-    @State private var isLoading: Bool = false
-    @State private var loadError: Error?
-    @State private var showManageStaff: Bool = false
-    @State private var showPINAccessInfo: Bool = false
+    @State private var state: LoadState = .idle
+    @State private var showsManageStaff: Bool = false
+
+    private enum LoadState {
+        case idle
+        case loading
+        case loaded([POSStaffMember])
+        case failed(Error)
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -39,19 +26,21 @@ struct POSStaffSettingsView: View {
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    if isLoading {
+                    switch state {
+                    case .idle, .loading:
                         ProgressView()
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, POSPadding.xLarge)
-                    } else if let loadError {
-                        staffLoadErrorView(error: loadError)
-                    } else {
-                        pinAccessStatusCard
-                        if !staffMembers.isEmpty {
-                            staffListCard
+                    case .failed(let error):
+                        staffLoadErrorView(error: error)
+                    case .loaded(let staff):
+                        if !staff.isEmpty {
+                            staffListCard(staff: staff)
                         }
                     }
-                    manageStaffCard
+                    if manageStaffURL != nil {
+                        manageStaffCard
+                    }
                     footerText
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -59,20 +48,21 @@ struct POSStaffSettingsView: View {
         }
         .background(Color.posSurface)
         .task {
-            await fetchStaff()
+            await loadStaffIfNeeded()
         }
-        .posFullScreenCover(isPresented: $showManageStaff) {
-            externalViews.createAuthenticatedWebView(
-                url: mode.manageURL,
-                title: Localization.manageStaffWebTitle,
-                completion: {
-                    showManageStaff = false
-                    Task { await fetchStaff() }
-                }
-            )
-        }
-        .posModal(isPresented: $showPINAccessInfo) {
-            pinAccessInfoModal
+        .posFullScreenCover(isPresented: $showsManageStaff) {
+            if let manageStaffURL {
+                externalViews.createAuthenticatedWebView(
+                    url: manageStaffURL,
+                    title: Localization.manageStaffWebTitle,
+                    completion: {
+                        showsManageStaff = false
+                        // Silent refresh: the list is already on screen, so update it in place
+                        // without the spinner (which could otherwise stick after the cover dismiss).
+                        Task { await fetchStaff(showsLoading: false) }
+                    }
+                )
+            }
         }
     }
 }
@@ -80,35 +70,14 @@ struct POSStaffSettingsView: View {
 // MARK: - Subviews
 
 private extension POSStaffSettingsView {
-    var anyStaffHasPIN: Bool {
-        staffMembers.contains { $0.pin != nil }
-    }
-
-    var pinAccessBinding: Binding<Bool> {
-        Binding(
-            get: { anyStaffHasPIN },
-            set: { _ in showPINAccessInfo = true }
-        )
-    }
-
-    var pinAccessStatusCard: some View {
-        POSInformationCard {
-            POSInformationCardFieldRowWithToggle(
-                label: Localization.pinAccessLabel,
-                value: Localization.pinAccessDescription,
-                showSeparator: false,
-                isOn: pinAccessBinding
-            )
-        }
-    }
-
-    var staffListCard: some View {
-        POSInformationCard {
+    func staffListCard(staff: [POSStaffMember]) -> some View {
+        let sortedStaff = sortedStaffMembers(staff)
+        return POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                ForEach(Array(sortedStaffMembers.enumerated()), id: \.element.userID) { index, member in
+                ForEach(Array(sortedStaff.enumerated()), id: \.element.userID) { index, member in
                     staffRow(member: member, isCurrentOperator: member.userID == currentOperatorID)
 
-                    if index < sortedStaffMembers.count - 1 {
+                    if index < sortedStaff.count - 1 {
                         Divider()
                             .padding(.vertical, POSPadding.small)
                     }
@@ -121,8 +90,8 @@ private extension POSStaffSettingsView {
         session.currentStaff?.userID
     }
 
-    var sortedStaffMembers: [POSStaffMember] {
-        staffMembers.sorted { lhs, rhs in
+    func sortedStaffMembers(_ staff: [POSStaffMember]) -> [POSStaffMember] {
+        staff.sorted { lhs, rhs in
             let lhsCurrent = lhs.userID == currentOperatorID
             let rhsCurrent = rhs.userID == currentOperatorID
             if lhsCurrent != rhsCurrent {
@@ -154,20 +123,15 @@ private extension POSStaffSettingsView {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Maps the server preset slug (`pos_admin` / `pos_manager` / `pos_cashier`, with the older
-    /// `administrator` / `shop_manager` kept for resilience) to a display label.
-    static func displayName(for preset: String) -> String {
+    /// Maps the role preset to a display label.
+    static func displayName(for preset: POSStaffPreset) -> String {
         switch preset {
-        case "pos_admin", "administrator":
+        case .admin:
             return Localization.roleAdmin
-        case "shop_manager":
-            return Localization.roleShopManager
-        case "pos_manager":
+        case .manager:
             return Localization.rolePOSManager
-        case "pos_cashier":
+        case .cashier:
             return Localization.rolePOSCashier
-        default:
-            return preset
         }
     }
 
@@ -194,9 +158,15 @@ private extension POSStaffSettingsView {
         }
     }
 
+    /// The wp-admin staff-management URL, or `nil` when the host didn't supply a usable one. When
+    /// `nil` the manage-on-web button is hidden rather than opening an empty web view.
+    var manageStaffURL: URL? {
+        URL(string: service.manageStaffURL)
+    }
+
     var manageStaffCard: some View {
         Button {
-            showManageStaff = true
+            showsManageStaff = true
         } label: {
             Text(Localization.manageStaffButton)
         }
@@ -229,58 +199,42 @@ private extension POSStaffSettingsView {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, POSPadding.small)
     }
-
-    var pinAccessInfoModal: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
-            PointOfSaleModalHeader(
-                isPresented: $showPINAccessInfo,
-                title: .constant(AttributedString(Localization.pinAccessModalTitle))
-            )
-
-            Text(anyStaffHasPIN ? Localization.pinAccessModalDisableMessage : Localization.pinAccessModalEnableMessage)
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Button {
-                showPINAccessInfo = false
-                showManageStaff = true
-            } label: {
-                Text(Localization.pinAccessModalManageButton)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
-        }
-        .padding(POSPadding.xxLarge)
-        .background(Color.posSurfaceBright)
-        .frame(maxWidth: Constants.modalMaxWidth)
-        .padding(.horizontal, POSPadding.medium)
-    }
 }
 
 // MARK: - Logic
 
 private extension POSStaffSettingsView {
-    func fetchStaff() async {
-        isLoading = true
-        loadError = nil
-        do {
-            staffMembers = try await mode.loadStaff()
-            // Keep the access session in sync so menu items like "Lock POS" pick up
-            // PIN changes made via the Manage staff web view without requiring a relaunch.
-            await session.refreshPINStatus()
-        } catch {
-            loadError = error
-        }
-        isLoading = false
+    /// Loads once on first appearance. Presenting the full-screen Manage staff web view makes this
+    /// view disappear, so `.task` re-fires on dismiss; the `.idle` guard keeps that from re-running
+    /// the initial load. Post-web changes are picked up by the silent refresh in the web view's
+    /// completion handler.
+    func loadStaffIfNeeded() async {
+        guard case .idle = state else { return }
+        await fetchStaff()
     }
-}
 
-// MARK: - Constants
-
-private enum Constants {
-    static let modalMaxWidth: CGFloat = 640
+    /// Loads the staff list. `showsLoading` drives the spinner + error state for the initial load and
+    /// retries; pass `false` for a silent in-place refresh (e.g. after returning from the Manage
+    /// staff web view), which keeps the current list visible and never strands the spinner.
+    func fetchStaff(showsLoading: Bool = true) async {
+        if showsLoading {
+            state = .loading
+        }
+        do {
+            let staff = try await service.loadStaff()
+            // Keep the access session in sync so menu items like "Lock POS" pick up PIN changes made
+            // via the Manage staff web view — using the list we just fetched, so the staff endpoint
+            // isn't hit a second time.
+            await session.refreshPINStatus(using: staff)
+            state = .loaded(staff)
+        } catch {
+            // Silent-refresh failures keep the current list on screen; only the initial load and
+            // retry surface the error state.
+            if showsLoading {
+                state = .failed(error)
+            }
+        }
+    }
 }
 
 // MARK: - Localization
@@ -290,18 +244,6 @@ private enum Localization {
         "posStaffSettingsView.staffTitle",
         value: "Staff",
         comment: "Navigation title for the staff settings detail view in POS settings."
-    )
-
-    static let pinAccessLabel = NSLocalizedString(
-        "posStaffSettingsView.pinAccessLabel",
-        value: "PIN access",
-        comment: "Toggle label showing whether PIN access is enabled in POS staff settings."
-    )
-
-    static let pinAccessDescription = NSLocalizedString(
-        "posStaffSettingsView.pinAccessDescription.v2",
-        value: "When enabled, POS can be locked and staff use PINs to access it.",
-        comment: "Description of the PIN access toggle in POS staff settings."
     )
 
     static let signedInBadge = NSLocalizedString(
@@ -340,12 +282,6 @@ private enum Localization {
         comment: "Display name for the administrator role in the POS staff list."
     )
 
-    static let roleShopManager = NSLocalizedString(
-        "posStaffSettingsView.role.shopManager",
-        value: "Shop Manager",
-        comment: "Display name for the shop manager role in the POS staff list."
-    )
-
     static let rolePOSManager = NSLocalizedString(
         "posStaffSettingsView.role.posManager",
         value: "POS Manager",
@@ -375,28 +311,32 @@ private enum Localization {
         value: "POS locks when you tap Lock POS from the menu, or automatically after 5 minutes of inactivity.",
         comment: "Footer text explaining how POS locking works, including auto-lock timeout."
     )
-
-    static let pinAccessModalTitle = NSLocalizedString(
-        "pos.pinAccessModal.title.v2",
-        value: "Managed on the web",
-        comment: "Title of the modal explaining that POS PIN access is controlled via the web admin."
-    )
-
-    static let pinAccessModalEnableMessage = NSLocalizedString(
-        "pos.pinAccessModal.message.enable",
-        value: "PIN access turns on automatically as soon as any staff member has a PIN. Set a PIN for a staff member to turn it on.",
-        comment: "Message shown when the operator tries to turn on PIN access from the POS app."
-    )
-
-    static let pinAccessModalDisableMessage = NSLocalizedString(
-        "pos.pinAccessModal.message.disable",
-        value: "To turn PIN access off, remove the PIN from every staff member.",
-        comment: "Message shown when the operator tries to turn off PIN access from the POS app."
-    )
-
-    static let pinAccessModalManageButton = NSLocalizedString(
-        "pos.pinAccessModal.manageButton",
-        value: "Manage staff on the web",
-        comment: "Primary button in the PIN access info modal that opens the Manage staff web view."
-    )
 }
+
+// MARK: - Preview
+
+#if DEBUG
+private struct PreviewPOSStaffSettingsService: POSStaffSettingsService {
+    func loadStaff() async throws -> [POSStaffMember] {
+        [
+            POSStaffMember(userID: 1,
+                           displayName: "Maya Patel",
+                           preset: .manager,
+                           capabilities: [:],
+                           pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
+                                      salt: "c2FsdA==", hash: "aGFzaA==")),
+            POSStaffMember(userID: 2,
+                           displayName: "Sam Lee",
+                           preset: .cashier,
+                           capabilities: [:],
+                           pin: nil)
+        ]
+    }
+
+    var manageStaffURL: String { "about:blank" }
+}
+
+#Preview {
+    POSStaffSettingsView(service: PreviewPOSStaffSettingsService())
+}
+#endif

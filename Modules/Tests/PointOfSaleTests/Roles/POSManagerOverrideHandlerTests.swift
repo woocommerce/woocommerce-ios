@@ -47,7 +47,7 @@ struct POSManagerOverrideHandlerTests {
         // Given
         let approver = POSStaff(userID: 88,
                                 displayName: "Morgan",
-                                preset: "pos_manager",
+                                preset: .manager,
                                 capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         var completionWasCalled = false
         var completionApprover: POSStaff?

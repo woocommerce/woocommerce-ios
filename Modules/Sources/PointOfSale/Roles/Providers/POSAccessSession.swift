@@ -1,3 +1,5 @@
+import struct Yosemite.POSStaffMember
+
 @MainActor
 protocol POSAccessSession: AnyObject {
     var currentStaff: POSStaff? { get }
@@ -17,8 +19,12 @@ protocol POSAccessSession: AnyObject {
     func lock()
     func checkLockoutState() throws(POSAuthError)
     func refreshPINStatus() async
+    /// Refreshes PIN gating from an already-loaded staff list, so a caller that just fetched staff
+    /// (e.g. the staff settings screen) can sync the session without hitting the staff endpoint again.
+    func refreshPINStatus(using staff: [POSStaffMember]) async
 
-    /// Wipes the persisted staff cache for the current site. Called on logout and site-switch
-    /// so stale credentials do not survive across sessions.
+    /// Clears the staff cache for the current site on a live session, dropping any in-flight
+    /// refresh's write so a clear that lands mid-fetch can't resurrect stale staff. Logout — where
+    /// no session is alive — wipes the persisted cache through `POSRolesPersistence` instead.
     func clearStaffCache()
 }

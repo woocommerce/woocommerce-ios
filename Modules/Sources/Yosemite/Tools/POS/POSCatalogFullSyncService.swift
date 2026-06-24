@@ -18,12 +18,23 @@ public protocol POSCatalogFullSyncServiceProtocol {
     /// - Returns: The synced catalog containing products and variations
     func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, isBackgroundSync: Bool) async throws -> POSCatalog
 
+    /// Runs a full catalog sync using the legacy paginated REST endpoints, bypassing the catalog file API.
+    /// Used as a fallback when the host blocks access to the generated catalog file.
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - allowCellular: Should cellular data be used if required.
+    /// - Returns: The synced catalog containing products and variations
+    func startPaginatedFullSync(for siteID: Int64, allowCellular: Bool) async throws -> POSCatalog
+
     /// Parses and persists a downloaded catalog file from a background download.
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
+    ///   - snapshotDate: When the snapshot's download started. Used as the persisted sync
+    ///     watermark so a resumed snapshot doesn't claim to be current,
+    ///     keeping the next smart/incremental sync able to refetch everything since then.
     /// - Returns: The parsed catalog
-    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog
 }
 
 /// Metadata from file-based catalog sync, used for analytics tracking.
@@ -150,16 +161,27 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         }
     }
 
-    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+    public func startPaginatedFullSync(for siteID: Int64, allowCellular: Bool) async throws -> POSCatalog {
+        DDLogInfo("🔄 Starting paginated full catalog sync for site ID: \(siteID) with allowCellular: \(allowCellular)")
+
+        let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
+        DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
+        try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
+        DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+
+        return catalog
+    }
+
+    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {
         DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
 
-        let syncStartDate = Date.now
         let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
 
         let catalog = POSCatalog(
             products: catalogResponse.products,
             variations: catalogResponse.variations,
-            syncDate: syncStartDate
+            syncDate: snapshotDate
         )
 
         DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
@@ -196,9 +218,15 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products,
-                          variations: variations,
-                          syncDate: syncStartDate)
+
+        // Prefer the server's clock as the sync watermark (the earliest across responses), falling
+        // back to the device clock only when no `Date` header was provided. See PagedItems.serverDate.
+        let serverDates = [products.serverDate, variations.serverDate].compactMap { $0 }
+        let syncDate = serverDates.min() ?? syncStartDate
+
+        return POSCatalog(products: products.items,
+                          variations: variations.items,
+                          syncDate: syncDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,
@@ -207,11 +235,11 @@ private extension POSCatalogFullSyncService {
                                    allowCellular: Bool,
                                    maxAttempts: Int) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
-        let (catalog, pollingResult) = try await downloadCatalog(for: siteID,
-                                                                 syncRemote: syncRemote,
-                                                                 regenerateCatalog: regenerateCatalog,
-                                                                 allowCellular: allowCellular,
-                                                                 maxAttempts: maxAttempts)
+        let (catalog, pollingResult, snapshotDate) = try await downloadCatalog(for: siteID,
+                                                                               syncRemote: syncRemote,
+                                                                               regenerateCatalog: regenerateCatalog,
+                                                                               allowCellular: allowCellular,
+                                                                               maxAttempts: maxAttempts)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
         DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
@@ -220,7 +248,12 @@ private extension POSCatalogFullSyncService {
         let metadata = POSCatalogSyncMetadata(pollAttempts: pollingResult.pollAttempts,
                                               generationDurationMs: generationDurationMs)
 
-        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init(), syncMetadata: metadata)
+        // Use the server's `scheduled_at` as the sync watermark, not the device clock. The catalog
+        // file is a snapshot taken somewhere in [scheduled_at, completed_at]; `scheduled_at` is the
+        // only safe lower bound for the next incremental's `modified_after` cursor — anything modified
+        // during generation is then re-fetched rather than skipped. Falls back to the device clock if
+        // the server omitted/garbled the timestamp.
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: snapshotDate, syncMetadata: metadata)
     }
 
     /// Computes server-side generation duration in milliseconds from ISO8601 timestamp strings.
@@ -266,7 +299,7 @@ private extension POSCatalogFullSyncService {
                          syncRemote: POSCatalogSyncRemoteProtocol,
                          regenerateCatalog: Bool,
                          allowCellular: Bool,
-                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult) {
+                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult, Date) {
         DDLogInfo("🟣 Starting catalog request...")
 
         // 1. Requests catalog until download URL is available.
@@ -287,8 +320,12 @@ private extension POSCatalogFullSyncService {
 
         // 3. Downloads catalog using the provided URL.
         DDLogInfo("🟣 Catalog ready for download: \(pollingResult.downloadURL)")
-        let catalog = try await syncRemote.downloadCatalog(for: siteID, downloadURL: pollingResult.downloadURL, allowCellular: allowCellular)
-        return (catalog, pollingResult)
+        let snapshotDate = pollingResult.scheduledAt.flatMap(Self.parseISO8601) ?? Date()
+        let catalog = try await syncRemote.downloadCatalog(for: siteID,
+                                                           downloadURL: pollingResult.downloadURL,
+                                                           allowCellular: allowCellular,
+                                                           snapshotDate: snapshotDate)
+        return (catalog, pollingResult, snapshotDate)
     }
 
     /// Polls for catalog generation completion using exponential backoff.

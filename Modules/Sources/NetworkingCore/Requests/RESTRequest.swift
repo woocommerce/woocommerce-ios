@@ -20,12 +20,11 @@ public struct RESTRequest: Request {
     ///
     let path: String
 
-    /// Parameters
-    ///
-    let parameters: [String: Any]?
+    let requestParameters: RequestParameters
 
-    /// Extra HTTP headers attached to the underlying URL request (e.g. the `X-WC-POS-*`
-    /// POS staff headers).
+    /// Extra HTTP headers to attach to the underlying URL request. Used for request-level metadata
+    /// (e.g. the `X-WC-POS-*` POS staff headers) that the server reads off the request rather than
+    /// the body.
     ///
     let customHeaders: [String: String]
 
@@ -37,14 +36,14 @@ public struct RESTRequest: Request {
                  apiVersionPath: String?,
                  method: HTTPMethod,
                  path: String,
-                 parameters: [String: Any]? = nil,
+                 requestParameters: RequestParameterDictionary? = nil,
                  customHeaders: [String: String] = [:],
                  allowsCellularAccess: Bool = true) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
-        self.parameters = parameters
+        self.requestParameters = RequestParameters(requestParameters)
         self.customHeaders = customHeaders
         self.allowsCellularAccess = allowsCellularAccess
     }
@@ -54,14 +53,48 @@ public struct RESTRequest: Request {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - customHeaders: Extra HTTP headers to attach to the underlying URL request.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     public init(siteURL: String,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
+         customHeaders: [String: String] = [:],
          allowsCellularAccess: Bool = true) {
-        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters, allowsCellularAccess: allowsCellularAccess)
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters,
+                  customHeaders: customHeaders,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    public init<Value: RequestParameterValueConvertible>(siteURL: String,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Value],
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    public init(siteURL: String,
+         method: HTTPMethod,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
+                  allowsCellularAccess: allowsCellularAccess)
     }
 
     /// - Parameters:
@@ -77,15 +110,43 @@ public struct RESTRequest: Request {
          wooApiVersion: WooAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
          customHeaders: [String: String] = [:],
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
-                  parameters: parameters,
+                  requestParameters: parameters,
                   customHeaders: customHeaders,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    init<Value: RequestParameterValueConvertible>(siteURL: String,
+         wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Value],
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: wooApiVersion.path,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    init(siteURL: String,
+         wooApiVersion: WooAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: wooApiVersion.path,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -102,13 +163,41 @@ public struct RESTRequest: Request {
          wordpressApiVersion: WordPressAPIVersion,
          method: HTTPMethod,
          path: String,
-         parameters: [String: Any]? = nil,
+         parameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wordpressApiVersion.path,
                   method: method,
                   path: path,
-                  parameters: parameters,
+                  requestParameters: parameters,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    init<Value: RequestParameterValueConvertible>(siteURL: String,
+         wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: [String: Value],
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: wordpressApiVersion.path,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
+                  allowsCellularAccess: allowsCellularAccess)
+    }
+
+    init(siteURL: String,
+         wordpressApiVersion: WordPressAPIVersion,
+         method: HTTPMethod,
+         path: String,
+         parameters: RequestParameterConvertibleDictionary,
+         allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: wordpressApiVersion.path,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters.requestParameterDictionary,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -130,8 +219,9 @@ public struct RESTRequest: Request {
         for (field, value) in customHeaders {
             request.setValue(value, forHTTPHeaderField: field)
         }
+        let parameters = try requestParameters.validatedAlamofireParameters()
         switch method {
-        case .post, .put:
+        case .post, .put, .patch:
             return try JSONEncoding.default.encode(request, with: parameters)
         default:
             return try URLEncoding.default.encode(request, with: parameters)

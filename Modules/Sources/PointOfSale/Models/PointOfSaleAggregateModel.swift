@@ -22,6 +22,7 @@ import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -95,6 +96,10 @@ protocol PointOfSaleAggregateModelProtocol {
     /// behaves as if TTP is not available.
     private(set) var tapToPayAvailabilityController: POSTapToPayAvailabilityController?
 
+    /// Receipt-printer backend for POS. Optional so existing callers (previews, tests)
+    /// keep working — when nil POS behaves as if receipt printing is not available.
+    private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
+
     private var cancellables: Set<AnyCancellable> = []
 
     // Private storage of the concrete coordinator
@@ -147,7 +152,9 @@ protocol PointOfSaleAggregateModelProtocol {
          isLocalCatalogEligible: Bool = false,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
-         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth) {
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -168,6 +175,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
+        self.receiptPrinter = receiptPrinter
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -190,6 +198,7 @@ protocol PointOfSaleAggregateModelProtocol {
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             preferredConnectionMethod: preferredConnectionMethod,
+            cardPaymentSelectionMode: cardPaymentSelectionMode,
             paymentState: paymentState)
         weakSelf = self
 

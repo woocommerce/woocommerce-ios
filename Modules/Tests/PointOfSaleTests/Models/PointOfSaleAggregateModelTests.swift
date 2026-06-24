@@ -12,6 +12,7 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.POSItemType
 import enum WooFoundationCore.WooAnalyticsStat
 import Combine
@@ -1450,6 +1451,27 @@ struct PointOfSaleAggregateModelTests {
             #expect(shownEvents.count == 2)
         }
     }
+
+    @MainActor struct ReceiptPrinterTests {
+        @Test func receiptPrinter_is_nil_by_default() async {
+            // Given, When
+            let sut = makePointOfSaleAggregateModel()
+
+            // Then
+            #expect(sut.receiptPrinter == nil)
+        }
+
+        @Test func receiptPrinter_exposes_the_injected_backend() async {
+            // Given
+            let printer = MockReceiptPrinterService()
+
+            // When
+            let sut = makePointOfSaleAggregateModel(receiptPrinter: printer)
+
+            // Then
+            #expect(sut.receiptPrinter === printer)
+        }
+    }
 }
 
 private func makePurchasableItem(name: String = "", price: String = "") -> POSItem {
@@ -1500,7 +1522,8 @@ private func makePointOfSaleAggregateModel(
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
     isLocalCatalogEligible: Bool = false,
-    sunsetWarningChecker: POSSunsetWarningChecking? = nil
+    sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,
@@ -1522,6 +1545,7 @@ private func makePointOfSaleAggregateModel(
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
         isLocalCatalogEligible: isLocalCatalogEligible,
-        sunsetWarningChecker: sunsetWarningChecker
+        sunsetWarningChecker: sunsetWarningChecker,
+        receiptPrinter: receiptPrinter
     )
 }

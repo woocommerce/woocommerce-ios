@@ -90,6 +90,7 @@ private extension POSFloatingControlView {
                     icon: { Image(systemName: "gearshape") }
                 )
             }
+            .accessibilityIdentifier("pos-settings-menu-item")
 
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {

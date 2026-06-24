@@ -131,7 +131,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                                 filters: BookingFilters? = nil,
                                 searchQuery: String? = nil,
                                 order: Order) async throws -> [Booking] {
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.rawValue,
@@ -313,7 +313,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         resourceID: Int64?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.start: Int64(startDate.timeIntervalSince1970),
             ParameterKey.end: Int64(endDate.timeIntervalSince1970)
         ]

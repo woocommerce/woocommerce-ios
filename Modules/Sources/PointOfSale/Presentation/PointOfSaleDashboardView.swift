@@ -11,7 +11,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
-    @Environment(\.posStaffSettingsMode) private var staffSettingsMode
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -156,17 +155,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            // The staff-settings mode is supplied by the host (POSTabCoordinator) when POS roles
-            // are enabled. When absent, fall back to an empty mode so the settings sheet stays
-            // buildable — the Staff card itself is gated off by the same feature flag inside
-            // `POSSettingsView`.
-            POSSettingsView(
-                settingsController: posModel.settingsController,
-                staffSettingsMode: staffSettingsMode ?? POSStaffSettingsMode(
-                    loadStaff: { [] },
-                    manageURL: URL(string: "about:blank")!
-                )
-            )
+            POSSettingsView(settingsController: posModel.settingsController)
         }
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
@@ -330,7 +319,8 @@ struct PointOfSaleDashboardView: View {
                     title: Localization.phoneCheckoutTitle,
                     backButtonConfiguration: .init(
                         state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                        action: { posModel.addMoreToCart() }
+                        action: { posModel.addMoreToCart() },
+                        accessibilityIdentifier: "pos-cart-back-button"
                     )
                 )
             }
@@ -361,12 +351,14 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
+            .accessibilityIdentifier("pos-exit-menu-item")
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
+            .accessibilityIdentifier("pos-settings-menu-item")
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
@@ -388,7 +380,7 @@ struct PointOfSaleDashboardView: View {
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
-        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 
     private var phoneOverflowMenuConstrainedSize: CGFloat {
@@ -427,7 +419,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         }
-        .accessibilityIdentifier("pos-phone-cart-button")
+        .accessibilityIdentifier("pos-compact-cart-button")
     }
 
     private var phoneCartSheetView: some View {

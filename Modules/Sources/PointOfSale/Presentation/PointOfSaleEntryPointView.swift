@@ -20,6 +20,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -55,7 +56,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
-    private let staffSettingsMode: POSStaffSettingsMode?
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -87,11 +88,11 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
-         staffSettingsMode: POSStaffSettingsMode? = nil,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        self.staffSettingsMode = staffSettingsMode
         let accessSession = POSAccessSessionFactory.make(
             siteID: siteID,
             featureFlags: services.featureFlags,
@@ -153,7 +154,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
-                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL,
+                                                                staffSettingsService: staffSettingsService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -166,8 +168,7 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor,
-                                                      featureFlags: services.featureFlags)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)
@@ -188,6 +189,7 @@ public struct PointOfSaleEntryPointView: View {
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.receiptPrinter = receiptPrinter
     }
 
     public var body: some View {
@@ -233,12 +235,13 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
-                preferredConnectionMethod: preferredConnectionMethod)
+                receiptPrinter: receiptPrinter,
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
         .environment(\.posFeatureFlags, services.featureFlags)
-        .environment(\.posStaffSettingsMode, staffSettingsMode)
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)

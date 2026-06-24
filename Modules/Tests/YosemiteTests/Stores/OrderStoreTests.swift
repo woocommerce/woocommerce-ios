@@ -497,6 +497,32 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storedOrder?.toReadOnly(), remoteOrder)
     }
 
+    func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() throws {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let requestedOrderID = sampleOrderID + 1
+        network.simulateResponse(requestUrlSuffix: "orders/\(requestedOrderID)", filename: "order-auto-draft-status")
+
+        let existingOrder = sampleOrder().copy(orderID: requestedOrderID, status: .autoDraft)
+        storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
+        viewStorage.saveIfNeeded()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+
+        // When
+        let result = waitFor { promise in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: requestedOrderID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let retrievedOrder = try XCTUnwrap(result.get())
+        XCTAssertEqual(retrievedOrder.status, .autoDraft)
+        XCTAssertNil(viewStorage.loadOrder(siteID: sampleSiteID, orderID: requestedOrderID))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
     func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1666,16 +1692,16 @@ final class OrderStoreTests: XCTestCase {
         let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
         XCTAssertEqual(lineItems.count, 3)
 
-        let removedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 6 })
-        XCTAssertEqual(removedBundleOrderItem["quantity"] as? Int64, 0)
+        let removedBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 6 })
+        XCTAssertEqual(requestInt64Value(removedBundleOrderItem["quantity"]), 0)
         XCTAssertNil(removedBundleOrderItem["bundle_configuration"])
 
-        let updatedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
-        XCTAssertEqual(updatedBundleOrderItem["quantity"] as? Int64, 2)
+        let updatedBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 0 })
+        XCTAssertEqual(requestInt64Value(updatedBundleOrderItem["quantity"]), 2)
         XCTAssertNotNil(updatedBundleOrderItem["bundle_configuration"])
 
-        let removedChildBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
-        XCTAssertEqual(removedChildBundleOrderItem["quantity"] as? Int64, 0)
+        let removedChildBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 7 })
+        XCTAssertEqual(requestInt64Value(removedChildBundleOrderItem["quantity"]), 0)
         XCTAssertNil(removedChildBundleOrderItem["bundle_configuration"])
     }
 
@@ -1700,12 +1726,12 @@ final class OrderStoreTests: XCTestCase {
         let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
         XCTAssertEqual(lineItems.count, 2)
 
-        let bundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
-        XCTAssertEqual(bundleOrderItem["quantity"] as? Int64, 2)
+        let bundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 0 })
+        XCTAssertEqual(requestInt64Value(bundleOrderItem["quantity"]), 2)
         XCTAssertNotNil(bundleOrderItem["bundle_configuration"])
 
-        let anotherOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
-        XCTAssertEqual(anotherOrderItem["quantity"] as? Int64, 3)
+        let anotherOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 7 })
+        XCTAssertEqual(requestInt64Value(anotherOrderItem["quantity"]), 3)
     }
 }
 
@@ -1995,5 +2021,22 @@ private extension OrderStoreTests {
 
     func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {
         return [Networking.OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)]
+    }
+
+    func requestInt64Value(_ value: Any?) -> Int64? {
+        switch value {
+        case let value as Int64:
+            return value
+        case let value as Int:
+            return Int64(value)
+        case let value as UInt where value <= UInt(Int64.max):
+            return Int64(value)
+        case let value as UInt64 where value <= UInt64(Int64.max):
+            return Int64(value)
+        case let value as NSNumber:
+            return value.int64Value
+        default:
+            return nil
+        }
     }
 }

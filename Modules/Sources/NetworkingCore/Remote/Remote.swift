@@ -119,9 +119,10 @@ open class Remote: NSObject {
     /// - Parameters:
     ///     - request: Request that should be performed.
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
+    ///     - parseInBackground: Parse the response off the main thread (completion still on main). Temporary; see WOOMOB-3314.
     ///     - completion: Closure to be executed upon completion.
-    ///
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
+                            parseInBackground: Bool = false,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.responseData(for: request) { [weak self] result in
             guard let self else {
@@ -130,16 +131,39 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                do {
-                    let validator = request.responseDataValidator()
-                    try validator.validate(data: data)
-                    let parsed = try mapper.map(response: data)
-                    completion(.success(parsed))
-                } catch {
-                    self.handleResponseError(error: error, for: request)
-                    self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                    DDLogError("<> Mapping Error: \(error)")
-                    completion(.failure(error))
+                if parseInBackground {
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        guard let self else {
+                            return
+                        }
+                        do {
+                            let validator = request.responseDataValidator()
+                            try validator.validate(data: data)
+                            let parsed = try mapper.map(response: data)
+                            DispatchQueue.main.async {
+                                completion(.success(parsed))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                self.handleResponseError(error: error, for: request)
+                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                                DDLogError("<> Mapping Error: \(error)")
+                                completion(.failure(error))
+                            }
+                        }
+                    }
+                } else {
+                    do {
+                        let validator = request.responseDataValidator()
+                        try validator.validate(data: data)
+                        let parsed = try mapper.map(response: data)
+                        completion(.success(parsed))
+                    } catch {
+                        self.handleResponseError(error: error, for: request)
+                        self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                        DDLogError("<> Mapping Error: \(error)")
+                        completion(.failure(error))
+                    }
                 }
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))
@@ -297,6 +321,8 @@ private extension Remote {
             publishJetpackTimeoutNotification(error: dotcomError)
         case .invalidToken:
             publishInvalidTokenNotification(error: dotcomError)
+        case .unknownBlog:
+            publishUnknownBlogNotification(error: dotcomError)
         default:
             break
         }
@@ -351,6 +377,12 @@ private extension Remote {
         NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
     }
 
+    /// Publishes an `Unknown Blog` Notification.
+    ///
+    private func publishUnknownBlogNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveUnknownBlogError, object: error, userInfo: nil)
+    }
+
     /// Publishes a `JSON Parsing Error` Notification.
     ///
     private func publishJSONParsingErrorNotification(error: Error, path: String?, entityName: String) {
@@ -372,10 +404,15 @@ public struct PagedItems<T> {
     /// Number of items available, across all pages, whether loaded or not
     public let totalItems: Int?
 
-    public init(items: [T], hasMorePages: Bool, totalItems: Int?) {
+    /// The server's clock at the moment it served this page, parsed from the HTTP `Date` response
+    /// header. `nil` if the header is absent or unparseable.
+    public let serverDate: Date?
+
+    public init(items: [T], hasMorePages: Bool, totalItems: Int?, serverDate: Date? = nil) {
         self.items = items
         self.hasMorePages = hasMorePages
         self.totalItems = totalItems
+        self.serverDate = serverDate
     }
 }
 
@@ -401,7 +438,10 @@ public extension Remote {
 
         let totalItems = totalItemsCount(from: responseHeaders)
 
-        return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalItems)
+        return PagedItems(items: items,
+                          hasMorePages: hasMorePages,
+                          totalItems: totalItems,
+                          serverDate: serverDate(from: responseHeaders))
     }
 
     func totalItemsCount(from responseHeaders: [String: String]?) -> Int? {
@@ -410,6 +450,28 @@ public extension Remote {
             $0.key.lowercased() == PaginationHeaderKey.totalCount.lowercased()
         }).flatMap { Int($0.value) }
     }
+
+    /// Parses the HTTP `Date` response header (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`) into a `Date`.
+    /// Returns `nil` if the header is absent or doesn't match the format we expect from the server.
+    func serverDate(from responseHeaders: [String: String]?) -> Date? {
+        responseHeaders?.first(where: {
+            $0.key.lowercased() == PaginationHeaderKey.serverDate.lowercased()
+        }).flatMap { Self.httpDateFormatter.date(from: $0.value) }
+    }
+}
+
+private extension Remote {
+    /// Formatter for the HTTP `Date` header as the server currently sends it
+    /// (e.g. `Tue, 15 Jun 2026 10:30:00 GMT`). Fixed `en_US_POSIX` locale + GMT so parsing does not
+    /// depend on the device's locale or time zone. If the server's date format changes, update the
+    /// format string to match what we actually receive.
+    static let httpDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "GMT")
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        return formatter
+    }()
 }
 
 // MARK: - Constants!
@@ -423,6 +485,8 @@ public extension Remote {
     enum PaginationHeaderKey {
         public static let totalPagesCount = "x-wp-totalpages"
         public static let totalCount = "x-wp-total"
+        /// Standard HTTP `Date` response header — the server's clock when it served the response.
+        public static let serverDate = "date"
     }
 
     enum JSONParsingErrorUserInfoKey {
@@ -439,6 +503,10 @@ public extension NSNotification.Name {
     /// Posted whenever an Invalid Token Error is received.
     ///
     static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+
+    /// Posted whenever an Unknown Blog Error is received, indicating the selected site ID is no longer recognized.
+    ///
+    static let RemoteDidReceiveUnknownBlogError = NSNotification.Name(rawValue: "RemoteDidReceiveUnknownBlogError")
 
     /// Posted whenever a Jetpack Timeout is received.
     ///

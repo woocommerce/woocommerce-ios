@@ -246,6 +246,9 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
+    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+
     // MARK: Site creation
     //
     case siteCreated = "login_woocommerce_site_created"
@@ -1385,6 +1388,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
     case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
     case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
+    case pointOfSaleLocalCatalogBlockedFellBackToRemote = "local_catalog_blocked_fell_back_to_remote"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
@@ -1414,6 +1418,7 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+    case wooShippingCarrierTermsOfService = "wcs_carrier_tos"
 
     // MARK: Support Chat events
     case supportChatEntryPointTapped = "support_chat_entry_point_tapped"

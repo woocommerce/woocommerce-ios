@@ -108,8 +108,8 @@ public final class RefundsRemote: Remote {
 
         do {
             let encodedJson = try mapper.map(refund: refund)
-            let parameters = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any] ?? [:]
             // POS staff attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
+            let parameters = try (JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any])?.requestParameterDictionaryFromJSONObject()
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,

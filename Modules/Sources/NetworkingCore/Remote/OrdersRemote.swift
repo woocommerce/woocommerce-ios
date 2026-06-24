@@ -48,8 +48,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
         let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
-        let parameters: [String: Any] = {
-            var parameters = [
+        let parameters: RequestParameterConvertibleDictionary = {
+            var parameters: RequestParameterConvertibleDictionary = [
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
@@ -134,7 +134,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
             return []
         }
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
             ParameterKeys.fields: ParameterValues.fieldValues
@@ -228,8 +228,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         do {
             let path = Constants.ordersPath
             let mapper = OrderMapper(siteID: siteID)
-            let parameters: [String: Any] = try {
-                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
+            let parameters: RequestParameterConvertibleDictionary = try {
+                var params: RequestParameterConvertibleDictionary = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
@@ -260,17 +260,16 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                    let giftCardParameter: RequestParameterValue = [NestedFieldKeys.giftCardCode: giftCard]
+                    params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
-                // Set source type to mark the order as created from mobile. POS staff
-                // attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
-                let baseMetadata: [MetaData] = [
-                    MetaData(metadataID: 0,
-                             key: OrderAttributionInfo.Keys.sourceType.rawValue,
-                             value: OrderAttributionInfo.Values.mobileAppSourceType)
-                ]
-                params[Order.CodingKeys.metadata.rawValue] = try baseMetadata.map { try $0.toDictionary() }
+                // Set source type to mark the order as created from mobile. POS staff attribution
+                // travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
+                let sourceTypeMetadata = MetaData(metadataID: 0,
+                                                  key: OrderAttributionInfo.Keys.sourceType.rawValue,
+                                                  value: OrderAttributionInfo.Values.mobileAppSourceType)
+                params[Order.CodingKeys.metadata.rawValue] = try [sourceTypeMetadata.toDictionary()]
 
                 if let createdViaValue = source.createdViaValue {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
@@ -339,8 +338,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
             let mapper = OrderMapper(siteID: siteID)
-            let parameters: [String: Any] = try {
-                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
+            let parameters: RequestParameterConvertibleDictionary = try {
+                var params: RequestParameterConvertibleDictionary = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
@@ -374,7 +373,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                    let giftCardParameter: RequestParameterValue = [NestedFieldKeys.giftCardCode: giftCard]
+                    params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
                 // Attach cash-change meta when present. POS staff attribution travels in
@@ -538,10 +538,11 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
-        let parameters: [String: Any] = [
-            "billing": [
-                "email": emailAddress
-            ]
+        let billing: RequestParameterValue = [
+            "email": emailAddress
+        ]
+        let parameters: RequestParameterConvertibleDictionary = [
+            "billing": billing
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
@@ -556,7 +557,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
@@ -579,7 +580,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.keyword: searchTerm,
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
@@ -708,7 +709,7 @@ public extension OrdersRemote {
 
     func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
         guard !orderIDs.isEmpty else { return [] }
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
             ParameterKeys.fields: ParameterValues.fieldValues

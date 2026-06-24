@@ -26,9 +26,9 @@ open class Remote: NSObject {
     ///
     public func enqueue(_ request: Request) async throws {
         do {
-            // `responseDataAndHeaders` is a `nonisolated async` call, so validation runs on the
-            // cooperative pool (off the main thread) when it resumes.
-            let (data, _) = try await network.responseDataAndHeaders(for: request)
+            // `responseData` is a `nonisolated async` call, so validation runs on the cooperative
+            // pool (off the main thread) when it resumes.
+            let data = try await network.responseData(for: request)
             try request.responseDataValidator().validate(data: data)
         } catch {
             handleResponseError(error: error, for: request)
@@ -42,9 +42,9 @@ open class Remote: NSObject {
     /// - Returns: The result from the JSON parsed response for the expected type.
     public func enqueue<T: Decodable>(_ request: Request) async throws -> T {
         do {
-            // `responseDataAndHeaders` is a `nonisolated async` call, so validation and decoding run
-            // on the cooperative pool (off the main thread) when it resumes.
-            let (data, _) = try await network.responseDataAndHeaders(for: request)
+            // `responseData` is a `nonisolated async` call, so validation and decoding run on the
+            // cooperative pool (off the main thread) when it resumes.
+            let data = try await network.responseData(for: request)
             try request.responseDataValidator().validate(data: data)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {

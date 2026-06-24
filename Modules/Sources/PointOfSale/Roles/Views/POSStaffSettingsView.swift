@@ -59,7 +59,7 @@ struct POSStaffSettingsView: View {
                         showsManageStaff = false
                         // Silent refresh: the list is already on screen, so update it in place
                         // without the spinner (which could otherwise stick after the cover dismiss).
-                        Task { await fetchStaff(showLoading: false) }
+                        Task { await fetchStaff(showsLoading: false) }
                     }
                 )
             }
@@ -213,11 +213,11 @@ private extension POSStaffSettingsView {
         await fetchStaff()
     }
 
-    /// Loads the staff list. `showLoading` drives the spinner + error state for the initial load and
+    /// Loads the staff list. `showsLoading` drives the spinner + error state for the initial load and
     /// retries; pass `false` for a silent in-place refresh (e.g. after returning from the Manage
     /// staff web view), which keeps the current list visible and never strands the spinner.
-    func fetchStaff(showLoading: Bool = true) async {
-        if showLoading {
+    func fetchStaff(showsLoading: Bool = true) async {
+        if showsLoading {
             state = .loading
         }
         do {
@@ -230,7 +230,7 @@ private extension POSStaffSettingsView {
         } catch {
             // Silent-refresh failures keep the current list on screen; only the initial load and
             // retry surface the error state.
-            if showLoading {
+            if showsLoading {
                 state = .failed(error)
             }
         }

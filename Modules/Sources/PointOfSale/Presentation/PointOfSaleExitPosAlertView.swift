@@ -56,7 +56,7 @@ struct PointOfSaleExitPosAlertView: View {
             Spacer()
             closeButton
                 .font(.posButtonSymbolMedium)
-                .foregroundColor(Color.posOnSurface)
+                .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .accessibilitySortPriority(-1)
         }
     }

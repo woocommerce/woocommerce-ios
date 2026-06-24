@@ -43,32 +43,20 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     private var regularCloseButton: some View {
-        HStack {
-            Spacer()
-            closeButton
-                .font(.posButtonSymbolLarge)
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
-        }
+        closeButton(fontStyle: .posButtonSymbolLarge)
     }
 
     private var compactCloseButton: some View {
-        HStack {
-            Spacer()
-            closeButton
-                .font(.posButtonSymbolMedium)
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
-                .accessibilitySortPriority(-1)
-        }
+        closeButton(fontStyle: .posButtonSymbolMedium)
     }
 
-    private var closeButton: some View {
-        Button {
+    private func closeButton(fontStyle: POSFontStyle) -> some View {
+        POSModalCloseButton(accessibilityLabel: Localization.closeButtonAccessibilityLabel,
+                            accessibilityIdentifier: "pos-exit-modal-close-button",
+                            fontStyle: fontStyle,
+                            foregroundColor: Color.posOnSurfaceVariantLowest) {
             isPresented = false
-        } label: {
-            Text(Image(systemName: "xmark"))
         }
-        .accessibilityIdentifier("pos-exit-modal-close-button")
-        .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
     }
 
     private var content: some View {

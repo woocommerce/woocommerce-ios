@@ -6,6 +6,10 @@ import Hardware
 /// Pure and printer-agnostic: it produces the human-readable receipt text that a printer
 /// backend wraps into its own print command. The card/EMV block is included only when card
 /// details are present, so cash and other payment methods render cleanly.
+///
+/// Layout treats `String.count` as the printed column width. That holds for monospaced Latin
+/// text but not for full-width (CJK) or combining/RTL scripts, where columns can misalign and the
+/// space-based wrapping finds no break points — revisit width measurement before localising there.
 public struct ReceiptTextRenderer {
     private let lineWidth: Int
     private let dateFormatter: DateFormatter

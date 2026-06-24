@@ -16,8 +16,6 @@ protocol POSSettingsControllerProtocol {
     var storeViewModel: POSSettingsStoreViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
     var isLocalCatalogEligible: Bool { get }
-    /// Backs the read-only Staff settings screen, supplied by the host when POS roles are enabled.
-    /// `nil` keeps the Staff card hidden (roles disabled, or unconfigured previews/mocks).
     var staffSettingsService: POSStaffSettingsService? { get }
 }
 

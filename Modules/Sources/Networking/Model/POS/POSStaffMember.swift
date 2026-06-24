@@ -8,7 +8,6 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     public let displayName: String
 
     /// Server-side role preset, used only for display labelling — never for permission checks.
-    /// Canonical presets are `pos_admin` / `pos_manager` / `pos_cashier`; see `POSStaffPreset`.
     public let preset: POSStaffPreset
 
     /// POS capabilities the staff member holds, keyed by the server's `pos_*` capability

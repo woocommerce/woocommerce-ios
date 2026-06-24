@@ -255,6 +255,31 @@ final class RemoteTests: XCTestCase {
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that a network-level failure is only mapped and re-thrown: it is NOT routed through
+    /// `handleResponseError`, so no error notification is posted even for a failure that would map to one.
+    func test_enqueue_when_the_network_request_fails_then_does_not_post_an_error_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        // `request` is a JetpackRequest, so this would post a Jetpack-timeout notification if the
+        // network-failure path passed it to `handleResponseError` — which it must not.
+        network.simulateError(requestUrlSuffix: "something", error: DotcomError.requestFailed())
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
+        expectationForNotification.isInverted = true
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then: the error is mapped and re-thrown as-is, without handling it.
+            XCTAssertEqual(error as? DotcomError, .requestFailed())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: 1.0)
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///

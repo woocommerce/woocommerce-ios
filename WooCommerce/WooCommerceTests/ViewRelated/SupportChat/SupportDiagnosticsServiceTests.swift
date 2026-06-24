@@ -6,6 +6,7 @@ import protocol WooFoundation.ConnectivityObserver
 @testable import Networking
 @testable import WooCommerce
 
+@Suite(.serialized)
 @MainActor
 struct SupportDiagnosticsServiceTests {
 

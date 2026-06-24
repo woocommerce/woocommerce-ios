@@ -16,7 +16,7 @@ struct LegacyOrderCustomerSection: View {
     var body: some View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
             .sheet(isPresented: $showAddressForm) {
-                NavigationView {
+                NavigationStack {
                     switch viewModel.customerNavigationScreen {
                     case .form:
                         EditOrderAddressForm(dismiss: { _ in

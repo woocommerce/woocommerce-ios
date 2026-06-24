@@ -167,7 +167,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
                         underlyingType: index.itemType == .variation ? .variation : .product,
                         itemID: index.itemID
                     )
-                } ?? nil
+                }.flatMap { $0 }
             }
         }
     }

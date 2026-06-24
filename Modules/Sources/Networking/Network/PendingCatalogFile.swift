@@ -10,9 +10,27 @@ public struct PendingCatalogFile: Codable {
     public let filePath: String
     public let siteID: Int64
 
-    public init(filePath: String, siteID: Int64) {
+    /// When the snapshot's background download started. Passed to the resume parse handler so the
+    /// persisted sync watermark reflects the snapshot's real age. A resumed
+    /// snapshot must not claim to be current, or the next incremental sync would skip the gap.
+    /// See `BackgroundCatalogDownloadCoordinator.resumePendingParseIfNeeded`.
+    public let createdAt: Date
+
+    public init(filePath: String, siteID: Int64, createdAt: Date) {
         self.filePath = filePath
         self.siteID = siteID
+        self.createdAt = createdAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case filePath, siteID, createdAt
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        filePath = try container.decode(String.self, forKey: .filePath)
+        siteID = try container.decode(Int64.self, forKey: .siteID)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .distantPast
     }
 }
 

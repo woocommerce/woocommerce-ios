@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-02 09:58:14+0000 */
+/* Translation-Revision-Date: 2026-06-15 19:54:38+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -5413,9 +5413,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of button that allows the user to rate the app in the App Store */
 "Rate us" = "נשמח לקבל ממך דירוג";
 
-/* Subtitle for Contact Support */
-"Reach our happiness engineers who can help answer tough questions" = "יצירת קשר עם נציגי התמיכה שלנו שיכולים לענות על שאלות קשות";
-
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "לעיון בעצות שלנו לפתרון בעיות";
 
@@ -8614,6 +8611,36 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "מדד";
 
+/* Description shown below the title of the analytics updates bottom sheet on the dashboard. */
+"analyticsUpdateModeBottomSheet.description" = "אפשר לבחור מתי הנתונים האנליטיים יעודכנו.";
+
+/* Clarification text shown below the analytics update options on the dashboard bottom sheet. The placeholder is a link for Learn more, please ensure to keep the trailing period. */
+"analyticsUpdateModeBottomSheet.footerWithLearnMoreLink" = "זוהי הגדרה שכוללת את כל החנות, ושולטת גם באפשרות 'עדכונים' בהגדרות הנתונים האנליטיים של מנהל המערכת של WooCommerce‏. %1$@.";
+
+/* Description of the Immediately analytics update option. */
+"analyticsUpdateModeBottomSheet.immediateDescription" = "מתעדכן ברגע שנתונים חדשים זמינים.";
+
+/* Analytics update option that imports analytics data as soon as new data is available. */
+"analyticsUpdateModeBottomSheet.immediateTitle" = "מיד";
+
+/* Link text in the analytics updates bottom sheet footer that opens WooCommerce Analytics documentation. */
+"analyticsUpdateModeBottomSheet.learnMore" = "למידע נוסף";
+
+/* Navigation title for the WooCommerce Analytics documentation web view. */
+"analyticsUpdateModeBottomSheet.learnMoreNavigationTitle" = "נתונים אנליטיים של WooCommerce";
+
+/* Description of the Scheduled analytics update option. */
+"analyticsUpdateModeBottomSheet.scheduledDescription" = "מתעדכן באופן אוטומטי כל 12 שעות.\nמומלץ לחנויות עם נפח הזמנות גבוה.";
+
+/* Analytics update option that imports analytics data on a schedule. */
+"analyticsUpdateModeBottomSheet.scheduledTitle" = "מתוזמן";
+
+/* Title of the bottom sheet that explains and lets the merchant choose how WooCommerce Analytics imports update data. */
+"analyticsUpdateModeBottomSheet.title" = "עדכוני נתונים אנליטיים";
+
+/* Notice shown when saving the analytics update mode setting fails. */
+"analyticsUpdateModeBottomSheet.updateErrorNotice" = "לא ניתן היה לעדכן את ההגדרה. יש לנסות שוב.";
+
 /* Alert confirmation button displayed when user identified as underage and taken to force logout. */
 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "הבנתי";
 
@@ -10059,9 +10086,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "לעולם לא לפספס הזמנה חדשה";
 
-/* Button to open AI chat support in the connectivity tool screen */
-"connectivityTool.chatWithSupport" = "שיחה עם התמיכה בצ'אט";
-
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "פתרון בעיות לחיבור";
 
@@ -10503,6 +10527,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "dashboardViewHostingController.title" = "החנות שלי";
 
+/* Action title on the dashboard notice about scheduled analytics updates. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.learnMore" = "למידע נוסף";
+
+/* Notice shown on dashboard pull-to-refresh when analytics updates are scheduled every 12 hours. */
+"dashboardViewModel.analyticsImportUpdateModeNotice.title" = "הנתונים הסטטיסטיים עשויים להתעכב עד 12 שעות.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
 
@@ -10921,17 +10951,14 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
 
-/* Subtitle for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.subtitle" = "קבלת עזרה מסייען הבינה המלאכותית שלנו:";
-
-/* Title for the AI support chat row on the Help screen */
-"helpAndSupport.aiSupportChat.title" = "שיחה עם התמיכה בצ'אט";
-
 /* Subtitle for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.subtitle" = "חזרה לשיחות תמיכה קודמות";
 
 /* Title for the support chat history row on the Help screen */
 "helpAndSupport.chatHistory.title" = "היסטוריית צ'אטים";
+
+/* Subtitle for Contact Support */
+"helpAndSupport.contactSupport.subtitle" = "קבלת עזרה עבור בעיות באפליקציה או בחנות.";
 
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "בדיקה אם האתר שלך עובד עם האפליקציה";
@@ -12357,6 +12384,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown on the Point of Sale Mark as paid confirmation when the network call fails. */
 "pointOfSale.markAsPaid.failureMessage" = "לא ניתן היה לסמן הזמנה זו כ'שולמה'. יש לנסות שוב.";
 
+/* Error displayed in Point of Sale checkout when the created order does not match the cart contents. */
+"pointOfSale.orderController.orderDoesNotMatchCart2" = "אירעה בעיה ביצירת ההזמנה, הפריטים אינם תואמים לבחירה שלך. יש לבדוק את התוכן של עגלת הקניות ולנסות שוב.";
+
 /* Fallback name for a product that couldn't be identified in error handling. */
 "pointOfSale.orderController.unknownProduct" = "מוצר אחד או יותר";
 
@@ -12804,6 +12834,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
 "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "תמונה של קוד לסריקה לצד סורק ברקוד.";
 
+/* Accessibility label for the close button in barcode scanner setup. */
+"pos.barcodeScannerSetup.closeButton.accessibilityLabel" = "סגירה";
+
 /* Message shown when scanner setup is complete */
 "pos.barcodeScannerSetup.complete.instruction.2" = "הכול מוכן, אפשר להתחיל לסרוק מוצרים. בפעם הבאה שיהיה צורך לחבר את הסורק, אפשר להדליק אותו והוא יתחבר מחדש אוטומטית.";
 
@@ -12980,6 +13013,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "לא ניתן לטעון";
+
+/* Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedSubtitle" = "השירות של Point of Sale אינו יכול לגשת לקובץ עם פרטי המוצרים שלך, משום שספקית האחסון שלך חוסמת אותו.\nיש לבקש ממנה לאפשר גישה לקובץ הזה כדי שהשירות של Point of Sale ימשיך לפעול כראוי.";
+
+/* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
+"pos.itemList.catalogBlockedTitle" = "נדרשת פעולה בחנות שלך";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
@@ -13172,6 +13211,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "לא ניתן לטעון את ההזמנות";
+
+/* Button text to retry loading orders in Point of Sale. */
+"pos.orderList.tryAgainButtonTitle" = "ניסיון חוזר";
 
 /* Button text for reloading the orders list when it's empty. */
 "pos.orderListView.emptyOrdersButtonTitle.3" = "רענון";
@@ -13687,8 +13729,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "תשלום במזומן";
 
+/* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
+"pos.totalsView.customAmountsTotal" = "סכומים בהתאמה אישית";
+
 /* Title for discount total amount field */
 "pos.totalsView.discountTotal2" = "סך כל ההנחה";
+
+/* Button to return to item selection when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.editOrder" = "עריכת הזמנה";
+
+/* Message shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.message" = "אירעה בעיה ביצירת ההזמנה, הפריטים אינם תואמים לבחירה שלך. יש לבדוק את התוכן של עגלת הקניות ולנסות שוב.";
+
+/* Title shown when the POS order created by the server does not match the cart contents. */
+"pos.totalsView.orderMismatch.error.title" = "לא ניתן היה לשלם בקופה";
 
 /* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
 "pos.totalsView.otherPaymentMethods.button.title" = "אמצעי תשלום אחרים";
@@ -13701,12 +13755,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for total amount field */
 "pos.totalsView.total" = "סכום כולל";
-
-/* Detail for an error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.detail" = "עליך להתאים את חלוקת המסך כדי לספק מקום נוסף ל'נקודת מכירה'.";
-
-/* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
-"pos.unsupportedWidth.title" = "התצוגה של 'נקודת מכירה' לא נתמכת ברוחב המסך הזה.";
 
 /* Button title for the POS promotional banner on the dashboard */
 "posPromoOnPhonesCampaign.buttonTitle" = "למידע נוסף";
@@ -13851,9 +13899,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WordPress REST API test card in the pre-login connectivity tool */
 "preLoginConnectivityTool.test.wordPressRESTAPI" = "REST API של WordPress";
-
-/* Chat with AI support button in the pre-login connectivity tool */
-"preLoginConnectivityToolView.chatWithSupport" = "שיחה עם התמיכה בצ'אט";
 
 /* Contact support button in the pre-login connectivity tool */
 "preLoginConnectivityToolView.contactSupport" = "פנייה לתמיכה";
@@ -14338,6 +14383,207 @@ which should be translated separately and considered part of this sentence. */
 /* Name of the out-of-stock alert, used in the Stock row's detail text when a partial set of sub-toggles is enabled. */
 "pushNotificationPreferencesViewModel.storeStock.detail.outOfStock" = "לא במלאי";
 
+/* Title on the QR-login authenticating screen. */
+"qrLogin.authenticating.title" = "מבצעת כניסה…";
+
+/* Cancel button on the camera-permission alerts. */
+"qrLogin.cameraPermission.cancel" = "ביטול";
+
+/* Body of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.body" = "ללא גישה למצלמה, עדיין ניתן להיכנס על ידי הזנת כתובת החנות שלך.";
+
+/* Primary action on the first-denial camera-permission alert. */
+"qrLogin.cameraPermission.firstDenial.primary" = "מתן גישה למצלמה";
+
+/* Title of the alert shown the first time the user denies camera access. */
+"qrLogin.cameraPermission.firstDenial.title" = "דרושה גישה למצלמה";
+
+/* Body of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.body" = "יש לאפשר גישה למצלמה בהגדרות, או לבטל כדי להיכנס באמצעות כתובת החנות שלך במקום זאת.";
+
+/* Primary action on the permanently-denied camera-permission alert. */
+"qrLogin.cameraPermission.permanentlyDenied.primary" = "פתיחת הגדרות ההרשאות";
+
+/* Title of the alert shown when the OS will no longer prompt for camera access. */
+"qrLogin.cameraPermission.permanentlyDenied.title" = "הגישה למצלמה כבויה";
+
+/* QR-login error body for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.body" = "כניסה זו כבר הושלמה במכשיר אחר. יש ליצור קוד חדש אם עליך לנסות שוב.";
+
+/* QR-login error title for wp.com consumed / already_consumed. */
+"qrLogin.error.alreadySignedInElsewhere.title" = "כבר בוצעה כניסה במקום אחר";
+
+/* QR-login error body when another device already scanned the QR. */
+"qrLogin.error.codeAlreadyUsed.body" = "קוד זה כבר נסרק. יש ליצור קוד חדש בחנות שלך.";
+
+/* QR-login error title for HTTP 409 — another device already scanned this QR. */
+"qrLogin.error.codeAlreadyUsed.title" = "כבר נעשה שימוש בקוד זה";
+
+/* QR-login error body for the token-rejected case. */
+"qrLogin.error.codeExpired.body" = "קוד זה פג תוקף או שכבר נעשה בו שימוש. יש ליצור קוד חדש בחנות שלך.";
+
+/* QR-login error title when the token was rejected by the server. */
+"qrLogin.error.codeExpired.title" = "פג תוקף הקוד";
+
+/* Secondary CTA on every QR-login error — falls back to the site-address login. */
+"qrLogin.error.enterSiteURL" = "הזנת כתובת ה-URL של האתר במקום זאת";
+
+/* QR-login error body when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.body" = "האפליקציה כבר מותקנת — קוד QR זה מיועד להתקנתה. ב-wp-admin, יש להקיש על הכפתור 'האפליקציה מותקנת' כדי לחשוף את קוד ה-QR לכניסה. לחלופין, אפשר לבקר בכתובת woo.com\/mobilelogin מהמחשב שלך.";
+
+/* QR-login error title when the user scans the wp-admin install QR. */
+"qrLogin.error.installQR.title" = "זהו קוד ה-QR להתקנה";
+
+/* QR-login error body when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.body" = "קוד QR זה אינו קוד כניסה של WooCommerce. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title when the scanned payload isn't recognised. */
+"qrLogin.error.invalidPayload.title" = "לא קוד של WooCommerce";
+
+/* QR-login error body for transport failures. */
+"qrLogin.error.network.body" = "יש לבדוק את החיבור ולנסות שוב.";
+
+/* QR-login error title for transport failures. */
+"qrLogin.error.network.title" = "לא ניתן היה להגיע לחנות שלך";
+
+/* QR-login error body when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.body" = "השירות של WooCommerce לא הותקן באתר זה.";
+
+/* QR-login error title when the fetched site doesn't have WooCommerce installed. */
+"qrLogin.error.notAWooSite.title" = "לא חנות של WooCommerce";
+
+/* QR-login error body for HTTP 429. */
+"qrLogin.error.rateLimited.body" = "יש להמתין מספר דקות ולנסות שנית.";
+
+/* QR-login error title for HTTP 429 responses. */
+"qrLogin.error.rateLimited.title" = "יותר מדי ניסיונות";
+
+/* Primary CTA on a non-retryable QR-login error. */
+"qrLogin.error.scanNewCode" = "סריקת קוד חדש";
+
+/* QR-login error body when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.body" = "לא הצלחנו לקרוא קוד QR זה. יש לנסות שוב.";
+
+/* QR-login error title when the scanner pipeline fails. */
+"qrLogin.error.scannerFailure.title" = "לא ניתן היה לקרוא קוד זה";
+
+/* QR-login error body when sign-in was explicitly denied. */
+"qrLogin.error.signInDenied.body" = "למען אבטחתך, ניסיון כניסה זה בוטל. יש ליצור קוד חדש בחנות שלך כדי לנסות שוב.";
+
+/* QR-login error title when the merchant denied the sign-in in the desktop browser. */
+"qrLogin.error.signInDenied.title" = "הכניסה נדחתה";
+
+/* QR-login error body for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.body" = "הכניסה שלך נקטעה. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title for invalid_exchange_grant / wp.com exchange 404. */
+"qrLogin.error.signInInterrupted.title" = "הכניסה נקטעה";
+
+/* QR-login error body when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.body" = "לא אישרת בזמן. יש ליצור קוד חדש בחנות שלך ולנסות שוב.";
+
+/* QR-login error title when the merchant didn't confirm in time. */
+"qrLogin.error.signInTimedOut.title" = "תם הזמן הקצוב לכניסה";
+
+/* QR-login error body when post-exchange site fetch fails authentication. */
+"qrLogin.error.siteAuthFailure.body" = "לא הצלחנו לבצע אימות מול החנות שלך. יש לנסות שוב.";
+
+/* QR-login error title when post-exchange site fetch fails. */
+"qrLogin.error.siteAuthFailure.title" = "הכניסה נכשלה";
+
+/* QR-login error body for the store-can't-complete case. */
+"qrLogin.error.storeUnsupported.body" = "תוסף ה-WooCommerce שלך אינו תומך בכניסה באמצעות QR. יש לעדכן את WooCommerce בחנות שלך ולנסות שוב, או להיכנס על ידי הזנת כתובת ה-URL של האתר שלך.";
+
+/* QR-login error title when the store's plugin doesn't support the QR flow. */
+"qrLogin.error.storeUnsupported.title" = "חנות זו אינה יכולה להשלים כניסה באמצעות קוד QR";
+
+/* Primary CTA on a retryable QR-login error. */
+"qrLogin.error.tryAgain" = "ניסיון חוזר";
+
+/* QR-login error body for 5xx / malformed responses. */
+"qrLogin.error.unexpected.body" = "החנות שלך החזירה שגיאה לא צפויה. כדאי להמתין רגע ולנסות שוב.";
+
+/* QR-login error title for 5xx / malformed / unmapped server responses. */
+"qrLogin.error.unexpected.title" = "משהו השתבש";
+
+/* QR-login error body when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.body" = "לחשבון שלך אין הרשאה להשתמש באפליקציה עבור החנות הזו.";
+
+/* QR-login error title when the user's role doesn't allow app access. */
+"qrLogin.error.userNotEligible.title" = "דרושה הרשאה";
+
+/* Navigation-bar Help button on the QR-login screens. */
+"qrLogin.help" = "עזרה";
+
+/* Button to cancel sign-in from the QR number-match screen. */
+"qrLogin.numberMatch.cancel" = "ביטול";
+
+/* Countdown label on the QR number-match screen. %1$d is the number of seconds remaining. */
+"qrLogin.numberMatch.countdown" = "פקיעת תוקף בעוד ⁦%1$d⁩ שנ'";
+
+/* Security note on the QR number-match screen. */
+"qrLogin.numberMatch.securityNote" = "שני המסכים חייבים להציג את אותו מספר להשלמת הכניסה.";
+
+/* Label above the site host on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.selfHosted" = "מתבצעת כניסה אל";
+
+/* Label above the wp.com email on the QR number-match screen. */
+"qrLogin.numberMatch.subtitle.wpCom" = "מתבצעת כניסה בתור";
+
+/* Instruction above the 3-digit number on the QR number-match screen. */
+"qrLogin.numberMatch.tapHint" = "יש להקיש על המספר הזה במחשב שלך כדי להשלים את התהליך.";
+
+/* Title on the QR number-match screen. */
+"qrLogin.numberMatch.title" = "אישור ביצוע כניסה";
+
+/* Accessibility label for the back button on the QR-login prologue. */
+"qrLogin.prologue.back" = "חזרה";
+
+/* Secondary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.fallbackCTA" = "אין לך מחשב? כניסה עם כתובת של חנות";
+
+/* Help button on the QR-login prologue. */
+"qrLogin.prologue.help" = "עזרה";
+
+/* Primary call-to-action on the QR-login prologue. */
+"qrLogin.prologue.scanCTA" = "סריקת קוד QR";
+
+/* Hint below the URL pill on the QR-login prologue. */
+"qrLogin.prologue.stepHint" = "לאחר מכן, יש לסרוק את קוד ה-QR שמופיע.";
+
+/* Subtitle on the QR-login prologue, introducing the URL the user should visit. */
+"qrLogin.prologue.subtitle" = "במחשב שלך, יש לבקר בכתובת:";
+
+/* Title on the QR-login prologue screen. */
+"qrLogin.prologue.title" = "יש לסרוק לכניסה";
+
+/* Accessibility hint for the tappable URL pill on the QR-login prologue. */
+"qrLogin.prologue.urlPill.accessibilityHint" = "מעתיק את כתובת ה-URL ללוח.";
+
+/* Confirmation shown on the QR-login prologue URL pill after it is tapped to copy. */
+"qrLogin.prologue.urlPill.copied" = "הקישור הועתק!";
+
+/* Accessibility label for the cancel button on the QR scanner. */
+"qrLogin.scanner.cancel.accessibility" = "ביטול";
+
+/* Instruction text shown below the scanner viewfinder. */
+"qrLogin.scanner.instruction" = "יש למרכז את קוד ה-QR בתוך המסגרת";
+
+/* URL pill shown above the scanner viewfinder. */
+"qrLogin.scanner.urlPill" = "יש לבקר ב-woo.com\/mobilelogin";
+
+/* Body of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.body" = "המשך הפעולה ינתק אותך מהסשן הנוכחי שלך ויתחיל כניסה חדשה.";
+
+/* Secondary CTA on the QR-login session-replace warning — keeps the current session. */
+"qrLogin.sessionReplace.cancel" = "ביטול";
+
+/* Primary CTA on the QR-login session-replace warning — signs out and resumes the QR sign-in. */
+"qrLogin.sessionReplace.confirm" = "המשך ביציאה";
+
+/* Title of the QR-login warning shown when a signed-in merchant scans a sign-in QR code. */
+"qrLogin.sessionReplace.title" = "כבר בוצעה כניסה";
+
 /* Button to dismiss the product quantity rules view screen. */
 "quantityRulesView.done" = "בוצע";
 
@@ -14615,6 +14861,12 @@ which should be translated separately and considered part of this sentence. */
 /* Segmented control option that displays Total revenue (including taxes and shipping) on the Performance card. Matches Android. */
 "storePerformanceView.revenueType.total" = "סכום כולל";
 
+/* Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled. */
+"storePerformanceView.scheduledUpdatesDelayText" = "הנתונים האנליטיים עשויים להיות מעודכנים בעיכוב של עד 12 שעות.";
+
+/* Accessibility label for the info button next to the Performance card's last updated timestamp. */
+"storePerformanceView.scheduledUpdatesInfoAccessibilityLabel" = "פרטי עדכון נתונים אנליטיים";
+
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "אין אפשרות להציג את הביצועים בחנות שלך";
 
@@ -14826,9 +15078,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the support chat history screen */
 "supportChatHistoryView.title" = "היסטוריית צ'אטים";
 
-/* Navigation title for the AI support chat screen */
-"supportChatHostingController.title" = "שיחה עם התמיכה בצ'אט";
-
 /* Title of the web view to update WooCommerce plugin from support chat */
 "supportChatHostingController.updateWooCommerce" = "עדכון WooCommerce";
 
@@ -14883,11 +15132,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown when a support ticket has already been created for this chat */
 "supportChatView.ticketCreatedMessage" = "נוצר כרטיס תמיכה עבור הצ'אט הזה. אנו נגיב באימייל.";
 
-/* Navigation title for the AI support chat screen */
-"supportChatView.title" = "שיחה עם התמיכה בצ'אט";
-
 /* Trailing toolbar button on the AI support chat that lets the merchant escalate to human support */
-"supportChatView.toolbar.contactSupport" = "פנייה לתמיכה";
+"supportChatView.toolbar.humanSupport" = "פנייה לנציג תמיכה";
 
 /* Trailing toolbar button on the AI support chat that lets the merchant mark the chat as resolved */
 "supportChatView.toolbar.markResolved" = "סימון כ'נפתר'";
@@ -15293,6 +15539,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "להסתיר את 'הביצועים הטובים ביותר'";
+
+/* Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled. */
+"topPerformersDashboardView.scheduledUpdatesDelayText" = "הנתונים האנליטיים עשויים להתעדכן בעיכוב של עד 12 שעות.";
+
+/* Accessibility label for the info button next to the Top Performers card's last updated timestamp. */
+"topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel" = "פרטי עדכון נתונים אנליטיים";
 
 /* Title when the Top Performers card is disabled because the analytics feature is unavailable */
 "topPerformersDashboardView.unavailableAnalyticsView.title" = "אין אפשרות להציג את הביצועים המובילים בחנות שלך";

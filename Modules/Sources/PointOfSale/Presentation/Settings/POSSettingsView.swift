@@ -71,6 +71,7 @@ extension POSSettingsView {
             .padding(.horizontal, POSPadding.medium)
         }
         .background(Color.posSurfaceBright)
+        .accessibilityIdentifier("pos-settings-view")
     }
 
     @ViewBuilder

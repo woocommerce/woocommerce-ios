@@ -40,6 +40,7 @@ private extension PaymentsActionButtons {
             }
         })
         .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .accessibilityIdentifier("pos-new-order-button")
     }
 }
 

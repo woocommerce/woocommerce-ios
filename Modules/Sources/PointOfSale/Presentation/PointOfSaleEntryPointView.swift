@@ -20,6 +20,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -55,6 +56,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -85,12 +87,15 @@ public struct PointOfSaleEntryPointView: View {
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
+         staffFetcher: POSStaffFetching,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
-            featureFlags: services.featureFlags
+            featureFlags: services.featureFlags,
+            fetcher: staffFetcher
         ))
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -157,8 +162,7 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor,
-                                                      featureFlags: services.featureFlags)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)
@@ -179,6 +183,7 @@ public struct PointOfSaleEntryPointView: View {
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.receiptPrinter = receiptPrinter
     }
 
     public var body: some View {
@@ -224,7 +229,9 @@ public struct PointOfSaleEntryPointView: View {
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)
                 },
-                preferredConnectionMethod: preferredConnectionMethod)
+                receiptPrinter: receiptPrinter,
+                preferredConnectionMethod: preferredConnectionMethod,
+                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -267,6 +274,8 @@ public struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
+import struct Yosemite.POSStaffMember
+
 #Preview {
     PointOfSaleEntryPointView(
         siteID: 1,
@@ -293,8 +302,13 @@ public struct PointOfSaleEntryPointView: View {
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
         receiptSettingsAdminURL: "",
+        staffFetcher: POSPreviewStaffFetcher(),
         services: POSPreviewServices()
     )
+}
+
+private struct POSPreviewStaffFetcher: POSStaffFetching {
+    func fetchStaff(siteID: Int64) async throws(POSStaffFetchError) -> [POSStaffMember] { [] }
 }
 
 #endif

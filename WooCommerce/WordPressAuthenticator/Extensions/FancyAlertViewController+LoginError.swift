@@ -28,16 +28,13 @@ extension FancyAlertViewController {
         onDismiss: (() -> Void)? = nil) -> FancyAlertViewController {
 
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            controller.dismiss(animated: true) {
-                // Find the topmost view controller that we can present from
-                guard WordPressAuthenticator.shared.delegate?.supportEnabled == true,
-                    let viewController = UIApplication.shared.delegate?.window??.topmostPresentedViewController
-                else {
+            controller.dismissAndPresent { presenter in
+                guard WordPressAuthenticator.shared.delegate?.supportEnabled == true else {
                     return
                 }
 
                 moreHelpTapped?()
-                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
+                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: presenter, sourceTag: sourceTag)
             }
         }
 
@@ -117,16 +114,14 @@ extension FancyAlertViewController {
     ///
     private static func alertForGenericErrorMessage(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            controller.dismiss(animated: true) {
-                guard let sourceViewController = UIApplication.shared.delegate?.window??.topmostPresentedViewController,
-                    let authDelegate = WordPressAuthenticator.shared.delegate
-                else {
+            controller.dismissAndPresent { presenter in
+                guard let authDelegate = WordPressAuthenticator.shared.delegate else {
                     return
                 }
 
                 let state = AuthenticatorAnalyticsTracker.shared.state
                 let siteAddress = loginFields.siteAddress.isEmpty ? nil : loginFields.siteAddress
-                authDelegate.presentSupport(from: sourceViewController,
+                authDelegate.presentSupport(from: presenter,
                                             sourceTag: sourceTag,
                                             lastStep: state.lastStep,
                                             lastFlow: state.lastFlow,
@@ -161,17 +156,12 @@ extension FancyAlertViewController {
             WPAuthenticatorLogInfo("Error Alert: Support not enabled. Hiding Help button.")
         } else {
             moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-                controller.dismiss(animated: true) {
-                    // Find the topmost view controller that we can present from
-                    guard let appDelegate = UIApplication.shared.delegate,
-                        let window = appDelegate.window,
-                        let viewController = window?.topmostPresentedViewController,
-                        WordPressAuthenticator.shared.delegate?.supportEnabled == true
-                        else {
-                            return
+                controller.dismissAndPresent { presenter in
+                    guard WordPressAuthenticator.shared.delegate?.supportEnabled == true else {
+                        return
                     }
 
-                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
+                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: presenter, sourceTag: sourceTag)
                 }
             }
         }
@@ -195,17 +185,14 @@ extension FancyAlertViewController {
     ///
     private static func alertForBadURL(with message: String) -> FancyAlertViewController {
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            controller.dismiss(animated: true) {
-                // Find the topmost view controller that we can present from
-                guard let viewController = UIApplication.shared.delegate?.window??.topmostPresentedViewController,
-                    let url = URL(string: "https://apps.wordpress.org/support/#faq-ios-3")
-                    else {
-                        return
+            controller.dismissAndPresent { presenter in
+                guard let url = URL(string: "https://apps.wordpress.org/support/#faq-ios-3") else {
+                    return
                 }
 
                 let safariViewController = SFSafariViewController(url: url)
                 safariViewController.modalPresentationStyle = .pageSheet
-                viewController.present(safariViewController, animated: true, completion: nil)
+                presenter.present(safariViewController, animated: true, completion: nil)
             }
         }
 
@@ -219,5 +206,23 @@ extension FancyAlertViewController {
                                                      titleAccessoryButton: nil,
                                                      dismissAction: nil)
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
+    }
+}
+
+private extension FancyAlertViewController {
+    /// Dismisses the alert and then runs `presentAction` with the view controller that presented it.
+    ///
+    /// The presenter is captured before dismissing because resolving it afterwards via
+    /// `UIApplication.shared.delegate?.window` returns nil in this scene-based app, which is
+    /// what previously left the "Need more help?" buttons dead (the modal would just close).
+    func dismissAndPresent(_ presentAction: @escaping (_ presenter: UIViewController) -> Void) {
+        let presenter = presentingViewController
+        dismiss(animated: true) {
+            guard let presenter else {
+                return
+            }
+
+            presentAction(presenter)
+        }
     }
 }

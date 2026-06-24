@@ -29,13 +29,13 @@ struct UnrestrictedPOSAccessSessionTests {
 
         // When
         try await sut.signIn(withPIN: "1234")
-        try await sut.requestManagerApproval(withPIN: "1234", for: .refundShopOrders)
+        try await sut.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
         sut.lock()
         await sut.refreshPINStatus()
 
         // Then
         #expect(sut.isLocked == false)
         #expect(sut.currentStaff == nil)
-        #expect(sut.allows(.refundShopOrders))
+        #expect(sut.allows(.issueRefunds))
     }
 }

@@ -32,7 +32,7 @@ extension UIView {
             trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: insets.right),
             topAnchor.constraint(equalTo: subview.topAnchor, constant: -insets.top),
             bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: insets.bottom)
-            ])
+        ])
     }
 
     @objc public func pinSubviewToAllEdgeMargins(_ subview: UIView) {
@@ -41,7 +41,7 @@ extension UIView {
             layoutMarginsGuide.trailingAnchor.constraint(equalTo: subview.trailingAnchor),
             layoutMarginsGuide.topAnchor.constraint(equalTo: subview.topAnchor),
             layoutMarginsGuide.bottomAnchor.constraint(equalTo: subview.bottomAnchor)
-            ])
+        ])
     }
 
     /// Adds constraints that pin a subview to self's safe area with padding insets.
@@ -64,7 +64,7 @@ extension UIView {
                 safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: subview.trailingAnchor, constant: insets.right),
                 safeAreaLayoutGuide.topAnchor.constraint(equalTo: subview.topAnchor, constant: -insets.top),
                 safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: subview.bottomAnchor, constant: insets.bottom)
-                ])
+            ])
         }
     }
 

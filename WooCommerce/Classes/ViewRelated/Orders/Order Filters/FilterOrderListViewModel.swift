@@ -117,11 +117,11 @@ final class FilterOrderListViewModel: FilterListViewModel {
     }
 
     var criteria: Filters {
-        let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
-        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
-        let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
-        let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
-        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter ?? nil
+        let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum]
+        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter
+        let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct
+        let customer = customerFilterViewModel.selectedValue as? CustomerFilter
+        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,

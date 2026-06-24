@@ -12,7 +12,7 @@ extension UIView {
         view.backgroundColor = color
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: height)
-            ])
+        ])
         return view
     }
 

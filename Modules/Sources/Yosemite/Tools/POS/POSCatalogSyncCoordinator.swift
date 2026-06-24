@@ -318,7 +318,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // The file is accessible (again) — clear any blocked memory for the site.
             sitesWithBlockedCatalogFile.remove(siteID)
             if syncStrategy == .localCatalogFile {
-                siteSettings.setPOSCatalogFileBlockedByHost(siteID: siteID, blocked: false)
+                siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: nil)
             }
             return catalog
         } catch where error.isPOSCatalogFileBlockedError {
@@ -327,7 +327,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                                                isActive: true)?.version
             let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
             sitesWithBlockedCatalogFile.insert(siteID)
-            siteSettings.setPOSCatalogFileBlockedByHost(siteID: siteID, blocked: true)
+            siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: Date())
             guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) || isRetryWhileBlocked else {
                 throw error
             }

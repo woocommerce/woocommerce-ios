@@ -759,28 +759,6 @@ private extension OrderListViewController {
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
 
-        let analytics = ServiceLocator.analytics
-        if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
-
-            analytics.track(event: .TestOrder.entryPointDisplayed())
-            return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                               image: .boxesImage,
-                               details: Localization.createTestOrderDetail,
-                               buttonTitle: Localization.tryTestOrder,
-                               onTap: { [weak self] _ in
-                guard let self else { return }
-                analytics.track(event: .TestOrder.tryTestOrderTapped())
-                let hostingController = CreateTestOrderHostingController {
-                    analytics.track(event: .TestOrder.testOrderStarted())
-                    UIApplication.shared.open(url)
-                }
-                self.present(UINavigationController(rootViewController: hostingController), animated: true)
-            }, onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
-        }
-
-        /// Otherwise, show link to Woo blog.
         return .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                          image: .boxesImage,
                          details: Localization.allOrdersEmptyStateDetail,
@@ -1001,16 +979,6 @@ private extension OrderListViewController {
         static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
-        static let createTestOrderDetail = NSLocalizedString(
-            "orderList.createTestOrder.emptyStateDetail",
-            value: "Run an order to ensure your WooCommerce process delivers a seamless customer experience.",
-            comment: "Message shown in the Orders empty state inviting the merchant to place their first order."
-        )
-        static let tryTestOrder = NSLocalizedString(
-            "orderList.createTestOrder.emptyStateButton",
-            value: "Place your first order",
-            comment: "Button title in the Orders empty state that opens the place-an-order screen."
-        )
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",

@@ -8,7 +8,6 @@ import enum Yosemite.PrinterConnectionStatus
 /// Drives the setup modal through `discoveryState` and the settings status row through
 /// `isConnected` / `connectedPrinterName`, wrapping the manufacturer-agnostic
 /// `ReceiptPrinterServiceProtocol` so the views never touch the printer service directly.
-@MainActor
 @Observable
 final class POSPrinterConnectionController {
     /// Drives the setup modal: pairing → searching → found → connecting → error.
@@ -25,13 +24,11 @@ final class POSPrinterConnectionController {
     }
 
     private let service: ReceiptPrinterServiceProtocol
-    // `nonisolated(unsafe)` so the nonisolated `deinit` can cancel these. Safe because every write
-    // happens on the main actor, and the deinit read races nothing: deallocation means no other
-    // reference survives. `Task.cancel()` is itself callable from any isolation.
-    nonisolated(unsafe) private var discoveryTask: Task<Void, Never>?
-    nonisolated(unsafe) private var connectTask: Task<Void, Never>?
-    nonisolated(unsafe) private var statusTask: Task<Void, Never>?
+    private var discoveryTask: Task<Void, Never>?
+    private var connectTask: Task<Void, Never>?
+    private var statusTask: Task<Void, Never>?
 
+    @MainActor
     init(service: ReceiptPrinterServiceProtocol) {
         self.service = service
         observeConnectionStatus()
@@ -44,6 +41,7 @@ final class POSPrinterConnectionController {
     }
 
     /// Starts (or restarts) Bluetooth discovery, accumulating found printers into `discoveryState`.
+    @MainActor
     func startDiscovery() {
         discoveryTask?.cancel()
         discoveryState = .searching
@@ -77,6 +75,7 @@ final class POSPrinterConnectionController {
     }
 
     /// Connects to the chosen printer, stopping discovery first so the SDK scan is not left running.
+    @MainActor
     func connect(to device: PrinterDevice) {
         discoveryTask?.cancel()
         connectTask?.cancel()
@@ -100,12 +99,14 @@ final class POSPrinterConnectionController {
         }
     }
 
+    @MainActor
     func disconnect() async {
         await service.disconnect()
     }
 
     /// Tears down any in-flight discovery and returns to the pairing screen, so reopening the
     /// modal always starts fresh.
+    @MainActor
     func cancelSetup() async {
         discoveryTask?.cancel()
         connectTask?.cancel()
@@ -113,6 +114,7 @@ final class POSPrinterConnectionController {
         await service.stopDiscovery()
     }
 
+    @MainActor
     private func observeConnectionStatus() {
         // Reach the stream through a transient `self` so the long-lived iteration captures only a
         // weak reference. Holding `self` strongly across this never-ending loop would retain the

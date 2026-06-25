@@ -52,7 +52,7 @@ struct PointOfSaleDashboardView: View {
     // MARK: View State
 
     enum ViewState: Equatable {
-        case loading(isCatalogSyncing: Bool = false)
+        case loading(catalogSyncState: POSCatalogSyncViewState? = nil)
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
         case content
@@ -69,9 +69,9 @@ struct PointOfSaleDashboardView: View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             switch viewState {
-            case .loading(let isCatalogSyncing):
+            case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
-                    isCatalogSyncing: isCatalogSyncing,
+                    catalogSyncState: catalogSyncState,
                     onExit: { dismiss() }
                 )
                     .transition(.opacity)

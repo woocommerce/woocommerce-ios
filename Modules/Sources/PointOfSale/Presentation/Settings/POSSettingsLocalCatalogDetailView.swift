@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
     private let viewModel: POSSettingsLocalCatalogViewModel
@@ -83,16 +84,33 @@ private extension POSSettingsLocalCatalogDetailView {
                     value: Localization.manualUpdateInfo,
                     showSeparator: false,
                     labelStyle: .bold,
-                    buttonTitle: Localization.updateCatalog,
+                    buttonTitle: updateCatalogButtonTitle,
                     buttonAction: {
                         Task {
                             await viewModel.refreshCatalog()
                         }
                     },
                     buttonStyle: .primary,
-                    isLoading: viewModel.isRefreshingCatalog
+                    isLoading: false
                 )
             }
+        }
+    }
+
+    var updateCatalogButtonTitle: String {
+        guard viewModel.isRefreshingCatalog else {
+            return Localization.updateCatalog
+        }
+
+        guard let progress = viewModel.catalogRefreshProgress else {
+            return Localization.updateCatalogPreparing
+        }
+
+        switch progress {
+        case .preparing:
+            return Localization.updateCatalogPreparing
+        case .itemCount(let processed, let total):
+            return String.localizedStringWithFormat(Localization.updateCatalogProgressFormat, processed, total)
         }
     }
 
@@ -182,6 +200,19 @@ private extension POSSettingsLocalCatalogDetailView {
             "posSettingsLocalCatalogDetailView.updateCatalog",
             value: "Update catalog",
             comment: "Button text for updating the catalog manually."
+        )
+
+        static let updateCatalogPreparing = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogPreparing",
+            value: "Preparing...",
+            comment: "Button text shown while a manual POS catalog update is preparing before item counts are available."
+        )
+
+        static let updateCatalogProgressFormat = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogProgressFormat",
+            value: "%1$ld of %2$ld items",
+            comment: "Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, " +
+                "%2$ld is the total number of catalog items."
         )
 
         static let errorRetryButtonTitle = NSLocalizedString(

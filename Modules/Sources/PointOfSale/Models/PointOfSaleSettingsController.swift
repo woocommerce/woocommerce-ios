@@ -16,6 +16,7 @@ protocol POSSettingsControllerProtocol {
     var storeViewModel: POSSettingsStoreViewModel { get }
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
     var isLocalCatalogEligible: Bool { get }
+    var staffSettingsService: POSStaffSettingsService? { get }
 }
 
 @Observable final class PointOfSaleSettingsController: POSSettingsControllerProtocol {
@@ -25,6 +26,7 @@ protocol POSSettingsControllerProtocol {
     let storeViewModel: POSSettingsStoreViewModel
     let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     let isLocalCatalogEligible: Bool
+    let staffSettingsService: POSStaffSettingsService?
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
@@ -35,7 +37,9 @@ protocol POSSettingsControllerProtocol {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
-         receiptSettingsAdminURL: String) {
+         receiptSettingsAdminURL: String,
+         staffSettingsService: POSStaffSettingsService? = nil) {
+        self.staffSettingsService = staffSettingsService
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -93,6 +97,8 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var isLocalCatalogEligible: Bool {
         localCatalogViewModel != nil
     }
+
+    var staffSettingsService: POSStaffSettingsService?
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

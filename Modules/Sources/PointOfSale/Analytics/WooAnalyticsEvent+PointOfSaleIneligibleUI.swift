@@ -24,6 +24,8 @@ extension WooAnalyticsEvent {
 private extension POSIneligibleReason {
     var analyticsValue: String {
         switch self {
+        case .noInternetConnection:
+            return "no_internet_connection"
         case .unsupportedCurrency:
             return "store_currency"
         case .unsupportedWooCommerceVersion:

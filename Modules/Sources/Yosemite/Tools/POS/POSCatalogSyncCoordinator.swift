@@ -298,6 +298,18 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                 regenerateCatalog: Bool,
                                                 allowCellular: Bool,
                                                 isBackgroundSync: Bool) async throws -> POSCatalog {
+        if shouldSkipFileSyncForPersistedBlockedHost(siteID: siteID,
+                                                     regenerateCatalog: regenerateCatalog,
+                                                     isBackgroundSync: isBackgroundSync) {
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Catalog file is blocked by host for site \(siteID); " +
+                      "skipping automatic file sync wait and falling back to paginated full sync")
+            let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
+                                                                               plugin: .wooCommerce,
+                                                                               isActive: true)?.version
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
+            return try await fullSyncService.startPaginatedFullSync(for: siteID, allowCellular: allowCellular)
+        }
+
         do {
             let catalog = try await fullSyncService.startFullSync(for: siteID,
                                                                   regenerateCatalog: regenerateCatalog,
@@ -308,6 +320,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             })
             // The file is accessible (again) — clear any blocked memory for the site.
             sitesWithBlockedCatalogFile.remove(siteID)
+            if syncStrategy == .localCatalogFile {
+                siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: nil)
+            }
             return catalog
         } catch where error.isPOSCatalogFileBlockedError {
             let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
@@ -315,6 +330,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                                                isActive: true)?.version
             let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
             sitesWithBlockedCatalogFile.insert(siteID)
+            siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: Date())
             guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) || isRetryWhileBlocked else {
                 throw error
             }
@@ -337,6 +353,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
             return try await fullSyncService.startPaginatedFullSync(for: siteID, allowCellular: allowCellular)
         }
+    }
+
+    private func shouldSkipFileSyncForPersistedBlockedHost(siteID: Int64, regenerateCatalog: Bool, isBackgroundSync: Bool) -> Bool {
+        syncStrategy == .localCatalogFile &&
+        !regenerateCatalog &&
+        !isBackgroundSync &&
+        siteSettings.isPOSCatalogFileBlockedByHost(siteID: siteID)
     }
 
     /// The core fix for host-blocked catalog files ships in WooCommerce 11.0

@@ -41,7 +41,7 @@
         {
             "user_id": 1,
             "display_name": "Avery Admin",
-            "preset": "administrator",
+            "preset": "pos_admin",
             "capabilities": {
                 "pos_process_sales": true,
                 "pos_view_orders": true,

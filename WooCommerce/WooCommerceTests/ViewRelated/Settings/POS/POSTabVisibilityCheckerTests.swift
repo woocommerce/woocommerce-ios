@@ -182,6 +182,25 @@ struct POSTabVisibilityCheckerTests {
         #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
     }
 
+    @Test func is_visible_on_iPad_when_operating_system_is_below_iOS_26_and_all_conditions_satisfied() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .gb, currency: .GBP)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
     @Test func is_invisible_for_australia_when_au_feature_flag_disabled_even_if_expansion_flags_are_enabled() async throws {
         // Given - AU must be controlled by its own remote feature flag, not the broader expansion flags.
         let featureFlagService = MockFeatureFlagService()
@@ -300,13 +319,35 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
 
         // Then
         #expect(result == true)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_operating_system_is_below_iOS_26_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
     }
 
     @Test(arguments: [
@@ -324,7 +365,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -343,7 +385,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -362,7 +405,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()

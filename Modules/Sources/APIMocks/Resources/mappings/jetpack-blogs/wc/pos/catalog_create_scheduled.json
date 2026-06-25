@@ -1,0 +1,28 @@
+{
+    "scenarioName": "pos-catalog-generation",
+    "requiredScenarioState": "Started",
+    "newScenarioState": "catalog-progress",
+    "request": {
+        "method": "POST",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "bodyPatterns": [{
+            "matches": ".*path=/wc/pos/v1/catalog/create%26_method%3Dpost.*"
+        }]
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": {
+                "state": "scheduled",
+                "scheduled_at": "2026-06-24T12:00:00+00:00",
+                "progress": 0,
+                "processed": 0,
+                "total": 3
+            }
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

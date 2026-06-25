@@ -1,0 +1,14 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/pos/catalog/161477129/full.json"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "pos/catalog/161477129/full.json",
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

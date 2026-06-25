@@ -3,28 +3,18 @@ import SwiftUI
 import StoreDesignSystem
 
 /// Debug-only gallery for the StoreDesignSystem design tokens, reachable from the Debug
-/// Panel. Lets you browse and play with colors, typography and icons live in a real
-/// (debug / PR / installable) build. Compiled only in Debug, where the package's
-/// `#if DEBUG` token catalogs exist.
+/// Panel. A single pushed screen with sections (no nested navigation): the Debug Panel is
+/// hosted in a UIKit navigation controller with no SwiftUI navigation, so a nested
+/// NavigationStack/NavigationLinks break that navigation. Compiled only in Debug, where
+/// the package's #if DEBUG token catalogs exist.
 struct DesignSystemGalleryView: View {
     var body: some View {
-        // Own NavigationStack so the drill-in links route correctly: the Debug Panel is
-        // hosted in a UIKit navigation controller (no SwiftUI navigation), where multiple
-        // bridged NavigationLinks don't disambiguate.
-        NavigationStack {
-            List {
-                Section("Tokens") {
-                    NavigationLink("Colors") { ColorTokensView() }
-                    NavigationLink("Typography") { TypographyTokensView() }
-                    NavigationLink("Icons") { IconTokensView() }
-                }
-                Section("Components") {
-                    Text("Coming soon")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .navigationTitle("Design System")
+        List {
+            ColorSection()
+            TypographySection()
+            IconSection()
         }
+        .navigationTitle("Design System")
     }
 }
 
@@ -40,33 +30,35 @@ private struct TokenColorPicker: View {
         Picker("Color", selection: $selection) {
             ForEach(StoreColorCatalog.all) { Text($0.name).tag($0.name) }
         }
+        .pickerStyle(.menu)
     }
 }
 
 // MARK: - Colors
 
-private struct ColorTokensView: View {
+private struct ColorSection: View {
     var body: some View {
-        List(StoreColorCatalog.all) { token in
-            HStack(spacing: 12) {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(token.color)
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.secondary.opacity(0.3))
-                    )
-                Text(token.name)
-                    .font(.system(.footnote, design: .monospaced))
+        Section("Colors") {
+            ForEach(StoreColorCatalog.all) { token in
+                HStack(spacing: 12) {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(token.color)
+                        .frame(width: 44, height: 44)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.secondary.opacity(0.3))
+                        )
+                    Text(token.name)
+                        .font(.system(.footnote, design: .monospaced))
+                }
             }
         }
-        .navigationTitle("Colors")
     }
 }
 
 // MARK: - Typography
 
-private struct TypographyTokensView: View {
+private struct TypographySection: View {
     @State private var colorName = "storeTextPrimary"
     @State private var emphasis: Emphasis = .regular
 
@@ -84,13 +76,12 @@ private struct TypographyTokensView: View {
     }
 
     var body: some View {
-        List {
-            Section {
-                Picker("Emphasis", selection: $emphasis) {
-                    ForEach(Emphasis.allCases) { Text($0.rawValue.capitalized).tag($0) }
-                }
-                TokenColorPicker(selection: $colorName)
+        Section("Typography") {
+            Picker("Emphasis", selection: $emphasis) {
+                ForEach(Emphasis.allCases) { Text($0.rawValue.capitalized).tag($0) }
             }
+            .pickerStyle(.menu)
+            TokenColorPicker(selection: $colorName)
             ForEach(StoreTextStyleCatalog.all) { token in
                 VStack(alignment: .leading, spacing: 4) {
                     Text(token.name)
@@ -103,13 +94,12 @@ private struct TypographyTokensView: View {
                 .padding(.vertical, 4)
             }
         }
-        .navigationTitle("Typography")
     }
 }
 
 // MARK: - Icons
 
-private struct IconTokensView: View {
+private struct IconSection: View {
     @State private var style: IconStyle = .regular
     @State private var sizeName = "large"
     @State private var colorName = "storeTextPrimary"
@@ -131,16 +121,16 @@ private struct IconTokensView: View {
     }
 
     var body: some View {
-        List {
-            Section {
-                Picker("Style", selection: $style) {
-                    ForEach(IconStyle.allCases) { Text($0.rawValue.capitalized).tag($0) }
-                }
-                Picker("Size", selection: $sizeName) {
-                    ForEach(StoreIconSizeCatalog.all) { Text("\($0.name) (\(Int($0.value)))").tag($0.name) }
-                }
-                TokenColorPicker(selection: $colorName)
+        Section("Icons") {
+            Picker("Style", selection: $style) {
+                ForEach(IconStyle.allCases) { Text($0.rawValue.capitalized).tag($0) }
             }
+            .pickerStyle(.menu)
+            Picker("Size", selection: $sizeName) {
+                ForEach(StoreIconSizeCatalog.all) { Text("\($0.name) (\(Int($0.value)))").tag($0.name) }
+            }
+            .pickerStyle(.menu)
+            TokenColorPicker(selection: $colorName)
             ForEach(icons) { token in
                 if let variant = token.variants.first(where: { $0.style == style.rawValue }) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -155,7 +145,6 @@ private struct IconTokensView: View {
                 }
             }
         }
-        .navigationTitle("Icons")
     }
 }
 #endif

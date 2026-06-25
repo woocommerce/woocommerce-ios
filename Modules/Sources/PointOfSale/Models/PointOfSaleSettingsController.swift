@@ -111,13 +111,6 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     }
 
     var staffSettingsService: POSStaffSettingsService?
-
-    @MainActor
-    static func withPrinter() -> POSSettingsPreviewController {
-        let controller = POSSettingsPreviewController()
-        controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService())
-        return controller
-    }
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

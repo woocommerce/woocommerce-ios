@@ -205,7 +205,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
         let isSyncStarted: Bool = switch currentState {
-        case .syncStarted, .initialSyncStarted: true
+        case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress: true
         default: false
         }
         #expect(isSyncStarted)
@@ -572,6 +572,26 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(finalState == .syncCompleted(siteID: sampleSiteID))
     }
 
+    @Test func fullSyncStateModel_emits_item_count_progress_during_sync() async throws {
+        // Given
+        let expectedProgress = POSCatalogSyncProgress.itemCount(processed: 131, total: 4512)
+        mockSyncService.progressToEmit = expectedProgress
+        mockSyncService.blockAfterEmittingProgress()
+
+        let syncTask = Task {
+            try await sut.performFullSync(for: sampleSiteID)
+        }
+
+        await mockSyncService.waitUntilSyncBlocked()
+
+        // Then
+        let progressState = await sut.fullSyncStateModel.state[sampleSiteID]
+        #expect(progressState == .initialSyncProgress(siteID: sampleSiteID, progress: expectedProgress))
+
+        mockSyncService.resumeBlockedSync()
+        _ = try await syncTask.value
+    }
+
     // MARK: - Helper Methods
 
     private func createSiteInDatabase(siteID: Int64, lastFullSyncDate: Date? = nil, lastIncrementalSyncDate: Date? = nil) throws {
@@ -587,6 +607,7 @@ struct POSCatalogSyncCoordinatorTests {
 final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     var startFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
     var syncDelay: UInt64 = 0 // nanoseconds to delay before returning
+    var progressToEmit: POSCatalogSyncProgress?
 
     // Controlled sync mechanism
     private var syncContinuations: [CheckedContinuation<Void, Never>] = []
@@ -600,10 +621,15 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     func startFullSync(for siteID: Int64,
                         regenerateCatalog: Bool,
                         allowCellular: Bool,
-                        isBackgroundSync: Bool) async throws -> POSCatalog {
+                        isBackgroundSync: Bool,
+                        onProgress: POSCatalogSyncProgressHandler?) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular
+
+        if let progressToEmit {
+            await onProgress?(progressToEmit)
+        }
 
         // If we should block, wait for continuation to be resumed
         if shouldBlockSync {
@@ -667,6 +693,10 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
 
     func blockNextSync() {
         shouldBlockSync = true
+    }
+
+    func blockAfterEmittingProgress() {
+        blockNextSync()
     }
 
     func waitUntilSyncBlocked() async {
@@ -1078,7 +1108,7 @@ extension POSCatalogSyncCoordinatorTests {
         // Verify sync is in progress
         let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
         let isSyncInProgress: Bool = switch stateBeforeStop {
-        case .initialSyncStarted, .syncStarted: true
+        case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress: true
         default: false
         }
         #expect(isSyncInProgress)

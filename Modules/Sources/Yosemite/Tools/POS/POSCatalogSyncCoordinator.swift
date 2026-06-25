@@ -302,7 +302,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let catalog = try await fullSyncService.startFullSync(for: siteID,
                                                                   regenerateCatalog: regenerateCatalog,
                                                                   allowCellular: allowCellular,
-                                                                  isBackgroundSync: isBackgroundSync)
+                                                                  isBackgroundSync: isBackgroundSync,
+                                                                  onProgress: { [weak self] progress in
+                await self?.emitFullSyncProgress(progress, for: siteID)
+            })
             // The file is accessible (again) — clear any blocked memory for the site.
             sitesWithBlockedCatalogFile.remove(siteID)
             return catalog
@@ -415,7 +418,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
         switch await fullSyncStateModel.state[siteID] {
-        case .syncStarted, .initialSyncStarted:
+        case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress:
             return true
         default:
             return false
@@ -655,7 +658,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // This will prevent new syncs from starting for this site
         if let currentState = await fullSyncStateModel.state[siteID] {
             switch currentState {
-            case .initialSyncStarted, .syncStarted:
+            case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress:
                 await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
                 DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
             default:
@@ -888,6 +891,8 @@ private extension POSCatalogSyncCoordinator {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
+                .initialSyncProgress(let id, _),
+                .syncProgress(let id, _),
                 .syncCompleted(let id),
                 .initialSyncFailed(let id, _),
                 .syncFailed(let id, _),
@@ -896,6 +901,18 @@ private extension POSCatalogSyncCoordinator {
         }
 
         await fullSyncStateModel.updateState(state, for: siteID)
+    }
+
+    func emitFullSyncProgress(_ progress: POSCatalogSyncProgress, for siteID: Int64) async {
+        let currentState = await fullSyncStateModel.state[siteID]
+        switch currentState {
+        case .initialSyncStarted, .initialSyncProgress, .syncNeverDone:
+            await emitSyncState(.initialSyncProgress(siteID: siteID, progress: progress))
+        case .syncStarted, .syncProgress:
+            await emitSyncState(.syncProgress(siteID: siteID, progress: progress))
+        default:
+            break
+        }
     }
 }
 
@@ -915,6 +932,8 @@ public class POSCatalogSyncStateModel {
 public enum POSCatalogSyncState: Equatable {
     case initialSyncStarted(siteID: Int64)
     case syncStarted(siteID: Int64)
+    case initialSyncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
+    case syncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
     case syncCompleted(siteID: Int64)
     case initialSyncFailed(siteID: Int64, error: Error)
     case syncFailed(siteID: Int64, error: Error)
@@ -927,11 +946,36 @@ public enum POSCatalogSyncState: Equatable {
             (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)),
             (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
+        case (.initialSyncProgress(let lhsSiteID, let lhsProgress), .initialSyncProgress(let rhsSiteID, let rhsProgress)),
+            (.syncProgress(let lhsSiteID, let lhsProgress), .syncProgress(let rhsSiteID, let rhsProgress)):
+            return lhsSiteID == rhsSiteID && lhsProgress == rhsProgress
         case (.initialSyncFailed(let lhsSiteID, let lhsError), .initialSyncFailed(let rhsSiteID, let rhsError)),
             (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
             return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
         default:
             return false
+        }
+    }
+}
+
+public enum POSCatalogSyncProgress: Equatable, Sendable {
+    case preparing
+    case itemCount(processed: Int, total: Int)
+
+    init?(response: POSCatalogRequestResponse) {
+        switch response.status {
+        case .scheduled:
+            self = .preparing
+        case .inProgress:
+            guard let processed = response.processed,
+                  let total = response.total,
+                  total > 0 else {
+                self = .preparing
+                return
+            }
+            self = .itemCount(processed: processed, total: total)
+        case .completed, .failed:
+            return nil
         }
     }
 }

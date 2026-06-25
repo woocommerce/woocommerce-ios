@@ -10,7 +10,6 @@ import Observation
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
-import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 protocol POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
@@ -46,7 +45,7 @@ protocol POSSettingsControllerProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
-         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         printerConnectionController: POSPrinterConnectionController? = nil,
          staffSettingsService: POSStaffSettingsService? = nil) {
         self.staffSettingsService = staffSettingsService
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
@@ -67,7 +66,7 @@ protocol POSSettingsControllerProtocol {
             self.localCatalogViewModel = nil
         }
 
-        self.printerConnectionController = receiptPrinter.map { POSPrinterConnectionController(service: $0) }
+        self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
     }

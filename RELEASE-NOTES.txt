@@ -25,6 +25,7 @@
 - [*] Order creation: fixed bundled product configuration on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17381]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
+- [*] Help & Support: Fixed the main tab bar remaining visible on the System Status Report and other Help & Support screens. [https://github.com/woocommerce/woocommerce-ios/pull/17395]
 
 25.0
 -----

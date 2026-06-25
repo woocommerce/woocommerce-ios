@@ -28,7 +28,10 @@ enum DesignSystemGallery {
     }
 
     private static func push<V: View>(_ view: V, title: String, onto navigationController: UINavigationController?) {
-        let hostingController = UIHostingController(rootView: view)
+        let titledView = view
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+        let hostingController = UIHostingController(rootView: titledView)
         hostingController.title = title
         navigationController?.pushViewController(hostingController, animated: true)
     }

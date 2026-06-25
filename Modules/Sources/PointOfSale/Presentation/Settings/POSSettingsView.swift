@@ -9,8 +9,8 @@ struct POSSettingsView: View {
     let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
-        POSNavigationSplitView(selection: $selection) { _ in
-            listView
+        POSNavigationSplitView(selection: $selection) { selection in
+            listView(selection: selection)
         } detail: { selection, navigationPath in
             detailView(for: selection, navigationPath: navigationPath)
                 .environment(\.posHeaderBackButtonConfiguration,
@@ -28,7 +28,7 @@ struct POSSettingsView: View {
 
 extension POSSettingsView {
     @ViewBuilder
-    private var listView: some View {
+    private func listView(selection: Binding<SidebarNavigation?>) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.navigationTitle,
@@ -44,37 +44,37 @@ extension POSSettingsView {
             VStack(spacing: POSSpacing.small) {
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.store.title,
                                 subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
-                                isSelected: selection == .store,
+                                isSelected: selection.wrappedValue == .store,
                                 action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
-                    selection = .store
+                    selection.wrappedValue = .store
                 })
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.hardware.title,
                                 subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
-                                isSelected: selection == .hardware,
+                                isSelected: selection.wrappedValue == .hardware,
                                 action: {
                     analytics.track(.pointOfSaleSettingsHardwareTapped)
-                    selection = .hardware
+                    selection.wrappedValue = .hardware
                 })
                 if settingsController.isLocalCatalogEligible {
                     POSSettingsCard(title: POSSettingsView.SidebarNavigation.localCatalog.title,
                                     subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
-                                    isSelected: selection == .localCatalog,
+                                    isSelected: selection.wrappedValue == .localCatalog,
                                     action: {
-                        selection = .localCatalog
+                        selection.wrappedValue = .localCatalog
                     })
                 }
                 if isStaffSectionVisible {
                     POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
                                     subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
-                                    isSelected: selection == .staff,
+                                    isSelected: selection.wrappedValue == .staff,
                                     action: {
-                        selection = .staff
+                        selection.wrappedValue = .staff
                     })
                 }
                 Spacer()
 
-                helpView
+                helpView(selection: selection)
             }
             .padding(.horizontal, POSPadding.medium)
         }
@@ -111,10 +111,10 @@ extension POSSettingsView {
     }
 
     @ViewBuilder
-    private var helpView: some View {
+    private func helpView(selection: Binding<SidebarNavigation?>) -> some View {
         Button {
             analytics.track(.pointOfSaleSettingsHelpTapped)
-            selection = .help
+            selection.wrappedValue = .help
         } label: {
             HStack(spacing: POSSpacing.small) {
                 if let icon = SidebarNavigation.help.icon {

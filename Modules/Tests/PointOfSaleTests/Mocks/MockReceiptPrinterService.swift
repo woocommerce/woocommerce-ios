@@ -93,7 +93,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         if let connectError {
             throw connectError
         }
-        emitConnectionStatus(.connected)
+        emitConnectionStatus(.connected(printer))
     }
 
     func disconnect() async {

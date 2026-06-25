@@ -14,14 +14,16 @@ final class POSPrinterConnectionController {
     /// Drives the setup modal: pairing → searching → found → connecting → error.
     private(set) var discoveryState: PrinterDiscoveryState = .idle
 
-    /// Whether a printer is currently connected, mirrored from the service's status stream.
-    private(set) var isConnected = false
-
     /// The printer the merchant connected to, used to label the settings status row.
     private(set) var connectedPrinter: PrinterDevice?
 
     var connectedPrinterName: String? {
         connectedPrinter?.name
+    }
+
+    /// Whether a printer is currently connected, derived from `connectedPrinter`.
+    var isConnected: Bool {
+        connectedPrinter != nil
     }
 
     private let service: ReceiptPrinterServiceProtocol
@@ -86,11 +88,9 @@ final class POSPrinterConnectionController {
             await service.stopDiscovery()
             do {
                 try await service.connect(to: device)
-                // A superseded connect (another printer tapped, or setup cancelled) must not
-                // report success or failure over the newer flow.
-                guard !Task.isCancelled, let self else { return }
-                connectedPrinter = device
             } catch {
+                // A superseded connect (another printer tapped, or setup cancelled) must not
+                // report an error over the newer flow.
                 guard !Task.isCancelled, let self else { return }
                 discoveryState = .error
             }
@@ -119,10 +119,9 @@ final class POSPrinterConnectionController {
             for await status in updates {
                 guard let self else { return }
                 switch status {
-                case .connected:
-                    isConnected = true
+                case .connected(let device):
+                    connectedPrinter = device
                 case .disconnected, .idle:
-                    isConnected = false
                     connectedPrinter = nil
                 case .connecting, .disconnecting:
                     break

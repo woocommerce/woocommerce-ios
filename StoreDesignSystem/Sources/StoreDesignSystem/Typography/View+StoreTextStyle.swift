@@ -1,8 +1,3 @@
-//  View+StoreTextStyle.swift
-//
-//  Applies a StoreTextStyle: the system font at the token's size + weight, line spacing
-//  to approximate the token's line height, and tracking — all scaling with Dynamic Type.
-
 import SwiftUI
 import UIKit
 

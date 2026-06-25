@@ -1,19 +1,5 @@
-//  StoreTextStyle.swift
-//
-//  Type scale from the Mobile Design System Figma ("iOS" type scale). Each style is a
-//  composite token: size + line height + tracking + weight. Apply with the
-//  `.storeTextStyle(_:)` view modifier — a SwiftUI `Font` alone cannot carry line
-//  height or tracking.
-//
-//  Emphasis is an orthogonal weight axis: every style ships Regular / Emphasized
-//  (Medium) / Strong (Bold) with identical size/line-height/tracking, so emphasis is
-//  modeled as the `.emphasized` / `.strong` derivations rather than separate tokens.
-//  Font family is `SF Pro Text` for all styles, i.e. the system font.
-
 import SwiftUI
 
-/// A design-system text style. Closed for construction (`private init`): reference a
-/// named preset (`StoreTextStyle.bodyLarge`), optionally derived (`.bodyLarge.strong`).
 public struct StoreTextStyle: Equatable {
     public let size: CGFloat
     public let lineHeight: CGFloat

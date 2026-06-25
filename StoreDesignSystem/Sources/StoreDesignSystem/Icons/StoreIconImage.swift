@@ -1,9 +1,3 @@
-//  StoreIconImage.swift
-//
-//  A design-system icon at a specific style (e.g. `StoreIcon.Gear.regular`). Closed for
-//  construction — instances are only the generated `StoreIcon` tokens. Render with
-//  `.image(size:)`, which returns a template image you tint via `.foregroundStyle(...)`.
-
 import SwiftUI
 
 public struct StoreIconImage {
@@ -11,6 +5,16 @@ public struct StoreIconImage {
 
     init(_ assetName: String) {
         self.assetName = assetName
+    }
+
+    /// The icon's base name, e.g. `AngleDown` for the `AngleDown-Regular` asset.
+    public var name: String {
+        String(assetName.split(separator: "-").first ?? "")
+    }
+
+    /// The icon's style, e.g. `regular` for the `AngleDown-Regular` asset.
+    public var style: String {
+        assetName.split(separator: "-").last.map { $0.lowercased() } ?? ""
     }
 
     /// A template, tintable image of this icon at the given size (use `StoreIconSize`).

@@ -1,49 +1,46 @@
-//  Color+StoreColorPalette.swift
-//
-//  GENERATED from the Mobile Design System Figma Semantic color layer. Do not edit by hand.
-//  Regenerate via .context/gen_colors.py after a new Semantic color export.
-//
-//  Role-based semantic colors (the layer components consume). Each token resolves to a
-//  Light/Dark colorset. High contrast is intentionally not modeled at this layer.
-
 import SwiftUI
 
 public extension Color {
     // MARK: - Interactive
-    static var storeInteractivePrimary: Color { Color("storeInteractivePrimary", bundle: .module) }
-    static var storeInteractiveDestructive: Color { Color("storeInteractiveDestructive", bundle: .module) }
+    static let storeInteractivePrimary = bundledColor("storeInteractivePrimary")
+    static let storeInteractiveDestructive = bundledColor("storeInteractiveDestructive")
 
     // MARK: - Primary
-    static var storePrimaryPressed: Color { Color("storePrimaryPressed", bundle: .module) }
+    static let storePrimaryPressed = bundledColor("storePrimaryPressed")
 
     // MARK: - Text
-    static var storeTextPrimary: Color { Color("storeTextPrimary", bundle: .module) }
-    static var storeTextSecondary: Color { Color("storeTextSecondary", bundle: .module) }
-    static var storeTextTertiary: Color { Color("storeTextTertiary", bundle: .module) }
-    static var storeTextDisabled: Color { Color("storeTextDisabled", bundle: .module) }
-    static var storeTextOnPrimary: Color { Color("storeTextOnPrimary", bundle: .module) }
+    static let storeTextPrimary = bundledColor("storeTextPrimary")
+    static let storeTextSecondary = bundledColor("storeTextSecondary")
+    static let storeTextTertiary = bundledColor("storeTextTertiary")
+    static let storeTextDisabled = bundledColor("storeTextDisabled")
+    static let storeTextOnPrimary = bundledColor("storeTextOnPrimary")
 
     // MARK: - Icon
-    static var storeIconPrimary: Color { Color("storeIconPrimary", bundle: .module) }
+    static let storeIconPrimary = bundledColor("storeIconPrimary")
 
     // MARK: - Surface
-    static var storeSurfacePrimary: Color { Color("storeSurfacePrimary", bundle: .module) }
-    static var storeSurfaceSecondary: Color { Color("storeSurfaceSecondary", bundle: .module) }
-    static var storeSurfaceOverlay: Color { Color("storeSurfaceOverlay", bundle: .module) }
+    static let storeSurfacePrimary = bundledColor("storeSurfacePrimary")
+    static let storeSurfaceSecondary = bundledColor("storeSurfaceSecondary")
+    static let storeSurfaceOverlay = bundledColor("storeSurfaceOverlay")
 
     // MARK: - Border
-    static var storeBorderDefault: Color { Color("storeBorderDefault", bundle: .module) }
-    static var storeBorderFocused: Color { Color("storeBorderFocused", bundle: .module) }
+    static let storeBorderDefault = bundledColor("storeBorderDefault")
+    static let storeBorderFocused = bundledColor("storeBorderFocused")
 
     // MARK: - Status
-    static var storeStatusSuccess: Color { Color("storeStatusSuccess", bundle: .module) }
-    static var storeStatusError: Color { Color("storeStatusError", bundle: .module) }
-    static var storeStatusWarning: Color { Color("storeStatusWarning", bundle: .module) }
+    static let storeStatusSuccess = bundledColor("storeStatusSuccess")
+    static let storeStatusError = bundledColor("storeStatusError")
+    static let storeStatusWarning = bundledColor("storeStatusWarning")
 
     // MARK: - Label
-    static var storeLabelPrimary: Color { Color("storeLabelPrimary", bundle: .module) }
-    static var storeLabelSecondary: Color { Color("storeLabelSecondary", bundle: .module) }
-    static var storeLabelTertiary: Color { Color("storeLabelTertiary", bundle: .module) }
-    static var storeLabelDisabled: Color { Color("storeLabelDisabled", bundle: .module) }
-    static var storeLabelOnPrimary: Color { Color("storeLabelOnPrimary", bundle: .module) }
+    static let storeLabelPrimary = bundledColor("storeLabelPrimary")
+    static let storeLabelSecondary = bundledColor("storeLabelSecondary")
+    static let storeLabelTertiary = bundledColor("storeLabelTertiary")
+    static let storeLabelDisabled = bundledColor("storeLabelDisabled")
+    static let storeLabelOnPrimary = bundledColor("storeLabelOnPrimary")
+
+    /// Loads a named color from the design system's asset catalog in this package's bundle.
+    private static func bundledColor(_ name: String) -> Color {
+        Color(name, bundle: .module)
+    }
 }

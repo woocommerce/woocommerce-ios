@@ -35,9 +35,9 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
-            #if DEBUG
+            #if DEBUG || ALPHA
             NavigationLink("Design System") {
-                DesignSystemGalleryView()
+                DesignSystemDemoView()
             }
             #endif
 

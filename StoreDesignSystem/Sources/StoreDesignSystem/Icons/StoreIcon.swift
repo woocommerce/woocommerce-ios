@@ -1,12 +1,3 @@
-//  StoreIcon.swift
-//
-//  GENERATED from the Mobile Design System Figma icon library. Do not edit by hand.
-//  Regenerate via .context/gen_icons.py (reads the exported PDFs).
-//
-//  Icon-first: each icon exposes ONLY the styles it actually has in the design, so
-//  invalid (icon, style) combinations do not compile. Render with `.image(size:)`,
-//  which returns a template image to tint via `.foregroundStyle(.storeIconPrimary)`.
-
 public enum StoreIcon {
     public enum AngleDown {
         public static let regular = StoreIconImage("AngleDown-Regular")

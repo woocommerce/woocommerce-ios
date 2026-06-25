@@ -7,19 +7,32 @@ import StoreDesignSystem
 /// (debug / PR / installable) build. Compiled only in Debug, where the package's
 /// `#if DEBUG` token catalogs exist.
 struct DesignSystemGalleryView: View {
+    /// Called by the "Done" button. Defaults to a no-op so the view is still usable in previews.
+    var onDismiss: () -> Void = {}
+
     var body: some View {
-        List {
-            Section("Tokens") {
-                NavigationLink("Colors") { ColorTokensView() }
-                NavigationLink("Typography") { TypographyTokensView() }
-                NavigationLink("Icons") { IconTokensView() }
+        // Self-contained NavigationStack: the Debug Panel is hosted in a UIKit
+        // navigation controller (no SwiftUI navigation), so nested NavigationLinks need
+        // their own stack to route correctly.
+        NavigationStack {
+            List {
+                Section("Tokens") {
+                    NavigationLink("Colors") { ColorTokensView() }
+                    NavigationLink("Typography") { TypographyTokensView() }
+                    NavigationLink("Icons") { IconTokensView() }
+                }
+                Section("Components") {
+                    Text("Coming soon")
+                        .foregroundStyle(.secondary)
+                }
             }
-            Section("Components") {
-                Text("Coming soon")
-                    .foregroundStyle(.secondary)
+            .navigationTitle("Design System")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done", action: onDismiss)
+                }
             }
         }
-        .navigationTitle("Design System")
     }
 }
 

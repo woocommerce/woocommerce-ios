@@ -34,8 +34,8 @@ struct DebugPanelView: View {
             }
 
             #if DEBUG
-            DebugSheetPresenter("Design System") { dismiss in
-                DesignSystemGalleryView(onDismiss: dismiss)
+            NavigationLink(destination: DesignSystemGalleryView()) {
+                Text("Design System")
             }
             #endif
 

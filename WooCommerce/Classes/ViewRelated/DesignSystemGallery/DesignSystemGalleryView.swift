@@ -7,32 +7,34 @@ import StoreDesignSystem
 /// (debug / PR / installable) build. Compiled only in Debug, where the package's
 /// `#if DEBUG` token catalogs exist.
 struct DesignSystemGalleryView: View {
-    /// Called by the "Done" button. Defaults to a no-op so the view is still usable in previews.
-    var onDismiss: () -> Void = {}
+    @State private var section: GallerySection = .colors
+
+    private enum GallerySection: String, CaseIterable, Identifiable {
+        case colors = "Colors"
+        case typography = "Typography"
+        case icons = "Icons"
+        var id: String { rawValue }
+    }
 
     var body: some View {
-        // Self-contained NavigationStack: the Debug Panel is hosted in a UIKit
-        // navigation controller (no SwiftUI navigation), so nested NavigationLinks need
-        // their own stack to route correctly.
-        NavigationStack {
-            List {
-                Section("Tokens") {
-                    NavigationLink("Colors") { ColorTokensView() }
-                    NavigationLink("Typography") { TypographyTokensView() }
-                    NavigationLink("Icons") { IconTokensView() }
-                }
-                Section("Components") {
-                    Text("Coming soon")
-                        .foregroundStyle(.secondary)
-                }
+        // A single pushed screen with a segmented selector rather than nested
+        // NavigationLinks: the Debug Panel is hosted in a UIKit navigation controller with
+        // no SwiftUI NavigationStack, so nested links misroute. This keeps it in-place
+        // (not modal) and correct.
+        VStack(spacing: 0) {
+            Picker("Section", selection: $section) {
+                ForEach(GallerySection.allCases) { Text($0.rawValue).tag($0) }
             }
-            .navigationTitle("Design System")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done", action: onDismiss)
-                }
+            .pickerStyle(.segmented)
+            .padding()
+
+            switch section {
+            case .colors: ColorTokensView()
+            case .typography: TypographyTokensView()
+            case .icons: IconTokensView()
             }
         }
+        .navigationTitle("Design System")
     }
 }
 
@@ -68,7 +70,6 @@ private struct ColorTokensView: View {
                     .font(.system(.footnote, design: .monospaced))
             }
         }
-        .navigationTitle("Colors")
     }
 }
 
@@ -111,7 +112,6 @@ private struct TypographyTokensView: View {
                 .padding(.vertical, 4)
             }
         }
-        .navigationTitle("Typography")
     }
 }
 
@@ -163,7 +163,6 @@ private struct IconTokensView: View {
                 }
             }
         }
-        .navigationTitle("Icons")
     }
 }
 #endif

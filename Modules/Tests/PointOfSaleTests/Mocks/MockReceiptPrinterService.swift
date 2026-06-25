@@ -29,6 +29,14 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// wait for the controller to start observing before emitting statuses.
     var onConnectionStatusSubscribed: (() -> Void)?
 
+    /// When `true`, `connect(to:)` parks (until cancelled) after firing `onConnectSubscribed`, so a
+    /// test can release the controller while a connect is in flight.
+    var parkConnect = false
+
+    /// Fired when a parked `connect(to:)` call starts waiting, so tests release the controller only
+    /// once the connect is genuinely in flight.
+    var onConnectSubscribed: (() -> Void)?
+
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
@@ -75,6 +83,13 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
 
     func connect(to printer: PrinterDevice) async throws {
         connectedDevices.append(printer)
+        if parkConnect {
+            // Hold the call open so a test can release the controller mid-connect; cancellation
+            // from the controller's deinit unwinds the sleep.
+            onConnectSubscribed?()
+            try await Task.sleep(nanoseconds: 30_000_000_000)
+            return
+        }
         if let connectError {
             throw connectError
         }

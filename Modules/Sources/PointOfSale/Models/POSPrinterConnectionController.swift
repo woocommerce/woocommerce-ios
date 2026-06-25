@@ -45,26 +45,30 @@ final class POSPrinterConnectionController {
         discoveryTask?.cancel()
         discoveryState = .searching
         discoveryTask = Task { [weak self] in
-            guard let self else { return }
+            // Reach the stream through a transient `self` so the in-flight `for await` holds only a
+            // weak reference; binding `self` strongly here would retain the controller (which owns
+            // this task) and stop its deinit — and this task's cancellation — from running.
+            guard let stream = self?.service.discover() else { return }
             var devices: [PrinterDevice] = []
             do {
-                for try await device in service.discover() {
+                for try await device in stream {
                     if !devices.contains(device) {
                         devices.append(device)
                     }
+                    // A cancelled discovery (a restart, or the merchant moving on to connecting)
+                    // is no longer authoritative and must not overwrite the newer flow's state.
+                    guard !Task.isCancelled, let self else { return }
                     discoveryState = .found(devices)
                 }
                 // Discovery finished without a single device: surface the empty list so the
                 // modal can offer a retry instead of spinning forever.
+                guard !Task.isCancelled, let self else { return }
                 if case .searching = discoveryState {
                     discoveryState = .found([])
                 }
             } catch {
-                // A cancelled discovery (the merchant moved on to connecting or closed the modal)
-                // must not clobber the state the new flow already set.
-                if !Task.isCancelled {
-                    discoveryState = .error
-                }
+                guard !Task.isCancelled, let self else { return }
+                discoveryState = .error
             }
         }
     }
@@ -72,15 +76,22 @@ final class POSPrinterConnectionController {
     /// Connects to the chosen printer, stopping discovery first so the SDK scan is not left running.
     func connect(to device: PrinterDevice) {
         discoveryTask?.cancel()
-        discoveryState = .connecting(device)
         connectTask?.cancel()
+        discoveryState = .connecting(device)
         connectTask = Task { [weak self] in
-            guard let self else { return }
+            // Reach the service through a transient `self` so the in-flight connect holds only a weak
+            // reference; binding `self` strongly here would retain the controller for the whole
+            // (SDK-bounded) connect and stop its deinit — and this task's cancellation — from running.
+            guard let service = self?.service else { return }
             await service.stopDiscovery()
             do {
                 try await service.connect(to: device)
+                // A superseded connect (another printer tapped, or setup cancelled) must not
+                // report success or failure over the newer flow.
+                guard !Task.isCancelled, let self else { return }
                 connectedPrinter = device
             } catch {
+                guard !Task.isCancelled, let self else { return }
                 discoveryState = .error
             }
         }
@@ -94,14 +105,19 @@ final class POSPrinterConnectionController {
     /// modal always starts fresh.
     func cancelSetup() async {
         discoveryTask?.cancel()
+        connectTask?.cancel()
         discoveryState = .idle
         await service.stopDiscovery()
     }
 
     private func observeConnectionStatus() {
+        // Reach the stream through a transient `self` so the long-lived iteration captures only a
+        // weak reference. Holding `self` strongly across this never-ending loop would retain the
+        // controller (which owns this task) and stop `deinit` — and its cancellation — from running.
         statusTask = Task { [weak self] in
-            guard let self else { return }
-            for await status in service.connectionStatusUpdates() {
+            guard let updates = self?.service.connectionStatusUpdates() else { return }
+            for await status in updates {
+                guard let self else { return }
                 switch status {
                 case .connected:
                     isConnected = true

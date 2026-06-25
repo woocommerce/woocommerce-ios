@@ -83,6 +83,49 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.connectedPrinterName == nil)
     }
 
+    @Test func test_controller_when_released_then_deallocates_without_leaking_via_status_observation() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        weak var weakController: POSPrinterConnectionController?
+
+        // When
+        do {
+            let controller = await makeSubscribedController(service: service)
+            weakController = controller
+        }
+
+        // Then
+        // The connection-status observation must not retain the controller, otherwise its
+        // deinit (and the task cancellation within) never runs.
+        #expect(weakController == nil)
+    }
+
+    @Test func test_controller_when_released_during_connect_then_deallocates_without_leaking() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let service = MockReceiptPrinterService()
+        service.parkConnect = true
+        weak var weakController: POSPrinterConnectionController?
+
+        // When
+        do {
+            let controller = await makeSubscribedController(service: service)
+            weakController = controller
+            // Suspend until the connect call is genuinely in flight, then let `controller` drop.
+            await withCheckedContinuation { continuation in
+                service.onConnectSubscribed = {
+                    continuation.resume()
+                }
+                controller.connect(to: device)
+            }
+        }
+
+        // Then
+        // An in-flight connect must not retain the controller, otherwise its deinit (and the task
+        // cancellation within) never runs while the SDK call is outstanding.
+        #expect(weakController == nil)
+    }
+
     @Test func test_disconnect_when_connected_then_clears_connection() async {
         // Given
         let device = PrinterDevice(id: "1", name: "Star TSP100")

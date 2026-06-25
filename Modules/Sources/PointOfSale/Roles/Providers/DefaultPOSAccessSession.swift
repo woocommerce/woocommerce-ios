@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import CocoaLumberjackSwift
+import struct Yosemite.POSStaffMember
 
 @Observable
 @MainActor
@@ -99,6 +100,13 @@ final class DefaultPOSAccessSession: POSAccessSession {
             // gating reflect whatever it already holds (no cached PINs ⇒ no lock screen).
             DDLogError("POS staff refresh failed: \(error)")
         }
+        applyCacheState()
+    }
+
+    /// Refreshes gating from a staff list the caller already fetched — caches it and re-derives lock
+    /// state without a second staff fetch.
+    func refreshPINStatus(using staff: [POSStaffMember]) async {
+        cache.save(staff, siteID: siteID)
         applyCacheState()
     }
 

@@ -2,6 +2,9 @@ import Foundation
 import struct Yosemite.PrinterDevice
 import enum Yosemite.PrinterConnectionStatus
 import protocol Yosemite.ReceiptPrinterServiceProtocol
+import struct Yosemite.ReceiptContent
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 @testable import PointOfSale
 
 final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
@@ -16,12 +19,18 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// Error thrown by `connect(to:)`, if any.
     var connectError: Error?
 
+    /// Error thrown by `printReceipt(...)`, if any.
+    var printError: Error?
+
     // MARK: - Spies
 
     private(set) var discoverCallCount = 0
     private(set) var stopDiscoveryCallCount = 0
     private(set) var connectedDevices: [PrinterDevice] = []
     private(set) var disconnectCallCount = 0
+    private(set) var printedContent: ReceiptContent?
+    private(set) var printedStoreInformation: ReceiptStoreInformation?
+    private(set) var printedCardDetails: CardPresentTransactionDetails?
 
     // MARK: - ReceiptPrinterServiceProtocol
 
@@ -66,5 +75,16 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     func disconnect() async {
         disconnectCallCount += 1
         emitConnectionStatus(.disconnected)
+    }
+
+    func printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {
+        printedContent = content
+        printedStoreInformation = storeInformation
+        printedCardDetails = cardDetails
+        if let printError {
+            throw printError
+        }
     }
 }

@@ -107,4 +107,5 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
                                                                               receiptSettingsAdminURL: "")
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     var isLocalCatalogEligible = true
+    var staffSettingsService: POSStaffSettingsService?
 }

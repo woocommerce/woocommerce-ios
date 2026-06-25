@@ -41,7 +41,11 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
-    func processRefund(reason: String?, auth: POSStaffAuth?) async throws
+    /// Records the staff member who authorized the in-progress refund via a manager override (or
+    /// `nil` when the operator performed it under their own capability), so the refund can be
+    /// attributed to both the operator and the approver at submission. Called from the gate.
+    func recordRefundApprover(_ approver: POSStaff?)
+    func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
 }
 
@@ -106,6 +110,11 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
+    /// Resolves the signed-in operator at submission time, so the controller owns refund attribution
+    /// end to end instead of receiving a pre-built `POSStaffAuth` from the view.
+    private let currentStaffProvider: () -> POSStaff?
+    /// The staff member who authorized the in-progress refund via override, recorded at the gate.
+    private var pendingRefundApprover: POSStaff?
     private var isProcessingRefund = false
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -119,12 +128,14 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          refundSubmissionProcessor: POSRefundSubmissionProcessing,
+         currentStaffProvider: @escaping () -> POSStaff? = { nil },
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
+        self.currentStaffProvider = currentStaffProvider
     }
 
     @MainActor
@@ -295,6 +306,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false
+        pendingRefundApprover = nil
     }
 
     @MainActor
@@ -376,6 +388,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     func clearRefundSelection() {
         refundSelectableItems = []
         hasModifiedRefundSelection = false
+        pendingRefundApprover = nil
     }
 
     @MainActor
@@ -410,7 +423,12 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Processing
 
     @MainActor
-    func processRefund(reason: String?, auth: POSStaffAuth?) async throws {
+    func recordRefundApprover(_ approver: POSStaff?) {
+        pendingRefundApprover = approver
+    }
+
+    @MainActor
+    func processRefund(reason: String?) async throws {
         guard !isProcessingRefund else {
             throw POSRefundProcessingError.refundAlreadyInProgress
         }
@@ -433,6 +451,9 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             throw POSRefundProcessingError.emptySelection
         }
 
+        // Build the staff attribution here so it stays out of the views: the approving manager (if
+        // any) becomes the actor and the signed-in operator the initiator.
+        let auth = POSStaffAttribution.authorized(operator: currentStaffProvider(), approver: pendingRefundApprover)
         try await refundSubmissionProcessor.submitRefund(
             for: order,
             preparation: preparation,

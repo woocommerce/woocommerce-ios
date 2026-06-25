@@ -2,7 +2,6 @@ import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
-import struct Yosemite.POSStaffAuth
 
 // MARK: - Refund Modal State
 
@@ -89,11 +88,6 @@ struct POSRefundModalContentView: View {
     let onRefundReasonChanged: ((String?) -> Void)?
     let onRefundSuccess: (() -> Void)?
     let onRefundFailure: ((Error) -> Void)?
-
-    /// Staff attribution attached to the refund's create request as `X-WC-POS-*` headers.
-    /// Built at the `POSOrderDetailsView` layer; `nil` when no operator is signed in
-    /// (preview/test paths).
-    let auth: POSStaffAuth?
 
     let errorStrings: POSRefundErrorStrings
 
@@ -359,8 +353,7 @@ struct POSRefundModalContentView: View {
     private func processRefund(reviewData: POSRefundReviewData) async {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
         do {
-            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason,
-                                                                    auth: auth)
+            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
             refundSubmissionModel.reset()
             modalState = .success(reviewData)

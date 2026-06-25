@@ -1125,7 +1125,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         #expect(refundSubmissionProcessor.submitRefundCalled == true)
@@ -1151,7 +1151,7 @@ final class POSOrderListControllerTests {
         sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
@@ -1177,10 +1177,60 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: "Customer changed their mind", auth: nil)
+        try await sut.processRefund(reason: "Customer changed their mind")
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundReason == "Customer changed their mind")
+    }
+
+    @MainActor
+    @Test func processRefund_when_no_approver_recorded_then_attributes_refund_to_the_operator() async throws {
+        // Given a controller that knows the signed-in operator and no override
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [POSCapability.issueRefunds.rawValue])
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        _ = await controller.startRefundFlow()
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — the operator is the actor; no initiator
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == POSStaffAuth(actorUserID: 42))
+    }
+
+    @MainActor
+    @Test func processRefund_when_override_approver_recorded_then_attributes_actor_to_approver_and_initiator_to_operator() async throws {
+        // Given a cashier operator and a manager who authorized the refund via override
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [POSCapability.processSales.rawValue])
+        let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        _ = await controller.startRefundFlow()
+        controller.recordRefundApprover(approver)
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — the approving manager is the actor, the operator the initiator
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == POSStaffAuth(actorUserID: 7, initiatorUserID: 42))
+    }
+
+    @MainActor
+    private func makeRefundController(currentStaff: POSStaff?) -> POSOrderListController {
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        return POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
+                                      refundsService: refundsService,
+                                      refundSubmissionProcessor: refundSubmissionProcessor,
+                                      currentStaffProvider: { currentStaff })
     }
 
     @MainActor
@@ -1201,7 +1251,7 @@ final class POSOrderListControllerTests {
         try #require(sut.refundSelectableItems.count == 2)
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         #expect(sut.refundSelectableItems.isEmpty)
@@ -1229,7 +1279,7 @@ final class POSOrderListControllerTests {
         // When / Then
         var thrownError: Error?
         do {
-            try await sut.processRefund(reason: .none, auth: nil)
+            try await sut.processRefund(reason: .none)
         } catch {
             thrownError = error
         }
@@ -1240,7 +1290,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func processRefund_when_no_selected_order_then_throws_missingSelectedOrder() async throws {
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, auth: nil)
+            try await sut.processRefund(reason: .none)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingSelectedOrder
         })
@@ -1255,7 +1305,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, auth: nil)
+            try await sut.processRefund(reason: .none)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .missingRefundPreparation
         })
@@ -1279,7 +1329,7 @@ final class POSOrderListControllerTests {
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, auth: nil)
+            try await sut.processRefund(reason: .none)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .emptySelection
         })
@@ -1307,13 +1357,13 @@ final class POSOrderListControllerTests {
                 fire()
             }
             firstRefundTask = Task { @MainActor in
-                try await sut.processRefund(reason: .none, auth: nil)
+                try await sut.processRefund(reason: .none)
             }
         }
 
         // When / Then
         await #expect(performing: {
-            try await sut.processRefund(reason: .none, auth: nil)
+            try await sut.processRefund(reason: .none)
         }, throws: { error in
             (error as? POSRefundProcessingError) == .refundAlreadyInProgress
         })
@@ -1339,7 +1389,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         let items = try #require(refundSubmissionProcessor.spySubmitRefundItems)
@@ -1369,7 +1419,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == true)
@@ -1392,7 +1442,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         #expect(refundSubmissionProcessor.spySubmitRefundIsAutomaticRefund == false)
@@ -1419,7 +1469,7 @@ final class POSOrderListControllerTests {
         _ = await sut.startRefundFlow()
 
         // When
-        try await sut.processRefund(reason: .none, auth: nil)
+        try await sut.processRefund(reason: .none)
 
         // Then
         #expect(orderListService.loadOrderWasCalled == true)

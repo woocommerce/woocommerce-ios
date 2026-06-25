@@ -5,7 +5,6 @@ import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
-import struct Yosemite.POSStaffAuth
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -27,7 +26,6 @@ struct POSOrderDetailsView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
-    @Environment(\.posAccessSession) private var accessSession
     @State private var isShowingEmailReceiptView = false
     /// Current step of the in-progress refund flow. The dedicated "are we in the refund flow"
     /// flag is `activeRefundSelectionOrderID`; this property is only consulted once we're in
@@ -39,10 +37,6 @@ struct POSOrderDetailsView: View {
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
-    /// Approver `POSStaff` captured when a cashier triggered the refund and a manager
-    /// authorized it. Becomes the refund's `X-WC-POS-Staff-Id` actor (with the cashier recorded
-    /// as `X-WC-POS-Initiator-Id`) so the server can record who approved it.
-    @State private var pendingOverrideApprover: POSStaff?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -169,7 +163,6 @@ struct POSOrderDetailsView: View {
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
                     onRefundFailure: onRefundFailure,
-                    auth: refundAuth(),
                     errorStrings: refundErrorStrings
                 )
             }
@@ -606,21 +599,13 @@ private extension POSOrderDetailsView {
         )
     }
 
-    /// Staff attribution for the refund's create request, sent as `X-WC-POS-*` headers.
-    /// On a manager-override refund the approving manager is the actor and the operator (cashier)
-    /// is the initiator; otherwise the operator is the actor. Returns `nil` when no operator is
-    /// signed in so the network boundary sends no POS headers — matching pre-roll-out behaviour.
-    private func refundAuth() -> POSStaffAuth? {
-        POSStaffAttribution.authorized(operator: accessSession.currentStaff, approver: pendingOverrideApprover)
-    }
-
     /// Gates the refund button through the manager-override flow. When the operator already has
     /// `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the PIN modal is
-    /// presented and the refund proceeds once a manager approves. The approving manager becomes the
-    /// refund actor and the current operator the initiator (see `refundAuth()`).
+    /// presented and the refund proceeds once a manager approves. The approver is handed to the
+    /// controller, which owns building the refund's staff attribution.
     func requestRefundPermission() {
         refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { approver in
-            pendingOverrideApprover = approver
+            orderListModel.ordersController.recordRefundApprover(approver)
             initiateRefundFlow()
         }
     }
@@ -679,7 +664,6 @@ private extension POSOrderDetailsView {
         refundFlowPreparationID = nil
         refundModalState = nil
         currentRefundReason = nil
-        pendingOverrideApprover = nil
         orderListModel.ordersController.clearRefundSelection()
         dismissRefundSelectionIfNeeded()
     }

@@ -2,7 +2,6 @@
 
 import Foundation
 import WooFoundation
-import struct Yosemite.POSStaffAuth
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -542,8 +541,9 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    func recordRefundApprover(_ approver: POSStaff?) {}
     @MainActor
-    func processRefund(reason: String?, auth: POSStaffAuth?) async throws {}
+    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
 

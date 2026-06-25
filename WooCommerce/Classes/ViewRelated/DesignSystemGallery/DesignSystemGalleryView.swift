@@ -118,43 +118,52 @@ private struct TypographyTokensView: View {
 // MARK: - Icons
 
 private struct IconTokensView: View {
-    @State private var iconName = StoreIconCatalog.all.first?.name ?? ""
-    @State private var styleIndex = 0
+    @State private var style: IconStyle = .regular
     @State private var sizeName = "large"
     @State private var colorName = "storeTextPrimary"
 
-    private var token: StoreIconToken {
-        StoreIconCatalog.all.first { $0.name == iconName } ?? StoreIconCatalog.all[0]
+    private enum IconStyle: String, CaseIterable, Identifiable {
+        case light, regular, solid
+        var id: String { rawValue }
     }
 
     private var size: CGFloat {
         StoreIconSizeCatalog.all.first { $0.name == sizeName }?.value ?? StoreIconSize.large
     }
 
-    var body: some View {
-        VStack(spacing: 0) {
-            token.variants[min(styleIndex, token.variants.count - 1)].image
-                .image(size: size)
-                .foregroundStyle(storeColor(named: colorName))
-                .frame(maxWidth: .infinity, minHeight: 160)
+    // Icons available in the selected style (styles are not universal across icons).
+    private var icons: [StoreIconToken] {
+        StoreIconCatalog.all.filter { token in
+            token.variants.contains { $0.style == style.rawValue }
+        }
+    }
 
-            Form {
-                Picker("Icon", selection: $iconName) {
-                    ForEach(StoreIconCatalog.all) { Text($0.name).tag($0.name) }
-                }
-                Picker("Style", selection: $styleIndex) {
-                    ForEach(token.variants.indices, id: \.self) { index in
-                        Text(token.variants[index].style.capitalized).tag(index)
-                    }
+    var body: some View {
+        List {
+            Section {
+                Picker("Style", selection: $style) {
+                    ForEach(IconStyle.allCases) { Text($0.rawValue.capitalized).tag($0) }
                 }
                 Picker("Size", selection: $sizeName) {
                     ForEach(StoreIconSizeCatalog.all) { Text("\($0.name) (\(Int($0.value)))").tag($0.name) }
                 }
                 TokenColorPicker(selection: $colorName)
             }
+            ForEach(icons) { token in
+                if let variant = token.variants.first(where: { $0.style == style.rawValue }) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(token.name)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        variant.image
+                            .image(size: size)
+                            .foregroundStyle(storeColor(named: colorName))
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
         }
         .navigationTitle("Icons")
-        .onChange(of: iconName) { _, _ in styleIndex = 0 }
     }
 }
 #endif

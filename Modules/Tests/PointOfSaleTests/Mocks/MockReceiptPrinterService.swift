@@ -16,11 +16,18 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     /// Devices emitted by `discover()`.
     var discoveredDevices: [PrinterDevice] = []
 
+    /// Error thrown by the `discover()` stream after emitting `discoveredDevices`, if any.
+    var discoverError: Error?
+
     /// Error thrown by `connect(to:)`, if any.
     var connectError: Error?
 
     /// Error thrown by `printReceipt(...)`, if any.
     var printError: Error?
+
+    /// Fired when a `connectionStatusUpdates()` stream subscribes, so tests can deterministically
+    /// wait for the controller to start observing before emitting statuses.
+    var onConnectionStatusSubscribed: (() -> Void)?
 
     // MARK: - Spies
 
@@ -38,6 +45,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         AsyncStream { continuation in
             continuation.yield(connectionStatus)
             statusObservers.append(continuation)
+            onConnectionStatusSubscribed?()
         }
     }
 
@@ -52,11 +60,12 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
         discoverCallCount += 1
         let devices = discoveredDevices
+        let error = discoverError
         return AsyncThrowingStream { continuation in
             for device in devices {
                 continuation.yield(device)
             }
-            continuation.finish()
+            continuation.finish(throwing: error)
         }
     }
 

@@ -149,7 +149,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
-                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL,
+                                                                receiptPrinter: receiptPrinter)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(

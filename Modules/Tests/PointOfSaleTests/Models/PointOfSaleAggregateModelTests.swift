@@ -1351,8 +1351,8 @@ struct PointOfSaleAggregateModelTests {
             let coordinator = MockPOSCatalogSyncCoordinator()
             coordinator.isSyncStaleResult = true
             coordinator.hoursSinceLastSyncResult = 42
-            let sut = makePointOfSaleAggregateModel(catalogSyncCoordinator: coordinator,
-                                                    siteID: siteID,
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
 
             await sut.checkStaleSyncStatus()
@@ -1375,8 +1375,8 @@ struct PointOfSaleAggregateModelTests {
             let coordinator = MockPOSCatalogSyncCoordinator()
             coordinator.isSyncStaleResult = true
             coordinator.hoursSinceLastSyncResult = 42
-            let sut = makePointOfSaleAggregateModel(catalogSyncCoordinator: coordinator,
-                                                    siteID: siteID,
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
 
             await sut.checkStaleSyncStatus()

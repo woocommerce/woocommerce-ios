@@ -541,12 +541,14 @@ private extension SettingsViewController {
     }
 
     func debugPanelWasPressed() {
-        let hostingController = UIHostingController(rootView: DebugPanelView(onOpenDesignSystem: { [weak self] in
-            #if DEBUG
-            DesignSystemGallery.push(onto: self?.navigationController)
-            #endif
-        }))
-        navigationController?.pushViewController(hostingController, animated: true)
+        // Present the Debug Panel as a full-screen SwiftUI modal so its content — including
+        // the Design System gallery — uses pure SwiftUI navigation in a single
+        // NavigationStack, with no UIKit navigation controller to conflict with.
+        let hostingController = UIHostingController(rootView: NavigationStack {
+            DebugPanelView()
+        })
+        hostingController.modalPresentationStyle = .fullScreen
+        present(hostingController, animated: true)
     }
 
     func whatsNewWasPressed() {

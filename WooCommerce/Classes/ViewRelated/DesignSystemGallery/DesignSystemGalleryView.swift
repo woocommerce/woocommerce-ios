@@ -1,82 +1,32 @@
 #if DEBUG
 import SwiftUI
-import UIKit
 import StoreDesignSystem
 
-/// Debug-only gallery for the StoreDesignSystem design tokens. Navigation is driven by
-/// UIKit (plain `pushViewController` of hosted SwiftUI views) rather than SwiftUI
-/// NavigationStack/NavigationLink: the Debug Panel lives inside a UIKit navigation
-/// controller, where nested SwiftUI navigation corrupts the stack. This drills in:
-/// master list (Tokens / Components) -> Tokens list (Colors / Typography / Icons) ->
-/// token detail (configuration at the top).
-enum DesignSystemGallery {
-    static func push(onto navigationController: UINavigationController?) {
-        let master = MasterView(
-            onTokens: { [weak navigationController] in pushTokens(onto: navigationController) },
-            onComponents: { [weak navigationController] in push(ComponentsView(), title: "Components", onto: navigationController) }
-        )
-        push(master, title: "Design System", onto: navigationController)
-    }
-
-    private static func pushTokens(onto navigationController: UINavigationController?) {
-        let tokens = TokensListView(
-            onColors: { [weak navigationController] in push(ColorTokensView(), title: "Colors", onto: navigationController) },
-            onTypography: { [weak navigationController] in push(TypographyTokensView(), title: "Typography", onto: navigationController) },
-            onIcons: { [weak navigationController] in push(IconTokensView(), title: "Icons", onto: navigationController) }
-        )
-        push(tokens, title: "Tokens", onto: navigationController)
-    }
-
-    private static func push<V: View>(_ view: V, title: String, onto navigationController: UINavigationController?) {
-        let titledView = view
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-        let hostingController = UIHostingController(rootView: titledView)
-        hostingController.title = title
-        navigationController?.pushViewController(hostingController, animated: true)
-    }
-}
-
-// MARK: - Navigation rows
-
-private struct DesignSystemRow: View {
-    let title: String
-    let action: () -> Void
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Text(title)
-                    .foregroundStyle(Color.primary)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
-        }
-    }
-}
-
-private struct MasterView: View {
-    let onTokens: () -> Void
-    let onComponents: () -> Void
+/// Debug-only gallery for the StoreDesignSystem design tokens. Pure SwiftUI: it lives
+/// inside the Debug Panel's `NavigationStack` (the Debug Panel is presented as a
+/// full-screen SwiftUI modal, so there's no UIKit navigation controller to fight with).
+/// Drill-in: master list (Tokens / Components) -> Tokens list (Colors / Typography /
+/// Icons) -> token detail, with its configuration at the top.
+struct DesignSystemGalleryView: View {
     var body: some View {
         List {
-            DesignSystemRow(title: "Tokens", action: onTokens)
-            DesignSystemRow(title: "Components", action: onComponents)
+            NavigationLink("Tokens") { TokenCategoriesView() }
+            NavigationLink("Components") { ComponentsView() }
         }
+        .navigationTitle("Design System")
     }
 }
 
-private struct TokensListView: View {
-    let onColors: () -> Void
-    let onTypography: () -> Void
-    let onIcons: () -> Void
+// MARK: - Token categories
+
+private struct TokenCategoriesView: View {
     var body: some View {
         List {
-            DesignSystemRow(title: "Colors", action: onColors)
-            DesignSystemRow(title: "Typography", action: onTypography)
-            DesignSystemRow(title: "Icons", action: onIcons)
+            NavigationLink("Colors") { ColorTokensView() }
+            NavigationLink("Typography") { TypographyTokensView() }
+            NavigationLink("Icons") { IconTokensView() }
         }
+        .navigationTitle("Tokens")
     }
 }
 
@@ -86,6 +36,7 @@ private struct ComponentsView: View {
             Text("Coming soon")
                 .foregroundStyle(.secondary)
         }
+        .navigationTitle("Components")
     }
 }
 
@@ -122,6 +73,7 @@ private struct ColorTokensView: View {
                     .font(.system(.footnote, design: .monospaced))
             }
         }
+        .navigationTitle("Colors")
     }
 }
 
@@ -167,6 +119,7 @@ private struct TypographyTokensView: View {
                 }
             }
         }
+        .navigationTitle("Typography")
     }
 }
 
@@ -222,6 +175,7 @@ private struct IconTokensView: View {
                 }
             }
         }
+        .navigationTitle("Icons")
     }
 }
 #endif

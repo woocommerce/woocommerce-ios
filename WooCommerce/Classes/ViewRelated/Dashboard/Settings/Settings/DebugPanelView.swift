@@ -2,8 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct DebugPanelView: View {
-    /// Invoked by the (DEBUG-only) Design System row; the host pushes the gallery via UIKit.
-    var onOpenDesignSystem: () -> Void = {}
+    @Environment(\.dismiss) private var dismiss
 
     @State private var announcementToPresent: Announcement?
     @State private var announcementError: String?
@@ -37,8 +36,8 @@ struct DebugPanelView: View {
             }
 
             #if DEBUG
-            Button("Design System") {
-                onOpenDesignSystem()
+            NavigationLink("Design System") {
+                DesignSystemGalleryView()
             }
             #endif
 
@@ -91,6 +90,13 @@ struct DebugPanelView: View {
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
+        }
         .sheet(item: $announcementToPresent) { announcement in
             ViewControllerContainer(WhatsNewFactory.whatsNew(announcement) {
                 announcementToPresent = nil

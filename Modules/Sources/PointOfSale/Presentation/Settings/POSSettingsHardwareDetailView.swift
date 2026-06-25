@@ -12,8 +12,22 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
+    @State private var showPrinterSetupModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var isCancellingReconnection: Bool = false
+
+    /// Receipt printers appear in the hardware list only when the printer feature is enabled,
+    /// which is signalled by the settings controller exposing a printer connection controller.
+    private var hardwareDestinations: [HardwareDestination] {
+        HardwareDestination.allCases.filter { destination in
+            switch destination {
+            case .printers:
+                return settingsController.printerConnectionController != nil
+            default:
+                return true
+            }
+        }
+    }
 
     private var cardReaderName: String {
         settingsController.connectedCardReader?.name ?? Localization.cardReaderNotConnected
@@ -53,7 +67,7 @@ struct POSSettingsHardwareDetailView: View {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(HardwareDestination.allCases) { destination in
+                ForEach(hardwareDestinations) { destination in
                     NavigationLink(value: NavigationDestination.hardware(destination)) {
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(destination.title)
@@ -87,6 +101,9 @@ struct POSSettingsHardwareDetailView: View {
             case .hardware(.scanners):
                 scannersView
                     .environment(\.posHeaderBackButtonConfiguration, nil)
+            case .hardware(.printers):
+                printersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
@@ -106,6 +123,11 @@ struct POSSettingsHardwareDetailView: View {
         }
         .posModal(isPresented: $showBarcodeScanningSetupModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            if let printerConnectionController = settingsController.printerConnectionController {
+                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: printerConnectionController)
+            }
         }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
             SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
@@ -288,6 +310,60 @@ private extension POSSettingsHardwareDetailView {
         .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
     }
+
+    @ViewBuilder
+    var printersView: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.printersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            ScrollView {
+                VStack(spacing: POSSpacing.small) {
+                    if let controller = settingsController.printerConnectionController {
+                        if controller.isConnected {
+                            POSInformationCard {
+                                printerNameRow(controller: controller)
+                            }
+                        } else {
+                            POSSettingsCard(title: Localization.printerConnectTitle,
+                                            subtitle: Localization.printerConnectSubtitle,
+                                            action: { showPrinterSetupModal = true })
+                        }
+                    }
+                }
+                .padding(.horizontal, POSPadding.medium)
+                .foregroundColor(.posOnSurface)
+            }
+        }
+        .background(backgroundColor)
+        .navigationBarBackButtonHidden(true)
+    }
+
+    func printerNameRow(controller: POSPrinterConnectionController) -> some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            VStack(alignment: .leading, spacing: POSPadding.small) {
+                Text(Localization.printerDeviceNameTitle)
+                    .font(.posBodyMediumRegular())
+                Text(controller.connectedPrinterName ?? Localization.printerNotConnected)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Button(Localization.printerDisconnectTitle) {
+                Task {
+                    await controller.disconnect()
+                }
+            }
+            .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: false))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }
 
 // MARK: - Navigation
@@ -295,6 +371,7 @@ private extension POSSettingsHardwareDetailView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners
+        case printers
 
         var id: Self { self }
 
@@ -304,6 +381,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationCardReaderTitle
             case .scanners:
                 return Localization.hardwareNavigationBarcodeTitle
+            case .printers:
+                return Localization.hardwareNavigationPrinterTitle
             }
         }
 
@@ -313,6 +392,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationCardReaderSubtitle
             case .scanners:
                 return Localization.hardwareNavigationBarcodeSubtitle
+            case .printers:
+                return Localization.hardwareNavigationPrinterSubtitle
             }
         }
     }
@@ -478,6 +559,54 @@ private extension POSSettingsHardwareDetailView {
             comment: "Description of Barcode scanner settings configuration."
         )
 
+        static let hardwareNavigationPrinterTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle",
+            value: "Receipt printers",
+            comment: "Navigation title of Receipt printer settings."
+        )
+
+        static let hardwareNavigationPrinterSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle",
+            value: "Manage receipt printer connections",
+            comment: "Description of Receipt printer settings for connections."
+        )
+
+        static let printersTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printersTitle",
+            value: "Receipt printers",
+            comment: "Navigation title for receipt printers settings in Point of Sale."
+        )
+
+        static let printerConnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerConnectTitle",
+            value: "Connect printer",
+            comment: "Title for the receipt printer connect button when no printer is connected."
+        )
+
+        static let printerConnectSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle",
+            value: "Connect your receipt printer and start printing receipts",
+            comment: "Subtitle for the receipt printer connect button when no printer is connected."
+        )
+
+        static let printerDeviceNameTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle",
+            value: "Device name",
+            comment: "Label for the connected receipt printer's name in Point of Sale settings."
+        )
+
+        static let printerNotConnected = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerNotConnected",
+            value: "Printer not connected",
+            comment: "Text shown when no receipt printer is connected in Point of Sale settings."
+        )
+
+        static let printerDisconnectTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle",
+            value: "Disconnect printer",
+            comment: "Title for the receipt printer disconnect button when a printer is connected."
+        )
+
         static let cardReaderConnectTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderConnectTitle",
             value: "Connect card reader",
@@ -586,7 +715,7 @@ private extension POSSettingsHardwareDetailView {
 #Preview {
     @Previewable @State var navigationPath = NavigationPath()
     NavigationStack(path: $navigationPath) {
-        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController(), navigationPath: $navigationPath)
+        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController.withPrinter(), navigationPath: $navigationPath)
     }
 }
 #endif

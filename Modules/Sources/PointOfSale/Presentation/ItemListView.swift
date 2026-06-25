@@ -191,7 +191,7 @@ struct ItemListView: View {
     /// manager authorized it via override (that approval is a local gate, never sent). `nil` when
     /// no operator is signed in so the network boundary sends no POS headers.
     private func couponCreationAuth() -> POSStaffAuth? {
-        POSStaffAttribution.operatorOnly(accessSession.currentStaff)
+        accessSession.currentStaff.map(POSStaffAttribution.operatorOnly)
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {

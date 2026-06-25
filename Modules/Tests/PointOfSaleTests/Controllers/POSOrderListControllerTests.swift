@@ -1222,6 +1222,22 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func beginRefundSession_when_no_operator_is_signed_in_then_refund_carries_no_attribution() async throws {
+        // Given POS roles disabled / nobody signed in — the staff provider returns nil
+        let controller = makeRefundController(currentStaff: nil)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: nil)
+        _ = await controller.startRefundFlow()
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — no session is created, so the request carries no POS headers
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == nil)
+    }
+
+    @MainActor
     @Test func processRefund_does_not_carry_an_earlier_override_approver_into_a_later_refund() async throws {
         // Given a first refund authorized via override (its session ends when it submits)
         let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,

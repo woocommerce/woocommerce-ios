@@ -120,15 +120,17 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private var isProcessingRefund = false
 
     /// Identifies who is performing the current refund action: the signed-in `operatorStaff` and, when
-    /// a manager override authorized it, the `approver`. Built once at the start of the action.
+    /// a manager override authorized it, the `approver`. Built once at the start of the action. The
+    /// session only exists when an operator is signed in (POS roles enabled) — otherwise it stays
+    /// `nil` and the refund carries no attribution.
     private struct RefundSession {
-        let operatorStaff: POSStaff?
+        let operatorStaff: POSStaff
         let approver: POSStaff?
 
         /// Staff attribution for the refund's create request, sent as `X-WC-POS-*` headers. On an
         /// override the approving manager is the actor and the operator the initiator; otherwise the
         /// operator is the actor.
-        var auth: POSStaffAuth? {
+        var auth: POSStaffAuth {
             POSStaffAttribution.authorized(operator: operatorStaff, approver: approver)
         }
     }
@@ -440,7 +442,13 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
     @MainActor
     func beginRefundSession(approver: POSStaff?) {
-        refundSession = RefundSession(operatorStaff: currentStaffProvider(), approver: approver)
+        // No signed-in operator (POS roles disabled, or not yet signed in) means no attribution at
+        // all, so there's no session to track.
+        guard let operatorStaff = currentStaffProvider() else {
+            refundSession = nil
+            return
+        }
+        refundSession = RefundSession(operatorStaff: operatorStaff, approver: approver)
     }
 
     @MainActor

@@ -543,20 +543,11 @@ private extension SettingsViewController {
     func debugPanelWasPressed() {
         let hostingController = UIHostingController(rootView: DebugPanelView(onOpenDesignSystem: { [weak self] in
             #if DEBUG
-            self?.openDesignSystemGallery()
+            DesignSystemGallery.push(onto: self?.navigationController)
             #endif
         }))
         navigationController?.pushViewController(hostingController, animated: true)
     }
-
-    #if DEBUG
-    private func openDesignSystemGallery() {
-        let gallery = NavigationBarHidingHostingController(rootView: DesignSystemGalleryView(onClose: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        }))
-        navigationController?.pushViewController(gallery, animated: true)
-    }
-    #endif
 
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
@@ -986,20 +977,3 @@ private extension SettingsViewController {
         }
     }
 }
-
-#if DEBUG
-/// Hosting controller that hides the parent UIKit navigation bar while visible, so a
-/// hosted SwiftUI `NavigationStack` can provide a single navigation bar (used by the
-/// Design System gallery).
-private final class NavigationBarHidingHostingController<Content: View>: UIHostingController<Content> {
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-}
-#endif

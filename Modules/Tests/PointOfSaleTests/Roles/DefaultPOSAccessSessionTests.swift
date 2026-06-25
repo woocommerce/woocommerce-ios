@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 import struct Yosemite.POSStaffMember
+import enum Yosemite.POSStaffPreset
 @testable import PointOfSale
 
 @MainActor
@@ -159,7 +160,7 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_allows_when_currentStaff_lacks_capability_then_returns_false() async throws {
         // Given
-        let staff = makeStaff(preset: "pos_cashier", capabilities: [])
+        let staff = makeStaff(preset: .cashier, capabilities: [])
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator(authenticateResult: .success(staff)))
         try await sut.session.signIn(withPIN: "1234")
 
@@ -449,7 +450,7 @@ private extension DefaultPOSAccessSessionTests {
     func makeStaffMember(userID: Int64 = 1, hasPIN: Bool) -> POSStaffMember {
         POSStaffMember(userID: userID,
                        displayName: "Staff",
-                       preset: "pos_cashier",
+                       preset: .cashier,
                        capabilities: ["pos_process_sales": true],
                        pin: hasPIN ? .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                            salt: "c2FsdA==", hash: "aGFzaA==") : nil)
@@ -457,7 +458,7 @@ private extension DefaultPOSAccessSessionTests {
 
     func makeStaff(userID: Int64 = 1,
                    displayName: String = "Maya",
-                   preset: String = "pos_manager",
+                   preset: POSStaffPreset = .manager,
                    capabilities: Set<String> = []) -> POSStaff {
         POSStaff(userID: userID,
                  displayName: displayName,

@@ -22,7 +22,7 @@ struct PointOfSaleLoadingView: View {
                     .progressViewStyle(POSProgressViewStyle())
 
                 if isCatalogSyncing {
-                    Spacer().frame(height: POSSpacing.large * 2)
+                    Spacer().frame(height: POSSpacing.xLarge)
                     Text(Localization.syncingCatalogTitle)
                         .font(.posHeadingBold)
                     if let progressText {
@@ -38,13 +38,13 @@ struct PointOfSaleLoadingView: View {
                             onExit?()
                         } label: {
                             Text(Localization.syncingCatalogExitButtonTitle)
-                                .font(.posBodySmallBold(underline: true))
+                                .font(.posBodySmallRegular(underline: true))
                                 .foregroundStyle(Color.posOnSurface)
                         }
 
                         syncingCatalogHintView
                     }
-                    .padding(.bottom, POSPadding.large)
+                    .padding(.bottom, POSPadding.xLarge)
                 } else {
                     Spacer()
                 }
@@ -96,8 +96,9 @@ private extension PointOfSaleLoadingView {
             Text(Localization.syncingCatalogHint)
             Text(Localization.syncingCatalogSubtitle)
         }
-        .font(.posCaptionRegular)
+        .font(.posBodyMediumRegular())
         .foregroundStyle(Color.posOnSurfaceVariantLowest)
+        .padding(.horizontal, POSPadding.xLarge)
     }
 
     struct Localization {

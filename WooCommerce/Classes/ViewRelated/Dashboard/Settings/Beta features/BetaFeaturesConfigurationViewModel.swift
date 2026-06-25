@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 import protocol Experiments.FeatureFlagService
 import struct Storage.GeneralAppSettingsStorage
 
@@ -7,7 +6,7 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
     private let featureFlagService: FeatureFlagService
-    private let isIPad: Bool
+    private let isPOSTabVisible: () async -> Bool
 
     private let betaFeatures = BetaFeature.allCases
 
@@ -15,10 +14,10 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
 
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         isIPad: Bool = UIDevice.current.userInterfaceIdiom == .pad) {
+         isPOSTabVisible: @escaping () async -> Bool = BetaFeaturesConfigurationViewModel.defaultPOSTabVisibility) {
         self.appSettings = appSettings
         self.featureFlagService = featureFlagService
-        self.isIPad = isIPad
+        self.isPOSTabVisible = isPOSTabVisible
         self.appPasswordsExperimentAvailabilityChecker = ApplicationPasswordsExperimentAvailabilityChecker()
 
         setupInitialFeaturesVisibility()
@@ -27,6 +26,14 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
 
     func isOn(feature: BetaFeature) -> Binding<Bool> {
         appSettings.betaFeatureEnabledBinding(feature)
+    }
+
+    func refreshAvailableFeatures() async {
+        let fetchedAvailableFeatures = await fetchFeaturesAvailability()
+
+        await MainActor.run {
+            availableFeatures = fetchedAvailableFeatures
+        }
     }
 }
 
@@ -38,7 +45,7 @@ private extension BetaFeaturesConfigurationViewModel {
             case .applicationPasswords:
                 return appPasswordsExperimentAvailabilityChecker.isAvailable
             case .posLocalCatalog:
-                return isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
+                return false
         }
     }
 
@@ -50,11 +57,7 @@ private extension BetaFeaturesConfigurationViewModel {
 
     func updateFeaturesAvailability() {
         Task {
-            let fetchedAvailableFeatures = await fetchFeaturesAvailability()
-
-            await MainActor.run {
-                availableFeatures = fetchedAvailableFeatures
-            }
+            await refreshAvailableFeatures()
         }
     }
 
@@ -69,12 +72,28 @@ private extension BetaFeaturesConfigurationViewModel {
                     results.append(feature)
                 }
             case .posLocalCatalog:
-                if isIPad && featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) {
+                if await shouldShowPOSLocalCatalog() {
                     results.append(feature)
                 }
             }
         }
 
         return results
+    }
+
+    func shouldShowPOSLocalCatalog() async -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
+            return false
+        }
+        return await isPOSTabVisible()
+    }
+}
+
+extension BetaFeaturesConfigurationViewModel {
+    static func defaultPOSTabVisibility() async -> Bool {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return false
+        }
+        return await POSTabVisibilityChecker(site: site).checkVisibility()
     }
 }

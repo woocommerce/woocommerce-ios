@@ -53,7 +53,7 @@ private extension POSRolesPersistenceTests {
     func makeStaffMemberWithPIN() -> POSStaffMember {
         POSStaffMember(userID: 1,
                        displayName: "Staff",
-                       preset: "pos_cashier",
+                       preset: .cashier,
                        capabilities: ["pos_process_sales": true],
                        pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                   salt: "c2FsdA==", hash: "aGFzaA=="))

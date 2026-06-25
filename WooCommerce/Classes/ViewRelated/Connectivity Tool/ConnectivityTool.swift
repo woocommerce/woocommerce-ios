@@ -3,7 +3,7 @@ import Combine
 
 /// Connectivity Tool Hosting Controller
 ///
-final class ConnectivityToolViewController: UIHostingController<ConnectivityTool> {
+final class ConnectivityToolViewController: TabBarHidingHostingController<ConnectivityTool> {
 
     /// ConnectivityTool view model
     ///
@@ -25,7 +25,6 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         viewModel = ConnectivityToolViewModel()
         let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
-        self.hidesBottomBarWhenPushed = true
         self.title = NSLocalizedString("Troubleshoot Connection", comment: "Screen title for the connectivity tool")
     }
 

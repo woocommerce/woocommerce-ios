@@ -3,6 +3,8 @@
 
 25.1
 -----
+- [Internal] Parse all network responses off the main thread to keep the UI responsive on large payloads. [https://github.com/woocommerce/woocommerce-ios/pull/17402]
+- [*] Payments: the balance summary now shows Total balance (available + pending funds) and Available funds [https://github.com/woocommerce/woocommerce-ios/pull/17404]
 - [*] Fixed product titles being misaligned in the Linked Products cross-sells/upsells list when a product name wrapped to multiple lines. [https://github.com/woocommerce/woocommerce-ios/pull/17353]
 - [*] Fixed crashes that could occur when opening share and action sheets on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17382]
 - [***] Phone POS available for UK-based stores [https://github.com/woocommerce/woocommerce-ios/pull/17325]
@@ -23,9 +25,11 @@
 - [*] Order creation: fixed bundled product configuration on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17381]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
+- [*] Help & Support: Fixed the main tab bar remaining visible on the System Status Report and other Help & Support screens. [https://github.com/woocommerce/woocommerce-ios/pull/17395]
 
 25.0
 -----
+- [*] Fixed a crash on launch that could affect logged-in users when A/B experiments refreshed. [https://github.com/woocommerce/woocommerce-ios/pull/17408]
 - [*] Fixed an app hang on launch on stores with large REST APIs (many plugins). [https://github.com/woocommerce/woocommerce-ios/pull/17396]
 - [*] Fixed a crash that could occur when using the Connectivity Tool to troubleshoot connection issues. [https://github.com/woocommerce/woocommerce-ios/pull/17361]
 - [*] Fixed order refunds hiding duplicate product lines after one matching line was refunded. [https://github.com/woocommerce/woocommerce-ios/pull/17313]

@@ -108,4 +108,5 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     var printerConnectionController: POSPrinterConnectionController?
     var isLocalCatalogEligible = true
+    var staffSettingsService: POSStaffSettingsService?
 }

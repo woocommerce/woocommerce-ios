@@ -89,6 +89,7 @@ public struct PointOfSaleEntryPointView: View {
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -150,7 +151,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
-                                                                receiptPrinter: receiptPrinter)
+                                                                receiptPrinter: receiptPrinter,
+                                                                staffSettingsService: staffSettingsService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(

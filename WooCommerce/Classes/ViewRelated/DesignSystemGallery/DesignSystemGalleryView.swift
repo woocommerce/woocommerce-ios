@@ -7,34 +7,24 @@ import StoreDesignSystem
 /// (debug / PR / installable) build. Compiled only in Debug, where the package's
 /// `#if DEBUG` token catalogs exist.
 struct DesignSystemGalleryView: View {
-    @State private var section: GallerySection = .colors
-
-    private enum GallerySection: String, CaseIterable, Identifiable {
-        case colors = "Colors"
-        case typography = "Typography"
-        case icons = "Icons"
-        var id: String { rawValue }
-    }
-
     var body: some View {
-        // A single pushed screen with a segmented selector rather than nested
-        // NavigationLinks: the Debug Panel is hosted in a UIKit navigation controller with
-        // no SwiftUI NavigationStack, so nested links misroute. This keeps it in-place
-        // (not modal) and correct.
-        VStack(spacing: 0) {
-            Picker("Section", selection: $section) {
-                ForEach(GallerySection.allCases) { Text($0.rawValue).tag($0) }
+        // Own NavigationStack so the drill-in links route correctly: the Debug Panel is
+        // hosted in a UIKit navigation controller (no SwiftUI navigation), where multiple
+        // bridged NavigationLinks don't disambiguate.
+        NavigationStack {
+            List {
+                Section("Tokens") {
+                    NavigationLink("Colors") { ColorTokensView() }
+                    NavigationLink("Typography") { TypographyTokensView() }
+                    NavigationLink("Icons") { IconTokensView() }
+                }
+                Section("Components") {
+                    Text("Coming soon")
+                        .foregroundStyle(.secondary)
+                }
             }
-            .pickerStyle(.segmented)
-            .padding()
-
-            switch section {
-            case .colors: ColorTokensView()
-            case .typography: TypographyTokensView()
-            case .icons: IconTokensView()
-            }
+            .navigationTitle("Design System")
         }
-        .navigationTitle("Design System")
     }
 }
 
@@ -70,6 +60,7 @@ private struct ColorTokensView: View {
                     .font(.system(.footnote, design: .monospaced))
             }
         }
+        .navigationTitle("Colors")
     }
 }
 
@@ -112,6 +103,7 @@ private struct TypographyTokensView: View {
                 .padding(.vertical, 4)
             }
         }
+        .navigationTitle("Typography")
     }
 }
 
@@ -163,6 +155,7 @@ private struct IconTokensView: View {
                 }
             }
         }
+        .navigationTitle("Icons")
     }
 }
 #endif

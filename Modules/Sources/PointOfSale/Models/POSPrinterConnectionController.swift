@@ -25,9 +25,12 @@ final class POSPrinterConnectionController {
     }
 
     private let service: ReceiptPrinterServiceProtocol
-    private var discoveryTask: Task<Void, Never>?
-    private var connectTask: Task<Void, Never>?
-    private var statusTask: Task<Void, Never>?
+    // `nonisolated(unsafe)` so the nonisolated `deinit` can cancel these. Safe because every write
+    // happens on the main actor, and the deinit read races nothing: deallocation means no other
+    // reference survives. `Task.cancel()` is itself callable from any isolation.
+    nonisolated(unsafe) private var discoveryTask: Task<Void, Never>?
+    nonisolated(unsafe) private var connectTask: Task<Void, Never>?
+    nonisolated(unsafe) private var statusTask: Task<Void, Never>?
 
     init(service: ReceiptPrinterServiceProtocol) {
         self.service = service

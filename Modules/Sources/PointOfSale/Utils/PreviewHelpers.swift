@@ -541,7 +541,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
-    func recordRefundApprover(_ approver: POSStaff?) {}
+    func beginRefundSession(approver: POSStaff?) {}
     @MainActor
     func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}

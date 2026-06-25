@@ -41,10 +41,10 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
-    /// Records the staff member who authorized the in-progress refund via a manager override (or
-    /// `nil` when the operator performed it under their own capability), so the refund can be
-    /// attributed to both the operator and the approver at submission. Called from the gate.
-    func recordRefundApprover(_ approver: POSStaff?)
+    /// Begins a refund action's attribution session, capturing the signed-in operator and the
+    /// `approver` who authorized it via manager override (`nil` when the operator performed it under
+    /// their own capability). Called when a refund starts; the session is cleared with the selection.
+    func beginRefundSession(approver: POSStaff?)
     func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
 }
@@ -110,12 +110,28 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
-    /// Resolves the signed-in operator at submission time, so the controller owns refund attribution
-    /// end to end instead of receiving a pre-built `POSStaffAuth` from the view.
+    /// Resolves the signed-in operator when a refund action begins, so the controller owns refund
+    /// attribution end to end instead of receiving a pre-built `POSStaffAuth` from the view.
     private let currentStaffProvider: () -> POSStaff?
-    /// The staff member who authorized the in-progress refund via override, recorded at the gate.
-    private var pendingRefundApprover: POSStaff?
+    /// Attribution snapshot for the in-progress refund, captured when the action begins so it stays a
+    /// single cohesive unit scoped to that one refund — rather than loose fields reset in many places.
+    /// `nil` between refund actions.
+    private var refundSession: RefundSession?
     private var isProcessingRefund = false
+
+    /// Identifies who is performing the current refund action: the signed-in `operatorStaff` and, when
+    /// a manager override authorized it, the `approver`. Built once at the start of the action.
+    private struct RefundSession {
+        let operatorStaff: POSStaff?
+        let approver: POSStaff?
+
+        /// Staff attribution for the refund's create request, sent as `X-WC-POS-*` headers. On an
+        /// override the approving manager is the actor and the operator the initiator; otherwise the
+        /// operator is the actor.
+        var auth: POSStaffAuth? {
+            POSStaffAttribution.authorized(operator: operatorStaff, approver: approver)
+        }
+    }
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -306,7 +322,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false
-        pendingRefundApprover = nil
     }
 
     @MainActor
@@ -388,7 +403,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     func clearRefundSelection() {
         refundSelectableItems = []
         hasModifiedRefundSelection = false
-        pendingRefundApprover = nil
+        // The refund session ends with the selection — the single place its lifetime is torn down.
+        refundSession = nil
     }
 
     @MainActor
@@ -423,8 +439,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Processing
 
     @MainActor
-    func recordRefundApprover(_ approver: POSStaff?) {
-        pendingRefundApprover = approver
+    func beginRefundSession(approver: POSStaff?) {
+        refundSession = RefundSession(operatorStaff: currentStaffProvider(), approver: approver)
     }
 
     @MainActor
@@ -451,15 +467,12 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             throw POSRefundProcessingError.emptySelection
         }
 
-        // Build the staff attribution here so it stays out of the views: the approving manager (if
-        // any) becomes the actor and the signed-in operator the initiator.
-        let auth = POSStaffAttribution.authorized(operator: currentStaffProvider(), approver: pendingRefundApprover)
         try await refundSubmissionProcessor.submitRefund(
             for: order,
             preparation: preparation,
             selectedItems: selectedItems,
             reason: reason,
-            auth: auth
+            auth: refundSession?.auth
         )
 
         clearRefundSelection()

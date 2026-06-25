@@ -183,6 +183,9 @@ struct POSOrderDetailsView: View {
         .onAppear {
             if autoStartNextRefundFlow {
                 autoStartNextRefundFlow = false
+                // Auto-started refunds skip the gate (already authorized upstream), so begin the
+                // session with no override approver — attributing to the operator alone.
+                orderListModel.ordersController.beginRefundSession(approver: nil)
                 initiateRefundFlow()
             }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -605,7 +608,7 @@ private extension POSOrderDetailsView {
     /// controller, which owns building the refund's staff attribution.
     func requestRefundPermission() {
         refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { approver in
-            orderListModel.ordersController.recordRefundApprover(approver)
+            orderListModel.ordersController.beginRefundSession(approver: approver)
             initiateRefundFlow()
         }
     }

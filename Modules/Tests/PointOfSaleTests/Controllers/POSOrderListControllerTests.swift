@@ -1191,6 +1191,7 @@ final class POSOrderListControllerTests {
         let controller = makeRefundController(currentStaff: operatorStaff)
         let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
         controller.selectOrder(order)
+        controller.beginRefundSession(approver: nil)
         _ = await controller.startRefundFlow()
 
         // When
@@ -1210,14 +1211,37 @@ final class POSOrderListControllerTests {
         let controller = makeRefundController(currentStaff: operatorStaff)
         let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
         controller.selectOrder(order)
+        controller.beginRefundSession(approver: approver)
         _ = await controller.startRefundFlow()
-        controller.recordRefundApprover(approver)
 
         // When
         try await controller.processRefund(reason: nil)
 
         // Then — the approving manager is the actor, the operator the initiator
         #expect(refundSubmissionProcessor.spySubmitRefundAuth == POSStaffAuth(actorUserID: 7, initiatorUserID: 42))
+    }
+
+    @MainActor
+    @Test func processRefund_does_not_carry_an_earlier_override_approver_into_a_later_refund() async throws {
+        // Given a first refund authorized via override (its session ends when it submits)
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [POSCapability.processSales.rawValue])
+        let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: approver)
+        _ = await controller.startRefundFlow()
+        try await controller.processRefund(reason: nil)
+
+        // When a second refund runs without beginning a new session
+        controller.selectOrder(order)
+        _ = await controller.startRefundFlow()
+        try await controller.processRefund(reason: nil)
+
+        // Then the first refund's override approver does not leak into it
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == nil)
     }
 
     @MainActor

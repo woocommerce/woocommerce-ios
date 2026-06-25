@@ -2,19 +2,52 @@
 import SwiftUI
 import StoreDesignSystem
 
-/// Debug-only gallery for the StoreDesignSystem design tokens, reachable from the Debug
-/// Panel. A single pushed screen with sections (no nested navigation): the Debug Panel is
-/// hosted in a UIKit navigation controller with no SwiftUI navigation, so a nested
-/// NavigationStack/NavigationLinks break that navigation. Compiled only in Debug, where
-/// the package's #if DEBUG token catalogs exist.
+/// Debug-only gallery for the StoreDesignSystem design tokens. Pushed onto the Debug
+/// Panel's UIKit navigation by `SettingsViewController` (which hides the outer UIKit bar),
+/// so this self-contained NavigationStack provides the drill-in: master list ->
+/// Tokens list -> token detail (with its configuration at the top). `onClose` pops back
+/// to the Debug Panel.
 struct DesignSystemGalleryView: View {
+    var onClose: () -> Void = {}
+
+    var body: some View {
+        NavigationStack {
+            List {
+                NavigationLink("Tokens") { TokenCategoriesView() }
+                NavigationLink("Components") { ComponentsView() }
+            }
+            .navigationTitle("Design System")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: onClose) {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Token categories
+
+private struct TokenCategoriesView: View {
     var body: some View {
         List {
-            ColorSection()
-            TypographySection()
-            IconSection()
+            NavigationLink("Colors") { ColorTokensView() }
+            NavigationLink("Typography") { TypographyTokensView() }
+            NavigationLink("Icons") { IconTokensView() }
         }
-        .navigationTitle("Design System")
+        .navigationTitle("Tokens")
+    }
+}
+
+private struct ComponentsView: View {
+    var body: some View {
+        List {
+            Text("Coming soon")
+                .foregroundStyle(.secondary)
+        }
+        .navigationTitle("Components")
     }
 }
 
@@ -36,29 +69,28 @@ private struct TokenColorPicker: View {
 
 // MARK: - Colors
 
-private struct ColorSection: View {
+private struct ColorTokensView: View {
     var body: some View {
-        Section("Colors") {
-            ForEach(StoreColorCatalog.all) { token in
-                HStack(spacing: 12) {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(token.color)
-                        .frame(width: 44, height: 44)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.secondary.opacity(0.3))
-                        )
-                    Text(token.name)
-                        .font(.system(.footnote, design: .monospaced))
-                }
+        List(StoreColorCatalog.all) { token in
+            HStack(spacing: 12) {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(token.color)
+                    .frame(width: 44, height: 44)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.secondary.opacity(0.3))
+                    )
+                Text(token.name)
+                    .font(.system(.footnote, design: .monospaced))
             }
         }
+        .navigationTitle("Colors")
     }
 }
 
 // MARK: - Typography
 
-private struct TypographySection: View {
+private struct TypographyTokensView: View {
     @State private var colorName = "storeTextPrimary"
     @State private var emphasis: Emphasis = .regular
 
@@ -76,30 +108,35 @@ private struct TypographySection: View {
     }
 
     var body: some View {
-        Section("Typography") {
-            Picker("Emphasis", selection: $emphasis) {
-                ForEach(Emphasis.allCases) { Text($0.rawValue.capitalized).tag($0) }
-            }
-            .pickerStyle(.menu)
-            TokenColorPicker(selection: $colorName)
-            ForEach(StoreTextStyleCatalog.all) { token in
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(token.name)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("The quick brown fox")
-                        .storeTextStyle(styled(token.style))
-                        .foregroundStyle(storeColor(named: colorName))
+        List {
+            Section("Configuration") {
+                Picker("Emphasis", selection: $emphasis) {
+                    ForEach(Emphasis.allCases) { Text($0.rawValue.capitalized).tag($0) }
                 }
-                .padding(.vertical, 4)
+                .pickerStyle(.menu)
+                TokenColorPicker(selection: $colorName)
+            }
+            Section("Styles") {
+                ForEach(StoreTextStyleCatalog.all) { token in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(token.name)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Text("The quick brown fox")
+                            .storeTextStyle(styled(token.style))
+                            .foregroundStyle(storeColor(named: colorName))
+                    }
+                    .padding(.vertical, 4)
+                }
             }
         }
+        .navigationTitle("Typography")
     }
 }
 
 // MARK: - Icons
 
-private struct IconSection: View {
+private struct IconTokensView: View {
     @State private var style: IconStyle = .regular
     @State private var sizeName = "large"
     @State private var colorName = "storeTextPrimary"
@@ -121,30 +158,35 @@ private struct IconSection: View {
     }
 
     var body: some View {
-        Section("Icons") {
-            Picker("Style", selection: $style) {
-                ForEach(IconStyle.allCases) { Text($0.rawValue.capitalized).tag($0) }
+        List {
+            Section("Configuration") {
+                Picker("Style", selection: $style) {
+                    ForEach(IconStyle.allCases) { Text($0.rawValue.capitalized).tag($0) }
+                }
+                .pickerStyle(.menu)
+                Picker("Size", selection: $sizeName) {
+                    ForEach(StoreIconSizeCatalog.all) { Text("\($0.name) (\(Int($0.value)))").tag($0.name) }
+                }
+                .pickerStyle(.menu)
+                TokenColorPicker(selection: $colorName)
             }
-            .pickerStyle(.menu)
-            Picker("Size", selection: $sizeName) {
-                ForEach(StoreIconSizeCatalog.all) { Text("\($0.name) (\(Int($0.value)))").tag($0.name) }
-            }
-            .pickerStyle(.menu)
-            TokenColorPicker(selection: $colorName)
-            ForEach(icons) { token in
-                if let variant = token.variants.first(where: { $0.style == style.rawValue }) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(token.name)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                        variant.image
-                            .image(size: size)
-                            .foregroundStyle(storeColor(named: colorName))
+            Section("Icons") {
+                ForEach(icons) { token in
+                    if let variant = token.variants.first(where: { $0.style == style.rawValue }) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(token.name)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            variant.image
+                                .image(size: size)
+                                .foregroundStyle(storeColor(named: colorName))
+                        }
+                        .padding(.vertical, 4)
                     }
-                    .padding(.vertical, 4)
                 }
             }
         }
+        .navigationTitle("Icons")
     }
 }
 #endif

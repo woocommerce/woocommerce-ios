@@ -361,7 +361,7 @@ struct PointOfSaleDashboardView: View {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
             .accessibilityIdentifier("pos-settings-menu-item")
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1), session.allows(.viewOrders) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                     presentOrders()

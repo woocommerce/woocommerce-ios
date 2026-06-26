@@ -11,8 +11,8 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
-    /// Invoked when the Settings menu item is tapped. The host gates the action on
-    /// `woocommerce_pos_view_settings` before presenting the settings screen.
+    /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
+    /// presenting the settings screen.
     private let onSettingsSelected: () -> Void
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false

@@ -5,6 +5,7 @@ struct POSSettingsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
+    @State private var editOverrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -17,12 +18,22 @@ struct POSSettingsView: View {
                              horizontalSizeClass == .compact ?
                                 .init(state: .enabled, action: { self.selection = nil }) : nil)
         } detailPlaceholderView: {
-            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel,
+                                       requestEditPermission: requestEditPermission)
         } setDefaultValue: {
             if selection == nil {
                 selection = .store
             }
         }
+        .posRootModal()
+        .posManagerOverrideModal(handler: editOverrideHandler)
+    }
+
+    /// Gates an edit to POS settings on `.editPOSSettings`. When the operator holds it (admins only)
+    /// the edit runs immediately; otherwise the manager-override modal is presented and the edit runs
+    /// once an authorized staff member approves.
+    func requestEditPermission(_ perform: @escaping () -> Void) {
+        editOverrideHandler.gate(.editPOSSettings, reason: Localization.editOverrideDescription, perform: { _ in perform() })
     }
 }
 
@@ -86,12 +97,14 @@ extension POSSettingsView {
     private func detailView(for selection: SidebarNavigation, navigationPath: Binding<NavigationPath>) -> some View {
         switch selection {
         case .store:
-            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel,
+                                       requestEditPermission: requestEditPermission)
         case .hardware:
             POSSettingsHardwareDetailView(settingsController: settingsController, navigationPath: navigationPath)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
-                POSSettingsLocalCatalogDetailView(viewModel: viewModel)
+                POSSettingsLocalCatalogDetailView(viewModel: viewModel,
+                                                  requestEditPermission: requestEditPermission)
             } else {
                 EmptyView()
             }
@@ -182,6 +195,13 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.navigationTitle",
             value: "Settings",
             comment: "Title of the Point of Sale settings view."
+        )
+
+        static let editOverrideDescription = NSLocalizedString(
+            "pointOfSaleSettingsView.editOverrideReason",
+            value: "Changing settings requires manager approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "edit-settings permission tries to change a Point of Sale setting."
         )
 
         static let sidebarNavigationStoreTitle = NSLocalizedString(

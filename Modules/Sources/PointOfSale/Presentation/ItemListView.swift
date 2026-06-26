@@ -341,12 +341,19 @@ struct ItemListView: View {
     }
 
     private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
-        POSItemActionHandlerFactory.itemActionHandler(
+        let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: itemListType,
             searchTerm: searchTerm,
             posModel: posModel,
             analytics: analytics
         )
+        // Gate applying an existing coupon on `applyCoupons`; products tap through unchanged.
+        return GatedItemActionHandler(wrapping: handler) { item in
+            if case .coupon = item {
+                return accessSession.allows(.applyCoupons)
+            }
+            return true
+        }
     }
 
     private func variationActionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {

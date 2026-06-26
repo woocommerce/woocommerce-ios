@@ -28,7 +28,10 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
     }
 
     private func setupProperties() {
-        pendingBalance = formatAmount(overview.pendingBalanceAmount)
+        // We sum the ammounts as the values do not come with the response, if this changes in the future
+        // would be worth to update this function as well
+        // ref: https://github.com/Automattic/woocommerce-payments/blob/c988beda4aea4718d9f47d57908a1a2a25678028/client/components/account-balances/index.tsx#L116
+        totalBalance = formatAmount(overview.availableBalance.adding(overview.pendingBalanceAmount))
         lastPayoutAmount = formatAmount(overview.lastPayout?.amount ?? NSDecimalNumber(value: 0))
         lastPayoutDate = formatDate(overview.lastPayout?.date) ?? Localization.noDateString
         lastPayoutStatus = overview.lastPayout?.status ?? .unknown
@@ -37,7 +40,7 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
         balanceTypeHint = balanceTypeHintText()
     }
 
-    @Published var pendingBalance: String = ""
+    @Published var totalBalance: String = ""
     @Published var lastPayoutAmount: String = ""
     @Published var lastPayoutDate: String = ""
     @Published var lastPayoutStatus: WooPaymentsPayoutStatus = .unknown

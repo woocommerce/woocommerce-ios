@@ -33,27 +33,6 @@ final class OrderListViewModel {
     ///
     var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
 
-    /// URL to site
-    var siteURL: URL? {
-        guard let site = stores.sessionManager.defaultSite else {
-            return nil
-        }
-        return URL(string: site.url)
-    }
-
-    /// Whether the entry point to test order should be displayed on the empty state screen.
-    ///
-    var shouldEnableTestOrder: Bool {
-        guard let site = stores.sessionManager.defaultSite,
-              let url = siteURL,
-              UIApplication.shared.canOpenURL(url) else {
-            return false
-        }
-
-        /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
-    }
-
     /// Filters applied to the order list.
     ///
     private(set) var filters: FilterOrderListViewModel.Filters? {

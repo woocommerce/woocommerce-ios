@@ -338,7 +338,7 @@ private extension WCPayCardBrand {
     }
 
     func cardAccessibilityDescription(last4: String) -> NSAttributedString {
-        let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, cardBrandName(), last4)
+        let localizedDescription = String(format: Localization.cardAccessibilityDescriptionFormat, displayName, last4)
         let attributedLocalizedDescription = NSMutableAttributedString(string: localizedDescription)
 
         guard let last4Range = localizedDescription.range(of: last4) else {
@@ -349,33 +349,6 @@ private extension WCPayCardBrand {
         attributedLocalizedDescription.setAttributes([.accessibilitySpeechSpellOut: true], range: last4NSRange)
 
         return attributedLocalizedDescription
-    }
-
-    func cardBrandName() -> String {
-        switch self {
-        case .amex:
-            return "American Express"
-        case .diners:
-            return "Diners Club"
-        case .discover:
-            return "Discover"
-        case .eftposAu:
-            return "eftpos"
-        case .interac:
-            return "Interac"
-        case .jcb:
-            return "JCB"
-        case .mastercard:
-            return "Mastercard"
-        case .unionpay:
-            return "UnionPay"
-        case .visa:
-            return "Visa"
-        case .cartesBancaires:
-            return "Cartes Bancaires"
-        case .unknown:
-            return ""
-        }
     }
 
     enum Localization {

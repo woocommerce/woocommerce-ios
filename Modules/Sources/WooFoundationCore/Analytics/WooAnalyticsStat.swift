@@ -439,12 +439,6 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditAddressMapPickerTapped = "order_detail_edit_address_map_picker_tapped"
     case orderDetailEditAddressMapPickerUseAddressTapped = "order_detail_edit_address_map_picker_use_address_tapped"
 
-    // MARK: Test order
-    //
-    case orderListTestOrderDisplayed = "order_list_test_order_displayed"
-    case orderListTryTestOrderTapped = "order_list_try_test_order_tapped"
-    case testOrderStartTapped = "test_order_start_tapped"
-
     // MARK: Order Data/Action Events
     //
     case orderOpen = "order_open"

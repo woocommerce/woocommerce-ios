@@ -7,9 +7,8 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     public let userID: Int64
     public let displayName: String
 
-    /// Server-side preset slug, used only for display labelling — never for permission checks.
-    /// POS presets use the `pos_` prefix (e.g. `pos_cashier`, `pos_manager`, `pos_admin`).
-    public let preset: String
+    /// Server-side role preset, used only for display labelling — never for permission checks.
+    public let preset: POSStaffPreset
 
     /// POS capabilities the staff member holds, keyed by the server's `pos_*` capability
     /// identifier. The server emits only granted entries (all values are `true` in the
@@ -20,7 +19,7 @@ public struct POSStaffMember: Codable, Equatable, Sendable {
     public let pin: PINDetails?
 
     public init(userID: Int64, displayName: String,
-                preset: String, capabilities: [String: Bool], pin: PINDetails?) {
+                preset: POSStaffPreset, capabilities: [String: Bool], pin: PINDetails?) {
         self.userID = userID
         self.displayName = displayName
         self.preset = preset

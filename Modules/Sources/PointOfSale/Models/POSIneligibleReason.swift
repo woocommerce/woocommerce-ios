@@ -4,6 +4,7 @@ import enum WooFoundation.CurrencyCode
 
 /// Represents the reasons why a site may be ineligible for POS.
 public enum POSIneligibleReason: Equatable {
+    case noInternetConnection
     case unsupportedWooCommerceVersion(minimumVersion: String)
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound

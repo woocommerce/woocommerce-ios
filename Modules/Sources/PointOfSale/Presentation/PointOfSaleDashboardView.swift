@@ -590,10 +590,9 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Gates opening the settings screen on `woocommerce_pos_view_settings`. When the operator already
-    /// holds it (e.g. a manager) settings opens immediately; otherwise the manager-override modal is
-    /// presented and settings opens once an authorized staff member approves. Opening settings is a
-    /// local unlock — no `POSStaffAuth` is sent, since it makes no order/refund mutation.
+    /// Gates opening the settings screen on `.viewPOSSettings`. When the operator already holds it
+    /// (e.g. a manager/admin) settings opens immediately; otherwise the manager-override modal is
+    /// presented and settings opens once an authorized staff member approves.
     func requestSettingsPermission() {
         settingsOverrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
             showSettings = true

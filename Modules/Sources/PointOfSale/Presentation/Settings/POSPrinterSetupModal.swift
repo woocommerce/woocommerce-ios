@@ -7,8 +7,38 @@ struct POSPrinterSetupModal: View {
     @Binding var isPresented: Bool
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
+    }
 
     var body: some View {
+        Group {
+            if isCompactWidth {
+                // In compact width the modal fills the screen to avoid the cramped iPad-tuned card.
+                modalCore
+                    .frame(width: parentSize.width, height: parentSize.height)
+            } else {
+                modalCore
+                    .frame(maxWidth: parentSize.width * Constants.parentWidthRatio,
+                           maxHeight: parentSize.height * Constants.maxParentHeightRatio)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .onChange(of: controller.isConnected) { _, isConnected in
+            if isConnected {
+                isPresented = false
+            }
+        }
+        .onDisappear {
+            Task {
+                await controller.cancelSetup()
+            }
+        }
+    }
+
+    private var modalCore: some View {
         VStack(spacing: POSSpacing.xLarge) {
             ScrollView(showsIndicators: false) {
                 HStack {
@@ -28,19 +58,6 @@ struct POSPrinterSetupModal: View {
         })
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .frame(maxWidth: parentSize.width * Constants.parentWidthRatio,
-               maxHeight: parentSize.height * Constants.maxParentHeightRatio)
-        .fixedSize(horizontal: false, vertical: true)
-        .onChange(of: controller.isConnected) { _, isConnected in
-            if isConnected {
-                isPresented = false
-            }
-        }
-        .onDisappear {
-            Task {
-                await controller.cancelSetup()
-            }
-        }
     }
 }
 
@@ -124,7 +141,7 @@ private extension POSPrinterSetupModal {
                             Image(systemName: "chevron.right")
                                 .foregroundStyle(.secondary)
                         }
-                        .padding()
+                        .padding(POSPadding.medium)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color.posSurfaceContainerLowest)
                         .posItemCardBorderStyles()
@@ -156,7 +173,7 @@ private extension POSPrinterSetupModal {
         .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-              secondaryButton: .init(title: Localization.bluetoothSettingsButton, action: {
+              secondaryButton: .init(title: Localization.settingsButton, action: {
             openDeviceSettings()
         }))
     }
@@ -194,10 +211,10 @@ private extension POSPrinterSetupModal {
             value: "Connect printer",
             comment: "Button to start printer discovery after pairing in POS settings.")
 
-        static let bluetoothSettingsButton = NSLocalizedString(
-            "pos.printerSetup.bluetoothSettingsButton",
-            value: "Open iPad Bluetooth settings",
-            comment: "Secondary button to open the device settings for Bluetooth pairing in POS settings.")
+        static let settingsButton = NSLocalizedString(
+            "pos.printerSetup.settingsButton",
+            value: "Open Settings",
+            comment: "Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS.")
 
         static let searching = NSLocalizedString(
             "pos.printerSetup.searching",

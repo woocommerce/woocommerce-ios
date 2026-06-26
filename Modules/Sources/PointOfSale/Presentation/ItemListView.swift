@@ -105,6 +105,10 @@ struct ItemListView: View {
     @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
+    /// The staff member who authorized coupon creation via override, captured at the gate so the
+    /// create request can attribute it — the same way every POS write does. `nil` when the operator
+    /// held the capability outright.
+    @State private var couponOverrideApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -186,12 +190,12 @@ struct ItemListView: View {
         }
     }
 
-    /// Staff attribution for the coupon's create request, sent as `X-WC-POS-*` headers.
-    /// The operator is always the actor — coupon creation carries no initiator, even when a
-    /// manager authorized it via override (that approval is a local gate, never sent). `nil` when
-    /// no operator is signed in so the network boundary sends no POS headers.
+    /// Staff attribution for the coupon's create request, sent as `X-WC-POS-*` headers — the same
+    /// shape every POS write uses: on an override the approving manager is the actor and the operator
+    /// the initiator, otherwise the operator is the actor. `nil` when no operator is signed in, so the
+    /// network boundary sends no POS headers.
     private func couponCreationAuth() -> POSStaffAuth? {
-        accessSession.currentStaff.map(POSStaffAttribution.operatorOnly)
+        accessSession.currentStaff.map { POSStaffAttribution.authorized(operator: $0, approver: couponOverrideApprover) }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -447,7 +451,7 @@ private extension ItemListView {
                                     canCreateCoupon: isAddingCouponAllowed,
                                     onCreateCoupon: {
                                         analytics.track(.pointOfSaleCouponsCreateTapped)
-                                        showCouponCreationModal = true
+                                        requestCouponCreationPermission()
                                     }
                                 )
                             )
@@ -503,15 +507,13 @@ private extension ItemListView {
         .transition(.opacity.combined(with: .scale))
     }
 
-    /// Gates the coupon-create flow through the manager-override modal. When the operator
-    /// already has `woocommerce_pos_create_coupons` creation proceeds immediately; otherwise the PIN
-    /// modal is presented and creation proceeds once a manager approves. The manager approval
-    /// is a local gate — the `POST /coupons` request is always attributed to the operator and
-    /// carries no override-approver header.
+    /// Gates the coupon-create flow through the manager-override modal. When the operator already has
+    /// `createCoupons` creation proceeds immediately; otherwise the PIN modal is presented and creation
+    /// proceeds once a manager approves — the approver is recorded so the create request is attributed
+    /// to them (see `couponCreationAuth()`).
     private func requestCouponCreationPermission() {
-        // The approval is a local gate — the `POST /coupons` request is always attributed to the
-        // operator (see `couponCreationAuth()`), so the approver is intentionally ignored here.
-        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { approver in
+            couponOverrideApprover = approver
             showCouponCreationModal = true
         }
     }

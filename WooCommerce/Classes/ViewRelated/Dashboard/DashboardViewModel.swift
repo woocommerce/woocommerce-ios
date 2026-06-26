@@ -775,9 +775,10 @@ private extension DashboardViewModel {
 
     func observeSelfDrivenPushTokenPersistence() {
         pushNotesManager.siteIDsRegisteredForWooPNsPublisher
-            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard))
+            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard),
+                           stores.sessionManager.defaultSitePublisher)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _, _ in
+            .sink { [weak self] _, _, _ in
                 guard let self else { return }
                 Task {
                     await self.updateSelfDrivenPushRegistrationStatus()
@@ -1126,10 +1127,16 @@ private extension DashboardViewModel {
         isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID)
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
 
+        guard let defaultSite = stores.sessionManager.defaultSite,
+              defaultSite.siteID == siteID else {
+            shouldSuggestWPComConnection = false
+            return
+        }
+
         let isEligibleForSelfDrivenPN = await pushNotificationEligibilityChecker.checkEligibility()
         shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
             registeredSiteIDs.contains(siteID) == false &&
-            (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
+            (stores.isAuthenticatedWithoutWPCom || defaultSite.isJetpackCPConnected) &&
             !dismissedWPComConnectionSuggestion &&
             isEligibleForSelfDrivenPN
     }

@@ -149,4 +149,3 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         }
     }
 }
-

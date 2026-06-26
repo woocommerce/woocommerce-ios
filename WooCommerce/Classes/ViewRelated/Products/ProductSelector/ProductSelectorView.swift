@@ -80,6 +80,18 @@ struct ProductSelectorView: View {
         return viewModel.selectProductsTitle
     }
 
+    /// The filter picker is revealed only when the merchant is actively searching or has chosen a
+    /// non-default filter, so the row stays minimal during browsing while still being discoverable
+    /// once the merchant engages with search.
+    private var shouldShowProductSearchFilter: Bool {
+        searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
+    }
+
+    private var productSelectorHeaderSearchRowHeight: CGFloat {
+        let rowHeight = Constants.minimumRowHeight * scale
+        return shouldShowProductSearchFilter ? rowHeight * 2 : rowHeight
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             productSelectorHeader
@@ -333,26 +345,35 @@ private extension ProductSelectorView {
     }
 
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        GeometryReader { geometry in
-            HStack {
-                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                    searchHeaderisBeingEdited = isEditing
-                })
-                .submitLabel(.done)
-                .accessibilityIdentifier("product-selector-search-bar")
-                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
-                }
-                .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
-                .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
-                .padding(.trailing)
-                .renderedIf(searchHeaderisBeingEdited)
+        // Stacked layout on every size class — mirrors the Products tab search structurally and
+        // gives the picker enough room to render as a full-width segmented control when visible.
+        VStack(spacing: 0) {
+            searchHeader
+            if shouldShowProductSearchFilter {
+                productSearchFilterPicker
+                    .padding(.horizontal, Constants.defaultPadding)
+                    .padding(.bottom, Constants.productSearchFilterBottomPadding)
+                    .transition(.opacity)
             }
         }
-        // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,
-        // so we need to set a desired height for this view.
-        .frame(height: Constants.minimumRowHeight * scale)
+        .frame(height: productSelectorHeaderSearchRowHeight)
+        .animation(.easeInOut(duration: 0.2), value: shouldShowProductSearchFilter)
         .background(Color(.listForeground(modal: false)))
+    }
+
+    private var searchHeader: some View {
+        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+            searchHeaderisBeingEdited = isEditing
+        })
+        .submitLabel(.done)
+        .accessibilityIdentifier("product-selector-search-bar")
+    }
+
+    private var productSearchFilterPicker: some View {
+        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+            ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
+        }
+        .pickerStyle(.segmented)
     }
 }
 
@@ -392,6 +413,7 @@ private extension ProductSelectorView {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
         static let minimumRowHeight: CGFloat = 48
+        static let productSearchFilterBottomPadding: CGFloat = 8
         static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"

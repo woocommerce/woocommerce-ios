@@ -15,7 +15,8 @@ struct ReceiptPrinterServiceTests {
     @Test func test_connectionStatusUpdates_forwards_service_stream() async {
         // Given
         let sut = makeService()
-        printerDiscoveryService.emitConnectionStatus(.connected)
+        let device = PrinterDevice(id: "1", name: "Printer 1")
+        printerDiscoveryService.emitConnectionStatus(.connected(device))
 
         // When
         var status: PrinterConnectionStatus?
@@ -25,7 +26,7 @@ struct ReceiptPrinterServiceTests {
         }
 
         // Then
-        #expect(status == .connected)
+        #expect(status == .connected(device))
     }
 
     @Test func test_discover_forwards_service_stream_yielding_devices() async throws {

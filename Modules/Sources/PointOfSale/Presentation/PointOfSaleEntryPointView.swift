@@ -151,7 +151,7 @@ public struct PointOfSaleEntryPointView: View {
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
                                                                 receiptSettingsAdminURL: receiptSettingsAdminURL,
-                                                                receiptPrinter: receiptPrinter,
+                                                                printerConnectionController: receiptPrinter.map { POSPrinterConnectionController(service: $0) },
                                                                 staffSettingsService: staffSettingsService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService

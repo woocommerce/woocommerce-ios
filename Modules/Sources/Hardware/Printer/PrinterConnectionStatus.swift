@@ -6,6 +6,6 @@ public enum PrinterConnectionStatus: Equatable, Sendable {
     case idle
     case disconnected
     case connecting
-    case connected
+    case connected(PrinterDevice)
     case disconnecting
 }

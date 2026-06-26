@@ -5,7 +5,7 @@ import struct Yosemite.PrinterDevice
 @testable import PointOfSale
 
 @MainActor
-@Suite(.timeLimit(.minutes(5)))
+@Suite(.timeLimit(.minutes(1)))
 struct POSPrinterConnectionControllerTests {
     @Test func test_startDiscovery_when_devices_found_then_state_is_found_with_devices() async {
         // Given

@@ -1085,8 +1085,11 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_shouldSuggestWPComConnection_returns_false_when_default_site_is_unavailable_for_site_credential_login() async {
         // Given
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        sessionManager.defaultSite = nil
+        stores = MockStoresManager(sessionManager: sessionManager)
+        setUpBasicMocks()
         mockReloadingData()
-        stores.sessionManager.defaultSite = nil
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
         eligibilityChecker.isEligible = true

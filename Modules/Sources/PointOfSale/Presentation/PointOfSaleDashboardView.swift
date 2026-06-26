@@ -111,7 +111,7 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   onSettings: requestSettingsPermission,
+                                   onSettingsSelected: requestSettingsPermission,
                                    onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)

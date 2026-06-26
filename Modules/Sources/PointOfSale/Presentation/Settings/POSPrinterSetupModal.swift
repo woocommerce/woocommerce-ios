@@ -1,5 +1,7 @@
 import SwiftUI
 import struct Yosemite.PrinterDevice
+import enum WooFoundation.BluetoothAuthorization
+import protocol WooFoundation.BluetoothAuthorizationProviding
 
 /// Drives the receipt-printer setup flow from a `POSPrinterConnectionController`, presenting
 /// pairing, discovery, connection, and error states. Dismisses itself once a printer connects.
@@ -8,6 +10,7 @@ struct POSPrinterSetupModal: View {
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
 
     private var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -29,6 +32,16 @@ struct POSPrinterSetupModal: View {
         .onChange(of: controller.isConnected) { _, isConnected in
             if isConnected {
                 isPresented = false
+            }
+        }
+        .onAppear {
+            controller.refreshBluetoothAuthorization()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            // The merchant may have toggled the app's Bluetooth permission in Settings while we were
+            // backgrounded; re-read it so the pairing screen reflects the change on return.
+            if newPhase == .active {
+                controller.refreshBluetoothAuthorization()
             }
         }
         .onDisappear {
@@ -69,14 +82,18 @@ private extension POSPrinterSetupModal {
         case .idle:
             messageContent(icon: "printer",
                            title: Localization.pairTitle,
-                           message: Localization.pairInstruction)
+                           message: pairMessage)
         case .searching:
             progressContent(message: Localization.searching)
-        case .found(let devices) where devices.isEmpty:
+        case .noPrintersFound:
             messageContent(icon: "printer",
                            title: Localization.noPrintersTitle,
                            message: Localization.noPrintersMessage)
-        case .found(let devices):
+        case .foundOne(let device):
+            messageContent(icon: "printer",
+                           title: String(format: Localization.foundPrinterFormat, device.name),
+                           message: Localization.foundPrinterMessage)
+        case .foundMultiple(let devices):
             deviceList(devices)
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
@@ -84,6 +101,17 @@ private extension POSPrinterSetupModal {
             messageContent(icon: "exclamationmark.triangle",
                            title: Localization.errorTitle,
                            message: Localization.errorMessage)
+        }
+    }
+
+    /// On the pairing step, call out the disabled Bluetooth permission when that's the blocker;
+    /// otherwise show the standard pair-in-Settings guidance.
+    var pairMessage: String {
+        switch controller.bluetoothAuthorization {
+        case .denied:
+            return Localization.enableBluetoothInstruction
+        case .notDetermined, .allowed:
+            return Localization.pairInstruction
         }
     }
 
@@ -112,7 +140,8 @@ private extension POSPrinterSetupModal {
     func progressContent(message: String) -> some View {
         VStack(spacing: POSSpacing.xLarge) {
             ProgressView()
-                .progressViewStyle(POSProgressViewStyle(size: Constants.iconSize, lineWidth: 8))
+                .progressViewStyle(POSProgressViewStyle())
+                .padding(Constants.spinnerStrokeOverflow)
 
             Text(message)
                 .font(.posHeadingBold)
@@ -123,33 +152,43 @@ private extension POSPrinterSetupModal {
 
     func deviceList(_ devices: [PrinterDevice]) -> some View {
         VStack(spacing: POSSpacing.large) {
-            Text(Localization.selectPrinterTitle)
+            Text(Localization.severalPrintersTitle)
                 .font(.posHeadingBold)
                 .foregroundColor(.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.small) {
+            if controller.isDiscovering {
+                scanningIndicator
+            }
+
+            VStack(spacing: POSSpacing.none) {
                 ForEach(devices) { device in
-                    Button {
-                        controller.connect(to: device)
-                    } label: {
-                        HStack(spacing: POSSpacing.medium) {
-                            Text(device.name)
-                                .font(.posBodyLargeRegular())
-                                .foregroundStyle(Color.posOnSurface)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.secondary)
+                    HStack(spacing: POSSpacing.medium) {
+                        Text(device.name)
+                            .font(.posBodyLargeRegular())
+                            .foregroundStyle(Color.posOnSurface)
+                        Spacer()
+                        Button(Localization.connectRowButton) {
+                            controller.connect(to: device)
                         }
-                        .padding(POSPadding.medium)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.posSurfaceContainerLowest)
-                        .posItemCardBorderStyles()
+                        .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
                     }
-                    .buttonStyle(.plain)
+                    .padding(.vertical, POSPadding.small)
+                    .accessibilityElement(children: .combine)
                     .accessibilityLabel(device.name)
                 }
             }
+        }
+    }
+
+    var scanningIndicator: some View {
+        HStack(spacing: POSSpacing.medium) {
+            ProgressView()
+                .progressViewStyle(POSProgressViewStyle(size: Constants.scanningSpinnerSize,
+                                                        lineWidth: Constants.scanningSpinnerLineWidth))
+            Text(Localization.scanningForPrinters)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(.posOnSurface)
         }
     }
 }
@@ -160,11 +199,25 @@ private extension POSPrinterSetupModal {
         switch controller.discoveryState {
         case .idle:
             return setupButtons(primaryTitle: Localization.connectButton)
-        case .found(let devices) where devices.isEmpty:
+        case .noPrintersFound:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
         case .error:
             return setupButtons(primaryTitle: Localization.searchAgainButton)
-        case .searching, .found, .connecting:
+        case .foundOne(let device):
+            return .init(
+                primaryButton: .init(title: Localization.connectToPrinterButton, action: {
+                    controller.connect(to: device)
+                }),
+                secondaryButton: .init(title: Localization.keepSearchingButton, action: {
+                    controller.keepSearching(skipping: device)
+                }))
+        case .foundMultiple:
+            return .init(
+                primaryButton: nil,
+                secondaryButton: .init(title: Localization.cancelButton, action: {
+                    isPresented = false
+                }))
+        case .searching, .connecting:
             return nil
         }
     }
@@ -173,9 +226,18 @@ private extension POSPrinterSetupModal {
         .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-              secondaryButton: .init(title: Localization.settingsButton, action: {
+              secondaryButton: settingsButton)
+    }
+
+    /// The app's Settings page only exposes the Bluetooth permission toggle — nothing about pairing —
+    /// so only offer it when that permission is the thing the merchant needs to fix.
+    var settingsButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
+        guard controller.bluetoothAuthorization == .denied else {
+            return nil
+        }
+        return .init(title: Localization.settingsButton, action: {
             openDeviceSettings()
-        }))
+        })
     }
 
     func openDeviceSettings() {
@@ -192,6 +254,12 @@ private extension POSPrinterSetupModal {
         static let iconSize: CGFloat = 112
         static let maxParentHeightRatio: CGFloat = 0.9
         static let parentWidthRatio: CGFloat = 0.75
+        /// The spinner's stroke is centered on its radius, so it overflows the style's frame by
+        /// half the line width (default 48). Pad by that amount so the enclosing ScrollView
+        /// doesn't clip the donut top and bottom.
+        static let spinnerStrokeOverflow: CGFloat = 24
+        static let scanningSpinnerSize: CGFloat = 20
+        static let scanningSpinnerLineWidth: CGFloat = 4
     }
 
     enum Localization {
@@ -201,10 +269,18 @@ private extension POSPrinterSetupModal {
             comment: "Title for the printer pairing step in POS settings.")
 
         static let pairInstruction = NSLocalizedString(
-            "pos.printerSetup.pair.instruction",
-            value: "Turn on your Star Micronics receipt printer and enable Bluetooth, "
-                + "then tap Connect printer to start searching.",
-            comment: "Instruction for pairing a receipt printer in POS settings.")
+            "pos.printerSetup.pair.pairInSettingsInstruction",
+            value: "Turn on your Star Micronics receipt printer, then pair it in the Settings app "
+                + "under Bluetooth. Once it's paired, tap Connect printer to find it.",
+            comment: "Instruction for pairing a receipt printer in POS settings. Tells the user to "
+                + "pair the printer in the iOS Settings app under Bluetooth before searching in the app.")
+
+        static let enableBluetoothInstruction = NSLocalizedString(
+            "pos.printerSetup.pair.enableBluetoothInstruction",
+            value: "Bluetooth access is turned off. Tap Open Settings to turn it on, "
+                + "then pair your printer under Bluetooth.",
+            comment: "Instruction shown on the receipt printer pairing step when the app's Bluetooth "
+                + "permission is disabled, telling the merchant to enable it in the iOS Settings app.")
 
         static let connectButton = NSLocalizedString(
             "pos.printerSetup.connectButton",
@@ -221,10 +297,46 @@ private extension POSPrinterSetupModal {
             value: "Searching for printers…",
             comment: "Message shown while discovering receipt printers in POS settings.")
 
-        static let selectPrinterTitle = NSLocalizedString(
-            "pos.printerSetup.selectPrinter.title",
-            value: "Select your printer",
+        static let foundPrinterFormat = NSLocalizedString(
+            "pos.printerSetup.foundOne.titleFormat",
+            value: "Found %1$@",
+            comment: "Title shown when a single receipt printer is discovered in POS settings. "
+                + "%1$@ is the printer name.")
+
+        static let foundPrinterMessage = NSLocalizedString(
+            "pos.printerSetup.foundOne.message",
+            value: "Do you want to connect to this printer?",
+            comment: "Message asking the merchant to confirm connecting to the discovered receipt printer in POS settings.")
+
+        static let connectToPrinterButton = NSLocalizedString(
+            "pos.printerSetup.foundOne.connectButton",
+            value: "Connect to printer",
+            comment: "Button to connect to the single discovered receipt printer in POS settings.")
+
+        static let keepSearchingButton = NSLocalizedString(
+            "pos.printerSetup.foundOne.keepSearchingButton",
+            value: "Keep Searching",
+            comment: "Button to skip the discovered receipt printer and keep searching in POS settings.")
+
+        static let severalPrintersTitle = NSLocalizedString(
+            "pos.printerSetup.foundMultiple.title",
+            value: "Several printers found",
             comment: "Title shown above the list of discovered receipt printers in POS settings.")
+
+        static let scanningForPrinters = NSLocalizedString(
+            "pos.printerSetup.foundMultiple.scanningLabel",
+            value: "Scanning for printers",
+            comment: "Label shown next to a spinner while receipt printer scanning continues in POS settings.")
+
+        static let connectRowButton = NSLocalizedString(
+            "pos.printerSetup.foundMultiple.connectButton",
+            value: "Connect",
+            comment: "Button in a printer row to connect to that receipt printer in POS settings.")
+
+        static let cancelButton = NSLocalizedString(
+            "pos.printerSetup.foundMultiple.cancelButton",
+            value: "Cancel",
+            comment: "Button to close the receipt printer setup without connecting in POS settings.")
 
         static let connectingFormat = NSLocalizedString(
             "pos.printerSetup.connecting.format",
@@ -237,8 +349,9 @@ private extension POSPrinterSetupModal {
             comment: "Title shown when no receipt printers are discovered in POS settings.")
 
         static let noPrintersMessage = NSLocalizedString(
-            "pos.printerSetup.noPrinters.message",
-            value: "Make sure your printer is on and Bluetooth is enabled, then search again.",
+            "pos.printerSetup.noPrinters.pairInSettingsMessage",
+            value: "Make sure your printer is on and paired in the Settings app under Bluetooth, "
+                + "then search again.",
             comment: "Message shown when no receipt printers are discovered in POS settings.")
 
         static let errorTitle = NSLocalizedString(
@@ -262,5 +375,37 @@ private extension POSPrinterSetupModal {
 #Preview {
     POSPrinterSetupModal(isPresented: .constant(true),
                          controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService()))
+}
+
+#Preview("Bluetooth disabled") {
+    POSPrinterSetupModal(
+        isPresented: .constant(true),
+        controller: POSPrinterConnectionController(
+            service: POSReceiptPrinterPreviewService(),
+            bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied))
+    )
+}
+
+#Preview("Printer found") {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP100")],
+            keepDiscovering: true))
+    controller.startDiscovery()
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+}
+
+#Preview("Several printers found") {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(
+            devices: [PrinterDevice(id: "1", name: "Star TSP100"),
+                      PrinterDevice(id: "2", name: "Star mC-Print3")],
+            keepDiscovering: true))
+    controller.startDiscovery()
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+}
+
+private struct PreviewBluetoothAuthorizationProvider: BluetoothAuthorizationProviding {
+    let current: BluetoothAuthorization
 }
 #endif

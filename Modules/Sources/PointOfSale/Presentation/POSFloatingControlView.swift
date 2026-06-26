@@ -8,9 +8,11 @@ struct POSFloatingControlView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS` before
+    /// presenting the exit confirmation.
+    private let onExitSelected: () -> Void
     /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
     /// presenting the settings screen.
     private let onSettingsSelected: () -> Void
@@ -18,12 +20,12 @@ struct POSFloatingControlView: View {
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
-    init(showExitPOSModal: Binding<Bool>,
+    init(onExitSelected: @escaping () -> Void,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
          onSettingsSelected: @escaping () -> Void,
          onOrdersSelected: @escaping () -> Void) {
-        self._showExitPOSModal = showExitPOSModal
+        self.onExitSelected = onExitSelected
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
         self.onSettingsSelected = onSettingsSelected
@@ -74,7 +76,7 @@ private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
+            onExitSelected()
         } label: {
             Label(
                 title: { Text(Localization.exitPointOfSale) },
@@ -193,7 +195,7 @@ private extension POSFloatingControlView {
 #if DEBUG
 
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
                            onSettingsSelected: {},
@@ -208,7 +210,7 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false),
+    return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
                                   onSettingsSelected: {},
@@ -218,7 +220,7 @@ private extension POSFloatingControlView {
 }
 
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
                            onSettingsSelected: {},

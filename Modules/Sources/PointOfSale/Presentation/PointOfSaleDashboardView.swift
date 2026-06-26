@@ -16,7 +16,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
-    @State private var settingsOverrideHandler = POSManagerOverrideHandler()
+    @State private var overrideHandler = POSManagerOverrideHandler()
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var navigationPath: [POSNavigationDestination] = []
@@ -108,7 +108,7 @@ struct PointOfSaleDashboardView: View {
                     .accessibilitySortPriority(2)
             }
 
-            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+            POSFloatingControlView(onExitSelected: requestExitPermission,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
@@ -148,7 +148,7 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .posManagerOverrideModal(handler: settingsOverrideHandler)
+        .posManagerOverrideModal(handler: overrideHandler)
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -349,7 +349,7 @@ struct PointOfSaleDashboardView: View {
             }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
-                showExitPOSModal = true
+                requestExitPermission()
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
@@ -594,8 +594,16 @@ private extension PointOfSaleDashboardView {
     /// (e.g. a manager/admin) settings opens immediately; otherwise the manager-override modal is
     /// presented and settings opens once an authorized staff member approves.
     func requestSettingsPermission() {
-        settingsOverrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
+        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
             showSettings = true
+        }
+    }
+
+    /// Gates leaving POS on `.exitPOS`. Cashiers and managers both need a manager/admin override to
+    /// exit (only admins hold it); once authorized, the existing exit confirmation is presented.
+    func requestExitPermission() {
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { _ in
+            showExitPOSModal = true
         }
     }
 }
@@ -654,6 +662,12 @@ private extension PointOfSaleDashboardView {
             value: "Opening settings requires manager approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "view-settings permission tries to open Point of Sale settings."
+        )
+        static let exitOverrideDescription = NSLocalizedString(
+            "pointOfSaleDashboard.exit.overrideReason",
+            value: "Exiting Point of Sale requires manager approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "exit permission tries to leave Point of Sale."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

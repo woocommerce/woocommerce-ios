@@ -172,10 +172,9 @@ private extension POSPrinterSetupModal {
                             controller.connect(to: device)
                         }
                         .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                        .accessibilityLabel(String(format: Localization.connectRowAccessibilityFormat, device.name))
                     }
                     .padding(.vertical, POSPadding.small)
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(device.name)
                 }
             }
         }
@@ -332,6 +331,12 @@ private extension POSPrinterSetupModal {
             "pos.printerSetup.foundMultiple.connectButton",
             value: "Connect",
             comment: "Button in a printer row to connect to that receipt printer in POS settings.")
+
+        static let connectRowAccessibilityFormat = NSLocalizedString(
+            "pos.printerSetup.foundMultiple.connectButton.accessibilityLabel",
+            value: "Connect to %1$@",
+            comment: "Accessibility label for the connect button in a printer row in POS settings. "
+                + "%1$@ is the printer name.")
 
         static let cancelButton = NSLocalizedString(
             "pos.printerSetup.foundMultiple.cancelButton",

@@ -113,7 +113,7 @@ final class POSPrinterConnectionController {
     /// latches via `hasShownMultiple`, so once a second printer appears the flow stays on the list.
     private func handleDiscovered(_ device: PrinterDevice) {
         guard !skippedDeviceIDs.contains(device.id),
-              !discoveredDevices.contains(device) else {
+              !discoveredDevices.contains(where: { $0.id == device.id }) else {
             return
         }
         discoveredDevices.append(device)

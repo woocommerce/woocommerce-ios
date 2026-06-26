@@ -38,6 +38,24 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.discoveryState == .foundOne(device))
     }
 
+    @Test func test_startDiscovery_when_same_id_emitted_with_different_name_then_stays_foundOne() async {
+        // Given
+        // The same physical printer can be re-emitted with a display-normalized name; it must be
+        // de-duped by id so the flow does not flip to the multiple-printers list.
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let renamed = PrinterDevice(id: "1", name: "Star TSP100 (2)")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device, renamed]
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startDiscovery()
+        await wait(on: sut, until: { !sut.isDiscovering })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+    }
+
     @Test func test_startDiscovery_when_no_devices_found_then_state_is_noPrintersFound() async {
         // Given
         let service = MockReceiptPrinterService()
@@ -237,6 +255,7 @@ private extension POSPrinterConnectionControllerTests {
                     _ = controller.discoveryState
                     _ = controller.isConnected
                     _ = controller.connectedPrinter
+                    _ = controller.isDiscovering
                 } onChange: {
                     Task { @MainActor in
                         continuation.resume()

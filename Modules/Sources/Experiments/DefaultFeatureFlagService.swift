@@ -120,7 +120,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .smarterNotifications:
             return true
         case .starReceiptPrinterSupport:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

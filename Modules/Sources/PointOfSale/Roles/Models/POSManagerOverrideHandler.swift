@@ -34,6 +34,21 @@ final class POSManagerOverrideHandler {
         self.onApproved = onApproved
     }
 
+    /// Gates `capability`: runs `perform` immediately when the configured session already grants it,
+    /// otherwise presents the override modal and runs `perform` once an authorized staff member
+    /// approves. No-ops until the handler has been configured with a session (the override modal
+    /// configures it on appear).
+    func gate(_ capability: POSCapability, reason: String, perform: @escaping () -> Void) {
+        guard let session else {
+            return
+        }
+        if session.allows(capability) {
+            perform()
+        } else {
+            requestApproval(for: capability, reason: reason, onApproved: perform)
+        }
+    }
+
     @discardableResult
     func submit(pin: String) async -> Bool {
         guard let request, let session else {

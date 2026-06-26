@@ -29,14 +29,17 @@ struct POSManagerOverrideHandlerTests {
                                capabilities: [POSCapability.viewPOSSettings.rawValue])
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: manager))
         var performCount = 0
+        var capturedViaOverride: Bool?
 
         // When
-        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") {
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
             performCount += 1
+            capturedViaOverride = viaOverride
         }
 
-        // Then it runs directly and presents no modal
+        // Then it runs directly, flags no override, and presents no modal
         #expect(performCount == 1)
+        #expect(capturedViaOverride == false)
         #expect(sut.request == nil)
     }
 
@@ -45,10 +48,12 @@ struct POSManagerOverrideHandlerTests {
         let cashier = POSStaff(userID: 1, displayName: "Cassie", preset: .cashier, capabilities: [])
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: cashier))
         var performCount = 0
+        var capturedViaOverride: Bool?
 
         // When the gate is requested for a capability the operator lacks
-        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") {
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
             performCount += 1
+            capturedViaOverride = viaOverride
         }
 
         // Then the override modal is presented and the action has not run yet
@@ -58,8 +63,9 @@ struct POSManagerOverrideHandlerTests {
         // When an authorized manager approves
         await sut.submit(pin: "1234")
 
-        // Then the action runs
+        // Then the action runs and flags that it came through the override
         #expect(performCount == 1)
+        #expect(capturedViaOverride == true)
     }
 
     @Test func test_submit_when_started_then_sets_loading_state() async {

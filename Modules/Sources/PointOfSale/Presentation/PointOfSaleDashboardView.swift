@@ -590,37 +590,30 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Gates opening the orders screen on `.viewOrders`. When the operator already holds it
-    /// (e.g. a manager/admin) orders open immediately; otherwise the manager-override modal is
-    /// presented and orders open once an authorized staff member approves.
+    /// Opens the orders list, gated on `.viewOrders` via manager override.
     func requestOrdersPermission() {
-        overrideHandler.gate(.viewOrders, reason: Localization.ordersOverrideDescription) {
+        overrideHandler.gate(.viewOrders, reason: Localization.ordersOverrideDescription) { _ in
             presentOrders()
         }
     }
 
-    /// Gates opening the settings screen on `.viewPOSSettings`. When the operator already holds it
-    /// (e.g. a manager/admin) settings opens immediately; otherwise the manager-override modal is
-    /// presented and settings opens once an authorized staff member approves.
+    /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
     func requestSettingsPermission() {
-        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) {
+        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
             showSettings = true
         }
     }
 
-    /// Gates leaving POS on `.exitPOS`. Cashiers and managers both need a manager/admin override to
-    /// exit (only admins hold it); once authorized, the existing exit confirmation is presented.
+    /// Presents the exit confirmation, gated on `.exitPOS` via manager override.
     func requestExitPermission() {
-        guard !session.allows(.exitPOS) else {
-            // The operator already holds `.exitPOS` (admin): no override modal is shown, so the
-            // confirmation can present immediately.
-            showExitPOSModal = true
-            return
-        }
-        overrideHandler.requestApproval(for: .exitPOS, reason: Localization.exitOverrideDescription) {
-            // The override modal and the exit confirmation share the single POS modal manager. Present
-            // the confirmation only after the override modal has finished dismissing — otherwise the two
-            // transitions collide on the shared manager and neither shows, dropping the operator back into
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { viaOverride in
+            guard viaOverride else {
+                showExitPOSModal = true
+                return
+            }
+            // The override modal and the exit confirmation share the single POS modal manager, so
+            // present the confirmation only after the override modal has finished dismissing —
+            // presenting both together collides on the shared manager and drops the operator back into
             // POS. Mirrors the cart-sheet → barcode-cover handoff in `phoneCartSheetView`.
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.exitOverrideHandoffDelay) {
                 showExitPOSModal = true

@@ -20,7 +20,8 @@ final class WooPushNotificationSetupCoordinator {
     func startSetup(siteAlreadyConnected: Bool,
                     pluginOutdatedVersion: String? = nil) {
         guard let site = stores.sessionManager.defaultSite else {
-            fatalError("❌ No default site found for Woo push notification setup!")
+            assertionFailure("No default site found for Woo push notification setup.")
+            return
         }
         let navigationController = WooNavigationController()
         let handler = WPComConnectionSetupHandler(

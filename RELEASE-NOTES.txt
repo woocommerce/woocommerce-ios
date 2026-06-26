@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.2
+-----
+
+
 25.1
 -----
 - [*] Order creation product search: the Products/SKU filter now appears below the search bar while you're searching, making SKU search easier to find. [https://github.com/woocommerce/woocommerce-ios/pull/17375]

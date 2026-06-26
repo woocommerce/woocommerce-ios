@@ -1,5 +1,4 @@
 import SwiftUI
-import class NetworkingCore.AlamofireNetwork
 import WooFoundationCore
 import WooFoundation
 import Yosemite
@@ -15,8 +14,8 @@ import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
-
-    init() {}
+    init() {
+    }
 
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()

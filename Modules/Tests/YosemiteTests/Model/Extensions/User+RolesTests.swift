@@ -126,7 +126,6 @@ final class User_RolesTests: XCTestCase {
         // Then
         XCTAssertEqual(displayText, expected)
     }
-
 }
 
 private extension User_RolesTests {

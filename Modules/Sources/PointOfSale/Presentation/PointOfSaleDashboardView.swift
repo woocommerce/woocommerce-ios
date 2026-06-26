@@ -676,19 +676,19 @@ private extension PointOfSaleDashboardView {
         )
         static let settingsOverrideDescription = NSLocalizedString(
             "pointOfSaleDashboard.settings.overrideReason",
-            value: "Opening settings requires manager approval",
+            value: "Opening settings requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "view-settings permission tries to open Point of Sale settings."
         )
         static let exitOverrideDescription = NSLocalizedString(
             "pointOfSaleDashboard.exit.overrideReason",
-            value: "Exiting Point of Sale requires manager approval",
+            value: "Exiting Point of Sale requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "exit permission tries to leave Point of Sale."
         )
         static let ordersOverrideDescription = NSLocalizedString(
             "pointOfSaleDashboard.orders.overrideReason",
-            value: "Opening orders requires manager approval",
+            value: "Opening orders requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "view-orders permission tries to open the Point of Sale orders list."
         )

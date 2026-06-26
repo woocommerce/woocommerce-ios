@@ -783,7 +783,8 @@ extension Networking.POSProduct {
             stockQuantity: .fake(),
             stockStatusKey: .fake(),
             statusKey: .fake(),
-            variationIDs: .fake()
+            variationIDs: .fake(),
+            locationStock: []
         )
     }
 }
@@ -805,7 +806,8 @@ extension Networking.POSProductVariation {
             downloadable: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),
-            stockStatusKey: .fake()
+            stockStatusKey: .fake(),
+            locationStock: []
         )
     }
 }

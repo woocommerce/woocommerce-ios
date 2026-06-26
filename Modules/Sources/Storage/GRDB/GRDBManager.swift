@@ -89,6 +89,10 @@ private extension GRDBManager {
             try V003AddVariationTypeKey.migrate(db)
         }
 
+        migrator.registerMigration("V004AddProductPointOfSaleStockQuantity") { db in
+            try V004AddProductPointOfSaleStockQuantity.migrate(db)
+        }
+
         try migrator.migrate(databaseConnection)
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Hashable, Identifiable {
     // Identifiable & POSOrderableItem
@@ -17,6 +18,23 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
     // Variation specific
     public let parentProductName: String
 
+    // Stock
+    public let manageStock: Bool
+    public let stockQuantity: Decimal?
+    public let stockStatusKey: String
+    public let pointOfSaleStockQuantity: Decimal?
+    public let parentManageStock: Bool
+    public let parentStockQuantity: Decimal?
+    public let parentStockStatusKey: String
+    public let parentPointOfSaleStockQuantity: Decimal?
+
+    public var productStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: stockStatusKey)
+    }
+    public var parentProductStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: parentStockStatusKey)
+    }
+
     public init(id: POSItemIdentifier,
                 name: String,
                 formattedPrice: String,
@@ -24,7 +42,15 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
                 productImageSource: String? = nil,
                 productID: Int64,
                 variationID: Int64,
-                parentProductName: String) {
+                parentProductName: String,
+                manageStock: Bool = false,
+                stockQuantity: Decimal? = nil,
+                stockStatusKey: String = "",
+                pointOfSaleStockQuantity: Decimal? = nil,
+                parentManageStock: Bool = false,
+                parentStockQuantity: Decimal? = nil,
+                parentStockStatusKey: String = "",
+                parentPointOfSaleStockQuantity: Decimal? = nil) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -33,6 +59,14 @@ public struct POSVariation: OrderSyncProductVariationTypeProtocol, Equatable, Ha
         self.productID = productID
         self.productVariationID = variationID
         self.parentProductName = parentProductName
+        self.manageStock = manageStock
+        self.stockQuantity = stockQuantity
+        self.stockStatusKey = stockStatusKey
+        self.pointOfSaleStockQuantity = pointOfSaleStockQuantity
+        self.parentManageStock = parentManageStock
+        self.parentStockQuantity = parentStockQuantity
+        self.parentStockStatusKey = parentStockStatusKey
+        self.parentPointOfSaleStockQuantity = parentPointOfSaleStockQuantity
     }
 }
 

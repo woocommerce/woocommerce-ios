@@ -272,6 +272,9 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 if let createdViaValue = source.createdViaValue {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
                 }
+                if let inventoryLocationValue = source.inventoryLocationValue {
+                    params[ParameterKeys.inventoryLocation] = inventoryLocationValue
+                }
 
                 params[ParameterKeys.decimalPlaces] = OrdersRemote.Defaults.decimalPoints
 
@@ -613,6 +616,7 @@ public extension OrdersRemote {
         static let customer = "customer"
         static let product = "product"
         static let createdVia = "created_via"
+        static let inventoryLocation = "inventory_location"
         static let decimalPlaces = "dp"
     }
 
@@ -709,6 +713,15 @@ private extension OrdersRemote.OrderCreationSource {
             return nil
         case .pointOfSale:
             return "pos-rest-api"
+        }
+    }
+
+    var inventoryLocationValue: String? {
+        switch self {
+        case .storeManagement:
+            return nil
+        case .pointOfSale:
+            return "pos"
         }
     }
 }

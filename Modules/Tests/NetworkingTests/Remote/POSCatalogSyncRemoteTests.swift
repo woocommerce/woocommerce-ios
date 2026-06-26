@@ -497,6 +497,107 @@ struct POSCatalogSyncRemoteTests {
         #expect(fieldNames.contains("manage_stock"))
         #expect(fieldNames.contains("stock_quantity"))
         #expect(fieldNames.contains("stock_status"))
+        #expect(fieldNames.contains("location_stock"))
+    }
+
+    @Test func posProductVariation_decodes_location_stock_array_with_pos_entry() throws {
+        // Given
+        let json = """
+        {
+            "id": 123,
+            "parent_id": 119,
+            "attributes": [],
+            "price": "15.00",
+            "downloadable": false,
+            "manage_stock": true,
+            "stock_quantity": 9,
+            "stock_status": "instock",
+            "type": "variation",
+            "location_stock": [
+                {
+                    "slug": "warehouse",
+                    "name": "Warehouse",
+                    "quantity": 9,
+                    "stock_status": "instock"
+                },
+                {
+                    "slug": "pos",
+                    "name": "POS",
+                    "quantity": 3,
+                    "stock_status": "instock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let variation = try decodePOSProductVariation(from: json)
+
+        // Then
+        #expect(variation.locationStock.count == 2)
+        #expect(variation.pointOfSaleStockQuantity == 3)
+    }
+
+    @Test func posProductVariation_decodes_location_stock_without_removed_fields() throws {
+        // Given
+        let json = """
+        {
+            "id": 123,
+            "parent_id": 119,
+            "attributes": [],
+            "price": "15.00",
+            "downloadable": false,
+            "manage_stock": true,
+            "stock_quantity": 9,
+            "stock_status": "instock",
+            "type": "variation",
+            "location_stock": [
+                {
+                    "slug": "pos",
+                    "name": "POS",
+                    "quantity": 3,
+                    "stock_status": "instock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let variation = try decodePOSProductVariation(from: json)
+
+        // Then
+        #expect(variation.pointOfSaleStockQuantity == 3)
+    }
+
+    @Test func posProductVariation_without_pos_location_stock_has_nil_pos_stock_quantity() throws {
+        // Given
+        let json = """
+        {
+            "id": 123,
+            "parent_id": 119,
+            "attributes": [],
+            "price": "15.00",
+            "downloadable": false,
+            "manage_stock": true,
+            "stock_quantity": 9,
+            "stock_status": "instock",
+            "type": "variation",
+            "location_stock": [
+                {
+                    "slug": "warehouse",
+                    "name": "Warehouse",
+                    "quantity": 9,
+                    "stock_status": "instock"
+                }
+            ]
+        }
+        """
+
+        // When
+        let variation = try decodePOSProductVariation(from: json)
+
+        // Then
+        #expect(variation.pointOfSaleStockQuantity == nil)
     }
 
     // MARK: - Count Endpoints Tests
@@ -683,8 +784,12 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["_product_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
-        #expect(queryParametersDictionary["_variation_fields"] as? String == POSProductVariation.requestFields.joined(separator: ","))
+        let productFields = try #require(queryParametersDictionary["_product_fields"] as? String)
+        let variationFields = try #require(queryParametersDictionary["_variation_fields"] as? String)
+        #expect(productFields == POSProduct.requestFields.joined(separator: ","))
+        #expect(variationFields == POSProductVariation.requestFields.joined(separator: ","))
+        #expect(productFields.split(separator: ",").contains("location_stock"))
+        #expect(variationFields.split(separator: ",").contains("location_stock"))
         #expect(queryParametersDictionary["force"] == nil)
     }
 
@@ -738,6 +843,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(simpleProduct.name == "Synergistic Copper Clock")
         #expect(simpleProduct.price == "220")
         #expect(simpleProduct.stockStatusKey == "instock")
+        #expect(simpleProduct.locationStock.count == 2)
+        #expect(simpleProduct.pointOfSaleStockQuantity == 7)
         #expect(simpleProduct.images.count == 1)
         #expect(simpleProduct.images.first?.src == "https://example.com/wp-content/uploads/2025/08/img-ad.png")
 
@@ -770,6 +877,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(variation.sku?.isEmpty == true)
         #expect(variation.globalUniqueID?.isEmpty == true)
         #expect(variation.price == "330.34")
+        #expect(variation.locationStock.count == 2)
+        #expect(variation.pointOfSaleStockQuantity == 4)
         #expect(variation.attributes.count == 3)
         #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
         #expect(variation.attributes == [
@@ -1215,6 +1324,12 @@ private extension POSCatalogSyncRemoteTests {
                              backgroundDownloader: mockBackgroundDownloader,
                              fileManager: mockFileManager,
                              backgroundDownloadStateStore: backgroundDownloadStateStore)
+    }
+
+    func decodePOSProductVariation(from json: String) throws -> POSProductVariation {
+        let decoder = JSONDecoder()
+        decoder.userInfo[.siteID] = sampleSiteID
+        return try decoder.decode(POSProductVariation.self, from: Data(json.utf8))
     }
 
     /// Loads test data from bundle response file.

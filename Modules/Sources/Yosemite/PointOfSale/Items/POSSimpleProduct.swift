@@ -20,6 +20,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
     public let manageStock: Bool
     public let stockQuantity: Decimal?
     public let stockStatusKey: String
+    public let pointOfSaleStockQuantity: Decimal?
     public var productStockStatus: ProductStockStatus {
         return ProductStockStatus(rawValue: stockStatusKey)
     }
@@ -34,7 +35,8 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
                 bundledItems: [ProductBundleItem] = [],
                 manageStock: Bool,
                 stockQuantity: Decimal?,
-                stockStatusKey: String) {
+                stockStatusKey: String,
+                pointOfSaleStockQuantity: Decimal? = nil) {
         self.id = id
         self.name = name
         self.formattedPrice = formattedPrice
@@ -44,6 +46,7 @@ public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
+        self.pointOfSaleStockQuantity = pointOfSaleStockQuantity
     }
 }
 

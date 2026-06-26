@@ -120,7 +120,13 @@ struct GRDBObservableDataSourceTests {
     @Test("Load variations for parent product")
     func test_load_variations_for_parent_product() async throws {
         // Given: Insert parent product and variations
-        let parentProduct = createPersistedProduct(id: 100, name: "Parent", type: "variable")
+        let parentProduct = createPersistedProduct(id: 100,
+                                                   name: "Parent",
+                                                   type: "variable",
+                                                   manageStock: true,
+                                                   stockQuantity: 8,
+                                                   stockStatusKey: "instock",
+                                                   pointOfSaleStockQuantity: 6)
         try await insertProducts([parentProduct])
         try await insertTestVariations(parentID: 100, count: 3)
 
@@ -141,6 +147,15 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.variationItems.count == 3)
         #expect(sut.isLoadingVariations == false)
         #expect(sut.productItems.isEmpty) // Products should remain unaffected
+
+        guard case .variation(let firstVariation) = sut.variationItems.first else {
+            Issue.record("First item should be variation")
+            return
+        }
+        #expect(firstVariation.parentManageStock == true)
+        #expect(firstVariation.parentStockQuantity == 8)
+        #expect(firstVariation.parentStockStatusKey == "instock")
+        #expect(firstVariation.parentPointOfSaleStockQuantity == 6)
     }
 
     @Test("Load variations is idempotent for same parent")
@@ -767,7 +782,13 @@ struct GRDBObservableDataSourceTests {
         }
     }
 
-    private func createPersistedProduct(id: Int64, name: String, type: String) -> PersistedProduct {
+    private func createPersistedProduct(id: Int64,
+                                        name: String,
+                                        type: String,
+                                        manageStock: Bool = false,
+                                        stockQuantity: Decimal? = nil,
+                                        stockStatusKey: String = "instock",
+                                        pointOfSaleStockQuantity: Decimal? = nil) -> PersistedProduct {
         PersistedProduct(
             id: id,
             siteID: siteID,
@@ -780,9 +801,10 @@ struct GRDBObservableDataSourceTests {
             price: "10.00",
             downloadable: false,
             parentID: 0,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock",
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey,
+            pointOfSaleStockQuantity: pointOfSaleStockQuantity,
             statusKey: "publish"
         )
     }

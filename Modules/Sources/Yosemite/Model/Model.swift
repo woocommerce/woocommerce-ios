@@ -103,6 +103,7 @@ public typealias QRLoginNetworkError = Networking.QRLoginNetworkError
 public typealias QRLoginScanDevice = Networking.QRLoginScanDevice
 public typealias QRLoginTokenHash = Networking.QRLoginTokenHash
 public typealias POSProduct = Networking.POSProduct
+public typealias POSLocationStock = Networking.POSLocationStock
 public typealias POSProductVariation = Networking.POSProductVariation
 public typealias POSStaffMember = Networking.POSStaffMember
 public typealias POSStaffPreset = Networking.POSStaffPreset

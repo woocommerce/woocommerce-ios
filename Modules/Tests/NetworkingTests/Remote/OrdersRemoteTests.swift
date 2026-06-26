@@ -886,6 +886,20 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, "pos-rest-api")
     }
 
+    func test_createPOSOrder_sets_inventory_location_for_point_of_sale() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        _ = try? await remote.createPOSOrder(siteID: 123, order: order, fields: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["inventory_location"] as? String, "pos")
+        XCTAssertNil(request.parameters["location"])
+    }
+
     func test_createOrder_without_source_parameter_does_not_set_created_via() throws {
         // Given
         let remote = OrdersRemote(network: network)
@@ -897,6 +911,8 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertNil(request.parameters["created_via"])
+        XCTAssertNil(request.parameters["inventory_location"])
+        XCTAssertNil(request.parameters["location"])
     }
 
     func test_createOrder_includes_decimal_places_parameter() throws {

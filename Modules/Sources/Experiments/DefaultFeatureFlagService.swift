@@ -70,7 +70,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inventoryProductLabelsInPOS:
-            return false
+            return true
         case .productImageOptimizedHandling:
             return true
         case .pointOfSaleOrdersi1:

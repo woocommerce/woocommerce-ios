@@ -11,6 +11,20 @@
       "stock_status": "instock",
       "manage_stock": false,
       "stock_quantity": null,
+      "location_stock": [
+        {
+          "slug": "warehouse",
+          "name": "Warehouse",
+          "quantity": 22,
+          "stock_status": "instock"
+        },
+        {
+          "slug": "pos",
+          "name": "POS",
+          "quantity": 7,
+          "stock_status": "instock"
+        }
+      ],
       "price": 220,
       "images": [
         {
@@ -119,6 +133,20 @@
       "stock_status": "instock",
       "manage_stock": true,
       "stock_quantity": 69,
+      "location_stock": [
+        {
+          "slug": "warehouse",
+          "name": "Warehouse",
+          "quantity": 69,
+          "stock_status": "instock"
+        },
+        {
+          "slug": "pos",
+          "name": "POS",
+          "quantity": 4,
+          "stock_status": "instock"
+        }
+      ],
       "price": 330.34,
       "image": {
         "id": 62,

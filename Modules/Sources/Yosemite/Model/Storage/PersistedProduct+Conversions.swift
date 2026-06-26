@@ -20,11 +20,14 @@ extension PersistedProduct {
             manageStock: posProduct.manageStock,
             stockQuantity: posProduct.stockQuantity,
             stockStatusKey: posProduct.stockStatusKey,
+            pointOfSaleStockQuantity: posProduct.pointOfSaleStockQuantity,
             statusKey: posProduct.statusKey
         )
     }
 
     func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = [], variationIDs: [Int64] = []) -> POSProduct {
+        let locationStock = pointOfSaleStockQuantity.map { [POSLocationStock.pointOfSale(quantity: $0)] } ?? []
+
         return POSProduct(
             siteID: siteID,
             productID: id,
@@ -43,7 +46,8 @@ extension PersistedProduct {
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
             statusKey: statusKey,
-            variationIDs: variationIDs
+            variationIDs: variationIDs,
+            locationStock: locationStock
         )
     }
 

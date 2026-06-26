@@ -54,6 +54,7 @@ struct PointOfSaleItemMapperTests {
                 #expect(mappedProduct.manageStock == product.manageStock)
                 #expect(mappedProduct.stockQuantity == product.stockQuantity)
                 #expect(mappedProduct.stockStatusKey == product.stockStatusKey)
+                #expect(mappedProduct.pointOfSaleStockQuantity == product.pointOfSaleStockQuantity)
 
             case "variable":
                 guard case let .variableParentProduct(mappedProduct) = items[index] else {
@@ -113,6 +114,105 @@ struct PointOfSaleItemMapperTests {
         }
     }
 
+    @Test("Map variation to POS item includes POS location stock quantity")
+    func mapVariationToPOSItem_includes_pos_location_stock_quantity() {
+        // Given
+        let variation = POSProductVariation.fake().copy(
+            productID: 125,
+            productVariationID: 456,
+            attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Red")],
+            manageStock: true,
+            stockQuantity: 10,
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 4)]
+        )
+        let parentProduct = Self.createParentProduct()
+
+        // When
+        let items = sut.mapVariationsToPOSItems(variations: [variation], parentProduct: parentProduct)
+
+        // Then
+        guard case let .variation(mappedVariation) = items.first else {
+            Issue.record("Expected variation, but got \(String(describing: items.first))")
+            return
+        }
+        #expect(mappedVariation.manageStock == variation.manageStock)
+        #expect(mappedVariation.stockQuantity == variation.stockQuantity)
+        #expect(mappedVariation.stockStatusKey == variation.stockStatusKey)
+        #expect(mappedVariation.pointOfSaleStockQuantity == variation.pointOfSaleStockQuantity)
+    }
+
+    @Test("Map variation to POS item includes parent stock for inherited stock display")
+    func mapVariationToPOSItem_includes_parent_stock_for_inherited_stock_display() {
+        // Given
+        let variation = POSProductVariation.fake().copy(
+            productID: 125,
+            productVariationID: 456,
+            attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Red")],
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "outofstock",
+            locationStock: []
+        )
+        let parentProduct = POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 125),
+            name: "Parent Product",
+            productImageSource: nil,
+            productID: 125,
+            allAttributes: [ProductAttribute.fake().copy(name: "Color", options: ["Red"])],
+            manageStock: true,
+            stockQuantity: 8,
+            stockStatusKey: "instock",
+            pointOfSaleStockQuantity: 6
+        )
+
+        // When
+        let items = sut.mapVariationsToPOSItems(variations: [variation], parentProduct: parentProduct)
+
+        // Then
+        guard case let .variation(mappedVariation) = items.first else {
+            Issue.record("Expected variation, but got \(String(describing: items.first))")
+            return
+        }
+        #expect(mappedVariation.parentManageStock == parentProduct.manageStock)
+        #expect(mappedVariation.parentStockQuantity == parentProduct.stockQuantity)
+        #expect(mappedVariation.parentStockStatusKey == parentProduct.stockStatusKey)
+        #expect(mappedVariation.parentPointOfSaleStockQuantity == parentProduct.pointOfSaleStockQuantity)
+    }
+
+    @Test("Map search result variation includes POS location stock quantity")
+    func mapSearchResultVariation_includes_pos_location_stock_quantity() {
+        // Given
+        let variation = POSProductVariation.fake().copy(
+            productID: 125,
+            productVariationID: 456,
+            attributes: [ProductVariationAttribute.fake().copy(name: "Color", option: "Red")],
+            manageStock: true,
+            stockQuantity: 10,
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 4)]
+        )
+        let parentProduct = POSProduct.fake().copy(
+            productID: 125,
+            name: "Variable Product",
+            productTypeKey: "variable",
+            attributes: [ProductAttribute.fake().copy(name: "Color", variation: true, options: ["Red"])]
+        )
+
+        // When
+        let item = sut.mapVariationToSearchResultPOSItem(variation: variation, parentProduct: parentProduct)
+
+        // Then
+        guard case let .searchResultVariation(mappedVariation, _) = item else {
+            Issue.record("Expected search result variation, but got \(String(describing: item))")
+            return
+        }
+        #expect(mappedVariation.manageStock == variation.manageStock)
+        #expect(mappedVariation.stockQuantity == variation.stockQuantity)
+        #expect(mappedVariation.stockStatusKey == variation.stockStatusKey)
+        #expect(mappedVariation.pointOfSaleStockQuantity == variation.pointOfSaleStockQuantity)
+    }
+
     @Test("Format price correctly",
           arguments: [
             // Test valid price
@@ -136,6 +236,32 @@ struct PointOfSaleItemMapperTests {
         #expect(simpleProduct.formattedPrice == expectedPrice)
     }
 
+    @Test("Map simple product without POS location stock leaves POS stock quantity unset")
+    func mapSimpleProduct_without_pos_location_stock_leaves_pos_stock_quantity_unset() {
+        // Given
+        let product = POSProduct.fake().copy(
+            productTypeKey: "simple",
+            stockQuantity: 6,
+            locationStock: [
+                POSLocationStock(slug: "warehouse",
+                                 name: "Warehouse",
+                                 quantity: 6,
+                                 stockStatusKey: "instock")
+            ]
+        )
+
+        // When
+        let items = sut.mapProductsToPOSItems(products: [product])
+
+        // Then
+        guard case let .simpleProduct(simpleProduct) = items.first else {
+            Issue.record("Expected simple product, but got \(String(describing: items.first))")
+            return
+        }
+        #expect(simpleProduct.stockQuantity == 6)
+        #expect(simpleProduct.pointOfSaleStockQuantity == nil)
+    }
+
     // MARK: - Test Data Factory Methods
 
     private static func createSimpleProduct1() -> POSProduct {
@@ -147,7 +273,8 @@ struct PointOfSaleItemMapperTests {
             images: [.fake().copy(src: "https://example.com/image1.jpg")],
             manageStock: true,
             stockQuantity: 10,
-            stockStatusKey: "instock"
+            stockStatusKey: "instock",
+            locationStock: [.pointOfSale(quantity: 3)]
         )
     }
 

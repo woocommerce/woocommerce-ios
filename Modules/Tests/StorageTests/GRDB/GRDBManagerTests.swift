@@ -147,6 +147,28 @@ struct GRDBManagerTests {
         }
     }
 
+    // MARK: - V004 Migration Tests
+
+    struct V004MigrationTests {
+        @Test("V004 migration adds pointOfSaleStockQuantity column to product and productVariation tables")
+        func test_v004_migration_adds_pointOfSaleStockQuantity_column() throws {
+            // Given
+            let manager = try GRDBManager()
+
+            // When
+            let columns = try manager.databaseConnection.read { db in
+                (
+                    try db.columns(in: "product").map(\.name),
+                    try db.columns(in: "productVariation").map(\.name)
+                )
+            }
+
+            // Then
+            #expect(columns.0.contains("pointOfSaleStockQuantity"))
+            #expect(columns.1.contains("pointOfSaleStockQuantity"))
+        }
+    }
+
     // MARK: - CRUD Tests
 
     struct CRUDTests {

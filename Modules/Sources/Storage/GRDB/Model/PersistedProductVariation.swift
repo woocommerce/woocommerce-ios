@@ -14,6 +14,7 @@ public struct PersistedProductVariation: Codable {
     public let fullDescription: String?
     public let manageStock: Bool
     public let stockQuantity: Decimal?
+    public let pointOfSaleStockQuantity: Decimal?
     public let stockStatusKey: String
 
     public init(id: Int64,
@@ -27,6 +28,7 @@ public struct PersistedProductVariation: Codable {
                 fullDescription: String?,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
+                pointOfSaleStockQuantity: Decimal? = nil,
                 stockStatusKey: String) {
         self.id = id
         self.siteID = siteID
@@ -39,6 +41,7 @@ public struct PersistedProductVariation: Codable {
         self.fullDescription = fullDescription
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
+        self.pointOfSaleStockQuantity = pointOfSaleStockQuantity
         self.stockStatusKey = stockStatusKey
     }
 }
@@ -61,6 +64,7 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
         public static let fullDescription = Column(CodingKeys.fullDescription)
         public static let manageStock = Column(CodingKeys.manageStock)
         public static let stockQuantity = Column(CodingKeys.stockQuantity)
+        public static let pointOfSaleStockQuantity = Column(CodingKeys.pointOfSaleStockQuantity)
         public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
     }
 
@@ -142,6 +146,7 @@ extension PersistedProductVariation {
         case fullDescription
         case manageStock
         case stockQuantity
+        case pointOfSaleStockQuantity
         case stockStatusKey
     }
 }

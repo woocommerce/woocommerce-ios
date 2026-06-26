@@ -29,7 +29,8 @@ struct PersistedProductTests {
             stockQuantity: 5,
             stockStatusKey: "instock",
             statusKey: "publish",
-            variationIDs: []
+            variationIDs: [],
+            locationStock: [.pointOfSale(quantity: 3)]
         )
 
         // When
@@ -50,6 +51,7 @@ struct PersistedProductTests {
         #expect(persisted.manageStock == posProduct.manageStock)
         #expect(persisted.stockQuantity == posProduct.stockQuantity)
         #expect(persisted.stockStatusKey == posProduct.stockStatusKey)
+        #expect(persisted.pointOfSaleStockQuantity == posProduct.pointOfSaleStockQuantity)
         #expect(persisted.statusKey == posProduct.statusKey)
     }
 
@@ -73,6 +75,7 @@ struct PersistedProductTests {
             manageStock: false,
             stockQuantity: nil,
             stockStatusKey: "outofstock",
+            pointOfSaleStockQuantity: 7,
             statusKey: "publish"
         )
 
@@ -133,6 +136,8 @@ struct PersistedProductTests {
         #expect(posProduct.manageStock == persisted.manageStock)
         #expect(posProduct.stockQuantity == persisted.stockQuantity)
         #expect(posProduct.stockStatusKey == persisted.stockStatusKey)
+        #expect(posProduct.pointOfSaleStockQuantity == persisted.pointOfSaleStockQuantity)
+        #expect(posProduct.locationStock.first?.slug == "pos")
         #expect(posProduct.statusKey == persisted.statusKey)
         #expect(posProduct.images.count == 2)
         #expect(posProduct.attributes.count == 2)
@@ -518,7 +523,8 @@ struct PersistedProductTests {
             stockQuantity: 50,
             stockStatusKey: "instock",
             statusKey: "publish",
-            variationIDs: []
+            variationIDs: [],
+            locationStock: [.pointOfSale(quantity: 9)]
         )
 
         // When saving and loading back
@@ -538,6 +544,7 @@ struct PersistedProductTests {
         #expect(loadedPOSProduct.fullDescription == posProduct.fullDescription)
         #expect(loadedPOSProduct.shortDescription == posProduct.shortDescription)
         #expect(loadedPOSProduct.sku == posProduct.sku)
+        #expect(loadedPOSProduct.pointOfSaleStockQuantity == posProduct.pointOfSaleStockQuantity)
         #expect(loadedPOSProduct.images.count == 2)
         #expect(loadedPOSProduct.attributes.count == 2)
 

@@ -4,9 +4,9 @@
         "display_name": "Morgan Manager",
         "preset": "pos_manager",
         "capabilities": {
-            "pos_process_sales": true,
-            "pos_view_orders": true,
-            "pos_issue_refunds": true
+            "woocommerce_pos_process_sales": true,
+            "woocommerce_pos_view_orders": true,
+            "woocommerce_pos_issue_refunds": true
         },
         "pin": {
             "algo": "pbkdf2-sha256",
@@ -20,7 +20,7 @@
         "display_name": "Casey Cashier",
         "preset": "pos_cashier",
         "capabilities": {
-            "pos_process_sales": true
+            "woocommerce_pos_process_sales": true
         },
         "pin": null
     }

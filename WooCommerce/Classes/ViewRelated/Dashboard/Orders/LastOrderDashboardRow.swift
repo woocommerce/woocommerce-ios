@@ -36,6 +36,8 @@ struct LastOrderDashboardRow: View {
                         }
                         Text(data.customerName)
                             .bodyStyle()
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
                     Spacer()

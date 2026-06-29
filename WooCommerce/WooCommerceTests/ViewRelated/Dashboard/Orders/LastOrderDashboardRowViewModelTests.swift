@@ -68,6 +68,47 @@ struct LastOrderDashboardRowViewModelTests {
         #expect(viewModel.fulfillmentBadgeText == nil)
     }
 
+    // MARK: - customerName
+
+    @Test
+    func test_customerName_when_billing_name_present_then_returns_full_name() {
+        // Given
+        let address = Address.fake().copy(firstName: "Jane", lastName: "Doe")
+        let order = Order.fake().copy(billingAddress: address)
+
+        // When
+        let viewModel = LastOrderDashboardRowViewModel(order: order)
+
+        // Then
+        #expect(viewModel.customerName == address.fullName)
+        #expect(viewModel.customerName != "Guest")
+    }
+
+    @Test
+    func test_customerName_when_no_billing_address_then_returns_guest() {
+        // Given
+        let order = Order.fake().copy(billingAddress: nil)
+
+        // When
+        let viewModel = LastOrderDashboardRowViewModel(order: order)
+
+        // Then
+        #expect(viewModel.customerName == "Guest")
+    }
+
+    @Test
+    func test_customerName_when_billing_name_empty_then_returns_guest() {
+        // Given
+        let address = Address.fake().copy(firstName: "", lastName: "")
+        let order = Order.fake().copy(billingAddress: address)
+
+        // When
+        let viewModel = LastOrderDashboardRowViewModel(order: order)
+
+        // Then
+        #expect(viewModel.customerName == "Guest")
+    }
+
     // MARK: - isFulfillmentStatusRequired
 
     @Test

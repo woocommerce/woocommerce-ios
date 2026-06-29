@@ -11,17 +11,17 @@ struct POSFontStyleTests {
 
     // MARK: - POSLayoutScale sanity
 
-    @Test func test_POSLayoutScale_tablet_and_phone_are_distinct_cases() {
+    @Test func test_POSLayoutScale_regular_and_compact_are_distinct_cases() {
         // Verify the two layout scale values exist and are different.
-        let tablet = POSLayoutScale.regular
-        let phone = POSLayoutScale.compact
+        let regular = POSLayoutScale.regular
+        let compact = POSLayoutScale.compact
 
-        #expect(tablet != phone)
+        #expect(regular != compact)
     }
 
-    // MARK: - baseSize: tablet returns original iPad design sizes
+    // MARK: - baseSize: regular returns original iPad design sizes
 
-    @Test func test_baseSize_when_tablet_then_posHeadingBold_returns_36() {
+    @Test func test_baseSize_when_regular_then_posHeadingBold_returns_36() {
         // Given / When
         let size = POSFontStyle.posHeadingBold.baseSize(for: .regular)
 
@@ -29,7 +29,7 @@ struct POSFontStyleTests {
         #expect(size == 36)
     }
 
-    @Test func test_baseSize_when_tablet_then_posBodyXLargeRegular_returns_30() {
+    @Test func test_baseSize_when_regular_then_posBodyXLargeRegular_returns_30() {
         // Given / When
         let size = POSFontStyle.posBodyXLargeRegular.baseSize(for: .regular)
 
@@ -37,7 +37,7 @@ struct POSFontStyleTests {
         #expect(size == 30)
     }
 
-    @Test func test_baseSize_when_tablet_then_posBodyLargeBold_returns_24() {
+    @Test func test_baseSize_when_regular_then_posBodyLargeBold_returns_24() {
         // Given / When
         let size = POSFontStyle.posBodyLargeBold.baseSize(for: .regular)
 
@@ -45,7 +45,7 @@ struct POSFontStyleTests {
         #expect(size == 24)
     }
 
-    @Test func test_baseSize_when_tablet_then_posBodyMediumBold_returns_20() {
+    @Test func test_baseSize_when_regular_then_posBodyMediumBold_returns_20() {
         // Given / When
         let size = POSFontStyle.posBodyMediumBold.baseSize(for: .regular)
 
@@ -53,7 +53,7 @@ struct POSFontStyleTests {
         #expect(size == 20)
     }
 
-    @Test func test_baseSize_when_tablet_then_posBodySmallBold_returns_16() {
+    @Test func test_baseSize_when_regular_then_posBodySmallBold_returns_16() {
         // Given / When
         let size = POSFontStyle.posBodySmallBold().baseSize(for: .regular)
 
@@ -61,7 +61,7 @@ struct POSFontStyleTests {
         #expect(size == 16)
     }
 
-    @Test func test_baseSize_when_tablet_then_posCaptionBold_returns_14() {
+    @Test func test_baseSize_when_regular_then_posCaptionBold_returns_14() {
         // Given / When
         let size = POSFontStyle.posCaptionBold.baseSize(for: .regular)
 
@@ -69,17 +69,17 @@ struct POSFontStyleTests {
         #expect(size == 14)
     }
 
-    // MARK: - baseSize: phone returns documented phone-specific sizes
+    // MARK: - baseSize: compact returns documented compact-specific sizes
 
-    @Test func test_baseSize_when_phone_then_posHeadingBold_returns_24() {
+    @Test func test_baseSize_when_compact_then_posHeadingBold_returns_24() {
         // Given / When
         let size = POSFontStyle.posHeadingBold.baseSize(for: .compact)
 
-        // Then — phone heading is smaller than tablet (36 → 24)
+        // Then - compact heading is smaller than regular (36 -> 24)
         #expect(size == 24)
     }
 
-    @Test func test_baseSize_when_phone_then_posBodyXLargeRegular_returns_22() {
+    @Test func test_baseSize_when_compact_then_posBodyXLargeRegular_returns_22() {
         // Given / When
         let size = POSFontStyle.posBodyXLargeRegular.baseSize(for: .compact)
 
@@ -87,7 +87,7 @@ struct POSFontStyleTests {
         #expect(size == 22)
     }
 
-    @Test func test_baseSize_when_phone_then_posBodyLargeBold_returns_18() {
+    @Test func test_baseSize_when_compact_then_posBodyLargeBold_returns_18() {
         // Given / When
         let size = POSFontStyle.posBodyLargeBold.baseSize(for: .compact)
 
@@ -95,7 +95,7 @@ struct POSFontStyleTests {
         #expect(size == 18)
     }
 
-    @Test func test_baseSize_when_phone_then_posBodyMediumBold_returns_16() {
+    @Test func test_baseSize_when_compact_then_posBodyMediumBold_returns_16() {
         // Given / When
         let size = POSFontStyle.posBodyMediumBold.baseSize(for: .compact)
 
@@ -103,7 +103,7 @@ struct POSFontStyleTests {
         #expect(size == 16)
     }
 
-    @Test func test_baseSize_when_phone_then_posBodySmallBold_returns_14() {
+    @Test func test_baseSize_when_compact_then_posBodySmallBold_returns_14() {
         // Given / When
         let size = POSFontStyle.posBodySmallBold().baseSize(for: .compact)
 
@@ -111,7 +111,7 @@ struct POSFontStyleTests {
         #expect(size == 14)
     }
 
-    @Test func test_baseSize_when_phone_then_posCaptionBold_returns_12() {
+    @Test func test_baseSize_when_compact_then_posCaptionBold_returns_12() {
         // Given / When
         let size = POSFontStyle.posCaptionBold.baseSize(for: .compact)
 
@@ -119,7 +119,7 @@ struct POSFontStyleTests {
         #expect(size == 12)
     }
 
-    // MARK: - baseSize: phone sizes are always smaller than tablet sizes
+    // MARK: - baseSize: compact sizes are always smaller than regular sizes
 
     @Test(arguments: [
         POSFontStyle.posHeadingBold,
@@ -139,13 +139,13 @@ struct POSFontStyleTests {
         POSFontStyle.posButtonSymbolMedium,
         POSFontStyle.posButtonSymbolLarge,
     ])
-    func test_baseSize_when_phone_then_is_smaller_than_tablet(style: POSFontStyle) {
+    func test_baseSize_when_compact_then_is_smaller_than_regular(style: POSFontStyle) {
         // Given
-        let tabletSize = style.baseSize(for: .regular)
-        let phoneSize = style.baseSize(for: .compact)
+        let regularSize = style.baseSize(for: .regular)
+        let compactSize = style.baseSize(for: .compact)
 
-        // Then — phone base sizes must always be <= tablet to avoid bloating the smaller screen
-        #expect(phoneSize <= tabletSize)
+        // Then - compact base sizes must always be <= regular to avoid bloating the smaller screen
+        #expect(compactSize <= regularSize)
     }
 
     // MARK: - MinimumFloor clamping
@@ -154,23 +154,23 @@ struct POSFontStyleTests {
     /// *down* from the base. The MinimumFloor clamp prevents the effective size from
     /// dropping below the declared floor.
     ///
-    /// posBodySmallBold on phone has a phone base size of 14 pt and a floor of 11 pt.
+    /// posBodySmallBold on compact has a compact base size of 14 pt and a floor of 11 pt.
     /// Without the floor, .extraSmall scaling could produce a value below 11 pt.
     /// With the floor, the result must be >= 11 pt.
-    @Test func test_effectiveFontSize_when_phone_and_extraSmall_DynamicType_then_posBodySmallBold_is_not_below_floor() {
+    @Test func test_effectiveFontSize_when_compact_and_extraSmall_DynamicType_then_posBodySmallBold_is_not_below_floor() {
         // Given
         let style = POSFontStyle.posBodySmallBold()
         let expectedFloor: CGFloat = 11
 
-        // When — extraSmall is the smallest Dynamic Type category; it scales values down
+        // When - extraSmall is the smallest Dynamic Type category; it scales values down
         let effectiveSize = style.effectiveFontSize(for: .compact, contentSizeCategory: .extraSmall)
 
-        // Then — the floor clamp must keep the size at or above the declared minimum
+        // Then - the floor clamp must keep the size at or above the declared minimum
         #expect(effectiveSize >= expectedFloor)
     }
 
-    @Test func test_effectiveFontSize_when_phone_and_extraSmall_DynamicType_then_posCaptionRegular_is_not_below_floor() {
-        // Given — caption has a phone base size of 12 and a floor of 11
+    @Test func test_effectiveFontSize_when_compact_and_extraSmall_DynamicType_then_posCaptionRegular_is_not_below_floor() {
+        // Given - caption has a compact base size of 12 and a floor of 11
         let style = POSFontStyle.posCaptionRegular
         let expectedFloor: CGFloat = 11
 
@@ -181,8 +181,8 @@ struct POSFontStyleTests {
         #expect(effectiveSize >= expectedFloor)
     }
 
-    @Test func test_effectiveFontSize_when_phone_and_extraSmall_DynamicType_then_posBodyMediumRegular_is_not_below_floor() {
-        // Given — medium has a phone base of 16 and a floor of 12
+    @Test func test_effectiveFontSize_when_compact_and_extraSmall_DynamicType_then_posBodyMediumRegular_is_not_below_floor() {
+        // Given - medium has a compact base of 16 and a floor of 12
         let style = POSFontStyle.posBodyMediumRegular()
         let expectedFloor: CGFloat = 12
 
@@ -194,8 +194,8 @@ struct POSFontStyleTests {
     }
 
     /// The floor must also hold for button symbols, which share a single buttonSymbol floor of 11.
-    @Test func test_effectiveFontSize_when_phone_and_extraSmall_DynamicType_then_posButtonSymbolXSmall_is_not_below_floor() {
-        // Given — buttonSymbolXSmall has phone base 14, floor 11
+    @Test func test_effectiveFontSize_when_compact_and_extraSmall_DynamicType_then_posButtonSymbolXSmall_is_not_below_floor() {
+        // Given - buttonSymbolXSmall has compact base 14, floor 11
         let style = POSFontStyle.posButtonSymbolXSmall
         let expectedFloor: CGFloat = 11
 
@@ -217,14 +217,14 @@ struct POSFontStyleTests {
         POSFontStyle.posCaptionRegular,
         POSFontStyle.posButtonSymbolXSmall,
     ])
-    func test_effectiveFontSize_when_phone_and_large_DynamicType_then_exceeds_floor(style: POSFontStyle) {
-        // Given — at the default size the metrics do not shrink the value below the base
-        let phoneBase = style.baseSize(for: .compact)
+    func test_effectiveFontSize_when_compact_and_large_DynamicType_then_exceeds_floor(style: POSFontStyle) {
+        // Given - at the default size the metrics do not shrink the value below the base
+        let compactBase = style.baseSize(for: .compact)
 
         // When
         let effectiveSize = style.effectiveFontSize(for: .compact, contentSizeCategory: .large)
 
-        // Then — at default Dynamic Type the effective size is at least the phone base
-        #expect(effectiveSize >= phoneBase)
+        // Then - at default Dynamic Type the effective size is at least the compact base
+        #expect(effectiveSize >= compactBase)
     }
 }

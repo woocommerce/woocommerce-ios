@@ -1,16 +1,14 @@
 import SwiftUI
 
 struct POSSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.posAnalytics) private var analytics
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
 
     let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
-        POSNavigationSplitView(selection: $selection) { _ in
-            listView
+        POSNavigationSplitView(selection: $selection) { selection in
+            POSSettingsListView(selection: selection, settingsController: settingsController)
         } detail: { selection, navigationPath in
             detailView(for: selection, navigationPath: navigationPath)
                 .environment(\.posHeaderBackButtonConfiguration,
@@ -27,59 +25,96 @@ struct POSSettingsView: View {
 }
 
 extension POSSettingsView {
-    @ViewBuilder
-    private var listView: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.navigationTitle,
-                backButtonConfiguration: .init(state: .enabled,
-                                               action: {
-                                                   analytics.track(.pointOfSaleSettingsCloseButtonTapped)
-                                                   dismiss()
-                                               }))
-            .posHeaderBackButtonIcon(systemName: "xmark")
-            .foregroundColor(.posSurface)
-            .accessibilityAddTraits(.isHeader)
+    private struct POSSettingsListView: View {
+        @Environment(\.dismiss) private var dismiss
+        @Environment(\.posAnalytics) private var analytics
+        @Binding var selection: SidebarNavigation?
 
-            VStack(spacing: POSSpacing.small) {
-                POSSettingsCard(title: POSSettingsView.SidebarNavigation.store.title,
-                                subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
-                                isSelected: selection == .store,
-                                action: {
-                    analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
-                    selection = .store
-                })
-                POSSettingsCard(title: POSSettingsView.SidebarNavigation.hardware.title,
-                                subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
-                                isSelected: selection == .hardware,
-                                action: {
-                    analytics.track(.pointOfSaleSettingsHardwareTapped)
-                    selection = .hardware
-                })
-                if settingsController.isLocalCatalogEligible {
-                    POSSettingsCard(title: POSSettingsView.SidebarNavigation.localCatalog.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
-                                    isSelected: selection == .localCatalog,
-                                    action: {
-                        selection = .localCatalog
-                    })
-                }
-                if isStaffSectionVisible {
-                    POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
-                                    isSelected: selection == .staff,
-                                    action: {
-                        selection = .staff
-                    })
-                }
-                Spacer()
+        let settingsController: POSSettingsControllerProtocol
 
-                helpView
+        var body: some View {
+            VStack(alignment: .leading, spacing: POSSpacing.none) {
+                POSPageHeaderView(
+                    title: Localization.navigationTitle,
+                    backButtonConfiguration: .init(state: .enabled,
+                                                   action: {
+                                                       analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                       dismiss()
+                                                   }))
+                .posHeaderBackButtonIcon(systemName: "xmark")
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
+
+                VStack(spacing: POSSpacing.small) {
+                    POSSettingsCard(title: SidebarNavigation.store.title,
+                                    subtitle: SidebarNavigation.store.subtitle,
+                                    isSelected: selection == .store,
+                                    action: {
+                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        selection = .store
+                    })
+                    POSSettingsCard(title: SidebarNavigation.hardware.title,
+                                    subtitle: SidebarNavigation.hardware.subtitle,
+                                    isSelected: selection == .hardware,
+                                    action: {
+                        analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        selection = .hardware
+                    })
+                    if settingsController.isLocalCatalogEligible {
+                        POSSettingsCard(title: SidebarNavigation.localCatalog.title,
+                                        subtitle: SidebarNavigation.localCatalog.subtitle,
+                                        isSelected: selection == .localCatalog,
+                                        action: {
+                            selection = .localCatalog
+                        })
+                    }
+                    if isStaffSectionVisible {
+                        POSSettingsCard(title: SidebarNavigation.staff.title,
+                                        subtitle: SidebarNavigation.staff.subtitle,
+                                        isSelected: selection == .staff,
+                                        action: {
+                            selection = .staff
+                        })
+                    }
+                    Spacer()
+
+                    helpView
+                }
+                .padding(.horizontal, POSPadding.medium)
             }
-            .padding(.horizontal, POSPadding.medium)
+            .background(Color.posSurfaceBright)
+            .accessibilityIdentifier("pos-settings-view")
         }
-        .background(Color.posSurfaceBright)
-        .accessibilityIdentifier("pos-settings-view")
+
+        private var isStaffSectionVisible: Bool {
+            settingsController.staffSettingsService != nil
+        }
+
+        @ViewBuilder
+        private var helpView: some View {
+            Button {
+                analytics.track(.pointOfSaleSettingsHelpTapped)
+                selection = .help
+            } label: {
+                HStack(spacing: POSSpacing.small) {
+                    if let icon = SidebarNavigation.help.icon {
+                        Image(systemName: icon)
+                            .font(.posBodyMediumBold)
+                            .foregroundStyle(Color.posOnSurface)
+                    }
+                    Text(SidebarNavigation.help.title)
+                        .font(.posBodyMediumBold)
+                        .foregroundStyle(Color.posOnSurface)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(SidebarNavigation.help.title)
+        }
     }
 
     @ViewBuilder
@@ -104,36 +139,6 @@ extension POSSettingsView {
         case .help:
             POSSettingsHelpDetailView()
         }
-    }
-
-    private var isStaffSectionVisible: Bool {
-        settingsController.staffSettingsService != nil
-    }
-
-    @ViewBuilder
-    private var helpView: some View {
-        Button {
-            analytics.track(.pointOfSaleSettingsHelpTapped)
-            selection = .help
-        } label: {
-            HStack(spacing: POSSpacing.small) {
-                if let icon = SidebarNavigation.help.icon {
-                    Image(systemName: icon)
-                        .font(.posBodyMediumBold)
-                        .foregroundStyle(Color.posOnSurface)
-                }
-                Text(SidebarNavigation.help.title)
-                    .font(.posBodyMediumBold)
-                    .foregroundStyle(Color.posOnSurface)
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityLabel(SidebarNavigation.help.title)
     }
 }
 

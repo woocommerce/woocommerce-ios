@@ -1,5 +1,5 @@
 {
-  "originHash" : "e1e44a3374272cf4704a4ec421d71800bc3709e46abc34864c576591f25de250",
+  "originHash" : "697851aad485df38d9401e4f7e2b179bfc80515ffbaa0ba850bd595c8429130c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Automattic/Automattic-Tracks-iOS.git",
       "state" : {
-        "revision" : "b017a3510c4214f628305686dfd301ee19d7afe6",
-        "version" : "4.2.1"
+        "revision" : "cdc9348b2804af0b70a06d125fd4236d5c6f7f39",
+        "version" : "4.3.1"
       }
     },
     {

@@ -3,6 +3,7 @@
 
 25.2
 -----
+- [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
 
 
 25.1

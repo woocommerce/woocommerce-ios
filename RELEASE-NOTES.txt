@@ -4,7 +4,7 @@
 25.2
 -----
 - [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
-- [*] Fix duplicated products reusing the original product's slug, which could make the storefront preview open the wrong product. [PR_URL]
+- [*] Fix duplicated products reusing the original product's slug, which could make the storefront preview open the wrong product. [https://github.com/woocommerce/woocommerce-ios/pull/17436]
 
 
 25.1

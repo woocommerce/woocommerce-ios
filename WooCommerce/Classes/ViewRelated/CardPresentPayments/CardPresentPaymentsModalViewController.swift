@@ -78,7 +78,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
             primaryActionButtonsStackView.axis = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .vertical : .horizontal
             primaryActionButtonsStackView.distribution = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .fill : .fillProportionally
 
-            mainStackView.distribution = .fillProportionally
+            mainStackView.distribution = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .fill : .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {

@@ -116,7 +116,17 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     @ViewBuilder
     private var itemsContent: some View {
-        let itemsRow = VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+        ViewThatFits(in: .horizontal) {
+            itemsRow
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                itemsRow
+            }
+        }
+    }
+
+    private var itemsRow: some View {
+        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 if showsBackButton {
                     backButton
@@ -128,12 +138,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                 Button(action: {
                                     items[index].action?()
                                 }) {
-                                    Text(items[index].title)
-                                        .minimumScaleFactor(0.5)
-                                        .font(.posHeadingBold)
-                                        .lineLimit(1)
-                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                        .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                    titleText(items[index].title, isSelected: items[index].isSelected)
                                 }
                                 .disabled(items[index].isSelected)
                                 .accessibilityElement()
@@ -150,19 +155,30 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                         }
 
                         if let subtitle = items[index].subtitle {
-                            Text(subtitle)
-                                .font(.posBodyLargeRegular())
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                .foregroundColor(.posOnSurface)
+                            subtitleText(subtitle)
                         }
                     }
                 }
             }
         }
+    }
 
-        itemsRow
+    private func titleText(_ title: String, isSelected: Bool) -> some View {
+        Text(title)
+            .font(.posHeadingBold)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+    }
+
+    private func subtitleText(_ subtitle: String) -> some View {
+        Text(subtitle)
+            .font(.posBodyLargeRegular())
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(.posOnSurface)
     }
 
     private var shouldHaveLeadingPaddingForItems: Bool {

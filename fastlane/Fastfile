@@ -73,9 +73,6 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
-# Apple Developer team IDs for export and code signing, read from the
-# `DEVELOPMENT_TEAM` in each build configuration's xcconfig so the xcconfig
-# stays the single source of truth.
 def xcconfig_development_team(filename)
   path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
   XcconfigHelper.value(File.read(path), 'DEVELOPMENT_TEAM') ||

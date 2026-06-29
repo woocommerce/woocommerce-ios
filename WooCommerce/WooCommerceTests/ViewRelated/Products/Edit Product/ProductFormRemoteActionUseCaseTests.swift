@@ -415,6 +415,34 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertNil(copiedProductSKU)
     }
 
+    func test_duplicating_product_clears_slug_so_server_assigns_a_unique_one() {
+        // Given
+        // Reusing the source slug in the create request risks the storefront resolving to the
+        // original product, so the duplicate must be created with an empty slug for the server
+        // to assign a unique one.
+        let product = Product.fake().copy(slug: "original-slug", permalink: "https://store.example/original-slug")
+        let model = EditableProductModel(product: product)
+        var copiedProductSlug: String?
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .addProduct(let product, _):
+                copiedProductSlug = product.slug
+            default:
+                break
+            }
+        }
+        useCase.duplicateProduct(originalProduct: model, password: nil, onCompletion: { _ in })
+
+        // Then
+        assertEqual("", copiedProductSlug)
+        // The source product is never mutated when building the duplicate.
+        assertEqual("original-slug", product.slug)
+        assertEqual("https://store.example/original-slug", product.permalink)
+    }
+
     func test_duplicating_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Given
         let product = Product.fake()

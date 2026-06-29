@@ -75,8 +75,8 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
 
     private func resetHeightAndWidth() {
         if traitCollection.verticalSizeClass == .compact {
-            primaryActionButtonsStackView.axis = .horizontal
-            primaryActionButtonsStackView.distribution = .fillProportionally
+            primaryActionButtonsStackView.axis = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .vertical : .horizontal
+            primaryActionButtonsStackView.distribution = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .fill : .fillProportionally
 
             mainStackView.distribution = .fillProportionally
             heightConstraint.constant = Constants.modalWidth
@@ -95,6 +95,10 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
         heightConstraint.priority = .required
         widthConstraint.priority = .required
         configureSpacer()
+    }
+
+    private var shouldStackPrimaryActionButtonsVerticallyInCompactHeight: Bool {
+        viewModel.actionsMode == .twoActionAndAuxiliary && viewModel.textMode == .noBottomInfo
     }
 
     private func updateImageAndLoadingVisibility() {
@@ -500,6 +504,10 @@ extension CardPresentPaymentsModalViewController {
 
     func getAuxiliaryActionButton() -> UIButton {
         return auxiliaryButton
+    }
+
+    func getPrimaryActionButtonsStackView() -> UIStackView {
+        return primaryActionButtonsStackView
     }
 }
 

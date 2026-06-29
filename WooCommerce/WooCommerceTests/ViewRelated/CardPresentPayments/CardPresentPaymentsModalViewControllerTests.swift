@@ -200,6 +200,33 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
         XCTAssertFalse(secondaryButton.isHidden)
     }
+
+    func test_viewcontroller_keeps_auxiliary_button_tappable_in_compact_landscape_layout() throws {
+        let viewModel = ModalViewModel(textMode: .noBottomInfo, actionsMode: .twoActionAndAuxiliary)
+        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
+        let parentViewController = UIViewController()
+        parentViewController.view.frame = CGRect(x: 0, y: 0, width: 844, height: 390)
+
+        parentViewController.addChild(viewController)
+        parentViewController.setOverrideTraitCollection(
+            UITraitCollection(traitsFrom: [
+                UITraitCollection(horizontalSizeClass: .compact),
+                UITraitCollection(verticalSizeClass: .compact)
+            ]),
+            forChild: viewController
+        )
+        parentViewController.view.addSubview(viewController.view)
+        viewController.view.frame = parentViewController.view.bounds
+        viewController.didMove(toParent: parentViewController)
+
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
+
+        let auxiliaryButton = viewController.getAuxiliaryActionButton()
+
+        XCTAssertFalse(auxiliaryButton.isHidden)
+        XCTAssertGreaterThanOrEqual(auxiliaryButton.frame.height, 44)
+    }
 }
 
 

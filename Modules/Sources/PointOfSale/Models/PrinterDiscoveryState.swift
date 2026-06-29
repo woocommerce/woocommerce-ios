@@ -9,5 +9,6 @@ public enum PrinterDiscoveryState: Hashable, Identifiable, Sendable {
     case idle
     case searching
     case found([PrinterDevice])
+    case connecting(PrinterDevice)
     case error
 }

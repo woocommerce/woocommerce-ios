@@ -1166,6 +1166,48 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_default_site_is_unavailable_for_site_credential_login() async {
+        // Given
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        sessionManager.defaultSite = nil
+        stores = MockStoresManager(sessionManager: sessionManager)
+        setUpBasicMocks()
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(.connectWPCom))
+
+        // When
+        stores.updateDefaultStore(site)
+        await until {
+            viewModel.shouldSuggestWPComConnection &&
+            viewModel.showOnDashboardCards.contains(.connectWPCom)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+        XCTAssertTrue(viewModel.showOnDashboardCards.contains(.connectWPCom))
+    }
+
+    @MainActor
     func test_shouldSuggestWPComConnection_returns_false_when_site_is_registered_with_Woo_PN_and_not_wpcom_login() async {
         // Given
         mockReloadingData()

@@ -1,8 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.2
+-----
+
+
 25.1
 -----
+- [*] Order creation product search: the Products/SKU filter now appears below the search bar while you're searching, making SKU search easier to find. [https://github.com/woocommerce/woocommerce-ios/pull/17375]
+- [Internal] Parse all network responses off the main thread to keep the UI responsive on large payloads. [https://github.com/woocommerce/woocommerce-ios/pull/17402]
 - [*] Payments: the balance summary now shows Total balance (available + pending funds) and Available funds [https://github.com/woocommerce/woocommerce-ios/pull/17404]
 - [*] Fixed product titles being misaligned in the Linked Products cross-sells/upsells list when a product name wrapped to multiple lines. [https://github.com/woocommerce/woocommerce-ios/pull/17353]
 - [*] Fixed crashes that could occur when opening share and action sheets on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17382]
@@ -24,6 +30,7 @@
 - [*] Order creation: fixed bundled product configuration on iPad [https://github.com/woocommerce/woocommerce-ios/pull/17381]
 - [*] Application Logs: added a search field to filter log lines. [https://github.com/woocommerce/woocommerce-ios/pull/17374]
 - [*] Analytics: the date range selector can no longer be dismissed by swiping it away; tap Done to close it. [https://github.com/woocommerce/woocommerce-ios/pull/17373]
+- [*] Help & Support: Fixed the main tab bar remaining visible on the System Status Report and other Help & Support screens. [https://github.com/woocommerce/woocommerce-ios/pull/17395]
 
 25.0
 -----

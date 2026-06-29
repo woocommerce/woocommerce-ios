@@ -38,6 +38,9 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var getPOSLocalCatalogCellularDataAllowedCalled = false
     var setPOSLocalCatalogCellularDataAllowedCalled = false
     var mockPOSLocalCatalogCellularDataAllowed: Bool?
+    var setPOSCatalogFileBlockedByHostAtCalled = false
+    var isPOSCatalogFileBlockedByHostCalled = false
+    var mockPOSCatalogFileBlockedByHostAt: Date?
 
     // POS sunset warning properties
     var getSunsetWarningLastDismissedDateCalled = false
@@ -137,6 +140,20 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool {
         getPOSLocalCatalogCellularDataAllowedCalled = true
         return mockPOSLocalCatalogCellularDataAllowed ?? false
+    }
+
+    func setPOSCatalogFileBlockedByHostAt(siteID: Int64, date: Date?) {
+        setPOSCatalogFileBlockedByHostAtCalled = true
+        mockPOSCatalogFileBlockedByHostAt = date
+    }
+
+    func getPOSCatalogFileBlockedByHostAt(siteID: Int64) -> Date? {
+        mockPOSCatalogFileBlockedByHostAt
+    }
+
+    func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool {
+        isPOSCatalogFileBlockedByHostCalled = true
+        return mockPOSCatalogFileBlockedByHostAt != nil
     }
 
     func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {

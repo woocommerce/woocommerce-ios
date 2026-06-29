@@ -39,7 +39,7 @@ struct POSIneligibleView: View {
                         .frame(height: POSSpacing.medium)
 
                     VStack(spacing: POSSpacing.small) {
-                        Text(Localization.title)
+                        Text(title)
                             .font(POSFontStyle.posHeadingBold.font())
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color.posOnSurface)
@@ -120,6 +120,8 @@ struct POSIneligibleView: View {
 
     private var suggestionText: String {
         switch reason {
+        case .noInternetConnection:
+            return POSConnectivityErrorNotice.subtitle
         case let .unsupportedWooCommerceVersion(minimumVersion):
             let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
                                      value: "Your WooCommerce version is not supported. " +
@@ -161,6 +163,15 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for self deallocated: relaunch")
         }
     }
+
+    private var title: String {
+        switch reason {
+        case .noInternetConnection:
+            return POSConnectivityErrorNotice.title
+        default:
+            return Localization.title
+        }
+    }
 }
 
 private extension POSIneligibleView {
@@ -188,7 +199,8 @@ private extension POSIneligibleReason {
                 value: "Enable POS feature",
                 comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
             )
-        case .unsupportedWooCommerceVersion,
+        case .noInternetConnection,
+                .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
                 .wooCommercePluginNotFound,
                 .unsupportedCurrency,
@@ -203,6 +215,13 @@ private extension POSIneligibleReason {
 }
 
 #if DEBUG
+
+#Preview("No internet connection") {
+    POSIneligibleView(
+        reason: .noInternetConnection,
+        onRefresh: {}
+    )
+}
 
 #Preview("Unsupported currency") {
     POSIneligibleView(

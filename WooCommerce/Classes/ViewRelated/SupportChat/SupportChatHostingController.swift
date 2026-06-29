@@ -3,7 +3,7 @@ import UIKit
 
 /// Hosting controller for the AI support chat view.
 ///
-final class SupportChatHostingController: UIHostingController<SupportChatView> {
+final class SupportChatHostingController: TabBarHidingHostingController<SupportChatView> {
 
     private let viewModel: SupportChatViewModel
 
@@ -15,8 +15,6 @@ final class SupportChatHostingController: UIHostingController<SupportChatView> {
         self.viewModel = viewModel
         let view = SupportChatView(viewModel: viewModel)
         super.init(rootView: view)
-
-        self.hidesBottomBarWhenPushed = true
 
         viewModel.onStartJetpackSetup = { [weak self] in
             self?.startJetpackSetup()

@@ -105,6 +105,7 @@ public typealias QRLoginTokenHash = Networking.QRLoginTokenHash
 public typealias POSProduct = Networking.POSProduct
 public typealias POSProductVariation = Networking.POSProductVariation
 public typealias POSStaffMember = Networking.POSStaffMember
+public typealias POSStaffPreset = Networking.POSStaffPreset
 public typealias ProductAddOn = Networking.ProductAddOn
 public typealias ProductAddOnOption = Networking.ProductAddOnOption
 public typealias ProductBackordersSetting = Networking.ProductBackordersSetting

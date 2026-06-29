@@ -227,7 +227,7 @@ struct POSLockScreenModelTests {
         POSStaff(
             userID: 1,
             displayName: "Maya",
-            preset: "Manager",
+            preset: .manager,
             capabilities: Set(POSCapability.allCases.map(\.rawValue))
         )
     }

@@ -133,7 +133,7 @@ private extension POSStaffAdaptorTests {
     func makeMember(userID: Int64) -> POSStaffMember {
         POSStaffMember(userID: userID,
                        displayName: "User \(userID)",
-                       preset: "pos_cashier",
+                       preset: .cashier,
                        capabilities: ["pos_process_payments": true],
                        pin: nil)
     }

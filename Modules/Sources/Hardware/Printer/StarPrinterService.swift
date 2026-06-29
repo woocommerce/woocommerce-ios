@@ -184,7 +184,7 @@ private actor StarPrinterCoordinator {
             try await starPrinter.open()
             printer = starPrinter
             connectionDelegate = delegate
-            emit(.connected)
+            emit(.connected(device))
             DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
             starPrinter.printerDelegate = nil

@@ -234,7 +234,7 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -248,7 +248,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
+        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -270,7 +270,7 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var isPhoneLayout: Bool {
+    private var isCompactLayout: Bool {
         horizontalSizeClass == .compact &&
         services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }

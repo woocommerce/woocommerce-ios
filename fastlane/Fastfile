@@ -11,6 +11,7 @@ fastlane_require 'octokit'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
+require_relative 'helpers/xcconfig_helper'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -72,8 +73,17 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
-ENTERPRISE_TEAM_ID = '99KV9Z6BKV'
-APP_STORE_TEAM_ID = 'PZYM8XX95Q'
+# Apple Developer team IDs for export and code signing, read from the
+# `DEVELOPMENT_TEAM` in each build configuration's xcconfig so the xcconfig
+# stays the single source of truth.
+def xcconfig_development_team(filename)
+  path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
+  XcconfigHelper.value(File.read(path), 'DEVELOPMENT_TEAM') ||
+    UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")
+end
+
+ENTERPRISE_TEAM_ID = xcconfig_development_team('WooCommerce.release-alpha.xcconfig')
+APP_STORE_TEAM_ID = xcconfig_development_team('WooCommerce.common.xcconfig')
 
 # Shared options to use when invoking `gym` / `build_app`.
 #

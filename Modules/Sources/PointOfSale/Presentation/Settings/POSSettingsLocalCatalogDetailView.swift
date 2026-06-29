@@ -110,7 +110,8 @@ private extension POSSettingsLocalCatalogDetailView {
         case .preparing:
             return Localization.updateCatalogPreparing
         case .itemCount(let processed, let total):
-            return String.localizedStringWithFormat(Localization.updateCatalogProgressFormat, processed, total)
+            let format = total == 1 ? Localization.updateCatalogProgressSingularFormat : Localization.updateCatalogProgressFormat
+            return String.localizedStringWithFormat(format, processed, total)
         }
     }
 
@@ -213,6 +214,13 @@ private extension POSSettingsLocalCatalogDetailView {
             value: "%1$ld of %2$ld items",
             comment: "Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, " +
                 "%2$ld is the total number of catalog items."
+        )
+
+        static let updateCatalogProgressSingularFormat = NSLocalizedString(
+            "posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular",
+            value: "%1$ld of %2$ld item",
+            comment: "Button text shown during a manual POS catalog update when there is one item. " +
+                "%1$ld is the number of catalog items processed, %2$ld is the total number of catalog items."
         )
 
         static let errorRetryButtonTitle = NSLocalizedString(

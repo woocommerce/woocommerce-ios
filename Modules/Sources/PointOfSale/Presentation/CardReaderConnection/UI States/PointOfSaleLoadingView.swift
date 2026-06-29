@@ -87,7 +87,8 @@ private extension PointOfSaleLoadingView {
         case .preparing:
             return Localization.syncingCatalogPreparing
         case .itemCount(let processed, let total):
-            return String.localizedStringWithFormat(Localization.syncingCatalogProgressFormat, processed, total)
+            let format = total == 1 ? Localization.syncingCatalogProgressSingularFormat : Localization.syncingCatalogProgressFormat
+            return String.localizedStringWithFormat(format, processed, total)
         }
     }
 
@@ -118,6 +119,13 @@ private extension PointOfSaleLoadingView {
             "pointOfSale.catalogLoadingView.itemCountFormat",
             value: "%1$ld of %2$ld items",
             comment: "Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items."
+        )
+
+        static let syncingCatalogProgressSingularFormat = NSLocalizedString(
+            "pointOfSale.catalogLoadingView.itemCountFormat.singular",
+            value: "%1$ld of %2$ld item",
+            comment: "Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, " +
+                "%2$ld is the total number of catalog items."
         )
 
         static let syncingCatalogExitButtonTitle = NSLocalizedString(

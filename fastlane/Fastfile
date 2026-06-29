@@ -74,10 +74,10 @@ end.freeze
 
 # Apple Developer team IDs used for export and code signing. These mirror the
 # `DEVELOPMENT_TEAM` values in the xcconfig files, which are the canonical source:
-# internal/Enterprise from `config/WooCommerce.release-alpha.xcconfig`, external/App
-# Store from `config/WooCommerce.common.xcconfig`.
-INTERNAL_EXPORT_TEAM_ID = '99KV9Z6BKV'
-EXTERNAL_EXPORT_TEAM_ID = 'PZYM8XX95Q'
+# Enterprise from `config/WooCommerce.release-alpha.xcconfig`, App Store from
+# `config/WooCommerce.common.xcconfig`.
+ENTERPRISE_TEAM_ID = '99KV9Z6BKV'
+APP_STORE_TEAM_ID = 'PZYM8XX95Q'
 
 # Shared options to use when invoking `gym` / `build_app`.
 #
@@ -933,7 +933,7 @@ platform :ios do
       scheme: 'WooCommerce',
       workspace: WORKSPACE_PATH,
       clean: true,
-      export_team_id: EXTERNAL_EXPORT_TEAM_ID,
+      export_team_id: APP_STORE_TEAM_ID,
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
   end
@@ -1007,7 +1007,7 @@ platform :ios do
       # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
       xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
-      export_team_id: INTERNAL_EXPORT_TEAM_ID,
+      export_team_id: ENTERPRISE_TEAM_ID,
       export_options: {
         **COMMON_EXPORT_OPTIONS,
         method: 'enterprise',
@@ -1402,7 +1402,7 @@ platform :ios do
 
     sync_code_signing(
       type: 'enterprise',
-      team_id: INTERNAL_EXPORT_TEAM_ID,
+      team_id: ENTERPRISE_TEAM_ID,
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
       api_key: nil,
@@ -1417,7 +1417,7 @@ platform :ios do
   lane :update_certs_and_profiles_app_store do |readonly: true|
     sync_code_signing(
       type: 'appstore',
-      team_id: EXTERNAL_EXPORT_TEAM_ID,
+      team_id: APP_STORE_TEAM_ID,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       readonly: readonly,
       api_key: app_store_connect_api_key,

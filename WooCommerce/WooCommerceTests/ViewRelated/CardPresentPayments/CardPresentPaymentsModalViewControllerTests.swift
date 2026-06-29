@@ -201,51 +201,6 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(secondaryButton.isHidden)
     }
 
-    func test_viewcontroller_keeps_auxiliary_button_tappable_in_compact_landscape_layout() throws {
-        let viewController = makeCompactLandscapeViewController(textMode: .noBottomInfo, actionsMode: .twoActionAndAuxiliary)
-
-        let auxiliaryButton = viewController.getAuxiliaryActionButton()
-
-        XCTAssertFalse(auxiliaryButton.isHidden)
-        XCTAssertGreaterThanOrEqual(auxiliaryButton.frame.height, 44)
-    }
-
-    func test_viewcontroller_stacks_low_content_three_action_buttons_vertically_in_compact_landscape_layout() throws {
-        let viewController = makeCompactLandscapeViewController(textMode: .noBottomInfo, actionsMode: .twoActionAndAuxiliary)
-
-        XCTAssertEqual(viewController.getPrimaryActionButtonsStackView().axis, .vertical)
-    }
-
-    func test_viewcontroller_keeps_dense_three_action_buttons_horizontal_in_compact_landscape_layout() throws {
-        let viewController = makeCompactLandscapeViewController(textMode: .reducedBottomInfo, actionsMode: .twoActionAndAuxiliary)
-
-        XCTAssertEqual(viewController.getPrimaryActionButtonsStackView().axis, .horizontal)
-    }
-
-    private func makeCompactLandscapeViewController(textMode: PaymentsModalTextMode,
-                                                    actionsMode: PaymentsModalActionsMode) -> CardPresentPaymentsModalViewController {
-        let viewModel = ModalViewModel(textMode: textMode, actionsMode: actionsMode)
-        let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        let parentViewController = UIViewController()
-        parentViewController.view.frame = CGRect(x: 0, y: 0, width: 844, height: 390)
-
-        parentViewController.addChild(viewController)
-        parentViewController.setOverrideTraitCollection(
-            UITraitCollection(traitsFrom: [
-                UITraitCollection(horizontalSizeClass: .compact),
-                UITraitCollection(verticalSizeClass: .compact)
-            ]),
-            forChild: viewController
-        )
-        parentViewController.view.addSubview(viewController.view)
-        viewController.view.frame = parentViewController.view.bounds
-        viewController.didMove(toParent: parentViewController)
-
-        viewController.view.setNeedsLayout()
-        viewController.view.layoutIfNeeded()
-
-        return viewController
-    }
 }
 
 

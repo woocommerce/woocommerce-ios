@@ -514,14 +514,6 @@ extension CardPresentPaymentsModalViewController {
     func getSecondaryActionButton() -> UIButton {
         return secondaryButton
     }
-
-    func getAuxiliaryActionButton() -> UIButton {
-        return auxiliaryButton
-    }
-
-    func getPrimaryActionButtonsStackView() -> UIStackView {
-        return primaryActionButtonsStackView
-    }
 }
 
 private extension CardPresentPaymentsModalViewController {

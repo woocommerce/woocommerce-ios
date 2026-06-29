@@ -72,10 +72,6 @@ ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
 
-# Apple Developer team IDs used for export and code signing. These mirror the
-# `DEVELOPMENT_TEAM` values in the xcconfig files, which are the canonical source:
-# Enterprise from `config/WooCommerce.release-alpha.xcconfig`, App Store from
-# `config/WooCommerce.common.xcconfig`.
 ENTERPRISE_TEAM_ID = '99KV9Z6BKV'
 APP_STORE_TEAM_ID = 'PZYM8XX95Q'
 

@@ -33,6 +33,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
     private var loadingView: UIView?
+    private var buttonMinimumHeightConstraints: [(button: UIButton, constraint: NSLayoutConstraint)] = []
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -145,11 +146,22 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureButtonMinimumHeights() {
-        [primaryButton, secondaryButton, auxiliaryButton].forEach { button in
-            let minimumHeightConstraint = button?.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.minimumButtonHeight)
-            minimumHeightConstraint?.priority = Constants.minimumButtonHeightPriority
-            minimumHeightConstraint?.isActive = true
-            button?.setContentCompressionResistancePriority(.required, for: .vertical)
+        buttonMinimumHeightConstraints = [primaryButton, secondaryButton, auxiliaryButton].compactMap { button in
+            guard let button else {
+                return nil
+            }
+
+            let minimumHeightConstraint = button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.minimumButtonHeight)
+            minimumHeightConstraint.priority = .required
+            button.setContentCompressionResistancePriority(.required, for: .vertical)
+
+            return (button, minimumHeightConstraint)
+        }
+    }
+
+    func updateButtonMinimumHeightConstraints() {
+        buttonMinimumHeightConstraints.forEach { button, constraint in
+            constraint.isActive = shouldShowActionButtons() && !button.isHidden
         }
     }
 
@@ -327,10 +339,12 @@ private extension CardPresentPaymentsModalViewController {
         configurePrimaryButton()
         configureSecondaryButton()
         configureAuxiliaryButton()
+        updateButtonMinimumHeightConstraints()
     }
 
     func hideActionButtonsView() {
         actionButtonsView.isHidden = true
+        updateButtonMinimumHeightConstraints()
         configureSpacer()
     }
 
@@ -467,7 +481,6 @@ private extension CardPresentPaymentsModalViewController {
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
         static let minimumButtonHeight: CGFloat = 44
-        static let minimumButtonHeightPriority = UILayoutPriority(999)
         static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }

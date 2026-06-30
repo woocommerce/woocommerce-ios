@@ -23,7 +23,7 @@ public class SiteAPIRemote: Remote {
                                      availableAsRESTRequest: false)
         let mapper = SiteAPIMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, parseInBackground: true, completion: completion)
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 

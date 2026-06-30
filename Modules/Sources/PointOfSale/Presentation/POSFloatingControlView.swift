@@ -16,8 +16,7 @@ struct POSFloatingControlView: View {
     /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
     /// presenting the settings screen.
     private let onSettingsSelected: () -> Void
-    /// Invoked when the Orders menu item is tapped. The host gates it on `.viewOrders` before
-    /// presenting the orders screen.
+    /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
@@ -110,7 +109,7 @@ private extension POSFloatingControlView {
                 }
             }
 
-            if isRolesEnabled {
+            if canLockPOS {
                 Button {
                     session.lock()
                 } label: {
@@ -131,6 +130,13 @@ private extension POSFloatingControlView {
 
     private var isRolesEnabled: Bool {
         featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)
+    }
+
+    /// Only offer Lock POS when access is actually PIN-gated — i.e. some staff member has a PIN to
+    /// unlock with. Without this, locking a session that has no PINs (roles on, but `/staff` returned
+    /// nobody PIN-backed) would strand the operator on a lock screen that no PIN can dismiss.
+    private var canLockPOS: Bool {
+        isRolesEnabled && session.hasAnyPINs
     }
 }
 

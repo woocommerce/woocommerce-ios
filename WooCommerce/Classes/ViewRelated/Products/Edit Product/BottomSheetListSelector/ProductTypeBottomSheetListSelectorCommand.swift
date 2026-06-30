@@ -18,9 +18,9 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             isEligibleForSubscriptionProducts ? .subscription : nil,
-            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.variableProducts) ? .variable : nil,
+            .variable,
             isEligibleForSubscriptionProducts ? .variableSubscription : nil,
-            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.groupedProducts) ? .grouped : nil,
+            .grouped,
             .affiliate
         ].compactMap { $0 }
 
@@ -37,18 +37,15 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     private let source: Source
     private let onSelection: (BottomSheetProductType) -> Void
     private let isEligibleForSubscriptionProducts: Bool
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let backgroundColor: UIColor
 
     init(source: Source,
          subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          backgroundColor: UIColor = .listForeground(modal: false),
          onSelection: @escaping (BottomSheetProductType) -> Void) {
         self.source = source
         self.onSelection = onSelection
         self.isEligibleForSubscriptionProducts = subscriptionProductsEligibilityChecker.isSiteEligible()
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.backgroundColor = backgroundColor
         if case let .editForm(selected) = source {
             self.selected = selected

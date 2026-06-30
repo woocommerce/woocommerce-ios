@@ -13,18 +13,15 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
     private let site: Site
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let userDefaults: UserDefaults
 
     init(site: Site,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          userDefaults: UserDefaults = .standard) {
         self.site = site
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.userDefaults = userDefaults
     }
 
@@ -46,11 +43,6 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
     func checkVisibility() async -> Bool {
         // Check feature flag
         guard featureFlagService.isFeatureFlagEnabled(.ciabBookings) else {
-            return false
-        }
-
-        // Check if current site is CIAB (bookings only for CIAB sites)
-        guard ciabEligibilityChecker.isSiteCIAB(site) else {
             return false
         }
 

@@ -26,50 +26,46 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_gate_when_session_grants_capability_then_performs_immediately_without_override() {
         // Given an operator who already holds the capability
         let manager = POSStaff(userID: 1, displayName: "Manny", preset: .manager,
-                               capabilities: [POSCapability.issueRefunds.rawValue])
+                               capabilities: [POSCapability.viewPOSSettings.rawValue])
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: manager))
         var performCount = 0
-        var capturedApprover: POSStaff?
+        var capturedViaOverride: Bool?
 
         // When
-        sut.gate(.issueRefunds, reason: "Refunding orders requires manager approval") { approver in
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
             performCount += 1
-            capturedApprover = approver
+            capturedViaOverride = viaOverride
         }
 
-        // Then it runs directly with no approver and presents no modal
+        // Then it runs directly, flags no override, and presents no modal
         #expect(performCount == 1)
-        #expect(capturedApprover == nil)
+        #expect(capturedViaOverride == false)
         #expect(sut.request == nil)
     }
 
     @Test func test_gate_when_session_denies_capability_then_presents_override_and_performs_on_approval() async {
-        // Given an operator who lacks the capability and a manager who can authorize it
-        let cashier = POSStaff(userID: 1, displayName: "Cassie", preset: .cashier,
-                               capabilities: [POSCapability.processSales.rawValue])
-        let approver = POSStaff(userID: 2, displayName: "Morgan", preset: .manager,
-                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
-        let session = MockPOSAccessSession(currentStaff: cashier, managerApprovalResult: .success(approver))
-        let sut = POSManagerOverrideHandler(session: session)
+        // Given an operator who lacks the capability
+        let cashier = POSStaff(userID: 1, displayName: "Cassie", preset: .cashier, capabilities: [])
+        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: cashier))
         var performCount = 0
-        var capturedApprover: POSStaff?
+        var capturedViaOverride: Bool?
 
         // When the gate is requested for a capability the operator lacks
-        sut.gate(.issueRefunds, reason: "Refunding orders requires manager approval") { approver in
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
             performCount += 1
-            capturedApprover = approver
+            capturedViaOverride = viaOverride
         }
 
         // Then the override modal is presented and the action has not run yet
-        #expect(sut.request?.capability == .issueRefunds)
+        #expect(sut.request?.capability == .viewPOSSettings)
         #expect(performCount == 0)
 
         // When an authorized manager approves
         await sut.submit(pin: "1234")
 
-        // Then the action runs, attributed to the approver
+        // Then the action runs and flags that it came through the override
         #expect(performCount == 1)
-        #expect(capturedApprover == approver)
+        #expect(capturedViaOverride == true)
     }
 
     @Test func test_submit_when_started_then_sets_loading_state() async {

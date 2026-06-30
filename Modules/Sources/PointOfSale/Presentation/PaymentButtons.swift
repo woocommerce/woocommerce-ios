@@ -51,6 +51,7 @@ private extension PaymentsActionButtons {
         })
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier("pos-email-receipt-button")
     }
 
     var printReceiptButton: some View {

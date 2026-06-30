@@ -43,18 +43,6 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// If no state is cached, determines state from lastSyncDate
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
 
-    /// Checks if the last sync is older than the specified number of days
-    /// - Parameters:
-    ///   - siteID: The site ID to check
-    ///   - maxDays: Maximum number of days before a sync is considered stale
-    /// - Returns: True if the last sync is older than the specified days or if there has been no sync
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool
-
-    /// Returns the number of hours since the last catalog sync
-    /// - Parameter siteID: The site ID to check
-    /// - Returns: Hours since last sync, or nil if no sync date is available
-    func hoursSinceLastSync(for siteID: Int64) async -> Int?
-
     /// Stops all ongoing sync tasks for the specified site
     /// - Parameter siteID: The site ID to stop syncs for
     func stopOngoingSyncs(for siteID: Int64) async
@@ -224,7 +212,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         do {
             let syncedCatalog = try await syncTask.value
-            await emitSyncState(.syncCompleted(siteID: siteID))
+            await emitSyncState(.syncCompleted(siteID: siteID, syncDate: syncedCatalog.syncDate))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
@@ -618,37 +606,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let state: POSCatalogSyncState
 
-        if await lastFullSyncDate(for: siteID) == nil {
-            state = .syncNeverDone(siteID: siteID)
+        if let lastFullSyncDate = await lastFullSyncDate(for: siteID) {
+            state = .syncCompleted(siteID: siteID, syncDate: lastFullSyncDate)
         } else {
-            state = .syncCompleted(siteID: siteID)
+            state = .syncNeverDone(siteID: siteID)
         }
 
         await fullSyncStateModel.updateState(state, for: siteID)
         return state
-    }
-
-    public func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        // Check only the last full sync date, incremental syncs don't refresh well enough to consider non-stale.
-        guard let lastFullSync = await lastFullSyncDate(for: siteID) else {
-            // If we've never done a full sync, we're stale.
-            return true
-        }
-
-        guard let thresholdDate = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) else {
-            // This shouldn't fail, and if it does, we can assume the catalog is fine
-            return false
-        }
-
-        return lastFullSync < thresholdDate
-    }
-
-    public func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
-            return nil
-        }
-        let timeInterval = Date().timeIntervalSince(lastSyncDate)
-        return Int(timeInterval / 3600) // Convert seconds to hours
     }
 
     public func stopOngoingSyncs(for siteID: Int64) async {
@@ -698,7 +663,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 
         // Update sync state to completed
-        await emitSyncState(.syncCompleted(siteID: siteID))
+        await emitSyncState(.syncCompleted(siteID: siteID, syncDate: catalog.syncDate))
 
         // Record first sync date if needed
         recordFirstSyncIfNeeded(for: siteID)
@@ -911,7 +876,7 @@ private extension POSCatalogSyncCoordinator {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
-                .syncCompleted(let id),
+                .syncCompleted(let id, _),
                 .initialSyncFailed(let id, _),
                 .syncFailed(let id, _),
                 .syncNeverDone(let id):
@@ -938,7 +903,7 @@ public class POSCatalogSyncStateModel {
 public enum POSCatalogSyncState: Equatable {
     case initialSyncStarted(siteID: Int64)
     case syncStarted(siteID: Int64)
-    case syncCompleted(siteID: Int64)
+    case syncCompleted(siteID: Int64, syncDate: Date)
     case initialSyncFailed(siteID: Int64, error: Error)
     case syncFailed(siteID: Int64, error: Error)
     case syncNeverDone(siteID: Int64)
@@ -947,15 +912,47 @@ public enum POSCatalogSyncState: Equatable {
         switch (lhs, rhs) {
         case (.initialSyncStarted(let lhsSiteID), .initialSyncStarted(let rhsSiteID)),
             (.syncStarted(let lhsSiteID), .syncStarted(let rhsSiteID)),
-            (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)),
             (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
+        case (.syncCompleted(let lhsSiteID, let lhsSyncDate), .syncCompleted(let rhsSiteID, let rhsSyncDate)):
+            return lhsSiteID == rhsSiteID && lhsSyncDate == rhsSyncDate
         case (.initialSyncFailed(let lhsSiteID, let lhsError), .initialSyncFailed(let rhsSiteID, let rhsError)),
             (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
             return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
         default:
             return false
         }
+    }
+}
+
+public extension POSCatalogSyncState {
+    var lastFullSyncDate: Date? {
+        switch self {
+        case .syncCompleted(_, let syncDate):
+            return syncDate
+        default:
+            return nil
+        }
+    }
+
+    func isStale(maxDays: Int, now: Date = Date(), calendar: Calendar = .current) -> Bool {
+        guard let lastFullSyncDate else {
+            return true
+        }
+
+        guard let thresholdDate = calendar.date(byAdding: .day, value: -maxDays, to: now) else {
+            return false
+        }
+
+        return lastFullSyncDate < thresholdDate
+    }
+
+    func hoursSinceLastSync(now: Date = Date()) -> Int? {
+        guard let lastFullSyncDate else {
+            return nil
+        }
+
+        return Int(now.timeIntervalSince(lastFullSyncDate) / 3600)
     }
 }
 

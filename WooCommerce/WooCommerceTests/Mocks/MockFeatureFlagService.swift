@@ -111,6 +111,10 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return backgroundProductImageUpload
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
+        case .ciabBookings:
+            return false
+        case .ciabBookingReschedule:
+            return false
         case .selfDrivenPushToken:
             return selfDrivenPushToken
         case .smarterNotifications:

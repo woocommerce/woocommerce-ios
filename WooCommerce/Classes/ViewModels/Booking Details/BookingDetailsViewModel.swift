@@ -1,4 +1,5 @@
 import EventHorizonSDK
+import Experiments
 import Foundation
 import SwiftUI
 import Yosemite
@@ -25,6 +26,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// Product fetched for the booking, used to calculate duration and get resources.
     private var bookingProduct: Product?
@@ -55,8 +57,10 @@ final class BookingDetailsViewModel: ObservableObject {
     }
 
     /// Whether the Reschedule button should be shown.
-    /// Hidden for bookings with status: canceled, completed, failed, or in-cart.
     var shouldShowRescheduleButton: Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.ciabBookingReschedule) else {
+            return false
+        }
         let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .unknown] // treating failed and in-cart as unknown
         return !ineligibleStatuses.contains(booking.bookingStatus)
     }
@@ -74,11 +78,13 @@ final class BookingDetailsViewModel: ObservableObject {
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.booking = booking
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
             resourceID: booking.resourceID

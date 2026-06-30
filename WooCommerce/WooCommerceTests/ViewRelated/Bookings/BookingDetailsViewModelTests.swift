@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 import Yosemite
 import Fakes
+import protocol Experiments.FeatureFlagService
 import YosemiteTestHelpers
 @testable import WooCommerce
 
@@ -488,7 +489,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
     // MARK: - Reschedule button visibility
 
-    func test_shouldShowRescheduleButton_returns_true_for_eligible_status() {
+    func test_shouldShowRescheduleButton_returns_false_for_eligible_status() {
         // Given
         let eligibleStatuses = ["paid", "unpaid", "confirmed", "pending-confirmation"]
 
@@ -499,7 +500,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             let viewModel = givenViewModel(booking: booking)
 
             // Then
-            XCTAssertTrue(viewModel.shouldShowRescheduleButton, "Reschedule should be visible for status: \(statusKey)")
+            XCTAssertFalse(viewModel.shouldShowRescheduleButton, "Reschedule should be hidden for status: \(statusKey)")
         }
     }
 
@@ -630,11 +631,13 @@ final class BookingDetailsViewModelTests: XCTestCase {
 }
 
 private extension BookingDetailsViewModelTests {
-    func givenViewModel(booking: Booking = Booking.fake()) -> BookingDetailsViewModel {
+    func givenViewModel(booking: Booking = Booking.fake(),
+                        featureFlagService: FeatureFlagService = MockFeatureFlagService()) -> BookingDetailsViewModel {
         return BookingDetailsViewModel(booking: booking,
                                        stores: storesManager,
                                        storage: storageManager,
-                                       analytics: analytics)
+                                       analytics: analytics,
+                                       featureFlagService: featureFlagService)
     }
 
     func waitForFirstBookingAction(

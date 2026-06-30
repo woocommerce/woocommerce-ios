@@ -1,4 +1,4 @@
-import Foundation
+import Experiments
 import Yosemite
 
 protocol BookingsTabEligibilityCheckerProtocol {
@@ -9,15 +9,22 @@ protocol BookingsTabEligibilityCheckerProtocol {
 final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
     private let site: Site
     private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
 
     init(site: Site,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
         self.stores = stores
+        self.featureFlagService = featureFlagService
     }
 
     /// Checks the final visibility of the Bookings tab.
     func checkVisibility() async -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.ciabBookings) else {
+            return false
+        }
+
         if await checkIfStoreHasBookableProducts() {
             return true
         } else if await checkIfStoreHasBookings() {

@@ -150,26 +150,6 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     }
 }
 
-/// Wraps an item-action handler and drops taps the `allowsTap` predicate rejects, so capability
-/// gates (e.g. `applyCoupons`) can be enforced without the base handlers knowing about roles.
-/// Blocked taps are silently ignored — the same behaviour as tapping an already-added coupon.
-final class GatedItemActionHandler: POSItemActionHandler {
-    private let wrapped: POSItemActionHandler
-    private let allowsTap: (POSItem) -> Bool
-
-    init(wrapping wrapped: POSItemActionHandler, allowsTap: @escaping (POSItem) -> Bool) {
-        self.wrapped = wrapped
-        self.allowsTap = allowsTap
-    }
-
-    func handleTap(_ item: POSItem, position: Int) {
-        guard allowsTap(item) else {
-            return
-        }
-        wrapped.handleTap(item, position: position)
-    }
-}
-
 struct POSItemActionHandlerFactory {
     static func itemActionHandler(
         itemListType: ItemListType,

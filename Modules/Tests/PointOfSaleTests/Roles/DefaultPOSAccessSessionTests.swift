@@ -451,7 +451,7 @@ private extension DefaultPOSAccessSessionTests {
         POSStaffMember(userID: userID,
                        displayName: "Staff",
                        preset: .cashier,
-                       capabilities: ["pos_process_sales": true],
+                       capabilities: ["woocommerce_pos_process_sales": true],
                        pin: hasPIN ? .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                            salt: "c2FsdA==", hash: "aGFzaA==") : nil)
     }

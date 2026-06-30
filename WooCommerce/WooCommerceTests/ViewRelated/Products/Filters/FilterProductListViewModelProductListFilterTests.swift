@@ -180,5 +180,4 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
             .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())
         ])
     }
-
 }

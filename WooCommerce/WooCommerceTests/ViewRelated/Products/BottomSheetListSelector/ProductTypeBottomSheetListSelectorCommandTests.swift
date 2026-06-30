@@ -120,5 +120,4 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
         ]
         XCTAssertEqual(selectedActions, expectedActions)
     }
-
 }

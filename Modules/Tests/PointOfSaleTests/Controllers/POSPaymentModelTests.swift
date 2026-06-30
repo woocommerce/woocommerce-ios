@@ -3,6 +3,8 @@ import Foundation
 import Combine
 import struct Yosemite.Order
 import struct Yosemite.Address
+import struct Yosemite.ReceiptStoreInformation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
@@ -767,6 +769,70 @@ struct POSPaymentModelTests {
         await #expect(throws: POSPaymentError.self) {
             try await sut.sendReceipt(to: "test@example.com")
         }
+    }
+
+    @Test("printReceipt prints the current order on the connected printer")
+    @MainActor
+    func test_printReceipt_when_order_present_then_prints_current_order() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.orderToReturn = order
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+
+        // Collect a payment to set the currentOrder
+        await sut.startPayment()
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 123)
+    }
+
+    @Test("printReceipt throws when no current order")
+    @MainActor
+    func test_printReceipt_when_no_order_then_throws() async {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let sut = makePaymentController(receiptPrinter: printer)
+
+        // When / Then
+        await #expect(throws: POSPaymentError.self) {
+            try await sut.printReceipt(storeInformation: .empty)
+        }
+        #expect(printer.printedOrder == nil)
+    }
+
+    @Test("printReceipt is a no-op when no printer is configured")
+    @MainActor
+    func test_printReceipt_when_printer_nil_then_does_not_throw() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: nil)
+
+        await sut.startPayment()
+
+        // When / Then — printing without a configured printer silently no-ops.
+        try await sut.printReceipt(storeInformation: .empty)
     }
 
     // MARK: - Reset
@@ -2484,6 +2550,7 @@ private func makePaymentController(
     scanToPayVerifier: POSScanToPayVerifying? = nil,
     markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
     postPaymentStep: (() async throws -> Void)? = nil,
     configuration: POSPaymentFlowConfiguration = .cart(onNewOrder: {}, onEditOrder: {}),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
@@ -2502,6 +2569,7 @@ private func makePaymentController(
         scanToPayVerifier: scanToPayVerifier,
         markAsPaidHandler: markAsPaidHandler,
         receiptSender: receiptSender,
+        receiptPrinter: receiptPrinter,
         postPaymentStep: postPaymentStep,
         configuration: configuration,
         analytics: analytics,

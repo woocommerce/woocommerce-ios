@@ -523,6 +523,32 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
+        @Test func printReceipt_when_invoked_then_prints_current_order_on_printer() async throws {
+            // Given
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then
+            #expect(printer.printedOrder?.orderID == 42)
+            #expect(printer.printedStoreInformation != nil)
+        }
+
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()

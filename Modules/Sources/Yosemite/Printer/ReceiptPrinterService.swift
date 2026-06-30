@@ -1,4 +1,6 @@
 import Hardware
+import Networking
+import WooFoundation
 
 /// Provides receipt-printer capabilities to callers: device discovery and the connection lifecycle.
 ///
@@ -28,6 +30,14 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
                       cardDetails: CardPresentTransactionDetails?) async throws
+
+    /// Prints a receipt for the given order on the connected printer.
+    ///
+    /// Assembles the receipt content from the order (line items, totals, note) so callers that
+    /// only hold an `Order` — like POS — don't have to build Hardware receipt parameters. The
+    /// printed receipt carries no card details in this form (`cardDetails: nil`).
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws
 }
 
 /// Default `ReceiptPrinterServiceProtocol`, backed by an injected Hardware discovery service.
@@ -37,6 +47,8 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
 public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private let printerDiscoveryService: PrinterDiscoveryService
     private let receiptTextRenderer: ReceiptTextRenderer
+    private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+    private let contentAssembler = ReceiptContentAssembler()
 
     public init(printerDiscoveryService: PrinterDiscoveryService,
                 receiptTextRenderer: ReceiptTextRenderer = ReceiptTextRenderer()) {
@@ -72,4 +84,36 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
                                                        cardDetails: cardDetails)
         try await printerDiscoveryService.printReceipt(text: text)
     }
+
+    public func printReceipt(order: Order,
+                             storeInformation: ReceiptStoreInformation) async throws {
+        let parameters = receiptParameters(for: order)
+        let content = contentAssembler.makeContent(order: order, parameters: parameters, removingHtml: true)
+        try await printReceipt(content: content, storeInformation: storeInformation, cardDetails: nil)
+    }
+
+    private func receiptParameters(for order: Order) -> CardPresentReceiptParameters {
+        let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) ?? order.total
+        return CardPresentReceiptParameters(amount: 0,
+                                            formattedAmount: formattedAmount,
+                                            currency: order.currency,
+                                            date: order.datePaid ?? order.dateCreated,
+                                            storeName: nil,
+                                            cardDetails: Self.placeholderCardDetails,
+                                            orderID: order.orderID)
+    }
+
+    /// `CardPresentReceiptParameters.cardDetails` is non-optional, but this order-based path prints
+    /// without card details. The renderer reads the separate `cardDetails:` argument (passed `nil`
+    /// above), never `parameters.cardDetails`, so this value only satisfies the type.
+    private static let placeholderCardDetails = CardPresentTransactionDetails(last4: "",
+                                                                              expMonth: 0,
+                                                                              expYear: 0,
+                                                                              cardholderName: nil,
+                                                                              brand: .unknown,
+                                                                              generatedCard: nil,
+                                                                              receipt: nil,
+                                                                              emvAuthData: nil,
+                                                                              wallet: nil,
+                                                                              network: nil)
 }

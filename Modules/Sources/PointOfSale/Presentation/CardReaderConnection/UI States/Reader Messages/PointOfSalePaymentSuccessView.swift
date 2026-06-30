@@ -1,4 +1,5 @@
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
@@ -45,10 +46,18 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private func handlePrintReceiptTap() {
-        guard !posModel.isReceiptPrinterConnected else {
+        guard posModel.isReceiptPrinterConnected else {
+            showPrinterSetupModal = true
             return
         }
-        showPrinterSetupModal = true
+        // Print-failure UX (retry + email fallback) is deferred to a follow-up; log for now.
+        Task {
+            do {
+                try await posModel.printReceipt()
+            } catch {
+                DDLogError("⛔️ POS receipt print failed: \(error)")
+            }
+        }
     }
 
     private var successView: some View {

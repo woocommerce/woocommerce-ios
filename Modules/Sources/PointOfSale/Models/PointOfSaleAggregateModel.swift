@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSCustomAmount
@@ -194,6 +195,7 @@ protocol PointOfSaleAggregateModelProtocol {
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
+            receiptPrinter: receiptPrinter,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
@@ -508,6 +510,25 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
         try await paymentModel.sendReceipt(to: emailAddress)
+    }
+
+    @MainActor
+    func printReceipt() async throws {
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+    }
+
+    /// Best-effort store details for the printed receipt header, drawn from the POS settings store
+    /// view model. Falls back to the store name / address it exposes when receipt-specific settings
+    /// aren't populated.
+    @MainActor
+    private func receiptStoreInformation() -> ReceiptStoreInformation {
+        let storeViewModel = settingsController.storeViewModel
+        let receiptInformation = storeViewModel.receiptInformation
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.storeName,
+                                       storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
+                                       phone: receiptInformation.phone,
+                                       email: receiptInformation.email,
+                                       refundReturnsPolicy: receiptInformation.refundReturnsPolicy)
     }
 
     @MainActor

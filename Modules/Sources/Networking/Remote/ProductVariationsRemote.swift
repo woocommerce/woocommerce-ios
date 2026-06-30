@@ -293,9 +293,9 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
         // Bulk price update intentionally sends only id + regular_price so stale sale-price fields do not make the API reject the request.
         // Android parity for #16084.
-        let parameters: [[String: Any]] = productVariations.map { variation in
-            ["id": variation.productVariationID,
-             "regular_price": variation.regularPrice ?? ""]
+        let parameters: [RequestParameterDictionary] = productVariations.map { variation in
+            ["id": .int64(variation.productVariationID),
+             "regular_price": .string(variation.regularPrice ?? "")]
         }
         let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
         let path = "\(Path.products)/\(productID)/variations/batch"

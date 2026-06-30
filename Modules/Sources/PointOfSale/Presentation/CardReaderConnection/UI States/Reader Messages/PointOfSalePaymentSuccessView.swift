@@ -11,6 +11,7 @@ struct PointOfSalePaymentSuccessView: View {
     @State private var isViewLoaded: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -83,7 +84,8 @@ struct PointOfSalePaymentSuccessView: View {
                 // iPad: buttons take half the screen width (count:2 span:1).
                 // Phone: half the screen width is ~190pt, too narrow for "New order" /
                 // "Email receipt" — let them span the container minus standard insets instead.
-                PaymentsActionButtons(successAction: successAction)
+                PaymentsActionButtons(successAction: successAction,
+                                      showsPrintReceipt: posModel.receiptPrinter != nil)
                     .if(horizontalSizeClass != .compact) { view in
                         view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                     }
@@ -119,6 +121,9 @@ private extension PointOfSalePaymentSuccessView {
 
 #if DEBUG
 #Preview {
+    let model = POSPreviewHelpers.makePreviewAggregateModel(
+        receiptPrinter: POSReceiptPrinterPreviewService()
+    )
     PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
@@ -126,5 +131,6 @@ private extension PointOfSalePaymentSuccessView {
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil
     )
+    .environment(model)
 }
 #endif

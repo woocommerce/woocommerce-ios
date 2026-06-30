@@ -1044,11 +1044,10 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
-        let isStatusEditingSupported = ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
             status: lookUpOrderStatus(for: order),
-            isEditButtonVisible: isStatusEditingSupported,
+            isEditButtonVisible: true,
             isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB
         )
 

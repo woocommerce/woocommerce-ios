@@ -431,16 +431,9 @@ final class MainTabBarController: UITabBarController {
             userInterfaceIdiom: isPad ? .pad : .phone,
             eligibilityService: posEligibilityService
         )
-        let isBookingsFeatureAvailable = BookingsTabEligibilityChecker.checkInitialVisibility(
-            for: siteID,
-            in: userDefaults
-        )
-
-        self.isBookingsFeatureAvailable = isBookingsFeatureAvailable
-
         let isBookingsTabVisible = shouldShowBookingsTab(
             isPOSTabVisible: isPOSTabVisible,
-            bookingsFeatureAvailable: isBookingsFeatureAvailable
+            bookingsFeatureAvailable: false
         )
 
         updateTabViewControllers(
@@ -1076,13 +1069,6 @@ private extension MainTabBarController {
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
         let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
         self.bookingsEligibilityChecker = bookingsEligibilityChecker
-
-        // Sets Bookings tab initial visibility based on cached value if available.
-        let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
-        isBookingsFeatureAvailable = initialVisibility
-        let initialBookingsTabVisibility = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
-                                                                 bookingsFeatureAvailable: initialVisibility)
-        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialBookingsTabVisibility)
 
         // Cancels any existing task.
         bookingsEligibilityCheckTask?.cancel()

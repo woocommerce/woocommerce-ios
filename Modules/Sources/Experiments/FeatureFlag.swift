@@ -187,10 +187,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleFTSSearch
 
-    /// Enables a new Bookings tab for CIAB sites
-    ///
-    case ciabBookings
-
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI
@@ -239,10 +235,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
-
-    /// Enables the reschedule booking entry point in booking details
-    ///
-    case ciabBookingReschedule
 
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///

@@ -47,10 +47,7 @@ struct POSStaffSettingsView: View {
                             staffListCard(staff: staff)
                         }
                     }
-                    // Managing staff happens in wp-admin and is gated server-side on `manage_woocommerce`,
-                    // which only admins/shop managers hold — so only surface the CTA when the operator
-                    // has `managePOSStaff`. There's no override: a manager can't grant it to themselves.
-                    if manageStaffURL != nil, session.allows(.managePOSStaff) {
+                    if manageStaffURL != nil {
                         manageStaffCard
                     }
                     footerText

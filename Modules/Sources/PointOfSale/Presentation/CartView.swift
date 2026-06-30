@@ -7,7 +7,6 @@ struct CartView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAccessSession) private var session
     private let viewHelper = CartViewHelper()
 
     /// Optional override for triggering the barcode-scanner setup from outside CartView.
@@ -261,9 +260,7 @@ private extension CartView {
             Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        // `processSales` gates completing a sale. Every POS role holds it today, so this is a no-op
-        // until granular caps land — but the gate is wired so we don't assume it's always granted.
-        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart) || !session.allows(.processSales))
+        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
         .accessibilityIdentifier("pos-checkout-button")
     }
 

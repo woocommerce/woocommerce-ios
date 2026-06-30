@@ -197,23 +197,7 @@ private extension POSTabCoordinator {
         Task { @MainActor [weak self, weak hostingController] in
             guard let self, let hostingController else { return }
 
-            // Get local catalog eligibility as bool from service
-            let isLocalCatalogEligible: Bool
-            if let service = localCatalogEligibilityService {
-                // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility()
-                try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
-
-                // Retry transient failures before using the value
-                let state = try await service.catalogEligibility(for: siteID)
-                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
-                    try await service.refreshEligibilityState(for: siteID)
-                }
-                isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
-            } else {
-                // Service not ready yet (rare race condition), assume ineligible
-                isLocalCatalogEligible = false
-            }
+            let isLocalCatalogEligible = await resolveLocalCatalogEligibility(for: siteID)
 
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
@@ -386,6 +370,29 @@ private extension POSTabCoordinator {
             } else {
                 await hostingController.dismiss(animated: true)
             }
+        }
+    }
+
+    func resolveLocalCatalogEligibility(for siteID: Int64) async -> Bool {
+        guard let service = localCatalogEligibilityService else {
+            // Service not ready yet (rare race condition), assume ineligible
+            return false
+        }
+
+        do {
+            // Resolve POS eligibility before deciding the fetch strategy
+            let posState = await eligibilityChecker.checkEligibility()
+            try await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
+
+            // Retry transient failures before using the value
+            let state = try await service.catalogEligibility(for: siteID)
+            if case .ineligible(reason: .catalogSizeCheckFailed) = state {
+                try await service.refreshEligibilityState(for: siteID)
+            }
+            return try await service.catalogEligibility(for: siteID) == .eligible
+        } catch {
+            DDLogError("⛔️ Could not resolve POS local catalog eligibility, falling back to remote catalog: \(error)")
+            return false
         }
     }
 }

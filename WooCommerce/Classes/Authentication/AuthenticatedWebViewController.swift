@@ -162,7 +162,7 @@ private extension AuthenticatedWebViewController {
             view.safeBottomAnchor.constraint(equalTo: webView.bottomAnchor),
         ])
 
-        extendContentUnderSafeAreas()
+        matchWebViewBackground()
     }
 
     func configureActivityIndicator() {
@@ -173,8 +173,7 @@ private extension AuthenticatedWebViewController {
         ])
     }
 
-    func extendContentUnderSafeAreas() {
-        webView.scrollView.clipsToBounds = false
+    func matchWebViewBackground() {
         view.backgroundColor = webView.underPageBackgroundColor
     }
 
@@ -274,8 +273,7 @@ private extension AuthenticatedWebViewController {
                 .value: initialURL.absoluteString,
             ])
 
-            let queryItem = URLQueryItem(name: Constants.actionParam, value: Constants.jetpackSSOAction)
-            guard let cookie, let loginURL = URL(string: currentSite.loginURL)?.appending(queryItems: [queryItem]) else {
+            guard let cookie, let loginURL = Self.makeJetpackSSOLoginURL(from: currentSite.loginURL, redirectingTo: initialURL) else {
                 return loadContent(url: initialURL)
             }
             webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie)
@@ -357,9 +355,65 @@ extension AuthenticatedWebViewController: WKUIDelegate {
     func webViewDidClose(_ webView: WKWebView) {
         dismiss(animated: true)
     }
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptAlertPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping () -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: Localization.ok, style: .default) { _ in
+            completionHandler()
+        })
+        presentJavaScriptDialog(alertController, fallback: completionHandler)
+    }
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptConfirmPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (Bool) -> Void) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: Localization.cancel, style: .cancel) { _ in
+            completionHandler(false)
+        })
+        alertController.addAction(UIAlertAction(title: Localization.ok, style: .default) { _ in
+            completionHandler(true)
+        })
+        presentJavaScriptDialog(alertController) {
+            completionHandler(false)
+        }
+    }
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptTextInputPanelWithPrompt prompt: String,
+                 defaultText: String?,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (String?) -> Void) {
+        let alertController = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.text = defaultText
+        }
+        alertController.addAction(UIAlertAction(title: Localization.cancel, style: .cancel) { _ in
+            completionHandler(nil)
+        })
+        alertController.addAction(UIAlertAction(title: Localization.ok, style: .default) { [weak alertController] _ in
+            completionHandler(alertController?.textFields?.first?.text)
+        })
+        presentJavaScriptDialog(alertController) {
+            completionHandler(nil)
+        }
+    }
 }
 
 private extension AuthenticatedWebViewController {
+    func presentJavaScriptDialog(_ alertController: UIAlertController, fallback: @escaping () -> Void) {
+        let presentingController = topmostViewController()
+        guard presentingController.viewIfLoaded?.window != nil else {
+            fallback()
+            return
+        }
+        presentingController.present(alertController, animated: true)
+    }
+
     func presentPopupWebView(with configuration: WKWebViewConfiguration,
                              for navigationAction: WKNavigationAction) -> WKWebView? {
         guard navigationAction.targetFrame == nil else {
@@ -395,7 +449,40 @@ private extension AuthenticatedWebViewController {
     enum Constants {
         static let actionParam = "action"
         static let jetpackSSOAction = "jetpack-sso"
+        static let redirectToParam = "redirect_to"
         static let ssoRedirectCookieName = "jetpack_sso_redirect_to"
+    }
+
+    enum Localization {
+        static let ok = NSLocalizedString(
+            "authenticatedWebViewController.javascriptDialog.ok",
+            value: "OK",
+            comment: "Button to accept a JavaScript dialog in an authenticated web view."
+        )
+        static let cancel = NSLocalizedString(
+            "authenticatedWebViewController.javascriptDialog.cancel",
+            value: "Cancel",
+            comment: "Button to cancel a JavaScript dialog in an authenticated web view."
+        )
+    }
+}
+
+extension AuthenticatedWebViewController {
+    static func makeJetpackSSOLoginURL(from loginURLString: String, redirectingTo redirectURL: URL) -> URL? {
+        guard let loginURL = URL(string: loginURLString),
+              var components = URLComponents(url: loginURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        var queryItems = components.queryItems ?? []
+        queryItems.removeAll { queryItem in
+            queryItem.name == Constants.actionParam || queryItem.name == Constants.redirectToParam
+        }
+        queryItems.append(URLQueryItem(name: Constants.actionParam, value: Constants.jetpackSSOAction))
+        queryItems.append(URLQueryItem(name: Constants.redirectToParam, value: redirectURL.absoluteString))
+        components.queryItems = queryItems
+
+        return components.url
     }
 }
 

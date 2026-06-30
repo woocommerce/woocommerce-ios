@@ -7,23 +7,22 @@ struct WCAuthenticatedWebView: View {
     let completion: () -> Void
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             AuthenticatedWebView(isPresented: .constant(true),
                                  url: url)
-                                 .navigationTitle(title)
-                                 .navigationBarTitleDisplayMode(.inline)
-                                 .toolbar {
-                                     ToolbarItem(placement: .confirmationAction) {
-                                         Button(action: {
-                                             completion()
-                                         }, label: {
-                                             Text(Localization.done)
-                                         })
-                                     }
-                                 }
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(action: {
+                            completion()
+                        }, label: {
+                            Text(Localization.done)
+                        })
+                    }
+                }
         }
         .wooNavigationBarStyle()
-        .navigationViewStyle(.stack)
     }
 }
 

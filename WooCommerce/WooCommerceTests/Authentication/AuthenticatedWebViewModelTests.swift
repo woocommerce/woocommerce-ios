@@ -89,6 +89,27 @@ struct AuthenticatedWebViewModelTests {
         #expect(authenticationFlow == .none)
     }
 
+    @Test func makeJetpackSSOLoginURL_includes_redirect_to_with_full_initial_url() throws {
+        // Given
+        let initialURL = try #require(URL(string: siteURL + "/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff"))
+
+        // When
+        let loginURL = try #require(AuthenticatedWebViewController.makeJetpackSSOLoginURL(
+            from: siteURL + "/wp-login.php?foo=bar",
+            redirectingTo: initialURL
+        ))
+        let components = try #require(URLComponents(url: loginURL, resolvingAgainstBaseURL: false))
+        let queryItems = components.queryItems ?? []
+
+        // Then
+        #expect(components.scheme == "http")
+        #expect(components.host == "example.com")
+        #expect(components.path == "/wp-login.php")
+        #expect(queryItems.first(where: { $0.name == "foo" })?.value == "bar")
+        #expect(queryItems.first(where: { $0.name == "action" })?.value == "jetpack-sso")
+        #expect(queryItems.first(where: { $0.name == "redirect_to" })?.value == initialURL.absoluteString)
+    }
+
     @Test func isAuthenticationFailure_returns_true_if_first_navigation_fails_with_error_status_code() throws {
         // Given
         let testSite = Site.fake().copy(siteID: 123, url: siteURL, hasSSOEnabled: true)

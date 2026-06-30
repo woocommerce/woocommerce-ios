@@ -119,6 +119,25 @@ extension UIAlertController {
         alertController.addCancelActionWithTitle(ActionSheetStrings.cancel)
         viewController.present(alertController, animated: true)
     }
+
+    /// Anchors this action sheet's popover so it stays on screen on iOS 26.
+    ///
+    /// On iOS 26 (Liquid Glass), anchoring a `.actionSheet` to a navigation bar button item resolves an
+    /// off-screen popover source rect, so the sheet opens off screen. Anchor to the presenting view
+    /// instead — the global `viewWillLayoutSubviews` override above then keeps it centered on screen.
+    /// Earlier iOS versions keep the original bar button anchoring so their behavior is unchanged.
+    func anchorToBarButtonItem(_ barButtonItem: UIBarButtonItem?, in viewController: UIViewController) {
+        guard let popoverController = popoverPresentationController else {
+            return
+        }
+        if #available(iOS 26.0, *) {
+            popoverController.sourceView = viewController.view
+            popoverController.sourceRect = viewController.view.bounds
+            popoverController.permittedArrowDirections = []
+        } else {
+            popoverController.barButtonItem = barButtonItem
+        }
+    }
 }
 
 private enum ActionSheetStrings {

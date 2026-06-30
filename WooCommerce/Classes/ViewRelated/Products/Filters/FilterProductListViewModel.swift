@@ -84,11 +84,9 @@ final class FilterProductListViewModel: FilterListViewModel {
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - siteID: Current selected store's ID
-    ///   - site: Current selected store's Site instance, if available
     ///   - featureFlagService: Feature flag service
     init(filters: Filters,
          siteID: Int64,
-         site: Site? = nil,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -100,8 +98,7 @@ final class FilterProductListViewModel: FilterListViewModel {
             .productType(siteID: siteID)
             .createViewModel(
                 filters: filters,
-                storageManager: storageManager,
-                site: site ?? stores.sessionManager.defaultSite
+                storageManager: storageManager
             )
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)

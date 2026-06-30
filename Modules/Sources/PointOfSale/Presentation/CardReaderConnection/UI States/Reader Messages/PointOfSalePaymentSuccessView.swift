@@ -47,8 +47,10 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private func handlePrintReceiptTap() {
-        let isPrinterConnected = posModel.settingsController.printerConnectionController?.isConnected ?? false
-        if printReceiptRouter.shouldPresentSetup(isPrinterConnected: isPrinterConnected) {
+        guard let controller = posModel.settingsController.printerConnectionController else {
+            return
+        }
+        if printReceiptRouter.action(isPrinterConnected: controller.isConnected) == .presentSetup {
             showPrinterSetupModal = true
         }
     }

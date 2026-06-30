@@ -91,7 +91,7 @@ private extension POSSettingsLocalCatalogDetailView {
                         }
                     },
                     buttonStyle: .primary,
-                    isLoading: false
+                    isButtonEnabled: !viewModel.isRefreshingCatalog
                 )
             }
         }

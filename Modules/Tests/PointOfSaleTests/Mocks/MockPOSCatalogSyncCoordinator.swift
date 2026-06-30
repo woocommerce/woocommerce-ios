@@ -70,8 +70,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     var isSyncStaleResult: Bool = false
+    var onIsSyncStaleCalled: (() -> Void)?
 
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
+        onIsSyncStaleCalled?()
         return isSyncStaleResult
     }
 

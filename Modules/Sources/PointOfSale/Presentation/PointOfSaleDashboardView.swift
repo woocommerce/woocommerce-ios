@@ -364,7 +364,7 @@ struct PointOfSaleDashboardView: View {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    requestOrdersPermission()
+                    presentOrders()
                 } label: {
                     Label(Localization.phoneMenuOrders, systemImage: "text.document")
                 }

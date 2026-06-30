@@ -3,6 +3,7 @@
 
 25.2
 -----
+- [*] Products: Fixed bulk updating the regular price of a variable product failing with "Can't update price". [https://github.com/woocommerce/woocommerce-ios/pull/17446]
 - [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
 
 

@@ -423,7 +423,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = moreOptionsButton
+        // On iOS 26, anchoring an action sheet to a bar button item opens it off-screen. Anchor to the
+        // view instead, so the global `UIAlertController` override centers it like the app's other sheets.
+        if #available(iOS 26.0, *) {
+            popoverController?.sourceView = view
+            popoverController?.sourceRect = view.bounds
+            popoverController?.permittedArrowDirections = []
+        } else {
+            popoverController?.barButtonItem = moreOptionsButton
+        }
 
         present(actionSheet, animated: true)
     }

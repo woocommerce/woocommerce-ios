@@ -3,7 +3,7 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
-    @State private var editOverrideHandler = POSManagerOverrideHandler()
+    @State private var overrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
 
@@ -24,14 +24,21 @@ struct POSSettingsView: View {
             }
         }
         .posRootModal()
-        .posManagerOverrideModal(handler: editOverrideHandler)
+        .posManagerOverrideModal(handler: overrideHandler)
     }
 
     /// Gates an edit to POS settings on `.editPOSSettings`. When the operator holds it the edit runs
     /// immediately; otherwise the manager-override modal is presented and the edit runs once an
     /// authorized staff member approves.
     func requestEditPermission(_ perform: @escaping () -> Void) {
-        editOverrideHandler.gate(.editPOSSettings, reason: Localization.editOverrideDescription, perform: { _ in perform() })
+        overrideHandler.gate(.editPOSSettings, reason: Localization.editOverrideDescription, perform: { _ in perform() })
+    }
+
+    /// Gates opening the wp-admin staff-management web view on `.managePOSStaff`. When the operator
+    /// holds it the view opens immediately; otherwise the override modal is presented and it opens once
+    /// an authorized staff member approves.
+    func requestManageStaffPermission(_ perform: @escaping () -> Void) {
+        overrideHandler.gate(.managePOSStaff, reason: Localization.manageStaffOverrideDescription, perform: { _ in perform() })
     }
 }
 
@@ -145,7 +152,8 @@ extension POSSettingsView {
             }
         case .staff:
             if let staffSettingsService = settingsController.staffSettingsService {
-                POSStaffSettingsView(service: staffSettingsService)
+                POSStaffSettingsView(service: staffSettingsService,
+                                     requestManageStaffPermission: requestManageStaffPermission)
             } else {
                 EmptyView()
             }
@@ -207,6 +215,13 @@ extension POSSettingsView {
             value: "Changing settings requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "edit-settings permission tries to change a Point of Sale setting."
+        )
+
+        static let manageStaffOverrideDescription = NSLocalizedString(
+            "pointOfSaleSettingsView.manageStaffOverrideReason",
+            value: "Managing staff requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "manage-staff permission tries to open staff management."
         )
 
         static let sidebarNavigationStoreTitle = NSLocalizedString(

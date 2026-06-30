@@ -7,9 +7,18 @@ struct POSStaffSettingsView: View {
     @Environment(\.posAccessSession) private var session
 
     let service: POSStaffSettingsService
+    /// Gates opening the staff-management web view on `managePOSStaff`. Defaults to running it directly
+    /// (previews / no host gate).
+    private let requestManageStaffPermission: (@escaping () -> Void) -> Void
 
     @State private var state: LoadState = .idle
     @State private var showsManageStaff: Bool = false
+
+    init(service: POSStaffSettingsService,
+         requestManageStaffPermission: @escaping (@escaping () -> Void) -> Void = { $0() }) {
+        self.service = service
+        self.requestManageStaffPermission = requestManageStaffPermission
+    }
 
     private enum LoadState {
         case idle
@@ -38,10 +47,7 @@ struct POSStaffSettingsView: View {
                             staffListCard(staff: staff)
                         }
                     }
-                    // Managing staff happens in wp-admin and is gated server-side on `manage_woocommerce`,
-                    // which only admins/shop managers hold — so only surface the CTA when the operator
-                    // has `managePOSStaff`. There's no override: a manager can't grant it to themselves.
-                    if manageStaffURL != nil, session.allows(.managePOSStaff) {
+                    if manageStaffURL != nil {
                         manageStaffCard
                     }
                     footerText
@@ -169,7 +175,11 @@ private extension POSStaffSettingsView {
 
     var manageStaffCard: some View {
         Button {
-            showsManageStaff = true
+            // Always offered; gated on `managePOSStaff` so a staff member without it needs an
+            // authorized override before the wp-admin staff page opens (it's also gated server-side
+            // on `manage_woocommerce`). The web view authenticates as the device account, so the
+            // override authorizes opening it rather than acting as the approver.
+            requestManageStaffPermission { showsManageStaff = true }
         } label: {
             Text(Localization.manageStaffButton)
         }

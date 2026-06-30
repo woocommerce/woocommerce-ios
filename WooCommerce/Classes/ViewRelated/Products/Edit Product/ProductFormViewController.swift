@@ -422,7 +422,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
         }
 
-        actionSheet.anchorToBarButtonItem(moreOptionsButton, in: self)
+        actionSheet.anchorActionSheet(toBarButtonItem: moreOptionsButton, in: self)
 
         present(actionSheet, animated: true)
     }

@@ -82,7 +82,7 @@ extension ProductDownloadFileViewController {
         let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.anchorToBarButtonItem(sender, in: self)
+        menuAlert.anchorActionSheet(toBarButtonItem: sender, in: self)
 
         present(menuAlert, animated: true)
     }

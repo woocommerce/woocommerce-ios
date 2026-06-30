@@ -610,7 +610,7 @@ private extension ProductVariationsViewController {
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
 
-        actionSheet.anchorToBarButtonItem(sender, in: self)
+        actionSheet.anchorActionSheet(toBarButtonItem: sender, in: self)
 
         present(actionSheet, animated: true)
     }

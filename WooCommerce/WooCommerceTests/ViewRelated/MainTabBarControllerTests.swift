@@ -616,6 +616,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(visibleTabs, expectedTabs)
     }
 
+    @MainActor
     func test_switching_sites_applies_cached_pos_tab_visibility() throws {
         // Arrange
         let siteA_ID: Int64 = 101

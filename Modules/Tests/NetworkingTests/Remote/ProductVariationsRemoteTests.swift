@@ -460,6 +460,49 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(updatedProductVariation, productVariations)
     }
 
+    func test_bulk_update_productVariations_sends_only_id_and_regular_price() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let firstProductVariationID: Int64 = 2783
+        let secondProductVariationID: Int64 = 2784
+        let productVariations = [
+            sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: firstProductVariationID)
+                .copy(regularPrice: "5.00", salePrice: "8.00"),
+            sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: secondProductVariationID)
+                .copy(regularPrice: "6.00", salePrice: "9.00")
+        ]
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
+
+        // When
+        waitForExpectation { expectation in
+            remote.updateProductVariations(siteID: sampleSiteID, productID: sampleProductID, productVariations: productVariations) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let updateParam = try XCTUnwrap(request.parameters["update"] as? [[String: Any]])
+        let expectedPayloads: [(id: Int64, regularPrice: String)] = [
+            (firstProductVariationID, "5.00"),
+            (secondProductVariationID, "6.00")
+        ]
+
+        XCTAssertEqual(updateParam.count, productVariations.count)
+        for (index, expectedPayload) in expectedPayloads.enumerated() {
+            let update = updateParam[index]
+            XCTAssertEqual(Set(update.keys), Set(["id", "regular_price"]))
+            XCTAssertEqual(update["id"] as? Int64, expectedPayload.id)
+            XCTAssertEqual(update["regular_price"] as? String, expectedPayload.regularPrice)
+            XCTAssertNil(update["sale_price"])
+            XCTAssertNil(update["date_on_sale_from"])
+            XCTAssertNil(update["date_on_sale_to"])
+            XCTAssertNil(update["sku"])
+            XCTAssertNil(update["attributes"])
+        }
+    }
+
     /// Verifies that updateProductVariation properly relays Networking Layer errors.
     ///
     func testUpdateProductVariationProperlyRelaysNetwokingErrors() {

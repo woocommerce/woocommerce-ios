@@ -291,22 +291,23 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                         productVariations: [ProductVariation],
                                         completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
 
-        do {
-            let parameters = try productVariations.map { try $0.toDictionary() }
-            let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
-            let path = "\(Path.products)/\(productID)/variations/batch"
-            let request = JetpackRequest(wooApiVersion: .mark3,
-                                         method: .post,
-                                         siteID: siteID,
-                                         path: path,
-                                         parameters: requestParameters,
-                                         availableAsRESTRequest: true)
-            let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
-
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
+        // Bulk price update intentionally sends only id + regular_price so stale sale-price fields do not make the API reject the request.
+        // Android parity for #16084.
+        let parameters: [[String: Any]] = productVariations.map { variation in
+            ["id": variation.productVariationID,
+             "regular_price": variation.regularPrice ?? ""]
         }
+        let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
+        let path = "\(Path.products)/\(productID)/variations/batch"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: requestParameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Deletes a specific `ProductVariation`.

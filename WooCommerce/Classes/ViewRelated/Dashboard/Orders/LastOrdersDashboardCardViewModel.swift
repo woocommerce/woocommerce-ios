@@ -146,9 +146,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
-            let isCIAB = ciabEligibilityChecker.isCurrentSiteCIAB
             rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0, isCIAB: isCIAB) }
+                .map { LastOrderDashboardRowViewModel(order: $0) }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error

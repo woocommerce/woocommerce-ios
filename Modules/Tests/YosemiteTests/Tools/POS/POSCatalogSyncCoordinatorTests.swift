@@ -550,18 +550,25 @@ struct POSCatalogSyncCoordinatorTests {
 
     @Test func lastFullSyncState_returns_syncCompleted_when_synced_before() async throws {
         // Given - previous sync exists
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-3600))
+        let syncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: syncDate)
 
         // When - query state
         let state = await sut.loadLastFullSyncState(for: sampleSiteID)
 
         // Then - should return syncCompleted
-        #expect(state == .syncCompleted(siteID: sampleSiteID))
+        guard case let .syncCompleted(siteID, loadedSyncDate) = state else {
+            Issue.record("Expected syncCompleted state, got \(state)")
+            return
+        }
+        #expect(siteID == sampleSiteID)
+        #expect(abs(loadedSyncDate.timeIntervalSince(syncDate)) < 1.0)
     }
 
     @Test func fullSyncStateModel_emits_events_during_sync() async throws {
         // Given
-        let expectedCatalog = POSCatalog(products: [], variations: [], syncDate: .now)
+        let syncDate = Date()
+        let expectedCatalog = POSCatalog(products: [], variations: [], syncDate: syncDate)
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When - start sync and stream collection concurrently
@@ -569,7 +576,23 @@ struct POSCatalogSyncCoordinatorTests {
 
         // Then - should emit syncStarted and syncCompleted with correct siteID
         let finalState = await sut.fullSyncStateModel.state[sampleSiteID]
-        #expect(finalState == .syncCompleted(siteID: sampleSiteID))
+        #expect(finalState == .syncCompleted(siteID: sampleSiteID, syncDate: syncDate))
+    }
+
+    @Test func processBackgroundDownload_emits_syncCompleted_with_catalog_sync_date() async throws {
+        // Given
+        let syncDate = Date(timeIntervalSince1970: 1_234)
+        let catalog = POSCatalog(products: [], variations: [], syncDate: syncDate)
+        mockSyncService.parseAndPersistBackgroundDownloadResult = .success(catalog)
+
+        // When
+        try await sut.processBackgroundDownload(fileURL: URL(fileURLWithPath: "/tmp/catalog.json"),
+                                                siteID: sampleSiteID,
+                                                snapshotDate: Date())
+
+        // Then
+        let finalState = await sut.fullSyncStateModel.state[sampleSiteID]
+        #expect(finalState == .syncCompleted(siteID: sampleSiteID, syncDate: syncDate))
     }
 
     // MARK: - Helper Methods
@@ -964,79 +987,109 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
     }
 
-    // MARK: - isSyncStale Tests
+    // MARK: - POSCatalogSyncState Staleness Tests
 
-    @Test func isSyncStale_returns_true_when_no_full_sync_performed() async throws {
-        // Given - no full sync date set
+    @Test func syncState_isStale_returns_true_when_no_full_sync_performed() async throws {
+        // Given
+        let state = POSCatalogSyncState.syncNeverDone(siteID: sampleSiteID)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let isStale = state.isStale(maxDays: 7)
 
         // Then
         #expect(isStale == true)
     }
 
-    @Test func isSyncStale_returns_false_when_full_sync_is_recent() async throws {
+    @Test func syncState_isStale_returns_false_when_full_sync_is_recent() async throws {
         // Given - last full sync was 3 days ago
-        let threeDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -3, to: Date()))
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: threeDaysAgo)
+        let now = Date()
+        let threeDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -3, to: now))
+        let state = POSCatalogSyncState.syncCompleted(siteID: sampleSiteID, syncDate: threeDaysAgo)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let isStale = state.isStale(maxDays: 7, now: now)
 
         // Then
         #expect(isStale == false)
     }
 
-    @Test func isSyncStale_returns_true_when_full_sync_is_old() async throws {
+    @Test func syncState_isStale_returns_true_when_full_sync_is_old() async throws {
         // Given - last full sync was 10 days ago
-        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo)
+        let now = Date()
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: now))
+        let state = POSCatalogSyncState.syncCompleted(siteID: sampleSiteID, syncDate: tenDaysAgo)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let isStale = state.isStale(maxDays: 7, now: now)
 
         // Then
         #expect(isStale == true)
     }
 
-    @Test func isSyncStale_ignores_incremental_sync_date() async throws {
+    @Test func loadedSyncState_ignores_incremental_sync_date_for_staleness() async throws {
         // Given - incremental sync was recent, but full sync was old
-        let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
-        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: Date()))
+        let now = Date()
+        let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: now))
+        let tenDaysAgo = try #require(Calendar.current.date(byAdding: .day, value: -10, to: now))
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: tenDaysAgo, lastIncrementalSyncDate: yesterday)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let state = await sut.loadLastFullSyncState(for: sampleSiteID)
 
         // Then - should only check full sync date
-        #expect(isStale == true)
+        #expect(state.isStale(maxDays: 7, now: now) == true)
     }
 
-    @Test func isSyncStale_boundary_within_threshold() async throws {
+    @Test func syncState_isStale_boundary_within_threshold() async throws {
         // Given - last full sync was 6 days and 23 hours ago (just under 7 days)
-        let justUnderSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -6, to: Date()))
+        let now = Date()
+        let justUnderSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -6, to: now))
             .addingTimeInterval(-23 * 60 * 60) // minus 23 hours
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justUnderSevenDays)
+        let state = POSCatalogSyncState.syncCompleted(siteID: sampleSiteID, syncDate: justUnderSevenDays)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let isStale = state.isStale(maxDays: 7, now: now)
 
         // Then - just under threshold should not be stale
         #expect(isStale == false)
     }
 
-    @Test func isSyncStale_boundary_past_threshold() async throws {
+    @Test func syncState_isStale_boundary_past_threshold() async throws {
         // Given - last full sync was 7 days and 1 second ago (just past 7 days)
-        let justPastSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -7, to: Date()))
+        let now = Date()
+        let justPastSevenDays = try #require(Calendar.current.date(byAdding: .day, value: -7, to: now))
             .addingTimeInterval(-1)
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: justPastSevenDays)
+        let state = POSCatalogSyncState.syncCompleted(siteID: sampleSiteID, syncDate: justPastSevenDays)
 
         // When
-        let isStale = await sut.isSyncStale(for: sampleSiteID, maxDays: 7)
+        let isStale = state.isStale(maxDays: 7, now: now)
 
         // Then - past threshold should be stale
         #expect(isStale == true)
+    }
+
+    @Test func syncState_hoursSinceLastSync_returns_hours_for_completed_sync() {
+        // Given
+        let now = Date()
+        let fortyTwoHoursAgo = now.addingTimeInterval(-42 * 60 * 60)
+        let state = POSCatalogSyncState.syncCompleted(siteID: sampleSiteID, syncDate: fortyTwoHoursAgo)
+
+        // When
+        let hours = state.hoursSinceLastSync(now: now)
+
+        // Then
+        #expect(hours == 42)
+    }
+
+    @Test func syncState_hoursSinceLastSync_returns_nil_for_non_completed_state() {
+        // Given
+        let state = POSCatalogSyncState.syncNeverDone(siteID: sampleSiteID)
+
+        // When
+        let hours = state.hoursSinceLastSync()
+
+        // Then
+        #expect(hours == nil)
     }
 
     // MARK: - Stop Ongoing Syncs Tests

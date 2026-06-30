@@ -1306,8 +1306,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let analytics = MockPOSAnalytics()
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(analytics: analytics,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1328,8 +1327,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let analytics = MockPOSAnalytics()
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(analytics: analytics,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1349,8 +1347,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let siteID: Int64 = 123
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(siteID: siteID,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1359,11 +1356,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.showStaleSyncWarning == true)
 
             // When
-            coordinator.isSyncStaleResult = false
-            await fireOnce { fire in
-                coordinator.onIsSyncStaleCalled = { fire() }
-                coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID), for: siteID)
-            }
+            coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID, syncDate: Date()), for: siteID)
 
             // Then
             #expect(sut.showStaleSyncWarning == false)
@@ -1373,8 +1366,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let siteID: Int64 = 123
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(siteID: siteID,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1383,16 +1375,29 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.showStaleSyncWarning == true)
 
             // When
-            coordinator.isSyncStaleResult = false
-            coordinator.onIsSyncStaleCalled = {
-                #expect(Bool(false))
-            }
             coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
-            await Task.yield()
-            coordinator.onIsSyncStaleCalled = nil
 
             // Then
             #expect(sut.showStaleSyncWarning == true)
+        }
+
+        @Test func staleSyncWarning_when_fresh_full_sync_fails_then_does_not_show_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date()
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == false)
+
+            // When
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
         }
     }
 

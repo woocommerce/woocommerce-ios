@@ -599,8 +599,9 @@ private extension PointOfSaleDashboardView {
 
     /// Presents the exit confirmation, gated on `.exitPOS` via manager override.
     func requestExitPermission() {
-        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { viaOverride in
-            guard viaOverride else {
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { approver in
+            guard approver != nil else {
+                // The operator already held `.exitPOS` — no override modal was shown.
                 showExitPOSModal = true
                 return
             }

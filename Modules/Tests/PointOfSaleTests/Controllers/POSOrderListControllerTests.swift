@@ -1205,7 +1205,7 @@ final class POSOrderListControllerTests {
     @Test func processRefund_when_override_approver_recorded_then_attributes_actor_to_approver_and_initiator_to_operator() async throws {
         // Given a cashier operator and a manager who authorized the refund via override
         let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
-                                     capabilities: [POSCapability.processSales.rawValue])
+                                     capabilities: [])
         let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
                                 capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         let controller = makeRefundController(currentStaff: operatorStaff)
@@ -1241,7 +1241,7 @@ final class POSOrderListControllerTests {
     @Test func processRefund_does_not_carry_an_earlier_override_approver_into_a_later_refund() async throws {
         // Given a first refund authorized via override (its session ends when it submits)
         let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
-                                     capabilities: [POSCapability.processSales.rawValue])
+                                     capabilities: [])
         let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
                                 capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         let controller = makeRefundController(currentStaff: operatorStaff)

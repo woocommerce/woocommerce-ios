@@ -108,7 +108,6 @@ final class DashboardViewModel: ObservableObject {
     private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
-    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
@@ -167,7 +166,6 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
@@ -204,7 +202,6 @@ final class DashboardViewModel: ObservableObject {
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
-        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
         self.aiAssistantEligibilityChecker = aiAssistantEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -819,11 +816,7 @@ private extension DashboardViewModel {
                     return false
                 }
 
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .productsStockDashboardCard,
-                        for: site
-                    )
+                return true
             }
             .assign(to: &$isEligibleForStock)
     }
@@ -839,11 +832,7 @@ private extension DashboardViewModel {
                     return false
                 }
 
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .storeSetupDashboardCard,
-                        for: site
-                    )
+                return true
             }
             .assign(to: &$isEligibleForStoreSetup)
     }

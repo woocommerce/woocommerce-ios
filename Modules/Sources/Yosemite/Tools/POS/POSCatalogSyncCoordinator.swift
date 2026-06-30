@@ -928,6 +928,7 @@ private extension POSCatalogSyncCoordinator {
 
     func emitFullSyncProgress(_ progress: POSCatalogSyncProgress, for siteID: Int64) async {
         let currentState = await fullSyncStateModel.state[siteID]
+        let progress = currentState.progressByPreservingItemCount(whenReceiving: progress)
         switch currentState {
         case .initialSyncStarted, .initialSyncProgress, .syncNeverDone:
             await emitSyncState(.initialSyncProgress(siteID: siteID, progress: progress))
@@ -935,6 +936,27 @@ private extension POSCatalogSyncCoordinator {
             await emitSyncState(.syncProgress(siteID: siteID, progress: progress))
         default:
             break
+        }
+    }
+}
+
+private extension Optional where Wrapped == POSCatalogSyncState {
+    func progressByPreservingItemCount(whenReceiving progress: POSCatalogSyncProgress) -> POSCatalogSyncProgress {
+        guard progress == .preparing else {
+            return progress
+        }
+
+        switch self {
+        case .some(.initialSyncProgress(_, let currentProgress)),
+                .some(.syncProgress(_, let currentProgress)):
+            switch currentProgress {
+            case .itemCount:
+                return currentProgress
+            case .preparing:
+                return progress
+            }
+        default:
+            return progress
         }
     }
 }

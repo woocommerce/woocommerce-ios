@@ -5,8 +5,10 @@ import Storage
 public final class FeatureFlagStore: Store {
     private let remote: FeatureFlagRemoteProtocol
     private let overrideStore: RemoteFeatureFlagOverrideStore?
-    private var cachedFeatureFlags: [RemoteFeatureFlag: Bool]?
-    private var cacheTimestamp: Date?
+    private let currentSiteIDProvider: @MainActor () -> Int64?
+    private let activePluginVersionsProvider: @MainActor (Int64?) -> [String: String]
+    private var cachedFeatureFlagsByContext: [FeatureFlagContext: CacheEntry] = [:]
+    private var activePluginVersionsBySite: [SiteContext: [String: String]] = [:]
     private let cacheMaxAge: TimeInterval
     private let currentDate: () -> Date
 
@@ -16,11 +18,15 @@ public final class FeatureFlagStore: Store {
          remote: FeatureFlagRemoteProtocol,
          overrideStore: RemoteFeatureFlagOverrideStore? = nil,
          cacheMaxAge: TimeInterval = 24 * 60 * 60,
-         currentDate: @escaping () -> Date = { Date() }) {
+         currentDate: @escaping () -> Date = { Date() },
+         currentSiteIDProvider: @escaping @MainActor () -> Int64? = { nil },
+         activePluginVersionsProvider: @escaping @MainActor (Int64?) -> [String: String] = { _ in [:] }) {
         self.remote = remote
         self.cacheMaxAge = cacheMaxAge
         self.currentDate = currentDate
         self.overrideStore = overrideStore
+        self.currentSiteIDProvider = currentSiteIDProvider
+        self.activePluginVersionsProvider = activePluginVersionsProvider
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -37,12 +43,16 @@ public final class FeatureFlagStore: Store {
     public convenience init(dispatcher: Dispatcher,
                             storageManager: StorageManagerType,
                             network: Network,
-                            overrideStore: RemoteFeatureFlagOverrideStore?) {
+                            overrideStore: RemoteFeatureFlagOverrideStore?,
+                            currentSiteIDProvider: @escaping @MainActor () -> Int64? = { nil },
+                            activePluginVersionsProvider: @escaping @MainActor (Int64?) -> [String: String] = { _ in [:] }) {
         self.init(dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
                   remote: FeatureFlagRemote(network: network),
-                  overrideStore: overrideStore)
+                  overrideStore: overrideStore,
+                  currentSiteIDProvider: currentSiteIDProvider,
+                  activePluginVersionsProvider: activePluginVersionsProvider)
     }
 
     // MARK: - Actions
@@ -66,6 +76,8 @@ public final class FeatureFlagStore: Store {
         switch action {
         case let .isRemoteFeatureFlagEnabled(featureFlag, defaultValue, useCache, completion):
             isRemoteFeatureFlagEnabled(featureFlag, defaultValue: defaultValue, useCache: useCache, completion: completion)
+        case let .refreshRemoteFeatureFlags(siteID, activePluginVersions, completion):
+            refreshRemoteFeatureFlags(siteID: siteID, activePluginVersions: activePluginVersions, completion: completion)
         }
     }
 }
@@ -73,9 +85,8 @@ public final class FeatureFlagStore: Store {
 // MARK: - Services
 //
 private extension FeatureFlagStore {
-    var isCacheExpired: Bool {
-        guard let cacheTimestamp else { return true }
-        return currentDate().timeIntervalSince(cacheTimestamp) >= cacheMaxAge
+    func isCacheExpired(_ entry: CacheEntry) -> Bool {
+        currentDate().timeIntervalSince(entry.timestamp) >= cacheMaxAge
     }
 
     func isRemoteFeatureFlagEnabled(_ featureFlag: RemoteFeatureFlag,
@@ -88,25 +99,95 @@ private extension FeatureFlagStore {
             return
         }
 
-        if useCache, let cachedFlags = cachedFeatureFlags, !isCacheExpired {
-            completion(cachedFlags[featureFlag] ?? defaultValue)
-            return
-        }
-
         Task { @MainActor in
+            let context = currentContext()
+
+            if useCache, let entry = cachedFeatureFlagsByContext[context], !isCacheExpired(entry) {
+                completion(entry.featureFlags[featureFlag] ?? defaultValue)
+                return
+            }
+
             do {
-                let featureFlags = try await remote.loadAllFeatureFlags()
-                await MainActor.run {
-                    self.cachedFeatureFlags = featureFlags
-                    self.cacheTimestamp = self.currentDate()
-                    completion(featureFlags[featureFlag] ?? defaultValue)
-                }
+                let featureFlags = try await remote.loadAllFeatureFlags(activePluginVersions: context.activePluginVersionsDictionary)
+                cachedFeatureFlagsByContext[context] = CacheEntry(featureFlags: featureFlags, timestamp: currentDate())
+                completion(featureFlags[featureFlag] ?? defaultValue)
             } catch {
                 DDLogError("⛔️ FeatureFlagStore: Failed to load feature flags with error: \(error)")
-                await MainActor.run {
-                    completion(defaultValue)
-                }
+                completion(defaultValue)
             }
         }
+    }
+
+    func refreshRemoteFeatureFlags(siteID: Int64?,
+                                   activePluginVersions: [String: String],
+                                   completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            let siteContext = SiteContext(siteID: siteID)
+            activePluginVersionsBySite[siteContext] = activePluginVersions
+            let context = FeatureFlagContext(siteContext: siteContext, activePluginVersions: activePluginVersions)
+
+            do {
+                let featureFlags = try await remote.loadAllFeatureFlags(activePluginVersions: activePluginVersions)
+                cachedFeatureFlagsByContext[context] = CacheEntry(featureFlags: featureFlags, timestamp: currentDate())
+                completion(.success(()))
+            } catch {
+                DDLogError("⛔️ FeatureFlagStore: Failed to refresh feature flags with error: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+
+    @MainActor
+    func currentContext() -> FeatureFlagContext {
+        let siteID = currentSiteIDProvider()
+        let siteContext = SiteContext(siteID: siteID)
+        let activePluginVersions = activePluginVersionsBySite[siteContext] ?? activePluginVersionsProvider(siteID)
+        return FeatureFlagContext(siteContext: siteContext, activePluginVersions: activePluginVersions)
+    }
+}
+
+private struct CacheEntry {
+    let featureFlags: [RemoteFeatureFlag: Bool]
+    let timestamp: Date
+}
+
+private enum SiteContext: Hashable {
+    case noSite
+    case site(Int64)
+
+    init(siteID: Int64?) {
+        if let siteID {
+            self = .site(siteID)
+        } else {
+            self = .noSite
+        }
+    }
+}
+
+private struct FeatureFlagContext: Hashable {
+    let siteContext: SiteContext
+    let activePluginVersions: [PluginVersion]
+
+    init(siteContext: SiteContext, activePluginVersions: [String: String]) {
+        self.siteContext = siteContext
+        self.activePluginVersions = activePluginVersions
+            .map { PluginVersion(plugin: $0.key, version: $0.value) }
+            .sorted()
+    }
+
+    var activePluginVersionsDictionary: [String: String] {
+        Dictionary(uniqueKeysWithValues: activePluginVersions.map { ($0.plugin, $0.version) })
+    }
+}
+
+private struct PluginVersion: Hashable, Comparable {
+    let plugin: String
+    let version: String
+
+    static func < (lhs: PluginVersion, rhs: PluginVersion) -> Bool {
+        if lhs.plugin == rhs.plugin {
+            return lhs.version < rhs.version
+        }
+        return lhs.plugin < rhs.plugin
     }
 }

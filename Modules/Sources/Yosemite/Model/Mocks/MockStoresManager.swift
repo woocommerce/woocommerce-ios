@@ -171,6 +171,8 @@ public class MockStoresManager: StoresManager {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         default:
             let message = "⚠️ [MockStoresManager] Unhandled action type: \(action.identifier) \(String(describing: action))"

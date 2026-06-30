@@ -16,6 +16,8 @@ final class FeatureFlagStoreTests: XCTestCase {
     private var remote: MockFeatureFlagRemote!
     private var store: FeatureFlagStore!
     private var currentDate: Date!
+    private var currentSiteID: Int64?
+    private var activePluginVersions: [String: String]!
 
     override func setUp() {
         super.setUp()
@@ -24,11 +26,15 @@ final class FeatureFlagStoreTests: XCTestCase {
         network = MockNetwork()
         remote = MockFeatureFlagRemote()
         currentDate = Date()
+        currentSiteID = nil
+        activePluginVersions = [:]
         store = FeatureFlagStore(dispatcher: dispatcher,
                                  storageManager: storageManager,
                                  network: network,
                                  remote: remote,
-                                 currentDate: { self.currentDate })
+                                 currentDate: { self.currentDate },
+                                 currentSiteIDProvider: { self.currentSiteID },
+                                 activePluginVersionsProvider: { _ in self.activePluginVersions })
     }
 
     override func tearDown() {
@@ -38,6 +44,8 @@ final class FeatureFlagStoreTests: XCTestCase {
         storageManager = nil
         dispatcher = nil
         currentDate = nil
+        currentSiteID = nil
+        activePluginVersions = nil
         super.tearDown()
     }
 
@@ -159,6 +167,96 @@ final class FeatureFlagStoreTests: XCTestCase {
         // Then - should fetch from remote and return the new value (false)
         XCTAssertFalse(isEnabled)
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
+    }
+
+    func test_isRemoteFeatureFlagEnabled_when_site_changes_does_not_return_previous_site_cached_value() throws {
+        // Given
+        currentSiteID = 1
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+        let firstSiteValue = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { result in
+                    promise(result)
+                })
+        }
+        XCTAssertTrue(firstSiteValue)
+
+        // When
+        currentSiteID = 2
+        remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout()))
+        let secondSiteValue = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { result in
+                    promise(result)
+                })
+        }
+
+        // Then
+        XCTAssertFalse(secondSiteValue)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
+    }
+
+    func test_isRemoteFeatureFlagEnabled_when_active_plugin_versions_change_uses_separate_cache_context() throws {
+        // Given
+        currentSiteID = 1
+        activePluginVersions = ["woocommerce/woocommerce.php": "10.9.2"]
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+        let firstVersionValue = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { result in
+                    promise(result)
+                })
+        }
+        XCTAssertTrue(firstVersionValue)
+
+        // When
+        activePluginVersions = ["woocommerce/woocommerce.php": "9.9.0"]
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: false]))
+        let secondVersionValue = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: true, useCache: true) { result in
+                    promise(result)
+                })
+        }
+
+        // Then
+        XCTAssertFalse(secondVersionValue)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
+        XCTAssertEqual(remote.activePluginVersions, [
+            ["woocommerce/woocommerce.php": "10.9.2"],
+            ["woocommerce/woocommerce.php": "9.9.0"]
+        ])
+    }
+
+    func test_refreshRemoteFeatureFlags_with_empty_plugin_versions_keeps_selected_site_context_empty_for_lazy_reads() throws {
+        // Given
+        currentSiteID = 1
+        activePluginVersions = ["woocommerce/woocommerce.php": "10.9.2"]
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: false]))
+
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .refreshRemoteFeatureFlags(siteID: 1, activePluginVersions: [:]) { result in
+                    if case let .failure(error) = result {
+                        XCTFail("Expected refresh to succeed, received \(error)")
+                    }
+                    promise(())
+                })
+        }
+
+        // When
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+        let isEnabled = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: true, useCache: true) { result in
+                    promise(result)
+                })
+        }
+
+        // Then
+        XCTAssertFalse(isEnabled)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
+        XCTAssertEqual(remote.activePluginVersions, [[:]])
     }
 
     func test_isRemoteFeatureFlagEnabled_when_cache_is_not_expired_returns_cached_value() throws {

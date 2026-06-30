@@ -11,6 +11,9 @@ struct PointOfSalePaymentSuccessView: View {
 
     @State private var isViewLoaded: Bool = false
     @State private var showPrinterSetupModal: Bool = false
+    /// Set when Print is tapped without a connected printer, so connecting via the inline setup
+    /// modal prints the receipt automatically instead of making the merchant tap Print again.
+    @State private var pendingPrintAfterSetup: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -43,13 +46,30 @@ struct PointOfSalePaymentSuccessView: View {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
             }
         }
+        .onChange(of: posModel.isReceiptPrinterConnected) { _, isConnected in
+            guard isConnected, pendingPrintAfterSetup else { return }
+            pendingPrintAfterSetup = false
+            printReceipt()
+        }
+        .onChange(of: showPrinterSetupModal) { _, isShowing in
+            // Merchant backed out of setup without connecting — drop the pending print so a later
+            // unrelated connection can't trigger an unexpected print.
+            if !isShowing, !posModel.isReceiptPrinterConnected {
+                pendingPrintAfterSetup = false
+            }
+        }
     }
 
     private func handlePrintReceiptTap() {
         guard posModel.isReceiptPrinterConnected else {
+            pendingPrintAfterSetup = true
             showPrinterSetupModal = true
             return
         }
+        printReceipt()
+    }
+
+    private func printReceipt() {
         // Print-failure UX (retry + email fallback) is deferred to a follow-up; log for now.
         Task {
             do {

@@ -37,12 +37,12 @@ import WidgetKit
 struct StoreInfoMediumMetricsContainerView_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoMediumMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .previewDisplayName("Medium")
 
         StoreInfoMediumMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .environment(\.dynamicTypeSize, .accessibility1)
             .previewDisplayName("Medium - Accessibility font")

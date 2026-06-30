@@ -79,12 +79,12 @@ import WidgetKit
 struct StoreInfoMetricsLogoHeader_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoMetricsLogoHeader(data: StoreInfoMetricsView_Previews.exampleData)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemMedium))
             .previewDisplayName("With range")
 
         StoreInfoMetricsLogoHeader(data: StoreInfoMetricsView_Previews.exampleData, showsRange: false)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Without range")
     }

@@ -373,34 +373,34 @@ private func sampleData() -> [MetricChartPoint] {
     MetricChartView(data: sampleData(), style: .sparkline, tone: .up)
         .frame(width: 60, height: 20)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
 }
 
 #Preview("Sparkline down") {
     MetricChartView(data: sampleData(), style: .sparkline, tone: .down)
         .frame(width: 60, height: 20)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
 }
 
 #Preview("Bar up") {
     MetricChartView(data: sampleData(), style: .bar, tone: .up)
         .frame(width: 200, height: 40)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
 }
 
 #Preview("Bar down") {
     MetricChartView(data: sampleData(), style: .bar, tone: .down)
         .frame(width: 200, height: 40)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
 }
 
 #Preview("Bar on primary") {
     MetricChartView(data: sampleData(), style: .barOnPrimary)
         .frame(width: 200, height: 40)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
 }
 #endif

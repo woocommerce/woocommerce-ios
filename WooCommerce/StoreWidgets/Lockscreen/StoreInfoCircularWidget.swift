@@ -30,7 +30,7 @@ private struct StoreInfoCircularView: View {
                 .fill(Color.black)
             Text(entryData.revenueCompact)
         }
-        .widgetBackground(backgroundView: Color(.brand))
+        .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
     }
 }
 

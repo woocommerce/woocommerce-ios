@@ -52,12 +52,12 @@ import WidgetKit
 struct StoreInfoSmallMetricsContainerView_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .previewDisplayName("Small")
 
         StoreInfoSmallMetricsContainerView(data: StoreInfoMetricsView_Previews.exampleData)
-            .widgetBackground(backgroundView: Color(.brand))
+            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .environment(\.dynamicTypeSize, .accessibility1)
             .previewDisplayName("Small - Accessibility font")

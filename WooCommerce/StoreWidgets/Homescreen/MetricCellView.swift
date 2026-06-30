@@ -96,7 +96,7 @@ struct MetricCellView_Previews: PreviewProvider {
         }
         .frame(width: 180)
         .padding()
-        .background(Color(.brand))
+        .background(StoreWidgetAppearance.brandColor)
         .previewLayout(.sizeThatFits)
     }
 }

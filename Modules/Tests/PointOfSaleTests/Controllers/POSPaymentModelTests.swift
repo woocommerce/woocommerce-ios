@@ -1169,6 +1169,36 @@ struct POSPaymentModelTests {
         #expect(sut.paymentState.cash == .collectingCash)
     }
 
+    @Test("reader disconnection observer does not restart card payment during cash flow")
+    @MainActor
+    func observeReaderReconnection_whenCashPaymentActive_doesNotStartCardPaymentOnReconnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+        sut.observeReaderReconnection()
+        sut.startCashPayment()
+
+        // When
+        service.connectedReader = nil
+        await Task.yield()
+        await Task.yield()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        await Task.yield()
+        await Task.yield()
+
+        // Then
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState.cash == .collectingCash)
+    }
+
     // MARK: - Card Events During Cash Flow
 
     @Test("preparingReader card event during cash flow does not exit cash")

@@ -46,6 +46,17 @@ struct PointOfSalePaymentState: Equatable {
         }
     }
 
+    var disablesCardReaderConnectionControl: Bool {
+        card.disablesCardReaderConnectionControl
+    }
+
+    var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
+        guard cash == .idle, scanToPay == .idle, markAsPaid == .idle else {
+            return false
+        }
+        return card.allowsAutomaticCardPaymentStartOnReaderChange
+    }
+
     var isSuccess: Bool {
         if case .cardPaymentSuccessful = card { return true }
         if cash == .paymentSuccess { return true }
@@ -216,6 +227,40 @@ extension PointOfSaleCardPaymentState {
                 .preparingReader,
                 .acceptingCard,
                 .cardInserted:
+            return false
+        }
+    }
+
+    var disablesCardReaderConnectionControl: Bool {
+        switch self {
+        case .processingPayment:
+            return true
+        case .idle,
+                .validatingOrder,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .preparingReader,
+                .acceptingCard,
+                .cardInserted,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
+
+    var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
+        switch self {
+        case .idle,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .paymentError:
+            return true
+        case .validatingOrder,
+                .preparingReader,
+                .acceptingCard,
+                .cardInserted,
+                .processingPayment,
+                .cardPaymentSuccessful:
             return false
         }
     }

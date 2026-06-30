@@ -3,17 +3,26 @@ import Foundation
 /// Protocol for `FeatureFlagsRemote` mainly used for mocking.
 ///
 public protocol FeatureFlagRemoteProtocol {
-    func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool]
+    func loadAllFeatureFlags(activePluginVersions: [String: String]) async throws -> [RemoteFeatureFlag: Bool]
+}
+
+public extension FeatureFlagRemoteProtocol {
+    func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
+        try await loadAllFeatureFlags(activePluginVersions: [:])
+    }
 }
 
 /// Feature Flags: Remote Endpoints
 ///
 public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
-    public func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
-        let parameters: [String: String] = [
-            ParameterKeys.platform: "ios",
-            ParameterKeys.marketingVersion: Bundle.main.marketingVersion,
+    public func loadAllFeatureFlags(activePluginVersions: [String: String] = [:]) async throws -> [RemoteFeatureFlag: Bool] {
+        var parameters: RequestParameterDictionary = [
+            ParameterKeys.platform: .string("ios"),
+            ParameterKeys.marketingVersion: .string(Bundle.main.marketingVersion),
         ]
+        activePluginVersions.forEach { plugin, version in
+            parameters[ParameterKeys.activePluginVersion(plugin: plugin)] = .string(version)
+        }
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Paths.lookup, parameters: parameters)
         let valuesByFeatureFlagString: [String: Bool] = try await enqueue(request)
@@ -91,5 +100,9 @@ private extension FeatureFlagRemote {
     enum ParameterKeys {
         static let platform = "platform"
         static let marketingVersion = "marketing_version"
+
+        static func activePluginVersion(plugin: String) -> String {
+            "active_plugin_versions[\(plugin)]"
+        }
     }
 }

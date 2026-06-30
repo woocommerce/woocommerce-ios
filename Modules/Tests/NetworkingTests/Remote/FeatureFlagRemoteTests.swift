@@ -37,6 +37,32 @@ final class FeatureFlagRemoteTests: XCTestCase {
         ])
     }
 
+    func test_loadAllFeatureFlags_with_active_plugin_versions_sends_bracketed_query_parameters() async throws {
+        // Given
+        let remote = FeatureFlagRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
+
+        // When
+        _ = try await remote.loadAllFeatureFlags(activePluginVersions: ["woocommerce/woocommerce.php": "10.9.2"])
+
+        // Then
+        let queryItems = try requestQueryItems()
+        XCTAssertEqual(queryItems["active_plugin_versions[woocommerce/woocommerce.php]"], "10.9.2")
+    }
+
+    func test_loadAllFeatureFlags_without_active_plugin_versions_does_not_send_plugin_parameters() async throws {
+        // Given
+        let remote = FeatureFlagRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
+
+        // When
+        _ = try await remote.loadAllFeatureFlags()
+
+        // Then
+        let queryItems = try requestQueryItems()
+        XCTAssertNil(queryItems["active_plugin_versions[woocommerce/woocommerce.php]"])
+    }
+
     func test_loadAllFeatureFlags_returns_empty_dictionary_when_response_does_not_include_known_flags() async throws {
         // Given
         let remote = FeatureFlagRemote(network: network)
@@ -104,5 +130,12 @@ final class FeatureFlagRemoteTests: XCTestCase {
 
         // Then
         XCTAssertNil(flag)
+    }
+
+    private func requestQueryItems() throws -> [String: String] {
+        let request = try XCTUnwrap(network.requestsForResponseData.first)
+        let url = try XCTUnwrap(try request.asURLRequest().url)
+        let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        return Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).map { ($0.name, $0.value ?? "") })
     }
 }

@@ -1023,6 +1023,7 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: DERIVED_DATA_DIR,
+      buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       build_for_testing: true,
       device: device,
       deployment_target_version: ios_version

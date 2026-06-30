@@ -16,9 +16,25 @@ steps:
     key: build
     command: .buildkite/commands/build-for-testing.sh
     plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - fastlane/logs/**/*
     notify:
       - github_commit_status:
           context: Build
+
+  - label: ":warning: Build Warning Baseline"
+    key: build-warning-baseline
+    command: .buildkite/commands/build-warning-baseline.sh
+    if: build.pull_request.id != null
+    plugins: [$CI_TOOLKIT]
+
+  - label: ":warning: Build Warning Count"
+    command: .buildkite/commands/comment-build-warning-increase.sh
+    depends_on:
+      - build
+      - build-warning-baseline
+    if: build.pull_request.id != null
+    plugins: [$CI_TOOLKIT]
 
   #################
   # Create Prototype Build

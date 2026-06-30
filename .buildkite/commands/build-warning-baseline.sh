@@ -1,0 +1,100 @@
+#!/bin/bash -eu
+
+set -o pipefail
+
+BASELINE_REPORT_PATH="${1:-build/base-build-warnings.json}"
+BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-trunk}"
+SCOPE="owned_app_and_modules"
+COMMANDS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+is_pull_request() {
+  [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]
+}
+
+if ! is_pull_request; then
+  echo "Not a pull request build; skipping build warning baseline."
+  exit 0
+fi
+
+if "$COMMANDS_DIR/should-skip-job.sh" --job-type build; then
+  exit 0
+fi
+
+echo "--- :git: Resolve build warning baseline"
+git fetch --no-tags origin "$BASE_BRANCH"
+
+BASE_REF="origin/$BASE_BRANCH"
+BASE_COMMIT="$(git merge-base HEAD "$BASE_REF")"
+SHORT_BASE_COMMIT="${BASE_COMMIT:0:12}"
+echo "Using $SHORT_BASE_COMMIT as the build warning baseline for $BASE_BRANCH."
+
+mkdir -p "$(dirname "$BASELINE_REPORT_PATH")"
+
+COUNT_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/count-build-warnings.sh" | awk '{print $1}')"
+CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH")
+CACHE_KEY="$(printf '%s\n' "${CACHE_KEY_PARTS[@]}" | shasum | awk '{print $1}')"
+CACHE_DIR="${BUILD_WARNING_BASELINE_CACHE_DIR:-$HOME/.cache/woocommerce-ios/build-warning-baselines}"
+CACHE_PATH="$CACHE_DIR/$CACHE_KEY.json"
+
+if [[ "$BASELINE_REPORT_PATH" = /* ]]; then
+  ABSOLUTE_BASELINE_REPORT_PATH="$BASELINE_REPORT_PATH"
+else
+  ABSOLUTE_BASELINE_REPORT_PATH="$REPO_ROOT/$BASELINE_REPORT_PATH"
+fi
+
+cache_matches_baseline() {
+  local report_path=$1
+  jq -e \
+    --arg base_commit "$BASE_COMMIT" \
+    --arg scope "$SCOPE" \
+    '.baseline_commit == $base_commit and .scope == $scope and (.count | type == "number")' \
+    "$report_path" >/dev/null
+}
+
+if [ -f "$CACHE_PATH" ] && cache_matches_baseline "$CACHE_PATH"; then
+  echo "Reusing cached build warning baseline for $SHORT_BASE_COMMIT."
+  cp "$CACHE_PATH" "$BASELINE_REPORT_PATH"
+  upload_artifact "$BASELINE_REPORT_PATH"
+  exit 0
+fi
+
+BASE_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/woo-warning-base.XXXXXX")"
+rm -rf "$BASE_WORKTREE"
+
+cleanup() {
+  git worktree remove --force "$BASE_WORKTREE" 2>/dev/null || rm -rf "$BASE_WORKTREE"
+}
+trap cleanup EXIT
+
+git worktree add --detach "$BASE_WORKTREE" "$BASE_COMMIT"
+
+pushd "$BASE_WORKTREE"
+
+"$BASE_WORKTREE/.buildkite/commands/shared-set-up.sh"
+
+echo "--- :writing_hand: Copy Files"
+mkdir -pv ~/.configure/woocommerce-ios/secrets
+cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
+rm -rf fastlane/logs
+
+echo "--- :hammer_and_wrench: Building baseline"
+SCAN_BUILDLOG_PATH="$BASE_WORKTREE/fastlane/logs" bundle exec fastlane build_for_testing
+
+echo "--- :warning: Count baseline build warnings"
+"$COMMANDS_DIR/count-build-warnings.sh" fastlane/logs "$ABSOLUTE_BASELINE_REPORT_PATH"
+
+popd
+
+baseline_report_tmp="$(mktemp)"
+jq \
+  --arg base_branch "$BASE_BRANCH" \
+  --arg base_commit "$BASE_COMMIT" \
+  '. + {base_branch: $base_branch, baseline_commit: $base_commit}' \
+  "$BASELINE_REPORT_PATH" > "$baseline_report_tmp"
+mv "$baseline_report_tmp" "$BASELINE_REPORT_PATH"
+
+mkdir -p "$CACHE_DIR"
+cp "$BASELINE_REPORT_PATH" "$CACHE_PATH"
+
+upload_artifact "$BASELINE_REPORT_PATH"

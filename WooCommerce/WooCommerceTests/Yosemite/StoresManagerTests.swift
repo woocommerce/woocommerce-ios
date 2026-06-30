@@ -241,6 +241,59 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(sessionManager.defaultStoreID, 456, "Store ID should be updated to the new store")
     }
 
+    @MainActor
+    func test_refreshRemoteFeatureFlags_dispatches_active_woocommerce_plugin_version_from_system_information() async {
+        // Given
+        let manager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        let siteID: Int64 = 134
+        let systemInformation = SystemInformation(systemPlugins: [
+            SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "10.9.2", active: true),
+            SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", version: "14.0", active: true)
+        ])
+        var capturedSiteID: Int64?
+        var capturedActivePluginVersions: [String: String]?
+        manager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .refreshRemoteFeatureFlags(siteID, activePluginVersions, completion):
+                capturedSiteID = siteID
+                capturedActivePluginVersions = activePluginVersions
+                completion(.success(()))
+            case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
+                completion(defaultValue)
+            }
+        }
+
+        // When
+        await manager.refreshRemoteFeatureFlags(siteID: siteID, systemInformation: systemInformation)
+
+        // Then
+        XCTAssertEqual(capturedSiteID, siteID)
+        XCTAssertEqual(capturedActivePluginVersions, ["woocommerce/woocommerce.php": "10.9.2"])
+    }
+
+    @MainActor
+    func test_refreshRemoteFeatureFlags_dispatches_empty_plugin_versions_when_system_information_sync_failed() async {
+        // Given
+        let manager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        let siteID: Int64 = 134
+        var capturedActivePluginVersions: [String: String]?
+        manager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .refreshRemoteFeatureFlags(_, activePluginVersions, completion):
+                capturedActivePluginVersions = activePluginVersions
+                completion(.success(()))
+            case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
+                completion(defaultValue)
+            }
+        }
+
+        // When
+        await manager.refreshRemoteFeatureFlags(siteID: siteID, systemInformation: nil)
+
+        // Then
+        XCTAssertEqual(capturedActivePluginVersions, [:])
+    }
+
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {

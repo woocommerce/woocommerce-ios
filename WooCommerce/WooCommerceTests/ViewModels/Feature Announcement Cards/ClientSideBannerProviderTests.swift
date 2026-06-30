@@ -40,6 +40,8 @@ final class ClientSideBannerProviderTests: XCTestCase {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -239,6 +241,8 @@ final class ClientSideBannerProviderTests: XCTestCase {
                 } else {
                     onCompletion(false)
                 }
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
     }

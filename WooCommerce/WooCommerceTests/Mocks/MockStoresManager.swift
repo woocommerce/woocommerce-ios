@@ -58,8 +58,11 @@ final class MockStoresManager: DefaultStoresManager {
         switch action {
         case let action as FeatureFlagAction:
             // Mirror `FeatureFlagStore`: with no remote override configured, resolve to the local default.
-            if case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion) = action {
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
                 completion(defaultValue)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         default:
             break

@@ -65,6 +65,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
                 capturedDefaultValue = defaultValue
                 completion(defaultValue)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -88,6 +90,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(featureFlag, _, _, completion):
                 capturedFeatureFlag = featureFlag
                 completion(false)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -111,6 +115,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, _, useCache, completion):
                 capturedUseCache = useCache
                 completion(false)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -146,6 +152,8 @@ private extension WooPushNotificationEligibilityCheckTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(isEnabled)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
     }

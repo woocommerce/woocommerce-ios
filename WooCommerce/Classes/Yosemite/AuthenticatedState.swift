@@ -63,6 +63,9 @@ class AuthenticatedState: StoresManagerState {
             selectedSite: site,
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
         )
+        let activePluginVersionsProvider = WooCommerceActivePluginVersionsProvider(
+            pluginsService: PluginsService(storageManager: storageManager)
+        )
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -78,7 +81,11 @@ class AuthenticatedState: StoresManagerState {
             FeatureFlagStore(dispatcher: dispatcher,
                             storageManager: storageManager,
                             network: network,
-                            overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore),
+                            overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore,
+                            currentSiteIDProvider: { sessionManager.defaultStoreID },
+                            activePluginVersionsProvider: { siteID in
+                                activePluginVersionsProvider.activePluginVersions(siteID: siteID)
+                            }),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

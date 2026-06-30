@@ -572,6 +572,8 @@ extension POSTabVisibilityCheckerTests {
                 default:
                     completion(false)
                 }
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
     }

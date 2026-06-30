@@ -25,6 +25,8 @@ final class LocalNotificationSchedulerTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is enabled.
                 completion(true)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -45,6 +47,8 @@ final class LocalNotificationSchedulerTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is disabled.
                 completion(false)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 
@@ -78,6 +82,8 @@ final class LocalNotificationSchedulerTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is enabled.
                 completion(true)
+            case let .refreshRemoteFeatureFlags(_, _, completion):
+                completion(.success(()))
             }
         }
 

@@ -861,9 +861,10 @@ private extension DefaultStoresManager {
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 async let orderStatuses = retrieveOrderStatus(with: siteID)
-                async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
+                let systemInformation = await fetchSystemInformationAndRetryIfFails(siteID: siteID)
+                await refreshRemoteFeatureFlags(siteID: siteID, systemInformation: systemInformation)
 
-                trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
+                trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: systemInformation?.systemPlugins)
 
                 // Batch 3 (after batch 2 completes): Non-essential data.
                 synchronizePaymentGateways(siteID: siteID)
@@ -1040,6 +1041,24 @@ private extension DefaultStoresManager {
             trackedEligibleSites.remove(siteID)
         }
         ServiceLocator.analytics.track(.jetpackSiteFlaggedUnsupportedForAppPasswords, withProperties: properties)
+    }
+}
+
+
+extension DefaultStoresManager {
+    /// Refreshes remote feature flags for the selected site context after the latest system information sync attempt.
+    @MainActor
+    func refreshRemoteFeatureFlags(siteID: Int64, systemInformation: SystemInformation?) async {
+        let activePluginVersions = WooCommerceActivePluginVersionsProvider.activePluginVersions(from: systemInformation?.systemPlugins ?? [])
+
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            dispatch(FeatureFlagAction.refreshRemoteFeatureFlags(siteID: siteID, activePluginVersions: activePluginVersions) { result in
+                if case let .failure(error) = result {
+                    DDLogError("⛔️ Failed to refresh remote feature flags for siteID: \(siteID). Error: \(error)")
+                }
+                continuation.resume()
+            })
+        }
     }
 }
 

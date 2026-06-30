@@ -168,12 +168,25 @@ struct DefaultPOSAccessSessionTests {
         #expect(sut.session.allows(.issueRefunds) == false)
     }
 
-    @Test func test_allows_when_no_currentStaff_then_returns_false() {
-        // Given
+    @Test func test_allows_when_gated_but_not_signed_in_then_returns_false() {
+        // Given a session with PIN-backed staff (gating active) but nobody signed in
+        let cache = POSStaffCache(storage: InMemoryStaffStorage())
+        cache.save([makeStaffMember(hasPIN: true)], siteID: 123)
+        let sut = makeSUT(authenticator: MockPOSPINAuthenticator(), cache: cache)
+
+        // When / Then — gating is active and there's no current staff, so access is denied
+        #expect(sut.session.hasAnyPINs == true)
+        #expect(sut.session.allows(.issueRefunds) == false)
+    }
+
+    @Test func test_allows_when_no_pins_cached_then_returns_true() {
+        // Given a roles-enabled session with no PIN-backed staff (gating inactive)
         let sut = makeSUT(authenticator: MockPOSPINAuthenticator())
 
-        // When / Then
-        #expect(sut.session.allows(.issueRefunds) == false)
+        // When / Then — nobody can sign in and no PIN could approve an override, so gating is off
+        #expect(sut.session.hasAnyPINs == false)
+        #expect(sut.session.allows(.issueRefunds) == true)
+        #expect(sut.session.allows(.exitPOS) == true)
     }
 
     @Test func test_lock_when_called_then_persists_true_to_per_site_lock_key() {

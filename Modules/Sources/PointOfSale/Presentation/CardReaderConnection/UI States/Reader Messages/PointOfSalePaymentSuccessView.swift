@@ -14,8 +14,6 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
-    private let printReceiptRouter = POSPrintReceiptButtonRouter()
-
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
     }
@@ -47,12 +45,10 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private func handlePrintReceiptTap() {
-        guard let controller = posModel.settingsController.printerConnectionController else {
+        guard !posModel.isReceiptPrinterConnected else {
             return
         }
-        if printReceiptRouter.action(isPrinterConnected: controller.isConnected) == .presentSetup {
-            showPrinterSetupModal = true
-        }
+        showPrinterSetupModal = true
     }
 
     private var successView: some View {

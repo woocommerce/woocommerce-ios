@@ -9,9 +9,12 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var isViewLoaded: Bool = false
+    @State private var showPrinterSetupModal: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    private let printReceiptRouter = POSPrintReceiptButtonRouter()
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -35,6 +38,18 @@ struct PointOfSalePaymentSuccessView: View {
                 }
                 isTitleFocused = true
             }
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            if let controller = posModel.settingsController.printerConnectionController {
+                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+            }
+        }
+    }
+
+    private func handlePrintReceiptTap() {
+        let isPrinterConnected = posModel.settingsController.printerConnectionController?.isConnected ?? false
+        if printReceiptRouter.shouldPresentSetup(isPrinterConnected: isPrinterConnected) {
+            showPrinterSetupModal = true
         }
     }
 
@@ -85,7 +100,8 @@ struct PointOfSalePaymentSuccessView: View {
                 // Phone: half the screen width is ~190pt, too narrow for "New order" /
                 // "Email receipt" — let them span the container minus standard insets instead.
                 PaymentsActionButtons(successAction: successAction,
-                                      showsPrintReceipt: posModel.receiptPrinter != nil)
+                                      showsPrintReceipt: posModel.receiptPrinter != nil,
+                                      printReceiptAction: handlePrintReceiptTap)
                     .if(horizontalSizeClass != .compact) { view in
                         view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                     }

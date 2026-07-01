@@ -385,6 +385,62 @@ struct POSCatalogFullSyncServiceTests {
         #expect(mockSyncRemote.catalogRequestCallCount == 1)
     }
 
+    @Test func startFullSync_with_catalog_API_reports_preparing_progress_when_generation_is_scheduled() async throws {
+        // Given
+        mockSyncRemote.catalogRequestSequence = [
+            .success(.init(status: .scheduled, downloadURL: nil)),
+            .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
+        ]
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+        let progressRecorder = POSCatalogSyncProgressRecorder()
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID,
+                                        allowCellular: true,
+                                        isBackgroundSync: false,
+                                        onProgress: { progress in
+            await progressRecorder.record(progress)
+        })
+
+        // Then
+        #expect(await progressRecorder.values() == [.preparing])
+    }
+
+    @Test func startFullSync_with_catalog_API_reports_item_count_progress_when_generation_is_in_progress() async throws {
+        // Given
+        mockSyncRemote.catalogRequestSequence = [
+            .success(.init(status: .inProgress, downloadURL: nil, processed: 131, total: 4512)),
+            .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
+        ]
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+        let progressRecorder = POSCatalogSyncProgressRecorder()
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        _ = try await sut.startFullSync(for: sampleSiteID,
+                                        allowCellular: true,
+                                        isBackgroundSync: false,
+                                        onProgress: { progress in
+            await progressRecorder.record(progress)
+        })
+
+        // Then
+        #expect(await progressRecorder.values() == [.itemCount(processed: 131, total: 4512)])
+    }
+
     @Test func startFullSync_when_server_returns_timestamps_without_timezone_then_populates_generationDurationMs() async throws {
         // Given - Initial request already completed, timestamps in server format with no timezone suffix
         mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,
@@ -487,5 +543,17 @@ struct POSCatalogFullSyncServiceTests {
         #expect(POSCatalogFullSyncService.PollingConfig.multiplier == 1.3)
         #expect(POSCatalogFullSyncService.PollingConfig.maxInterval == 20.0)
         #expect(POSCatalogFullSyncService.PollingConfig.backgroundMaxAttempts == 4)
+    }
+}
+
+private actor POSCatalogSyncProgressRecorder {
+    private var recordedValues: [POSCatalogSyncProgress] = []
+
+    func record(_ progress: POSCatalogSyncProgress) {
+        recordedValues.append(progress)
+    }
+
+    func values() -> [POSCatalogSyncProgress] {
+        recordedValues
     }
 }

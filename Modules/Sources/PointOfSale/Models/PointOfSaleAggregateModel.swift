@@ -517,6 +517,15 @@ extension PointOfSaleAggregateModel {
         try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
     }
 
+    /// Loads the store's receipt settings (phone/email/returns policy) once at POS start, so a
+    /// receipt printed after a payment is instant — the print flow reads these cached values instead
+    /// of fetching. No-op when receipt printing is unavailable; fails gracefully otherwise.
+    @MainActor
+    func preloadReceiptStoreInformation() async {
+        guard receiptPrinter != nil else { return }
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+    }
+
     /// Best-effort store details for the printed receipt header, drawn from the POS settings store
     /// view model. Falls back to the store name / address it exposes when receipt-specific settings
     /// aren't populated.

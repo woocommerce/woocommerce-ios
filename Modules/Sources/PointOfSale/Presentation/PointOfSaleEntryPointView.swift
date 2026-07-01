@@ -235,6 +235,10 @@ public struct PointOfSaleEntryPointView: View {
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
+
+            // Warm the store's receipt settings while POS starts up so printing a receipt after a
+            // payment doesn't wait on a fetch.
+            await posModel?.preloadReceiptStoreInformation()
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

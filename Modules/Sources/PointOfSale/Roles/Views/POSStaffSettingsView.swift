@@ -9,13 +9,13 @@ struct POSStaffSettingsView: View {
     let service: POSStaffSettingsService
     /// Gates opening the staff-management web view on `managePOSStaff`. Defaults to running it directly
     /// (previews / no host gate).
-    private let requestManageStaffPermission: (@escaping () -> Void) -> Void
+    private let requestManageStaffPermission: POSPermissionRequest
 
     @State private var state: LoadState = .idle
     @State private var showsManageStaff: Bool = false
 
     init(service: POSStaffSettingsService,
-         requestManageStaffPermission: @escaping (@escaping () -> Void) -> Void = { $0() }) {
+         requestManageStaffPermission: @escaping POSPermissionRequest = { $0() }) {
         self.service = service
         self.requestManageStaffPermission = requestManageStaffPermission
     }

@@ -593,17 +593,12 @@ final class MainTabBarControllerTests: XCTestCase {
         let mockPOSEligibilityService = MockPOSEligibilityService()
         mockPOSEligibilityService.cachedTabVisibility[siteID] = true
 
-        let userDefaults = UserDefaults(suiteName: #function)!
-        userDefaults.removePersistentDomain(forName: #function)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteID, isVisible: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         stores: stores,
                                         posEligibilityService: mockPOSEligibilityService,
-                                        userDefaults: userDefaults,
                                         isPad: false)
         }) else {
             XCTFail("Failed to instantiate MainTabBarController")
@@ -615,28 +610,24 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view) // This triggers viewDidLoad
 
         // Then
-        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .bookings, .hubMenu]
-        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: false, isBookingsTabVisible: true)
+        let expectedTabs: [WooTab] = [.myStore, .orders, .products, .hubMenu]
+        let visibleTabs = WooTab.visibleTabs(isPOSTabVisible: false, isBookingsTabVisible: false)
         XCTAssertEqual(tabBarController.viewControllers?.count, expectedTabs.count)
         XCTAssertEqual(visibleTabs, expectedTabs)
     }
 
-    func test_switching_sites_applies_cached_tab_visibility() throws {
+    @MainActor
+    func test_switching_sites_applies_cached_pos_tab_visibility() throws {
         // Arrange
         let siteA_ID: Int64 = 101
         let siteB_ID: Int64 = 202
 
-        // Site A: POS visible, Bookings not visible
         let mockPOSEligibilityService = MockPOSEligibilityService()
         mockPOSEligibilityService.cachedTabVisibility[siteA_ID] = true
         mockPOSEligibilityService.cachedTabVisibility[siteB_ID] = false
 
-        let userDefaults = UserDefaults(suiteName: #function)!
-        userDefaults.removePersistentDomain(forName: #function)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteA_ID, isVisible: false)
-        userDefaults.cacheBookingsTabVisibility(siteID: siteB_ID, isVisible: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
 
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             MainTabBarController(coder: coder,
@@ -647,10 +638,7 @@ final class MainTabBarControllerTests: XCTestCase {
                                                              eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,
-                                 bookingsEligibilityCheckerFactory: { site in
-                                     BookingsTabEligibilityChecker(site: site, userDefaults: userDefaults)
-                                 },
-                                 userDefaults: userDefaults)
+                                 bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
         }))
 
         // Trigger viewDidLoad
@@ -672,19 +660,18 @@ final class MainTabBarControllerTests: XCTestCase {
         stores.updateDefaultStore(storeID: siteB_ID)
         stores.updateDefaultStore(.fake().copy(siteID: siteB_ID))
 
-        // Assert 2: Site B should have Bookings, but not POS.
-        XCTAssertEqual(tabBarController.viewControllers?.count, 5, "There should be 5 tabs for Site B")
-        XCTAssertTrue(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
-                      "Bookings tab should be visible for Site B")
+        // Assert 2: Site B should not have cached POS or Bookings visibility.
+        XCTAssertEqual(tabBarController.viewControllers?.count, 4, "There should be 4 tabs for Site B")
+        XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is BookingsTabViewHostingController }),
+                       "Bookings tab should not be visible for Site B before eligibility check completes")
         XCTAssertFalse(tabBarController.tabRootViewControllers.contains(where: { $0 is POSTabViewController }),
                        "POS tab should not be visible for Site B")
     }
 
     @MainActor
-    func test_bookings_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
+    func test_bookings_tab_becomes_visible_after_eligibility_check_succeeds() throws {
         // Given
         let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
-        mockBookingsEligibilityChecker.initialVisibility = true
 
         let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
@@ -709,7 +696,13 @@ final class MainTabBarControllerTests: XCTestCase {
         stores.updateDefaultStore(storeID: siteID)
         stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
-        // Then bookings tab is visible before eligibility check is returned
+        // Then bookings tab is hidden before eligibility check is returned
+        XCTAssertEqual(tabBarController.tabRootViewControllers.count, 4)
+
+        // When bookings tab becomes visible
+        mockBookingsEligibilityChecker.setVisibilityResult(true)
+
+        // Then bookings tab is visible
         waitUntil {
             tabBarController.tabRootViewControllers.count == 5
         }
@@ -718,38 +711,6 @@ final class MainTabBarControllerTests: XCTestCase {
             isPOSTabVisible: false,
             isBookingsTabVisible: true
         ), isAnInstanceOf: BookingsTabViewHostingController.self)
-
-        // When bookings tab becomes invisible
-        mockBookingsEligibilityChecker.setVisibilityResult(false)
-
-        // Then bookings tab is hidden
-        waitUntil {
-            tabBarController.tabRootViewControllers.count == 4
-        }
-
-        assertThat(tabBarController.tabRootViewController(
-            tab: .myStore,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: DashboardViewHostingController.self)
-        assertThat(tabBarController.tabRootViewController(
-            tab: .orders,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: OrdersSplitViewWrapperController.self)
-        assertThat(tabBarController.tabRootViewController(
-            tab: .products,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ), isAnInstanceOf: ProductsViewController.self)
-
-        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(
-            tab: .hubMenu,
-            isPOSTabVisible: false,
-            isBookingsTabVisible: false
-        ) as? UINavigationController)
-        assertThat(hubMenuNavigationController.topViewController,
-                   isAnInstanceOf: HubMenuViewController.self)
     }
 }
 
@@ -829,7 +790,6 @@ private final class MockAsyncPOSEligibilityChecker: @preconcurrency POSTabVisibi
 
 @MainActor
 private final class MockAsyncBookingsEligibilityChecker: @preconcurrency BookingsTabEligibilityCheckerProtocol {
-    var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
 
@@ -839,10 +799,6 @@ private final class MockAsyncBookingsEligibilityChecker: @preconcurrency Booking
             visibilityContinuation = nil
             continuation.resume(returning: result)
         }
-    }
-
-    func checkInitialVisibility() -> Bool {
-        initialVisibility
     }
 
     func checkVisibility() async -> Bool {

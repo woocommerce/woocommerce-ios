@@ -74,9 +74,6 @@ extension UserDefaults {
         // Application passwords experiment remote FF cached value
         case applicationPasswordsExperimentRemoteFFValue
 
-        // CIAB Bookings tab availability
-        case ciabBookingsTabAvailable
-
         /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
         case hideWPComConnectionOnDashboard
 

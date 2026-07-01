@@ -57,7 +57,6 @@ final class BookingDetailsViewModel: ObservableObject {
     }
 
     /// Whether the Reschedule button should be shown.
-    /// Hidden for bookings with status: canceled, completed, failed, or in-cart.
     var shouldShowRescheduleButton: Bool {
         guard featureFlagService.isFeatureFlagEnabled(.ciabBookingReschedule) else {
             return false

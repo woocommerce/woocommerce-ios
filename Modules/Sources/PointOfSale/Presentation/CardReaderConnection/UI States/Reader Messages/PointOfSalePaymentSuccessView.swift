@@ -47,26 +47,33 @@ struct PointOfSalePaymentSuccessView: View {
             }
         }
         .onChange(of: posModel.isReceiptPrinterConnected) { _, isConnected in
-            guard isConnected, pendingPrintAfterSetup else { return }
-            pendingPrintAfterSetup = false
-            printReceipt()
+            let effect = POSPrintReceiptFlowHelper.printerConnectionChanged(
+                isConnected: isConnected,
+                pendingPrintAfterSetup: pendingPrintAfterSetup)
+            if effect == .print {
+                pendingPrintAfterSetup = false
+                printReceipt()
+            }
         }
         .onChange(of: showPrinterSetupModal) { _, isShowing in
-            // Merchant backed out of setup without connecting — drop the pending print so a later
-            // unrelated connection can't trigger an unexpected print.
-            if !isShowing, !posModel.isReceiptPrinterConnected {
+            if POSPrintReceiptFlowHelper.shouldClearPendingPrint(
+                isSetupPresented: isShowing,
+                isPrinterConnected: posModel.isReceiptPrinterConnected) {
                 pendingPrintAfterSetup = false
             }
         }
     }
 
     private func handlePrintReceiptTap() {
-        guard posModel.isReceiptPrinterConnected else {
+        switch POSPrintReceiptFlowHelper.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
+        case .presentSetup:
             pendingPrintAfterSetup = true
             showPrinterSetupModal = true
-            return
+        case .print:
+            printReceipt()
+        case .none:
+            break
         }
-        printReceipt()
     }
 
     private func printReceipt() {

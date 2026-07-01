@@ -69,6 +69,12 @@ protocol POSSettingsControllerProtocol {
         self.printerConnectionController = printerConnectionController
 
         observeCardReader(from: cardPresentPaymentService)
+
+        // Load receipt settings eagerly so a receipt printed right after payment carries the store's
+        // phone, email, and returns policy without the merchant first visiting Settings > Store.
+        Task { [storeViewModel] in
+            await storeViewModel.retrievePOSReceiptSettings()
+        }
     }
 
     private func observeCardReader(from service: CardPresentPaymentFacade) {

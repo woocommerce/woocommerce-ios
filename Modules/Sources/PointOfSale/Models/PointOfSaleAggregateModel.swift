@@ -524,7 +524,7 @@ extension PointOfSaleAggregateModel {
     private func receiptStoreInformation() -> ReceiptStoreInformation {
         let storeViewModel = settingsController.storeViewModel
         let receiptInformation = storeViewModel.receiptInformation
-        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.storeName,
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.receiptStoreName,
                                        storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
                                        phone: receiptInformation.phone,
                                        email: receiptInformation.email,

@@ -47,13 +47,16 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
 public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private let printerDiscoveryService: PrinterDiscoveryService
     private let receiptTextRenderer: ReceiptTextRenderer
-    private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-    private let contentAssembler = ReceiptContentAssembler()
+    private let currencyFormatter: CurrencyFormatter
+    private let contentAssembler: ReceiptContentAssembler
 
     public init(printerDiscoveryService: PrinterDiscoveryService,
                 receiptTextRenderer: ReceiptTextRenderer = ReceiptTextRenderer()) {
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         self.printerDiscoveryService = printerDiscoveryService
         self.receiptTextRenderer = receiptTextRenderer
+        self.currencyFormatter = currencyFormatter
+        self.contentAssembler = ReceiptContentAssembler(currencyFormatter: currencyFormatter)
     }
 
     public func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {

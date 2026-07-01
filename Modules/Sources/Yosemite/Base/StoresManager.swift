@@ -98,6 +98,10 @@ public protocol StoresManager {
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification()
 
+    /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification
+    ///
+    func listenToUnknownBlogNotification()
+
     /// Whether the stores should attempt to authenticate the current site 's admin page
     /// on web view using the current credentials.
     ///

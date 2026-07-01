@@ -8,7 +8,8 @@ public struct POSVariableParentProduct: Equatable, Hashable, Identifiable {
     let allAttributes: [ProductAttribute]
 
     init(id: POSItemIdentifier,
-         name: String, productImageSource: String?,
+         name: String,
+         productImageSource: String?,
          productID: Int64,
          allAttributes: [ProductAttribute]) {
         self.id = id
@@ -20,7 +21,7 @@ public struct POSVariableParentProduct: Equatable, Hashable, Identifiable {
 
     #if DEBUG
 
-    /// Initializer for SwiftUI previews.
+    /// Initializer for SwiftUI previews and UI test mocks.
     public init(id: POSItemIdentifier, name: String, productImageSource: String?, productID: Int64) {
         self.init(id: id, name: name, productImageSource: productImageSource, productID: productID, allAttributes: [])
     }

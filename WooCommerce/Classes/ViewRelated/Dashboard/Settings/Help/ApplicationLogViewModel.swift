@@ -62,7 +62,27 @@ final class ApplicationLogViewModel: ObservableObject {
 
     let lines: [ApplicationLogLine]
 
-    let lastLineID: UUID
+    /// Search text bound to the search field. Updated on every keystroke; the actual
+    /// filtering is driven by the debounced `debouncedSearchText` to avoid filtering on each keystroke.
+    ///
+    @Published var searchText = ""
+
+    @Published private var debouncedSearchText = ""
+
+    /// Lines matching the current (debounced) search query, using a case-insensitive substring match
+    /// against the row's shown text (the log message and its formatted date).
+    /// Returns all lines when the search is empty.
+    ///
+    var filteredLines: [ApplicationLogLine] {
+        let query = debouncedSearchText.lowercased()
+        guard !query.isEmpty else {
+            return lines
+        }
+        return lines.filter { line in
+            line.text.lowercased().contains(query)
+                || (line.dateText?.lowercased().contains(query) ?? false)
+        }
+    }
 
     @Published var lastCellIsVisible = false
 
@@ -80,9 +100,11 @@ final class ApplicationLogViewModel: ObservableObject {
             .map(String.init)
             .map(ApplicationLogLine.init(text:))
 
-        // The `ScrollViewProxy.scrollTo` method doesn't seem to handle an optional line well
-        // Instead of `nil`, we can represent a missing value with a random UUID
-        lastLineID = lines.last?.id ?? UUID()
+        // Debounce the search input so filtering doesn't run on every keystroke.
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .assign(to: \.debouncedSearchText, on: self)
+            .store(in: &cancellableSet)
 
         guard lines.isNotEmpty else {
             // If the file is empty, there will be no last cell,
@@ -97,10 +119,6 @@ final class ApplicationLogViewModel: ObservableObject {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .assign(to: \.buttonVisible, on: self)
             .store(in: &cancellableSet)
-    }
-
-    func isLastLine(_ line: ApplicationLogLine) -> Bool {
-        line.id == lastLineID
     }
 
     var activityItems: [Any] {

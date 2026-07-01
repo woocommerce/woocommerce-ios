@@ -126,13 +126,23 @@ private extension EnhancedCouponListViewController {
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createCouponAction)
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in
             guard let self else { return }
-            self.presentedViewController?.dismiss(animated: true, completion: nil)
-            self.startCouponCreation(discountType: selectedType)
+            self.dismissCouponTypeBottomSheetThenStartCreation(discountType: selectedType)
         }
 
         let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
         let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet, initialPosition: .expanded)
         bottomSheetViewController.show(from: self, sourceBarButtonItem: createCouponButtonItem)
+    }
+
+    func dismissCouponTypeBottomSheetThenStartCreation(discountType: Coupon.DiscountType) {
+        guard let presentedViewController else {
+            startCouponCreation(discountType: discountType)
+            return
+        }
+
+        presentedViewController.dismiss(animated: true) { [weak self] in
+            self?.startCouponCreation(discountType: discountType)
+        }
     }
 
     func showDetails(from coupon: Coupon) {

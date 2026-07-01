@@ -6,6 +6,9 @@ import struct Yosemite.POSStaffMember
 protocol POSStaffKeyValueStorage: Sendable {
     func string(forKey key: String) -> String?
     func setString(_ value: String?, forKey key: String)
+    /// Removes every entry. Each storage instance is scoped to POS staff data only (the keychain
+    /// implementation uses a dedicated service), so this never touches other state.
+    func removeAll()
 }
 
 struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
@@ -35,6 +38,16 @@ struct KeychainPOSStaffStorage: POSStaffKeyValueStorage {
             }
         } catch {
             DDLogError("POSStaffCache keychain write failed for key=\(key): \(error)")
+        }
+    }
+
+    /// Removes every cached staff entry across all sites. Scoped to this storage's dedicated keychain
+    /// service, so it never touches the app's auth credentials or any other keychain data.
+    func removeAll() {
+        do {
+            try keychain.removeAll()
+        } catch {
+            DDLogError("POSStaffCache keychain removeAll failed: \(error)")
         }
     }
 }

@@ -139,7 +139,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
-    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+    @Published private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel?
+
+    private func makeConfirmPaymentViewModel() -> BlazeConfirmPaymentViewModel? {
         guard let image else {
             return nil
         }
@@ -222,8 +224,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
-    @Published var isShowingPaymentInfo = false
-
     /// ResultController to get the product for the given product ID
     ///
     private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
@@ -395,7 +395,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             isEvergreen: isEvergreen,
             objective: campaignObjective?.id
         ))
-        isShowingPaymentInfo = true
+
+        guard let confirmPaymentViewModel = makeConfirmPaymentViewModel() else {
+            return
+        }
+        self.confirmPaymentViewModel = confirmPaymentViewModel
     }
 }
 

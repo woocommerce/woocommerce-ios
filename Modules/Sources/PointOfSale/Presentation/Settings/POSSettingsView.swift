@@ -43,25 +43,33 @@ extension POSSettingsView {
 
             VStack(spacing: POSSpacing.small) {
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.store.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
-                                    isSelected: selection == .store,
-                                    action: {
+                                subtitle: POSSettingsView.SidebarNavigation.store.subtitle,
+                                isSelected: selection == .store,
+                                action: {
                     analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                     selection = .store
                 })
                 POSSettingsCard(title: POSSettingsView.SidebarNavigation.hardware.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
-                                    isSelected: selection == .hardware,
-                                    action: {
+                                subtitle: POSSettingsView.SidebarNavigation.hardware.subtitle,
+                                isSelected: selection == .hardware,
+                                action: {
                     analytics.track(.pointOfSaleSettingsHardwareTapped)
                     selection = .hardware
                 })
                 if settingsController.isLocalCatalogEligible {
                     POSSettingsCard(title: POSSettingsView.SidebarNavigation.localCatalog.title,
-                                        subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
-                                        isSelected: selection == .localCatalog,
-                                        action: {
+                                    subtitle: POSSettingsView.SidebarNavigation.localCatalog.subtitle,
+                                    isSelected: selection == .localCatalog,
+                                    action: {
                         selection = .localCatalog
+                    })
+                }
+                if isStaffSectionVisible {
+                    POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
+                                    isSelected: selection == .staff,
+                                    action: {
+                        selection = .staff
                     })
                 }
                 Spacer()
@@ -71,6 +79,7 @@ extension POSSettingsView {
             .padding(.horizontal, POSPadding.medium)
         }
         .background(Color.posSurfaceBright)
+        .accessibilityIdentifier("pos-settings-view")
     }
 
     @ViewBuilder
@@ -86,9 +95,19 @@ extension POSSettingsView {
             } else {
                 EmptyView()
             }
+        case .staff:
+            if let staffSettingsService = settingsController.staffSettingsService {
+                POSStaffSettingsView(service: staffSettingsService)
+            } else {
+                EmptyView()
+            }
         case .help:
             POSSettingsHelpDetailView()
         }
+    }
+
+    private var isStaffSectionVisible: Bool {
+        settingsController.staffSettingsService != nil
     }
 
     @ViewBuilder
@@ -123,6 +142,7 @@ extension POSSettingsView {
         case store
         case hardware
         case localCatalog
+        case staff
         case help
 
         var id: Self { self }
@@ -132,6 +152,7 @@ extension POSSettingsView {
             case .store: return Localization.sidebarNavigationStoreTitle
             case .hardware: return Localization.sidebarNavigationHardwareTitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogTitle
+            case .staff: return Localization.sidebarNavigationStaffTitle
             case .help: return Localization.sidebarNavigationHelpTitle
             }
         }
@@ -141,13 +162,14 @@ extension POSSettingsView {
             case .store: return Localization.sidebarNavigationStoreSubtitle
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
+            case .staff: return Localization.sidebarNavigationStaffSubtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
             }
         }
 
         var icon: String? {
             switch self {
-            case .store, .hardware, .localCatalog:
+            case .store, .hardware, .localCatalog, .staff:
                 return nil
             case .help:
                 return "questionmark.circle"
@@ -202,6 +224,18 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle",
             value: "Manage catalog settings",
             comment: "Description of the settings to be found within the Local catalog section."
+        )
+
+        static let sidebarNavigationStaffTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStaffTitle",
+            value: "Staff",
+            comment: "Title of the Staff section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationStaffSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1",
+            value: "View staff and PIN access",
+            comment: "Description of the settings to be found within the Staff section."
         )
 
         static let sidebarNavigationHelpSubtitle = NSLocalizedString(

@@ -8,9 +8,13 @@ struct POSSettingsStoreDetailView: View {
     @Environment(\.posAnalytics) private var analytics
 
     let viewModel: POSSettingsStoreViewModel
+    /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
+    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsStoreViewModel) {
+    init(viewModel: POSSettingsStoreViewModel,
+         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
         self.viewModel = viewModel
+        self.requestEditPermission = requestEditPermission
     }
 
     private var backgroundColor: Color {
@@ -107,7 +111,7 @@ struct POSSettingsStoreDetailView: View {
                 if !viewModel.receiptSettingsAdminURL.isEmpty {
                     Button {
                         analytics.track(.pointOfSaleEditReceiptTapped)
-                        showingWebView = true
+                        requestEditPermission { showingWebView = true }
                     } label: {
                         Image(systemName: "square.and.pencil")
                             .font(.posBodyLargeBold)

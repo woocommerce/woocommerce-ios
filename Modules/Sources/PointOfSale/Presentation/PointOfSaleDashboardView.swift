@@ -112,7 +112,7 @@ struct PointOfSaleDashboardView: View {
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
-                                   onOrdersSelected: requestOrdersPermission)
+                                   onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -364,7 +364,7 @@ struct PointOfSaleDashboardView: View {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    requestOrdersPermission()
+                    presentOrders()
                 } label: {
                     Label(Localization.phoneMenuOrders, systemImage: "text.document")
                 }
@@ -590,13 +590,6 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Opens the orders list, gated on `.viewOrders` via manager override.
-    func requestOrdersPermission() {
-        overrideHandler.gate(.viewOrders, reason: Localization.ordersOverrideDescription) { _ in
-            presentOrders()
-        }
-    }
-
     /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
     func requestSettingsPermission() {
         overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
@@ -685,12 +678,6 @@ private extension PointOfSaleDashboardView {
             value: "Exiting Point of Sale requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "exit permission tries to leave Point of Sale."
-        )
-        static let ordersOverrideDescription = NSLocalizedString(
-            "pointOfSaleDashboard.orders.overrideReason",
-            value: "Opening orders requires approval",
-            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
-                + "view-orders permission tries to open the Point of Sale orders list."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

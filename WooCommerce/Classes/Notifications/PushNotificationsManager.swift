@@ -548,7 +548,7 @@ extension PushNotificationsManager {
     @MainActor
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
         guard applicationState == .background, // Proceeds only if the app is in background.
-              let _ = userInfo[APNSKey.identifier] // Ensures that we are only processing a remote notification.
+              userInfo[APNSKey.type] != nil // Ensures that we are only processing a remote notification.
         else {
             return .noData
         }
@@ -1039,8 +1039,10 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: Any]()
 
-        // Determine notification source - Woo driven PNs don't have `note_id` in the payload
-        let isWooDriven = userInfo[APNSKey.identifier] == nil
+        // Determine notification source - Woo driven PNs don't have `note_id` in the payload.
+        // The value may be absent, Swift `nil`, or `NSNull`, so resolve it via `string(forKey:)`,
+        // which normalizes all of those to `nil`.
+        let isWooDriven = userInfo.string(forKey: APNSKey.identifier) == nil
         properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
 
         // Set identifier based on source

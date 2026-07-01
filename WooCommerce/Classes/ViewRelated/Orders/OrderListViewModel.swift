@@ -338,8 +338,7 @@ extension OrderListViewModel {
         }
 
         return OrderListCellViewModel(order: order,
-                                      currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

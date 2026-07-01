@@ -76,10 +76,10 @@ struct POSFloatingControlView: View {
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
         // The menu anchors above the ellipsis button, so the first-declared items render nearest the
-        // button (visually at the bottom). Declaring the signed-in operator first places it at the
+        // button (visually at the bottom). Declaring the signed-in staff member first places it at the
         // very bottom of the menu, below a divider — an informational, non-actionable row.
         if let staff = session.currentStaff {
-            POSOperatorMenuRow(staff: staff)
+            POSStaffMenuRow(staff: staff)
 
             Divider()
         }

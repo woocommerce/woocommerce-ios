@@ -383,6 +383,11 @@ extension PushNotificationsManager {
         }
         let newToken = tokenData.hexString
 
+        // Snapshot the Woo-registered sites BEFORE the token-change cleanup below can clear them, so
+        // the WPCom fallback can still re-enable them when the FF is off and the device token also
+        // rotated on the same launch (e.g. a device restore) — otherwise those sites stay blacked out.
+        let sitesToFallBackToWPCom = registrationState.siteIDsRegisteredForWooPNs
+
         // When the device token changes, clear registered site IDs so all sites
         // re-register with the new token.
         if let existingToken = registrationState.deviceToken, existingToken != newToken {
@@ -400,7 +405,7 @@ extension PushNotificationsManager {
             return
         }
 
-        func registerForWPComPushNotificationsIfPossible() {
+        func registerForWPComPushNotificationsIfPossible(onRegistered: ((String) -> Void)? = nil) {
             if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { device, error in
@@ -411,7 +416,41 @@ extension PushNotificationsManager {
 
                 DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
                 self.registrationState.deviceID = deviceID
-                self.disableWPComPushNotificationsIfNeeded(siteIDs: self.registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+                onRegistered?(deviceID)
+            }
+        }
+
+        // Disables WPCom PNs for the sites registered for Woo-driven PNs (self-driven ON).
+        func disableWPComForRegisteredWooSites(deviceID: String) {
+            disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+        }
+
+        // Self-driven OFF: fall back to WPCom-driven notifications. Re-enables the WPCom PNs we
+        // disabled while Woo-driven was active, then tears down the local Woo state — but only once
+        // the re-enable is confirmed, so a transient failure retries on the next launch instead of
+        // leaving the merchant with no notifications.
+        func fallBackToWPComPushNotifications() {
+            let staleWooSites = sitesToFallBackToWPCom
+            guard staleWooSites.isNotEmpty else {
+                registerForWPComPushNotificationsIfPossible()
+                return
+            }
+            // Site-credential users have no WPCom PNs to re-enable; just stop Woo-driven delivery.
+            if stores.isAuthenticatedWithoutWPCom {
+                tearDownWooRegistration()
+                return
+            }
+            let reenableThenTeardown: (String) -> Void = { [weak self] deviceID in
+                self?.enableWPComPushNotifications(siteIDs: staleWooSites, deviceID: deviceID) { success in
+                    if success {
+                        self?.tearDownWooRegistration()
+                    }
+                }
+            }
+            if let deviceID = registrationState.deviceID {
+                reenableThenTeardown(deviceID)
+            } else {
+                registerForWPComPushNotificationsIfPossible(onRegistered: reenableThenTeardown)
             }
         }
 
@@ -423,20 +462,17 @@ extension PushNotificationsManager {
                     try await registerSelfDrivenPushNotificationsForAllSites(with: newToken)
                     // Disable WPCom PNs for successfully registered sites
                     if let deviceID = registrationState.deviceID {
-                        disableWPComPushNotificationsIfNeeded(
-                            siteIDs: registrationState.siteIDsRegisteredForWooPNs,
-                            deviceID: deviceID
-                        )
+                        disableWPComForRegisteredWooSites(deviceID: deviceID)
                     } else {
                         // Register with WPCom to get deviceID for disabling
-                        registerForWPComPushNotificationsIfPossible()
+                        registerForWPComPushNotificationsIfPossible(onRegistered: disableWPComForRegisteredWooSites)
                     }
                 } catch {
-                    registerForWPComPushNotificationsIfPossible()
+                    registerForWPComPushNotificationsIfPossible(onRegistered: disableWPComForRegisteredWooSites)
                 }
             }
         } else {
-            registerForWPComPushNotificationsIfPossible()
+            fallBackToWPComPushNotifications()
         }
     }
 
@@ -1011,6 +1047,38 @@ private extension PushNotificationsManager {
         }))
     }
 
+    /// Re-enables mobile push notifications for the given site IDs. Used when falling back to
+    /// WPCom-driven notifications after self-driven push is turned off.
+    ///
+    /// - Note: we re-enable both `newComment` and `storeOrder`. Any custom WPCom preference the user
+    ///   had before migrating to Woo-driven push was already lost when we disabled them, so we can't
+    ///   restore it — enabling both is the accepted behavior (matches Android).
+    ///
+    func enableWPComPushNotifications(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Bool) -> Void) {
+        guard let deviceID, let deviceIDInt = Int64(deviceID),
+              siteIDs.isNotEmpty,
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(false)
+        }
+        let updatedBlogs = siteIDs.map {
+            NotificationSettings.Blog(blogID: $0, devices: [
+                .init(deviceID: deviceIDInt, newComment: true, storeOrder: true)
+            ])
+        }
+        let siteSettings = NotificationSettings(blogs: updatedBlogs)
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
+            guard let self else { return onCompletion(false) }
+            switch result {
+            case .success:
+                analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
+                onCompletion(true)
+            case .failure(let error):
+                analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
+                onCompletion(false)
+            }
+        }))
+    }
+
     func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let siteID,
               let tokenID = registrationState.wooPushNotificationToken,
@@ -1026,6 +1094,15 @@ private extension PushNotificationsManager {
             availableAsRESTRequest: true,
             onCompletion: completion
         ))
+    }
+
+    /// Stops Woo-driven delivery for the selected site (best-effort) and clears the local Woo
+    /// registration state so the app no longer suppresses/disables WPCom for those sites.
+    ///
+    func tearDownWooRegistration() {
+        unregisterFromWooPushNotificationsIfPossible { [weak self] _ in
+            self?.registrationState.clearWooRegistration()
+        }
     }
 }
 

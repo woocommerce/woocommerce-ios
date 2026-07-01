@@ -635,6 +635,8 @@ public enum WooAnalyticsStat: String {
     case wooPushTokenRegisterError = "woo_push_token_register_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+    case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
+    case wpcomDeviceEnablePushNotificationsError = "wpcom_device_enable_push_notifications_error"
 
     case pushNotificationsCardView = "push_notifications_card_view"
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"

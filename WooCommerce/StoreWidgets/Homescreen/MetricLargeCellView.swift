@@ -79,7 +79,7 @@ struct MetricLargeCellView_Previews: PreviewProvider {
                                                   chartData: sampleChart))
             .frame(width: 320, height: 70)
             .padding()
-            .background(StoreWidgetAppearance.brandColor)
+            .background(Color(.brand))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Large cell")
     }

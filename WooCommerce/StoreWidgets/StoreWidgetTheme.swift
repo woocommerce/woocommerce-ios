@@ -1,7 +1,4 @@
 import SwiftUI
-#if canImport(UIKit) && !os(watchOS)
-import UIKit
-#endif
 #if canImport(AppIntents)
 import AppIntents
 #endif
@@ -102,32 +99,18 @@ extension StoreWidgetTheme {
         guard usesSystemAppearance else {
             return Color(.white)
         }
-        return .storeWidgetLogoAccent
+        #if os(watchOS)
+        // WooCommercePurple shade 40 (rgb 135, 62, 255).
+        return Color(red: 0.529, green: 0.243, blue: 1.000)
+        #else
+        return Color(.accent)
+        #endif
     }
 
     /// Color for the dashed baseline rule in `MetricChartView` (visible only when the
     /// bar group clusters in the middle of a wide chart).
     var chartBaselineColor: Color {
         usesSystemAppearance ? Color.secondary.opacity(0.35) : Color.white.opacity(0.25)
-    }
-}
-
-private extension Color {
-    /// WooCommercePurple shade 40 in light mode and shade 30 in dark mode.
-    static var storeWidgetLogoAccent: Color {
-        #if os(watchOS)
-        Color(red: 135.0 / 255.0, green: 62.0 / 255.0, blue: 1.0)
-        #elseif canImport(UIKit)
-        Color(UIColor { traitCollection in
-            if traitCollection.userInterfaceStyle == .dark {
-                UIColor(red: 167.0 / 255.0, green: 126.0 / 255.0, blue: 1.0, alpha: 1.0)
-            } else {
-                UIColor(red: 135.0 / 255.0, green: 62.0 / 255.0, blue: 1.0, alpha: 1.0)
-            }
-        })
-        #else
-        Color(red: 135.0 / 255.0, green: 62.0 / 255.0, blue: 1.0)
-        #endif
     }
 }
 

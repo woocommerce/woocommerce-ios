@@ -37,18 +37,18 @@ import WidgetKit
 struct StoreInfoLargeMetricsContainerView_Previews: PreviewProvider {
     static var previews: some View {
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
-            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
+            .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
             .previewDisplayName("Large")
 
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
-            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
+            .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
             .environment(\.dynamicTypeSize, .accessibility1)
             .previewDisplayName("Large - Accessibility font")
 
         StoreInfoLargeMetricsContainerView(data: StoreInfoMetricsView_Previews.fullCatalogData)
-            .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
+            .widgetBackground(backgroundView: Color(.brand))
             .previewContext(WidgetPreviewContext(family: .systemExtraLarge))
             .previewDisplayName("Extra Large")
     }

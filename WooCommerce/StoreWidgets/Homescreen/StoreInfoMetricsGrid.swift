@@ -98,7 +98,7 @@ struct StoreInfoMetricsGrid_Previews: PreviewProvider {
                 .previewDisplayName("Large leading metric")
         }
         .padding()
-        .background(StoreWidgetAppearance.brandColor)
+        .background(Color(.brand))
         .previewLayout(.sizeThatFits)
     }
 }

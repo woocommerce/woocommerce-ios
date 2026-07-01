@@ -51,7 +51,11 @@ extension View {
 
 enum StoreWidgetAppearance {
     static var brandColor: Color {
-        Layout.watchBrandColor
+#if os(watchOS)
+        return Layout.watchBrandColor
+#else
+        return Color(.brand)
+#endif
     }
 }
 

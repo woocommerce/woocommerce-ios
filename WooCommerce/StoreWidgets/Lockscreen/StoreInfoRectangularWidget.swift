@@ -33,7 +33,7 @@ private struct StoreInfoRectangularView: View {
             }
             Spacer()
         }
-        .widgetBackground(backgroundView: StoreWidgetAppearance.brandColor)
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 

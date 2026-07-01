@@ -1,6 +1,5 @@
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
-import enum Yosemite.POSStaffPreset
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
@@ -147,28 +146,6 @@ private extension POSFloatingControlView {
     private var canLockPOS: Bool {
         isRolesEnabled && session.hasAnyPINs
     }
-
-    /// Formats the signed-in operator as "Name - Role" (e.g. "Thomas - Cashier"). When the display
-    /// name already matches the role label, only the role is shown to avoid "Cashier - Cashier".
-    private func operatorMenuLabel(_ staff: POSStaff) -> String {
-        let roleName = roleDisplayName(for: staff.preset)
-        guard staff.displayName.caseInsensitiveCompare(roleName) != .orderedSame else {
-            return roleName
-        }
-        return String.localizedStringWithFormat(Localization.operatorLabelFormat, staff.displayName, roleName)
-    }
-
-    /// Maps the role preset to a short display label shown beside the operator name in the menu.
-    private func roleDisplayName(for preset: POSStaffPreset) -> String {
-        switch preset {
-        case .admin:
-            return Localization.roleAdmin
-        case .manager:
-            return Localization.roleManager
-        case .cashier:
-            return Localization.roleCashier
-        }
-    }
 }
 
 private extension POSFloatingControlView {
@@ -227,31 +204,6 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",
             comment: "The title of the menu button to access Point of Sale settings."
-        )
-
-        static let operatorLabelFormat = NSLocalizedString(
-            "pointOfSale.floatingButtons.operator.labelFormat",
-            value: "%1$@ - %2$@",
-            comment: "Format for the signed-in POS operator shown in the menu: name, then role, " +
-            "e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role."
-        )
-
-        static let roleAdmin = NSLocalizedString(
-            "pointOfSale.floatingButtons.role.admin",
-            value: "Admin",
-            comment: "Display name for the admin role shown beside the operator name in the POS menu."
-        )
-
-        static let roleManager = NSLocalizedString(
-            "pointOfSale.floatingButtons.role.manager",
-            value: "Manager",
-            comment: "Display name for the manager role shown beside the operator name in the POS menu."
-        )
-
-        static let roleCashier = NSLocalizedString(
-            "pointOfSale.floatingButtons.role.cashier",
-            value: "Cashier",
-            comment: "Display name for the cashier role shown beside the operator name in the POS menu."
         )
     }
 }

@@ -511,15 +511,6 @@ private extension POSOrderDetailsView {
         }
     }
 
-    /// Gates the refund flow on `.issueRefunds`. When the operator already holds it the flow starts
-    /// immediately; otherwise the manager-override modal is presented and the flow starts once an
-    /// authorized staff member approves.
-    func requestRefundPermission() {
-        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { _ in
-            initiateRefundFlow()
-        }
-    }
-
     struct OrderDetailsActionsSetup {
         let primary: OrderDetailsAction?
         let secondary: [OrderDetailsAction]
@@ -809,15 +800,6 @@ private enum Localization {
         value: "Start refund flow for this order",
         comment: "Accessibility hint for issue refund button"
     )
-
-    static func refundOverrideDescription(_ orderNumber: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.refundOverride.description",
-            value: "Issue a refund for Order #%1$@",
-            comment: "Description shown in the manager override modal when refund requires approval. %1$@ is the order number."
-        )
-        return String(format: format, orderNumber)
-    }
 
     static let moreActionsA11yLabel = NSLocalizedString(
         "pos.orderDetailsView.moreActions.label",

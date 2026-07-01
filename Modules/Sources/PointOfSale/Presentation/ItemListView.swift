@@ -105,6 +105,7 @@ struct ItemListView: View {
     @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
+    @State private var couponOverrideApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -505,9 +506,10 @@ private extension ItemListView {
 
     /// Gates coupon creation on `.createCoupons`. When the operator already holds it, the creation
     /// sheet opens immediately; otherwise the manager-override modal is presented and it opens once an
-    /// authorized staff member approves.
+    /// authorized staff member approves — the approver is recorded so the create request is attributed.
     private func requestCouponCreationPermission() {
-        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { approver in
+            couponOverrideApprover = approver
             showCouponCreationModal = true
         }
     }

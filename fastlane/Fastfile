@@ -8,10 +8,10 @@ fastlane_require 'git'
 # normally pulled in transitively by Fastlane actions, but requiring it
 # explicitly here avoids load-order surprises.
 fastlane_require 'octokit'
+fastlane_require 'xcodeproj'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
-require_relative 'helpers/xcconfig_helper'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -75,7 +75,7 @@ end.freeze
 
 def xcconfig_development_team(filename)
   path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
-  XcconfigHelper.value(File.read(path), 'DEVELOPMENT_TEAM') ||
+  Xcodeproj::Config.new(path).attributes['DEVELOPMENT_TEAM'] ||
     UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")
 end
 

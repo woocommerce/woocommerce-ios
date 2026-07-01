@@ -9,7 +9,7 @@ struct POSSettingsStoreDetailView: View {
 
     let viewModel: POSSettingsStoreViewModel
     /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
-    let requestEditPermission: (@escaping () -> Void) -> Void
+    private let requestEditPermission: (@escaping () -> Void) -> Void
 
     init(viewModel: POSSettingsStoreViewModel,
          requestEditPermission: @escaping (@escaping () -> Void) -> Void = { $0() }) {

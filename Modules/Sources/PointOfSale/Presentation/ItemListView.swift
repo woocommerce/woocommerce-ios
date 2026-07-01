@@ -654,7 +654,6 @@ private extension ItemListView {
         static func staleSyncWarningDescription(days: Int) -> String {
             String.localizedStringWithFormat(staleSyncWarningDescriptionFormat, days)
         }
-
     }
 }
 

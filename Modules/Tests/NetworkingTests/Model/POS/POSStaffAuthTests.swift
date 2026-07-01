@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import Yosemite
+@testable import Networking
 
 struct POSStaffAuthTests {
     @Test

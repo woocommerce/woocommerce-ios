@@ -511,6 +511,17 @@ private extension POSOrderDetailsView {
         }
     }
 
+    /// Gates the refund button through the manager-override flow. When the operator already has
+    /// `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the PIN modal is
+    /// presented and the refund proceeds once a manager approves. The approver is handed to the
+    /// controller, which owns building the refund's staff attribution.
+    func requestRefundPermission() {
+        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { approver in
+            orderListModel.ordersController.beginRefundSession(approver: approver)
+            initiateRefundFlow()
+        }
+    }
+
     struct OrderDetailsActionsSetup {
         let primary: OrderDetailsAction?
         let secondary: [OrderDetailsAction]
@@ -593,17 +604,6 @@ private extension POSOrderDetailsView {
                 }
             }
         )
-    }
-
-    /// Gates the refund button through the manager-override flow. When the operator already has
-    /// `woocommerce_pos_issue_refunds` the refund proceeds immediately; otherwise the PIN modal is
-    /// presented and the refund proceeds once a manager approves. The approver is handed to the
-    /// controller, which owns building the refund's staff attribution.
-    func requestRefundPermission() {
-        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { approver in
-            orderListModel.ordersController.beginRefundSession(approver: approver)
-            initiateRefundFlow()
-        }
     }
 
     func initiateRefundFlow() {

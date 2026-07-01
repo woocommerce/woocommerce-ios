@@ -507,9 +507,16 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return {
-                requestRefundPermission()
-            }
+            return { requestRefundPermission() }
+        }
+    }
+
+    /// Gates the refund flow on `.issueRefunds`. When the operator already holds it the flow starts
+    /// immediately; otherwise the manager-override modal is presented and the flow starts once an
+    /// authorized staff member approves.
+    func requestRefundPermission() {
+        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { _ in
+            initiateRefundFlow()
         }
     }
 
@@ -786,6 +793,16 @@ private enum Localization {
             value: "Issue refund",
             comment: "Primary action button to start issuing a refund on the order details view"
         )
+
+    static func refundOverrideDescription(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundOverride.description",
+            value: "Refunding Order #%1$@ requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "issue-refunds permission tries to start a refund. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
 
     static let issueRefundAccessibilityHint = NSLocalizedString(
         "pos.orderDetailsView.issueRefundAction.accessibilityHint",

@@ -105,10 +105,6 @@ struct ItemListView: View {
     @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
-    /// The staff member who authorized coupon creation via override, captured at the gate so the
-    /// create request can attribute it — the same way every POS write does. `nil` when the operator
-    /// held the capability outright.
-    @State private var couponOverrideApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -507,13 +503,11 @@ private extension ItemListView {
         .transition(.opacity.combined(with: .scale))
     }
 
-    /// Gates the coupon-create flow through the manager-override modal. When the operator already has
-    /// `createCoupons` creation proceeds immediately; otherwise the PIN modal is presented and creation
-    /// proceeds once a manager approves — the approver is recorded so the create request is attributed
-    /// to them (see `couponCreationAuth()`).
+    /// Gates coupon creation on `.createCoupons`. When the operator already holds it, the creation
+    /// sheet opens immediately; otherwise the manager-override modal is presented and it opens once an
+    /// authorized staff member approves.
     private func requestCouponCreationPermission() {
-        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { approver in
-            couponOverrideApprover = approver
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
             showCouponCreationModal = true
         }
     }
@@ -624,9 +618,10 @@ private extension ItemListView {
         )
 
         static let couponOverrideDescription = NSLocalizedString(
-            "pos.itemlistview.managerOverride.coupon.description",
-            value: "Create a coupon",
-            comment: "Description shown in the manager override modal when coupon creation requires approval"
+            "pos.itemlistview.couponOverrideReason",
+            value: "Creating coupons requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "create-coupons permission tries to create a coupon."
         )
 
         static let sunsetWarningTitle = NSLocalizedString(

@@ -3,13 +3,13 @@ import UIKit
 import struct WooFoundation.ProductImageThumbnail
 
 enum ProductThumbnailStyle {
-    private static let cornerRadius: CGFloat = 2
-    private static let borderWidth: CGFloat = 0.5
+    fileprivate static let cornerRadius: CGFloat = 2
+    fileprivate static let borderWidth: CGFloat = 0.5
     static let placeholderImage: UIImage = .productsTabProductCellPlaceholderImage
-    private static let backgroundColor: UIColor = .listForeground(modal: false)
-    private static let borderColor: UIColor = .border
-    private static let placeholderContentMode: UIView.ContentMode = .center
-    private static let imageContentMode: UIView.ContentMode = .scaleAspectFill
+    fileprivate static let backgroundColor: UIColor = .listForeground(modal: false)
+    fileprivate static let borderColor: UIColor = .border
+    fileprivate static let placeholderContentMode: UIView.ContentMode = .center
+    fileprivate static let imageContentMode: UIView.ContentMode = .scaleAspectFill
 }
 
 extension UIImageView {

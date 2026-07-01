@@ -9,6 +9,8 @@ struct POSStaffMenuRow: View {
         Label {
             Text(label)
                 .lineLimit(2)
+                // Truncate the middle so the start of the name and the trailing role stay visible.
+                .truncationMode(.middle)
         } icon: {
             Image(systemName: "person.circle")
         }

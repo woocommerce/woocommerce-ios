@@ -239,7 +239,6 @@ public extension Site {
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
     }
-
 }
 
 /// Defines all of the Site CodingKeys.

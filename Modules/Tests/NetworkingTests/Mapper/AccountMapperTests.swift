@@ -85,7 +85,6 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(site!.siteID, 1112233334444555)
         XCTAssertEqual(site!.shortName, "Business")
     }
-
 }
 
 // MARK: - Private Methods.

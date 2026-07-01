@@ -178,9 +178,10 @@ private enum Localization {
     )
 
     static let hintThree = NSLocalizedString(
-        "Try a payment using your own card (and refund it when you're done.)",
+        "setUpTapToPayInformation.tryPayment.hint",
+        value: "Try a live payment using your own card (and refund it when you're done; processing fees apply.)",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments " +
-        "using their own card"
+        "using their own card, which creates a live transaction and incurs processing fees"
     )
 
     static let setUpButton = NSLocalizedString(

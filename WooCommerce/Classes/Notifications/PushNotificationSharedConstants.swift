@@ -41,12 +41,17 @@ enum PushNotificationSharedConstants {
         return knownPushNotificationTypes.contains(type)
     }
 
-    /// Push notification `type` values delivered by the Woo-driven (self-driven) push system.
-    /// Used to suppress lingering Woo-driven pushes once the app has fallen back to WPCom.
+    /// The push `type`s the Woo-driven (self-driven) push system sends.
     ///
-    /// - Note: scoped to the unambiguous Woo-only types. Woo-driven *reviews* arrive as
-    ///   `type: comment` (with no `note_id`) and are intentionally not covered here to avoid any
-    ///   risk of touching WPCom comment pushes.
+    /// The NotificationServiceExtension uses this to recognise a Woo-driven push and suppress it once
+    /// the feature flag is off and the app has fallen back to WPCom — otherwise a store whose Woo
+    /// registration still lingers on the server would produce a duplicate next to the re-enabled
+    /// WPCom notification.
+    ///
+    /// This is an allowlist rather than simply "any push with no `note_id`" (the usual Woo-vs-WPCom
+    /// tell): app-level pushes such as `badge-reset` also have no `note_id`, and silencing those
+    /// would break badge clearing. `store_review` is delivered as `type: comment` and is deliberately
+    /// excluded so we can never accidentally match a WPCom comment push.
     static let wooDrivenPushTypes: Set<String> = [
         "store_order",
         "store_stock"

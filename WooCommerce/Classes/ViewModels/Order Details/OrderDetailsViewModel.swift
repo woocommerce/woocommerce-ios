@@ -415,7 +415,6 @@ extension OrderDetailsViewModel {
             )
         }
     }
-
 }
 
 // MARK: - Configuring results controllers

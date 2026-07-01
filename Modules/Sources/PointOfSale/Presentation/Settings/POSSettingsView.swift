@@ -23,7 +23,8 @@ struct POSSettingsView: View {
                 selection = .store
             }
         }
-        .posRootModal()
+        // No `.posRootModal()` here — `.posFullScreenCover` already provides one for this content, and a
+        // second bound to the same `POSModalManager` would render the override modal twice.
         .posManagerOverrideModal(handler: overrideHandler)
     }
 
@@ -288,6 +289,11 @@ extension POSSettingsView {
 
 #if DEBUG
 #Preview {
+    // Production supplies these via `.posFullScreenCover`; the standalone preview provides its own root
+    // modal and managers so the override modal has somewhere to render.
     POSSettingsView(settingsController: POSSettingsPreviewController())
+        .posRootModal()
+        .environmentObject(POSModalManager())
+        .environmentObject(POSFullScreenCoverManager())
 }
 #endif

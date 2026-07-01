@@ -79,14 +79,7 @@ private extension POSFloatingControlView {
         // button (visually at the bottom). Declaring the signed-in operator first places it at the
         // very bottom of the menu, below a divider — an informational, non-actionable row.
         if let staff = session.currentStaff {
-            Label {
-                Text(operatorMenuLabel(staff))
-            } icon: {
-                Image(systemName: "person.circle")
-            }
-            .foregroundStyle(.secondary)
-            .disabled(true)
-            .accessibilityIdentifier("pos-operator-menu-item")
+            POSOperatorMenuRow(staff: staff)
 
             Divider()
         }
@@ -154,11 +147,6 @@ private extension POSFloatingControlView {
     private var canLockPOS: Bool {
         isRolesEnabled && session.hasAnyPINs
     }
-
-    /// Formats the signed-in operator as "Name - Role" (e.g. "Thomas - Cashier").
-    private func operatorMenuLabel(_ staff: POSStaff) -> String {
-        String.localizedStringWithFormat(Localization.operatorLabelFormat, staff.displayName, staff.preset.displayName)
-    }
 }
 
 private extension POSFloatingControlView {
@@ -217,13 +205,6 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.settings.button.title",
             value: "Settings",
             comment: "The title of the menu button to access Point of Sale settings."
-        )
-
-        static let operatorLabelFormat = NSLocalizedString(
-            "pointOfSale.floatingButtons.operator.labelFormat",
-            value: "%1$@ - %2$@",
-            comment: "Format for the signed-in POS operator shown in the menu: name, then role, " +
-            "e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role."
         )
     }
 }

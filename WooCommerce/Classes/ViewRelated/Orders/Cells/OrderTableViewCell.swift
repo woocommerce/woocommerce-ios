@@ -62,8 +62,7 @@ final class OrderTableViewCell: UITableViewCell, SearchResultCell {
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
-           let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
+        if let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
             salesChannelLabel.isHidden = false
             salesChannelLabel.applySalesChannelStyle()
             salesChannelLabel.text = salesChannel.description

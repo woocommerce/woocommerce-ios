@@ -2,7 +2,6 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 import NetworkingCore
-import Experiments
 
 struct LastOrderDashboardRow: View {
     let data: RowData
@@ -142,7 +141,7 @@ struct LastOrderDashboardRowViewModel {
             statusBackgroundColor: statusBackgroundColor,
             fulfillmentBadgeText: isFulfillmentStatusRequired ? fulfillmentBadgeText : nil,
             fulfillmentBadgeBackgroundColor: isFulfillmentStatusRequired ? fulfillmentBadgeBackgroundColor : nil,
-            salesChannelText: shouldShowSalesChannel ? salesChannelText : nil
+            salesChannelText: isPOSOrder ? salesChannelText : nil
         )
     }
 
@@ -204,10 +203,6 @@ struct LastOrderDashboardRowViewModel {
     /// Background color for the fulfillment badge.
     var fulfillmentBadgeBackgroundColor: Color {
         order.fulfillmentStatus.badgeBackgroundSwiftUIColor
-    }
-
-    private var shouldShowSalesChannel: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) && isPOSOrder
     }
 }
 

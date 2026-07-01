@@ -41,10 +41,22 @@ enum PushNotificationSharedConstants {
         return knownPushNotificationTypes.contains(type)
     }
 
+    /// Push notification `type` values delivered by the Woo-driven (self-driven) push system.
+    /// Used to suppress lingering Woo-driven pushes once the app has fallen back to WPCom.
+    ///
+    /// - Note: scoped to the unambiguous Woo-only types. Woo-driven *reviews* arrive as
+    ///   `type: comment` (with no `note_id`) and are intentionally not covered here to avoid any
+    ///   risk of touching WPCom comment pushes.
+    static let wooDrivenPushTypes: Set<String> = [
+        "store_order",
+        "store_stock"
+    ]
+
     enum UserDefaultsKeys {
         static let deviceToken = "deviceToken"
         static let deviceID = "deviceID"
         static let wooPushNotificationToken = "wooPushNotificationToken"
         static let siteIDsRegisteredForWooPushNotifications = "siteIDsRegisteredForWooPushNotifications"
+        static let selfDrivenPushEnabled = "selfDrivenPushEnabled"
     }
 }

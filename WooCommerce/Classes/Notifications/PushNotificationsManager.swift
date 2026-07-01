@@ -526,9 +526,9 @@ extension PushNotificationsManager {
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
-            if registrationState.isSiteRegisteredForWooPNs(foregroundNotification.siteID),
-               foregroundNotification.noteID != nil {
-                // Ignore WPCom PNs if site is registered for Woo PNs
+            if registrationState.shouldSuppress(userInfo: content.userInfo) {
+                // Suppress the in-app banner for whichever source is not active for this site
+                // (WPCom while Woo-driven is active, or lingering Woo-driven after falling back).
                 return []
             }
             configuration.application
@@ -829,6 +829,9 @@ private extension PushNotificationsManager {
     func checkSelfDrivenPushNotificationsEligibility() {
         Task { @MainActor in
             let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
+            // Persist unconditionally so the NotificationServiceExtension always reads the current
+            // value (even if the in-memory value happens to already match).
+            registrationState.selfDrivenPushEnabled = isEnabled
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {

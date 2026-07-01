@@ -8,6 +8,7 @@ struct POSStaffMenuRow: View {
     var body: some View {
         Label {
             Text(label)
+                .lineLimit(2)
         } icon: {
             Image(systemName: "person.circle")
         }

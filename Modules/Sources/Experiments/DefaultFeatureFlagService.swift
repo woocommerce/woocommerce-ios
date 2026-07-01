@@ -75,8 +75,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderAddressMapSearch:
             return true
-        case .pointOfSaleHistoricalOrdersi1:
-            return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:

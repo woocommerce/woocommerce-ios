@@ -171,10 +171,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case orderAddressMapSearch
 
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
-
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
     ///
     case pointOfSaleFTSSearch

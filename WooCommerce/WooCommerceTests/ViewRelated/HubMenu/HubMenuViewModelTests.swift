@@ -797,10 +797,6 @@ private final class MockBookingsEligibilityChecker: BookingsTabEligibilityChecke
         self.isEligible = isEligible
     }
 
-    func checkInitialVisibility() -> Bool {
-        isEligible
-    }
-
     func checkVisibility() async -> Bool {
         isEligible
     }

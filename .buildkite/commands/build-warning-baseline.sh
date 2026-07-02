@@ -33,7 +33,8 @@ mkdir -p "$(dirname "$BASELINE_REPORT_PATH")"
 
 COUNT_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/count-build-warnings.sh" | awk '{print $1}')"
 BASELINE_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/build-warning-baseline.sh" | awk '{print $1}')"
-CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH" "$BASELINE_SCRIPT_HASH")
+CACHE_EPOCH="${BUILD_WARNING_BASELINE_CACHE_EPOCH:-$(date -u +%Y-W%W)}"
+CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH" "$BASELINE_SCRIPT_HASH" "$CACHE_EPOCH")
 CACHE_KEY="$(printf '%s\n' "${CACHE_KEY_PARTS[@]}" | shasum | awk '{print $1}')"
 CACHE_DIR="${BUILD_WARNING_BASELINE_CACHE_DIR:-$HOME/.cache/woocommerce-ios/build-warning-baselines}"
 CACHE_PATH="$CACHE_DIR/$CACHE_KEY.json"

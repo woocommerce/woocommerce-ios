@@ -124,11 +124,6 @@ struct POSSettingsHardwareDetailView: View {
         .posModal(isPresented: $showBarcodeScanningSetupModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
-            if let printerConnectionController = settingsController.printerConnectionController {
-                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: printerConnectionController)
-            }
-        }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
             SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
         }
@@ -324,15 +319,7 @@ private extension POSSettingsHardwareDetailView {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     if let controller = settingsController.printerConnectionController {
-                        if controller.isConnected {
-                            POSInformationCard {
-                                printerNameRow(controller: controller)
-                            }
-                        } else {
-                            POSSettingsCard(title: Localization.printerConnectTitle,
-                                            subtitle: Localization.printerConnectSubtitle,
-                                            action: { showPrinterSetupModal = true })
-                        }
+                        printerSection(controller: controller)
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -341,6 +328,26 @@ private extension POSSettingsHardwareDetailView {
         }
         .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
+    }
+
+    /// The printer card, presenting the setup modal on the same non-optional controller that gates
+    /// this section — so the modal is only ever built when a controller exists.
+    @ViewBuilder
+    func printerSection(controller: POSPrinterConnectionController) -> some View {
+        Group {
+            if controller.isConnected {
+                POSInformationCard {
+                    printerNameRow(controller: controller)
+                }
+            } else {
+                POSSettingsCard(title: Localization.printerConnectTitle,
+                                subtitle: Localization.printerConnectSubtitle,
+                                action: { showPrinterSetupModal = true })
+            }
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+        }
     }
 
     func printerNameRow(controller: POSPrinterConnectionController) -> some View {

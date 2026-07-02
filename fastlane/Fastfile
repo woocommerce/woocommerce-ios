@@ -75,7 +75,6 @@ end.freeze
 
 def xcconfig_development_team(filename)
   path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
-  # `Xcodeproj::Config.new` raises an opaque error on a missing path, so guard first.
   UI.user_error!("xcconfig not found: #{path}") unless File.readable?(path)
   Xcodeproj::Config.new(path).attributes['DEVELOPMENT_TEAM'] ||
     UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")

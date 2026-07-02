@@ -167,21 +167,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables displaying Point Of Sale details in order list and order details
-    ///
-    case pointOfSaleOrdersi1
-
-    /// Enables displaying Point Of Sale as a filter in order list
-    ///
-    case pointOfSaleOrdersi2
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
-
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
 
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
     ///

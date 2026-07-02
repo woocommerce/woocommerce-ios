@@ -139,7 +139,12 @@ fi
 baseline_commit="$(jq -r '.baseline_commit // empty' "$BASELINE_REPORT_PATH")"
 baseline_short_commit="${baseline_commit:0:12}"
 if [ -n "$baseline_short_commit" ]; then
-  baseline_label="PR base \`$baseline_short_commit\` on \`$BASE_BRANCH\`"
+  repository_url="${BUILDKITE_REPO:-https://github.com/woocommerce/woocommerce-ios}"
+  repository_url="${repository_url%.git}"
+  if [[ "$repository_url" == git@github.com:* ]]; then
+    repository_url="https://github.com/${repository_url#git@github.com:}"
+  fi
+  baseline_label="PR base \`$BASE_BRANCH\` at [$baseline_short_commit]($repository_url/commit/$baseline_commit)"
 else
   baseline_label="the PR base build warning baseline"
 fi
@@ -179,6 +184,55 @@ breakdown_table="$(
     puts "\n_#{remaining} more area#{remaining == 1 ? "" : "s"} increased._" if remaining.positive?
   ' "$REPORT_PATH" "$BASELINE_REPORT_PATH"
 )"
+additional_warnings_table="$(
+  ruby -rjson -e '
+    current = JSON.parse(File.read(ARGV[0]))
+    baseline = JSON.parse(File.read(ARGV[1]))
+
+    current_warnings = current.fetch("warnings", [])
+    baseline_warnings = baseline.fetch("warnings", [])
+
+    if current_warnings.empty? || baseline_warnings.empty?
+      puts "_Exact additional warning details are unavailable because one report does not include warning entries._"
+      exit
+    end
+
+    signature = lambda { |warning| [warning.fetch("path", ""), warning.fetch("message", "")].join("\0") }
+    baseline_counts = Hash.new(0)
+    baseline_warnings.each { |warning| baseline_counts[signature.call(warning)] += 1 }
+
+    additional = []
+    current_warnings.each do |warning|
+      warning_signature = signature.call(warning)
+      if baseline_counts[warning_signature].positive?
+        baseline_counts[warning_signature] -= 1
+      else
+        additional << warning
+      end
+    end
+
+    if additional.empty?
+      puts "_No exact additional warnings found; warning distribution changed._"
+      exit
+    end
+
+    def markdown_escape(value)
+      value.to_s.gsub("|", "\\\\|").gsub(/\s+/, " ").strip
+    end
+
+    displayed_warnings = additional.first(20)
+    puts "| File | Warning |"
+    puts "|---|---|"
+    displayed_warnings.each do |warning|
+      path = warning.fetch("path", "")
+      line = warning["line"]
+      location = line ? "#{path}:#{line}" : path
+      puts "| `#{markdown_escape(location)}` | #{markdown_escape(warning.fetch("message", ""))} |"
+    end
+    remaining = additional.length - displayed_warnings.length
+    puts "\n_#{remaining} more additional warning#{remaining == 1 ? "" : "s"}._" if remaining.positive?
+  ' "$REPORT_PATH" "$BASELINE_REPORT_PATH"
+)"
 comment_body="$(cat <<EOF
 ## Build warnings increased
 
@@ -190,6 +244,10 @@ This PR has **$current_count** owned app/module build warnings, which is **+$inc
 Only warnings tied to owned repo paths under \`WooCommerce/\`, \`Modules/Sources/\`, and \`Modules/Tests/\` are counted.
 
 $breakdown_table
+
+### Additional Warnings
+
+$additional_warnings_table
 
 Please remove the new warnings before merging.
 EOF

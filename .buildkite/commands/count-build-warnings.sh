@@ -80,19 +80,33 @@ end
 total_warning_lines = 0
 owned_warning_count = 0
 breakdown = Hash.new(0)
+warnings = []
 
 log_files.each do |log_file|
   File.foreach(log_file) do |line|
-    line = line.gsub(/\e\[[0-9;]*[A-Za-z]/, '')
+    line = line.gsub(/\e\[[0-9;]*[A-Za-z]/, '').chomp
     next unless line.match?(/(^|[^[:alnum:]_])warning:/)
 
     total_warning_lines += 1
-    match = line.match(/\A(?<location>.*?): warning:/)
+    match = line.match(/\A(?<location>.*?): warning: (?<message>.*)\z/)
     next unless match
 
-    warning_path = match[:location]
-      .sub(/:\d+(?::\d+)?\z/, '')
-      .sub(/:[^:\/]+\z/, '')
+    location = match[:location]
+    message = match[:message].strip
+    line_number = nil
+    column_number = nil
+    warning_path = location
+
+    if (location_match = location.match(/\A(?<path>.*):(?<line>\d+):(?<column>\d+)\z/))
+      warning_path = location_match[:path]
+      line_number = location_match[:line].to_i
+      column_number = location_match[:column].to_i
+    elsif (location_match = location.match(/\A(?<path>.*):(?<line>\d+)\z/))
+      warning_path = location_match[:path]
+      line_number = location_match[:line].to_i
+    else
+      warning_path = warning_path.sub(/:[^:\/]+\z/, '')
+    end
 
     repo_path = normalize_repo_path(warning_path, repo_root)
     next unless repo_path
@@ -102,6 +116,13 @@ log_files.each do |log_file|
 
     owned_warning_count += 1
     breakdown[area] += 1
+    warnings << {
+      area: area,
+      path: repo_path,
+      line: line_number,
+      column: column_number,
+      message: message
+    }
   end
 end
 
@@ -112,7 +133,8 @@ report = {
   generated_at: Time.now.utc.strftime('%Y-%m-%dT%H:%M:%SZ'),
   total_warning_lines: total_warning_lines,
   excluded_warning_lines: total_warning_lines - owned_warning_count,
-  breakdown: breakdown.sort_by { |area, count| [-count, area] }.map { |area, count| { area: area, count: count } }
+  breakdown: breakdown.sort_by { |area, count| [-count, area] }.map { |area, count| { area: area, count: count } },
+  warnings: warnings.sort_by { |warning| [warning[:area], warning[:path], warning[:line] || 0, warning[:column] || 0, warning[:message]] }
 }
 
 File.write(output_path, "#{JSON.pretty_generate(report)}\n")

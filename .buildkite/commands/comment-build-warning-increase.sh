@@ -149,13 +149,6 @@ else
   baseline_label="the PR base build warning baseline"
 fi
 
-if [ "$current_count" -le "$baseline_count" ]; then
-  echo "Build warnings did not increase: $current_count current vs $baseline_count baseline."
-  delete_existing_comment
-  exit 0
-fi
-
-increase=$((current_count - baseline_count))
 breakdown_table="$(
   ruby -rjson -e '
     current = JSON.parse(File.read(ARGV[0]))
@@ -184,7 +177,7 @@ breakdown_table="$(
     puts "\n_#{remaining} more area#{remaining == 1 ? "" : "s"} increased._" if remaining.positive?
   ' "$REPORT_PATH" "$BASELINE_REPORT_PATH"
 )"
-additional_warnings_table="$(
+additional_warnings_report="$(
   ruby -rjson -e '
     current = JSON.parse(File.read(ARGV[0]))
     baseline = JSON.parse(File.read(ARGV[1]))
@@ -193,6 +186,7 @@ additional_warnings_table="$(
     baseline_warnings = baseline.fetch("warnings", [])
 
     if current_warnings.empty? || baseline_warnings.empty?
+      puts "0"
       puts "_Exact additional warning details are unavailable because one report does not include warning entries._"
       exit
     end
@@ -212,6 +206,7 @@ additional_warnings_table="$(
     end
 
     if additional.empty?
+      puts "0"
       puts "_No exact additional warnings found; warning distribution changed._"
       exit
     end
@@ -221,6 +216,7 @@ additional_warnings_table="$(
     end
 
     displayed_warnings = additional.first(20)
+    puts additional.length
     puts "| File | Warning |"
     puts "|---|---|"
     displayed_warnings.each do |warning|
@@ -233,13 +229,41 @@ additional_warnings_table="$(
     puts "\n_#{remaining} more additional warning#{remaining == 1 ? "" : "s"}._" if remaining.positive?
   ' "$REPORT_PATH" "$BASELINE_REPORT_PATH"
 )"
-comment_body="$(cat <<EOF
-## Build warnings increased
+additional_warnings_count="$(printf '%s\n' "$additional_warnings_report" | sed -n '1p')"
+additional_warnings_table="$(printf '%s\n' "$additional_warnings_report" | sed '1d')"
 
-This PR has **$current_count** owned app/module build warnings, which is **+$increase** compared with **$baseline_count** on $baseline_label.
+if ! [[ "$additional_warnings_count" =~ ^[0-9]+$ ]]; then
+  echo "Invalid additional warning count: $additional_warnings_count" >&2
+  exit 1
+fi
+
+count_delta=$((current_count - baseline_count))
+if [ "$additional_warnings_count" -eq 0 ] && [ "$count_delta" -le 0 ]; then
+  echo "Build warnings did not increase and no exact additional warnings were found: $current_count current vs $baseline_count baseline."
+  delete_existing_comment
+  exit 0
+fi
+
+if [ "$count_delta" -gt 0 ]; then
+  count_delta_label="+$count_delta"
+else
+  count_delta_label="$count_delta"
+fi
+
+additional_warning_label="$additional_warnings_count additional warning"
+if [ "$additional_warnings_count" -ne 1 ]; then
+  additional_warning_label="${additional_warning_label}s"
+fi
+
+comment_body="$(cat <<EOF
+## Build warnings added
+
+This PR has **$current_count** owned app/module build warnings compared with **$baseline_count** on $baseline_label.
 
 - Current build: $BUILDKITE_BUILD_URL
 - Baseline report: \`$BASELINE_REPORT_PATH\`
+- Net count delta: **$count_delta_label**
+- Exact additions found: **$additional_warning_label**
 
 Only warnings tied to owned repo paths under \`WooCommerce/\`, \`Modules/Sources/\`, and \`Modules/Tests/\` are counted.
 

@@ -22,10 +22,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+            readOnlySite: Site.fake().copy(siteID: sampleSiteID)
         )
         let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,

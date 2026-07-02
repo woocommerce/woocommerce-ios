@@ -208,6 +208,7 @@ struct TotalsView: View {
                         await paymentModel.startCardPayment(with: .tapToPay)
                     }
                 },
+                isCardReaderAvailable: isCardReaderRowAvailableInOtherMethodsSheet,
                 isCardReaderEnabled: isCardReaderRowEnabledInOtherMethodsSheet,
                 onCardReader: {
                     guard !isStartingPayment else { return }
@@ -837,6 +838,10 @@ private extension TotalsView {
     var isTapToPayRowEnabledInOtherMethodsSheet: Bool {
         guard paymentModel.isCompactCardPaymentSelectionEnabled else { return true }
         return paymentModel.selectedCardPaymentRail != .tapToPay
+    }
+
+    var isCardReaderRowAvailableInOtherMethodsSheet: Bool {
+        totalsViewHelper.shouldShowCardReaderInOtherPaymentMethods(bottomControlState: bottomControlState)
     }
 
     /// Card reader is disabled only while Bluetooth is the active payment method.

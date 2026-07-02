@@ -360,6 +360,26 @@ struct TotalsViewHelperTests {
         #expect(state == .hidden)
     }
 
+    @Test
+    func test_shouldShowCardReaderInOtherPaymentMethods_when_reader_and_other_methods_then_returns_false() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When / Then
+        #expect(helper.shouldShowCardReaderInOtherPaymentMethods(bottomControlState: .readerAndOtherMethods) == false)
+    }
+
+    @Test
+    func test_shouldShowCardReaderInOtherPaymentMethods_when_not_reader_and_other_methods_then_returns_true() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When / Then
+        #expect(helper.shouldShowCardReaderInOtherPaymentMethods(bottomControlState: .cashAndOtherMethods))
+        #expect(helper.shouldShowCardReaderInOtherPaymentMethods(bottomControlState: .checkoutMethods([.cardReader, .cashPayment])))
+        #expect(helper.shouldShowCardReaderInOtherPaymentMethods(bottomControlState: .hidden))
+    }
+
     private var loadedOrderState: PointOfSaleOrderState {
         .loaded(.init(cartTotal: "10",
                       orderTotal: "10",

@@ -113,6 +113,10 @@ struct TotalsViewHelper {
         return methods
     }
 
+    func shouldShowCardReaderInOtherPaymentMethods(bottomControlState: BottomControlState) -> Bool {
+        bottomControlState != .readerAndOtherMethods
+    }
+
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
         let hasCoupons = cart.coupons.isNotEmpty
         let orderIsLoading = orderTotals == nil

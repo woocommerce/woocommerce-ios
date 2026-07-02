@@ -1,19 +1,14 @@
 import SwiftUI
 
-/// Right-pane confirmation pushed when the merchant taps "Mark order as paid". Capturing an
-/// optional free-form note here gives the merchant somewhere to record what the payment was
-/// (e.g. "Bank transfer from Maria") so the order has reconciliation context in WP-Admin.
-/// On confirm the host triggers the order update; on success the totals view shows the
-/// `paymentSuccess` UI driven by `PointOfSaleMarkAsPaidState.paymentSuccess`.
 struct PointOfSaleMarkAsPaidConfirmationView: View {
+    @Environment(\.keyboardObserver) private var keyboardObserver
+
     let orderTotal: String
     let isProcessing: Bool
     let errorMessage: String?
     let onConfirm: (_ note: String?) -> Void
     let onCancel: () -> Void
 
-    /// Optional merchant-supplied free-form note. Empty string is treated as nil downstream —
-    /// see `trimmedNote`.
     @State private var note: String = ""
     @FocusState private var isNoteFieldFocused: Bool
 
@@ -23,19 +18,6 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
     }
 
     var body: some View {
-        // Mirror `PointOfSaleScanToPayView` / `PointOfSaleCollectCashView`:
-        // GeometryReader → ScrollView → VStack. The geometry reader gives the
-        // scroll view explicit width so `POSPageHeaderView` at the top fills
-        // the navigation pane edge-to-edge (the merchant reads it as a top
-        // bar) rather than sizing to its intrinsic content width and ending
-        // up centered + inset behind the 480pt-capped content below it.
-        //
-        // `alignment: .top` on the outer frame matters: cash anchors its header
-        // to the top via Spacers in the inner form VStack, but our content
-        // doesn't have any Spacers (it's a short confirmation form), so without
-        // explicit alignment SwiftUI vertical-centers the children when
-        // `minHeight` makes the VStack taller than they need — pushing the
-        // header down to the middle of the screen.
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .center, spacing: POSSpacing.medium) {
@@ -64,10 +46,6 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                 .foregroundColor(.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
 
-            // Optional free-form note. Persisted as a private order note alongside the
-            // mark-as-paid completion, giving the merchant reconciliation context in WP-Admin
-            // (e.g. "Bank transfer from Maria"). Defaults to empty → no note is added and
-            // behaviour matches the previous (note-less) flow exactly.
             VStack(alignment: .leading, spacing: POSSpacing.small) {
                 Text(Localization.noteFieldLabel)
                     .font(.posBodySmallBold())
@@ -85,17 +63,15 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                     .cornerRadius(POSCornerRadiusStyle.small.value)
                     .disabled(isProcessing)
                     .accessibilityIdentifier("pos-mark-as-paid-note-field")
-                    // `axis: .vertical` makes the Return key insert a newline
-                    // rather than fire `.onSubmit`, so a keyboard toolbar Done
-                    // button is the only reliable way to dismiss the keyboard
-                    // on a multi-line TextField.
                     .toolbar {
-                        ToolbarItemGroup(placement: .keyboard) {
-                            Spacer()
-                            Button(Localization.noteKeyboardDone) {
-                                isNoteFieldFocused = false
+                        if isNoteFieldFocused && keyboardObserver.isKeyboardVisible {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button(Localization.noteKeyboardDone) {
+                                    isNoteFieldFocused = false
+                                }
+                                .accessibilityIdentifier("pos-mark-as-paid-note-keyboard-done")
                             }
-                            .accessibilityIdentifier("pos-mark-as-paid-note-keyboard-done")
                         }
                     }
             }

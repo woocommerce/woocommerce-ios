@@ -53,7 +53,7 @@ struct PointOfSaleMarkAsPaidConfirmationView: View {
                 TextField(Localization.notePlaceholder,
                           text: $note,
                           axis: .vertical)
-                    .lineLimit(2...4)
+                    .lineLimit(1...4)
                     .font(.posBodyMediumRegular())
                     .focused($isNoteFieldFocused)
                     .textInputAutocapitalization(.sentences)

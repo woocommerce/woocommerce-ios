@@ -46,10 +46,12 @@ struct PointOfSalePaymentState: Equatable {
         }
     }
 
+    /// Locks reader connection controls only while the active card flow cannot safely be interrupted.
     var disablesCardReaderConnectionControl: Bool {
         card.disablesCardReaderConnectionControl
     }
 
+    /// Restarts card collection after reader changes only when no alternate payment flow is active.
     var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
         guard cash == .idle, scanToPay == .idle, markAsPaid == .idle else {
             return false

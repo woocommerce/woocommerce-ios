@@ -255,6 +255,21 @@ struct PointOfSaleDashboardView: View {
                 navigationRouter.pushCash(orderTotal: totals.orderTotal)
             }
         }
+        // Mirror tablet navigation so secondary payment state changes push their focused screens.
+        .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+            if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.paymentState.markAsPaid) { oldValue, newValue in
+            if newValue == .confirming, oldValue == .idle,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushMarkAsPaid(orderTotal: totals.orderTotal)
+            } else if newValue == .paymentSuccess {
+                navigationRouter.popToRoot()
+            }
+        }
         .onChange(of: posModel.orderStage) { _, newStage in
             // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.

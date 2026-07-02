@@ -2,8 +2,8 @@
 
 set -o pipefail
 
-REPORT_PATH="${1:-build/build-warnings.json}"
-BASELINE_REPORT_PATH="${2:-build/base-build-warnings.json}"
+REPORT_PATH="${1:-build-warnings.json}"
+BASELINE_REPORT_PATH="${2:-base-build-warnings.json}"
 CURRENT_LOG_PATH="${3:-fastlane/logs}"
 BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-trunk}"
 COMMENT_ID="build-warning-count"

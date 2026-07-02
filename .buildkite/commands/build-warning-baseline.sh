@@ -2,7 +2,7 @@
 
 set -o pipefail
 
-BASELINE_REPORT_PATH="${1:-build/base-build-warnings.json}"
+BASELINE_REPORT_PATH="${1:-base-build-warnings.json}"
 BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-trunk}"
 SCOPE="owned_app_and_modules"
 COMMANDS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

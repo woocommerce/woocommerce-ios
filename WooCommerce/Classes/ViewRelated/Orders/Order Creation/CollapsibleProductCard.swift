@@ -156,7 +156,6 @@ private struct CollapsibleProductRowCard: View {
                                           productImageSize: viewModel.hasParentProduct ?
                                           Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
-                                          productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     .overlay(alignment: .topTrailing) {
@@ -415,7 +414,6 @@ private extension CollapsibleProductRowCard {
         static let borderLineWidth: CGFloat = 1
         static let parentProductImageSize: CGFloat = 56.0
         static let childProductImageSize: CGFloat = 40.0
-        static let productImageCornerRadius: CGFloat = 4.0
         static let iconSize: CGFloat = 16
         static let deleteIconSize: CGFloat = 24.0
         static let rowMinHeight: CGFloat = 40.0

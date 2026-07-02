@@ -267,4 +267,107 @@ struct TotalsViewHelperTests {
                                                                           paymentState: PointOfSalePaymentState(card: cardPaymentState, cash: .idle),
                                                                           cardReaderConnectionStatus: .reconnecting(.init(name: "", batteryLevel: nil))) == false)
     }
+
+    // MARK: - Bottom control state tests
+
+    @Test
+    func test_bottomControlState_when_tapToPay_unknown_and_reader_disconnected_then_returns_checkout_methods() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: loadedOrderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .disconnected,
+                                              tapToPayAvailabilityState: .unknown,
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: false)
+
+        // Then
+        #expect(state == .checkoutMethods([.cardReader, .cashPayment]))
+    }
+
+    @Test
+    func test_bottomControlState_when_tapToPay_unavailable_and_reader_disconnected_then_returns_reader_and_other_methods() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: loadedOrderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .disconnected,
+                                              tapToPayAvailabilityState: .unavailable(reason: .deviceNotSupported),
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: false)
+
+        // Then
+        #expect(state == .readerAndOtherMethods)
+    }
+
+    @Test
+    func test_bottomControlState_when_tapToPay_unavailable_without_other_methods_then_returns_checkout_methods() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: loadedOrderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .disconnected,
+                                              tapToPayAvailabilityState: .unavailable(reason: .deviceNotSupported),
+                                              hasOtherPaymentMethodsAvailable: false,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: false)
+
+        // Then
+        #expect(state == .checkoutMethods([.cardReader, .cashPayment]))
+    }
+
+    @Test
+    func test_bottomControlState_when_tapToPay_available_and_hero_visible_then_returns_cash_and_other_methods() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: loadedOrderState,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .disconnected,
+                                              tapToPayAvailabilityState: .available,
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: true,
+                                              isBluetoothReaderSelected: false)
+
+        // Then
+        #expect(state == .cashAndOtherMethods)
+    }
+
+    @Test
+    func test_bottomControlState_when_order_syncing_then_returns_hidden() {
+        // Given
+        let helper = TotalsViewHelper()
+
+        // When
+        let state = helper.bottomControlState(orderState: .syncing,
+                                              paymentState: idlePaymentState,
+                                              cardReaderConnectionStatus: .disconnected,
+                                              tapToPayAvailabilityState: .unavailable(reason: .deviceNotSupported),
+                                              hasOtherPaymentMethodsAvailable: true,
+                                              isTapToPayHeroVisible: false,
+                                              isBluetoothReaderSelected: false)
+
+        // Then
+        #expect(state == .hidden)
+    }
+
+    private var loadedOrderState: PointOfSaleOrderState {
+        .loaded(.init(cartTotal: "10",
+                      orderTotal: "10",
+                      taxTotal: "0",
+                      orderTotalDecimal: 10))
+    }
+
+    private var idlePaymentState: PointOfSalePaymentState {
+        PointOfSalePaymentState(card: .idle, cash: .idle)
+    }
 }

@@ -13,7 +13,7 @@ struct POSSuccessIcon: View {
             // phone-prototype iconography. iPad keeps the brand asset (its
             // glyph weight + proportions are what the design ships) — gating
             // the swap on `.phone` so this PR stays scoped to phone polish.
-            if layoutScale == .phone {
+            if layoutScale == .compact {
                 Image(systemName: "checkmark")
                     .font(.system(size: checkmarkSize, weight: .bold))
                     .foregroundColor(.posOnSuccess)
@@ -29,13 +29,13 @@ struct POSSuccessIcon: View {
     }
 
     private var iconSize: CGFloat {
-        layoutScale == .phone ? Constants.phoneIconSize : Constants.tabletIconSize
+        layoutScale == .compact ? Constants.phoneIconSize : Constants.tabletIconSize
     }
 
     private var checkmarkSize: CGFloat {
         // Phone keeps the SF-Symbol-sized 28pt; iPad restores the design's
         // 52pt brand-asset width that #17092's drift had bumped to 64pt.
-        layoutScale == .phone ? Constants.phoneCheckmarkSize : Constants.tabletCheckmarkSize
+        layoutScale == .compact ? Constants.phoneCheckmarkSize : Constants.tabletCheckmarkSize
     }
 }
 

@@ -247,7 +247,6 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
         defaults[.applicationPasswordUnsupportedList] = nil
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
-        defaults[.ciabBookingsTabAvailable] = nil
         defaults[.hideWPComConnectionOnDashboard] = nil
         defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = nil
         defaults[.debugMinWooVersionForSelfDrivenPushNotifications] = nil

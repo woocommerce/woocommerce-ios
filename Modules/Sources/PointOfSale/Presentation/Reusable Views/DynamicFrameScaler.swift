@@ -10,7 +10,7 @@ struct DynamicWidthScaler: ViewModifier {
     let largeSizeScale: CGFloat
 
     func body(content: Content) -> some View {
-        if layoutScale == .phone {
+        if layoutScale == .compact {
             content
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, POSPadding.medium)

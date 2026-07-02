@@ -5,15 +5,15 @@
             "display_name": "Morgan Manager",
             "preset": "pos_manager",
             "capabilities": {
-                "pos_process_sales": true,
-                "pos_view_orders": true,
-                "pos_apply_coupons": true,
-                "pos_create_coupons": true,
-                "pos_issue_refunds": true,
-                "pos_view_settings": true,
-                "pos_edit_settings": true,
-                "pos_manage_staff": true,
-                "pos_exit": true
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true,
+                "woocommerce_pos_create_coupons": true,
+                "woocommerce_pos_issue_refunds": true,
+                "woocommerce_pos_view_settings": true,
+                "woocommerce_pos_edit_settings": true,
+                "woocommerce_pos_manage_staff": true,
+                "woocommerce_pos_exit": true
             },
             "pin": {
                 "algo": "pbkdf2-sha256",
@@ -27,9 +27,9 @@
             "display_name": "Casey Cashier",
             "preset": "pos_cashier",
             "capabilities": {
-                "pos_process_sales": true,
-                "pos_view_orders": true,
-                "pos_apply_coupons": true
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true
             },
             "pin": {
                 "algo": "pbkdf2-sha256",
@@ -43,15 +43,15 @@
             "display_name": "Avery Admin",
             "preset": "pos_admin",
             "capabilities": {
-                "pos_process_sales": true,
-                "pos_view_orders": true,
-                "pos_apply_coupons": true,
-                "pos_create_coupons": true,
-                "pos_issue_refunds": true,
-                "pos_view_settings": true,
-                "pos_edit_settings": true,
-                "pos_manage_staff": true,
-                "pos_exit": true
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true,
+                "woocommerce_pos_create_coupons": true,
+                "woocommerce_pos_issue_refunds": true,
+                "woocommerce_pos_view_settings": true,
+                "woocommerce_pos_edit_settings": true,
+                "woocommerce_pos_manage_staff": true,
+                "woocommerce_pos_exit": true
             },
             "pin": null
         }

@@ -35,10 +35,22 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         horizontalSizeClass == .regular
     }
 
+    private var sidebarSelection: Binding<SelectionValue?> {
+        Binding {
+            selection
+        } set: { newValue in
+            if let currentSelection = selection,
+               currentSelection.id == newValue?.id {
+                detailNavigationPath = NavigationPath()
+            }
+            selection = newValue
+        }
+    }
+
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
-                sidebar($selection)
+                sidebar(sidebarSelection)
                     .frame(width: sidebarWidth(for: geometry.size.width))
 
                 NavigationStack(path: $detailNavigationPath) {

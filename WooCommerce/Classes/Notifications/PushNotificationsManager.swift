@@ -411,17 +411,32 @@ extension PushNotificationsManager {
             return
         }
         let newToken = tokenData.hexString
+        let deviceTokenChanged: Bool = {
+            guard let existingToken = registrationState.deviceToken else {
+                return false
+            }
+            return existingToken != newToken
+        }()
 
-        // When the device token changes, clear registered site IDs so all sites
-        // re-register with the new token.
-        if let existingToken = registrationState.deviceToken, existingToken != newToken {
+        // When the device token changes while self-driven push is ON, clear registered site IDs so
+        // all sites re-register with the new token.
+        if selfDrivenPushNotificationEnabled, deviceTokenChanged {
             DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
             for siteID in registrationState.siteIDsRegisteredForWooPNs {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }
         }
 
-        registrationState.applyNewDeviceToken(newToken)
+        // With self-driven push OFF, a token rotation makes the Woo registrations stale (their
+        // records hold the dead token). The fallback below detects that through the STORED token,
+        // so persisting the new one is deferred until the fallback completes — a failed attempt
+        // then retries on the next launch.
+        let staleWooFallbackPending = !selfDrivenPushNotificationEnabled
+            && deviceTokenChanged
+            && registrationState.siteIDsRegisteredForWooPNs.isNotEmpty
+        if !staleWooFallbackPending {
+            registrationState.applyNewDeviceToken(newToken)
+        }
 
         // The awaited flow handles its own registration,
         // so skip the existing path below.
@@ -429,7 +444,7 @@ extension PushNotificationsManager {
             return
         }
 
-        func registerForWPComPushNotificationsIfPossible() {
+        func registerForWPComPushNotificationsIfPossible(onRegistered: ((String) -> Void)? = nil) {
             if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { device, error in
@@ -440,7 +455,47 @@ extension PushNotificationsManager {
 
                 DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
                 self.registrationState.deviceID = deviceID
-                self.disableWPComPushNotificationsIfNeeded(siteIDs: self.registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+                onRegistered?(deviceID)
+            }
+        }
+
+        // Disables WPCom PNs for the sites registered for Woo-driven PNs (self-driven ON).
+        func disableWPComForRegisteredWooSites(deviceID: String) {
+            disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
+        }
+
+        // Self-driven OFF: runs only when the device token rotated — the Woo registrations then
+        // hold a dead token, so re-enabling the WPCom PNs we disabled cannot double-send. Local
+        // state and the new token are persisted only after the re-enable succeeds, so a transient
+        // failure retries on the next launch.
+        func fallBackToWPComPushNotificationsIfWooIsStale() {
+            guard staleWooFallbackPending else {
+                registerForWPComPushNotificationsIfPossible()
+                return
+            }
+            let staleWooSites = registrationState.siteIDsRegisteredForWooPNs
+            let completeFallback = { [weak self] in
+                guard let self else { return }
+                self.registrationState.applyNewDeviceToken(newToken)
+                self.registrationState.clearWooRegistration()
+            }
+            // Site-credential users have no WPCom PNs to re-enable; just drop the stale local state.
+            if stores.isAuthenticatedWithoutWPCom {
+                completeFallback()
+                return
+            }
+            // Don't re-enable WPCom PNs for stores the user has hidden.
+            let visibleStaleSites = staleWooSites.filter { !UserDefaults.standard.hiddenStoreIDs.contains($0) }
+            registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
+                guard let self else { return }
+                guard visibleStaleSites.isNotEmpty else {
+                    return completeFallback()
+                }
+                self.enableWPComPushNotifications(siteIDs: visibleStaleSites, deviceID: deviceID) { success in
+                    if success {
+                        completeFallback()
+                    }
+                }
             }
         }
 
@@ -452,20 +507,17 @@ extension PushNotificationsManager {
                     try await registerSelfDrivenPushNotificationsForAllSites(with: newToken)
                     // Disable WPCom PNs for successfully registered sites
                     if let deviceID = registrationState.deviceID {
-                        disableWPComPushNotificationsIfNeeded(
-                            siteIDs: registrationState.siteIDsRegisteredForWooPNs,
-                            deviceID: deviceID
-                        )
+                        disableWPComForRegisteredWooSites(deviceID: deviceID)
                     } else {
                         // Register with WPCom to get deviceID for disabling
-                        registerForWPComPushNotificationsIfPossible()
+                        registerForWPComPushNotificationsIfPossible(onRegistered: disableWPComForRegisteredWooSites)
                     }
                 } catch {
-                    registerForWPComPushNotificationsIfPossible()
+                    registerForWPComPushNotificationsIfPossible(onRegistered: disableWPComForRegisteredWooSites)
                 }
             }
         } else {
-            registerForWPComPushNotificationsIfPossible()
+            fallBackToWPComPushNotificationsIfWooIsStale()
         }
     }
 
@@ -1036,6 +1088,46 @@ private extension PushNotificationsManager {
                 analytics.track(.wpcomDeviceDisablePushNotificationsSuccess)
             case .failure(let error):
                 analytics.track(.wpcomDeviceDisablePushNotificationsError, withError: error)
+            }
+        }))
+    }
+
+    /// Re-enables mobile push notifications for the given site IDs, when falling back to
+    /// WPCom-driven notifications after self-driven push is turned off.
+    ///
+    /// - Note: re-enables both `newComment` and `storeOrder` — any custom WPCom preference was
+    ///   already lost when we disabled them on Woo registration.
+    ///
+    func enableWPComPushNotifications(siteIDs: [Int64], deviceID: String?, onCompletion: @escaping (Bool) -> Void) {
+        guard let deviceID, let deviceIDInt = Int64(deviceID),
+              siteIDs.isNotEmpty,
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return onCompletion(false)
+        }
+        let updatedBlogs = siteIDs.map {
+            NotificationSettings.Blog(blogID: $0, devices: [
+                .init(deviceID: deviceIDInt, newComment: true, storeOrder: true)
+            ])
+        }
+        let siteSettings = NotificationSettings(blogs: updatedBlogs)
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
+            // `AccountStore` invokes this completion off the main thread; hop back before touching
+            // state and dispatching the follow-up teardown action (the Dispatcher is main-thread only).
+            let handleResult = {
+                guard let self else { return onCompletion(false) }
+                switch result {
+                case .success:
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
+                    onCompletion(true)
+                case .failure(let error):
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
+                    onCompletion(false)
+                }
+            }
+            if Thread.isMainThread {
+                handleResult()
+            } else {
+                DispatchQueue.main.async(execute: handleResult)
             }
         }))
     }

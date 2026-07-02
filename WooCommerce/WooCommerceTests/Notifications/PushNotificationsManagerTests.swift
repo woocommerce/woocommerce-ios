@@ -752,6 +752,146 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    // MARK: - Self-driven OFF: fall back to WPCom for stale Woo registrations
+    //
+    // When the FF resolves to OFF and the device token has rotated, the Woo registrations hold a
+    // dead token and cannot deliver, so `registerDeviceToken` registers the current token with
+    // WPCom, re-enables the WPCom notifications we disabled while Woo-driven was active, and
+    // clears the local Woo state. The new token is persisted only when the fallback completes, so
+    // a failure retries next launch. With an unchanged token nothing changes — the Woo system
+    // keeps delivering alone. One test per scenario:
+    //   1. rotated token: register + re-enable + state cleared + analytics
+    //   2. unchanged token: no-op — Woo keeps delivering, WPCom stays disabled
+    //   3. re-enable fails: state AND old token kept so the next launch retries
+    //   4. no prior Woo registration: plain WPCom register, no settings changes
+    //   5. site-credential user: no WPCom to re-enable, stale local state still cleared
+    //   6. hidden store: excluded from the re-enable, still cleared
+
+    func test_registerDeviceToken_when_FF_off_and_token_rotated_then_reenables_wpcom_and_clears_woo_state() async {
+        // Given — a site registered while the FF was ON, and a device token that rotated since.
+        seedPriorWooRegistration()
+        seedStoredDeviceToken("an-old-device-token")
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — the current token is registered with WPCom, notifications are re-enabled,
+        // the local Woo state is cleared, and the new token is persisted.
+        XCTAssertTrue(dispatchedRegisterDotcomDevice)
+        assertReenabledWPComPushNotifications()
+        assertWooRegistrationCleared()
+        XCTAssertEqual(storedDeviceToken, sampleTokenData.hexString)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_success"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_token_unchanged_then_keeps_woo_registration() async {
+        // Given — a Woo-registered site whose stored token matches the current one: the Woo system
+        // still delivers, so falling back would double-send. Nothing must change.
+        seedPriorWooRegistration()
+        seedStoredDeviceToken(sampleTokenData.hexString)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — no settings changes and the Woo registration stays.
+        XCTAssertTrue(storesManager.receivedActions.compactMap { $0 as? AccountAction }.isEmpty)
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_reenable_fails_then_keeps_woo_state_and_old_token_for_retry() async {
+        // Given
+        seedPriorWooRegistration()
+        seedStoredDeviceToken("an-old-device-token")
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .failure(NSError(domain: "test", code: 1)))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — the re-enable failed: the Woo state AND the old stored token are kept, so the
+        // rotation is detected again on the next launch and the fallback retries.
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(storedDeviceToken, "an-old-device-token")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_error"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_with_no_prior_woo_registration_then_registers_wpcom_without_settings_changes() async {
+        // Given — never used Woo-driven PNs.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — plain WPCom registration, no notification-settings toggling at all.
+        XCTAssertTrue(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(storesManager.receivedActions.compactMap { $0 as? AccountAction }.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_site_credentials_user_then_clears_stale_woo_state_without_wpcom_calls() async {
+        // Given — a site-credential (no WPCom) user with a prior Woo registration and a rotated token.
+        seedPriorWooRegistration()
+        seedStoredDeviceToken("an-old-device-token")
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — the stale local state is cleared; there is no WPCom to register or re-enable.
+        assertWooRegistrationCleared()
+        XCTAssertEqual(storedDeviceToken, sampleTokenData.hexString)
+        XCTAssertFalse(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(storesManager.receivedActions.compactMap { $0 as? AccountAction }.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_a_stale_site_is_hidden_then_skips_its_wpcom_reenable() async {
+        // Given — two Woo-registered sites with a rotated token; the user has hidden store 100.
+        seedPriorWooRegistration(siteIDs: "99,100")
+        seedStoredDeviceToken("an-old-device-token")
+        UserDefaults.standard.saveHiddenStoreIDs([100])
+        addTeardownBlock {
+            UserDefaults.standard.saveHiddenStoreIDs([])
+        }
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — WPCom is re-enabled for the visible site only, and the local state is cleared.
+        assertReenabledWPComPushNotifications(blogID: 99)
+        let accountActions = storesManager.receivedActions.compactMap { $0 as? AccountAction }
+        XCTAssertFalse(accountActions.contains(where: {
+            if case let .updateNotificationSettings(settings, _) = $0 {
+                return settings.blogs.contains(where: { $0.blogID == 100 })
+            }
+            return false
+        }), "Hidden store must not have its WPCom notifications re-enabled")
+        assertWooRegistrationCleared()
+    }
+
     func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -2021,6 +2161,87 @@ final class PushNotificationsManagerTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    /// Seeds the local state left behind by a prior Woo-driven (FF ON) registration.
+    func seedPriorWooRegistration(siteIDs: String = "99", tokenID: String = "555", deviceID: String = "456") {
+        defaults.set(siteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        defaults.set(tokenID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set(deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+    }
+
+    /// Seeds the persisted APNS device token — differing from `sampleTokenData` to simulate a rotation.
+    func seedStoredDeviceToken(_ token: String) {
+        defaults.set(token, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+    }
+
+    var storedDeviceToken: String? {
+        defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+    }
+
+    /// Creates a manager whose self-driven eligibility resolves to `false`, awaiting the resolution.
+    /// Seed any prior Woo state via `seedPriorWooRegistration()` before calling this.
+    func makeFallbackManagerWithFFOff(analytics: Analytics = ServiceLocator.analytics) async -> PushNotificationsManager {
+        let eligibilityExpectation = expectation(description: "Eligibility check completed")
+        eligibilityExpectation.assertForOverFulfill = false
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: { eligibilityExpectation.fulfill() })
+        let manager = makeManager(featureFlagService: MockFeatureFlagService(selfDrivenPushToken: false), analytics: analytics)
+        await fulfillment(of: [eligibilityExpectation], timeout: 1.0)
+        return manager
+    }
+
+    func stubUpdateNotificationSettings(result: Result<Void, Error>) {
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
+            if case let .updateNotificationSettings(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Stubs the fallback's NotificationActions: WPCom device registration succeeds with
+    /// deviceID "456" and self-driven unregistration succeeds.
+    func stubFallbackWooActions() {
+        guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "456"}"#.utf8)) else {
+            return XCTFail("Failed to decode DotcomDevice")
+        }
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDevice(_, _, _, onCompletion) = action {
+                onCompletion(device, nil)
+            }
+        }
+    }
+
+    var sampleTokenData: Data {
+        Data(Sample.deviceToken.utf8)
+    }
+
+    var dispatchedRegisterDotcomDevice: Bool {
+        storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case .registerDevice = $0 { return true }
+            return false
+        }
+    }
+
+    /// Asserts an `updateNotificationSettings` action re-enabled WPCom PNs (newComment/storeOrder true).
+    func assertReenabledWPComPushNotifications(blogID: Int64 = 99,
+                                               deviceID: Int64 = 456,
+                                               file: StaticString = #filePath,
+                                               line: UInt = #line) {
+        let reenabled = storesManager.receivedActions.compactMap { $0 as? AccountAction }.contains {
+            guard case let .updateNotificationSettings(settings, _) = $0,
+                  let device = settings.blogs.first(where: { $0.blogID == blogID })?
+                      .devices.first(where: { $0.deviceID == deviceID }) else {
+                return false
+            }
+            return device.newComment == true && device.storeOrder == true
+        }
+        XCTAssertTrue(reenabled, "Expected WPCom PNs re-enabled for blog \(blogID)", file: file, line: line)
+    }
+
+    /// Asserts the local Woo registration state was cleared.
+    func assertWooRegistrationCleared(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertNil(manager.wooPushNotificationToken, file: file, line: line)
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty, file: file, line: line)
+    }
+
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      storageManager: MockStorageManager? = nil,
                      pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,

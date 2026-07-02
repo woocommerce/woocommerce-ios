@@ -10,7 +10,6 @@ struct POSPrinterSetupModal: View {
     let controller: POSPrinterConnectionController
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.scenePhase) private var scenePhase
 
     private var isCompactWidth: Bool {
         horizontalSizeClass == .compact
@@ -32,16 +31,6 @@ struct POSPrinterSetupModal: View {
         .onChange(of: controller.isConnected) { _, isConnected in
             if isConnected {
                 isPresented = false
-            }
-        }
-        .onAppear {
-            controller.refreshBluetoothAuthorization()
-        }
-        .onChange(of: scenePhase) { _, newPhase in
-            // The merchant may have toggled the app's Bluetooth permission in Settings while we were
-            // backgrounded; re-read it so the pairing screen reflects the change on return.
-            if newPhase == .active {
-                controller.refreshBluetoothAuthorization()
             }
         }
         .onDisappear {

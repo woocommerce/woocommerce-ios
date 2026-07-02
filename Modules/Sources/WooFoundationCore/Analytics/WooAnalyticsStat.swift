@@ -1461,8 +1461,7 @@ extension WooAnalyticsStat {
             return false
         // Per-site push token registration events attribute properties to the target site via a factory,
         // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site. Unregistration events also target arbitrary (possibly
-        // non-selected) sites, so the selected-site enrichment would misattribute them.
+        // with the currently selected site.
         case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
              .wooPushTokenUnregisterSuccess, .wooPushTokenUnregisterError:
             return false

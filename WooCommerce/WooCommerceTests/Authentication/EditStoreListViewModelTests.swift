@@ -212,7 +212,7 @@ struct EditStoreListViewModelTests {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let notificationManager = MockPushNotificationsManager(
-            wooPushNotificationTokensBySite: [site1.siteID: 99],
+            wooPushNotificationToken: "99",
             siteIDsRegisteredForWooPNs: [site1.siteID]
         )
 
@@ -254,7 +254,7 @@ struct EditStoreListViewModelTests {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let notificationManager = MockPushNotificationsManager(
-            wooPushNotificationTokensBySite: [site1.siteID: 99],
+            wooPushNotificationToken: "99",
             siteIDsRegisteredForWooPNs: [] // site1 is NOT registered
         )
 
@@ -290,7 +290,7 @@ struct EditStoreListViewModelTests {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let notificationManager = MockPushNotificationsManager(
-            wooPushNotificationTokensBySite: [:], // registered but no token record for site1
+            wooPushNotificationToken: nil,
             siteIDsRegisteredForWooPNs: [site1.siteID]
         )
 
@@ -327,7 +327,7 @@ struct EditStoreListViewModelTests {
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         var completionTriggered = false
         let notificationManager = MockPushNotificationsManager(
-            wooPushNotificationTokensBySite: [site1.siteID: 99],
+            wooPushNotificationToken: "99",
             siteIDsRegisteredForWooPNs: [site1.siteID]
         )
 
@@ -365,7 +365,7 @@ struct EditStoreListViewModelTests {
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let notificationManager = MockPushNotificationsManager(
             mockedDeviceID: nil, // no WPCom device ID
-            wooPushNotificationTokensBySite: [site1.siteID: 99],
+            wooPushNotificationToken: "99",
             siteIDsRegisteredForWooPNs: [site1.siteID]
         )
 

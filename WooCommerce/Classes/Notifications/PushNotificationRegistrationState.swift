@@ -41,30 +41,14 @@ final class PushNotificationRegistrationState {
         }
     }
 
-    /// Per-site Woo push token record IDs — unregistering a site requires that site's own record ID.
-    /// Stored as `[String: String]` because plists don't support `Int64` keys.
-    private(set) var wooPushNotificationTokensBySite: [Int64: Int64] {
+    /// Self driven push notification token
+    var wooPushNotificationToken: String? {
         get {
-            guard let stored = defaults.dictionary(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
-                    as? [String: String] else {
-                return [:]
-            }
-            return stored.reduce(into: [:]) { result, entry in
-                if let siteID = Int64(entry.key), let tokenID = Int64(entry.value) {
-                    result[siteID] = tokenID
-                }
-            }
+            defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
         }
         set {
-            let stored = newValue.reduce(into: [String: String]()) { result, entry in
-                result["\(entry.key)"] = "\(entry.value)"
-            }
-            defaults.set(stored, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
+            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
         }
-    }
-
-    func wooPushNotificationTokenID(for siteID: Int64) -> Int64? {
-        wooPushNotificationTokensBySite[siteID]
     }
 
     /// Site IDs registered to Woo PN system, separated by commas
@@ -109,33 +93,8 @@ final class PushNotificationRegistrationState {
         siteIDsRegisteredForWooPNs = updatedIDs
     }
 
-    func setWooPushNotificationTokenID(_ tokenID: Int64, for siteID: Int64) {
-        wooPushNotificationTokensBySite[siteID] = tokenID
-    }
-
-    func removeWooPushNotificationTokenID(for siteID: Int64) {
-        wooPushNotificationTokensBySite[siteID] = nil
-    }
-
-    /// One-time migration of the legacy single token record ID into the per-site map. The legacy
-    /// owner is unknowable with multiple registered sites, so it is paired with the only registered
-    /// site, else the selected one, else dropped.
-    func migrateLegacyWooPushNotificationTokenIfNeeded(selectedSiteID: Int64?) {
-        guard let legacyToken = defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken) else {
-            return
-        }
-        defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
-
-        guard wooPushNotificationTokensBySite.isEmpty, let tokenID = Int64(legacyToken) else {
-            return
-        }
-        let registeredSites = siteIDsRegisteredForWooPNs
-        if registeredSites.count == 1, let onlySite = registeredSites.first {
-            wooPushNotificationTokensBySite[onlySite] = tokenID
-        } else if let selectedSiteID, registeredSites.contains(selectedSiteID) {
-            wooPushNotificationTokensBySite[selectedSiteID] = tokenID
-        }
-        // No registered sites: orphan token, dropped with the legacy key above.
+    func setWooPushNotificationTokenID(_ tokenID: Int64) {
+        wooPushNotificationToken = "\(tokenID)"
     }
 
     func applyNewDeviceToken(_ newToken: String) {
@@ -168,14 +127,8 @@ extension PushNotificationRegistrationState {
 /// Clean-up
 extension PushNotificationRegistrationState {
     func clearWooRegistration() {
-        wooPushNotificationTokensBySite = [:]
+        wooPushNotificationToken = nil
         siteIDsRegisteredForWooPNs = []
-    }
-
-    /// Clears a single site's Woo registration (local token record + registered mark).
-    func clearWooRegistration(for siteID: Int64) {
-        removeWooPushNotificationTokenID(for: siteID)
-        unmarkSiteAsRegisteredForWooPNs(siteID)
     }
 
     func clearWPComRegistration() {

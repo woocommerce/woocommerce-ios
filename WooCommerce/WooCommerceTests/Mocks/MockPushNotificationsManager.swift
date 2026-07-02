@@ -41,7 +41,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
-    private let wooPushNotificationTokensBySite: [Int64: Int64]
+    let wooPushNotificationToken: String?
     private(set) var siteIDsRegisteredForWooPNs: [Int64]
     let hasStoredSiteIDsRegisteredForWooPNs: Bool
     private(set) var unmarkedSiteIDs: [Int64] = []
@@ -72,18 +72,14 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
-         wooPushNotificationTokensBySite: [Int64: Int64] = [:],
+         wooPushNotificationToken: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
          hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
-        self.wooPushNotificationTokensBySite = wooPushNotificationTokensBySite
+        self.wooPushNotificationToken = wooPushNotificationToken
         self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
         self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty
         self.siteIDsRegisteredForWooPNsSubject = CurrentValueSubject(siteIDsRegisteredForWooPNs)
-    }
-
-    func wooPushNotificationTokenID(for siteID: Int64) -> Int64? {
-        wooPushNotificationTokensBySite[siteID]
     }
 
     func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {

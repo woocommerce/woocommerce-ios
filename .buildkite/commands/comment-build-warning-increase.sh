@@ -16,7 +16,10 @@ is_pull_request() {
 download_artifact_path() {
   local artifact_path=$1
   set +e
-  if command -v download_artifact >/dev/null 2>&1; then
+
+  if [[ "$artifact_path" == *"*"* || "$artifact_path" == *"?"* || "$artifact_path" == *"["* ]] && command -v buildkite-agent >/dev/null 2>&1; then
+    buildkite-agent artifact download "$artifact_path" .
+  elif command -v download_artifact >/dev/null 2>&1; then
     download_artifact "$artifact_path"
   elif command -v buildkite-agent >/dev/null 2>&1; then
     buildkite-agent artifact download "$artifact_path" .
@@ -62,11 +65,11 @@ ensure_current_report() {
     return
   fi
 
-  if [ ! -d "$CURRENT_LOG_PATH" ]; then
-    download_artifact_path "$CURRENT_LOG_PATH/**/*" || true
+  if [ ! -e "$CURRENT_LOG_PATH" ]; then
+    download_artifact_path "$CURRENT_LOG_PATH/*" || true
   fi
 
-  if [ ! -d "$CURRENT_LOG_PATH" ]; then
+  if [ ! -e "$CURRENT_LOG_PATH" ]; then
     return 1
   fi
 
@@ -116,6 +119,7 @@ fi
 
 if [ -z "$current_scope" ]; then
   echo "Current build warning report is missing a scope; skipping comparison."
+  delete_existing_comment
   exit 0
 fi
 

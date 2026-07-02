@@ -669,9 +669,9 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // When / Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelPaymentCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.startCashPayment()
 
@@ -1169,9 +1169,9 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics)
 
             // When
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelReconnectionCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.cancelReconnection()
             }
@@ -1244,10 +1244,10 @@ struct PointOfSaleAggregateModelTests {
             barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
 
             // When & Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 soundPlayer.onPlaySound = { sound in
                     #expect(sound == .barcodeScanFailure)
-                    continuation.resume()
+                    fire()
                 }
                 sut.barcodeScanned(.success("123456"))
             }

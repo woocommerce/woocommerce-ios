@@ -54,6 +54,12 @@ protocol PointOfSaleAggregateModelProtocol {
 
     @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
 
+    /// Whether a receipt printer is currently connected. `false` when the printer feature is off
+    /// (no connection controller) or no printer is paired.
+    @MainActor var isReceiptPrinterConnected: Bool {
+        settingsController.printerConnectionController?.isConnected ?? false
+    }
+
     private(set) var cart: Cart = .init() {
         didSet { rebuildCartProductObservation() }
     }

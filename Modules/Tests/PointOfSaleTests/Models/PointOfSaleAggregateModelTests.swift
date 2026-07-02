@@ -14,6 +14,7 @@ import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
 import protocol Yosemite.ReceiptPrinterServiceProtocol
+import struct Yosemite.PrinterDevice
 import enum Yosemite.POSItemType
 import enum WooFoundationCore.WooAnalyticsStat
 import Combine
@@ -1521,6 +1522,60 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.receiptPrinter === printer)
+        }
+    }
+
+    @MainActor struct ReceiptPrinterConnectionTests {
+        @Test func isReceiptPrinterConnected_when_no_printer_controller_then_false() async {
+            // Given
+            let settingsController = MockPOSSettingsController()
+
+            // When
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
+
+            // Then
+            #expect(sut.isReceiptPrinterConnected == false)
+        }
+
+        @Test func isReceiptPrinterConnected_when_printer_disconnected_then_false() async {
+            // Given
+            let settingsController = MockPOSSettingsController()
+            settingsController.printerConnectionController = POSPrinterConnectionController(service: MockReceiptPrinterService())
+
+            // When
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
+
+            // Then
+            #expect(sut.isReceiptPrinterConnected == false)
+        }
+
+        @Test func isReceiptPrinterConnected_when_printer_connected_then_true() async {
+            // Given
+            let controller = POSPrinterConnectionController(service: MockReceiptPrinterService())
+            controller.connect(to: PrinterDevice(id: "1", name: "Star TSP100"))
+            await waitForConnection(of: controller)
+            let settingsController = MockPOSSettingsController()
+            settingsController.printerConnectionController = controller
+
+            // When
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
+
+            // Then
+            #expect(sut.isReceiptPrinterConnected == true)
+        }
+    }
+}
+
+@MainActor
+private func waitForConnection(of controller: POSPrinterConnectionController) async {
+    while !controller.isConnected {
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = controller.isConnected
+                _ = controller.connectedPrinter
+            } onChange: {
+                Task { @MainActor in continuation.resume() }
+            }
         }
     }
 }

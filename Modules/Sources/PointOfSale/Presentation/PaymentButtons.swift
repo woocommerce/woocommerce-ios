@@ -3,6 +3,7 @@ import SwiftUI
 struct PaymentsActionButtons: View {
     let successAction: PaymentFlowAction
     let showsPrintReceipt: Bool
+    let printReceiptAction: () -> Void
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posNavigationRouter) private var router
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -53,16 +54,18 @@ private extension PaymentsActionButtons {
         })
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier("pos-email-receipt-button")
     }
 
     var printReceiptButton: some View {
-        Button(action: {}, label: {
+        Button(action: printReceiptAction, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.printReceipt)
             }
         })
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier("pos-print-receipt-button")
     }
 
     var successButton: some View {
@@ -108,7 +111,8 @@ private extension PaymentsActionButtons {
             title: "New order",
             action: {},
             analyticsEvent: nil),
-        showsPrintReceipt: true)
+        showsPrintReceipt: true,
+        printReceiptAction: {})
     .environment(\.horizontalSizeClass, .regular)
 }
 
@@ -118,7 +122,8 @@ private extension PaymentsActionButtons {
             title: "New order",
             action: {},
             analyticsEvent: nil),
-        showsPrintReceipt: true)
+        showsPrintReceipt: true,
+        printReceiptAction: {})
     .environment(\.horizontalSizeClass, .compact)
 }
 #endif

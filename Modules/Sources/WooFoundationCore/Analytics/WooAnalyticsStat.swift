@@ -633,6 +633,8 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wooPushTokenUnregisterSuccess = "woo_push_token_unregister_success"
+    case wooPushTokenUnregisterError = "woo_push_token_unregister_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
     case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
@@ -1459,8 +1461,10 @@ extension WooAnalyticsStat {
             return false
         // Per-site push token registration events attribute properties to the target site via a factory,
         // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
+        // with the currently selected site. Unregistration events also target arbitrary (possibly
+        // non-selected) sites, so the selected-site enrichment would misattribute them.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
+             .wooPushTokenUnregisterSuccess, .wooPushTokenUnregisterError:
             return false
         default:
             return true

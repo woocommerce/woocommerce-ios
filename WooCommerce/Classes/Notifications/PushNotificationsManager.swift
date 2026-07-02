@@ -439,8 +439,7 @@ extension PushNotificationsManager {
             // Both had their WPCom PNs disabled, so both need the re-enable.
             let staleWooSites = Set(registrationState.siteIDsRegisteredForWooPNs)
                 .union(wooTokensToUnregister.keys)
-                .sorted()
-            guard staleWooSites.isNotEmpty else {
+            guard !staleWooSites.isEmpty else {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
@@ -449,10 +448,21 @@ extension PushNotificationsManager {
                 unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
                 return
             }
+            // Don't re-enable WPCom PNs for stores the user has hidden (parity with Android's
+            // visible-sites intersection) — their Woo registrations are still torn down below.
+            let visibleStaleSites = staleWooSites
+                .subtracting(UserDefaults.standard.hiddenStoreIDs)
+                .sorted()
             registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
-                self?.enableWPComPushNotifications(siteIDs: staleWooSites, deviceID: deviceID) { success in
+                guard let self else { return }
+                guard visibleStaleSites.isNotEmpty else {
+                    // Only hidden stores left: nothing to re-enable, just stop Woo-driven delivery.
+                    self.unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
+                    return
+                }
+                self.enableWPComPushNotifications(siteIDs: visibleStaleSites, deviceID: deviceID) { success in
                     if success {
-                        self?.unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
+                        self.unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
                     }
                 }
             }
@@ -1111,11 +1121,14 @@ private extension PushNotificationsManager {
                 siteID: targetSiteID,
                 tokenID: tokenID,
                 availableAsRESTRequest: isTargetSiteSelected,
-                onCompletion: { result in
-                    if case .failure(let error) = result {
-                        DDLogError("⛔️ Unable to unregister Woo push token for site \(targetSiteID): \(error)")
-                    } else {
+                onCompletion: { [weak self] result in
+                    switch result {
+                    case .success:
                         DDLogInfo("📱 Unregistered Woo push token for site \(targetSiteID)")
+                        self?.analytics.track(.wooPushTokenUnregisterSuccess)
+                    case .failure(let error):
+                        DDLogError("⛔️ Unable to unregister Woo push token for site \(targetSiteID): \(error)")
+                        self?.analytics.track(.wooPushTokenUnregisterError, withError: error)
                     }
                     group.leave()
                 }

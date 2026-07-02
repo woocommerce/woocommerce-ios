@@ -770,6 +770,39 @@ final class PushNotificationsManagerTests: XCTestCase {
         assertReenabledWPComPushNotifications()
         assertWooRegistrationTornDown()
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_success"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_unregister_success"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_a_stale_site_is_hidden_then_skips_its_wpcom_reenable_but_still_unregisters_it() async {
+        // Given — two Woo-registered sites; the user has hidden store 100 in the store picker.
+        seedPriorWooRegistration(tokensBySite: [99: 555, 100: 777])
+        UserDefaults.standard.saveHiddenStoreIDs([100])
+        addTeardownBlock {
+            UserDefaults.standard.saveHiddenStoreIDs([])
+        }
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — WPCom is re-enabled for the visible site only…
+        assertReenabledWPComPushNotifications(blogID: 99)
+        let accountActions = storesManager.receivedActions.compactMap { $0 as? AccountAction }
+        XCTAssertFalse(accountActions.contains(where: {
+            if case let .updateNotificationSettings(settings, _) = $0 {
+                return settings.blogs.contains(where: { $0.blogID == 100 })
+            }
+            return false
+        }), "Hidden store must not have its WPCom notifications re-enabled")
+
+        // …while BOTH sites' Woo registrations are torn down.
+        XCTAssertNil(manager.wooPushNotificationTokenID(for: 99))
+        XCTAssertNil(manager.wooPushNotificationTokenID(for: 100))
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty)
     }
 
     func test_registerDeviceToken_when_FF_off_and_enable_fails_then_keeps_woo_state_for_retry() async {

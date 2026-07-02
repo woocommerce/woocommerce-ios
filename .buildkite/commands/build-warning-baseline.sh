@@ -36,6 +36,9 @@ CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SC
 CACHE_KEY="$(printf '%s\n' "${CACHE_KEY_PARTS[@]}" | shasum | awk '{print $1}')"
 CACHE_DIR="${BUILD_WARNING_BASELINE_CACHE_DIR:-$HOME/.cache/woocommerce-ios/build-warning-baselines}"
 CACHE_PATH="$CACHE_DIR/$CACHE_KEY.json"
+TOOLKIT_CACHE_KEY="build-warning-baseline-$CACHE_KEY"
+TOOLKIT_CACHE_DIR="${BUILD_WARNING_BASELINE_TOOLKIT_CACHE_DIR:-build-warning-baseline-cache}"
+TOOLKIT_CACHE_PATH="$TOOLKIT_CACHE_DIR/base-build-warnings.json"
 
 if [[ "$BASELINE_REPORT_PATH" = /* ]]; then
   ABSOLUTE_BASELINE_REPORT_PATH="$BASELINE_REPORT_PATH"
@@ -52,10 +55,59 @@ cache_matches_baseline() {
     "$report_path" >/dev/null
 }
 
-if [ -f "$CACHE_PATH" ] && cache_matches_baseline "$CACHE_PATH"; then
-  echo "Reusing cached build warning baseline for $SHORT_BASE_COMMIT."
-  cp "$CACHE_PATH" "$BASELINE_REPORT_PATH"
+upload_baseline_artifact() {
   upload_artifact "$BASELINE_REPORT_PATH"
+}
+
+copy_to_baseline_report() {
+  local report_path=$1
+
+  cp "$report_path" "$BASELINE_REPORT_PATH"
+}
+
+save_toolkit_cache() {
+  if ! command -v save_cache >/dev/null 2>&1; then
+    return
+  fi
+
+  rm -rf "$TOOLKIT_CACHE_DIR"
+  mkdir -p "$TOOLKIT_CACHE_DIR"
+  cp "$BASELINE_REPORT_PATH" "$TOOLKIT_CACHE_PATH"
+  save_cache "$TOOLKIT_CACHE_DIR" "$TOOLKIT_CACHE_KEY" || true
+  rm -rf "$TOOLKIT_CACHE_DIR"
+}
+
+restore_toolkit_cache() {
+  if ! command -v restore_cache >/dev/null 2>&1; then
+    return 1
+  fi
+
+  rm -rf "$TOOLKIT_CACHE_DIR"
+  restore_cache "$TOOLKIT_CACHE_KEY" || return 1
+
+  if [ -f "$TOOLKIT_CACHE_PATH" ] && cache_matches_baseline "$TOOLKIT_CACHE_PATH"; then
+    return 0
+  fi
+
+  rm -rf "$TOOLKIT_CACHE_DIR"
+  return 1
+}
+
+if [ -f "$CACHE_PATH" ] && cache_matches_baseline "$CACHE_PATH"; then
+  echo "Reusing local cached build warning baseline for $SHORT_BASE_COMMIT."
+  copy_to_baseline_report "$CACHE_PATH"
+  save_toolkit_cache
+  upload_baseline_artifact
+  exit 0
+fi
+
+if restore_toolkit_cache; then
+  echo "Reusing shared cached build warning baseline for $SHORT_BASE_COMMIT."
+  mkdir -p "$CACHE_DIR"
+  cp "$TOOLKIT_CACHE_PATH" "$CACHE_PATH"
+  copy_to_baseline_report "$TOOLKIT_CACHE_PATH"
+  rm -rf "$TOOLKIT_CACHE_DIR"
+  upload_baseline_artifact
   exit 0
 fi
 
@@ -97,4 +149,5 @@ mv "$baseline_report_tmp" "$BASELINE_REPORT_PATH"
 mkdir -p "$CACHE_DIR"
 cp "$BASELINE_REPORT_PATH" "$CACHE_PATH"
 
-upload_artifact "$BASELINE_REPORT_PATH"
+save_toolkit_cache
+upload_baseline_artifact

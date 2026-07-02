@@ -33,10 +33,12 @@ final class POSPrinterConnectionController {
         connectedPrinter != nil
     }
 
-    /// The app's Bluetooth permission, so the setup modal can prompt the merchant to enable it when
-    /// it's off. Refreshed via `refreshBluetoothAuthorization()` when the modal appears or the app
-    /// returns to the foreground.
-    private(set) var bluetoothAuthorization: BluetoothAuthorization
+    /// The app's current Bluetooth permission, so the setup modal can prompt the merchant to enable
+    /// it when it's off. Read live so the flow always reflects the latest permission, including a
+    /// grant or denial from the in-app system prompt.
+    var bluetoothAuthorization: BluetoothAuthorization {
+        bluetoothAuthorizationProvider.current
+    }
 
     private let service: ReceiptPrinterServiceProtocol
     private let bluetoothAuthorizationProvider: BluetoothAuthorizationProviding
@@ -56,7 +58,6 @@ final class POSPrinterConnectionController {
          bluetoothAuthorizationProvider: BluetoothAuthorizationProviding = CoreBluetoothAuthorizationProvider()) {
         self.service = service
         self.bluetoothAuthorizationProvider = bluetoothAuthorizationProvider
-        self.bluetoothAuthorization = bluetoothAuthorizationProvider.current
         observeConnectionStatus()
     }
 
@@ -162,12 +163,6 @@ final class POSPrinterConnectionController {
 
     func disconnect() async {
         await service.disconnect()
-    }
-
-    /// Re-reads the app's Bluetooth permission, so the setup flow reflects a change the merchant just
-    /// made in Settings after being sent there.
-    func refreshBluetoothAuthorization() {
-        bluetoothAuthorization = bluetoothAuthorizationProvider.current
     }
 
     /// Tears down any in-flight discovery and returns to the pairing screen, so reopening the

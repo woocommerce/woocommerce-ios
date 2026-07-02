@@ -382,18 +382,32 @@ extension PushNotificationsManager {
             return
         }
         let newToken = tokenData.hexString
+        let deviceTokenChanged: Bool = {
+            guard let existingToken = registrationState.deviceToken else {
+                return false
+            }
+            return existingToken != newToken
+        }()
 
         // When the device token changes while self-driven push is ON, clear registered site IDs so
-        // all sites re-register. Skipped when OFF — the fallback below still needs that state.
-        if selfDrivenPushNotificationEnabled,
-           let existingToken = registrationState.deviceToken, existingToken != newToken {
+        // all sites re-register with the new token.
+        if selfDrivenPushNotificationEnabled, deviceTokenChanged {
             DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
             for siteID in registrationState.siteIDsRegisteredForWooPNs {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }
         }
 
-        registrationState.applyNewDeviceToken(newToken)
+        // With self-driven push OFF, a token rotation makes the Woo registrations stale (their
+        // records hold the dead token). The fallback below detects that through the STORED token,
+        // so persisting the new one is deferred until the fallback completes — a failed attempt
+        // then retries on the next launch.
+        let staleWooFallbackPending = !selfDrivenPushNotificationEnabled
+            && deviceTokenChanged
+            && registrationState.siteIDsRegisteredForWooPNs.isNotEmpty
+        if !staleWooFallbackPending {
+            registrationState.applyNewDeviceToken(newToken)
+        }
 
         // The awaited flow handles its own registration,
         // so skip the existing path below.
@@ -421,20 +435,27 @@ extension PushNotificationsManager {
             disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
         }
 
-        // Self-driven OFF: fall back to WPCom-driven notifications. Registers the current APNS
-        // token with WPCom, re-enables the WPCom PNs we disabled while Woo-driven was active, then —
-        // only once the re-enable is confirmed — unregisters Woo and clears local state, so a
+        // Self-driven OFF: matching Android (woocommerce-android#16166), the fallback only runs
+        // when the device token rotated — the Woo registrations then hold a dead token and cannot
+        // deliver, so re-enabling the WPCom PNs we disabled for those sites cannot double-send.
+        // With an unchanged token the Woo system keeps delivering and nothing needs to change.
+        // The re-enable is confirmed before the local state (and the new token) is persisted, so a
         // transient failure retries on the next launch instead of leaving the merchant with no
         // notifications.
-        func fallBackToWPComPushNotifications() {
-            let staleWooSites = registrationState.siteIDsRegisteredForWooPNs
-            guard staleWooSites.isNotEmpty else {
+        func fallBackToWPComPushNotificationsIfWooIsStale() {
+            guard staleWooFallbackPending else {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
-            // Site-credential users have no WPCom PNs to re-enable; just stop Woo-driven delivery.
+            let staleWooSites = registrationState.siteIDsRegisteredForWooPNs
+            let completeFallback = { [weak self] in
+                guard let self else { return }
+                self.registrationState.applyNewDeviceToken(newToken)
+                self.registrationState.clearWooRegistration()
+            }
+            // Site-credential users have no WPCom PNs to re-enable; just drop the stale local state.
             if stores.isAuthenticatedWithoutWPCom {
-                tearDownWooRegistration()
+                completeFallback()
                 return
             }
             // Don't re-enable WPCom PNs for stores the user has hidden.
@@ -442,12 +463,11 @@ extension PushNotificationsManager {
             registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
                 guard let self else { return }
                 guard visibleStaleSites.isNotEmpty else {
-                    self.tearDownWooRegistration()
-                    return
+                    return completeFallback()
                 }
                 self.enableWPComPushNotifications(siteIDs: visibleStaleSites, deviceID: deviceID) { success in
                     if success {
-                        self.tearDownWooRegistration()
+                        completeFallback()
                     }
                 }
             }
@@ -471,7 +491,7 @@ extension PushNotificationsManager {
                 }
             }
         } else {
-            fallBackToWPComPushNotifications()
+            fallBackToWPComPushNotificationsIfWooIsStale()
         }
     }
 
@@ -1103,24 +1123,6 @@ private extension PushNotificationsManager {
         }))
     }
 
-    /// Stops Woo-driven delivery for the selected site (best-effort — only its token record ID is
-    /// known locally) and clears all local Woo registration state.
-    ///
-    func tearDownWooRegistration() {
-        let hadToken = registrationState.wooPushNotificationToken != nil
-        unregisterFromWooPushNotificationsIfPossible { [weak self] result in
-            guard let self else { return }
-            if hadToken {
-                switch result {
-                case .success:
-                    analytics.track(.wooPushTokenUnregisterSuccess)
-                case .failure(let error):
-                    analytics.track(.wooPushTokenUnregisterError, withError: error)
-                }
-            }
-            registrationState.clearWooRegistration()
-        }
-    }
 }
 
 

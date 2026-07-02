@@ -7,7 +7,7 @@
 
 25.1
 -----
-- [Internal] Push notifications: fall back to WordPress.com notifications when the self-driven push feature is turned off. [https://github.com/woocommerce/woocommerce-ios/pull/17465]
+- [Internal] Push notifications: restore WordPress.com notifications for stores whose self-driven push registration went stale after the feature was turned off. [https://github.com/woocommerce/woocommerce-ios/pull/17465]
 - [*] Order creation product search: the Products/SKU filter now appears below the search bar while you're searching, making SKU search easier to find. [https://github.com/woocommerce/woocommerce-ios/pull/17375]
 - [Internal] Parse all network responses off the main thread to keep the UI responsive on large payloads. [https://github.com/woocommerce/woocommerce-ios/pull/17402]
 - [*] Payments: the balance summary now shows Total balance (available + pending funds) and Available funds [https://github.com/woocommerce/woocommerce-ios/pull/17404]

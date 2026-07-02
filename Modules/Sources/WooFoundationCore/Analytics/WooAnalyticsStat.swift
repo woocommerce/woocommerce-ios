@@ -633,8 +633,6 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
-    case wooPushTokenUnregisterSuccess = "woo_push_token_unregister_success"
-    case wooPushTokenUnregisterError = "woo_push_token_unregister_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
     case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
@@ -1462,8 +1460,7 @@ extension WooAnalyticsStat {
         // Per-site push token registration events attribute properties to the target site via a factory,
         // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
         // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
-             .wooPushTokenUnregisterSuccess, .wooPushTokenUnregisterError:
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
             return false
         default:
             return true

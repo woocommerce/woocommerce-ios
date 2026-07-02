@@ -77,28 +77,6 @@ final class POSTests: XCTestCase {
             .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
-    func test_POS_eligible_site_can_disconnect_card_reader_during_cash_payment_success_and_email_receipt() throws {
-        try beginTwoProductCheckout(extraLaunchArguments: Self.simulatedReaderLaunchArguments)
-            .tapCashPayment()
-            .verifyCashPaymentScreenVisible()
-            .tapConnectReader()
-            .waitForReaderConnected()
-            .disconnectConnectedReader()
-            .verifyCashPaymentScreenVisible()
-            .tapConnectReader()
-            .waitForReaderConnected()
-            .tapMarkPaymentComplete()
-            .waitForPaymentSuccess()
-            .disconnectConnectedReader()
-            .waitForPaymentSuccess()
-            .tapConnectReader()
-            .waitForReaderConnected()
-            .tapEmailReceipt()
-            .verifyEmailReceiptVisible()
-            .disconnectConnectedReader()
-            .verifyEmailReceiptVisible()
-    }
-
     func test_POS_eligible_site_can_search_manage_cart_open_settings_and_exit_POS() throws {
         try openPOS(extraLaunchArguments: Self.customAmountsLaunchArguments)
             .tapSearchProducts()

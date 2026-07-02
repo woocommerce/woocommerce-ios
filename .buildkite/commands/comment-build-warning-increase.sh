@@ -58,10 +58,12 @@ download_report() {
 
 ensure_current_report() {
   if [ -f "$REPORT_PATH" ]; then
+    upload_current_report_artifact
     return
   fi
 
   if download_report "$REPORT_PATH"; then
+    upload_current_report_artifact
     return
   fi
 
@@ -77,13 +79,19 @@ ensure_current_report() {
     return 1
   fi
 
-  if command -v upload_artifact >/dev/null 2>&1; then
-    upload_artifact "$REPORT_PATH" || true
-  elif command -v buildkite-agent >/dev/null 2>&1; then
-    buildkite-agent artifact upload "$REPORT_PATH" || true
-  fi
+  upload_current_report_artifact
 
   return 0
+}
+
+upload_current_report_artifact() {
+  if command -v upload_artifact >/dev/null 2>&1; then
+    upload_artifact "$REPORT_PATH" || true
+  fi
+
+  if command -v buildkite-agent >/dev/null 2>&1; then
+    buildkite-agent artifact upload "$REPORT_PATH" || true
+  fi
 }
 
 delete_existing_comment() {

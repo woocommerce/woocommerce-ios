@@ -58,7 +58,13 @@ cache_matches_baseline() {
 }
 
 upload_baseline_artifact() {
-  upload_artifact "$BASELINE_REPORT_PATH"
+  if command -v upload_artifact >/dev/null 2>&1; then
+    upload_artifact "$BASELINE_REPORT_PATH" || true
+  fi
+
+  if command -v buildkite-agent >/dev/null 2>&1; then
+    buildkite-agent artifact upload "$BASELINE_REPORT_PATH" || true
+  fi
 }
 
 copy_to_baseline_report() {

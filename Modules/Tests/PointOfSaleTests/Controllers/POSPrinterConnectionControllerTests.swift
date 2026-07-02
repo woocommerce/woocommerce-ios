@@ -7,7 +7,7 @@ import struct Yosemite.PrinterDevice
 @MainActor
 @Suite(.timeLimit(.minutes(1)))
 struct POSPrinterConnectionControllerTests {
-    @Test func test_startDiscovery_when_devices_found_then_state_is_found_with_devices() async {
+    @Test func test_startDiscovery_when_multiple_devices_found_then_state_is_foundMultiple() async {
         // Given
         let device1 = PrinterDevice(id: "1", name: "Star TSP100")
         let device2 = PrinterDevice(id: "2", name: "Star mC-Print3")
@@ -17,23 +17,74 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         sut.startDiscovery()
-        await wait(on: sut, until: { sut.discoveryState == .found([device1, device2]) })
+        await wait(on: sut, until: { sut.discoveryState == .foundMultiple([device1, device2]) })
 
         // Then
-        #expect(sut.discoveryState == .found([device1, device2]))
+        #expect(sut.discoveryState == .foundMultiple([device1, device2]))
     }
 
-    @Test func test_startDiscovery_when_no_devices_found_then_state_is_found_empty() async {
+    @Test func test_startDiscovery_when_one_device_found_then_state_is_foundOne() async {
+        // Given
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device]
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startDiscovery()
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device) })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+    }
+
+    @Test func test_startDiscovery_when_same_id_emitted_with_different_name_then_stays_foundOne() async {
+        // Given
+        // The same physical printer can be re-emitted with a display-normalized name; it must be
+        // de-duped by id so the flow does not flip to the multiple-printers list.
+        let device = PrinterDevice(id: "1", name: "Star TSP100")
+        let renamed = PrinterDevice(id: "1", name: "Star TSP100 (2)")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device, renamed]
+        let sut = await makeSubscribedController(service: service)
+
+        // When
+        sut.startDiscovery()
+        await wait(on: sut, until: { !sut.isDiscovering })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device))
+    }
+
+    @Test func test_startDiscovery_when_no_devices_found_then_state_is_noPrintersFound() async {
         // Given
         let service = MockReceiptPrinterService()
         let sut = await makeSubscribedController(service: service)
 
         // When
         sut.startDiscovery()
-        await wait(on: sut, until: { sut.discoveryState == .found([]) })
+        await wait(on: sut, until: { sut.discoveryState == .noPrintersFound })
 
         // Then
-        #expect(sut.discoveryState == .found([]))
+        #expect(sut.discoveryState == .noPrintersFound)
+    }
+
+    @Test func test_keepSearching_when_skipping_a_device_then_it_is_excluded_from_the_next_scan() async {
+        // Given
+        let device1 = PrinterDevice(id: "1", name: "Star TSP100")
+        let device2 = PrinterDevice(id: "2", name: "Star mC-Print3")
+        let service = MockReceiptPrinterService()
+        service.discoveredDevices = [device1, device2]
+        let sut = await makeSubscribedController(service: service)
+        sut.startDiscovery()
+        await wait(on: sut, until: { sut.discoveryState == .foundMultiple([device1, device2]) })
+
+        // When
+        sut.keepSearching(skipping: device1)
+        await wait(on: sut, until: { sut.discoveryState == .foundOne(device2) })
+
+        // Then
+        #expect(sut.discoveryState == .foundOne(device2))
     }
 
     @Test func test_startDiscovery_when_discover_fails_then_state_is_error() async {
@@ -143,6 +194,32 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.connectedPrinterName == nil)
         #expect(service.disconnectCallCount == 1)
     }
+
+    @Test func test_bluetoothAuthorization_when_permission_denied_then_state_is_denied() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
+
+        // When
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+
+        // Then
+        #expect(sut.bluetoothAuthorization == .denied)
+    }
+
+    @Test func test_bluetoothAuthorization_when_permission_changes_then_reads_live_value() async {
+        // Given
+        let service = MockReceiptPrinterService()
+        let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
+        let sut = await makeSubscribedController(service: service, bluetoothAuthorizationProvider: provider)
+        #expect(sut.bluetoothAuthorization == .denied)
+
+        // When
+        provider.stubbedAuthorization = .allowed
+
+        // Then
+        #expect(sut.bluetoothAuthorization == .allowed)
+    }
 }
 
 // MARK: - Helpers
@@ -153,8 +230,12 @@ private extension POSPrinterConnectionControllerTests {
     /// statuses emitted afterwards are guaranteed to reach it. The subscription runs in a `Task`
     /// spawned during `init`, which only executes once this method suspends — so setting the hook
     /// right after construction reliably catches it.
-    func makeSubscribedController(service: MockReceiptPrinterService) async -> POSPrinterConnectionController {
-        let controller = POSPrinterConnectionController(service: service)
+    func makeSubscribedController(
+        service: MockReceiptPrinterService,
+        bluetoothAuthorizationProvider: MockBluetoothAuthorizationProvider = MockBluetoothAuthorizationProvider()
+    ) async -> POSPrinterConnectionController {
+        let controller = POSPrinterConnectionController(service: service,
+                                                        bluetoothAuthorizationProvider: bluetoothAuthorizationProvider)
         await withCheckedContinuation { continuation in
             service.onConnectionStatusSubscribed = {
                 continuation.resume()
@@ -173,6 +254,7 @@ private extension POSPrinterConnectionControllerTests {
                     _ = controller.discoveryState
                     _ = controller.isConnected
                     _ = controller.connectedPrinter
+                    _ = controller.isDiscovering
                 } onChange: {
                     Task { @MainActor in
                         continuation.resume()

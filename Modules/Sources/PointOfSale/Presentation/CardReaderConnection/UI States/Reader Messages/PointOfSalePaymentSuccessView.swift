@@ -45,10 +45,10 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private func handlePrintReceiptTap() {
-        guard !posModel.isReceiptPrinterConnected else {
+        guard posModel.isReceiptPrinterConnected else {
+            showPrinterSetupModal = true
             return
         }
-        showPrinterSetupModal = true
     }
 
     private var successView: some View {

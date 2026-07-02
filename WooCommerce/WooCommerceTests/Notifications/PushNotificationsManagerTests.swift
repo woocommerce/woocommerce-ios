@@ -734,8 +734,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         // It does not clear WPcom token
         XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
 
-        // It persists Woo token and registered site ID
-        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken))
+        // It persists the site's Woo token record and registered site ID
+        XCTAssertEqual(manager.wooPushNotificationTokenID(for: 99), 123)
         XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications))
 
         // It dispatches the WPCom PN setting update to disable mobile PNs from WPCom for the current siteID and deviceID
@@ -784,7 +784,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         manager.registerDeviceToken(with: sampleTokenData)
 
         // Then — the re-enable failed, so Woo state is kept for the next launch and teardown is skipped.
-        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertEqual(manager.wooPushNotificationTokenID(for: 99), 555)
         XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
         XCTAssertFalse(dispatchedUnregisterFromWoo)
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_error"))
@@ -808,8 +808,9 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
     func test_registerDeviceToken_when_FF_off_and_device_token_rotated_then_still_reenables_wpcom() async {
-        // Given — a stored (old) device token differing from the new one makes the token-change cleanup
-        // unmark the sites before the fallback runs (e.g. a device restore). The snapshot must preserve them.
+        // Given — a stored (old) device token differing from the new one (e.g. a device restore).
+        // The token-change cleanup must NOT clear the registered sites when the FF is off, so the
+        // fallback can still re-enable and unregister them (and retry on a later launch if it fails).
         seedPriorWooRegistration()
         defaults.set("an-old-different-device-token", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -852,6 +853,64 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(dispatchedRegisterDotcomDevice)
         assertReenabledWPComPushNotifications()
         assertWooRegistrationTornDown()
+    }
+
+    func test_registerDeviceToken_when_FF_off_with_multiple_woo_sites_then_unregisters_each_with_its_own_token() async {
+        // Given — two Woo-registered sites, each with its own token record ID; site 99 is selected.
+        seedPriorWooRegistration(tokensBySite: [99: 555, 100: 777])
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubUpdateNotificationSettings(result: .success(()))
+
+        var unregistered: [Int64: (tokenID: Int64, availableAsRESTRequest: Bool)] = [:]
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion) = action {
+                unregistered[siteID] = (tokenID, availableAsRESTRequest)
+                onCompletion(.success(()))
+            }
+        }
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — every site is unregistered with ITS OWN token record; only the selected site may use
+        // the REST fallback, the non-selected site must go through the Jetpack tunnel.
+        XCTAssertEqual(unregistered[99]?.tokenID, 555)
+        XCTAssertEqual(unregistered[99]?.availableAsRESTRequest, true)
+        XCTAssertEqual(unregistered[100]?.tokenID, 777)
+        XCTAssertEqual(unregistered[100]?.availableAsRESTRequest, false)
+        // And — WPCom re-enabled for both sites, all local Woo state cleared.
+        assertReenabledWPComPushNotifications(blogID: 99)
+        assertReenabledWPComPushNotifications(blogID: 100)
+        XCTAssertNil(manager.wooPushNotificationTokenID(for: 100))
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_FF_off_with_legacy_single_token_then_migrates_and_unregisters() async {
+        // Given — a pre-map install: registered site + the legacy single token value (no per-site map).
+        seedLegacyWooRegistration(siteIDs: "99", legacyTokenID: "555")
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubUpdateNotificationSettings(result: .success(()))
+
+        var unregisteredTokenID: Int64?
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(_, tokenID, _, onCompletion) = action {
+                unregisteredTokenID = tokenID
+                onCompletion(.success(()))
+            }
+        }
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — the legacy token is migrated to the site and used for the unregister; the legacy key is gone.
+        XCTAssertEqual(unregisteredTokenID, 555)
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken))
+        assertReenabledWPComPushNotifications()
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty)
     }
 
     func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
@@ -2023,9 +2082,20 @@ final class PushNotificationsManagerTests: XCTestCase {
 //
 private extension PushNotificationsManagerTests {
     /// Seeds the local state left behind by a prior Woo-driven (FF ON) registration.
-    func seedPriorWooRegistration(siteIDs: String = "99", tokenID: String = "555", deviceID: String? = "456") {
+    func seedPriorWooRegistration(tokensBySite: [Int64: Int64] = [99: 555], deviceID: String? = "456") {
+        defaults.set(tokensBySite.keys.map { "\($0)" }.joined(separator: ","),
+                     forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        let storedTokens = tokensBySite.reduce(into: [String: String]()) { $0["\($1.key)"] = "\($1.value)" }
+        defaults.set(storedTokens, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
+        if let deviceID {
+            defaults.set(deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        }
+    }
+
+    /// Seeds the state of a pre-map install: registered site IDs plus the LEGACY single token value.
+    func seedLegacyWooRegistration(siteIDs: String = "99", legacyTokenID: String = "555", deviceID: String? = "456") {
         defaults.set(siteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
-        defaults.set(tokenID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set(legacyTokenID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
         if let deviceID {
             defaults.set(deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         }
@@ -2093,9 +2163,9 @@ private extension PushNotificationsManagerTests {
     }
 
     /// Asserts Woo was unregistered and the local Woo registration state cleared.
-    func assertWooRegistrationTornDown(file: StaticString = #filePath, line: UInt = #line) {
+    func assertWooRegistrationTornDown(siteID: Int64 = 99, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(dispatchedUnregisterFromWoo, "Expected a Woo unregister to be dispatched", file: file, line: line)
-        XCTAssertNil(manager.wooPushNotificationToken, file: file, line: line)
+        XCTAssertNil(manager.wooPushNotificationTokenID(for: siteID), file: file, line: line)
         XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty, file: file, line: line)
     }
 

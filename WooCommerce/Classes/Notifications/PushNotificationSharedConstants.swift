@@ -41,27 +41,13 @@ enum PushNotificationSharedConstants {
         return knownPushNotificationTypes.contains(type)
     }
 
-    /// The push `type`s the Woo-driven (self-driven) push system sends.
-    ///
-    /// The NotificationServiceExtension uses this to recognise a Woo-driven push and suppress it once
-    /// the feature flag is off and the app has fallen back to WPCom — otherwise a store whose Woo
-    /// registration still lingers on the server would produce a duplicate next to the re-enabled
-    /// WPCom notification.
-    ///
-    /// This is an allowlist rather than simply "any push with no `note_id`" (the usual Woo-vs-WPCom
-    /// tell): app-level pushes such as `badge-reset` also have no `note_id`, and silencing those
-    /// would break badge clearing. `store_review` is delivered as `type: comment` and is deliberately
-    /// excluded so we can never accidentally match a WPCom comment push.
-    static let wooDrivenPushTypes: Set<String> = [
-        "store_order",
-        "store_stock"
-    ]
-
     enum UserDefaultsKeys {
         static let deviceToken = "deviceToken"
         static let deviceID = "deviceID"
+        /// Legacy single Woo push token record ID — replaced by `wooPushNotificationTokensBySite`,
+        /// kept only for the one-time migration.
         static let wooPushNotificationToken = "wooPushNotificationToken"
+        static let wooPushNotificationTokensBySite = "wooPushNotificationTokensBySite"
         static let siteIDsRegisteredForWooPushNotifications = "siteIDsRegisteredForWooPushNotifications"
-        static let selfDrivenPushEnabled = "selfDrivenPushEnabled"
     }
 }

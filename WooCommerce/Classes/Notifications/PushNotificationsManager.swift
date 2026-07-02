@@ -92,8 +92,8 @@ final class PushNotificationsManager: PushNotesManager {
         registrationState.deviceID
     }
 
-    var wooPushNotificationToken: String? {
-        registrationState.wooPushNotificationToken
+    func wooPushNotificationTokenID(for siteID: Int64) -> Int64? {
+        registrationState.wooPushNotificationTokenID(for: siteID)
     }
 
     func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
@@ -212,8 +212,8 @@ extension PushNotificationsManager {
         if !isRunningTests {
             DDLogVerbose("👀 Push Notifications tokens are not supported in the Simulator - mocking success result")
             let mockTokenID = Int64.random(in: 99...9999)
-            registrationState.setWooPushNotificationTokenID(mockTokenID)
             if let siteID {
+                registrationState.setWooPushNotificationTokenID(mockTokenID, for: siteID)
                 registrationState.markSiteAsRegisteredForWooPNs(siteID)
             }
             return mockTokenID
@@ -383,14 +383,15 @@ extension PushNotificationsManager {
         }
         let newToken = tokenData.hexString
 
-        // Snapshot the Woo-registered sites BEFORE the token-change cleanup below can clear them, so
-        // the WPCom fallback can still re-enable them when the FF is off and the device token also
-        // rotated on the same launch (e.g. a device restore) — otherwise those sites stay blacked out.
-        let sitesToFallBackToWPCom = registrationState.siteIDsRegisteredForWooPNs
+        // Migrate the legacy single Woo token record ID into the per-site map (no-op once done).
+        registrationState.migrateLegacyWooPushNotificationTokenIfNeeded(selectedSiteID: siteID)
 
-        // When the device token changes, clear registered site IDs so all sites
-        // re-register with the new token.
-        if let existingToken = registrationState.deviceToken, existingToken != newToken {
+        // When the device token changes, clear registered site IDs so all sites re-register with
+        // the new token. Only relevant while self-driven push is ON: with the FF off nothing
+        // re-registers, and clearing here would erase the state the WPCom fallback below needs to
+        // re-enable and unregister those sites (breaking its retry-on-next-launch guarantee).
+        if selfDrivenPushNotificationEnabled,
+           let existingToken = registrationState.deviceToken, existingToken != newToken {
             DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
             for siteID in registrationState.siteIDsRegisteredForWooPNs {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
@@ -426,24 +427,25 @@ extension PushNotificationsManager {
         }
 
         // Self-driven OFF: fall back to WPCom-driven notifications. Re-enables the WPCom PNs we
-        // disabled while Woo-driven was active, then tears down the local Woo state — but only once
-        // the re-enable is confirmed, so a transient failure retries on the next launch instead of
-        // leaving the merchant with no notifications.
+        // disabled while Woo-driven was active, then unregisters each site from Woo and clears its
+        // local state — but only once the re-enable is confirmed, so a transient failure retries on
+        // the next launch instead of leaving the merchant with no notifications.
         func fallBackToWPComPushNotifications() {
-            let staleWooSites = sitesToFallBackToWPCom
+            let staleWooSites = registrationState.siteIDsRegisteredForWooPNs
+            let wooTokensToUnregister = registrationState.wooPushNotificationTokensBySite
             guard staleWooSites.isNotEmpty else {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
             // Site-credential users have no WPCom PNs to re-enable; just stop Woo-driven delivery.
             if stores.isAuthenticatedWithoutWPCom {
-                tearDownWooRegistration()
+                unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
                 return
             }
             let reenableThenTeardown: (String) -> Void = { [weak self] deviceID in
                 self?.enableWPComPushNotifications(siteIDs: staleWooSites, deviceID: deviceID) { success in
                     if success {
-                        self?.tearDownWooRegistration()
+                        self?.unregisterAllSitesFromWooPushNotifications(tokensBySite: wooTokensToUnregister)
                     }
                 }
             }
@@ -526,9 +528,9 @@ extension PushNotificationsManager {
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
-            if registrationState.shouldSuppress(userInfo: content.userInfo) {
-                // Suppress the in-app banner for whichever source is not active for this site
-                // (WPCom while Woo-driven is active, or lingering Woo-driven after falling back).
+            if registrationState.isSiteRegisteredForWooPNs(foregroundNotification.siteID),
+               foregroundNotification.noteID != nil {
+                // Ignore WPCom PNs if site is registered for Woo PNs
                 return []
             }
             configuration.application
@@ -829,9 +831,6 @@ private extension PushNotificationsManager {
     func checkSelfDrivenPushNotificationsEligibility() {
         Task { @MainActor in
             let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
-            // Persist unconditionally so the NotificationServiceExtension always reads the current
-            // value (even if the in-memory value happens to already match).
-            registrationState.selfDrivenPushEnabled = isEnabled
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {
@@ -1002,7 +1001,7 @@ private extension PushNotificationsManager {
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64,
                                              siteID: Int64,
                                              onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        registrationState.setWooPushNotificationTokenID(tokenID)
+        registrationState.setWooPushNotificationTokenID(tokenID, for: siteID)
         registrationState.markSiteAsRegisteredForWooPNs(siteID)
         onCompletion(.success(tokenID))
     }
@@ -1084,13 +1083,12 @@ private extension PushNotificationsManager {
 
     func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
         guard let siteID,
-              let tokenID = registrationState.wooPushNotificationToken,
-              let tokenIDInt = Int64(tokenID) else {
+              let tokenID = registrationState.wooPushNotificationTokenID(for: siteID) else {
             return completion(.success(()))
         }
         stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
             siteID: siteID,
-            tokenID: tokenIDInt,
+            tokenID: tokenID,
             // The target siteID is the currently selected site, so REST fallback via
             // `RequestConverter` is safe and preserved for site-credentials users who have no
             // Jetpack tunnel available.
@@ -1099,13 +1097,33 @@ private extension PushNotificationsManager {
         ))
     }
 
-    /// Stops Woo-driven delivery for the selected site (best-effort) and clears the local Woo
-    /// registration state so the app no longer suppresses/disables WPCom for those sites.
+    /// Unregisters every locally-known Woo push registration on its own site's backend (best-effort)
+    /// and clears all local Woo registration state.
     ///
-    func tearDownWooRegistration() {
-        unregisterFromWooPushNotificationsIfPossible { [weak self] _ in
-            self?.registrationState.clearWooRegistration()
+    /// The local clear is unconditional: at this point WPCom delivery is (being) restored, and a
+    /// site left marked as Woo-registered would keep suppressing its WPCom notifications. A failed
+    /// backend DELETE only means that site's token record lingers server-side until it becomes
+    /// undeliverable — it cannot cause a blackout.
+    ///
+    func unregisterAllSitesFromWooPushNotifications(tokensBySite: [Int64: Int64]) {
+        for (targetSiteID, tokenID) in tokensBySite {
+            // REST fallback routes to the selected site's URL, so it is only safe when the target
+            // IS the selected site; cross-site calls must use the Jetpack tunnel.
+            let isTargetSiteSelected = targetSiteID == siteID
+            stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: targetSiteID,
+                tokenID: tokenID,
+                availableAsRESTRequest: isTargetSiteSelected,
+                onCompletion: { result in
+                    if case .failure(let error) = result {
+                        DDLogError("⛔️ Unable to unregister Woo push token for site \(targetSiteID): \(error)")
+                    } else {
+                        DDLogInfo("📱 Unregistered Woo push token for site \(targetSiteID)")
+                    }
+                }
+            ))
         }
+        registrationState.clearWooRegistration()
     }
 }
 

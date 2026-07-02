@@ -33,9 +33,9 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
-    /// Self-driven push notification token ID
+    /// Self-driven push notification token record ID for a given site, if registered.
     ///
-    var wooPushNotificationToken: String? { get }
+    func wooPushNotificationTokenID(for siteID: Int64) -> Int64?
 
     /// Site IDs registered for Woo Push Notifications.
     ///

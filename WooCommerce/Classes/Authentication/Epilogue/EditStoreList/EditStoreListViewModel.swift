@@ -147,15 +147,14 @@ private extension EditStoreListViewModel {
     /// This is best-effort — failures are logged but do not block the save operation.
     @MainActor
     func unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: [Int64]) async {
-        guard let tokenString = pushNotificationManager.wooPushNotificationToken,
-              let tokenID = Int64(tokenString) else {
-            return
-        }
-
         let registeredSiteIDs = pushNotificationManager.siteIDsRegisteredForWooPNs
         let siteIDsToUnregister = hiddenSiteIDs.filter { registeredSiteIDs.contains($0) }
 
         for siteID in siteIDsToUnregister {
+            // Each site's Woo backend has its own token record ID.
+            guard let tokenID = pushNotificationManager.wooPushNotificationTokenID(for: siteID) else {
+                continue
+            }
             do {
                 try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                     stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(

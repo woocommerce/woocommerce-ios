@@ -29,6 +29,6 @@ private extension NotificationService {
         }
 
         let registrationState = PushNotificationRegistrationState(defaults: defaults)
-        return registrationState.shouldSuppress(userInfo: userInfo)
+        return registrationState.shouldSuppressWPComNotification(userInfo: userInfo)
     }
 }

@@ -41,28 +41,35 @@ final class PushNotificationRegistrationState {
         }
     }
 
-    /// Self driven push notification token
-    var wooPushNotificationToken: String? {
+    /// Per-site Woo push token record IDs, keyed by site ID.
+    ///
+    /// Each site's Woo backend mints its own token record ID on registration, and unregistering a
+    /// site requires *that site's* record ID — hence a map rather than a single value (the design
+    /// agreed in the Kiwi P2 and used on Android).
+    ///
+    /// Stored as `[String: String]` because `UserDefaults` property lists don't support `Int64` keys.
+    private(set) var wooPushNotificationTokensBySite: [Int64: Int64] {
         get {
-            defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+            guard let stored = defaults.dictionary(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
+                    as? [String: String] else {
+                return [:]
+            }
+            return stored.reduce(into: [:]) { result, entry in
+                if let siteID = Int64(entry.key), let tokenID = Int64(entry.value) {
+                    result[siteID] = tokenID
+                }
+            }
         }
         set {
-            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+            let stored = newValue.reduce(into: [String: String]()) { result, entry in
+                result["\(entry.key)"] = "\(entry.value)"
+            }
+            defaults.set(stored, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
         }
     }
 
-    /// The last resolved value of the self-driven push notifications feature flag.
-    ///
-    /// Persisted to the app-group defaults so the `NotificationServiceExtension` (a separate
-    /// process, which can't resolve the flag itself) can read it to decide suppression.
-    /// `nil` means it hasn't been resolved yet on this install.
-    var selfDrivenPushEnabled: Bool? {
-        get {
-            defaults.object(forKey: PushNotificationSharedConstants.UserDefaultsKeys.selfDrivenPushEnabled) as? Bool
-        }
-        set {
-            defaults.set(newValue, forKey: PushNotificationSharedConstants.UserDefaultsKeys.selfDrivenPushEnabled)
-        }
+    func wooPushNotificationTokenID(for siteID: Int64) -> Int64? {
+        wooPushNotificationTokensBySite[siteID]
     }
 
     /// Site IDs registered to Woo PN system, separated by commas
@@ -107,8 +114,38 @@ final class PushNotificationRegistrationState {
         siteIDsRegisteredForWooPNs = updatedIDs
     }
 
-    func setWooPushNotificationTokenID(_ tokenID: Int64) {
-        wooPushNotificationToken = "\(tokenID)"
+    func setWooPushNotificationTokenID(_ tokenID: Int64, for siteID: Int64) {
+        wooPushNotificationTokensBySite[siteID] = tokenID
+    }
+
+    func removeWooPushNotificationTokenID(for siteID: Int64) {
+        wooPushNotificationTokensBySite[siteID] = nil
+    }
+
+    /// One-time migration from the legacy single `wooPushNotificationToken` value to the per-site map.
+    ///
+    /// The legacy value held whichever site's token record registered *last* (the fan-out registers
+    /// concurrently, so with multiple sites the owner is unknowable). Pairing rules:
+    /// - exactly one registered site → pair with it (unambiguous, the common single-store case);
+    /// - multiple registered sites → pair with the selected site if it is registered (the same guess
+    ///   the legacy unregister code made); the remaining sites have no token until they re-register;
+    /// - no registered sites → the token is an orphan; drop it.
+    func migrateLegacyWooPushNotificationTokenIfNeeded(selectedSiteID: Int64?) {
+        guard let legacyToken = defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken) else {
+            return
+        }
+        defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+
+        guard wooPushNotificationTokensBySite.isEmpty, let tokenID = Int64(legacyToken) else {
+            return
+        }
+        let registeredSites = siteIDsRegisteredForWooPNs
+        if registeredSites.count == 1, let onlySite = registeredSites.first {
+            wooPushNotificationTokensBySite[onlySite] = tokenID
+        } else if let selectedSiteID, registeredSites.contains(selectedSiteID) {
+            wooPushNotificationTokensBySite[selectedSiteID] = tokenID
+        }
+        // No registered sites: orphan token, dropped with the legacy key above.
     }
 
     func applyNewDeviceToken(_ newToken: String) {
@@ -122,60 +159,33 @@ final class PushNotificationRegistrationState {
     }
 }
 
-/// Push notification suppression
+/// WPCom push notification suppression
 extension PushNotificationRegistrationState {
-    /// Returns `true` when the notification should be suppressed to avoid a duplicate, based on
-    /// which system (Woo-driven or WPCom) is the active source for the site.
+    /// Returns `true` when the notification should be suppressed because
+    /// the site already receives Woo-driven push notifications.
     ///
-    /// - WPCom notification (has `note_id`): suppressed while self-driven push is active for the
-    ///   site — i.e. the FF hasn't been turned off (`!= false`) and the site is Woo-registered.
-    /// - Woo-driven notification (no `note_id`, a Woo store `type`): suppressed only once we've
-    ///   fallen back to WPCom (FF explicitly `false`) **and** the site's Woo registration has been
-    ///   torn down (`!isSiteRegisteredForWooPNs`). Gating on the teardown — not just `FF == false` —
-    ///   avoids a blackout window: while the WPCom re-enable is still pending or failed, we keep
-    ///   showing the Woo push rather than suppressing it before WPCom is confirmed back on.
-    ///
-    /// Nil (`selfDrivenPushEnabled == nil`, not yet resolved) preserves legacy behavior: WPCom is
-    /// suppressed for Woo-registered sites, and Woo is never suppressed.
-    func shouldSuppress(userInfo: [AnyHashable: Any]) -> Bool {
-        guard let siteID = int64Value(userInfo["blog"]) else {
+    /// Both `blog` (site ID) and `note_id` must be present in `userInfo`
+    /// and the site must be registered for Woo push notifications.
+    func shouldSuppressWPComNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        guard let siteID = userInfo["blog"] as? Int64,
+              let _ = userInfo["note_id"] as? Int64 else {
             return false
         }
-        let isWPComNotification = int64Value(userInfo["note_id"]) != nil
-        if isWPComNotification {
-            return selfDrivenPushEnabled != false && isSiteRegisteredForWooPNs(siteID)
-        }
-        guard let type = userInfo["type"] as? String,
-              PushNotificationSharedConstants.wooDrivenPushTypes.contains(type) else {
-            return false
-        }
-        return selfDrivenPushEnabled == false && !isSiteRegisteredForWooPNs(siteID)
-    }
-
-    /// Reads an `Int64` from a push-payload value, tolerating the `Int64` / `NSNumber` / `String`
-    /// forms APNS may deliver — mirroring `Dictionary.integer(forKey:)` (used by `PushNotification.from`),
-    /// which isn't linked into the NotificationServiceExtension target.
-    private func int64Value(_ value: Any?) -> Int64? {
-        switch value {
-        case let value as Int64:
-            return value
-        case let value as Int:
-            return Int64(value)
-        case let value as NSNumber:
-            return value.int64Value
-        case let value as String:
-            return Int64(value)
-        default:
-            return nil
-        }
+        return isSiteRegisteredForWooPNs(siteID)
     }
 }
 
 /// Clean-up
 extension PushNotificationRegistrationState {
     func clearWooRegistration() {
-        wooPushNotificationToken = nil
+        wooPushNotificationTokensBySite = [:]
         siteIDsRegisteredForWooPNs = []
+    }
+
+    /// Clears a single site's Woo registration (local token record + registered mark).
+    func clearWooRegistration(for siteID: Int64) {
+        removeWooPushNotificationTokenID(for: siteID)
+        unmarkSiteAsRegisteredForWooPNs(siteID)
     }
 
     func clearWPComRegistration() {

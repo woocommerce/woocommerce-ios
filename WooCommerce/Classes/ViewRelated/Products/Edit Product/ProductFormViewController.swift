@@ -422,7 +422,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
         }
 
-        actionSheet.anchorActionSheet(toBarButtonItem: moreOptionsButton, in: self)
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = moreOptionsButton
 
         present(actionSheet, animated: true)
     }

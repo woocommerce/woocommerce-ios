@@ -295,7 +295,8 @@ private extension ProductDownloadListViewController {
         let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.anchorActionSheet(toBarButtonItem: sender, in: self)
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(menuAlert, animated: true)
     }

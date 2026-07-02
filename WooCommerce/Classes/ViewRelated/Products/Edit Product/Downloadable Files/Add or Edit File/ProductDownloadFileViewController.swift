@@ -82,7 +82,8 @@ extension ProductDownloadFileViewController {
         let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.anchorActionSheet(toBarButtonItem: sender, in: self)
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(menuAlert, animated: true)
     }

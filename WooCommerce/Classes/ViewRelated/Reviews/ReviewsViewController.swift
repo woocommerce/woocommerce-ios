@@ -257,7 +257,7 @@ private extension ReviewsViewController {
     @IBAction func presentMoreActions() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
-        actionSheet.anchorActionSheet(toBarButtonItem: rightBarButton, in: self)
+        actionSheet.popoverPresentationController?.barButtonItem = rightBarButton
 
         actionSheet.addCancelActionWithTitle(Localization.ActionSheet.cancelAction)
         actionSheet.addDefaultActionWithTitle(Localization.ActionSheet.markAsReadAction) { [weak self] _ in

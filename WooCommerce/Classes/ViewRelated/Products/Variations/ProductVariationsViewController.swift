@@ -610,7 +610,8 @@ private extension ProductVariationsViewController {
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
 
-        actionSheet.anchorActionSheet(toBarButtonItem: sender, in: self)
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
     }

@@ -175,7 +175,7 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleFTSSearch
 
-    /// Enables a new Bookings tab for CIAB sites
+    /// Legacy Bookings tab flag.
     ///
     case ciabBookings
 
@@ -228,7 +228,7 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables the reschedule booking entry point in booking details
+    /// Legacy booking reschedule entry point flag.
     ///
     case ciabBookingReschedule
 

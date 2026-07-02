@@ -3,9 +3,13 @@ import enum Yosemite.POSCatalogSyncProgress
 
 struct POSSettingsLocalCatalogDetailView: View {
     private let viewModel: POSSettingsLocalCatalogViewModel
+    /// Gates an edit action on `editPOSSettings`. Defaults to running it directly (previews / no host gate).
+    private let requestEditPermission: POSPermissionRequest
 
-    init(viewModel: POSSettingsLocalCatalogViewModel) {
+    init(viewModel: POSSettingsLocalCatalogViewModel,
+         requestEditPermission: @escaping POSPermissionRequest = { $0() }) {
         self.viewModel = viewModel
+        self.requestEditPermission = requestEditPermission
     }
 
     var body: some View {
@@ -62,17 +66,27 @@ private extension POSSettingsLocalCatalogDetailView {
 
     @ViewBuilder
     var managingDataUsage: some View {
-        @Bindable var viewModel = viewModel
         VStack(spacing: POSSpacing.none) {
             POSInformationCard {
                 POSInformationCardFieldRowWithToggle(
                     label: Localization.managingDataUsage,
                     value: Localization.allowSyncOnCellular,
                     showSeparator: false,
-                    isOn: $viewModel.allowFullSyncOnCellular
+                    isOn: cellularSyncBinding
                 )
             }
         }
+    }
+
+    /// Toggling the cellular-sync setting is an edit, so route changes through `editPOSSettings`:
+    /// the value only flips once the operator holds the cap or a manager approves the override.
+    private var cellularSyncBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.allowFullSyncOnCellular },
+            set: { newValue in
+                requestEditPermission { viewModel.allowFullSyncOnCellular = newValue }
+            }
+        )
     }
 
     @ViewBuilder
@@ -86,8 +100,10 @@ private extension POSSettingsLocalCatalogDetailView {
                     labelStyle: .bold,
                     buttonTitle: updateCatalogButtonTitle,
                     buttonAction: {
-                        Task {
-                            await viewModel.refreshCatalog()
+                        requestEditPermission {
+                            Task {
+                                await viewModel.refreshCatalog()
+                            }
                         }
                     },
                     buttonStyle: .primary,

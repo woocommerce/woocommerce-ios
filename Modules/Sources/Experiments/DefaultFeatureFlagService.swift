@@ -78,7 +78,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return !buildConfig.isProduction
+            return false
         case .pointOfSaleCatalogAPI:
             return true
         case .pointOfSaleRoles:
@@ -102,7 +102,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return true
         case .ciabBookingReschedule:
-            return !buildConfig.isProduction
+            return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         case .aiSupportChat:

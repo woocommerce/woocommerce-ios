@@ -16,8 +16,7 @@ struct POSFloatingControlView: View {
     /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
     /// presenting the settings screen.
     private let onSettingsSelected: () -> Void
-    /// Invoked when the Orders menu item is tapped. The host gates it on `.viewOrders` before
-    /// presenting the orders screen.
+    /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false

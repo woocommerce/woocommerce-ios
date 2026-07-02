@@ -14,10 +14,8 @@ extension OrderStatusEnum {
                 .withColorStudio(.red, shade: .shade5)
         case .completed:
                 .withColorStudio(.blue, shade: .shade5)
-        case .custom(let slug):
-            slug == CIABOrderStatusMapper.openSlug
-                ? .withColorStudio(.orange, shade: .shade5)
-                : .gray(.shade5)
+        case .custom:
+                .gray(.shade5)
         }
     }
 }

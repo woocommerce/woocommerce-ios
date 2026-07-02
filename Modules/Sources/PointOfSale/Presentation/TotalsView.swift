@@ -789,18 +789,15 @@ private extension TotalsView {
             .disabled(isStartingPayment)
             .accessibilityIdentifier("pos-card-reader-button")
 
-            HStack(spacing: POSSpacing.medium) {
-                Button(action: handleCashPaymentTapped) {
-                    Text(Localization.cashPaymentButtonTitle)
-                        .font(POSFontStyle.posBodyLargeBold)
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                .frame(maxWidth: .infinity)
-                .disabled(isStartingPayment)
-                .accessibilityIdentifier("pos-cash-payment-button")
-
-                otherPaymentMethodsButton
+            Button(action: handleCashPaymentTapped) {
+                Text(Localization.cashPaymentButtonTitle)
+                    .font(POSFontStyle.posBodyLargeBold)
             }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .disabled(isStartingPayment)
+            .accessibilityIdentifier("pos-cash-payment-button")
+
+            otherPaymentMethodsButton
         }
         .if(horizontalSizeClass == .compact) {
             $0.posPhoneBottomButtonPadding()

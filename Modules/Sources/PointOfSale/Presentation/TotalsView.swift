@@ -416,9 +416,9 @@ private extension TotalsView {
             "pos.totalsView.customAmountsTotal",
             value: "Custom amounts",
             comment: "Title for the custom amounts total amount field in the Point of Sale totals breakdown")
-        static let cardReaderButtonTitle = NSLocalizedString(
-            "pos.totalsView.cardReader.button.title",
-            value: "Card reader",
+        static let connectCardReaderButtonTitle = NSLocalizedString(
+            "pos.totalsView.connectCardReader.button.title.1",
+            value: "Connect card reader",
             comment: "Title for the card reader button on the Point of Sale checkout. "
                 + "Tapping it starts the connect-reader flow when no reader is connected.")
         static let cashPaymentButtonTitle = NSLocalizedString(
@@ -782,7 +782,7 @@ private extension TotalsView {
             Button {
                 handlePaymentMethodSelection(.cardReader)
             } label: {
-                Text(Localization.cardReaderButtonTitle)
+                Text(Localization.connectCardReaderButtonTitle)
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))

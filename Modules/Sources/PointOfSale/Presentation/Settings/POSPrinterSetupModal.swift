@@ -16,28 +16,40 @@ struct POSPrinterSetupModal: View {
     }
 
     var body: some View {
-        Group {
-            if isCompactWidth {
-                // In compact width the modal fills the screen to avoid the cramped iPad-tuned card.
-                modalCore
-                    .frame(width: parentSize.width, height: parentSize.height)
-            } else {
-                modalCore
-                    .frame(maxWidth: parentSize.width * Constants.parentWidthRatio,
-                           maxHeight: parentSize.height * Constants.maxParentHeightRatio)
-                    .fixedSize(horizontal: false, vertical: true)
+        // Size a single `modalCore` via these bounds so it keeps one view identity across size-class
+        // changes on iPad, preserving any state internal to the modal.
+        modalCore
+            .frame(minWidth: modalMinWidth, maxWidth: modalMaxWidth,
+                   minHeight: modalMinHeight, maxHeight: modalMaxHeight)
+            .fixedSize(horizontal: false, vertical: !isCompactWidth)
+            .onChange(of: controller.isConnected) { _, isConnected in
+                if isConnected {
+                    isPresented = false
+                }
             }
-        }
-        .onChange(of: controller.isConnected) { _, isConnected in
-            if isConnected {
-                isPresented = false
+            .onDisappear {
+                Task {
+                    await controller.cancelSetup()
+                }
             }
-        }
-        .onDisappear {
-            Task {
-                await controller.cancelSetup()
-            }
-        }
+    }
+
+    // In compact width the modal fills the screen to avoid the cramped iPad-tuned card, so its bounds
+    // are pinned to the parent. In regular width it hugs its content up to a share of the parent.
+    private var modalMinWidth: CGFloat? {
+        isCompactWidth ? parentSize.width : nil
+    }
+
+    private var modalMaxWidth: CGFloat {
+        isCompactWidth ? parentSize.width : parentSize.width * Constants.parentWidthRatio
+    }
+
+    private var modalMinHeight: CGFloat? {
+        isCompactWidth ? parentSize.height : nil
+    }
+
+    private var modalMaxHeight: CGFloat {
+        isCompactWidth ? parentSize.height : parentSize.height * Constants.maxParentHeightRatio
     }
 
     private var modalCore: some View {

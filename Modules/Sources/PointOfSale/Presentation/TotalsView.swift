@@ -420,8 +420,7 @@ private extension TotalsView {
         static let connectCardReaderButtonTitle = NSLocalizedString(
             "pos.totalsView.connectCardReader.button.title.1",
             value: "Connect card reader",
-            comment: "Title for the card reader button on the Point of Sale checkout. "
-                + "Tapping it starts the connect-reader flow when no reader is connected.")
+            comment: "Title for the primary Point of Sale checkout button that starts the card reader connection flow.")
         static let cashPaymentButtonTitle = NSLocalizedString(
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
@@ -429,8 +428,7 @@ private extension TotalsView {
         static let otherPaymentMethodsButtonTitle = NSLocalizedString(
             "pos.totalsView.otherPaymentMethods.button.title",
             value: "Other payment methods",
-            comment: "Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. "
-                + "Tapping it opens a sheet with non-TTP options (currently Card reader).")
+            comment: "Title for the Point of Sale checkout button that opens additional payment methods, such as Scan to Pay or Mark order as paid.")
         static let orderMismatchTitle = NSLocalizedString(
             "pos.totalsView.orderMismatch.error.title",
             value: "Couldn't check out",
@@ -747,8 +745,7 @@ private extension TotalsView {
         return true
     }
 
-    /// Cash + Other payment methods buttons shown below the totals for the Tap to Pay hero
-    /// and active Bluetooth reader layouts.
+    /// Cash + Other payment methods buttons shown below the primary card payment UI.
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
@@ -772,11 +769,7 @@ private extension TotalsView {
         }
     }
 
-    /// "Reader not connected" layout for devices where Tap to Pay is unavailable
-    /// (e.g. iPad). The reader connect button is the primary (filled) CTA on its
-    /// own row, with Cash and "Other payment methods" sharing the row below.
-    /// Without a TTP hero the reader is the main card path, so it stays a
-    /// first-class button rather than being demoted into the sheet.
+    /// Reader-first layout used when Tap to Pay is unavailable but secondary methods exist.
     @ViewBuilder
     var readerAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
@@ -869,9 +862,6 @@ private extension TotalsView {
     }
 
     func handleScanToPaySelected() {
-        // Same double-tap guard the bottom sheet uses: a quick double-tap in the
-        // window between the merchant tapping Scan to Pay and `paymentState.scanToPay`
-        // leaving `.idle` could otherwise fire `startScanToPayPayment()` twice.
         guard !isStartingPayment else { return }
         isStartingPayment = true
         Task { @MainActor in
@@ -880,21 +870,12 @@ private extension TotalsView {
     }
 
     func handleMarkAsPaidSelected() {
-        // Mark as Paid dispatches into a navigation push the merchant could otherwise
-        // re-trigger by tapping the row a second time during the same render frame.
         guard !isStartingPayment else { return }
         isStartingPayment = true
         paymentModel.startMarkAsPaidPayment()
     }
 
-    /// The "Other payment methods" outlined button shared by both bottom strips.
-    ///
-    /// On iPad the picker is a popover anchored to this button (native, with an
-    /// arrow pointing at it); on phone the body-level `posSheet` hosts the bottom
-    /// sheet instead. The two presentations are split by size class via
-    /// `isShowingOtherPaymentMethodsPopover` / `isShowingOtherPaymentMethodsBottomSheet`
-    /// so only one fires. The popover only ever lists Scan to Pay / Mark as Paid —
-    /// on iPad the Card reader is a first-class strip button, never an "other" method.
+    /// Shared trigger for the phone sheet and iPad popover.
     @ViewBuilder
     var otherPaymentMethodsButton: some View {
         Button(action: handleOtherPaymentMethodsTapped) {

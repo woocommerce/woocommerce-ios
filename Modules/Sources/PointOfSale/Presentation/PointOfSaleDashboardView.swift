@@ -255,10 +255,7 @@ struct PointOfSaleDashboardView: View {
                 navigationRouter.pushCash(orderTotal: totals.orderTotal)
             }
         }
-        // Scan-to-pay and mark-as-paid push through the same NavigationStack as cash.
-        // These mirror `tabletContentView`; without them the phone starts the payment
-        // (state leaves `.idle`) but never pushes the QR / confirmation view, leaving
-        // the merchant on the totals view with nothing happening.
+        // Mirror tablet navigation so secondary payment state changes push their focused screens.
         .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
             if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
                case .loaded(let totals) = posModel.orderState {

@@ -1987,12 +1987,15 @@ struct POSPaymentModelTests {
         let verifier = MockPOSScanToPayVerifier()
         verifier.resultQueue = [.success(.paid)]
         let orderProvider = MockPOSPaymentOrderProvider()
-        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        let order = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.orderToReturn = order
         orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
         let celebration = MockPaymentCaptureCelebration()
+        let scanToPayHandler = MockPOSScanToPayHandler()
 
         let sut = makePaymentController(
             orderProvider: orderProvider,
+            scanToPayHandler: scanToPayHandler,
             scanToPayVerifier: verifier,
             celebration: celebration,
             scanToPayPollInterval: 0)
@@ -2012,6 +2015,8 @@ struct POSPaymentModelTests {
         // Then
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
+        #expect(scanToPayHandler.recordScanToPayPaymentMethodCalled == true)
+        #expect(scanToPayHandler.recordScanToPayPaymentMethodReceivedOrder?.orderID == 123)
     }
 
     @Test("startScanToPayPolling sets verification error state when verifier throws")

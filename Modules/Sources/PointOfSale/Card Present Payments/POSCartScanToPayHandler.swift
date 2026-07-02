@@ -8,4 +8,8 @@ struct POSCartScanToPayHandler: POSScanToPayHandling {
     func completeScanToPayPayment(for order: Order) async throws {
         try await orderController.confirmScanToPayPayment()
     }
+
+    func recordScanToPayPaymentMethod(for order: Order) async {
+        await orderController.recordScanToPayPaymentMethod()
+    }
 }

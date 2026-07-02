@@ -46,12 +46,14 @@ protocol PointOfSaleOrderControllerProtocol {
     ///
     /// - Parameter note: Optional merchant-supplied free-form note (e.g. "Bank transfer from
     ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
-    ///   `addOrderNote`, separately from the order completion call. The order's payment-method
-    ///   title stays "Other" regardless of the note's content.
+    ///   `addOrderNote`, separately from the order completion call.
     func markOrderAsPaidManually(note: String?) async throws
     /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
     /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
     func confirmScanToPayPayment() async throws
+    /// Records Scan to Pay as the cached order's visible payment method title.
+    /// This is best-effort display metadata; failures should not block payment success.
+    func recordScanToPayPaymentMethod() async
     /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
     /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
     func reloadCurrentOrder() async throws -> Order
@@ -199,6 +201,21 @@ protocol PointOfSaleOrderControllerProtocol {
         try await orderService.addOrderNote(orderID: order.orderID,
                                             isCustomerNote: false,
                                             note: Localization.scanToPayNote)
+        await recordScanToPayPaymentMethod()
+    }
+
+    @MainActor
+    func recordScanToPayPaymentMethod() async {
+        guard let order else {
+            DDLogWarn("⚠️ [ScanToPay] Could not record payment method title because there is no current order")
+            return
+        }
+
+        do {
+            try await orderService.recordScanToPayPaymentMethod(order: order)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Failed to record payment method title: \(error)")
+        }
     }
 
     @MainActor

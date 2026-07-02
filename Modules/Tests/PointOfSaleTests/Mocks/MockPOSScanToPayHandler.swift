@@ -12,4 +12,11 @@ final class MockPOSScanToPayHandler: POSScanToPayHandling {
         completeScanToPayPaymentReceivedOrder = order
         if let error = errorToThrow { throw error }
     }
+
+    var recordScanToPayPaymentMethodCalled = false
+    var recordScanToPayPaymentMethodReceivedOrder: Order?
+    func recordScanToPayPaymentMethod(for order: Order) async {
+        recordScanToPayPaymentMethodCalled = true
+        recordScanToPayPaymentMethodReceivedOrder = order
+    }
 }

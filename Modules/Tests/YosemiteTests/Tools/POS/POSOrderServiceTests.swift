@@ -363,6 +363,60 @@ struct POSOrderServiceTests {
         })
     }
 
+    @Test
+    func markOrderAsCompletedManually_updates_order_status_and_payment_method() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+
+        // When
+        try await sut.markOrderAsCompletedManually(order: order)
+
+        // Then
+        let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
+        #expect(updatedOrder.status == .completed)
+        #expect(updatedOrder.paymentMethodID == "other")
+        #expect(updatedOrder.paymentMethodTitle == "Mark order as paid")
+
+        let fields = try #require(mockOrdersRemote.spyUpdatePOSOrderFields)
+        #expect(fields.contains(.status))
+        #expect(fields.contains(.paymentMethodID))
+        #expect(fields.contains(.paymentMethodTitle))
+    }
+
+    @Test
+    func recordScanToPayPaymentMethod_updates_only_payment_method_title() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+            .copy(paymentMethodID: "woocommerce_payments",
+                  paymentMethodTitle: "Other")
+
+        // When
+        try await sut.recordScanToPayPaymentMethod(order: order)
+
+        // Then
+        let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
+        #expect(updatedOrder.paymentMethodID == "woocommerce_payments")
+        #expect(updatedOrder.paymentMethodTitle == "Scan to Pay")
+
+        let fields = try #require(mockOrdersRemote.spyUpdatePOSOrderFields)
+        #expect(fields == [.paymentMethodTitle])
+    }
+
+    @Test
+    func recordScanToPayPaymentMethod_throws_error_when_update_fails() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+        mockOrdersRemote.updatePOSOrderResult = .failure(NSError(domain: "", code: 0))
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.recordScanToPayPaymentMethod(order: order)
+        }, throws: { _ in
+            // The actual error `POSOrderServiceError.updateOrderFailed` is private, thus we cannot check against the exact error.
+            return true
+        })
+    }
+
     @Test func updatePOSOrder_calls_remote_updatePOSOrderEmail_with_correct_parameters() async throws {
         // Given
         let siteID: Int64 = 123

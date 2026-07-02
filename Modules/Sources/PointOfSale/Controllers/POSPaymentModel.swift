@@ -851,6 +851,9 @@ extension POSPaymentModel {
         analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
         paymentState.scanToPay = .showingQRCode(verification: .confirming)
         Task { @MainActor [weak self] in
+            if let order = self?.currentOrder {
+                await self?.scanToPayHandler.recordScanToPayPaymentMethod(for: order)
+            }
             try? await self?.postPaymentStep?()
             self?.scanToPayPaymentSuccess()
         }

@@ -5,4 +5,5 @@ import struct Yosemite.Order
 /// merchant confirms the payment was received (or polling detects it server-side).
 protocol POSScanToPayHandling {
     func completeScanToPayPayment(for order: Order) async throws
+    func recordScanToPayPaymentMethod(for order: Order) async
 }

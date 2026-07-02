@@ -222,21 +222,18 @@ private extension POSPrinterSetupModal {
     }
 
     func setupButtons(primaryTitle: String) -> PointOfSaleFlowButtonConfiguration {
-        .init(primaryButton: .init(title: primaryTitle, action: {
+        // While the app's Bluetooth permission is off, discovery can't run, so Open Settings is the
+        // only action worth offering.
+        if controller.bluetoothAuthorization == .denied {
+            return .init(primaryButton: .init(title: Localization.settingsButton, action: {
+                openDeviceSettings()
+            }),
+                         secondaryButton: nil)
+        }
+        return .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-              secondaryButton: settingsButton)
-    }
-
-    /// The app's Settings page only exposes the Bluetooth permission toggle — nothing about pairing —
-    /// so only offer it when that permission is the thing the merchant needs to fix.
-    var settingsButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
-        guard controller.bluetoothAuthorization == .denied else {
-            return nil
-        }
-        return .init(title: Localization.settingsButton, action: {
-            openDeviceSettings()
-        })
+                     secondaryButton: nil)
     }
 
     func openDeviceSettings() {

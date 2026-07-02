@@ -66,6 +66,18 @@ copy_to_baseline_report() {
   cp "$report_path" "$BASELINE_REPORT_PATH"
 }
 
+annotate_baseline_source() {
+  local source=$1
+  local baseline_report_tmp
+
+  baseline_report_tmp="$(mktemp)"
+  jq \
+    --arg source "$source" \
+    '. + {baseline_cache_source: $source}' \
+    "$BASELINE_REPORT_PATH" > "$baseline_report_tmp"
+  mv "$baseline_report_tmp" "$BASELINE_REPORT_PATH"
+}
+
 save_toolkit_cache() {
   if ! command -v save_cache >/dev/null 2>&1; then
     return
@@ -97,6 +109,7 @@ restore_toolkit_cache() {
 if [ -f "$CACHE_PATH" ] && cache_matches_baseline "$CACHE_PATH"; then
   echo "Reusing local cached build warning baseline for $SHORT_BASE_COMMIT."
   copy_to_baseline_report "$CACHE_PATH"
+  annotate_baseline_source "local-cache"
   save_toolkit_cache
   upload_baseline_artifact
   exit 0
@@ -107,6 +120,7 @@ if restore_toolkit_cache; then
   mkdir -p "$CACHE_DIR"
   cp "$TOOLKIT_CACHE_PATH" "$CACHE_PATH"
   copy_to_baseline_report "$TOOLKIT_CACHE_PATH"
+  annotate_baseline_source "shared-cache"
   rm -rf "$TOOLKIT_CACHE_DIR"
   upload_baseline_artifact
   exit 0
@@ -143,7 +157,8 @@ baseline_report_tmp="$(mktemp)"
 jq \
   --arg base_branch "$BASE_BRANCH" \
   --arg base_commit "$BASE_COMMIT" \
-  '. + {base_branch: $base_branch, baseline_commit: $base_commit}' \
+  --arg baseline_cache_source "rebuilt" \
+  '. + {base_branch: $base_branch, baseline_commit: $base_commit, baseline_cache_source: $baseline_cache_source}' \
   "$BASELINE_REPORT_PATH" > "$baseline_report_tmp"
 mv "$baseline_report_tmp" "$BASELINE_REPORT_PATH"
 

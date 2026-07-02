@@ -136,6 +136,12 @@ if ! [[ "$baseline_count" =~ ^[0-9]+$ ]]; then
   exit 1
 fi
 
+baseline_cache_source="$(jq -r '.baseline_cache_source // empty' "$BASELINE_REPORT_PATH")"
+baseline_cache_source_line=""
+if [ -n "$baseline_cache_source" ]; then
+  baseline_cache_source_line="- Baseline source: \`$baseline_cache_source\`"
+fi
+
 baseline_commit="$(jq -r '.baseline_commit // empty' "$BASELINE_REPORT_PATH")"
 baseline_short_commit="${baseline_commit:0:12}"
 if [ -n "$baseline_short_commit" ]; then
@@ -262,6 +268,7 @@ This PR has **$current_count** owned app/module build warnings compared with **$
 
 - Current build: $BUILDKITE_BUILD_URL
 - Baseline report: \`$BASELINE_REPORT_PATH\`
+$baseline_cache_source_line
 - Net count delta: **$count_delta_label**
 - Exact additions found: **$additional_warning_label**
 

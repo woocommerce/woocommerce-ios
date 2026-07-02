@@ -1122,7 +1122,6 @@ private extension PushNotificationsManager {
             }
         }))
     }
-
 }
 
 

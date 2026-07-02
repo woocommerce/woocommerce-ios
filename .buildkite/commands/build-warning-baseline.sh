@@ -32,7 +32,8 @@ echo "Using $SHORT_BASE_COMMIT as the build warning baseline for $BASE_BRANCH."
 mkdir -p "$(dirname "$BASELINE_REPORT_PATH")"
 
 COUNT_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/count-build-warnings.sh" | awk '{print $1}')"
-CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH")
+BASELINE_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/build-warning-baseline.sh" | awk '{print $1}')"
+CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH" "$BASELINE_SCRIPT_HASH")
 CACHE_KEY="$(printf '%s\n' "${CACHE_KEY_PARTS[@]}" | shasum | awk '{print $1}')"
 CACHE_DIR="${BUILD_WARNING_BASELINE_CACHE_DIR:-$HOME/.cache/woocommerce-ios/build-warning-baselines}"
 CACHE_PATH="$CACHE_DIR/$CACHE_KEY.json"
@@ -134,7 +135,7 @@ echo "--- :hammer_and_wrench: Building baseline"
 SCAN_BUILDLOG_PATH="$BASE_WORKTREE/fastlane/logs" bundle exec fastlane build_for_testing
 
 echo "--- :warning: Count baseline build warnings"
-"$COMMANDS_DIR/count-build-warnings.sh" fastlane/logs "$ABSOLUTE_BASELINE_REPORT_PATH"
+BUILDKITE_BUILD_CHECKOUT_PATH="$BASE_WORKTREE" "$COMMANDS_DIR/count-build-warnings.sh" fastlane/logs "$ABSOLUTE_BASELINE_REPORT_PATH"
 
 popd
 

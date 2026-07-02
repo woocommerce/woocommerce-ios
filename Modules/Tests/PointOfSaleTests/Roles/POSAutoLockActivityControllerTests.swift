@@ -205,7 +205,7 @@ private extension POSAutoLockActivityControllerTests {
     }
 
     func makeStaff() -> POSStaff {
-        POSStaff(userID: 1, displayName: "Maya", preset: "shop_manager", capabilities: [])
+        POSStaff(userID: 1, displayName: "Maya", preset: .manager, capabilities: [])
     }
 }
 

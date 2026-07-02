@@ -104,7 +104,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private var isSelfDrivenPNEligible = false
@@ -121,7 +120,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.stores = stores
         self.storageManager = storageManager
@@ -129,7 +127,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         /// Initialize Sites Results Controller
@@ -267,11 +264,6 @@ private extension SettingsViewModel {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
             guard stores.sessionManager.defaultRoles.contains(.administrator) else {
-                return nil
-            }
-
-            // Hide plugins section for CIAB sites
-            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
                 return nil
             }
 

@@ -19,6 +19,7 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.POSCatalogSyncState
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
@@ -101,6 +102,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
+    private var fullSyncStateObservationTask: Task<Void, Never>?
 
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
@@ -205,6 +207,7 @@ protocol PointOfSaleAggregateModelProtocol {
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
         subscribeToCartProductUpdates()
+        startObservingFullSyncCompletionForStaleStatus()
         performInitialSyncIfNeeded()
     }
 }
@@ -675,6 +678,7 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         paymentModel.tearDown()
         cancellables.forEach { $0.cancel() }
+        fullSyncStateObservationTask?.cancel()
 
         // Stop the GRDB observation so stale cart IDs are not watched after dismissal.
         cartProductObserver?.observe(productIDs: [], variationIDs: [])
@@ -757,6 +761,46 @@ extension PointOfSaleAggregateModel {
         }
 
         analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
+    }
+
+    @MainActor
+    private var currentFullSyncState: POSCatalogSyncState? {
+        catalogSyncCoordinator?.fullSyncStateModel.state[siteID]
+    }
+
+    @MainActor
+    private func startObservingFullSyncCompletionForStaleStatus() {
+        guard catalogSyncCoordinator != nil else { return }
+
+        fullSyncStateObservationTask = Task { @MainActor [weak self] in
+            var previousState = self?.currentFullSyncState
+
+            while !Task.isCancelled {
+                await self?.observeNextFullSyncStateChange()
+                guard let self, !Task.isCancelled else { return }
+
+                let newState = currentFullSyncState
+                guard newState != previousState else { continue }
+
+                previousState = newState
+
+                if case .some(.syncCompleted) = newState {
+                    await checkStaleSyncStatus()
+                }
+            }
+        }
+    }
+
+    /// Waits for the next full sync state change from the shared coordinator model.
+    @MainActor
+    private func observeNextFullSyncStateChange() async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            withObservationTracking {
+                _ = currentFullSyncState
+            } onChange: {
+                continuation.resume()
+            }
+        }
     }
 }
 

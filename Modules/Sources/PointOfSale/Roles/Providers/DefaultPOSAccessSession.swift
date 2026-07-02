@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import CocoaLumberjackSwift
+import struct Yosemite.POSStaffMember
 
 @Observable
 @MainActor
@@ -44,7 +45,15 @@ final class DefaultPOSAccessSession: POSAccessSession {
     }
 
     func allows(_ capability: POSCapability) -> Bool {
-        currentStaff?.hasCapability(capability) == true
+        // Access is only gated when the cached staff list has PINs — the same cache-driven signal that
+        // drives the lock screen. With no PIN-backed staff, nobody signs in (so `currentStaff` is nil)
+        // and there'd be no PIN to approve an override, so gating is effectively off and everything is
+        // allowed. Without this, a roles-enabled site that hasn't set up any PINs would deny every gated
+        // action and strand the operator on an override modal no one can satisfy.
+        guard hasAnyPINs else {
+            return true
+        }
+        return currentStaff?.hasCapability(capability) == true
     }
 
     func signIn(withPIN pin: String) async throws(POSAuthError) {
@@ -99,6 +108,13 @@ final class DefaultPOSAccessSession: POSAccessSession {
             // gating reflect whatever it already holds (no cached PINs ⇒ no lock screen).
             DDLogError("POS staff refresh failed: \(error)")
         }
+        applyCacheState()
+    }
+
+    /// Refreshes gating from a staff list the caller already fetched — caches it and re-derives lock
+    /// state without a second staff fetch.
+    func refreshPINStatus(using staff: [POSStaffMember]) async {
+        cache.save(staff, siteID: siteID)
         applyCacheState()
     }
 

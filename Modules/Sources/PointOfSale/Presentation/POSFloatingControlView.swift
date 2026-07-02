@@ -4,26 +4,32 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAccessSession) private var session
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
-    @Binding private var showSettings: Bool
+    /// Invoked when the Exit POS menu item is tapped. The host gates it on `.exitPOS` before
+    /// presenting the exit confirmation.
+    private let onExitSelected: () -> Void
+    /// Invoked when the Settings menu item is tapped. The host gates it on `.viewPOSSettings` before
+    /// presenting the settings screen.
+    private let onSettingsSelected: () -> Void
+    /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
-    init(showExitPOSModal: Binding<Bool>,
+    init(onExitSelected: @escaping () -> Void,
          showSupport: Binding<Bool>,
          showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>,
+         onSettingsSelected: @escaping () -> Void,
          onOrdersSelected: @escaping () -> Void) {
-        self._showExitPOSModal = showExitPOSModal
+        self.onExitSelected = onExitSelected
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
-        self._showSettings = showSettings
+        self.onSettingsSelected = onSettingsSelected
         self.onOrdersSelected = onOrdersSelected
     }
 
@@ -71,7 +77,7 @@ private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
+            onExitSelected()
         } label: {
             Label(
                 title: { Text(Localization.exitPointOfSale) },
@@ -82,7 +88,7 @@ private extension POSFloatingControlView {
         if horizontalSizeClass == .regular || isPhoneLayout {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
+                onSettingsSelected()
             } label: {
                 Label(
                     title: { Text(Localization.settings) },
@@ -102,12 +108,35 @@ private extension POSFloatingControlView {
                     )
                 }
             }
+
+            if canLockPOS {
+                Button {
+                    session.lock()
+                } label: {
+                    Label(
+                        title: { Text(Localization.lockPOS) },
+                        icon: { Image(systemName: "lock") }
+                    )
+                }
+                .accessibilityIdentifier("pos-lock-menu-item")
+            }
         }
     }
 
     private var isPhoneLayout: Bool {
         horizontalSizeClass == .compact &&
         featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+    }
+
+    private var isRolesEnabled: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRoles)
+    }
+
+    /// Only offer Lock POS when access is actually PIN-gated — i.e. some staff member has a PIN to
+    /// unlock with. Without this, locking a session that has no PINs (roles on, but `/staff` returned
+    /// nobody PIN-backed) would strand the operator on a lock screen that no PIN can dismiss.
+    private var canLockPOS: Bool {
+        isRolesEnabled && session.hasAnyPINs
     }
 }
 
@@ -150,6 +179,12 @@ private extension POSFloatingControlView {
             comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
         )
 
+        static let lockPOS = NSLocalizedString(
+            "pointOfSale.floatingButtons.lock.button.title",
+            value: "Lock POS",
+            comment: "The title of the menu button to lock Point of Sale, requiring PIN entry to continue."
+        )
+
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
@@ -168,10 +203,10 @@ private extension POSFloatingControlView {
 #if DEBUG
 
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettingsSelected: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
@@ -183,20 +218,20 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false),
+    return POSFloatingControlView(onExitSelected: {},
                                   showSupport: .constant(false),
                                   showDocumentation: .constant(false),
-                                  showSettings: .constant(false),
+                                  onSettingsSelected: {},
                                   onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
+    POSFloatingControlView(onExitSelected: {},
                            showSupport: .constant(false),
                            showDocumentation: .constant(false),
-                           showSettings: .constant(false),
+                           onSettingsSelected: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())

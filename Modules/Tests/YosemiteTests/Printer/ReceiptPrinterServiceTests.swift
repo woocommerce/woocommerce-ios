@@ -1,4 +1,5 @@
 import Testing
+import Fakes
 @testable import Yosemite
 @testable import Hardware
 
@@ -14,7 +15,8 @@ struct ReceiptPrinterServiceTests {
     @Test func test_connectionStatusUpdates_forwards_service_stream() async {
         // Given
         let sut = makeService()
-        printerDiscoveryService.emitConnectionStatus(.connected)
+        let device = PrinterDevice(id: "1", name: "Printer 1")
+        printerDiscoveryService.emitConnectionStatus(.connected(device))
 
         // When
         var status: PrinterConnectionStatus?
@@ -24,7 +26,7 @@ struct ReceiptPrinterServiceTests {
         }
 
         // Then
-        #expect(status == .connected)
+        #expect(status == .connected(device))
     }
 
     @Test func test_discover_forwards_service_stream_yielding_devices() async throws {
@@ -100,6 +102,37 @@ struct ReceiptPrinterServiceTests {
 
         // Then
         #expect(printerDiscoveryService.disconnectWasCalled)
+    }
+
+    @Test func test_printReceipt_renders_text_and_forwards_to_service() async throws {
+        // Given
+        let sut = makeService()
+        let content = ReceiptContent(parameters: .fake(), lineItems: [], cartTotals: [], orderNote: nil)
+        let storeInformation = ReceiptStoreInformation(storeName: "My Store",
+                                                       storeAddress: nil,
+                                                       phone: nil,
+                                                       email: nil,
+                                                       refundReturnsPolicy: nil)
+
+        // When
+        try await sut.printReceipt(content: content, storeInformation: storeInformation, cardDetails: nil)
+
+        // Then
+        // The service renders the receipt to text in this layer, so the backend receives finished text
+        // (here including the store header) rather than receipt content.
+        #expect(printerDiscoveryService.printedText?.contains("My Store") == true)
+    }
+
+    @Test func test_printReceipt_when_service_throws_then_propagates_error() async {
+        // Given
+        let sut = makeService()
+        printerDiscoveryService.printError = SampleError.connectionFailed
+        let content = ReceiptContent(parameters: .fake(), lineItems: [], cartTotals: [], orderNote: nil)
+
+        // When / Then
+        await #expect(throws: SampleError.connectionFailed) {
+            try await sut.printReceipt(content: content, storeInformation: .empty, cardDetails: nil)
+        }
     }
 }
 

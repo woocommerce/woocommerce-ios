@@ -737,17 +737,15 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_dashboard_cards_contain_stock_card_when_store_is_eligible_and_non_ciab() async throws {
+    func test_dashboard_cards_contain_stock_card_when_store_is_eligible() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData()
 
@@ -762,45 +760,15 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_dashboard_cards_does_not_contain_stock_card_when_store_is_eligible_and_ciab() async throws {
+    func test_dashboard_cards_contain_onboarding_card_when_store_is_eligible() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [site]
-        )
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
-
-        mockReloadingData()
-
-        // Stock card need to be set with availability: .show and enabled: true by default if available.
-        let expectedStockCard = DashboardCard(type: .stock, availability: .show, enabled: false)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
-    }
-
-    @MainActor
-    func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
-        // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         mockReloadingData(storeHasOrders: false)
 
@@ -811,33 +779,6 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedOnboardingCard))
-    }
-
-    @MainActor
-    func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
-        // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [site]
-        )
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
-
-        mockReloadingData(storeHasOrders: false)
-
-        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.dashboardCards.contains(expectedOnboardingCard))
     }
 
     // MARK: Show New Cards Notice
@@ -1163,6 +1104,48 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_default_site_is_unavailable_for_site_credential_login() async {
+        // Given
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        sessionManager.defaultSite = nil
+        stores = MockStoresManager(sessionManager: sessionManager)
+        setUpBasicMocks()
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pushNotificationEligibilityChecker: eligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+        XCTAssertFalse(viewModel.showOnDashboardCards.contains(.connectWPCom))
+
+        // When
+        stores.updateDefaultStore(site)
+        await until {
+            viewModel.shouldSuggestWPComConnection &&
+            viewModel.showOnDashboardCards.contains(.connectWPCom)
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+        XCTAssertTrue(viewModel.showOnDashboardCards.contains(.connectWPCom))
     }
 
     @MainActor

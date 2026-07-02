@@ -42,6 +42,12 @@ public protocol Network {
 
     func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?)
 
+    /// Executes the specified Network Request and returns the response body.
+    ///
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: The response payload as `Data`.
+    func responseData(for request: URLRequestConvertible) async throws -> Data
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     ///
     /// - Parameters:
@@ -59,4 +65,11 @@ public protocol Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void)
+}
+
+public extension Network {
+    /// Default implementation that returns the response body, discarding the response headers.
+    func responseData(for request: URLRequestConvertible) async throws -> Data {
+        try await responseDataAndHeaders(for: request).0
+    }
 }

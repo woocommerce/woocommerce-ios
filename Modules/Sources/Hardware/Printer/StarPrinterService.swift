@@ -58,6 +58,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
     public func disconnect() async {
         await coordinator.disconnect()
     }
+
+    public func printReceipt(text: String) async throws {
+        try await coordinator.printReceipt(text: text)
+    }
 }
 
 /// Owns every StarIO10 object and all mutable connection/discovery state.
@@ -180,7 +184,7 @@ private actor StarPrinterCoordinator {
             try await starPrinter.open()
             printer = starPrinter
             connectionDelegate = delegate
-            emit(.connected)
+            emit(.connected(device))
             DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
             starPrinter.printerDelegate = nil
@@ -199,6 +203,22 @@ private actor StarPrinterCoordinator {
         current?.printerDelegate = nil
         await current?.close()
         emit(.disconnected)
+    }
+
+    func printReceipt(text: String) async throws {
+        guard let printer else {
+            DDLogError("🖨️ Cannot print: no printer connected")
+            throw PrinterError.printerNotConnected
+        }
+
+        let command = printCommand(text: text)
+        do {
+            try await printer.print(command: command)
+            DDLogInfo("🖨️ Receipt printed")
+        } catch {
+            DDLogError("🖨️ Receipt printing failed: \(error.localizedDescription)")
+            throw error
+        }
     }
 }
 
@@ -238,6 +258,17 @@ private extension StarPrinterCoordinator {
         previous.out.finish()
         previous.events.finish()
         previous.manager.stopDiscovery()
+    }
+
+    /// Wraps the already-rendered receipt text into a StarXpand print command.
+    func printCommand(text: String) -> String {
+        let printerBuilder = StarXpandCommand.PrinterBuilder()
+            .actionPrintText(text)
+            .actionFeedLine(2)
+            .actionCut(.partial)
+        return StarXpandCommand.StarXpandCommandBuilder()
+            .addDocument(StarXpandCommand.DocumentBuilder().addPrinter(printerBuilder))
+            .getCommands()
     }
 }
 

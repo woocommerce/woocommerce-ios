@@ -89,6 +89,7 @@ public struct PointOfSaleEntryPointView: View {
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -149,7 +150,9 @@ public struct PointOfSaleEntryPointView: View {
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
                                                                 isLocalCatalogEligible: isLocalCatalogEligible,
-                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL,
+                                                                printerConnectionController: receiptPrinter.map { POSPrinterConnectionController(service: $0) },
+                                                                staffSettingsService: staffSettingsService)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -231,7 +234,7 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 preferredConnectionMethod: preferredConnectionMethod,
-                cardPaymentSelectionMode: isPhoneLayout ? .compact : .large)
+                cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)
@@ -245,7 +248,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(orderListModel)
         .environment(orderListModel.refundSubmissionModel)
         .environment(\.siteTimezone, siteTimezone)
-        .environment(\.posLayoutScale, isPhoneLayout ? .phone : .tablet)
+        .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -267,7 +270,7 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var isPhoneLayout: Bool {
+    private var isCompactLayout: Bool {
         horizontalSizeClass == .compact &&
         services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
     }

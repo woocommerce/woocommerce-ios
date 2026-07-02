@@ -373,10 +373,6 @@ private final class MockBookingsEligibilityChecker {
 }
 
 extension MockBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
-    func checkInitialVisibility() -> Bool {
-        visibility
-    }
-
     func checkVisibility() async -> Bool {
         visibility
     }

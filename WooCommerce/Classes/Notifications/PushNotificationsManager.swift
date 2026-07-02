@@ -1082,14 +1082,23 @@ private extension PushNotificationsManager {
         }
         let siteSettings = NotificationSettings(blogs: updatedBlogs)
         stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
-            guard let self else { return onCompletion(false) }
-            switch result {
-            case .success:
-                analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
-                onCompletion(true)
-            case .failure(let error):
-                analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
-                onCompletion(false)
+            // `AccountStore` invokes this completion off the main thread; hop back before touching
+            // state and dispatching the follow-up teardown action (the Dispatcher is main-thread only).
+            let handleResult = {
+                guard let self else { return onCompletion(false) }
+                switch result {
+                case .success:
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsSuccess)
+                    onCompletion(true)
+                case .failure(let error):
+                    self.analytics.track(.wpcomDeviceEnablePushNotificationsError, withError: error)
+                    onCompletion(false)
+                }
+            }
+            if Thread.isMainThread {
+                handleResult()
+            } else {
+                DispatchQueue.main.async(execute: handleResult)
             }
         }))
     }

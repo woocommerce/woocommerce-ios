@@ -41,13 +41,8 @@ final class PushNotificationRegistrationState {
         }
     }
 
-    /// Per-site Woo push token record IDs, keyed by site ID.
-    ///
-    /// Each site's Woo backend mints its own token record ID on registration, and unregistering a
-    /// site requires *that site's* record ID — hence a map rather than a single value (the design
-    /// agreed in the Kiwi P2 and used on Android).
-    ///
-    /// Stored as `[String: String]` because `UserDefaults` property lists don't support `Int64` keys.
+    /// Per-site Woo push token record IDs — unregistering a site requires that site's own record ID.
+    /// Stored as `[String: String]` because plists don't support `Int64` keys.
     private(set) var wooPushNotificationTokensBySite: [Int64: Int64] {
         get {
             guard let stored = defaults.dictionary(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationTokensBySite)
@@ -122,14 +117,9 @@ final class PushNotificationRegistrationState {
         wooPushNotificationTokensBySite[siteID] = nil
     }
 
-    /// One-time migration from the legacy single `wooPushNotificationToken` value to the per-site map.
-    ///
-    /// The legacy value held whichever site's token record registered *last* (the fan-out registers
-    /// concurrently, so with multiple sites the owner is unknowable). Pairing rules:
-    /// - exactly one registered site → pair with it (unambiguous, the common single-store case);
-    /// - multiple registered sites → pair with the selected site if it is registered (the same guess
-    ///   the legacy unregister code made); the remaining sites have no token until they re-register;
-    /// - no registered sites → the token is an orphan; drop it.
+    /// One-time migration of the legacy single token record ID into the per-site map. The legacy
+    /// owner is unknowable with multiple registered sites, so it is paired with the only registered
+    /// site, else the selected one, else dropped.
     func migrateLegacyWooPushNotificationTokenIfNeeded(selectedSiteID: Int64?) {
         guard let legacyToken = defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken) else {
             return

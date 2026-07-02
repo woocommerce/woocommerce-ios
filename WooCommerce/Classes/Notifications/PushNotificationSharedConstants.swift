@@ -44,8 +44,6 @@ enum PushNotificationSharedConstants {
     enum UserDefaultsKeys {
         static let deviceToken = "deviceToken"
         static let deviceID = "deviceID"
-        /// Legacy single Woo push token record ID — replaced by `wooPushNotificationTokensBySite`,
-        /// kept only for the one-time migration.
         static let wooPushNotificationToken = "wooPushNotificationToken"
         static let wooPushNotificationTokensBySite = "wooPushNotificationTokensBySite"
         static let siteIDsRegisteredForWooPushNotifications = "siteIDsRegisteredForWooPushNotifications"

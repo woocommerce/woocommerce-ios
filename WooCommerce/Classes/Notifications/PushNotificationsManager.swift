@@ -386,10 +386,8 @@ extension PushNotificationsManager {
         // Migrate the legacy single Woo token record ID into the per-site map (no-op once done).
         registrationState.migrateLegacyWooPushNotificationTokenIfNeeded(selectedSiteID: siteID)
 
-        // When the device token changes, clear registered site IDs so all sites re-register with
-        // the new token. Only relevant while self-driven push is ON: with the FF off nothing
-        // re-registers, and clearing here would erase the state the WPCom fallback below needs to
-        // re-enable and unregister those sites (breaking its retry-on-next-launch guarantee).
+        // When the device token changes while self-driven push is ON, clear registered site IDs so
+        // all sites re-register. Skipped when OFF — the fallback below still needs that state.
         if selfDrivenPushNotificationEnabled,
            let existingToken = registrationState.deviceToken, existingToken != newToken {
             DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")

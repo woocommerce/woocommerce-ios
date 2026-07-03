@@ -176,6 +176,8 @@ private extension PrivacySettingsViewController {
         // switch
         cell.isOn = collectInfo
         cell.onChange = { [weak self] newValue in
+            // This event will only report if the user has Analytics currently on
+            ServiceLocator.analytics.track(.settingsCollectInfoToggled)
             self?.collectInfoWasUpdated(newValue: newValue)
         }
     }

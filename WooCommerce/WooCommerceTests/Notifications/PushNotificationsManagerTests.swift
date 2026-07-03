@@ -1365,6 +1365,107 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(successProperties["is_jetpack_connected"] as? Bool, false)
     }
 
+    // MARK: - Self-driven push token deletion analytics
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_succeeds_then_tracks_delete_success_with_target_site_properties() async throws {
+        // Given — selected site 100 is stored with distinct properties and a Woo push token is registered.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        defaults.set("1100", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+
+        manager = makeManager(analytics: analytics)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion) = action {
+                onCompletion(.success(()))
+            }
+        }
+
+        // When
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { _ in
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then — the event carries the target site's identifiers and capability flags.
+        let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_success"),
+                                         "Expected a woo_push_token_delete_success event")
+        let successProperties = analyticsProvider.receivedProperties[successIndex]
+        XCTAssertEqual(successProperties["blog_id"] as? Int64, 100)
+        XCTAssertEqual(successProperties["site_url"] as? String, "https://alpha.example")
+        XCTAssertEqual(successProperties["is_wpcom_store"] as? Bool, true)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
+    }
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_fails_then_tracks_delete_error_with_error_properties() async throws {
+        // Given — same setup as the success case, but the unregistration action fails.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        defaults.set("1100", forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+
+        manager = makeManager(analytics: analytics)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "test", code: 500)))
+            }
+        }
+
+        // When
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { _ in
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then — the event carries the target site's identifiers plus the generic error fields.
+        let errorIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_error"),
+                                       "Expected a woo_push_token_delete_error event")
+        let errorProperties = analyticsProvider.receivedProperties[errorIndex]
+        XCTAssertEqual(errorProperties["blog_id"] as? Int64, 100)
+        XCTAssertEqual(errorProperties["site_url"] as? String, "https://alpha.example")
+        XCTAssertEqual(errorProperties["error_domain"] as? String, "test")
+        XCTAssertEqual(errorProperties["error_code"] as? String, "500")
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+    }
+
+    func test_unregisterFromWooPushNotificationsIfPossible_when_no_token_is_stored_then_completes_without_tracking() async {
+        // Given — a selected site but no Woo push token, so there is nothing to delete.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let completionExpectation = expectation(description: "Unregistration completed")
+        manager.unregisterFromWooPushNotificationsIfPossible { result in
+            if case .failure = result {
+                XCTFail("Expected success when there is no token to delete")
+            }
+            completionExpectation.fulfill()
+        }
+        await fulfillment(of: [completionExpectation], timeout: 1.0)
+
+        // Then — no deletion happened, so no delete events should be tracked.
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
+    }
+
     func test_registerDeviceToken_when_site_returns_notFound_then_unmarks_that_site() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)

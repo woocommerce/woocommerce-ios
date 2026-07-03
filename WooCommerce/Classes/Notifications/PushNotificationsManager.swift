@@ -315,6 +315,35 @@ extension PushNotificationsManager {
         }
     }
 
+    /// Unregisters the currently selected site's self-driven push token, tracking the deletion result.
+    ///
+    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let siteID,
+              let tokenID = registrationState.wooPushNotificationToken,
+              let tokenIDInt = Int64(tokenID) else {
+            return completion(.success(()))
+        }
+        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+            siteID: siteID,
+            tokenID: tokenIDInt,
+            // The target siteID is the currently selected site, so REST fallback via
+            // `RequestConverter` is safe and preserved for site-credentials users who have no
+            // Jetpack tunnel available.
+            availableAsRESTRequest: true,
+            onCompletion: { [weak self] result in
+                if let self {
+                    switch result {
+                    case .success:
+                        analytics.track(event: .PushNotifications.wooPushTokenDeleteSuccess(targetSite: loadTargetSite(siteID: siteID)))
+                    case .failure(let error):
+                        analytics.track(event: .PushNotifications.wooPushTokenDeleteError(targetSite: loadTargetSite(siteID: siteID), error: error))
+                    }
+                }
+                completion(result)
+            }
+        ))
+    }
+
 
     /// Resets the Badge Count.
     ///
@@ -1009,23 +1038,6 @@ private extension PushNotificationsManager {
                 analytics.track(.wpcomDeviceDisablePushNotificationsError, withError: error)
             }
         }))
-    }
-
-    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let siteID,
-              let tokenID = registrationState.wooPushNotificationToken,
-              let tokenIDInt = Int64(tokenID) else {
-            return completion(.success(()))
-        }
-        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
-            siteID: siteID,
-            tokenID: tokenIDInt,
-            // The target siteID is the currently selected site, so REST fallback via
-            // `RequestConverter` is safe and preserved for site-credentials users who have no
-            // Jetpack tunnel available.
-            availableAsRESTRequest: true,
-            onCompletion: completion
-        ))
     }
 }
 

@@ -17,8 +17,48 @@ class AccountSettingsMapperTests: XCTestCase {
 
         XCTAssertEqual(account.userID, 10)
         XCTAssertTrue(account.tracksOptOut)
+        XCTAssertEqual(account.crashReportingOptOut, false)
         XCTAssertEqual(account.firstName, "Dem 123")
         XCTAssertEqual(account.lastName, "Nines")
+    }
+
+    /// Verifies that a `null` crash reporting opt out is parsed as `nil`, so it can be told apart from an explicit choice.
+    ///
+    func test_crashReportingOptOut_when_null_then_parses_as_nil() throws {
+        // Given
+        let response = makeSettingsResponse(crashReportingOptOutJSONValue: "null")
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertNil(account.crashReportingOptOut)
+    }
+
+    /// Verifies that a missing crash reporting opt out is parsed as `nil`, so it can be told apart from an explicit choice.
+    ///
+    func test_crashReportingOptOut_when_missing_then_parses_as_nil() throws {
+        // Given
+        let response = makeSettingsResponse(crashReportingOptOutJSONValue: nil)
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertNil(account.crashReportingOptOut)
+    }
+
+    /// Verifies that an explicit crash reporting opt out is parsed as a boolean.
+    ///
+    func test_crashReportingOptOut_when_true_then_parses_as_true() throws {
+        // Given
+        let response = makeSettingsResponse(crashReportingOptOutJSONValue: "true")
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertEqual(account.crashReportingOptOut, true)
     }
 }
 
@@ -36,5 +76,14 @@ private extension AccountSettingsMapperTests {
         }
 
         return try? AccountSettingsMapper(userID: 10).map(response: response)
+    }
+
+    /// Builds a minimal `me/settings` response, optionally including the crash reporting opt out
+    /// with the given raw JSON value (`"true"`, `"false"`, `"null"`), or omitting it when `nil`.
+    ///
+    func makeSettingsResponse(crashReportingOptOutJSONValue: String?) -> Data {
+        let crashReportingEntry = crashReportingOptOutJSONValue.map { ",\"woomobile_crash_reporting_opt_out\": \($0)" } ?? ""
+        let json = "{\"tracks_opt_out\": false" + crashReportingEntry + "}"
+        return Data(json.utf8)
     }
 }

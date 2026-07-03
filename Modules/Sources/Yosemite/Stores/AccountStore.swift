@@ -56,6 +56,8 @@ public class AccountStore: Store {
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
             updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
+        case .updateCrashReportingOptOut(let userID, let optOut, let onCompletion):
+            updateCrashReportingOptOut(userID: userID, optOut: optOut, onCompletion: onCompletion)
         case let .loadNotificationSettings(deviceID, onCompletion):
             loadNotificationSettings(deviceID: deviceID, onCompletion: onCompletion)
         case .updateNotificationSettings(let notificationSettings, let onCompletion):
@@ -217,6 +219,19 @@ private extension AccountStore {
     ///
     func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Submits the crash reporting opt-in / opt-out setting to be synced globally.
+    ///
+    func updateCrashReportingOptOut(userID: Int64, optOut: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.updateCrashReportingOptOut(for: userID, optOut: optOut) { result in
             switch result {
             case .success:
                 onCompletion(.success(()))

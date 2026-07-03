@@ -30,7 +30,8 @@ class PrivacySettingsViewController: UIViewController {
     ///
     private var reportCrashes = CrashLoggingSettings.didOptIn {
         didSet {
-            CrashLoggingSettings.didOptIn = reportCrashes
+            configureSections()
+            tableView.reloadData()
         }
     }
 
@@ -88,6 +89,10 @@ private extension PrivacySettingsViewController {
             case .success(let accountSettings):
                 // Switch is off when opting out of Tracks
                 self?.collectInfo = !accountSettings.tracksOptOut
+                Task { @MainActor in
+                    UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut, userID: userID)
+                    self?.reportCrashes = CrashLoggingSettings.didOptIn
+                }
             case .failure:
                 self?.presentErrorFetchingAccountSettingsNotice()
             }
@@ -214,7 +219,7 @@ private extension PrivacySettingsViewController {
         // switch
         cell.isOn = reportCrashes
         cell.onChange = { [weak self] newValue in
-            self?.reportCrashes = newValue
+            self?.reportCrashesWasUpdated(newValue: newValue)
         }
     }
 
@@ -301,6 +306,20 @@ private extension PrivacySettingsViewController {
     func reportCrashesWasUpdated(newValue: Bool) {
         // This event will only report if the user has Analytics currently on
         ServiceLocator.analytics.track(.settingsReportCrashesToggled)
+
+        reportCrashes = newValue
+
+        let useCase = UpdateCrashReportingSettingUseCase()
+        Task {
+            do {
+                try await useCase.update(optOut: !newValue)
+            } catch {
+                Task { @MainActor in
+                    reportCrashes = !newValue // Revert to the previous value to keep the UI consistent.
+                    presentErrorUpdatingCrashReportingSettingNotice(optInValue: newValue)
+                }
+            }
+        }
     }
 
     /// Presents a URL modally.
@@ -354,6 +373,21 @@ private extension PrivacySettingsViewController {
             guard let self else { return }
             self.collectInfo = optInValue
             self.collectInfoWasUpdated(newValue: optInValue)
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Presents an error notice when failing to update the crash reporting setting.
+    /// Receives the intended crash reporting `optInValue` as a parameter to be able to resubmit the request upon a retry.
+    ///
+    func presentErrorUpdatingCrashReportingSettingNotice(optInValue: Bool) {
+        // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
+        let info = NoticeNotificationInfo(identifier: UUID().uuidString)
+        let notice = Notice(title: Localization.errorUpdatingAnalyticsState,
+                            feedbackType: .error,
+                            notificationInfo: info,
+                            actionTitle: Localization.retry) { [weak self] in
+            self?.reportCrashesWasUpdated(newValue: optInValue)
         }
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

@@ -209,18 +209,26 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 struct CrashLoggingSettings {
     static var didOptIn: Bool {
         get {
-            // By default, opt the user into crash reporting
-            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? true
+            didOptIn(in: .standard)
         }
         set {
-            if newValue {
-                DDLogInfo("🔵 Crash Logging reporting restored.")
-            }
-            else {
-                DDLogInfo("🔴 Crash Logging opt-out complete.")
-            }
-
-            UserDefaults.standard.set(newValue, forKey: .userOptedInCrashLogging)
+            setDidOptIn(newValue, in: .standard)
         }
+    }
+
+    static func didOptIn(in userDefaults: UserDefaults) -> Bool {
+        // By default, opt the user into crash reporting
+        return userDefaults.object(forKey: .userOptedInCrashLogging) ?? true
+    }
+
+    static func setDidOptIn(_ newValue: Bool, in userDefaults: UserDefaults) {
+        if newValue {
+            DDLogInfo("🔵 Crash Logging reporting restored.")
+        }
+        else {
+            DDLogInfo("🔴 Crash Logging opt-out complete.")
+        }
+
+        userDefaults.set(newValue, forKey: .userOptedInCrashLogging)
     }
 }

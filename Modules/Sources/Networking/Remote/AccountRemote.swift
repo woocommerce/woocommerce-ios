@@ -10,6 +10,7 @@ public protocol AccountRemoteProtocol {
     func loadAccount(completion: @escaping (Result<Account, Error>) -> Void)
     func loadAccountSettings(for userID: Int64, completion: @escaping (Result<AccountSettings, Error>) -> Void)
     func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void)
+    func updateCrashReportingOptOut(for userID: Int64, optOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void)
     func loadSites() -> AnyPublisher<Result<[Site], Error>, Never>
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never>
     func fetchWordPressSiteSettings(for siteID: Int64) -> AnyPublisher<Result<WordPressSiteSettings, Error>, Never>
@@ -60,7 +61,7 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     public func loadAccountSettings(for userID: Int64, completion: @escaping (Result<AccountSettings, Error>) -> Void) {
         let path = "me/settings"
         let parameters = [
-            "fields": "tracks_opt_out,first_name,last_name"
+            "fields": "tracks_opt_out,woomobile_crash_reporting_opt_out,first_name,last_name"
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = AccountSettingsMapper(userID: userID)
@@ -77,6 +78,24 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
         let parameters = [
             "fields": "tracks_opt_out",
             "tracks_opt_out": String(tracksOptOut)
+        ]
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let mapper = AccountSettingsMapper(userID: userID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Updates the crash reporting opt out setting for the account associated with the Credential's authToken.
+    /// - Parameters:
+    ///   - userID: The dotcom user ID - used primarily for persistence not on the actual network call
+    ///
+    public func updateCrashReportingOptOut(for userID: Int64, optOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void) {
+        let path = "me/settings"
+        // `tracks_opt_out` is included in the response fields because the mapper requires it to decode `AccountSettings`.
+        let parameters = [
+            "fields": "tracks_opt_out,woomobile_crash_reporting_opt_out",
+            "woomobile_crash_reporting_opt_out": String(optOut)
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)

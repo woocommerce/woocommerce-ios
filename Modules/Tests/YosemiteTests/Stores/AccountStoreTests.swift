@@ -205,10 +205,54 @@ final class AccountStoreTests: XCTestCase {
         let account = try result.get()
         let expectedAccount = Networking.AccountSettings(userID: 10,
                                                          tracksOptOut: true,
+                                                         crashReportingOptOut: false,
                                                          firstName: "Dem 123",
                                                          lastName: "Nines")
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
         XCTAssertEqual(account, expectedAccount)
+    }
+
+    // MARK: - AccountAction.updateCrashReportingOptOut
+
+    /// Verifies that `updateCrashReportingOptOut` submits the setting to the remote and relays a success.
+    ///
+    func test_updateCrashReportingOptOut_when_remote_succeeds_then_returns_success() {
+        // Given
+        let remote = MockAccountRemote()
+        remote.whenUpdatingCrashReportingOptOut(thenReturn: .success(sampleAccountSettings()))
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.updateCrashReportingOptOut(userID: 10, optOut: true) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(remote.invocations, [.updateCrashReportingOptOut(userID: 10, optOut: true)])
+    }
+
+    /// Verifies that `updateCrashReportingOptOut` relays a remote failure, so callers can keep the local value untouched.
+    ///
+    func test_updateCrashReportingOptOut_when_remote_fails_then_returns_failure() {
+        // Given
+        let remote = MockAccountRemote()
+        remote.whenUpdatingCrashReportingOptOut(thenReturn: .failure(NetworkError.notFound()))
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = AccountAction.updateCrashReportingOptOut(userID: 10, optOut: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: - AccountAction.synchronizeSites
@@ -1028,6 +1072,7 @@ private extension AccountStoreTests {
     func sampleAccountSettings() -> Networking.AccountSettings {
         return AccountSettings(userID: 10,
                                tracksOptOut: true,
+                               crashReportingOptOut: nil,
                                firstName: nil,
                                lastName: nil)
     }

@@ -195,9 +195,7 @@ struct TotalsView: View {
                 isStartingPayment = false
             }
         }
-        // Phone-only: on iPad the picker is an anchored popover hosted on the
-        // "Other payment methods" button (see `otherPaymentMethodsButton`).
-        .posSheet(isPresented: isShowingOtherPaymentMethodsBottomSheet) {
+        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
                 isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
@@ -875,7 +873,7 @@ private extension TotalsView {
         paymentModel.startMarkAsPaidPayment()
     }
 
-    /// Shared trigger for the phone sheet and iPad popover.
+    /// Shared trigger for the Other payment methods sheet.
     @ViewBuilder
     var otherPaymentMethodsButton: some View {
         Button(action: handleOtherPaymentMethodsTapped) {
@@ -886,30 +884,6 @@ private extension TotalsView {
         .frame(maxWidth: .infinity)
         .disabled(isStartingPayment)
         .accessibilityIdentifier("pos-other-payment-methods-button")
-        .popover(isPresented: isShowingOtherPaymentMethodsPopover,
-                 attachmentAnchor: .point(.top),
-                 arrowEdge: .bottom) {
-            PointOfSaleSecondaryPaymentMethodsPopover(
-                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
-                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
-                onScanToPay: handleScanToPaySelected,
-                onMarkOrderAsPaid: handleMarkAsPaidSelected
-            )
-        }
-    }
-
-    /// iPad presentation of the Other payment methods picker — an anchored popover.
-    /// Derived from the shared trigger so it only fires in regular width.
-    var isShowingOtherPaymentMethodsPopover: Binding<Bool> {
-        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass != .compact },
-                set: { isShowingOtherPaymentMethodsSheet = $0 })
-    }
-
-    /// Phone presentation of the Other payment methods picker — the bottom sheet.
-    /// Derived from the shared trigger so it only fires in compact width.
-    var isShowingOtherPaymentMethodsBottomSheet: Binding<Bool> {
-        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass == .compact },
-                set: { isShowingOtherPaymentMethodsSheet = $0 })
     }
 }
 

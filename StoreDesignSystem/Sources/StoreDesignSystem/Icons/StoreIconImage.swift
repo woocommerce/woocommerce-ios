@@ -17,12 +17,12 @@ public struct StoreIconImage {
         assetName.split(separator: "-").last.map { $0.lowercased() } ?? ""
     }
 
-    /// A template, tintable image of this icon at the given size (use `StoreIconSize`).
-    public func image(size: CGFloat) -> some View {
+    /// A template, tintable image of this icon at the given size, e.g. `.image(size: .medium)`.
+    public func image(size: StoreIconSize) -> some View {
         Image(assetName, bundle: .module)
             .renderingMode(.template)
             .resizable()
             .scaledToFit()
-            .frame(width: size, height: size)
+            .frame(width: size.value, height: size.value)
     }
 }

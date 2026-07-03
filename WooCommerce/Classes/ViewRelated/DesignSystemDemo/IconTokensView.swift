@@ -15,8 +15,8 @@ struct IconTokensView: View {
                 HStack(spacing: 24) {
                     ForEach(token.variants, id: \.style) { variant in
                         VStack(spacing: 4) {
-                            variant.image(size: StoreIconSize.extraLarge)
-                                .foregroundStyle(Color.storeIconPrimary)
+                            variant.image(size: .extraLarge)
+                                .foregroundStyle(.storeOnSurface)
                             Text(variant.style)
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)

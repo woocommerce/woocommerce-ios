@@ -104,7 +104,8 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   swift package plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix && popd
 
-# Code generation (Sourcery for Copiable/Fakeable)
+# Code generation (Sourcery for Copiable/Fakeable and the Design System demo token catalogs
+# — run after changing StoreDesignSystem tokens)
 pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   swift package plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd

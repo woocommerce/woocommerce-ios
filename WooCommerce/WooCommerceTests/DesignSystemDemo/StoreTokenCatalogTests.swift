@@ -12,7 +12,7 @@ import StoreDesignSystem
 struct StoreTokenCatalogTests {
     @Test func color_catalog_enumerates_every_palette_token() throws {
         let defined = try Self.declaredNames(in: "Color/Color+StoreColorPalette.swift",
-                                             pattern: #"static let (\w+) = bundledColor"#)
+                                             pattern: #"static var (\w+): Color \{ bundledColor"#)
         #expect(Set(Color.storeColorCatalog.map(\.name)) == defined)
     }
 

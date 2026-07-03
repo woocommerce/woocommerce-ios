@@ -852,13 +852,20 @@ private extension TotalsView {
     var cashAndOtherPaymentMethodsButtons: some View {
         if horizontalSizeClass == .compact {
             VStack(spacing: POSSpacing.medium) {
-                cashPaymentButton
-                otherPaymentMethodsButton
+                cashPaymentButton()
+                otherPaymentMethodsButton()
             }
         } else {
-            HStack(spacing: POSSpacing.medium) {
-                cashPaymentButton
-                otherPaymentMethodsButton
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: POSSpacing.medium) {
+                    cashPaymentButton(lineLimit: 1)
+                    otherPaymentMethodsButton(lineLimit: 1)
+                }
+
+                VStack(spacing: POSSpacing.medium) {
+                    cashPaymentButton()
+                    otherPaymentMethodsButton()
+                }
             }
         }
     }
@@ -875,10 +882,12 @@ private extension TotalsView {
         .accessibilityIdentifier("pos-card-reader-button")
     }
 
-    var cashPaymentButton: some View {
+    func cashPaymentButton(lineLimit: Int? = nil) -> some View {
         Button(action: handleCashPaymentTapped) {
             Text(Localization.cashPaymentButtonTitle)
                 .font(secondaryPaymentButtonFont)
+                .lineLimit(lineLimit)
+                .fixedSize(horizontal: lineLimit != nil, vertical: false)
         }
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
@@ -888,10 +897,12 @@ private extension TotalsView {
 
     /// Shared trigger for the Other payment methods sheet.
     @ViewBuilder
-    var otherPaymentMethodsButton: some View {
+    func otherPaymentMethodsButton(lineLimit: Int? = nil) -> some View {
         Button(action: handleOtherPaymentMethodsTapped) {
             Text(Localization.otherPaymentMethodsButtonTitle)
                 .font(secondaryPaymentButtonFont)
+                .lineLimit(lineLimit)
+                .fixedSize(horizontal: lineLimit != nil, vertical: false)
         }
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)

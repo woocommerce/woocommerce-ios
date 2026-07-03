@@ -11,6 +11,7 @@ extension Storage.AccountSettings: ReadOnlyConvertible {
     public func update(with accountSettings: Yosemite.AccountSettings) {
         userID = accountSettings.userID
         tracksOptOut = accountSettings.tracksOptOut
+        crashReportingOptOut = accountSettings.crashReportingOptOut.map(NSNumber.init(value:))
         firstName = accountSettings.firstName
         lastName = accountSettings.lastName
     }
@@ -18,11 +19,9 @@ extension Storage.AccountSettings: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.AccountSettings {
-        // `crashReportingOptOut` is intentionally not persisted in storage — the local source
-        // of truth for crash reporting lives in user defaults.
         return AccountSettings(userID: userID,
                                tracksOptOut: tracksOptOut,
-                               crashReportingOptOut: nil,
+                               crashReportingOptOut: crashReportingOptOut?.boolValue,
                                firstName: firstName,
                                lastName: lastName)
     }

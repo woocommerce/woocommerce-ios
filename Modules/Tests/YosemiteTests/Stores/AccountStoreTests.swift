@@ -210,6 +210,7 @@ final class AccountStoreTests: XCTestCase {
                                                          lastName: "Nines")
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
         XCTAssertEqual(account, expectedAccount)
+        XCTAssertEqual(viewStorage.loadAccountSettings(userID: 10)?.crashReportingOptOut?.boolValue, false)
     }
 
     // MARK: - AccountAction.updateCrashReportingOptOut

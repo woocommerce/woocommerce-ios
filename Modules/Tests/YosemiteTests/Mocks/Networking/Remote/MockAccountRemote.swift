@@ -35,10 +35,10 @@ final class MockAccountRemote {
     private var closeAccountResult: Result<Void, Error> = .success(())
 
     /// Returns the value when `updateCrashReportingOptOut` is called.
-    private var updateCrashReportingOptOutResult: Result<AccountSettings, Error>?
+    private var updateCrashReportingOptOutResult: Result<Void, Error>?
 
     /// Returns the value when `updateCrashReportingOptOut` is called.
-    func whenUpdatingCrashReportingOptOut(thenReturn result: Result<AccountSettings, Error>) {
+    func whenUpdatingCrashReportingOptOut(thenReturn result: Result<Void, Error>) {
         updateCrashReportingOptOutResult = result
     }
 
@@ -82,7 +82,7 @@ extension MockAccountRemote {
         case loadSites
         case checkIfWooCommerceIsActive(siteID: Int64)
         case fetchWordPressSiteSettings(siteID: Int64)
-        case updateCrashReportingOptOut(userID: Int64, optOut: Bool)
+        case updateCrashReportingOptOut(optOut: Bool)
     }
 }
 
@@ -101,11 +101,11 @@ extension MockAccountRemote: AccountRemoteProtocol {
         // no-op
     }
 
-    func updateCrashReportingOptOut(for userID: Int64, optOut: Bool, completion: @escaping (Result<AccountSettings, Error>) -> Void) {
-        invocations.append(.updateCrashReportingOptOut(userID: userID, optOut: optOut))
+    func updateCrashReportingOptOut(optOut: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        invocations.append(.updateCrashReportingOptOut(optOut: optOut))
         guard let result = updateCrashReportingOptOutResult else {
             XCTFail("Could not find result for updating the crash reporting opt out.")
-            return
+            return completion(.failure(NetworkError.notFound()))
         }
         completion(result)
     }

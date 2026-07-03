@@ -219,12 +219,12 @@ final class AccountStoreTests: XCTestCase {
     func test_updateCrashReportingOptOut_when_remote_succeeds_then_returns_success() {
         // Given
         let remote = MockAccountRemote()
-        remote.whenUpdatingCrashReportingOptOut(thenReturn: .success(sampleAccountSettings()))
+        remote.whenUpdatingCrashReportingOptOut(thenReturn: .success(()))
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.updateCrashReportingOptOut(userID: 10, optOut: true) { result in
+            let action = AccountAction.updateCrashReportingOptOut(optOut: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -232,7 +232,7 @@ final class AccountStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(remote.invocations, [.updateCrashReportingOptOut(userID: 10, optOut: true)])
+        XCTAssertEqual(remote.invocations, [.updateCrashReportingOptOut(optOut: true)])
     }
 
     /// Verifies that `updateCrashReportingOptOut` relays a remote failure, so callers can keep the local value untouched.
@@ -245,7 +245,7 @@ final class AccountStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = AccountAction.updateCrashReportingOptOut(userID: 10, optOut: false) { result in
+            let action = AccountAction.updateCrashReportingOptOut(optOut: false) { result in
                 promise(result)
             }
             store.onAction(action)

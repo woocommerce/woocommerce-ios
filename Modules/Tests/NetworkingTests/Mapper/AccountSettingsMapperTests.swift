@@ -26,7 +26,7 @@ class AccountSettingsMapperTests: XCTestCase {
     ///
     func test_crashReportingOptOut_when_null_then_parses_as_nil() throws {
         // Given
-        let response = makeSettingsResponse(crashReportingOptOutJSONValue: "null")
+        let response = Data(#"{"tracks_opt_out": false, "woomobile_crash_reporting_opt_out": null}"#.utf8)
 
         // When
         let account = try AccountSettingsMapper(userID: 10).map(response: response)
@@ -39,7 +39,7 @@ class AccountSettingsMapperTests: XCTestCase {
     ///
     func test_crashReportingOptOut_when_missing_then_parses_as_nil() throws {
         // Given
-        let response = makeSettingsResponse(crashReportingOptOutJSONValue: nil)
+        let response = Data(#"{"tracks_opt_out": false}"#.utf8)
 
         // When
         let account = try AccountSettingsMapper(userID: 10).map(response: response)
@@ -52,7 +52,7 @@ class AccountSettingsMapperTests: XCTestCase {
     ///
     func test_crashReportingOptOut_when_true_then_parses_as_true() throws {
         // Given
-        let response = makeSettingsResponse(crashReportingOptOutJSONValue: "true")
+        let response = Data(#"{"tracks_opt_out": false, "woomobile_crash_reporting_opt_out": true}"#.utf8)
 
         // When
         let account = try AccountSettingsMapper(userID: 10).map(response: response)
@@ -76,14 +76,5 @@ private extension AccountSettingsMapperTests {
         }
 
         return try? AccountSettingsMapper(userID: 10).map(response: response)
-    }
-
-    /// Builds a minimal `me/settings` response, optionally including the crash reporting opt out
-    /// with the given raw JSON value (`"true"`, `"false"`, `"null"`), or omitting it when `nil`.
-    ///
-    func makeSettingsResponse(crashReportingOptOutJSONValue: String?) -> Data {
-        let crashReportingEntry = crashReportingOptOutJSONValue.map { ",\"woomobile_crash_reporting_opt_out\": \($0)" } ?? ""
-        let json = "{\"tracks_opt_out\": false" + crashReportingEntry + "}"
-        return Data(json.utf8)
     }
 }

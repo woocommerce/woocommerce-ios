@@ -23,24 +23,16 @@ final class UpdateCrashReportingSettingUseCase {
     /// For NON-WPCOM stores: Updates locally.
     ///
     @MainActor func update(optOut: Bool) async throws {
-        // There is no need to perform any request if the user hasn't changed the current crash reporting setting.
-        guard CrashLoggingSettings.didOptIn(in: userDefaults) == optOut else {
-            return
-        }
-
         // If we can't find an account(non-jp sites), lets commit the change immediately.
-        guard let defaultAccount = stores.sessionManager.defaultAccount else {
+        guard stores.sessionManager.defaultAccount != nil else {
             return CrashLoggingSettings.setDidOptIn(!optOut, in: userDefaults)
         }
 
-        let userID = defaultAccount.userID
         try await withCheckedThrowingContinuation { continuation in
-            let action = AccountAction.updateCrashReportingOptOut(userID: userID, optOut: optOut) { [weak self] result in
+            let action = AccountAction.updateCrashReportingOptOut(optOut: optOut) { [userDefaults] result in
                 switch result {
                 case .success:
-                    if let self {
-                        CrashLoggingSettings.setDidOptIn(!optOut, in: self.userDefaults)
-                    }
+                    CrashLoggingSettings.setDidOptIn(!optOut, in: userDefaults)
                     continuation.resume()
                 case .failure(let error):
                     DDLogError("⛔️ Error saving the crash reporting choice: \(error)")
@@ -59,20 +51,23 @@ final class UpdateCrashReportingSettingUseCase {
     /// - `nil` means no choice has been recorded on the account yet: the local value stays the source
     ///   of truth and is backfilled to the account so it persists across devices and reinstalls.
     ///
-    @MainActor func handleRemoteValue(_ remoteOptOut: Bool?, userID: Int64) {
+    func handleRemoteValue(_ remoteOptOut: Bool?) {
         guard let remoteOptOut else {
-            return backfillRemoteValue(userID: userID)
+            return backfillRemoteValue()
         }
 
-        CrashLoggingSettings.setDidOptIn(!remoteOptOut, in: userDefaults)
+        // Only write when the value actually changes, to avoid a misleading opt-in/opt-out log on every sync.
+        if CrashLoggingSettings.didOptIn(in: userDefaults) == remoteOptOut {
+            CrashLoggingSettings.setDidOptIn(!remoteOptOut, in: userDefaults)
+        }
     }
 
     /// Populates the account setting from the local value. Fire-and-forget: on failure the account
     /// stays unset and the backfill is retried on the next account-settings sync.
     ///
-    @MainActor private func backfillRemoteValue(userID: Int64) {
+    private func backfillRemoteValue() {
         let optOut = !CrashLoggingSettings.didOptIn(in: userDefaults)
-        let action = AccountAction.updateCrashReportingOptOut(userID: userID, optOut: optOut) { result in
+        let action = AccountAction.updateCrashReportingOptOut(optOut: optOut) { result in
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error backfilling the crash reporting choice: \(error)")
             }

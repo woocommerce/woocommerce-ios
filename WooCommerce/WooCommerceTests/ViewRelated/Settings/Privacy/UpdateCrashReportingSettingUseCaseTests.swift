@@ -28,7 +28,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
         var receivedOptOut: Bool?
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, let optOut, let onCompletion):
+            case .updateCrashReportingOptOut(let optOut, let onCompletion):
                 receivedOptOut = optOut
                 onCompletion(.success(()))
             default:
@@ -51,7 +51,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, _, let onCompletion):
+            case .updateCrashReportingOptOut(_, let onCompletion):
                 onCompletion(.failure(NSError(domain: "Test", code: 0)))
             default:
                 break
@@ -75,7 +75,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
         var dispatchedRemoteUpdate = false
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, _, let onCompletion):
+            case .updateCrashReportingOptOut(_, let onCompletion):
                 dispatchedRemoteUpdate = true
                 onCompletion(.success(()))
             default:
@@ -92,15 +92,18 @@ final class UpdateCrashReportingSettingUseCaseTests {
         #expect(CrashLoggingSettings.didOptIn(in: userDefaults) == false)
     }
 
+    /// A request must fire even when the requested value matches the persisted one: the persisted value
+    /// only reflects the last *successful* update, so skipping "unchanged" requests would silently drop
+    /// a toggle made while a previous update is still in flight.
     @MainActor
-    @Test func test_update_when_setting_is_unchanged_then_does_not_fire_a_request() async throws {
+    @Test func test_update_when_setting_is_unchanged_then_still_fires_a_request() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))
-        var dispatchedRemoteUpdate = false
+        var receivedOptOut: Bool?
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, _, let onCompletion):
-                dispatchedRemoteUpdate = true
+            case .updateCrashReportingOptOut(let optOut, let onCompletion):
+                receivedOptOut = optOut
                 onCompletion(.success(()))
             default:
                 break
@@ -113,11 +116,11 @@ final class UpdateCrashReportingSettingUseCaseTests {
         try await useCase.update(optOut: true)
 
         // Then
-        #expect(dispatchedRemoteUpdate == false)
+        #expect(receivedOptOut == true)
         #expect(CrashLoggingSettings.didOptIn(in: userDefaults) == false)
     }
 
-    // MARK: - handleRemoteValue(_:userID:)
+    // MARK: - handleRemoteValue(_:)
 
     @MainActor
     @Test(arguments: [true, false])
@@ -138,7 +141,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
 
         // When
         let useCase = UpdateCrashReportingSettingUseCase(stores: stores, userDefaults: userDefaults)
-        useCase.handleRemoteValue(remoteOptOut, userID: 10)
+        useCase.handleRemoteValue(remoteOptOut)
 
         // Then
         #expect(CrashLoggingSettings.didOptIn(in: userDefaults) == !remoteOptOut)
@@ -152,7 +155,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
         var receivedOptOut: Bool?
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, let optOut, let onCompletion):
+            case .updateCrashReportingOptOut(let optOut, let onCompletion):
                 receivedOptOut = optOut
                 onCompletion(.success(()))
             default:
@@ -163,7 +166,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
 
         // When
         let useCase = UpdateCrashReportingSettingUseCase(stores: stores, userDefaults: userDefaults)
-        useCase.handleRemoteValue(nil, userID: 10)
+        useCase.handleRemoteValue(nil)
 
         // Then
         #expect(receivedOptOut == true)
@@ -177,7 +180,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
         var receivedOptOut: Bool?
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case .updateCrashReportingOptOut(_, let optOut, let onCompletion):
+            case .updateCrashReportingOptOut(let optOut, let onCompletion):
                 receivedOptOut = optOut
                 onCompletion(.success(()))
             default:
@@ -187,7 +190,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
 
         // When
         let useCase = UpdateCrashReportingSettingUseCase(stores: stores, userDefaults: userDefaults)
-        useCase.handleRemoteValue(nil, userID: 10)
+        useCase.handleRemoteValue(nil)
 
         // Then
         #expect(receivedOptOut == false)

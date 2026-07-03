@@ -208,12 +208,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
 struct CrashLoggingSettings {
     static var didOptIn: Bool {
-        get {
-            didOptIn(in: .standard)
-        }
-        set {
-            setDidOptIn(newValue, in: .standard)
-        }
+        didOptIn(in: .standard)
     }
 
     static func didOptIn(in userDefaults: UserDefaults) -> Bool {

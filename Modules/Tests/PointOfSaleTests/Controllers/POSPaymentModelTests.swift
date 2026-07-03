@@ -2324,6 +2324,130 @@ struct POSPaymentModelTests {
         #expect(service.cancelPaymentCalled == true)
     }
 
+    @Test("compact mode Scan to Pay preserves Tap to Pay selection after cancellation")
+    @MainActor
+    func test_startScanToPayPayment_when_compact_mode_and_TTP_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelScanToPayPayment()
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("compact mode Scan to Pay preserves Bluetooth selection after cancellation")
+    @MainActor
+    func test_startScanToPayPayment_when_compact_mode_and_BT_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelScanToPayPayment()
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("compact mode Mark as Paid preserves Tap to Pay selection after cancellation")
+    @MainActor
+    func test_startMarkAsPaidPayment_when_compact_mode_and_TTP_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            sut.startMarkAsPaidPayment()
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.markAsPaid == .confirming)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelMarkAsPaidPayment()
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.markAsPaid == .idle)
+    }
+
+    @Test("compact mode Mark as Paid preserves Bluetooth selection after cancellation")
+    @MainActor
+    func test_startMarkAsPaidPayment_when_compact_mode_and_BT_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            sut.startMarkAsPaidPayment()
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.markAsPaid == .confirming)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelMarkAsPaidPayment()
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.markAsPaid == .idle)
+    }
+
     @Test("compact mode with Bluetooth selected waits for a reader without marking Bluetooth active")
     @MainActor
     func test_startPayment_when_compact_mode_and_BT_selected_but_disconnected_then_waits_without_active_method() async {

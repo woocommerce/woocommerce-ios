@@ -68,10 +68,48 @@ public extension ShapeStyle where Self == Color {
     static var storeOverlayOpacity20: Color { bundledColor("storeOverlayOpacity20") }
     static var storeOverlayOpacity50: Color { bundledColor("storeOverlayOpacity50") }
 
-    // MARK: - State Layers
-    static var storeStateLayerOnSurfaceOpacity08: Color { bundledColor("storeStateLayerOnSurfaceOpacity08") }
-    static var storeStateLayerOnSurfaceOpacity10: Color { bundledColor("storeStateLayerOnSurfaceOpacity10") }
-    static var storeStateLayerOnSurfaceOpacity16: Color { bundledColor("storeStateLayerOnSurfaceOpacity16") }
+    // MARK: - Palette
+    static var storePaletteWooBlue20: Color { bundledColor("storePaletteWooBlue20") }
+    static var storePaletteWooBlue40: Color { bundledColor("storePaletteWooBlue40") }
+    static var storePaletteWooBlue60: Color { bundledColor("storePaletteWooBlue60") }
+    static var storePaletteWooGreen20: Color { bundledColor("storePaletteWooGreen20") }
+    static var storePaletteWooGreen40: Color { bundledColor("storePaletteWooGreen40") }
+    static var storePaletteWooGreen60: Color { bundledColor("storePaletteWooGreen60") }
+    static var storePaletteWooOrange20: Color { bundledColor("storePaletteWooOrange20") }
+    static var storePaletteWooOrange40: Color { bundledColor("storePaletteWooOrange40") }
+    static var storePaletteWooOrange60: Color { bundledColor("storePaletteWooOrange60") }
+    static var storePaletteWooPink20: Color { bundledColor("storePaletteWooPink20") }
+    static var storePaletteWooPink40: Color { bundledColor("storePaletteWooPink40") }
+    static var storePaletteWooPink60: Color { bundledColor("storePaletteWooPink60") }
+    static var storePaletteWooPurple0: Color { bundledColor("storePaletteWooPurple0") }
+    static var storePaletteWooPurple5: Color { bundledColor("storePaletteWooPurple5") }
+    static var storePaletteWooPurple10: Color { bundledColor("storePaletteWooPurple10") }
+    static var storePaletteWooPurple20: Color { bundledColor("storePaletteWooPurple20") }
+    static var storePaletteWooPurple30: Color { bundledColor("storePaletteWooPurple30") }
+    static var storePaletteWooPurple40: Color { bundledColor("storePaletteWooPurple40") }
+    static var storePaletteWooPurple50: Color { bundledColor("storePaletteWooPurple50") }
+    static var storePaletteWooPurple60: Color { bundledColor("storePaletteWooPurple60") }
+    static var storePaletteWooPurple70: Color { bundledColor("storePaletteWooPurple70") }
+    static var storePaletteWooPurple80: Color { bundledColor("storePaletteWooPurple80") }
+    static var storePaletteWooPurple90: Color { bundledColor("storePaletteWooPurple90") }
+    static var storePaletteWooPurple100: Color { bundledColor("storePaletteWooPurple100") }
+    static var storePaletteWooSandstone5: Color { bundledColor("storePaletteWooSandstone5") }
+    static var storePaletteWooSandstone10: Color { bundledColor("storePaletteWooSandstone10") }
+    static var storePaletteWooSandstone20: Color { bundledColor("storePaletteWooSandstone20") }
+    static var storePaletteWooSandstone40: Color { bundledColor("storePaletteWooSandstone40") }
+    static var storePaletteWooSandstone60: Color { bundledColor("storePaletteWooSandstone60") }
+    static var storePaletteGray0: Color { bundledColor("storePaletteGray0") }
+    static var storePaletteGray5: Color { bundledColor("storePaletteGray5") }
+    static var storePaletteGray10: Color { bundledColor("storePaletteGray10") }
+    static var storePaletteGray20: Color { bundledColor("storePaletteGray20") }
+    static var storePaletteGray30: Color { bundledColor("storePaletteGray30") }
+    static var storePaletteGray40: Color { bundledColor("storePaletteGray40") }
+    static var storePaletteGray50: Color { bundledColor("storePaletteGray50") }
+    static var storePaletteGray60: Color { bundledColor("storePaletteGray60") }
+    static var storePaletteGray70: Color { bundledColor("storePaletteGray70") }
+    static var storePaletteGray80: Color { bundledColor("storePaletteGray80") }
+    static var storePaletteGray90: Color { bundledColor("storePaletteGray90") }
+    static var storePaletteGray100: Color { bundledColor("storePaletteGray100") }
 
     /// Loads a named color from the design system's asset catalog in this package's bundle.
     private static func bundledColor(_ name: String) -> Color {

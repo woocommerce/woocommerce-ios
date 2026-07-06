@@ -3,8 +3,7 @@ import SwiftUI
 /// Displays an attributed text where a "learn more" or any other substring is tappable in a longer text.
 struct LearnMoreAttributedText: View {
     private let attributedLearnMoreText: AttributedString
-    private let url: URL
-    private let onTapURL: ((URL) -> Void)?
+    private let urlHandler: LearnMoreAttributedTextURLHandler
     @State private var presentedURL: URL?
 
     /// - Parameters:
@@ -22,8 +21,7 @@ struct LearnMoreAttributedText: View {
          textColor: UIColor = .textSubtle,
          linkTextColor: UIColor = .accent,
          onTapURL: ((URL) -> Void)? = nil) {
-        self.url = url
-        self.onTapURL = onTapURL
+        self.urlHandler = LearnMoreAttributedTextURLHandler(expectedURL: url, onTapURL: onTapURL)
         attributedLearnMoreText = {
             var attributedText = AttributedString(.init(format: format, learnMoreText))
             attributedText.font = .footnote
@@ -46,18 +44,37 @@ struct LearnMoreAttributedText: View {
     var body: some View {
         Text(attributedLearnMoreText)
             .environment(\.openURL, OpenURLAction { url in
-                guard url == self.url else {
+                switch urlHandler.handle(url, presentURL: { presentedURL = $0 }) {
+                case .handled:
+                    return .handled
+                case .systemAction:
                     return .systemAction
                 }
-
-                if let onTapURL {
-                    onTapURL(url)
-                } else {
-                    presentedURL = url
-                }
-                return .handled
             })
             .safariSheet(url: $presentedURL)
+    }
+}
+
+struct LearnMoreAttributedTextURLHandler {
+    enum Result: Equatable {
+        case handled
+        case systemAction
+    }
+
+    let expectedURL: URL
+    let onTapURL: ((URL) -> Void)?
+
+    func handle(_ url: URL, presentURL: (URL) -> Void) -> Result {
+        guard url == expectedURL else {
+            return .systemAction
+        }
+
+        if let onTapURL {
+            onTapURL(url)
+        } else {
+            presentURL(url)
+        }
+        return .handled
     }
 }
 

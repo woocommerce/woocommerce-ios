@@ -4,10 +4,8 @@ set -o pipefail
 
 REPORT_PATH="${1:-build-warnings.json}"
 BASELINE_REPORT_PATH="${2:-base-build-warnings.json}"
-CURRENT_LOG_PATH="${3:-fastlane/logs}"
 BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-trunk}"
 COMMENT_ID="build-warning-count"
-COMMANDS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 is_pull_request() {
   [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]
@@ -15,83 +13,31 @@ is_pull_request() {
 
 download_artifact_path() {
   local artifact_path=$1
-  set +e
 
-  if [[ "$artifact_path" == *"*"* || "$artifact_path" == *"?"* || "$artifact_path" == *"["* ]] && command -v buildkite-agent >/dev/null 2>&1; then
-    buildkite-agent artifact download "$artifact_path" .
-  elif command -v download_artifact >/dev/null 2>&1; then
+  if command -v download_artifact >/dev/null 2>&1; then
     download_artifact "$artifact_path"
   elif command -v buildkite-agent >/dev/null 2>&1; then
     buildkite-agent artifact download "$artifact_path" .
   else
-    set -e
     return 1
   fi
-  local download_status=$?
-  set -e
-
-  return "$download_status"
 }
 
 download_report() {
   local report_path=$1
 
-  if [ -f "$report_path" ]; then
-    return
-  fi
-
+  # Reused agent checkouts can contain reports from previous builds; never
+  # trust a pre-existing file, always fetch the artifact from this build.
+  rm -f "$report_path"
   mkdir -p "$(dirname "$report_path")"
 
-  local download_status
-  if download_artifact_path "$report_path"; then
-    download_status=0
-  else
-    download_status=$?
-  fi
+  download_artifact_path "$report_path" || true
 
   if [ ! -f "$report_path" ] && [ -f "$(basename "$report_path")" ]; then
     mv "$(basename "$report_path")" "$report_path"
   fi
 
-  [ "$download_status" -eq 0 ] && [ -f "$report_path" ]
-}
-
-ensure_current_report() {
-  if [ -f "$REPORT_PATH" ]; then
-    upload_current_report_artifact
-    return
-  fi
-
-  if download_report "$REPORT_PATH"; then
-    upload_current_report_artifact
-    return
-  fi
-
-  if [ ! -e "$CURRENT_LOG_PATH" ]; then
-    download_artifact_path "$CURRENT_LOG_PATH/*" || true
-  fi
-
-  if [ ! -e "$CURRENT_LOG_PATH" ]; then
-    return 1
-  fi
-
-  if ! "$COMMANDS_DIR/count-build-warnings.sh" "$CURRENT_LOG_PATH" "$REPORT_PATH"; then
-    return 1
-  fi
-
-  upload_current_report_artifact
-
-  return 0
-}
-
-upload_current_report_artifact() {
-  if command -v upload_artifact >/dev/null 2>&1; then
-    upload_artifact "$REPORT_PATH" || true
-  fi
-
-  if command -v buildkite-agent >/dev/null 2>&1; then
-    buildkite-agent artifact upload "$REPORT_PATH" || true
-  fi
+  [ -f "$report_path" ]
 }
 
 delete_existing_comment() {
@@ -105,8 +51,8 @@ if ! is_pull_request; then
   exit 0
 fi
 
-if ! ensure_current_report; then
-  echo "No current build warning report or logs found at $REPORT_PATH / $CURRENT_LOG_PATH; skipping comparison."
+if ! download_report "$REPORT_PATH"; then
+  echo "No current build warning report artifact found at $REPORT_PATH; skipping comparison."
   delete_existing_comment
   exit 0
 fi

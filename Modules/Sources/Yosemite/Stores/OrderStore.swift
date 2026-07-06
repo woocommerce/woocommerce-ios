@@ -17,6 +17,7 @@ public class OrderStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
+        let temporaryBaseBranchTestWarningValue = 1
         dispatcher.register(processor: self, for: OrderAction.self)
     }
 

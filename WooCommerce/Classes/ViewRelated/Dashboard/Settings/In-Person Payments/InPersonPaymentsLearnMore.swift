@@ -20,21 +20,41 @@ struct InPersonPaymentsLearnMore: View {
                 .frame(width: iconSize, height: iconSize)
                 .accessibilityHidden(true)
                 .renderedIf(showInfoIcon)
-            AttributedText(viewModel.learnMoreAttributedString)
-        }
-        .accessibilityHint(viewModel.learnMoreAttributedString.string)
-        .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
-            viewModel.learnMoreTapped()
-            customOpenURL?(viewModel.url)
-        }
-        .onTapGesture {
-            viewModel.learnMoreTapped()
-            customOpenURL?(viewModel.url)
+            Text(attributedLearnMoreText)
+                .environment(\.openURL, OpenURLAction { url in
+                    guard url == viewModel.url else {
+                        return .systemAction
+                    }
+
+                    viewModel.learnMoreTapped()
+                    customOpenURL?(url)
+                    return .handled
+                })
+                .accessibilityHint(learnMoreText)
         }
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
+    }
+
+    private var attributedLearnMoreText: AttributedString {
+        var attributedText = AttributedString(learnMoreText)
+        attributedText.font = .footnote
+        attributedText.foregroundColor = .init(uiColor: .textSubtle)
+
+        if let range = attributedText.range(of: viewModel.linkText) {
+            let linkAttributes = AttributeContainer()
+                .link(viewModel.url)
+                .foregroundColor(.init(uiColor: .textLink))
+            attributedText[range].mergeAttributes(linkAttributes)
+        }
+
+        return attributedText
+    }
+
+    private var learnMoreText: String {
+        .localizedStringWithFormat(viewModel.formatText, viewModel.linkText)
     }
 }
 
@@ -44,17 +64,5 @@ struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
                                                                paymentGateway: .wcPay),
                                   showInfoIcon: true)
             .padding()
-    }
-}
-
-
-
-extension InPersonPaymentsLearnMore {
-    enum Localization {
-        static let toggleEnableCashOnDeliveryLearnMoreAccessibilityAction = NSLocalizedString(
-            "menu.payments.payInPerson.learnMore.link.accessibilityAction",
-            value: "Learn more",
-            comment: "Title for the accessibility action to open the learn more screen, showing information " +
-            "about adding Pay in Person to their checkout.")
     }
 }

@@ -17,7 +17,6 @@ public class OrderStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        let temporaryWarningGuardTestValue = 1
         dispatcher.register(processor: self, for: OrderAction.self)
     }
 

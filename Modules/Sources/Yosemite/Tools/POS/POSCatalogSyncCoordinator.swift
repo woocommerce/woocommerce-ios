@@ -127,7 +127,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
-    private let connectivityObserver: ConnectivityObserver?
+    nonisolated(unsafe) private let connectivityObserver: ConnectivityObserver?
     private let syncStrategy: POSCatalogSyncStrategy
     private let pendingParseResumer: BackgroundCatalogParseResuming
     private let pluginsService: PluginsServiceProtocol?

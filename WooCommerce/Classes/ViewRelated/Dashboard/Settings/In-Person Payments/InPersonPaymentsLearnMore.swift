@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct InPersonPaymentsLearnMore: View {
-    @Environment(\.customOpenURL) var customOpenURL
+    @Environment(\.customOpenURL) private var customOpenURL
+    @Environment(\.openURL) private var openURL
 
     @ObservedObject private var viewModel: LearnMoreViewModel
     private let showInfoIcon: Bool
@@ -46,7 +47,11 @@ struct InPersonPaymentsLearnMore: View {
 
     private func openLearnMore(url: URL) {
         viewModel.learnMoreTapped()
-        customOpenURL?(url)
+        if let customOpenURL {
+            customOpenURL(url)
+        } else {
+            openURL(url)
+        }
     }
 }
 

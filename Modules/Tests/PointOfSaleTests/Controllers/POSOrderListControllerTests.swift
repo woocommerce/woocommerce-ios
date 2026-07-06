@@ -1456,6 +1456,111 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func test_orderDetailsItemsState_when_refunded_order_selected_then_starts_loading_before_request() async throws {
+        // Given
+        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        guard case .loading(let rowCount) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loading item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(rowCount == 2)
+        #expect(sut.isLoadingOrderRefunds)
+    }
+
+    @MainActor
+    @Test func test_orderDetailsItemsState_when_refund_response_has_no_items_then_finishes_loading() async throws {
+        // Given
+        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        guard case .loaded(let lineItems, let customAmounts, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(lineItems.count == 2)
+        #expect(customAmounts.isEmpty)
+        #expect(refundedItems.isEmpty)
+        #expect(!sut.isLoadingOrderRefunds)
+    }
+
+    @MainActor
+    @Test func test_orderDetailsItemsState_when_reselecting_loaded_refunded_order_then_uses_cached_refunds() async throws {
+        // Given
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        await sut.loadOrderRefunds()
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        guard case .loaded(_, _, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(refundedItems.count == 1)
+        #expect(!sut.isLoadingOrderRefunds)
+    }
+
+    @MainActor
+    @Test func test_orderDetailsItemsState_when_refund_details_loaded_then_filters_refunded_line_items() async throws {
+        // Given
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        guard case .loaded(let lineItems, _, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(lineItems.map(\.itemID) == [2])
+        #expect(refundedItems.compactMap(\.refundedItemID) == [1])
+    }
+
+    @MainActor
     @Test func test_loadOrderRefunds_when_no_selected_order_then_selectedOrder_is_nil() async throws {
         // Given — no order selected
 

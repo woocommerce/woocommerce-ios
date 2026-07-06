@@ -26,6 +26,9 @@ steps:
     key: build-warning-baseline
     command: .buildkite/commands/build-warning-baseline.sh
     if: build.pull_request.id != null
+    # Advisory-only: if the baseline can't be produced, the comparison step
+    # skips gracefully instead of the PR build going red.
+    soft_fail: true
     plugins: [$CI_TOOLKIT]
 
   - label: ":warning: Build Warning Count"

@@ -31,7 +31,7 @@ struct InPersonPaymentsLearnMore: View {
                                         openLearnMore(url: url)
                                     })
                 .accessibilityHint(learnMoreText)
-                .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
+                .accessibilityAction(named: Localization.learnMoreAccessibilityAction) {
                     openLearnMore(url: viewModel.url)
                 }
         }
@@ -66,7 +66,7 @@ struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
 
 extension InPersonPaymentsLearnMore {
     enum Localization {
-        static let toggleEnableCashOnDeliveryLearnMoreAccessibilityAction = NSLocalizedString(
+        static let learnMoreAccessibilityAction = NSLocalizedString(
             "menu.payments.payInPerson.learnMore.link.accessibilityAction",
             value: "Learn more",
             comment: "Title for the accessibility action to open the learn more screen, showing information " +

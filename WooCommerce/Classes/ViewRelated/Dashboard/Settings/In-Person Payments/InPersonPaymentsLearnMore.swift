@@ -26,11 +26,13 @@ struct InPersonPaymentsLearnMore: View {
                         return .systemAction
                     }
 
-                    viewModel.learnMoreTapped()
-                    customOpenURL?(url)
+                    openLearnMore(url: url)
                     return .handled
                 })
                 .accessibilityHint(learnMoreText)
+                .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
+                    openLearnMore(url: viewModel.url)
+                }
         }
     }
 
@@ -56,6 +58,11 @@ struct InPersonPaymentsLearnMore: View {
     private var learnMoreText: String {
         .localizedStringWithFormat(viewModel.formatText, viewModel.linkText)
     }
+
+    private func openLearnMore(url: URL) {
+        viewModel.learnMoreTapped()
+        customOpenURL?(url)
+    }
 }
 
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
@@ -64,5 +71,15 @@ struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
                                                                paymentGateway: .wcPay),
                                   showInfoIcon: true)
             .padding()
+    }
+}
+
+extension InPersonPaymentsLearnMore {
+    enum Localization {
+        static let toggleEnableCashOnDeliveryLearnMoreAccessibilityAction = NSLocalizedString(
+            "menu.payments.payInPerson.learnMore.link.accessibilityAction",
+            value: "Learn more",
+            comment: "Title for the accessibility action to open the learn more screen, showing information " +
+            "about adding Pay in Person to their checkout.")
     }
 }

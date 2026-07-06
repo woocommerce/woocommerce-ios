@@ -18,7 +18,10 @@ bundle exec fastlane build_for_testing
 # would fail to attribute any warning to the repo.
 echo "--- :warning: Count build warnings"
 if .buildkite/commands/count-build-warnings.sh fastlane/logs build-warnings.json; then
+  # upload_artifact stores to S3 for the comparison step; the buildkite-agent
+  # upload makes the report visible in the build's Artifacts tab.
   upload_artifact build-warnings.json
+  buildkite-agent artifact upload build-warnings.json
 else
   echo "Failed to count build warnings; the build warning comparison step will be skipped."
 fi

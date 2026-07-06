@@ -195,20 +195,30 @@ comparison_report="$(
       if unique_additional.empty?
         additional_warnings_table = "_No exact additional warnings found; warning distribution changed._"
       else
+        has_duplicates = additional.length != unique_additional.length
         warning_lines = []
         warning_lines << "<details>"
-        warning_lines << "<summary>New warnings: #{unique_additional.length} (#{additional.length} log #{pluralize(additional.length, "entry", "entries")})</summary>"
-        warning_lines << ""
-        warning_lines << "Duplicate warning entries from repeated build invocations are grouped by file, line, and message."
-        warning_lines << ""
-        warning_lines << "| Occurrences | File | Warning |"
-        warning_lines << "|---:|---|---|"
+        if has_duplicates
+          warning_lines << "<summary>New warnings: #{unique_additional.length} (#{additional.length} entries in the build log)</summary>"
+          warning_lines << ""
+          warning_lines << "The same warning can appear multiple times in the build log (e.g. a file compiled into several targets); occurrences are grouped by file, line, and message."
+          warning_lines << ""
+          warning_lines << "| Occurrences | File | Warning |"
+          warning_lines << "|---:|---|---|"
+        else
+          warning_lines << "<summary>New warnings: #{unique_additional.length}</summary>"
+          warning_lines << ""
+          warning_lines << "| File | Warning |"
+          warning_lines << "|---|---|"
+        end
         unique_additional.each do |entry|
           warning = entry[:warning]
           path = warning.fetch("path", "")
           line = warning["line"]
           location = line ? "#{path}:#{line}" : path
-          warning_lines << "| #{entry[:count]} | `#{markdown_escape(location)}` | #{markdown_escape(warning.fetch("message", ""))} |"
+          row = "| `#{markdown_escape(location)}` | #{markdown_escape(warning.fetch("message", ""))} |"
+          row = "| #{entry[:count]} #{row}" if has_duplicates
+          warning_lines << row
         end
         warning_lines << ""
         warning_lines << "</details>"

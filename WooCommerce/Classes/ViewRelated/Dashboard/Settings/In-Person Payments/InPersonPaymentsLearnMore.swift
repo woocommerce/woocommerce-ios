@@ -30,7 +30,6 @@ struct InPersonPaymentsLearnMore: View {
                                     onTapURL: { url in
                                         openLearnMore(url: url)
                                     })
-                .accessibilityHint(learnMoreText)
                 .accessibilityAction(named: Localization.learnMoreAccessibilityAction) {
                     openLearnMore(url: viewModel.url)
                 }
@@ -39,10 +38,6 @@ struct InPersonPaymentsLearnMore: View {
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
-    }
-
-    private var learnMoreText: String {
-        .localizedStringWithFormat(viewModel.formatText, viewModel.linkText)
     }
 
     private func openLearnMore(url: URL) {

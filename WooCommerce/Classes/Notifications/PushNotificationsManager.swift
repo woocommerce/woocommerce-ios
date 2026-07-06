@@ -1139,6 +1139,7 @@ private extension PushNotificationsManager {
                     let tokenID = try await upsertWooPushTokenRecord(siteID: siteID)
                     try await deleteWooPushTokenRecord(siteID: siteID, tokenID: tokenID)
                     registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    analytics.track(event: .PushNotifications.wooPushTokenDeleteSuccess(targetSite: loadTargetSite(siteID: siteID)))
                     DDLogInfo("📱 Woo push token deleted for site \(siteID)")
                 } catch {
                     if case .notFound = error as? NetworkError {
@@ -1146,6 +1147,7 @@ private extension PushNotificationsManager {
                         // there is nothing left to delete.
                         registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
                     }
+                    analytics.track(event: .PushNotifications.wooPushTokenDeleteError(targetSite: loadTargetSite(siteID: siteID), error: error))
                     DDLogError("⛔️ Unable to delete Woo push token for site \(siteID): \(error)")
                 }
             }

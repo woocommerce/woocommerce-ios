@@ -777,6 +777,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         assertDeletedWooPushToken(siteID: 99)
         assertWooRegistrationCleared()
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_success"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
     }
 
     func test_registerDeviceToken_when_FF_off_and_reenable_fails_then_keeps_fallback_site_on_woo_push() async {
@@ -858,7 +859,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     func test_registerDeviceToken_when_FF_off_and_woo_delete_fails_then_keeps_site_marked_for_retry() async {
         // Given
-        manager = await makeMigrationScenario()
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         stubUpdateNotificationSettings(result: .success(()))
         stubFallbackWooActions(unregisterResult: .failure(NSError(domain: "test", code: 1)))
 
@@ -867,10 +868,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         await until { self.dispatchedUnregisterWooPushToken }
 
         // Then — the store still holds a live registration: the site stays marked so the delete
-        // retries on the next launch.
+        // retries on the next launch, and the failure is visible in Tracks.
         try? await Task.sleep(nanoseconds: 100_000_000)
         XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
         XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
     func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {

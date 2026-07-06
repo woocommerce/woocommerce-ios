@@ -197,7 +197,7 @@ comparison_report="$(
       else
         warning_lines = []
         warning_lines << "<details>"
-        warning_lines << "<summary>Unique additional warnings: #{unique_additional.length} (#{additional.length} #{pluralize(additional.length, "warning entry", "warning entries")})</summary>"
+        warning_lines << "<summary>New warnings: #{unique_additional.length} (#{additional.length} log #{pluralize(additional.length, "entry", "entries")})</summary>"
         warning_lines << ""
         warning_lines << "Duplicate warning entries from repeated build invocations are grouped by file, line, and message."
         warning_lines << ""
@@ -257,41 +257,44 @@ else
   count_delta_label="$count_delta"
 fi
 
-additional_warning_entry_label="$additional_warnings_count additional warning entry"
-if [ "$additional_warnings_count" -ne 1 ]; then
-  additional_warning_entry_label="${additional_warning_entry_label% entry} entries"
-fi
-unique_additional_warning_label="$unique_additional_warnings_count unique additional warning"
+new_warning_label="$unique_additional_warnings_count new build warning"
 if [ "$unique_additional_warnings_count" -ne 1 ]; then
-  unique_additional_warning_label="${unique_additional_warning_label}s"
+  new_warning_label="${new_warning_label}s"
 fi
-increased_area_label="$increased_areas_count area"
-if [ "$increased_areas_count" -ne 1 ]; then
-  increased_area_label="${increased_area_label}s"
+
+if [ "$unique_additional_warnings_count" -gt 0 ]; then
+  headline="This PR introduces **$new_warning_label** not present on $baseline_label."
+else
+  headline="This PR raises the build warning count to **$current_count**, up from **$baseline_count** on $baseline_label."
+fi
+
+additional_entry_word="entries"
+if [ "$additional_warnings_count" -eq 1 ]; then
+  additional_entry_word="entry"
 fi
 
 comment_body="$(cat <<EOF
-## Build warnings added
+## New build warnings detected
 
-This PR has **$current_count** owned app/module build warnings compared with **$baseline_count** on $baseline_label.
-
-- Current build: $BUILDKITE_BUILD_URL
-- Baseline report: \`$BASELINE_REPORT_PATH\`
-$baseline_cache_source_line
-- Net warning count change: **$count_delta_label entries**
-- Exact additions found: **$additional_warning_entry_label**
-- Unique additional warnings: **$unique_additional_warning_label**
-- Areas with higher warning counts: **$increased_area_label**
-
-Only warnings tied to owned repo paths under \`WooCommerce/\`, \`Modules/Sources/\`, and \`Modules/Tests/\` are counted.
-
-$area_breakdown_table
-
-### Additional Warnings
+$headline
 
 $additional_warnings_table
 
-Please remove the new warnings before merging.
+$area_breakdown_table
+
+<details>
+<summary>Details and caveats</summary>
+
+- Full JSON reports are available as artifacts on the [CI build]($BUILDKITE_BUILD_URL): \`$REPORT_PATH\` (this PR) and \`$BASELINE_REPORT_PATH\` (base branch).
+$baseline_cache_source_line
+- Warning counts: **$current_count** on this PR vs **$baseline_count** on the base — net change **$count_delta_label**, with $additional_warnings_count exact additional warning $additional_entry_word.
+- Only warnings in files under \`WooCommerce/\`, \`Modules/Sources/\`, and \`Modules/Tests/\` are counted; warnings from dependencies and generated code are ignored.
+- Warnings are matched by file path and message: renaming or moving a file can report its pre-existing warnings as new, while line-number shifts alone are not flagged.
+- The baseline is built from the merge base of this PR and \`$BASE_BRANCH\`; rebasing refreshes it.
+
+</details>
+
+Please consider removing the new warnings before merging.
 EOF
 )"
 

@@ -427,16 +427,7 @@ extension PushNotificationsManager {
             }
         }
 
-        // With self-driven push OFF, a token rotation makes the Woo registrations stale (their
-        // records hold the dead token). The fallback below detects that through the STORED token,
-        // so persisting the new one is deferred until the fallback completes — a failed attempt
-        // then retries on the next launch.
-        let staleWooFallbackPending = !selfDrivenPushNotificationEnabled
-            && deviceTokenChanged
-            && registrationState.siteIDsRegisteredForWooPNs.isNotEmpty
-        if !staleWooFallbackPending {
-            registrationState.applyNewDeviceToken(newToken)
-        }
+        registrationState.applyNewDeviceToken(newToken)
 
         // The awaited flow handles its own registration,
         // so skip the existing path below.
@@ -464,36 +455,37 @@ extension PushNotificationsManager {
             disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
         }
 
-        // Self-driven OFF: runs only when the device token rotated — the Woo registrations then
-        // hold a dead token, so re-enabling the WPCom PNs we disabled cannot double-send. Local
-        // state and the new token are persisted only after the re-enable succeeds, so a transient
-        // failure retries on the next launch.
-        func fallBackToWPComPushNotificationsIfWooIsStale() {
-            guard staleWooFallbackPending else {
+        // Self-driven OFF: migrates prior Woo push registrations back to WPCom. Sites with a
+        // working WPCom fallback (visible + full Jetpack) are re-enabled on WPCom first and
+        // unregistered from their store only once that succeeds — a failure leaves them on Woo
+        // push and the migration retries on the next launch. Sites without a fallback (hidden,
+        // Jetpack CP, or a site-credentials session) are unregistered unconditionally.
+        func migrateWooPushRegistrationsToWPComIfNeeded() {
+            let wooRegisteredSites = registrationState.siteIDsRegisteredForWooPNs
+            guard wooRegisteredSites.isNotEmpty else {
                 registerForWPComPushNotificationsIfPossible()
                 return
             }
-            let staleWooSites = registrationState.siteIDsRegisteredForWooPNs
-            let completeFallback = { [weak self] in
-                guard let self else { return }
-                self.registrationState.applyNewDeviceToken(newToken)
-                self.registrationState.clearWooRegistration()
-            }
-            // Site-credential users have no WPCom PNs to re-enable; just drop the stale local state.
-            if stores.isAuthenticatedWithoutWPCom {
-                completeFallback()
+            let fallbackSites: [Int64] = {
+                guard !stores.isAuthenticatedWithoutWPCom else { return [] }
+                return wooRegisteredSites.filter { siteID in
+                    guard !UserDefaults.standard.hiddenStoreIDs.contains(siteID),
+                          let site = loadTargetSite(siteID: siteID) else {
+                        return false
+                    }
+                    return site.isJetpackConnected && site.isJetpackThePluginInstalled
+                }
+            }()
+            deleteWooPushRegistrations(for: wooRegisteredSites.filter { !fallbackSites.contains($0) })
+            guard fallbackSites.isNotEmpty else {
+                registerForWPComPushNotificationsIfPossible()
                 return
             }
-            // Don't re-enable WPCom PNs for stores the user has hidden.
-            let visibleStaleSites = staleWooSites.filter { !UserDefaults.standard.hiddenStoreIDs.contains($0) }
             registerForWPComPushNotificationsIfPossible { [weak self] deviceID in
                 guard let self else { return }
-                guard visibleStaleSites.isNotEmpty else {
-                    return completeFallback()
-                }
-                self.enableWPComPushNotifications(siteIDs: visibleStaleSites, deviceID: deviceID) { success in
+                self.enableWPComPushNotifications(siteIDs: fallbackSites, deviceID: deviceID) { success in
                     if success {
-                        completeFallback()
+                        self.deleteWooPushRegistrations(for: fallbackSites)
                     }
                 }
             }
@@ -517,7 +509,7 @@ extension PushNotificationsManager {
                 }
             }
         } else {
-            fallBackToWPComPushNotificationsIfWooIsStale()
+            migrateWooPushRegistrationsToWPComIfNeeded()
         }
     }
 
@@ -1130,6 +1122,73 @@ private extension PushNotificationsManager {
                 DispatchQueue.main.async(execute: handleResult)
             }
         }))
+    }
+
+    /// Deletes the store-side Woo push token records for the given sites, unmarking each site
+    /// only after its delete succeeds so a failed site retries on the next launch.
+    ///
+    /// Registration returns a per-site record ID but only the last one is kept locally. The
+    /// store's create endpoint upserts by device UUID/token and returns the existing record's
+    /// ID, so re-registering first recovers the ID to delete.
+    func deleteWooPushRegistrations(for siteIDs: [Int64]) {
+        guard siteIDs.isNotEmpty else { return }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            for siteID in siteIDs {
+                do {
+                    let tokenID = try await upsertWooPushTokenRecord(siteID: siteID)
+                    try await deleteWooPushTokenRecord(siteID: siteID, tokenID: tokenID)
+                    registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    DDLogInfo("📱 Woo push token deleted for site \(siteID)")
+                } catch {
+                    if case .notFound = error as? NetworkError {
+                        // The route or record is gone (plugin downgraded or feature disabled) —
+                        // there is nothing left to delete.
+                        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    }
+                    DDLogError("⛔️ Unable to delete Woo push token for site \(siteID): \(error)")
+                }
+            }
+            if registrationState.siteIDsRegisteredForWooPNs.isEmpty {
+                registrationState.clearWooRegistration()
+            }
+        }
+    }
+
+    /// Dispatched directly rather than through the registration flow so the upsert doesn't
+    /// re-mark the site or overwrite the stored record ID.
+    @MainActor
+    private func upsertWooPushTokenRecord(siteID: Int64) async throws -> Int64 {
+        guard let deviceToken = registrationState.deviceToken else {
+            throw PushNotificationError.missingDeviceToken
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(NotificationAction.registerDeviceForSelfDrivenPushNotifications(
+                siteID: siteID,
+                device: APNSDevice(deviceToken: deviceToken),
+                applicationID: WooConstants.pushApplicationID,
+                deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
+                appVersion: Bundle.main.version,
+                // REST fallback routes to the selected site's URL, so it is only safe when the
+                // target is the selected site; cross-site calls go through the Jetpack tunnel.
+                availableAsRESTRequest: siteID == self.siteID
+            ) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    private func deleteWooPushTokenRecord(siteID: Int64, tokenID: Int64) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                siteID: siteID,
+                tokenID: tokenID,
+                availableAsRESTRequest: siteID == self.siteID
+            ) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

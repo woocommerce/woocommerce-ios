@@ -20,15 +20,15 @@ struct InPersonPaymentsLearnMore: View {
                 .frame(width: iconSize, height: iconSize)
                 .accessibilityHidden(true)
                 .renderedIf(showInfoIcon)
-            Text(attributedLearnMoreText)
-                .environment(\.openURL, OpenURLAction { url in
-                    guard url == viewModel.url else {
-                        return .systemAction
-                    }
-
-                    openLearnMore(url: url)
-                    return .handled
-                })
+            LearnMoreAttributedText(format: viewModel.formatText,
+                                    tappableLearnMoreText: viewModel.linkText,
+                                    url: viewModel.url,
+                                    shouldUnderLine: false,
+                                    textColor: .textSubtle,
+                                    linkTextColor: .textLink,
+                                    onTapURL: { url in
+                                        openLearnMore(url: url)
+                                    })
                 .accessibilityHint(learnMoreText)
                 .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
                     openLearnMore(url: viewModel.url)
@@ -38,21 +38,6 @@ struct InPersonPaymentsLearnMore: View {
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
-    }
-
-    private var attributedLearnMoreText: AttributedString {
-        var attributedText = AttributedString(learnMoreText)
-        attributedText.font = .footnote
-        attributedText.foregroundColor = .init(uiColor: .textSubtle)
-
-        if let range = attributedText.range(of: viewModel.linkText) {
-            let linkAttributes = AttributeContainer()
-                .link(viewModel.url)
-                .foregroundColor(.init(uiColor: .textLink))
-            attributedText[range].mergeAttributes(linkAttributes)
-        }
-
-        return attributedText
     }
 
     private var learnMoreText: String {

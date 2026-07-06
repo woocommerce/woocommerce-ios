@@ -33,11 +33,20 @@ mkdir -p "$(dirname "$BASELINE_REPORT_PATH")"
 
 COUNT_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/count-build-warnings.sh" | awk '{print $1}')"
 BASELINE_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/build-warning-baseline.sh" | awk '{print $1}')"
+# The weekly epoch is for storage, not staleness: the key already pins the exact
+# base commit, image, and scripts, but rotating keys weekly stops baselines from
+# stale/abandoned PRs being kept alive indefinitely in the cache store.
 CACHE_EPOCH="${BUILD_WARNING_BASELINE_CACHE_EPOCH:-$(date -u +%Y-W%W)}"
 CACHE_KEY_PARTS=("$BASE_COMMIT" "${IMAGE_ID:-unknown-image}" "$SCOPE" "$COUNT_SCRIPT_HASH" "$BASELINE_SCRIPT_HASH" "$CACHE_EPOCH")
 CACHE_KEY="$(printf '%s\n' "${CACHE_KEY_PARTS[@]}" | shasum | awk '{print $1}')"
 CACHE_DIR="${BUILD_WARNING_BASELINE_CACHE_DIR:-$HOME/.cache/woocommerce-ios/build-warning-baselines}"
 CACHE_PATH="$CACHE_DIR/$CACHE_KEY.json"
+
+# Key rotation alone never deletes files on the agent, so prune local entries
+# past two epochs to keep the cache directory bounded.
+if [ -d "$CACHE_DIR" ]; then
+  find "$CACHE_DIR" -type f -name '*.json' -mtime +14 -delete 2>/dev/null || true
+fi
 TOOLKIT_CACHE_KEY="build-warning-baseline-$CACHE_KEY"
 TOOLKIT_CACHE_DIR="${BUILD_WARNING_BASELINE_TOOLKIT_CACHE_DIR:-build-warning-baseline-cache}"
 TOOLKIT_CACHE_PATH="$TOOLKIT_CACHE_DIR/base-build-warnings.json"
@@ -137,10 +146,14 @@ BASE_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/woo-warning-base.XXXXXX")"
 rm -rf "$BASE_WORKTREE"
 
 cleanup() {
+  # Leave the worktree before removing it: `git worktree remove` run from
+  # inside the tree falls back to `rm -rf`, orphaning .git/worktrees metadata.
+  cd "$REPO_ROOT"
   git worktree remove --force "$BASE_WORKTREE" 2>/dev/null || rm -rf "$BASE_WORKTREE"
 }
 trap cleanup EXIT
 
+git worktree prune
 git worktree add --detach "$BASE_WORKTREE" "$BASE_COMMIT"
 
 pushd "$BASE_WORKTREE"

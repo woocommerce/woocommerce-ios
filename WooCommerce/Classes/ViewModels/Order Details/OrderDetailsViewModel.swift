@@ -707,6 +707,10 @@ extension OrderDetailsViewModel {
     }
 
     @MainActor func syncShippingLabelsOrShipments() async {
+        guard storeCountrySupportsShippingLabels else {
+            return
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             /// old logic for syncing labels
@@ -790,6 +794,10 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
+        guard storeCountrySupportsShippingLabels else {
+            return false
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             if await localRequirementsForShippingLabelsAreFulfilled() {
@@ -957,6 +965,29 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+    static let shippingLabelSupportedCountries: Set<CountryCode> = [.US, .PR, .VI, .GU, .AS, .MP, .UM]
+
+    static let storeCountrySettingID = "woocommerce_default_country"
+
+    var storeCountrySupportsShippingLabels: Bool {
+        guard let countryCode = storeCountryCode else {
+            return false
+        }
+        return Self.shippingLabelSupportedCountries.contains(countryCode)
+    }
+
+    var storeCountryCode: CountryCode? {
+        let predicate = NSPredicate(format: "siteID == %lld AND settingID == %@", order.siteID, Self.storeCountrySettingID)
+        let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+
+        guard let countryAndState = resultsController.fetchedObjects.first?.value,
+              let country = countryAndState.components(separatedBy: ":").first?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() else {
+            return nil
+        }
+
+        return CountryCode(rawValue: country)
+    }
 
     @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
         await withCheckedContinuation { continuation in

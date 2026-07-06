@@ -285,7 +285,7 @@ $area_breakdown_table
 <details>
 <summary>Details and caveats</summary>
 
-- Full JSON reports are in the [CI build]($BUILDKITE_BUILD_URL)'s Artifacts tab: \`$REPORT_PATH\` for this PR (uploaded by the Build step) and \`$BASELINE_REPORT_PATH\` for the base branch (uploaded by the Build Warning Baseline step).
+- Full JSON reports are in the Artifacts tab of the [CI build]($BUILDKITE_BUILD_URL): \`$REPORT_PATH\` for this PR (uploaded by the Build step) and \`$BASELINE_REPORT_PATH\` for the base branch (uploaded by the Build Warning Baseline step).
 $baseline_cache_source_line
 - Warning counts: **$current_count** on this PR vs **$baseline_count** on the base — net change **$count_delta_label**, with $additional_warnings_count exact additional warning $additional_entry_word.
 - Only warnings in files under \`WooCommerce/\`, \`Modules/Sources/\`, and \`Modules/Tests/\` are counted; warnings from dependencies and generated code are ignored.

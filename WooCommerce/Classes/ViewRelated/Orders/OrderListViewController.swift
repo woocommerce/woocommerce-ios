@@ -177,6 +177,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let temporaryWarningGuardTestValue = 1
         createDataSource()
 
         registerUserActivity()

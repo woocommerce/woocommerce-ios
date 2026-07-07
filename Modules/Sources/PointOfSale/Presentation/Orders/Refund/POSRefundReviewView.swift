@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct POSRefundReviewView: View {
     let onClose: () -> Void
@@ -94,7 +95,7 @@ private extension POSRefundReviewView {
                 Button(action: onAddReason) {
                     Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
-                        .foregroundColor(.posOnSurface)
+                        .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade30))
                 }
                 .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
             }

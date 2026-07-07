@@ -19,6 +19,7 @@ struct POSTotalsSectionView: View {
     var siteTimezone: TimeZone = .current
     var isLoadingRefundDetails: Bool = false
     @Binding var selectedRefundForDetail: POSOrderRefund?
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -143,7 +144,7 @@ struct POSTotalsSectionView: View {
                 } label: {
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posSecondary)
+                        .foregroundStyle(Color.posLinkCTA(for: colorScheme))
                         .underline()
                 }
             }

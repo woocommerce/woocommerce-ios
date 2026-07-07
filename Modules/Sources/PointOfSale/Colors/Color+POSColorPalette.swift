@@ -55,4 +55,9 @@ extension Color {
 
     // MARK: - Other
     static var posShadow: Color { Color("posShadow", bundle: .module) }
+
+    // MARK: - Semantic Colors
+    static func posLinkCTA(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? .posSecondary : .posPrimary
+    }
 }

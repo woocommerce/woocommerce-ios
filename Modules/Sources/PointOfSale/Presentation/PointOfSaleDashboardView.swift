@@ -593,8 +593,14 @@ private extension PointOfSaleDashboardView {
     func loadItemsWhenEligible() {
         Task { @MainActor in
             await posModel.purchasableItemsController.loadItems(base: .root)
-            await posModel.couponsController.loadItems(base: .root)
+        }
+
+        Task { @MainActor in
             await posModel.popularPurchasableItemsController.loadItems(base: .root)
+        }
+
+        Task { @MainActor in
+            await posModel.couponsController.loadItems(base: .root)
         }
     }
 

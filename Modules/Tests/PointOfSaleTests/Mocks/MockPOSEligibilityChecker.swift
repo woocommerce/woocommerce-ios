@@ -5,6 +5,7 @@ final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
     var visibility: Bool = false
     var eligibility: POSEligibilityState = .eligible
+    private(set) var checkEligibilityCallCount = 0
 
     func checkInitialVisibility() -> Bool {
         initialVisibility
@@ -17,7 +18,8 @@ final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     @MainActor
     func checkEligibility() async -> POSEligibilityState {
-        eligibility
+        checkEligibilityCallCount += 1
+        return eligibility
     }
 
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {

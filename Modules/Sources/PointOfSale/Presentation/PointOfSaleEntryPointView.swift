@@ -162,7 +162,10 @@ public struct PointOfSaleEntryPointView: View {
         )
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self.posEntryPointController = POSEntryPointController(
+            eligibilityChecker: posEligibilityChecker,
+            initialEligibilityState: isLocalCatalogEligible ? .eligible : nil
+        )
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
                                                       refundSubmissionProcessor: refundSubmissionProcessor)

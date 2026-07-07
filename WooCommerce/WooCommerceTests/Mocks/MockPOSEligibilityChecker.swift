@@ -6,10 +6,12 @@ import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var eligibility: POSEligibilityState = .eligible
+    private(set) var checkEligibilityCallCount = 0
 
     @MainActor
     func checkEligibility() async -> POSEligibilityState {
-        eligibility
+        checkEligibilityCallCount += 1
+        return eligibility
     }
 
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {

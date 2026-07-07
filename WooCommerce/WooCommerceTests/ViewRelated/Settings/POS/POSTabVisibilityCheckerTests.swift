@@ -255,6 +255,129 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
+    @Test func checkVisibility_returns_cached_visibility_when_offline_and_cached_visible() async throws {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+    }
+
+    @Test func checkVisibility_returns_cached_visibility_when_offline_and_cached_hidden() async throws {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+    }
+
+    @Test func checkVisibility_returns_cached_visibility_when_connectivity_is_unknown_and_cached_visible() async throws {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+    }
+
+    @Test func checkVisibility_returns_cached_visibility_on_phone_when_offline_and_phone_gates_pass() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              connectivityObserver: connectivityObserver,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+    }
+
+    @Test func checkVisibility_returns_false_on_phone_when_offline_and_phone_prototype_is_disabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = false
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              connectivityObserver: connectivityObserver,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkVisibility_returns_false_on_phone_when_offline_and_operating_system_is_below_iOS_26() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              connectivityObserver: connectivityObserver,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
     @Test func checkVisibility_skips_settings_from_initialLoad() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()

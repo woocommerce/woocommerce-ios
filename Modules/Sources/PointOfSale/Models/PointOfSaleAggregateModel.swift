@@ -726,7 +726,42 @@ private extension PointOfSaleAggregateModel {
     private func performInitialSyncIfNeeded() {
         guard let catalogSyncCoordinator else { return }
         Task {
-            try? await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
+            let hasLocalCatalog = await hasUsableLocalCatalog(siteID: siteID, catalogSyncCoordinator: catalogSyncCoordinator)
+            guard !hasLocalCatalog else {
+                return
+            }
+
+            do {
+                try await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
+            } catch {
+                await catalogSyncCoordinator.fullSyncStateModel.updateState(.initialSyncFailed(siteID: siteID, error: error), for: siteID)
+            }
+        }
+    }
+
+    func hasUsableLocalCatalog(siteID: Int64, catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) async -> Bool {
+        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        if syncState.hasCompletedFullSync {
+            return true
+        }
+
+        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
+    }
+}
+
+private extension POSCatalogSyncState {
+    var hasCompletedFullSync: Bool {
+        switch self {
+        case .syncCompleted:
+            return true
+        case .initialSyncStarted,
+                .syncStarted,
+                .initialSyncProgress,
+                .syncProgress,
+                .initialSyncFailed,
+                .syncFailed,
+                .syncNeverDone:
+            return false
         }
     }
 }

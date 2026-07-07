@@ -18,6 +18,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     var performSmartSyncFullSyncMaxAge: TimeInterval?
     var performSmartSyncIncrementalSyncMaxAge: TimeInterval?
     var performSmartSyncResult: Result<Void, Error> = .success(())
+    var onPerformSmartSyncCalled: (() -> Void)?
 
     var onPerformFullSyncCalled: (() -> Void)?
 
@@ -54,6 +55,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         performSmartSyncSiteID = siteID
         performSmartSyncFullSyncMaxAge = fullSyncMaxAge
         performSmartSyncIncrementalSyncMaxAge = incrementalSyncMaxAge
+        onPerformSmartSyncCalled?()
 
         switch performSmartSyncResult {
         case .success:
@@ -64,8 +66,14 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     let fullSyncStateModel = POSCatalogSyncStateModel()
+    var loadLastFullSyncStateInvocationCount = 0
+    var loadLastFullSyncStateSiteID: Int64?
+    var onLoadLastFullSyncStateCalled: (() -> Void)?
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
+        loadLastFullSyncStateInvocationCount += 1
+        loadLastFullSyncStateSiteID = siteID
+        onLoadLastFullSyncStateCalled?()
         return await fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
 

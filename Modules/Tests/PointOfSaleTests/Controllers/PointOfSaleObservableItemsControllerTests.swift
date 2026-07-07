@@ -371,6 +371,54 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(sut.itemsViewState.itemsStack.root == .loaded([mockProduct], hasMoreItems: false))
     }
 
+    @Test func test_refresh_error_with_previous_full_sync_keeps_empty_products_content() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.error", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+        coordinator.hoursSinceLastSyncResult = 1
+        await sut.loadItems(base: .root)
+
+        // When
+        coordinator.performIncrementalSyncResult = .failure(testError)
+        await sut.refreshItems(base: .root)
+
+        // Then
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .empty)
+    }
+
+    @Test func test_refresh_error_with_previous_full_sync_keeps_loaded_products_content() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
+        dataSource.productItems = mockItems
+        dataSource.isLoadingProducts = false
+        dataSource.hasMoreProducts = false
+        let testError = NSError(domain: "test.error", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+        coordinator.hoursSinceLastSyncResult = 1
+        await sut.loadItems(base: .root)
+
+        // When
+        coordinator.performIncrementalSyncResult = .failure(testError)
+        await sut.refreshItems(base: .root)
+
+        // Then
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .loaded(mockItems, hasMoreItems: false))
+    }
+
     @Test func test_load_products_retries_refresh_when_error_exists() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
@@ -510,6 +558,7 @@ final class PointOfSaleObservableItemsControllerTests {
         coordinator.fullSyncStateModel.state[siteID] = .initialSyncFailed(siteID: siteID, error: testError)
 
         // When
+        await sut.loadItems(base: .root)
         let containerState = sut.itemsViewState.containerState
 
         // Then
@@ -520,7 +569,30 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(errorState.errorType == .initialCatalogSyncError)
     }
 
-    @Test func test_syncFailed_with_empty_catalog_shows_error() async {
+    @Test func test_initialSyncFailed_with_previous_full_sync_shows_content() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        let mockItems = [makeSimpleProduct(productID: 1), makeSimpleProduct(productID: 2)]
+        dataSource.productItems = mockItems
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncFailed(siteID: siteID, error: testError)
+        coordinator.hoursSinceLastSyncResult = 1
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+        #expect(sut.itemsViewState.containerState == .content)
+        #expect(sut.itemsViewState.itemsStack.root == .loaded(mockItems, hasMoreItems: false))
+    }
+
+    @Test func test_syncFailed_with_empty_catalog_shows_content() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -536,11 +608,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let containerState = sut.itemsViewState.containerState
 
         // Then
-        guard case .error(let errorState) = containerState else {
-            Issue.record("Expected error state when catalog is empty")
-            return
-        }
-        #expect(errorState.errorType == .initialCatalogSyncError)
+        #expect(containerState == .content)
     }
 
     @Test func test_syncFailed_with_existing_catalog_shows_content() async {
@@ -589,7 +657,7 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(coordinator.performSmartSyncSiteID == siteID)
     }
 
-    @Test func test_reload_items_after_syncFailed_with_empty_catalog() async {
+    @Test func test_no_reload_after_syncFailed_with_empty_catalog() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -602,12 +670,11 @@ final class PointOfSaleObservableItemsControllerTests {
         coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
         coordinator.performSmartSyncResult = .success(())
 
-        // When: Load items (should trigger reload because catalog is empty)
+        // When: Load items after a subsequent sync failure
         await sut.loadItems(base: .root)
 
-        // Then: Should have called performSmartSync
-        #expect(coordinator.performSmartSyncInvocationCount == 1)
-        #expect(coordinator.performSmartSyncSiteID == siteID)
+        // Then: Should not retry sync before the cached catalog has a chance to load
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
     }
 
     @Test func test_no_reload_after_syncFailed_with_existing_catalog() async {

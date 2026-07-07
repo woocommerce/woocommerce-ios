@@ -36,4 +36,20 @@ struct POSEntryPointControllerTests {
         // Then
         #expect(controller.eligibilityState == .eligible)
     }
+
+    @Test func eligibilityState_uses_initial_state_without_checking_eligibility() async throws {
+        // Given
+        let mockEligibilityChecker = MockPOSEligibilityChecker()
+        mockEligibilityChecker.eligibility = .ineligible(reason: .noInternetConnection)
+
+        // When
+        let controller = POSEntryPointController(
+            eligibilityChecker: mockEligibilityChecker,
+            initialEligibilityState: .eligible
+        )
+
+        // Then
+        #expect(controller.eligibilityState == .eligible)
+        #expect(mockEligibilityChecker.checkEligibilityCallCount == 0)
+    }
 }

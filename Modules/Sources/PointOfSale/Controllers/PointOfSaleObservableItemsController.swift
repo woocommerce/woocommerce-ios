@@ -9,6 +9,7 @@ import class Yosemite.GRDBObservableDataSource
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncError
+import enum Yosemite.POSCatalogSyncState
 
 /// Controller that wraps an observable data source for POS items
 /// Uses computed state based on data source observations for automatic UI updates
@@ -25,6 +26,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 
     // Track current parent for variation state mapping
     private var currentParentItem: POSItem?
+
+    private var hasUsableLocalCatalogCache: Bool?
 
     var itemsViewState: ItemsViewState {
         ItemsViewState(
@@ -48,7 +51,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         )
         self.catalogSyncCoordinator = catalogSyncCoordinator
 
-        preloadloadLastFullSyncState()
+        preloadLastFullSyncState()
     }
 
     // periphery:ignore - used by tests
@@ -59,13 +62,14 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         self.dataSource = dataSource
         self.catalogSyncCoordinator = catalogSyncCoordinator
 
-        preloadloadLastFullSyncState()
+        preloadLastFullSyncState()
     }
 
     func loadItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
-            if await shouldReload(for: base) {
+            let hasUsableLocalCatalog = await updateUsableLocalCatalogCache()
+            if await shouldReload(for: base, hasUsableLocalCatalog: hasUsableLocalCatalog) {
                 await reloadItems(base: base)
             } else if shouldRefresh(for: base) {
                 await refreshItems(base: base)
@@ -120,10 +124,10 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             case .syncAlreadyInProgress, .requestCancelled:
                 refreshState = .idle
             default:
-                refreshState = .error(error)
+                refreshState = await updateUsableLocalCatalogCache() ? .idle : .error(error)
             }
         } catch {
-            refreshState = .error(error)
+            refreshState = await updateUsableLocalCatalogCache() ? .idle : .error(error)
         }
     }
 
@@ -173,10 +177,11 @@ private extension PointOfSaleObservableItemsController {
     var initialSyncResult: Result<Void, Error>? {
         switch catalogSyncCoordinator.fullSyncStateModel.state[siteID] {
         case .initialSyncFailed(_, let error):
+            if hasUsableLocalCatalogCache == nil { return nil }
+            if hasUsableLocalCatalogCache == true { return .success(()) }
             return .failure(error)
-        case .syncFailed(_, let error):
-            // If there's no catalog data, treat subsequent sync failures as critical
-            return dataSource.productItems.isEmpty ? .failure(error) : .success(())
+        case .syncFailed:
+            return .success(())
         case .syncCompleted:
             return .success(())
         default:
@@ -213,8 +218,12 @@ private extension PointOfSaleObservableItemsController {
 }
 
 private extension PointOfSaleObservableItemsController {
-    func shouldReload(for type: ItemListBaseItem) async -> Bool {
+    func shouldReload(for type: ItemListBaseItem, hasUsableLocalCatalog: Bool) async -> Bool {
         guard case .root = type else {
+            return false
+        }
+
+        guard !hasUsableLocalCatalog else {
             return false
         }
 
@@ -242,6 +251,21 @@ private extension PointOfSaleObservableItemsController {
         case .parent:
             return loadingState.variationsLoaded && dataSource.variationItems.isEmpty
         }
+    }
+
+    func hasUsableLocalCatalog() async -> Bool {
+        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        if syncState.hasCompletedFullSync {
+            return true
+        }
+
+        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
+    }
+
+    func updateUsableLocalCatalogCache() async -> Bool {
+        let hasUsableLocalCatalog = await hasUsableLocalCatalog()
+        hasUsableLocalCatalogCache = hasUsableLocalCatalog
+        return hasUsableLocalCatalog
     }
 
     /// Computes the item list state based on current conditions
@@ -319,10 +343,27 @@ private extension PointOfSaleObservableItemsController {
 }
 
 private extension PointOfSaleObservableItemsController {
-    func preloadloadLastFullSyncState() {
+    func preloadLastFullSyncState() {
         Task { @MainActor in
-            /// Ensure last full sync state is loaded with initial value
-            _ = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+            // Ensure last full sync state is loaded with initial value.
+            _ = await updateUsableLocalCatalogCache()
+        }
+    }
+}
+
+private extension POSCatalogSyncState {
+    var hasCompletedFullSync: Bool {
+        switch self {
+        case .syncCompleted:
+            return true
+        case .initialSyncStarted,
+                .syncStarted,
+                .initialSyncProgress,
+                .syncProgress,
+                .initialSyncFailed,
+                .syncFailed,
+                .syncNeverDone:
+            return false
         }
     }
 }

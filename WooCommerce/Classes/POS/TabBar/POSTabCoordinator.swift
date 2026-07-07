@@ -4,6 +4,8 @@ import SwiftUI
 import Yosemite
 import Combine
 import class WooFoundation.CurrencySettings
+import enum WooFoundation.ConnectivityStatus
+import protocol WooFoundation.ConnectivityObserver
 import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
@@ -42,6 +44,9 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let eligibilityService: POSEligibilityServiceProtocol
+    private let connectivityObserver: ConnectivityObserver
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
@@ -119,6 +124,9 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
         self.siteID = siteID
         self.storesManager = storesManager
@@ -136,6 +144,9 @@ final class POSTabCoordinator {
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
+        self.eligibilityService = eligibilityService
+        self.connectivityObserver = connectivityObserver
+        self.userInterfaceIdiom = userInterfaceIdiom
         self.localCatalogEligibilityService = localCatalogEligibilityService
 
         tabContainerController.wrappedController = POSTabViewController()
@@ -151,6 +162,11 @@ final class POSTabCoordinator {
             guard isPOSTabVisible else {
                 try await catalogEligibilityService.updatePOSEligibility(isEligible: false,
                                                                          for: siteID)
+                await posSyncDispatcher.stop()
+                return
+            }
+
+            guard connectivityObserver.currentStatus.isReachable else {
                 await posSyncDispatcher.stop()
                 return
             }
@@ -197,23 +213,7 @@ private extension POSTabCoordinator {
         Task { @MainActor [weak self, weak hostingController] in
             guard let self, let hostingController else { return }
 
-            // Get local catalog eligibility as bool from service
-            let isLocalCatalogEligible: Bool
-            if let service = localCatalogEligibilityService {
-                // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility()
-                try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
-
-                // Retry transient failures before using the value
-                let state = try await service.catalogEligibility(for: siteID)
-                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
-                    try await service.refreshEligibilityState(for: siteID)
-                }
-                isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible
-            } else {
-                // Service not ready yet (rare race condition), assume ineligible
-                isLocalCatalogEligible = false
-            }
+            let isLocalCatalogEligible = await resolveLocalCatalogAvailabilityForPOSEntry(siteID: siteID)
 
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
@@ -253,7 +253,7 @@ private extension POSTabCoordinator {
 
             // Only initialize local catalog infrastructure if eligible
             let grdbManager: GRDBManagerProtocol? = isLocalCatalogEligible ? ServiceLocator.grdbManager : nil
-            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? ServiceLocator.posCatalogSyncCoordinator : nil
+            let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = isLocalCatalogEligible ? storesManager.posCatalogSyncCoordinator : nil
 
             // Create appropriate barcode scan service based on local catalog eligibility
             // Will use local GRDB-based scanning if eligible and infrastructure is available,
@@ -289,22 +289,14 @@ private extension POSTabCoordinator {
 
                 let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite?.receiptSettingsAdminURL ?? ""
 
-                // Resolve TTP eligibility once, up front, so we can hand the right
-                // preferred method down to POSPaymentModel. The same checker is also
-                // passed in for the availability controller that drives the buttons /
-                // hero, but POSPaymentModel needs the answer synchronously to know
-                // whether to skip the BT auto-collect on checkout entry.
                 let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
                     siteID: siteID,
                     eligibilityService: POSEligibilityService()
                 )
-                let preferredConnectionMethod: CardReaderConnectionMethod
-                switch await tapToPayAvailabilityChecker.checkAvailability() {
-                case .available:
-                    preferredConnectionMethod = .tapToPay
-                case .unknown, .unavailable:
-                    preferredConnectionMethod = .bluetooth
-                }
+                let preferredConnectionMethod = await preferredConnectionMethodForPOSEntry(
+                    isLocalCatalogEligible: isLocalCatalogEligible,
+                    tapToPayAvailabilityChecker: tapToPayAvailabilityChecker
+                )
 
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
                                                                            stores: storesManager,
@@ -386,6 +378,115 @@ private extension POSTabCoordinator {
             } else {
                 await hostingController.dismiss(animated: true)
             }
+        }
+    }
+}
+
+extension POSTabCoordinator {
+    func resolveLocalCatalogAvailabilityForPOSEntry(siteID: Int64) async -> Bool {
+        if await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID) {
+            return true
+        }
+
+        guard let service = localCatalogEligibilityService else {
+            return false
+        }
+
+        guard connectivityObserver.currentStatus.isReachable else { return false }
+
+        do {
+            let posState = await eligibilityChecker.checkEligibility()
+            guard case .eligible = posState else {
+                return false
+            }
+
+            try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+            let state = try await service.catalogEligibility(for: siteID)
+            if state == .eligible {
+                return true
+            }
+
+            if case .ineligible(reason: .catalogSizeCheckFailed) = state {
+                if await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID) {
+                    return true
+                }
+                _ = try await service.refreshEligibilityState(for: siteID)
+                return try await service.catalogEligibility(for: siteID) == .eligible
+            }
+
+            return false
+        } catch {
+            return await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID)
+        }
+    }
+
+    func cachedLocalCatalogPOSEntryIsAvailable(siteID: Int64) async -> Bool {
+        guard storesManager.posCatalogSyncCoordinator != nil,
+              eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) == true,
+              await localCatalogHasPreviousFullSync(siteID: siteID) else {
+            return false
+        }
+
+        return true
+    }
+
+    func preferredConnectionMethodForPOSEntry(isLocalCatalogEligible: Bool,
+                                             tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking) async -> CardReaderConnectionMethod {
+        guard !(isLocalCatalogEligible && !connectivityObserver.currentStatus.isReachable) else {
+            return .bluetooth
+        }
+
+        guard userInterfaceIdiom == .phone else {
+            return .bluetooth
+        }
+
+        switch await tapToPayAvailabilityChecker.checkAvailability() {
+        case .available:
+            return .tapToPay
+        case .unknown, .unavailable:
+            return .bluetooth
+        }
+    }
+
+    private func localCatalogHasPreviousFullSync(siteID: Int64) async -> Bool {
+        guard let posCatalogSyncCoordinator = storesManager.posCatalogSyncCoordinator else {
+            return false
+        }
+
+        let syncState = await posCatalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        if syncState.hasCompletedFullSync {
+            return true
+        }
+
+        return await posCatalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
+    }
+}
+
+private extension ConnectivityStatus {
+    var isReachable: Bool {
+        switch self {
+        case .reachable:
+            return true
+        case .unknown, .notReachable:
+            return false
+        }
+    }
+}
+
+private extension POSCatalogSyncState {
+    var hasCompletedFullSync: Bool {
+        switch self {
+        case .syncCompleted:
+            return true
+        case .initialSyncStarted,
+                .syncStarted,
+                .initialSyncProgress,
+                .syncProgress,
+                .initialSyncFailed,
+                .syncFailed,
+                .syncNeverDone:
+            return false
         }
     }
 }

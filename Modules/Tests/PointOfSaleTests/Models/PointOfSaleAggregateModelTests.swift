@@ -1302,6 +1302,104 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
+    @MainActor struct InitialCatalogSyncTests {
+        @Test func init_when_full_sync_is_completed_then_does_not_start_smart_sync() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID), for: siteID)
+            var sut: PointOfSaleAggregateModel?
+
+            // When
+            await fireOnce { fire in
+                coordinator.onLoadLastFullSyncStateCalled = { fire() }
+                sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            }
+            coordinator.onLoadLastFullSyncStateCalled = nil
+            await Task.yield()
+
+            // Then
+            withExtendedLifetime(sut) {}
+            #expect(coordinator.loadLastFullSyncStateInvocationCount == 1)
+            #expect(coordinator.loadLastFullSyncStateSiteID == siteID)
+            #expect(coordinator.performSmartSyncInvocationCount == 0)
+        }
+
+        @Test func init_when_previous_full_sync_exists_and_latest_sync_failed_then_does_not_start_smart_sync() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+            coordinator.hoursSinceLastSyncResult = 1
+            var sut: PointOfSaleAggregateModel?
+
+            // When
+            await fireOnce { fire in
+                coordinator.onLoadLastFullSyncStateCalled = { fire() }
+                sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            }
+            coordinator.onLoadLastFullSyncStateCalled = nil
+            await Task.yield()
+
+            // Then
+            withExtendedLifetime(sut) {}
+            #expect(coordinator.loadLastFullSyncStateInvocationCount == 1)
+            #expect(coordinator.loadLastFullSyncStateSiteID == siteID)
+            #expect(coordinator.performSmartSyncInvocationCount == 0)
+        }
+
+        @Test func init_when_full_sync_has_never_completed_then_starts_smart_sync() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            var sut: PointOfSaleAggregateModel?
+
+            // When
+            await fireOnce { fire in
+                coordinator.onPerformSmartSyncCalled = { fire() }
+                sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            }
+            coordinator.onPerformSmartSyncCalled = nil
+
+            // Then
+            withExtendedLifetime(sut) {}
+            #expect(coordinator.loadLastFullSyncStateInvocationCount == 1)
+            #expect(coordinator.loadLastFullSyncStateSiteID == siteID)
+            #expect(coordinator.performSmartSyncInvocationCount == 1)
+            #expect(coordinator.performSmartSyncSiteID == siteID)
+        }
+
+        @Test func init_when_initial_smart_sync_fails_then_updates_initial_sync_failed_state() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            let error = URLError(.notConnectedToInternet)
+            coordinator.performSmartSyncResult = .failure(error)
+            var sut: PointOfSaleAggregateModel?
+
+            // When
+            await fireOnce { fire in
+                coordinator.onPerformSmartSyncCalled = { fire() }
+                sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            }
+            coordinator.onPerformSmartSyncCalled = nil
+            await Task.yield()
+
+            // Then
+            withExtendedLifetime(sut) {}
+            #expect(coordinator.performSmartSyncInvocationCount == 1)
+            #expect(coordinator.fullSyncStateModel.state[siteID] == .initialSyncFailed(siteID: siteID, error: error))
+        }
+    }
+
     @MainActor struct StaleSyncWarningTests {
         @Test func checkStaleSyncStatus_when_called_concurrently_then_tracks_shown_event_once() async {
             // Given

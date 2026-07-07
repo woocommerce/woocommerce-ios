@@ -11,8 +11,14 @@ public protocol POSEntryPointEligibilityCheckerProtocol {
     private(set) var eligibilityState: POSEligibilityState?
     private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
-    init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+    init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         initialEligibilityState: POSEligibilityState? = nil) {
         self.posEligibilityChecker = eligibilityChecker
+        self.eligibilityState = initialEligibilityState
+
+        guard initialEligibilityState == nil else {
+            return
+        }
 
         Task { @MainActor in
             eligibilityState = await posEligibilityChecker.checkEligibility()

@@ -178,19 +178,15 @@ struct PointOfSaleDashboardView: View {
             showSettings = false
             showOrders = false
         }
-        .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
-            guard case .eligible = newValue, oldValue != newValue else { return }
-            loadItemsWhenEligible()
+        // Runs at appear and again on each eligibility change, so the initial load happens
+        // exactly once when eligibility resolves to eligible — whether that's before or after
+        // the dashboard appears — and again after an ineligible → eligible recovery.
+        .task(id: posModel.entryPointController.eligibilityState) {
+            await loadItemsWhenEligible()
         }
         .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
-            // Only load here when eligibility resolved before the dashboard appeared, as the
-            // `eligibilityState` `onChange` above won't fire for that earlier transition.
-            // Otherwise the `onChange` owns the load, so we don't fetch everything twice.
-            if case .eligible = posModel.entryPointController.eligibilityState {
-                loadItemsWhenEligible()
-            }
         }
         .onChange(of: viewState) { oldValue, newValue in
             if newValue == .content && oldValue != newValue {
@@ -595,12 +591,12 @@ private extension PointOfSaleDashboardView {
         }
     }
 
-    func loadItemsWhenEligible() {
-        Task { @MainActor in
-            await posModel.purchasableItemsController.loadItems(base: .root)
-            await posModel.couponsController.loadItems(base: .root)
-            await posModel.popularPurchasableItemsController.loadItems(base: .root)
-        }
+    @MainActor
+    func loadItemsWhenEligible() async {
+        guard case .eligible = posModel.entryPointController.eligibilityState else { return }
+        await posModel.purchasableItemsController.loadItems(base: .root)
+        await posModel.couponsController.loadItems(base: .root)
+        await posModel.popularPurchasableItemsController.loadItems(base: .root)
     }
 
     func presentOrders() {

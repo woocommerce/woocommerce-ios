@@ -3,7 +3,7 @@
 
 25.2
 -----
-- [Internal] POS: Order list and search responses now only include the payment status metadata entry instead of all order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
+- [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
 - [*] The "Report Crashes" privacy setting is now saved to your WordPress.com account, so it persists across devices and reinstalls. [https://github.com/woocommerce/woocommerce-ios/pull/17473]
 - [*] Shipping Labels: Prevent skipping phone number validation when confirming an address by tapping too quickly. [https://github.com/woocommerce/woocommerce-ios/pull/17478]
 - [*] Fixed the card reader connection Cancel button being too small to tap in landscape on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17437]

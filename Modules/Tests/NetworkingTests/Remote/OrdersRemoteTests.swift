@@ -1028,8 +1028,8 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["status"] as? String, "any")
         XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
         XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
-        XCTAssertNotNil(parameters["_fields"] as? String)
-        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
     }
 
     func test_loadPOSOrders_sends_correct_parameters() async throws {
@@ -1050,11 +1050,11 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["status"] as? String, "any")
         XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
         XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
-        XCTAssertNotNil(parameters["_fields"] as? String)
-        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
     }
 
-    func test_loadPOSOrders_by_orderIDs_sends_include_meta_parameter() async throws {
+    func test_loadPOSOrders_by_orderIDs_excludes_meta_data_from_fields() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
@@ -1066,8 +1066,8 @@ final class OrdersRemoteTests: XCTestCase {
         let parameters = request.parameters
 
         XCTAssertEqual(parameters["include"] as? String, String(sampleOrderID))
-        XCTAssertNotNil(parameters["_fields"] as? String)
-        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
     }
 
     func test_searchPOSOrders_properly_relays_networking_error() async throws {

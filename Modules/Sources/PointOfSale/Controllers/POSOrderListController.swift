@@ -121,6 +121,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    /// Transient fetch state (`.loading`/`.failed`) per order. `.loaded` and `.needsLoading` are
+    /// derived from `loadedRefundsByOrderID` and the order payload in `refundDetailsState(for:)`.
     private var refundDetailsStateByOrderID: [Int64: POSOrderRefundDetailsState] = [:]
     private var loadedRefundsByOrderID: [Int64: [POSOrderRefund]] = [:]
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
@@ -339,7 +341,10 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order.map(orderApplyingCachedRefunds)
-        updateRefundDetailsStateForSelectedOrder()
+        if let order, refundDetailsStateByOrderID[order.id] == .failed {
+            // Allow the skeleton and a retry when returning to an order whose refund fetch failed.
+            refundDetailsStateByOrderID[order.id] = nil
+        }
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false
@@ -380,7 +385,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
         if selectedOrder?.id == orderID {
             selectedOrder = updatedOrder
-            updateRefundDetailsStateForSelectedOrder()
         }
     }
 
@@ -513,32 +517,13 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         do {
             let refunds = try await refundsService.loadOrderRefunds(for: order)
             loadedRefundsByOrderID[orderID] = refunds
-            refundDetailsStateByOrderID[orderID] = .loaded
+            refundDetailsStateByOrderID[orderID] = nil
             guard selectedOrder?.id == orderID else { return }
-            selectedOrder = selectedOrder?.copy(refunds: .some(refunds)) ?? order.copy(refunds: .some(refunds))
+            selectedOrder = selectedOrder?.copy(refunds: .some(refunds))
         } catch {
             refundDetailsStateByOrderID[orderID] = .failed
             DDLogError("⛔️ Failed to load refund details: \(error)")
         }
-    }
-
-    @MainActor
-    private func updateRefundDetailsStateForSelectedOrder() {
-        guard let selectedOrder else {
-            return
-        }
-
-        if selectedOrder.refunds.isEmpty {
-            refundDetailsStateByOrderID[selectedOrder.id] = nil
-            return
-        }
-
-        if loadedRefundsByOrderID[selectedOrder.id] != nil || selectedOrder.refunds.contains(where: { $0.items.isNotEmpty }) {
-            refundDetailsStateByOrderID[selectedOrder.id] = .loaded
-            return
-        }
-
-        refundDetailsStateByOrderID[selectedOrder.id] = .needsLoading
     }
 
     @MainActor
@@ -547,6 +532,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             return .loaded
         }
 
+        // Refund items are fetched together for the whole order, so any refund carrying items
+        // means the details were already loaded (e.g. by another list entry for the same order).
         if loadedRefundsByOrderID[order.id] != nil || order.refunds.contains(where: { $0.items.isNotEmpty }) {
             return .loaded
         }
@@ -565,11 +552,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     @MainActor
     private func invalidateLoadedRefundDetails(for order: POSOrder) {
         loadedRefundsByOrderID[order.id] = nil
-
-        if order.refunds.isEmpty {
-            refundDetailsStateByOrderID[order.id] = nil
-        } else {
-            refundDetailsStateByOrderID[order.id] = .needsLoading
-        }
+        refundDetailsStateByOrderID[order.id] = nil
     }
 }

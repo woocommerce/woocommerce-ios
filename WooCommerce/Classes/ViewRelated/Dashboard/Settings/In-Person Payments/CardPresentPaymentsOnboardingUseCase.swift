@@ -34,9 +34,14 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func updateState()
 
     /// Pending requirements can be skipped so the merchant can continue to collect payments.
-    /// Eventually, these become overdue requirements, which cannot be skipped
+    /// Eventually, these become overdue requirements, which can also be skipped (see `skipOverdueRequirements()`).
     ///
     func skipPendingRequirements()
+
+    /// Overdue requirements can also be skipped so the merchant can continue to collect payments, understanding
+    /// that some transactions may be declined until the requirement is resolved.
+    ///
+    func skipOverdueRequirements()
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
 
@@ -61,6 +66,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
+    private var overdueRequirementsStepSkipped: Bool = false
 
     @Published private(set) var state: CardPresentPaymentOnboardingState = .loading
 
@@ -99,6 +105,11 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func skipPendingRequirements() {
         pendingRequirementsStepSkipped = true
+        refresh()
+    }
+
+    func skipOverdueRequirements() {
+        overdueRequirementsStepSkipped = true
         refresh()
     }
 
@@ -399,7 +410,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountUnderReview(account: account) else {
             return .stripeAccountUnderReview(plugin: plugin)
         }
-        guard !isStripeAccountOverdueRequirements(account: account) else {
+        guard !shouldShowOverdueRequirements(account: account) else {
             logMissingRequirements(for: account)
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
@@ -421,8 +432,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let setAccount = CardPresentPaymentAction.use(paymentGatewayAccount: account)
         stores.dispatch(setAccount)
 
-        // Also reset the skipped pending requirements step, so that it can be shown again in the next flow
+        // Also reset the skipped pending/overdue requirements steps, so that they can be shown again in the next flow
         pendingRequirementsStepSkipped = false
+        overdueRequirementsStepSkipped = false
         return .completed(plugin: CardPresentPaymentsPluginState(plugin: plugin))
     }
 
@@ -513,6 +525,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func isStripeAccountOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .restricted && account.hasOverdueRequirements
+    }
+
+    func shouldShowOverdueRequirements(account: PaymentGatewayAccount) -> Bool {
+        isStripeAccountOverdueRequirements(account: account) && !overdueRequirementsStepSkipped
     }
 
     func isStripeAccountRejected(account: PaymentGatewayAccount) -> Bool {

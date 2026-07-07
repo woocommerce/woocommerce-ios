@@ -4,6 +4,7 @@ import enum Yosemite.CardPresentPaymentsPlugin
 struct InPersonPaymentsStripeAccountOverdue: View {
     let analyticReason: String
     let onRefresh: () -> Void
+    let onSkip: () -> Void
     let plugin: CardPresentPaymentsPlugin
     @State private var presentedSetupURL: URL? = nil
 
@@ -27,10 +28,10 @@ struct InPersonPaymentsStripeAccountOverdue: View {
                                                                                 presentedSetupURL = setupURL
                                                                                 trackPluginSetupTappedEvent()
                                                                             }),
-            secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
+            secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.skipButtonTitle,
                                                                                      analyticReason: analyticReason,
                                                                                      plugin: plugin,
-                                                                                     action: onRefresh)
+                                                                                     action: onSkip)
         )
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
      }
@@ -56,35 +57,34 @@ private extension InPersonPaymentsStripeAccountOverdue {
 
 private enum Localization {
      static let title = NSLocalizedString(
-         "In‑Person Payments is currently unavailable",
-         comment: """
-                  Title for the error screen when the Stripe account is restricted because there are overdue requirements.
-                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-                  """
+         "cardPresentPayments.onboarding.stripeAccountOverdue.title",
+         value: "Overdue requirements on your account",
+         comment: "Title for the error screen when the Stripe account is restricted because there are overdue requirements."
      )
 
      static let message = NSLocalizedString(
-         "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments.",
-         comment: """
-                  Error message when WooPayments is not supported because the Stripe account has overdue requirements
-                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-                  If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-                  """
+         "cardPresentPayments.onboarding.stripeAccountOverdue.message",
+         value: "You have at least one overdue requirement. You can skip and keep taking payments, but if the " +
+         "requirement is blocking your account, some transactions may be declined until you resolve it.",
+         comment: "Error message when the Stripe account has overdue requirements, explaining that the merchant can " +
+         "skip and continue taking payments, with a caution that some transactions may be declined if the " +
+         "account is actually blocked."
      )
 
     static let primaryButtonTitle = NSLocalizedString(
         "Resolve Now",
         comment: "Button to open a web view and resolve pending plugin requirements before using it.")
 
-    static let secondaryButtonTitle = NSLocalizedString(
-        "Refresh",
-        comment: "Button to refresh the state of the in-person payments setup.")
+    static let skipButtonTitle = NSLocalizedString(
+        "cardPresentPayments.onboarding.stripeAccountOverdue.skipButton",
+        value: "Skip",
+        comment: "Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments."
+    )
  }
 
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { }, plugin: .stripe)
+        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { }, onSkip: { }, plugin: .stripe)
     }
 }

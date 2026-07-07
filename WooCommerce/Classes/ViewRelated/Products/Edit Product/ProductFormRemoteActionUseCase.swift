@@ -63,6 +63,8 @@ final class ProductFormRemoteActionUseCase {
             let copiedProduct = originalProduct.product.copy(
                 productID: 0,
                 name: newName,
+                slug: "", // let the server assign a unique slug for the duplicate instead of reusing the original's
+                permalink: "", // derived server-side; cleared for local consistency
                 statusKey: ProductStatus.draft.rawValue,
                 sku: .some(nil), // just resetting SKU to nil for simplicity
                 password: password

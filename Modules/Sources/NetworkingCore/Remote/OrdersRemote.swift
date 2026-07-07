@@ -120,6 +120,11 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
     /// Retrieves specific `Order`s.
     ///
+    /// `meta_data` in the response is limited to `_payment_status` — the only metadata key consumed by
+    /// this method's callers (Bookings, via `BookingOrderInfo`). If a new caller needs other
+    /// metadata-derived `Order` properties (custom fields, attribution, charge ID, subscription renewal),
+    /// extend the `include_meta` value accordingly.
+    ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - orderIDs: The IDs of the orders to fetch.

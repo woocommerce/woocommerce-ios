@@ -246,10 +246,15 @@ private extension OrderStore {
     ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        // The date-modified shortcut below is only valid when the stored order is complete: order list and
+        // search fetches omit `meta_data` (see `OrdersRemote.ParameterValues.listFieldValues`), so an order
+        // stored without any metadata-derived values must be synced in full before it can be served locally.
         let storage = storageManager.viewStorage
-        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID),
+              storageOrder.containsMetadataDerivedValues else {
             return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
+        let storedOrder = storageOrder.toReadOnly()
 
         Task {
             // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
@@ -835,5 +840,23 @@ private extension OrderStore.GiftCardError {
                 comment: "Order gift card error notice message when the gift card is invalid."
             )
         }
+    }
+}
+
+private extension Storage.Order {
+    /// Whether this stored order carries any metadata-derived values, proving it was upserted from a
+    /// fetch that included the `meta_data` field. Order list and search fetches omit `meta_data`
+    /// (`OrdersRemote.ParameterValues.listFieldValues`), so an order stored only from those fetches has
+    /// none of these values and cannot be served from storage without a full sync first.
+    ///
+    /// `attributionInfo` alone identifies almost all fully-synced orders: `OrderAttributionInfo(metaData:)`
+    /// is non-failable, so the order decoder produces a non-nil value whenever the response contained at
+    /// least one metadata entry. Orders with zero metadata entries can never be certified as complete and
+    /// always take the full fetch — their payloads are the smallest, so the extra cost is minimal.
+    var containsMetadataDerivedValues: Bool {
+        attributionInfo != nil
+            || customFields?.isEmpty == false
+            || chargeID != nil
+            || renewalSubscriptionID != nil
     }
 }

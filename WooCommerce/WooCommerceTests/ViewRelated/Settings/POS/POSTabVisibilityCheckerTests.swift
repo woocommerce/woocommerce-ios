@@ -293,12 +293,16 @@ struct POSTabVisibilityCheckerTests {
         #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
     }
 
-    @Test func checkVisibility_returns_cached_visibility_when_connectivity_is_unknown_and_cached_visible() async throws {
-        // Given
+    @Test func checkVisibility_performs_full_check_when_connectivity_is_unknown() async throws {
+        // Given: connectivity is unknown (e.g. before the first path update at cold start),
+        // remote checks pass while the cached visibility is hidden
         let connectivityObserver = MockConnectivityObserver()
-        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupPOSTabVisibility(siteID: siteID, isVisible: false)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
                                               eligibilityService: eligibilityService,
                                               stores: stores,
                                               connectivityObserver: connectivityObserver)
@@ -306,9 +310,9 @@ struct POSTabVisibilityCheckerTests {
         // When
         let result = await checker.checkVisibility()
 
-        // Then
+        // Then: the full check ran instead of falling back to the cached value
         #expect(result == true)
-        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction })
     }
 
     @Test func checkVisibility_returns_cached_visibility_on_phone_when_offline_and_phone_gates_pass() async throws {

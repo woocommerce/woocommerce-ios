@@ -726,42 +726,16 @@ private extension PointOfSaleAggregateModel {
     private func performInitialSyncIfNeeded() {
         guard let catalogSyncCoordinator else { return }
         Task {
-            let hasLocalCatalog = await hasUsableLocalCatalog(siteID: siteID, catalogSyncCoordinator: catalogSyncCoordinator)
-            guard !hasLocalCatalog else {
-                return
-            }
-
             do {
+                // Smart sync self-limits by max age, so entry with a fresh catalog is a no-op.
                 try await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
             } catch {
+                // A failed sync only blocks POS entry when there's no usable local catalog to fall back on.
+                guard await !catalogSyncCoordinator.hasUsableLocalCatalog(for: siteID) else {
+                    return
+                }
                 await catalogSyncCoordinator.fullSyncStateModel.updateState(.initialSyncFailed(siteID: siteID, error: error), for: siteID)
             }
-        }
-    }
-
-    func hasUsableLocalCatalog(siteID: Int64, catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol) async -> Bool {
-        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
-        if syncState.hasCompletedFullSync {
-            return true
-        }
-
-        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
-    }
-}
-
-private extension POSCatalogSyncState {
-    var hasCompletedFullSync: Bool {
-        switch self {
-        case .syncCompleted:
-            return true
-        case .initialSyncStarted,
-                .syncStarted,
-                .initialSyncProgress,
-                .syncProgress,
-                .initialSyncFailed,
-                .syncFailed,
-                .syncNeverDone:
-            return false
         }
     }
 }

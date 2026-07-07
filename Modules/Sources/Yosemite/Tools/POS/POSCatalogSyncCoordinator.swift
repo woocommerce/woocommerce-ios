@@ -94,6 +94,18 @@ public extension POSCatalogSyncCoordinatorProtocol {
         let oneHour: TimeInterval = 60 * 60
         try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours, incrementalSyncMaxAge: oneHour, isBackgroundSync: isBackgroundSync)
     }
+
+    /// Whether the site has local catalog data from a previously completed full sync,
+    /// usable for POS entry even when later syncs fail or the device is offline.
+    func hasUsableLocalCatalog(for siteID: Int64) async -> Bool {
+        if case .syncCompleted = await loadLastFullSyncState(for: siteID) {
+            return true
+        }
+
+        // A sync date exists whenever a full sync completed at some point,
+        // even if the latest sync attempt failed.
+        return await hoursSinceLastSync(for: siteID) != nil
+    }
 }
 
 public enum POSCatalogSyncError: Error, Equatable {

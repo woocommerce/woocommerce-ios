@@ -9,7 +9,6 @@ import class Yosemite.GRDBObservableDataSource
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncError
-import enum Yosemite.POSCatalogSyncState
 
 /// Controller that wraps an observable data source for POS items
 /// Uses computed state based on data source observations for automatic UI updates
@@ -177,11 +176,14 @@ private extension PointOfSaleObservableItemsController {
     var initialSyncResult: Result<Void, Error>? {
         switch catalogSyncCoordinator.fullSyncStateModel.state[siteID] {
         case .initialSyncFailed(_, let error):
-            if hasUsableLocalCatalogCache == nil { return nil }
-            if hasUsableLocalCatalogCache == true { return .success(()) }
+            guard let hasUsableLocalCatalogCache else { return nil }
+            return hasUsableLocalCatalogCache ? .success(()) : .failure(error)
+        case .syncFailed(_, let error):
+            // A subsequent sync failure is only critical when there's no usable local data to fall back on.
+            if hasUsableLocalCatalogCache == true || !dataSource.productItems.isEmpty {
+                return .success(())
+            }
             return .failure(error)
-        case .syncFailed:
-            return .success(())
         case .syncCompleted:
             return .success(())
         default:
@@ -253,17 +255,8 @@ private extension PointOfSaleObservableItemsController {
         }
     }
 
-    func hasUsableLocalCatalog() async -> Bool {
-        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
-        if syncState.hasCompletedFullSync {
-            return true
-        }
-
-        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
-    }
-
     func updateUsableLocalCatalogCache() async -> Bool {
-        let hasUsableLocalCatalog = await hasUsableLocalCatalog()
+        let hasUsableLocalCatalog = await catalogSyncCoordinator.hasUsableLocalCatalog(for: siteID)
         hasUsableLocalCatalogCache = hasUsableLocalCatalog
         return hasUsableLocalCatalog
     }
@@ -347,23 +340,6 @@ private extension PointOfSaleObservableItemsController {
         Task { @MainActor in
             // Ensure last full sync state is loaded with initial value.
             _ = await updateUsableLocalCatalogCache()
-        }
-    }
-}
-
-private extension POSCatalogSyncState {
-    var hasCompletedFullSync: Bool {
-        switch self {
-        case .syncCompleted:
-            return true
-        case .initialSyncStarted,
-                .syncStarted,
-                .initialSyncProgress,
-                .syncProgress,
-                .initialSyncFailed,
-                .syncFailed,
-                .syncNeverDone:
-            return false
         }
     }
 }

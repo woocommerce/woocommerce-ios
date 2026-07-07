@@ -166,8 +166,11 @@ final class POSTabCoordinator {
                 return
             }
 
-            guard connectivityObserver.currentStatus.isReachable else {
-                await posSyncDispatcher.stop()
+            // Offline: keep the cached eligibility untouched. Keep foreground syncs scheduled
+            // for stores that already qualify for local-catalog POS entry, so catalog syncing
+            // resumes automatically once connectivity returns.
+            if case .notReachable = connectivityObserver.currentStatus {
+                await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID) ? posSyncDispatcher.start() : posSyncDispatcher.stop()
                 return
             }
 
@@ -384,59 +387,64 @@ private extension POSTabCoordinator {
 
 extension POSTabCoordinator {
     func resolveLocalCatalogAvailabilityForPOSEntry(siteID: Int64) async -> Bool {
+        // A cached POS tab visibility plus a previously synced catalog is enough to enter
+        // local-catalog POS without waiting on remote eligibility checks.
         if await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID) {
             return true
         }
 
         guard let service = localCatalogEligibilityService else {
+            // Service not ready yet (rare race condition), assume ineligible
             return false
         }
 
-        guard connectivityObserver.currentStatus.isReachable else { return false }
+        // Without a cached local-catalog entry, offline remote checks would fail anyway.
+        if case .notReachable = connectivityObserver.currentStatus {
+            return false
+        }
 
         do {
+            // Resolve POS eligibility before deciding the fetch strategy
             let posState = await eligibilityChecker.checkEligibility()
-            guard case .eligible = posState else {
+            let isPOSEligible = posState == .eligible
+            try await service.updatePOSEligibility(isEligible: isPOSEligible, for: siteID)
+            guard isPOSEligible else {
                 return false
             }
 
-            try await service.updatePOSEligibility(isEligible: true, for: siteID)
-
             let state = try await service.catalogEligibility(for: siteID)
-            if state == .eligible {
-                return true
-            }
-
             if case .ineligible(reason: .catalogSizeCheckFailed) = state {
-                if await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID) {
-                    return true
-                }
+                // Retry transient failures before using the value
                 _ = try await service.refreshEligibilityState(for: siteID)
                 return try await service.catalogEligibility(for: siteID) == .eligible
             }
 
-            return false
+            return state == .eligible
         } catch {
-            return await cachedLocalCatalogPOSEntryIsAvailable(siteID: siteID)
+            DDLogError("⛔️ Failed to resolve local catalog availability for POS entry: \(error)")
+            return false
         }
     }
 
     func cachedLocalCatalogPOSEntryIsAvailable(siteID: Int64) async -> Bool {
-        guard storesManager.posCatalogSyncCoordinator != nil,
-              eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) == true,
-              await localCatalogHasPreviousFullSync(siteID: siteID) else {
+        guard let posCatalogSyncCoordinator = storesManager.posCatalogSyncCoordinator,
+              eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) == true else {
             return false
         }
 
-        return true
+        return await posCatalogSyncCoordinator.hasUsableLocalCatalog(for: siteID)
     }
 
+    /// Resolves TTP availability once, up front, because POSPaymentModel needs the answer
+    /// synchronously to know whether to skip the BT auto-collect on checkout entry.
     func preferredConnectionMethodForPOSEntry(isLocalCatalogEligible: Bool,
-                                             tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking) async -> CardReaderConnectionMethod {
-        guard !(isLocalCatalogEligible && !connectivityObserver.currentStatus.isReachable) else {
+                                              tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking) async -> CardReaderConnectionMethod {
+        // Offline local-catalog entry can't validate Tap to Pay availability remotely.
+        if isLocalCatalogEligible, case .notReachable = connectivityObserver.currentStatus {
             return .bluetooth
         }
 
+        // Tap to Pay requires an iPhone, so skip the availability check on other devices.
         guard userInterfaceIdiom == .phone else {
             return .bluetooth
         }
@@ -448,49 +456,7 @@ extension POSTabCoordinator {
             return .bluetooth
         }
     }
-
-    private func localCatalogHasPreviousFullSync(siteID: Int64) async -> Bool {
-        guard let posCatalogSyncCoordinator = storesManager.posCatalogSyncCoordinator else {
-            return false
-        }
-
-        let syncState = await posCatalogSyncCoordinator.loadLastFullSyncState(for: siteID)
-        if syncState.hasCompletedFullSync {
-            return true
-        }
-
-        return await posCatalogSyncCoordinator.hoursSinceLastSync(for: siteID) != nil
-    }
 }
-
-private extension ConnectivityStatus {
-    var isReachable: Bool {
-        switch self {
-        case .reachable:
-            return true
-        case .unknown, .notReachable:
-            return false
-        }
-    }
-}
-
-private extension POSCatalogSyncState {
-    var hasCompletedFullSync: Bool {
-        switch self {
-        case .syncCompleted:
-            return true
-        case .initialSyncStarted,
-                .syncStarted,
-                .initialSyncProgress,
-                .syncProgress,
-                .initialSyncFailed,
-                .syncFailed,
-                .syncNeverDone:
-            return false
-        }
-    }
-}
-
 
 struct POSPresentationRootView: View {
     let posView: PointOfSaleEntryPointView?

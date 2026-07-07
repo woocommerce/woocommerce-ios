@@ -131,6 +131,47 @@ struct POSTabCoordinatorTests {
         #expect(await localCatalogEligibilityService.updatePOSEligibilityCallCount == 1)
     }
 
+    @Test func resolveLocalCatalogAvailability_uses_cached_entry_when_offline() async throws {
+        // Given
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: true)
+        let catalogSyncCoordinator = MockPOSTabCatalogSyncCoordinator(syncState: .syncCompleted(siteID: siteID))
+        let eligibilityChecker = MockPOSEligibilityChecker()
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        let sut = makeSUT(eligibilityService: eligibilityService,
+                          eligibilityChecker: eligibilityChecker,
+                          catalogSyncCoordinator: catalogSyncCoordinator,
+                          connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await sut.resolveLocalCatalogAvailabilityForPOSEntry(siteID: siteID)
+
+        // Then
+        #expect(result == true)
+        #expect(eligibilityChecker.checkEligibilityCallCount == 0)
+    }
+
+    @Test func resolveLocalCatalogAvailability_persists_ineligibility_when_online_and_pos_ineligible() async throws {
+        // Given
+        let eligibilityService = MockPOSEligibilityService()
+        let catalogSyncCoordinator = MockPOSTabCatalogSyncCoordinator(syncState: .syncNeverDone(siteID: siteID))
+        let localCatalogEligibilityService = MockPOSTabLocalCatalogEligibilityService(eligibilityState: .eligible)
+        let eligibilityChecker = MockPOSEligibilityChecker()
+        eligibilityChecker.eligibility = .ineligible(reason: .wooCommercePluginNotFound)
+        let sut = makeSUT(eligibilityService: eligibilityService,
+                          eligibilityChecker: eligibilityChecker,
+                          catalogSyncCoordinator: catalogSyncCoordinator,
+                          localCatalogEligibilityService: localCatalogEligibilityService)
+
+        // When
+        let result = await sut.resolveLocalCatalogAvailabilityForPOSEntry(siteID: siteID)
+
+        // Then
+        #expect(result == false)
+        #expect(await localCatalogEligibilityService.spyUpdatedPOSEligibilities == [false])
+    }
+
     @Test func updatePOSEligibility_does_not_refresh_local_catalog_ineligibility_when_offline() async throws {
         // Given
         let connectivityObserver = MockConnectivityObserver()
@@ -246,6 +287,7 @@ private final class MockPOSTabTapToPayAvailabilityChecker: POSTapToPayAvailabili
 private actor MockPOSTabLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let eligibilityState: POSLocalCatalogEligibilityState
     private(set) var updatePOSEligibilityCallCount = 0
+    private(set) var spyUpdatedPOSEligibilities: [Bool] = []
 
     init(eligibilityState: POSLocalCatalogEligibilityState = .eligible) {
         self.eligibilityState = eligibilityState
@@ -257,6 +299,7 @@ private actor MockPOSTabLocalCatalogEligibilityService: POSLocalCatalogEligibili
 
     func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {
         updatePOSEligibilityCallCount += 1
+        spyUpdatedPOSEligibilities.append(isEligible)
     }
 
     func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {

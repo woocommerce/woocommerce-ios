@@ -95,7 +95,10 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
             return false
         }
-        guard case .reachable = connectivityObserver.currentStatus else {
+        // Offline: fall back to the cached visibility instead of remote checks that would fail.
+        // Unknown connectivity (e.g. before the first path update at cold start) proceeds with
+        // the full check so a fresh online launch is not stuck with stale cached visibility.
+        if case .notReachable = connectivityObserver.currentStatus {
             return cachedPOSTabVisibility()
         }
 

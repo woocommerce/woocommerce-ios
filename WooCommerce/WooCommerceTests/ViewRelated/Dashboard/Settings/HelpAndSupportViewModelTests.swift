@@ -43,7 +43,7 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         let rows = viewModel.getRows()
 
         // Then
-        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport])
+        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .chatHistory])
     }
 
     func test_given_all_options_when_getting_rows_then_order_is_correct() {
@@ -55,7 +55,7 @@ final class HelpAndSupportViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(rows.first, .helpCenter)
-        XCTAssertEqual(rows.last, .systemStatusReport)
+        XCTAssertEqual(rows.last, .chatHistory)
     }
 
     func test_given_unauthenticated_user_with_login_site_url_when_getting_rows_then_site_compatibility_is_shown() {
@@ -126,34 +126,29 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         XCTAssertTrue(rows.isEmpty)
     }
 
-    func test_given_ai_chat_enabled_when_getting_rows_then_contact_support_and_chat_history_are_shown() {
+    func test_given_authenticated_user_when_getting_rows_then_chat_history_is_shown() {
         // Given
         let viewModel = HelpAndSupportViewModel(isAuthenticated: true,
                                                 isZendeskEnabled: true,
-                                                isMacCatalyst: false,
-                                                isAIChatEnabled: true)
+                                                isMacCatalyst: false)
 
         // When
         let rows = viewModel.getRows()
 
         // Then
-        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .chatHistory])
-        XCTAssertTrue(viewModel.shouldOpenAIChatFromContactSupport)
+        XCTAssertTrue(rows.contains(.chatHistory))
     }
 
-    func test_given_ai_chat_disabled_when_getting_rows_then_contact_support_is_shown_without_chat_history() {
+    func test_given_unauthenticated_user_when_getting_rows_then_chat_history_is_not_shown() {
         // Given
-        let viewModel = HelpAndSupportViewModel(isAuthenticated: true,
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false,
                                                 isZendeskEnabled: true,
-                                                isMacCatalyst: false,
-                                                isAIChatEnabled: false)
+                                                isMacCatalyst: false)
 
         // When
         let rows = viewModel.getRows()
 
         // Then
-        XCTAssertTrue(rows.contains(.contactSupport))
         XCTAssertFalse(rows.contains(.chatHistory))
-        XCTAssertFalse(viewModel.shouldOpenAIChatFromContactSupport)
     }
 }

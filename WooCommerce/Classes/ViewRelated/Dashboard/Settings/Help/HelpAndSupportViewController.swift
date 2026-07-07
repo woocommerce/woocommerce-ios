@@ -76,8 +76,7 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
-        isAIChatEnabled: true)
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel))
 
     /// Retains the support escalation coordinator while the flow is active.
     private var supportEscalationCoordinator: SupportEscalationCoordinator?
@@ -383,13 +382,7 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
-        guard !viewModel.shouldOpenAIChatFromContactSupport else {
-            aiSupportChatWasPressed()
-            return
-        }
-
-        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
-        viewController.show(from: self)
+        aiSupportChatWasPressed()
     }
 
     /// User's contact email action

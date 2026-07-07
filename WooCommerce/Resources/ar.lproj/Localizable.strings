@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-16 16:57:36+0000 */
+/* Translation-Revision-Date: 2026-06-29 16:56:47+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1619,9 +1619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "تمت المقارنة مع **%1$@**";
 
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "أكمل السداد وانتظر تلقي تنبيه حول الطلب على تطبيق WooCommerce الخاص بك.";
-
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "خيارات المكوّنات";
 
@@ -2331,6 +2328,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "رمز الدوت كوم غير صالح";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "مدونة Dotcom غير معروفة";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "اضغط ضغطًا مزدوجًا للتجاهل";
@@ -5679,9 +5679,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Romania" = "رومانيا";
 
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "شغِّل طلب الاختبار لضمان تقديم معالجة WooCommerce التي تقوم بها تجربة عملاء سلسة.";
-
 /* Country option for a site address. */
 "Russia" = "روسيا";
 
@@ -5952,9 +5949,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "تحديد شركة شحنك وأسعارها";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "حدد منتج الاختبار الخاص بك وأضفه إلى عربة التسوق وأكمل السداد على متجر الويب ذلك كعميل حقيقي.";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "إرسال";
@@ -6386,9 +6380,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Start Date label in custom range date picker */
 "Start Date" = "تاريخ البدء";
 
-/* Title on the action button on the test order screen */
-"Start Test order" = "بدء طلب الاختبار";
-
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "ابدأ في إنشاء قسيمة عن طريق تحديد نوع خصم في ورقة سفلية";
 
@@ -6593,9 +6584,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "الضغط على البطاقة أو إدراجها لاسترداد الأموال";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "انقر على الزر أدناه المراد إعادة توجيهه إلى متجرك على الإنترنت عبر متصفح الويب.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7366,14 +7354,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "محاولة سداد دفعة";
 
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "تجربة طلب الاختبار";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "جرّب سداد دفعة باستخدام بطاقتك الخاصة (واستردها عند الانتهاء). ";
-
-/* Title shown on the test order screen */
-"Try a test order" = "تجربة طلب الاختبار";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -7829,9 +7811,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "استخدام كلمة المرور لتسجيل الدخول";
-
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "استخدم التطبيق لمعالجة رد الأموال الخاص بطلب الاختبار.";
 
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "ملفات المستخدم الشخصية";
@@ -8667,6 +8646,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "أيقونة";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "سجلات البحث";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "ما المقصود بكلمة مرور التطبيق؟";
@@ -11835,9 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "عرض الصورة";
 
-/* No comment provided by engineer. */
-"password" = "كلمة المرور";
-
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "الدفع بشكل شخصي";
 
@@ -11886,8 +11865,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "غير معروف";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "الأموال المعلّقة";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "إجمالي الرصيد";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "تحرير";
@@ -12720,6 +12699,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "كتالوج المنتجات";
 
+/* Description of the settings to be found within the Staff section. */
+"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "عرض بيانات فريق العمل وصلاحية الوصول عبر رمز PIN";
+
+/* Title of the Staff section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "فريق العمل";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "تكوين المتجر والإعدادات";
 
@@ -12960,7 +12945,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "ميزة Tap to Pay";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "يُرجى التحقق من اتصالك بشبكة الإنترنت، ثم أعِد المحاولة.";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "لا يوجد اتصال بالإنترنت";
 
 /* A button that dismisses coupon creation sheet */
@@ -12968,6 +12956,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "إنشاء قسيمة";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "إغلاق";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "سيتم فقدان أي طلبات قيد التقدم.";
@@ -13013,9 +13004,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
 "pos.itemList.catalogBlockedTitle" = "الإجراءات المطلوبة في متجرك";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "أضف تكلفة لمرة واحدة.";
@@ -13260,6 +13248,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "هل تريد إلغاء عملية الاسترداد هذه؟";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "تم بالفعل تحديد قارئ البطاقات لعملية الدفع هذه.";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "وصّل قارئ يعمل عبر بلوتوث لقبول مدفوعات البطاقات.";
 
@@ -13280,6 +13271,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "طرق دفع الأخرى";
+
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "تم بالفعل تحديد ميزة Tap to Pay لعملية الدفع هذه.";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "استخدم جهاز iPhone هذا لتحصيل المدفوعات عبر البطاقة.";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "Tap to Pay";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
@@ -13824,6 +13824,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "تاريخ التحديث غير متوفر";
+
+/* Footer text explaining how POS locking works, including auto-lock timeout. */
+"posStaffSettingsView.autoLockFooter" = "يُقفَل نظام نقطة البيع (POS) عند الضغط على \"قفل نقطة البيع\" من القائمة، أو تلقائيًا بعد مرور 5 دقائق من عدم الاستخدام.";
+
+/* Button to open the WordPress admin staff management page in a web view. */
+"posStaffSettingsView.manageStaffWebButton" = "إدارة فريق العمل على الويب";
+
+/* Navigation title for the web view showing WordPress admin staff management. */
+"posStaffSettingsView.manageStaffWebTitle" = "إدارة فريق العمل";
+
+/* Status label shown next to a staff member who does not have a PIN configured. */
+"posStaffSettingsView.noPINLabel" = "رمز PIN غير موجود";
+
+/* Status label shown next to a staff member who has a PIN configured. */
+"posStaffSettingsView.pinSetLabel" = "تم تعيين رمز PIN";
+
+/* Display name for the administrator role in the POS staff list. */
+"posStaffSettingsView.role.admin" = "المشرف";
+
+/* Display name for the POS cashier role in the POS staff list. */
+"posStaffSettingsView.role.posCashier" = "أمين الصندوق لنقطة البيع (POS)";
+
+/* Display name for the POS manager role in the POS staff list. */
+"posStaffSettingsView.role.posManager" = "مدير نقطة البيع (POS)";
+
+/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
+"posStaffSettingsView.signedInBadge" = "تم تسجيل الدخول";
+
+/* Error message shown when the staff list fails to load from the server. */
+"posStaffSettingsView.staffLoadError" = "يتعذر تحميل بيانات فريق العمل. تحقق من الاتصال بالشبكة، ثم أعِد المحاولة.";
+
+/* Button to retry loading the staff list after a failure. */
+"posStaffSettingsView.staffLoadRetry" = "إعادة المحاولة";
+
+/* Navigation title for the staff settings detail view in POS settings. */
+"posStaffSettingsView.staffTitle" = "فريق العمل";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "تعذّر العثور على نقطة نهاية واجهة برمجة تطبيقات REST.";
@@ -14592,6 +14628,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "تقييم مرة واحدة";
+
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "نوع الحساب: %1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "معرّف التطبيق (AID): %1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "اسم التطبيق: %1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@ - %2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "تاريخ الدفع";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x‏%2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@. %2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "ملاحظات";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "الطلب رقم #%1$@";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "طريقة الدفع";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "الإيصال";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: إيصال الطلب #%2$@";
@@ -16019,6 +16088,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "يتعذر علينا تحميل البيانات المطلوبة";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "البريد الإلكتروني مفقود في عنوان الجهة المُرسِلة.";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "رقم الهاتف مفقود في عنوان الجهة المُرسِلة.";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "تم";

@@ -69,8 +69,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inventoryProductLabelsInPOS:
-            return false
         case .productImageOptimizedHandling:
             return true
         case .orderAddressMapSearch:

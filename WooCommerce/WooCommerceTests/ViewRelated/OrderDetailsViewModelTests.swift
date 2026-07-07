@@ -249,7 +249,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_syncShippingLabels_when_store_country_is_not_supported_does_not_dispatch_actions() async throws {
         for storeCountry in ["FR", "DE", "BR", "IN", ""] {
             // Given
-            let viewModel = configureShippingLabelContext(storeCountry: storeCountry)
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
 
             // When
             await viewModel.syncShippingLabelsOrShipments()
@@ -261,7 +262,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_syncShippingLabels_without_store_country_does_not_dispatch_actions() async throws {
         // Given
-        let viewModel = configureShippingLabelContext(storeCountry: nil)
+        let viewModel = configureShippingLabelContext(storeCountry: nil,
+                                                      handlesShipmentSync: true)
 
         // When
         await viewModel.syncShippingLabelsOrShipments()
@@ -494,7 +496,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_when_store_country_is_not_supported_returns_false_without_dispatching_actions() async throws {
         for storeCountry in ["FR", "DE", "BR", "IN", ""] {
             // Given
-            let viewModel = configureShippingLabelContext(storeCountry: storeCountry)
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
             // When
             let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -507,7 +510,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_without_store_country_returns_false_without_dispatching_actions() async throws {
         // Given
-        let viewModel = configureShippingLabelContext(storeCountry: nil)
+        let viewModel = configureShippingLabelContext(storeCountry: nil,
+                                                      handlesEligibilityCheck: true)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -520,7 +524,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_when_store_country_is_supported_dispatches_action() async throws {
         for storeCountry in ["US", "PR", "VI", "GU", "AS", "MP", "UM", "us", "Pr"] {
             // Given
-            let viewModel = configureShippingLabelContext(storeCountry: storeCountry)
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
             // When
             let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -851,7 +856,9 @@ private extension OrderDetailsViewModelTests {
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
     }
 
-    func configureShippingLabelContext(storeCountry: String?) -> OrderDetailsViewModel {
+    func configureShippingLabelContext(storeCountry: String?,
+                                       handlesEligibilityCheck: Bool = false,
+                                       handlesShipmentSync: Bool = false) -> OrderDetailsViewModel {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         storageManager = MockStorageManager()
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
@@ -862,8 +869,12 @@ private extension OrderDetailsViewModelTests {
 
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
-        whenCheckingShippingLabelCreationEligibility(thenReturn: true)
-        whenSyncingShipments(thenReturn: .success([]))
+        if handlesEligibilityCheck {
+            whenCheckingShippingLabelCreationEligibility(thenReturn: true)
+        }
+        if handlesShipmentSync {
+            whenSyncingShipments(thenReturn: .success([]))
+        }
         storesManager.reset()
 
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)

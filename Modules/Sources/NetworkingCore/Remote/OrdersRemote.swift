@@ -54,7 +54,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
                 ParameterKeys.usesGMTDates: true,
-                ParameterKeys.fields: ParameterValues.fieldValues,
+                ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
             if let after {
@@ -137,7 +137,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.paymentStatusIncludedMetaKeys
         ]
 
         let path = Constants.ordersPath
@@ -193,7 +194,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.listFieldValues
         ]
 
         let path = Constants.ordersPath
@@ -614,18 +615,29 @@ public extension OrdersRemote {
         static let product = "product"
         static let createdVia = "created_via"
         static let decimalPlaces = "dp"
+        /// Limits which keys are returned in `meta_data`. Available since WooCommerce 7.0; older stores ignore it and return all metadata.
+        static let includeMeta = "include_meta"
     }
 
     enum ParameterValues {
         static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
+        /// Field values for order list and search fetches, which exclude `meta_data` because no list UI consumes
+        /// metadata-derived properties and its size is unbounded (plugins can attach hundreds of entries per order).
+        /// The order details screen re-syncs the single order with the full `fieldValues` before displaying
+        /// metadata-derived content (custom fields, attribution, charge ID, subscriptions).
+        static let listFieldValues: String = commonOrderFieldValues.filter { $0 != metaDataField }.joined(separator: ",")
+        private static let metaDataField = "meta_data"
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "currency_symbol", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt",
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", metaDataField,
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
         static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
+        /// Order fetches whose consumers only need `_payment_status` from order metadata (e.g. `BookingOrderInfo`)
+        /// limit `meta_data` to that key to keep responses small on stores with heavy metadata.
+        static let paymentStatusIncludedMetaKeys = "_payment_status"
     }
 
     enum NestedFieldKeys {

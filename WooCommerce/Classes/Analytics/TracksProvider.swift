@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import AutomatticTracks
 import WordPressShared
@@ -42,6 +43,12 @@ public class TracksProvider: NSObject, AnalyticsProvider {
     public static func setPOSMode(_ active: Bool) {
         isPOSModeActive = active
     }
+
+    static var horizontalSizeClass: UIUserInterfaceSizeClass = .unspecified
+
+    public static func setHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+        horizontalSizeClass = sizeClass
+    }
 }
 
 
@@ -59,6 +66,7 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
+        let properties = trackWithHorizontalSizeClass(properties)
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
@@ -146,6 +154,24 @@ private extension TracksProvider {
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
             }
         }
+    }
+
+    /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
+    /// without overwriting a value the event already provides.
+    ///
+    func trackWithHorizontalSizeClass(_ properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        let sizeClass = Self.horizontalSizeClass
+        guard sizeClass == .compact || sizeClass == .regular else {
+            return properties
+        }
+
+        var layoutProperties = properties ?? [:]
+        guard layoutProperties[Constants.horizontalSizeClassKey] == nil else {
+            return layoutProperties
+        }
+
+        layoutProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
+        return layoutProperties
     }
 
     private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
@@ -347,6 +373,7 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+        static let horizontalSizeClassKey = "horizontal_size_class"
     }
 
     enum UserProperties {

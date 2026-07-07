@@ -195,9 +195,7 @@ struct TotalsView: View {
                 isStartingPayment = false
             }
         }
-        // Phone-only: on iPad the picker is an anchored popover hosted on the
-        // "Other payment methods" button (see `otherPaymentMethodsButton`).
-        .posSheet(isPresented: isShowingOtherPaymentMethodsBottomSheet) {
+        .posSheet(isPresented: $isShowingOtherPaymentMethodsSheet) {
             POSOtherPaymentMethodsSheet(
                 isTapToPayAvailable: isTapToPayRowAvailableInOtherMethodsSheet,
                 isTapToPayEnabled: isTapToPayRowEnabledInOtherMethodsSheet,
@@ -748,50 +746,23 @@ private extension TotalsView {
     /// Cash + Other payment methods buttons shown below the primary card payment UI.
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Button(action: handleCashPaymentTapped) {
-                Text(Localization.cashPaymentButtonTitle)
-                    .font(POSFontStyle.posBodyLargeBold)
+        cashAndOtherPaymentMethodsButtons
+            .if(horizontalSizeClass == .compact) {
+                $0.posPhoneBottomButtonPadding()
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .disabled(isStartingPayment)
-            .accessibilityIdentifier("pos-cash-payment-button")
-
-            otherPaymentMethodsButton
-        }
-        .if(horizontalSizeClass == .compact) {
-            $0.posPhoneBottomButtonPadding()
-        }
-        .if(horizontalSizeClass != .compact) {
-            $0
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
-        }
+            .if(horizontalSizeClass != .compact) {
+                $0
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.bottom, POSPadding.xxLarge)
+            }
     }
 
     /// Reader-first layout used when Tap to Pay is unavailable but secondary methods exist.
     @ViewBuilder
     var readerAndOtherMethodsBottomStrip: some View {
         VStack(spacing: POSSpacing.medium) {
-            Button {
-                handlePaymentMethodSelection(.cardReader)
-            } label: {
-                Text(Localization.connectCardReaderButtonTitle)
-                    .font(POSFontStyle.posBodyLargeBold)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .disabled(isStartingPayment)
-            .accessibilityIdentifier("pos-card-reader-button")
-
-            Button(action: handleCashPaymentTapped) {
-                Text(Localization.cashPaymentButtonTitle)
-                    .font(POSFontStyle.posBodyLargeBold)
-            }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .disabled(isStartingPayment)
-            .accessibilityIdentifier("pos-cash-payment-button")
-
-            otherPaymentMethodsButton
+            cardReaderButton
+            cashAndOtherPaymentMethodsButtons
         }
         .if(horizontalSizeClass == .compact) {
             $0.posPhoneBottomButtonPadding()
@@ -875,41 +846,70 @@ private extension TotalsView {
         paymentModel.startMarkAsPaidPayment()
     }
 
-    /// Shared trigger for the phone sheet and iPad popover.
     @ViewBuilder
-    var otherPaymentMethodsButton: some View {
+    var cashAndOtherPaymentMethodsButtons: some View {
+        if horizontalSizeClass == .compact {
+            VStack(spacing: POSSpacing.medium) {
+                cashPaymentButton()
+                otherPaymentMethodsButton()
+            }
+        } else {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: POSSpacing.medium) {
+                    cashPaymentButton(lineLimit: 1)
+                    otherPaymentMethodsButton(lineLimit: 1)
+                }
+
+                VStack(spacing: POSSpacing.medium) {
+                    cashPaymentButton()
+                    otherPaymentMethodsButton()
+                }
+            }
+        }
+    }
+
+    var cardReaderButton: some View {
+        Button {
+            handlePaymentMethodSelection(.cardReader)
+        } label: {
+            Text(Localization.connectCardReaderButtonTitle)
+                .font(POSFontStyle.posBodyLargeBold)
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .disabled(isStartingPayment)
+        .accessibilityIdentifier("pos-card-reader-button")
+    }
+
+    func cashPaymentButton(lineLimit: Int? = nil) -> some View {
+        Button(action: handleCashPaymentTapped) {
+            Text(Localization.cashPaymentButtonTitle)
+                .font(secondaryPaymentButtonFont)
+                .lineLimit(lineLimit)
+                .fixedSize(horizontal: lineLimit != nil, vertical: false)
+        }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .frame(maxWidth: .infinity)
+        .disabled(isStartingPayment)
+        .accessibilityIdentifier("pos-cash-payment-button")
+    }
+
+    /// Shared trigger for the Other payment methods sheet.
+    @ViewBuilder
+    func otherPaymentMethodsButton(lineLimit: Int? = nil) -> some View {
         Button(action: handleOtherPaymentMethodsTapped) {
             Text(Localization.otherPaymentMethodsButtonTitle)
-                .font(POSFontStyle.posBodyLargeBold)
+                .font(secondaryPaymentButtonFont)
+                .lineLimit(lineLimit)
+                .fixedSize(horizontal: lineLimit != nil, vertical: false)
         }
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
         .disabled(isStartingPayment)
         .accessibilityIdentifier("pos-other-payment-methods-button")
-        .popover(isPresented: isShowingOtherPaymentMethodsPopover,
-                 attachmentAnchor: .point(.top),
-                 arrowEdge: .bottom) {
-            PointOfSaleSecondaryPaymentMethodsPopover(
-                isScanToPayAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleScanToPay),
-                isMarkOrderAsPaidAvailable: featureFlags.isFeatureFlagEnabled(.pointOfSaleMarkOrderAsPaid),
-                onScanToPay: handleScanToPaySelected,
-                onMarkOrderAsPaid: handleMarkAsPaidSelected
-            )
-        }
     }
 
-    /// iPad presentation of the Other payment methods picker — an anchored popover.
-    /// Derived from the shared trigger so it only fires in regular width.
-    var isShowingOtherPaymentMethodsPopover: Binding<Bool> {
-        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass != .compact },
-                set: { isShowingOtherPaymentMethodsSheet = $0 })
-    }
-
-    /// Phone presentation of the Other payment methods picker — the bottom sheet.
-    /// Derived from the shared trigger so it only fires in compact width.
-    var isShowingOtherPaymentMethodsBottomSheet: Binding<Bool> {
-        Binding(get: { isShowingOtherPaymentMethodsSheet && horizontalSizeClass == .compact },
-                set: { isShowingOtherPaymentMethodsSheet = $0 })
+    var secondaryPaymentButtonFont: POSFontStyle {
+        horizontalSizeClass == .compact ? .posBodyLargeBold : .posBodyMediumBold
     }
 }
 

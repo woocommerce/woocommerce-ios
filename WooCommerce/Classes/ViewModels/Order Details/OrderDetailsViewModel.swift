@@ -965,7 +965,7 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
-    static let shippingLabelSupportedCountries: Set<CountryCode> = [.US, .PR, .VI, .GU, .AS, .MP, .UM]
+    static let shippingLabelSupportedCountries: Set<CountryCode> = [.US, .PR, .VI, .GU, .AS, .MP, .UM, .FM, .MH]
 
     static let storeCountrySettingID = "woocommerce_default_country"
 

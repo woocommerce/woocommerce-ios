@@ -522,7 +522,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     }
 
     func test_checkShippingLabelCreationEligibility_when_store_country_is_supported_dispatches_action() async throws {
-        for storeCountry in ["US", "PR", "VI", "GU", "AS", "MP", "UM", "us", "Pr"] {
+        for storeCountry in ["US", "PR", "VI", "GU", "AS", "MP", "UM", "FM", "MH", "us", "Pr"] {
             // Given
             let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
                                                           handlesEligibilityCheck: true)

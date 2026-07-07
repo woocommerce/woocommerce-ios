@@ -19,13 +19,23 @@ struct OrdersUpsertUseCase {
 
     /// Updates or inserts the given `Networking.Order` objects.
     ///
-    /// - Parameter insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
-    ///                                     marked as "Search Results Only".
+    /// - Parameters:
+    ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
+    ///                               marked as "Search Results Only".
+    ///     - includingMetadataDerivedFields: Indicates if the orders were fetched with the `meta_data` field.
+    ///                                       Pass `false` for orders from list/search fetches, which omit `meta_data`
+    ///                                       to reduce response size — previously stored metadata-derived values
+    ///                                       (custom fields, attribution info, charge ID, fulfillment status,
+    ///                                       renewal subscription ID) are then preserved instead of overwritten.
     ///
     @discardableResult
-    func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) -> [Storage.Order] {
+    func upsert(_ readOnlyOrders: [Networking.Order],
+                insertingSearchResults: Bool = false,
+                includingMetadataDerivedFields: Bool = true) -> [Storage.Order] {
         let storageOrders = readOnlyOrders.map { readOnlyOrder in
-            upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)
+            upsert(readOnlyOrder,
+                   insertingSearchResults: insertingSearchResults,
+                   includingMetadataDerivedFields: includingMetadataDerivedFields)
         }
 
         do {
@@ -45,10 +55,16 @@ struct OrdersUpsertUseCase {
         return storageOrders
     }
 
-    private func upsert(_ readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false) -> Storage.Order {
+    private func upsert(_ readOnlyOrder: Networking.Order,
+                        insertingSearchResults: Bool = false,
+                        includingMetadataDerivedFields: Bool = true) -> Storage.Order {
         let storageOrder = storage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
             ?? storage.insertNewObject(ofType: Storage.Order.self)
-        storageOrder.update(with: readOnlyOrder)
+        if includingMetadataDerivedFields {
+            storageOrder.update(with: readOnlyOrder)
+        } else {
+            updatePreservingMetadataDerivedAttributes(storageOrder, with: readOnlyOrder)
+        }
 
         // Are we caching Search Results? Did this order exist before?
         storageOrder.exclusiveForSearch = insertingSearchResults && (storageOrder.isInserted || storageOrder.exclusiveForSearch)
@@ -59,11 +75,28 @@ struct OrdersUpsertUseCase {
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
         handleOrderTaxes(readOnlyOrder, storageOrder, storage)
-        handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
+        if includingMetadataDerivedFields {
+            handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
+        }
         handleOrderGiftCards(readOnlyOrder, storageOrder, storage)
-        handleOrderAttributionInfo(readOnlyOrder, storageOrder, storage)
+        if includingMetadataDerivedFields {
+            handleOrderAttributionInfo(readOnlyOrder, storageOrder, storage)
+        }
 
         return storageOrder
+    }
+
+    /// Updates the storage order while keeping the scalar attributes that are derived from order metadata,
+    /// for orders fetched without the `meta_data` field (their decoded metadata-derived values are always empty).
+    ///
+    private func updatePreservingMetadataDerivedAttributes(_ storageOrder: Storage.Order, with readOnlyOrder: Networking.Order) {
+        let chargeID = storageOrder.chargeID
+        let fulfillmentStatusKey = storageOrder.fulfillmentStatusKey
+        let renewalSubscriptionID = storageOrder.renewalSubscriptionID
+        storageOrder.update(with: readOnlyOrder)
+        storageOrder.chargeID = chargeID
+        storageOrder.fulfillmentStatusKey = fulfillmentStatusKey
+        storageOrder.renewalSubscriptionID = renewalSubscriptionID
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items

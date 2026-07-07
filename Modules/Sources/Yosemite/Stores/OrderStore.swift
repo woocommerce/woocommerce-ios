@@ -173,7 +173,9 @@ private extension OrderStore {
                     onCompletion(Date().timeIntervalSince(startTime), result)
                 case .deleteAllBeforeSaving, .save:
                     let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
-                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders,
+                                                         removeAllStoredOrders: removeAllStoredOrders,
+                                                         includingMetadataDerivedFields: false) {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
@@ -210,7 +212,7 @@ private extension OrderStore {
                                                             createdVia: createdVia,
                                                             pageNumber: pageNumber,
                                                             pageSize: pageSize)
-                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                upsertStoredOrdersInBackground(readOnlyOrders: orders, includingMetadataDerivedFields: false) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
             } catch {
@@ -626,7 +628,10 @@ private extension OrderStore {
     func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               insertingSearchResults: true,
+                               includingMetadataDerivedFields: false,
+                               in: derivedStorage)
             upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
@@ -688,13 +693,16 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,
+                                                includingMetadataDerivedFields: Bool = true,
                                                 onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             if removeAllStoredOrders {
                 derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
             }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               includingMetadataDerivedFields: includingMetadataDerivedFields,
+                               in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -703,13 +711,19 @@ private extension OrderStore {
     /// - Parameters:
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - includingMetadataDerivedFields: Pass `false` for orders fetched without the `meta_data` field
+    ///                                       (list and search fetches) so previously stored metadata-derived
+    ///                                       values are preserved instead of overwritten.
     ///     - storage: Where we should save all the things!
     ///
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
+                                    includingMetadataDerivedFields: Bool = true,
                                     in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+        useCase.upsert(readOnlyOrders,
+                       insertingSearchResults: insertingSearchResults,
+                       includingMetadataDerivedFields: includingMetadataDerivedFields)
     }
 }
 

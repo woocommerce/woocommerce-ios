@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-16 09:55:15+0000 */
+/* Translation-Revision-Date: 2026-07-01 09:58:41+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1619,9 +1619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "**%1$@** との比較";
 
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "支払いを完了し、注文に関するプッシュ通知が WooCommerce アプリに届くのを待ちます。";
-
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "コンポーネントオプション";
 
@@ -2331,6 +2328,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom トークンが無効です";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "Dotcom の不明なブログ";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "ダブルタップして非表示";
@@ -5679,9 +5679,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Romania" = "ルーマニア";
 
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "テスト注文を実行して、WooCommerce のプロセスがシームレスなカスタマーエクスペリエンスを提供していることを確認します。";
-
 /* Country option for a site address. */
 "Russia" = "ロシア";
 
@@ -5952,9 +5949,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "配送業者と金額を選択";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "テスト商品を選択し、カートに追加して、実際の顧客として Web ストアで購入手続きを完了します。";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "送信";
@@ -6386,9 +6380,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Start Date label in custom range date picker */
 "Start Date" = "開始日";
 
-/* Title on the action button on the test order screen */
-"Start Test order" = "テスト注文を開始";
-
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "ボタンシートで割引の種類を選択してクーポンの作成を開始";
 
@@ -6593,9 +6584,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "カードをタップまたは挿入して返金";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "下のボタンをタップすると、Web ブラウザー経由でオンラインストアにリダイレクトされます。";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7366,14 +7354,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "支払いを試す";
 
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "テスト注文を試す";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "ご自身のカードで支払いをお試しください (完了したら返金してください)。";
-
-/* Title shown on the test order screen */
-"Try a test order" = "テスト注文を試す";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -7829,9 +7811,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "パスワードを使用してログイン";
-
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "アプリを使用してテスト注文の返金を処理します。";
 
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "ユーザープロフィール";
@@ -8667,6 +8646,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "ログを検索";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "アプリケーションパスワードとは";
@@ -11838,9 +11820,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "写真を表示";
 
-/* No comment provided by engineer. */
-"password" = "パスワード";
-
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "直接支払い";
 
@@ -11889,8 +11868,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "不明";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "保留中の資金";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "合計残高";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編集";
@@ -12726,6 +12705,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "商品カタログ";
 
+/* Description of the settings to be found within the Staff section. */
+"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "スタッフと PIN アクセスを表示";
+
+/* Title of the Staff section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "スタッフ";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "ストアの構成と設定";
 
@@ -12966,7 +12951,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "Tap To Pay";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "ネットワーク接続を確認して、もう一度お試しください。";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "インターネットに接続していません";
 
 /* A button that dismisses coupon creation sheet */
@@ -12974,6 +12962,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "クーポンを作成";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "閉じる";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "進行中の注文はすべて失われます。";
@@ -13019,9 +13010,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
 "pos.itemList.catalogBlockedTitle" = "ストアでのアクションが必要です";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "ネットワーク接続を確認して、もう一度お試しください。";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "1回限りの請求を追加します。";
@@ -13266,6 +13254,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "この返金をキャンセルしますか ?";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "この支払いにはカードリーダーがすでに選択されています。";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "Bluetooth リーダーを接続してカード払いを受け付けます。";
 
@@ -13286,6 +13277,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "他のお支払い方法";
+
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "この支払いには Tap to Pay がすでに選択されています。";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "この iPhone を使用してカードの支払いを受けます。";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "Tap To Pay";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "オプションを使用可能";
@@ -13833,6 +13833,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "更新日を利用できません";
+
+/* Footer text explaining how POS locking works, including auto-lock timeout. */
+"posStaffSettingsView.autoLockFooter" = "POS はメニューから「POS をロック」をタップするとロックされるほか、非アクティブになった5分後に自動的にロックされます。";
+
+/* Button to open the WordPress admin staff management page in a web view. */
+"posStaffSettingsView.manageStaffWebButton" = "ウェブでスタッフを管理";
+
+/* Navigation title for the web view showing WordPress admin staff management. */
+"posStaffSettingsView.manageStaffWebTitle" = "スタッフを管理";
+
+/* Status label shown next to a staff member who does not have a PIN configured. */
+"posStaffSettingsView.noPINLabel" = "PIN なし";
+
+/* Status label shown next to a staff member who has a PIN configured. */
+"posStaffSettingsView.pinSetLabel" = "PIN 設定済み";
+
+/* Display name for the administrator role in the POS staff list. */
+"posStaffSettingsView.role.admin" = "管理者";
+
+/* Display name for the POS cashier role in the POS staff list. */
+"posStaffSettingsView.role.posCashier" = "POS キャッシャー";
+
+/* Display name for the POS manager role in the POS staff list. */
+"posStaffSettingsView.role.posManager" = "POS マネージャー";
+
+/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
+"posStaffSettingsView.signedInBadge" = "ログイン済み";
+
+/* Error message shown when the staff list fails to load from the server. */
+"posStaffSettingsView.staffLoadError" = "スタッフを読み込めません。 接続を確認して、もう一度お試しください。";
+
+/* Button to retry loading the staff list after a failure. */
+"posStaffSettingsView.staffLoadRetry" = "再試行";
+
+/* Navigation title for the staff settings detail view in POS settings. */
+"posStaffSettingsView.staffTitle" = "スタッフ";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API エンドポイントが見つかりません。";
@@ -14601,6 +14637,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "評価回数1回";
+
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "アカウントの種類: %1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "AID: %1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "アプリケーション名: %1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@、%2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "支払日";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x %2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@、%2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "メモ";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "注文番号 %1$@ を注文";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "決済方法";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "領収書";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: 注文 #%2$@の領収書";
@@ -16031,6 +16100,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "必須データを読み込めません";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "配送元住所のメールアドレスがありません。";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "配送元住所の電話番号がありません。";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "完了";

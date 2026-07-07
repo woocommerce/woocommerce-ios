@@ -8,6 +8,7 @@ fastlane_require 'git'
 # normally pulled in transitively by Fastlane actions, but requiring it
 # explicitly here avoids load-order surprises.
 fastlane_require 'octokit'
+fastlane_require 'xcodeproj'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
@@ -15,8 +16,6 @@ require_relative 'helpers/release_notes_ai_helper'
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
-SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
-PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 GITHUB_REPO = 'woocommerce/woocommerce-ios'
 DEFAULT_BRANCH = 'trunk'
@@ -73,6 +72,16 @@ ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
 ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
   id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
 end.freeze
+
+def xcconfig_development_team(filename)
+  path = File.join(PROJECT_ROOT_FOLDER, 'config', filename)
+  UI.user_error!("xcconfig not found: #{path}") unless File.readable?(path)
+  Xcodeproj::Config.new(path).attributes['DEVELOPMENT_TEAM'] ||
+    UI.user_error!("Could not find DEVELOPMENT_TEAM in #{path}")
+end
+
+ENTERPRISE_TEAM_ID = xcconfig_development_team('WooCommerce.release-alpha.xcconfig')
+APP_STORE_TEAM_ID = xcconfig_development_team('WooCommerce.common.xcconfig')
 
 # Shared options to use when invoking `gym` / `build_app`.
 #
@@ -152,8 +161,6 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'zh-tw' => 'zh-Hant'
 }.freeze
 
-ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
-
 CODE_SIGNING_STORAGE_OPTIONS = {
   storage_mode: 's3',
   s3_bucket: 'a8c-fastlane-match',
@@ -182,9 +189,8 @@ before_all do |lane|
   # Check for Release Toolkit updates
   check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
-  # Check that the env files exist
+  # Check that the env file exists
   UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values") unless is_ci || File.file?(USER_ENV_FILE_PATH)
-  UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`') unless File.file?(PROJECT_ENV_FILE_PATH)
 
   setup_ci
 end
@@ -194,7 +200,6 @@ platform :ios do
   # Environment
   ########################################################################
   Dotenv.load(USER_ENV_FILE_PATH)
-  Dotenv.load(PROJECT_ENV_FILE_PATH)
 
   ########################################################################
   # Release Lanes
@@ -912,7 +917,7 @@ platform :ios do
     sh("rm #{archive_zip_path}")
 
     upload_to_testflight(
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       # Wait 2 hours for the build to process then time out
       wait_processing_timeout_duration: 7200,
       changelog: File.read(RELEASE_NOTES_PATH),
@@ -932,7 +937,7 @@ platform :ios do
       scheme: 'WooCommerce',
       workspace: WORKSPACE_PATH,
       clean: true,
-      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_team_id: APP_STORE_TEAM_ID,
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
   end
@@ -1006,7 +1011,7 @@ platform :ios do
       # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
       xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
-      export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      export_team_id: ENTERPRISE_TEAM_ID,
       export_options: {
         **COMMON_EXPORT_OPTIONS,
         method: 'enterprise',
@@ -1052,7 +1057,7 @@ platform :ios do
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       force: options[:skip_confirm],
       copyright: "© #{Time.now.year} WooCommerce"
     )
@@ -1393,24 +1398,18 @@ platform :ios do
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
   lane :update_certs_and_profiles_enterprise do |readonly: true|
-    if readonly
-      # In readonly mode, we can use the API key
-      api_key_path = ASC_KEY_PATH
-    else
+    unless readonly
       # The Enterprise account APIs do not support authentication via API key.
       # If we want to modify data (readonly = false) we need to authenticate manually.
       prompt_user_for_app_store_connect_credentials
-      # We also need to pass no API key path, otherwise Fastlane will give
-      # precedence to that authentication mode.
-      api_key_path = nil
     end
 
     sync_code_signing(
       type: 'enterprise',
-      team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      team_id: ENTERPRISE_TEAM_ID,
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path,
+      api_key: nil,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
@@ -1422,10 +1421,10 @@ platform :ios do
   lane :update_certs_and_profiles_app_store do |readonly: true|
     sync_code_signing(
       type: 'appstore',
-      team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      team_id: APP_STORE_TEAM_ID,
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end

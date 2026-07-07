@@ -75,6 +75,14 @@ struct POSFloatingControlView: View {
 
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
+        // First-declared items render nearest the ellipsis button (the bottom), so declaring the staff
+        // row here keeps it at the bottom of the menu.
+        if let staff = session.currentStaff {
+            POSStaffMenuRow(staff: staff)
+
+            Divider()
+        }
+
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
             onExitSelected()
@@ -97,16 +105,14 @@ private extension POSFloatingControlView {
             }
             .accessibilityIdentifier("pos-settings-menu-item")
 
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-                Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    onOrdersSelected()
-                } label: {
-                    Label(
-                        title: { Text(Localization.orders) },
-                        icon: { Image(systemName: "text.document") }
-                    )
-                }
+            Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                onOrdersSelected()
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
             }
 
             if canLockPOS {
@@ -234,6 +240,23 @@ private extension POSFloatingControlView {
                            onSettingsSelected: {},
                            onOrdersSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+}
+
+#Preview("Signed-in Operator") {
+    let session = MockPOSAccessSession(
+        currentStaff: POSStaff(userID: 1,
+                               displayName: "Thomas",
+                               preset: .cashier,
+                               capabilities: [])
+    )
+    return POSFloatingControlView(onExitSelected: {},
+                                  showSupport: .constant(false),
+                                  showDocumentation: .constant(false),
+                                  onSettingsSelected: {},
+                                  onOrdersSelected: {})
+        .environment(\.posBackgroundAppearance, .primary)
+        .environment(\.posAccessSession, session)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 

@@ -43,9 +43,11 @@ final class OrdersRemoteTests: XCTestCase {
     func test_order_fields_parameter_values_do_not_contain_whitespace() throws {
         // When
         let fieldValues = OrdersRemote.ParameterValues.fieldValues
+        let listFieldValues = OrdersRemote.ParameterValues.listFieldValues
 
         // Then
         XCTAssertFalse(fieldValues.contains(" "))
+        XCTAssertFalse(listFieldValues.contains(" "))
     }
 
     func test_order_fields_parameter_includes_created_via_field() throws {
@@ -54,6 +56,16 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(fieldValues.contains("created_via"), "fieldValues should include 'created_via' field")
+    }
+
+    func test_order_list_fields_parameter_excludes_meta_data_and_otherwise_matches_fieldValues() throws {
+        // When
+        let fieldValues = OrdersRemote.ParameterValues.fieldValues.components(separatedBy: ",")
+        let listFieldValues = OrdersRemote.ParameterValues.listFieldValues.components(separatedBy: ",")
+
+        // Then
+        XCTAssertFalse(listFieldValues.contains("meta_data"), "listFieldValues should not include 'meta_data'")
+        XCTAssertEqual(fieldValues.filter { $0 != "meta_data" }, listFieldValues)
     }
 
     // MARK: - Load All Orders Tests
@@ -146,6 +158,20 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    func test_loadAllOrders_excludes_meta_data_from_fields_parameter() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.loadAllOrders(for: sampleSiteID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertFalse(received.contains("meta_data"))
+    }
+
     // MARK: - Load Orders by IDs Tests
 
     func test_loadOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
@@ -181,6 +207,21 @@ final class OrdersRemoteTests: XCTestCase {
 
         XCTAssertNotNil(parameters["_fields"])
         XCTAssertEqual(parameters["per_page"] as? String, "4") // per_page matches order ID count
+    }
+
+    func test_loadOrders_by_ids_requests_meta_data_limited_to_payment_status() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.loadOrders(for: sampleSiteID, orderIDs: [1])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let fields = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertTrue(fields.contains("meta_data"), "Bookings consume `_payment_status`, so `meta_data` must stay in the response")
+        XCTAssertEqual(request.parameters["include_meta"] as? String, "_payment_status")
     }
 
     func test_loadOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
@@ -280,6 +321,20 @@ final class OrdersRemoteTests: XCTestCase {
 
         // Then
         XCTAssert(orders.count == 4)
+    }
+
+    func test_searchOrders_excludes_meta_data_from_fields_parameter() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+
+        // When
+        _ = try await remote.searchOrders(for: sampleSiteID, keyword: String())
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["_fields"] as? String)
+        XCTAssertFalse(received.contains("meta_data"))
     }
 
     /// Verifies that searchOrders properly relays Networking Layer errors.

@@ -3,74 +3,47 @@ import Testing
 
 struct POSPrintReceiptFlowHelperTests {
 
-    // MARK: - printButtonTapped
+    // MARK: - actionAfterPrintButtonTapped
 
-    @Test func test_printButtonTapped_when_printer_connected_then_prints() {
+    @Test func test_actionAfterPrintButtonTapped_when_printer_connected_then_prints() {
         // When
-        let effect = POSPrintReceiptFlowHelper.printButtonTapped(isPrinterConnected: true)
+        let action = POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: true)
 
         // Then
-        #expect(effect == .print)
+        #expect(action == .print)
     }
 
-    @Test func test_printButtonTapped_when_printer_disconnected_then_presents_setup() {
+    @Test func test_actionAfterPrintButtonTapped_when_printer_disconnected_then_presents_setup() {
         // When
-        let effect = POSPrintReceiptFlowHelper.printButtonTapped(isPrinterConnected: false)
+        let action = POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: false)
 
         // Then
-        #expect(effect == .presentSetup)
+        #expect(action == .presentSetup)
     }
 
-    // MARK: - printerConnectionChanged
+    // MARK: - actionAfterSetupModalVisibilityChanged
 
-    @Test func test_printerConnectionChanged_when_connected_and_print_pending_then_prints() {
-        // When — merchant connected through the setup flow they opened by tapping Print.
-        let effect = POSPrintReceiptFlowHelper.printerConnectionChanged(isConnected: true, pendingPrintAfterSetup: true)
+    @Test func test_actionAfterSetupModalVisibilityChanged_when_dismissed_after_connecting_then_prints() {
+        // When — the modal dismissed because a printer connected through the setup the merchant opened.
+        let action = POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(isPresented: false, isPrinterConnected: true)
 
         // Then
-        #expect(effect == .print)
+        #expect(action == .print)
     }
 
-    @Test func test_printerConnectionChanged_when_connected_but_no_print_pending_then_does_nothing() {
-        // When — a connection unrelated to a Print tap (e.g. connected via Settings).
-        let effect = POSPrintReceiptFlowHelper.printerConnectionChanged(isConnected: true, pendingPrintAfterSetup: false)
-
-        // Then
-        #expect(effect == .none)
-    }
-
-    @Test func test_printerConnectionChanged_when_disconnected_and_print_pending_then_does_nothing() {
-        // When
-        let effect = POSPrintReceiptFlowHelper.printerConnectionChanged(isConnected: false, pendingPrintAfterSetup: true)
-
-        // Then
-        #expect(effect == .none)
-    }
-
-    // MARK: - shouldClearPendingPrint
-
-    @Test func test_shouldClearPendingPrint_when_setup_dismissed_without_connecting_then_clears() {
+    @Test func test_actionAfterSetupModalVisibilityChanged_when_dismissed_without_connecting_then_does_nothing() {
         // When — merchant backed out of setup without connecting.
-        let shouldClear = POSPrintReceiptFlowHelper.shouldClearPendingPrint(isSetupPresented: false, isPrinterConnected: false)
+        let action = POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(isPresented: false, isPrinterConnected: false)
 
         // Then
-        #expect(shouldClear == true)
+        #expect(action == .none)
     }
 
-    @Test func test_shouldClearPendingPrint_when_setup_dismissed_after_connecting_then_keeps_pending() {
-        // When — the modal dismissed because a printer connected; the pending print must survive so
-        // the connection handler prints exactly once.
-        let shouldClear = POSPrintReceiptFlowHelper.shouldClearPendingPrint(isSetupPresented: false, isPrinterConnected: true)
-
-        // Then
-        #expect(shouldClear == false)
-    }
-
-    @Test func test_shouldClearPendingPrint_when_setup_still_presented_then_keeps_pending() {
+    @Test func test_actionAfterSetupModalVisibilityChanged_when_still_presented_then_does_nothing() {
         // When
-        let shouldClear = POSPrintReceiptFlowHelper.shouldClearPendingPrint(isSetupPresented: true, isPrinterConnected: false)
+        let action = POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(isPresented: true, isPrinterConnected: false)
 
         // Then
-        #expect(shouldClear == false)
+        #expect(action == .none)
     }
 }

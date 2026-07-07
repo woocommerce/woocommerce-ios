@@ -11,9 +11,6 @@ struct PointOfSalePaymentSuccessView: View {
 
     @State private var isViewLoaded: Bool = false
     @State private var showPrinterSetupModal: Bool = false
-    /// Set when Print is tapped without a connected printer, so connecting via the inline setup
-    /// modal prints the receipt automatically instead of making the merchant tap Print again.
-    @State private var pendingPrintAfterSetup: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -46,28 +43,20 @@ struct PointOfSalePaymentSuccessView: View {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
             }
         }
-        .onChange(of: posModel.isReceiptPrinterConnected) { _, isConnected in
-            let effect = POSPrintReceiptFlowHelper.printerConnectionChanged(
-                isConnected: isConnected,
-                pendingPrintAfterSetup: pendingPrintAfterSetup)
-            if effect == .print {
-                pendingPrintAfterSetup = false
-                printReceipt()
-            }
-        }
         .onChange(of: showPrinterSetupModal) { _, isShowing in
-            if POSPrintReceiptFlowHelper.shouldClearPendingPrint(
-                isSetupPresented: isShowing,
-                isPrinterConnected: posModel.isReceiptPrinterConnected) {
-                pendingPrintAfterSetup = false
+            // The setup modal auto-dismisses when a printer connects, so the modal closing with a
+            // printer connected means setup succeeded — print the receipt the merchant asked for.
+            if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
+                isPresented: isShowing,
+                isPrinterConnected: posModel.isReceiptPrinterConnected) == .print {
+                printReceipt()
             }
         }
     }
 
     private func handlePrintReceiptTap() {
-        switch POSPrintReceiptFlowHelper.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
+        switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
         case .presentSetup:
-            pendingPrintAfterSetup = true
             showPrinterSetupModal = true
         case .print:
             printReceipt()

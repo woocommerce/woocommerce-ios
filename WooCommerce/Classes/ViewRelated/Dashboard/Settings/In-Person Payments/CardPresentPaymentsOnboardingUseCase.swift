@@ -39,7 +39,9 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func skipPendingRequirements()
 
     /// Overdue requirements can also be skipped so the merchant can continue to collect payments, understanding
-    /// that some transactions may be declined until the requirement is resolved.
+    /// that some transactions may be declined until the requirement is resolved. This also skips any pending
+    /// requirements, so the merchant only has to skip once even if the account reports the same item as both
+    /// pending and overdue.
     ///
     func skipOverdueRequirements()
 
@@ -110,6 +112,9 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func skipOverdueRequirements() {
         overdueRequirementsStepSkipped = true
+        // An account with overdue requirements often has the same items listed as pending too (e.g. a payout
+        // requirement moves from currently_due to past_due). Skip both so the merchant isn't asked to skip twice.
+        pendingRequirementsStepSkipped = true
         refresh()
     }
 

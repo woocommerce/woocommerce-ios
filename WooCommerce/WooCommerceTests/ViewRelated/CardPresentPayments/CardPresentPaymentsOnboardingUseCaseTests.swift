@@ -995,6 +995,31 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
+    func test_onboarding_when_account_has_both_overdue_and_pending_requirements_skipped_once_for_wcpay_plugin_returns_complete() {
+        // Given
+        // An account can report the same item as both pending and overdue at once (e.g. a payout requirement
+        // moves from currently_due to past_due while remaining in both lists). Skipping overdue should be
+        // enough on its own; the merchant shouldn't have to skip a second time for the pending screen.
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self,
+                                   status: .restricted,
+                                   hasPendingRequirements: true,
+                                   hasOverdueRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        useCase.skipOverdueRequirements()
+        useCase.updateState()
+
+        let state = useCase.state
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
     func test_onboarding_returns_review_when_account_is_restricted_with_no_requirements_for_wcpay_plugin() {
         // Given
         setupCountry(country: .us)

@@ -102,13 +102,8 @@ private extension SummaryTableViewCell {
         subtitleLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) {
-            salesChannelLabel.isHidden = false
-            configureSalesChannelLabel()
-        } else {
-            salesChannelLabel.isHidden = true
-        }
+        salesChannelLabel.isHidden = false
+        configureSalesChannelLabel()
     }
 
     func configureIcon() {

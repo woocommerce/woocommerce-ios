@@ -757,12 +757,31 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 }
 
 final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
+    private let devices: [PrinterDevice]
+    private let keepDiscovering: Bool
+
+    /// - Parameters:
+    ///   - devices: printers the discovery stream yields, so previews can land on the found states.
+    ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
+    ///     scanning indicator visible instead of ending the scan.
+    init(devices: [PrinterDevice] = [], keepDiscovering: Bool = false) {
+        self.devices = devices
+        self.keepDiscovering = keepDiscovering
+    }
+
     func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
         AsyncStream { $0.yield(.idle) }
     }
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
-        AsyncThrowingStream { $0.finish() }
+        AsyncThrowingStream { continuation in
+            for device in devices {
+                continuation.yield(device)
+            }
+            if !keepDiscovering {
+                continuation.finish()
+            }
+        }
     }
 
     func stopDiscovery() async {}

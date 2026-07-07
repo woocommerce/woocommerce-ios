@@ -1443,8 +1443,7 @@ private extension ProductsViewController {
         ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
         let viewModel = FilterProductListViewModel(
             filters: filters,
-            siteID: siteID,
-            site: ServiceLocator.stores.sessionManager.defaultSite
+            siteID: siteID
         )
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))

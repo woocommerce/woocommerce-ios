@@ -77,8 +77,7 @@ final class HelpAndSupportViewController: UIViewController {
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
             && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
-        isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-    )
+        isAIChatEnabled: true)
 
     /// Retains the support escalation coordinator while the flow is active.
     private var supportEscalationCoordinator: SupportEscalationCoordinator?

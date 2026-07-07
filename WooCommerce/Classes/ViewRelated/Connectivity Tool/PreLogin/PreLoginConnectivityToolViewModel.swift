@@ -89,7 +89,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     /// Whether the AI support chat is supported.
     ///
     var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
+        return true
     }
 
     /// The site URL being tested.

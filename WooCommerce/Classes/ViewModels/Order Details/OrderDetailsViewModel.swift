@@ -965,7 +965,18 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
-    static let shippingLabelSupportedCountries: Set<CountryCode> = [.US, .PR, .VI, .GU, .AS, .MP, .UM, .FM, .MH]
+    /// Mirrors the Woo Shipping and legacy WCShip supported store-origin countries for shipping labels.
+    static let shippingLabelSupportedCountries: Set<CountryCode> = [
+        .US, // United States.
+        .AS, // American Samoa.
+        .PR, // Puerto Rico.
+        .VI, // United States Virgin Islands.
+        .GU, // Guam.
+        .MP, // Northern Mariana Islands.
+        .UM, // United States Minor Outlying Islands.
+        .FM, // Federated States of Micronesia.
+        .MH, // Marshall Islands.
+    ]
 
     static let storeCountrySettingID = "woocommerce_default_country"
 

@@ -261,10 +261,7 @@ final class MainTabBarController: UITabBarController {
     }
 
     private func observeTraitChanges() {
-        TracksProvider.setHorizontalSizeClass(traitCollection.horizontalSizeClass)
-
         registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
-            TracksProvider.setHorizontalSizeClass(self.traitCollection.horizontalSizeClass)
             self.configureTabBarLayoutOnIpad()
         }
 

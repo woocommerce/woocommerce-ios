@@ -43,20 +43,24 @@ public class TracksProvider: NSObject, AnalyticsProvider {
     public static func setPOSMode(_ active: Bool) {
         isPOSModeActive = active
     }
-
-    static var horizontalSizeClass: UIUserInterfaceSizeClass = .unspecified
-
-    public static func setHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
-        horizontalSizeClass = sizeClass
-    }
 }
 
 extension TracksProvider {
+    /// Read on the main thread only; UIKit trait reads are main-thread bound. Off the main thread
+    /// (background BGTask/push events, where layout is irrelevant) it returns `.unspecified`, which
+    /// `trackWithHorizontalSizeClass` skips.
+    func currentHorizontalSizeClass() -> UIUserInterfaceSizeClass {
+        guard Thread.isMainThread else {
+            return .unspecified
+        }
+        return UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass ?? .unspecified
+    }
+
     /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
     /// without overwriting a value the event already provides.
     ///
     func trackWithHorizontalSizeClass(_ properties: [AnyHashable: Any]?,
-                                      sizeClass: UIUserInterfaceSizeClass = TracksProvider.horizontalSizeClass) -> [AnyHashable: Any]? {
+                                      sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
         guard sizeClass == .compact || sizeClass == .regular else {
             return properties
         }
@@ -86,7 +90,7 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        let properties = trackWithHorizontalSizeClass(properties)
+        let properties = trackWithHorizontalSizeClass(properties, sizeClass: currentHorizontalSizeClass())
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {

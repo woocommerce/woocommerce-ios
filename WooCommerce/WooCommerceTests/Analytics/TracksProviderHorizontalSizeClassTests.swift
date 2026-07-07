@@ -46,12 +46,15 @@ struct TracksProviderHorizontalSizeClassTests {
     }
 
     @Test func test_trackWithHorizontalSizeClass_preserves_other_properties() {
+        // Given
+        let existingProperties: [AnyHashable: Any] = ["some_int_property": 2, "some_bool_property": false]
+
         // When
-        let result = sut.trackWithHorizontalSizeClass(["products_in_cart": 2, "is_ciab": false], sizeClass: .regular)
+        let result = sut.trackWithHorizontalSizeClass(existingProperties, sizeClass: .regular)
 
         // Then
-        #expect(result?["products_in_cart"] as? Int == 2)
-        #expect(result?["is_ciab"] as? Bool == false)
+        #expect(result?["some_int_property"] as? Int == 2)
+        #expect(result?["some_bool_property"] as? Bool == false)
         #expect(result?[key] as? String == "regular")
     }
 
@@ -62,13 +65,5 @@ struct TracksProviderHorizontalSizeClassTests {
         // Then
         #expect(result?.count == 1)
         #expect(result?[key] as? String == "compact")
-    }
-
-    @Test func test_setHorizontalSizeClass_updates_cached_value() {
-        // When
-        TracksProvider.setHorizontalSizeClass(.regular)
-
-        // Then
-        #expect(TracksProvider.horizontalSizeClass == .regular)
     }
 }

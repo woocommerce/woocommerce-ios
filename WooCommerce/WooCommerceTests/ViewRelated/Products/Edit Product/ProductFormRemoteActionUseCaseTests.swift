@@ -423,6 +423,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let product = Product.fake().copy(slug: "original-slug", permalink: "https://store.example/original-slug")
         let model = EditableProductModel(product: product)
         var copiedProductSlug: String?
+        var copiedProductPermalink: String?
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
 
         // When
@@ -430,6 +431,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
             switch action {
             case .addProduct(let product, _):
                 copiedProductSlug = product.slug
+                copiedProductPermalink = product.permalink
             default:
                 break
             }
@@ -438,6 +440,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
         // Then
         assertEqual("", copiedProductSlug)
+        assertEqual("", copiedProductPermalink)
         // The source product is never mutated when building the duplicate.
         assertEqual("original-slug", product.slug)
         assertEqual("https://store.example/original-slug", product.permalink)

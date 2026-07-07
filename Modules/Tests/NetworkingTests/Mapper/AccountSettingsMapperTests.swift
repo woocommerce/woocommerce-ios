@@ -17,8 +17,48 @@ class AccountSettingsMapperTests: XCTestCase {
 
         XCTAssertEqual(account.userID, 10)
         XCTAssertTrue(account.tracksOptOut)
+        XCTAssertEqual(account.crashReportingOptOut, false)
         XCTAssertEqual(account.firstName, "Dem 123")
         XCTAssertEqual(account.lastName, "Nines")
+    }
+
+    /// Verifies that a `null` crash reporting opt out is parsed as `nil`, so it can be told apart from an explicit choice.
+    ///
+    func test_crashReportingOptOut_when_null_then_parses_as_nil() throws {
+        // Given
+        let response = Data(#"{"tracks_opt_out": false, "woomobile_crash_reporting_opt_out": null}"#.utf8)
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertNil(account.crashReportingOptOut)
+    }
+
+    /// Verifies that a missing crash reporting opt out is parsed as `nil`, so it can be told apart from an explicit choice.
+    ///
+    func test_crashReportingOptOut_when_missing_then_parses_as_nil() throws {
+        // Given
+        let response = Data(#"{"tracks_opt_out": false}"#.utf8)
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertNil(account.crashReportingOptOut)
+    }
+
+    /// Verifies that an explicit crash reporting opt out is parsed as a boolean.
+    ///
+    func test_crashReportingOptOut_when_true_then_parses_as_true() throws {
+        // Given
+        let response = Data(#"{"tracks_opt_out": false, "woomobile_crash_reporting_opt_out": true}"#.utf8)
+
+        // When
+        let account = try AccountSettingsMapper(userID: 10).map(response: response)
+
+        // Then
+        XCTAssertEqual(account.crashReportingOptOut, true)
     }
 }
 

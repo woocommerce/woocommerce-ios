@@ -633,8 +633,12 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wooPushTokenDeleteSuccess = "woo_push_token_delete_success"
+    case wooPushTokenDeleteError = "woo_push_token_delete_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+    case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
+    case wpcomDeviceEnablePushNotificationsError = "wpcom_device_enable_push_notifications_error"
 
     case pushNotificationsCardView = "push_notifications_card_view"
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
@@ -1455,10 +1459,11 @@ extension WooAnalyticsStat {
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
             return false
-        // Per-site push token registration events attribute properties to the target site via a factory,
-        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
+        // Per-site push token registration/deletion events attribute properties to the target site via a
+        // factory, so opt out of the default-site enrichment that would otherwise overwrite `blog_id` /
+        // `site_url` with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
+             .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
             return false
         default:
             return true

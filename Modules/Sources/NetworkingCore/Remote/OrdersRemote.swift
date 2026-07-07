@@ -445,30 +445,6 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves the date a specific `Order` was last modified.
-    ///
-    /// - Parameters:
-    ///     - siteID: Site which hosts the Order.
-    ///     - orderID: Identifier of the Order.
-    /// - Returns:
-    ///     Async result with a `Date` or an error
-    ///
-    public func fetchDateModified(for siteID: Int64, orderID: Int64) async throws -> Date {
-        let parameters = [
-            ParameterKeys.fields: ParameterValues.dateModifiedField
-        ]
-
-        let path = "\(Constants.ordersPath)/\(orderID)"
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .get,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: parameters,
-                                     availableAsRESTRequest: true)
-        let mapper = EntityDateModifiedMapper()
-
-        return try await enqueue(request, mapper: mapper)
-    }
 }
 
 extension OrdersRemote: POSOrdersRemoteProtocol {
@@ -633,7 +609,6 @@ public extension OrdersRemote {
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", metaDataField,
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
-        static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
         /// Order fetches whose consumers only need `_payment_status` from order metadata (e.g. `BookingOrderInfo`)
         /// limit `meta_data` to that key to keep responses small on stores with heavy metadata.

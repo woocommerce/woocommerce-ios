@@ -185,7 +185,12 @@ struct PointOfSaleDashboardView: View {
         .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
-            loadItemsWhenEligible()
+            // Only load here when eligibility resolved before the dashboard appeared, as the
+            // `eligibilityState` `onChange` above won't fire for that earlier transition.
+            // Otherwise the `onChange` owns the load, so we don't fetch everything twice.
+            if case .eligible = posModel.entryPointController.eligibilityState {
+                loadItemsWhenEligible()
+            }
         }
         .onChange(of: viewState) { oldValue, newValue in
             if newValue == .content && oldValue != newValue {

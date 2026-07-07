@@ -517,12 +517,17 @@ extension PointOfSaleAggregateModel {
 
     @MainActor
     func printReceipt() async throws {
+        // Refresh the store's receipt settings so the printout reflects any changes made this
+        // session. On failure the previously loaded values are kept, so printing still proceeds
+        // with the best available information.
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
         try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
     }
 
-    /// Loads the store's receipt settings (phone/email/returns policy) once at POS start, so a
-    /// receipt printed after a payment is instant — the print flow reads these cached values instead
-    /// of fetching. No-op when receipt printing is unavailable; fails gracefully otherwise.
+    /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first
+    /// print has values ready without waiting on a fetch. The print flow refreshes these before
+    /// printing; this preload keeps a populated fallback for when that refresh fails. No-op when
+    /// receipt printing is unavailable; fails gracefully otherwise.
     @MainActor
     func preloadReceiptStoreInformation() async {
         guard receiptPrinter != nil else { return }

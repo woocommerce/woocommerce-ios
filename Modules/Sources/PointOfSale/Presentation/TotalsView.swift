@@ -746,17 +746,15 @@ private extension TotalsView {
     /// Cash + Other payment methods buttons shown below the primary card payment UI.
     @ViewBuilder
     var cashAndOtherMethodsBottomStrip: some View {
-        VStack(spacing: POSSpacing.medium) {
-            cashAndOtherPaymentMethodsButtons
-        }
-        .if(horizontalSizeClass == .compact) {
-            $0.posPhoneBottomButtonPadding()
-        }
-        .if(horizontalSizeClass != .compact) {
-            $0
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
-        }
+        cashAndOtherPaymentMethodsButtons
+            .if(horizontalSizeClass == .compact) {
+                $0.posPhoneBottomButtonPadding()
+            }
+            .if(horizontalSizeClass != .compact) {
+                $0
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.bottom, POSPadding.xxLarge)
+            }
     }
 
     /// Reader-first layout used when Tap to Pay is unavailable but secondary methods exist.

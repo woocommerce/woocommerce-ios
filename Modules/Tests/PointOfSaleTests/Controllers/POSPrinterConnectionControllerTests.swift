@@ -207,7 +207,7 @@ struct POSPrinterConnectionControllerTests {
         #expect(sut.bluetoothAuthorization == .denied)
     }
 
-    @Test func test_refreshBluetoothAuthorization_when_permission_changes_then_state_updates() async {
+    @Test func test_bluetoothAuthorization_when_permission_changes_then_reads_live_value() async {
         // Given
         let service = MockReceiptPrinterService()
         let provider = MockBluetoothAuthorizationProvider(authorization: .denied)
@@ -216,7 +216,6 @@ struct POSPrinterConnectionControllerTests {
 
         // When
         provider.stubbedAuthorization = .allowed
-        sut.refreshBluetoothAuthorization()
 
         // Then
         #expect(sut.bluetoothAuthorization == .allowed)

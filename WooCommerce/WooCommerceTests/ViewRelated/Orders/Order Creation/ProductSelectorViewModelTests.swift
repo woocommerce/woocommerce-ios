@@ -21,10 +21,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.setUp()
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+            readOnlySite: Site.fake().copy(siteID: sampleSiteID)
         )
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()

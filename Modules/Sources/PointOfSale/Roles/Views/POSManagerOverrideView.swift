@@ -47,7 +47,9 @@ private extension POSManagerOverrideView {
         .padding(.horizontal, POSPadding.large)
         .posModalCloseButton(action: { handler.cancel() }, accessibilityLabel: Localization.close)
         .padding(POSPadding.large)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Size to content and let the modal center it, like the lock screen and the iPad layout. Filling
+        // the screen pushed the close button under the status bar (status-bar overlap, untappable).
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     func header(spacing: CGFloat) -> some View {

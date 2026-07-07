@@ -124,11 +124,6 @@ struct POSSettingsHardwareDetailView: View {
         .posModal(isPresented: $showBarcodeScanningSetupModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
         }
-        .posModal(isPresented: $showPrinterSetupModal) {
-            if let printerConnectionController = settingsController.printerConnectionController {
-                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: printerConnectionController)
-            }
-        }
         .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
             SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
         }
@@ -226,14 +221,9 @@ private extension POSSettingsHardwareDetailView {
     }
 
     var cardReadersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.cardReadersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
+        POSSettingsDetailPage(title: Localization.cardReadersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     switch posModel.cardReaderConnectionStatus {
@@ -276,22 +266,15 @@ private extension POSSettingsHardwareDetailView {
                 .foregroundColor(.posOnSurface)
             }
         }
-        .background(backgroundColor)
-        .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
     var scannersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.scannersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
+        POSSettingsDetailPage(title: Localization.scannersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
             VStack(spacing: POSSpacing.small) {
                 ForEach(ScannerDestination.allCases) { destination in
                     POSSettingsCard(
@@ -307,40 +290,42 @@ private extension POSSettingsHardwareDetailView {
 
             Spacer()
         }
-        .background(backgroundColor)
-        .navigationBarBackButtonHidden(true)
     }
 
-    @ViewBuilder
     var printersView: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: Localization.printersTitle,
-                backButtonConfiguration: .init(state: .enabled, action: {
-                    navigationPath.removeLast()
-                }, buttonIcon: "chevron.left"))
-            .foregroundColor(.posSurface)
-
+        POSSettingsDetailPage(title: Localization.printersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
             ScrollView {
                 VStack(spacing: POSSpacing.small) {
                     if let controller = settingsController.printerConnectionController {
-                        if controller.isConnected {
-                            POSInformationCard {
-                                printerNameRow(controller: controller)
-                            }
-                        } else {
-                            POSSettingsCard(title: Localization.printerConnectTitle,
-                                            subtitle: Localization.printerConnectSubtitle,
-                                            action: { showPrinterSetupModal = true })
-                        }
+                        printerSection(controller: controller)
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
                 .foregroundColor(.posOnSurface)
             }
         }
-        .background(backgroundColor)
-        .navigationBarBackButtonHidden(true)
+    }
+
+    /// The printer card, presenting the setup modal on the same non-optional controller that gates
+    /// this section — so the modal is only ever built when a controller exists.
+    @ViewBuilder
+    func printerSection(controller: POSPrinterConnectionController) -> some View {
+        Group {
+            if controller.isConnected {
+                POSInformationCard {
+                    printerNameRow(controller: controller)
+                }
+            } else {
+                POSSettingsCard(title: Localization.printerConnectTitle,
+                                subtitle: Localization.printerConnectSubtitle,
+                                action: { showPrinterSetupModal = true })
+            }
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+        }
     }
 
     func printerNameRow(controller: POSPrinterConnectionController) -> some View {
@@ -363,6 +348,30 @@ private extension POSSettingsHardwareDetailView {
             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: false))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Detail page scaffold
+
+/// The shared scaffold for a hardware detail sub-page: a page header with a back button above the
+/// page's content, on the settings background. Keeps the per-device pages free of this boilerplate.
+private struct POSSettingsDetailPage<Content: View>: View {
+    let title: String
+    let backgroundColor: Color
+    let onBack: () -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: title,
+                backButtonConfiguration: .init(state: .enabled, action: onBack, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            content()
+        }
+        .background(backgroundColor)
+        .navigationBarBackButtonHidden(true)
     }
 }
 

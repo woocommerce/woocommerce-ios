@@ -84,7 +84,6 @@ final class ProductSelectorViewModel: ObservableObject {
         FilterProductListViewModel(
             filters: filtersSubject.value,
             siteID: siteID,
-            site: stores.sessionManager.defaultSite,
             stores: stores,
             storageManager: storageManager
         )

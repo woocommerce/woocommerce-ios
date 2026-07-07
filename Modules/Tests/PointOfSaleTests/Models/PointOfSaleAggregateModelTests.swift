@@ -12,6 +12,7 @@ import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncState
 import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.PrinterDevice
 import enum Yosemite.POSItemType
@@ -695,9 +696,9 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // When / Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelPaymentCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.startCashPayment()
 
@@ -1195,9 +1196,9 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics)
 
             // When
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelReconnectionCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.cancelReconnection()
             }
@@ -1270,10 +1271,10 @@ struct PointOfSaleAggregateModelTests {
             barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
 
             // When & Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 soundPlayer.onPlaySound = { sound in
                     #expect(sound == .barcodeScanFailure)
-                    continuation.resume()
+                    fire()
                 }
                 sut.barcodeScanned(.success("123456"))
             }
@@ -1369,6 +1370,56 @@ struct PointOfSaleAggregateModelTests {
                 $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
             }
             #expect(shownEvents.isEmpty)
+        }
+
+        @Test func staleSyncWarning_when_full_sync_completes_then_hides_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == true)
+
+            // When
+            coordinator.isSyncStaleResult = false
+            await fireOnce { fire in
+                coordinator.onIsSyncStaleCalled = { fire() }
+                coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID), for: siteID)
+            }
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+        }
+
+        @Test func staleSyncWarning_when_full_sync_fails_then_keeps_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.isSyncStaleResult = true
+            coordinator.hoursSinceLastSyncResult = 42
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == true)
+
+            // When
+            coordinator.isSyncStaleResult = false
+            coordinator.onIsSyncStaleCalled = {
+                #expect(Bool(false))
+            }
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+            await Task.yield()
+            coordinator.onIsSyncStaleCalled = nil
+
+            // Then
+            #expect(sut.showStaleSyncWarning == true)
         }
     }
 

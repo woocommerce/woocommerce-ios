@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-17 09:57:26+0000 */
+/* Translation-Revision-Date: 2026-07-06 02:59:15+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1616,9 +1616,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "Vergeleken met **%1$@**";
 
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "Voltooi de betaling en wacht op een pushbericht over de bestelling in je WooCommerce-app.";
-
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "Componentopties";
 
@@ -2328,6 +2325,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom-token ongeldig";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "Dotcom onbekende blog";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Dubbel klikken om te negeren";
@@ -5676,9 +5676,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Romania" = "Roemenië";
 
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Voer een proefbestelling uit om je ervan te verzekeren dat jouw WooCommerce-proces een naadloze klantervaring levert.";
-
 /* Country option for a site address. */
 "Russia" = "Rusland";
 
@@ -5949,9 +5946,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Selecteer je bezorgservice en tarieven";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Selecteer jouw testproduct, voeg deze toe aan de winkelwagen en voltooi het afrekenscherm in die webwinkel als een echte klant.";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "Verzenden";
@@ -6383,9 +6377,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Start Date label in custom range date picker */
 "Start Date" = "Startdatum";
 
-/* Title on the action button on the test order screen */
-"Start Test order" = "Proefbestelling starten";
-
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Om een coupon aan te maken, begin je door in een sheet onderaan het type korting te kiezen";
 
@@ -6590,9 +6581,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tik of voer een kaart in om terug te betalen";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "Druk op de knop hieronder om doorgestuurd te worden naar jouw webwinkel via een webbrowser.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7363,14 +7351,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Probeer een betaling";
 
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "Probeer een proefbestelling";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Probeer te betalen met je eigen betaalpas (en stort de betaling terug wanneer je klaar bent.)";
-
-/* Title shown on the test order screen */
-"Try a test order" = "Probeer een proefbestelling";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -7826,9 +7808,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Gebruik je wachtwoord om je aan te melden";
-
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "Gebruik de app om de restitutie voor de proefbestelling te verwerken.";
 
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Gebruikersprofielen";
@@ -8664,6 +8643,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Pictogram";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "Door logbestanden zoeken";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "Wat is een applicatiewachtwoord?";
@@ -11835,9 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "Foto weergeven";
 
-/* No comment provided by engineer. */
-"password" = "Wachtwoord";
-
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Fysiek betalen";
 
@@ -11886,8 +11865,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "Onbekend";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "Bedragen in behandeling";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "Totaal saldo";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Bewerken";
@@ -12723,6 +12702,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "Productcatalogus";
 
+/* Description of the settings to be found within the Staff section. */
+"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "Bekijk personeel en PIN-toegang";
+
+/* Title of the Staff section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "Personeel";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Winkelconfiguratie en -instellingen";
 
@@ -12963,7 +12948,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "Tap to Pay";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "Geen internetverbinding";
 
 /* A button that dismisses coupon creation sheet */
@@ -12971,6 +12959,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "Coupon aanmaken";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "Sluiten";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "Alle bestellingen die nog in behandeling zijn, zullen verloren gaan.";
@@ -13016,9 +13007,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
 "pos.itemList.catalogBlockedTitle" = "Actie vereist voor je winkel";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "Voeg een eenmalige toeslag toe.";
@@ -13263,6 +13251,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "Deze terugbetaling annuleren?";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "Kaartlezer is al geselecteerd voor deze betaling.";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "Koppel een Bluetooth-reader om kaartbetalingen te ontvangen.";
 
@@ -13283,6 +13274,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "Andere betaalmethoden";
+
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "Tap to Pay is al geselecteerd voor deze betaling.";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "Gebruik deze iPhone om kaartbetalingen aan te nemen.";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "Tap to Pay";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "Beschikbare opties";
@@ -13830,6 +13830,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "Datum niet beschikbaar updaten";
+
+/* Footer text explaining how POS locking works, including auto-lock timeout. */
+"posStaffSettingsView.autoLockFooter" = "POS vergrendelt wanneer je op POS vergrendelen tikt vanuit het menu, of automatisch na 5 minuten inactiviteit.";
+
+/* Button to open the WordPress admin staff management page in a web view. */
+"posStaffSettingsView.manageStaffWebButton" = "Personeel beheren op het web";
+
+/* Navigation title for the web view showing WordPress admin staff management. */
+"posStaffSettingsView.manageStaffWebTitle" = "Personeel beheren";
+
+/* Status label shown next to a staff member who does not have a PIN configured. */
+"posStaffSettingsView.noPINLabel" = "Geen PIN";
+
+/* Status label shown next to a staff member who has a PIN configured. */
+"posStaffSettingsView.pinSetLabel" = "PIN ingesteld";
+
+/* Display name for the administrator role in the POS staff list. */
+"posStaffSettingsView.role.admin" = "Beheerder";
+
+/* Display name for the POS cashier role in the POS staff list. */
+"posStaffSettingsView.role.posCashier" = "Kassier POS";
+
+/* Display name for the POS manager role in the POS staff list. */
+"posStaffSettingsView.role.posManager" = "POS Manager";
+
+/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
+"posStaffSettingsView.signedInBadge" = "Aangemeld";
+
+/* Error message shown when the staff list fails to load from the server. */
+"posStaffSettingsView.staffLoadError" = "Kan personeel niet laden. Controleer je netwerkverbinding en probeer het nogmaals.";
+
+/* Button to retry loading the staff list after a failure. */
+"posStaffSettingsView.staffLoadRetry" = "Opnieuw proberen";
+
+/* Navigation title for the staff settings detail view in POS settings. */
+"posStaffSettingsView.staffTitle" = "Personeel";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "REST API-eindpunt niet gevonden.";
@@ -14598,6 +14634,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "één keer beoordeeld";
+
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "Type account: %1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "AID: %1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "Toepassingsnaam: %1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@ - %2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "Datum van betaling";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x%2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@. %2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "Notities";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "Bestelnr. %1$@";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "Betaalmethode";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "Factuur";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: kwitantie voor bestelling #%2$@";
@@ -16028,6 +16097,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "We kunnen vereiste gegevens niet laden";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "E-mail ontbreekt voor het oorspronkelijke adres.";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "Telefoonnummer ontbreekt voor het oorspronkelijke adres.";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "Gereed";

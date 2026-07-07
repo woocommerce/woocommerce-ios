@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-17 09:56:57+0000 */
+/* Translation-Revision-Date: 2026-07-01 09:55:45+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -1619,9 +1619,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "與 **%1$@** 比較";
 
-/* Third instruction on the test order screen */
-"Complete the payment and await a push notification about the order on your WooCommerce app." = "完成付款流程，並等候 WooCommerce 應用程式的訂單推播通知。";
-
 /* Title for the list of component options in the Component Settings view */
 "Component Options" = "組件選項";
 
@@ -2331,6 +2328,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom Token 無效";
+
+/* WordPress.com error thrown when the site ID is no longer recognized. */
+"Dotcom Unknown Blog" = "Dotcom 未知的網誌";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "點選兩下將其關閉";
@@ -5679,9 +5679,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Romania" = "羅馬尼亞";
 
-/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "執行測試訂單，確認你的 WooCommerce 流程能提供流暢的顧客體驗。";
-
 /* Country option for a site address. */
 "Russia" = "俄羅斯";
 
@@ -5952,9 +5949,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "選擇你的貨運業者與費率";
-
-/* Second instruction on the test order screen */
-"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "選取測試商品並新增至購物車，然後像真的顧客一樣在網路商店完成結帳。";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "傳送";
@@ -6386,9 +6380,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Start Date label in custom range date picker */
 "Start Date" = "開始日期";
 
-/* Title on the action button on the test order screen */
-"Start Test order" = "開始使用測試訂單";
-
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "在底部工作表中選取折扣類型，即可開始建立優惠券";
 
@@ -6593,9 +6584,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "感應或插入卡片以退款";
-
-/* First instruction on the test order screen */
-"Tap the button below to be redirected to your online store via a web browser." = "點選下方按鈕，系統會透過網頁瀏覽器重新導向至你的網路商店。";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7366,14 +7354,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "嘗試付款";
 
-/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
-"Try a Test Order" = "試用測試訂單";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "使用你自己的信用卡體驗付款 (體驗完後可退款)。";
-
-/* Title shown on the test order screen */
-"Try a test order" = "試用測試訂單";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -7829,9 +7811,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "使用密碼登入";
-
-/* Fourth instruction on the test order screen */
-"Use the app to process the refund for the test order." = "使用應用程式處理測試訂單的退款流程。";
 
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "使用者個人檔案";
@@ -8667,6 +8646,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "圖示";
+
+/* Placeholder text for the search field on the application log detail screen. */
+"applicationLogDetail.searchPrompt" = "搜尋記錄";
 
 /* Button that will navigate to a web page explaining Application Password */
 "applicationPasswordDisabled.auxiliaryButtonTitle" = "什麼是應用程式密碼？";
@@ -11835,9 +11817,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of button which opens the selected package photo. */
 "packagePhotoView.viewPhoto" = "檢視照片";
 
-/* No comment provided by engineer. */
-"password" = "密碼";
-
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "親自付款";
 
@@ -11886,8 +11865,8 @@ which should be translated separately and considered part of this sentence. */
 /* A status for a payout, shown in a small badge view */
 "payouts.currency.overview.payoutTable.status.unknown.title" = "不明";
 
-/* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
-"payouts.currency.overview.pendingFunds" = "待確認款項";
+/* Title for total balance overview in WooPayments Payouts view. This shows the combined available and pending balance, matching the WooPayments plugin wording. */
+"payouts.currency.overview.totalBalance" = "總餘額";
 
 /* Accessibility label for the button to edit */
 "pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編輯";
@@ -12723,6 +12702,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Local catalog section within Point of Sale settings. */
 "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle.2" = "商品目錄";
 
+/* Description of the settings to be found within the Staff section. */
+"pointOfSaleSettingsView.sidebarNavigationStaffSubtitle.m1" = "檢視員工和 PIN 存取權限";
+
+/* Title of the Staff section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStaffTitle" = "員工";
+
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "商店組態和設定";
 
@@ -12963,7 +12948,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Tap to Pay button in the POS checkout payment-method row. */
 "pos.checkout.paymentMethod.tapToPay" = "卡緊收";
 
-/* Title shown on a toast view that appears when there's no internet connection */
+/* Subtitle appearing on error screens when there is a network connectivity error. */
+"pos.connectivity.subtitle" = "請檢查你的網際網路連線並再試一次。";
+
+/* Title shown when Point of Sale has no internet connection */
 "pos.connectivity.title" = "沒有網際網路連線";
 
 /* A button that dismisses coupon creation sheet */
@@ -12971,6 +12959,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "建立優惠券";
+
+/* Accessibility label for the button to close the exit Point of Sale modal alert. */
+"pos.exitPOSModal.closeButton.accessibilityLabel" = "關閉";
 
 /* Body text of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitBody" = "任何進行中的訂單將會遺失。";
@@ -13016,9 +13007,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file. */
 "pos.itemList.catalogBlockedTitle" = "需要對商店採取行動";
-
-/* Subtitle appearing on error screens when there is a network connectivity error. */
-"pos.itemList.connectivityErrorSubtitle" = "請檢查你的網際網路連線並再試一次。";
 
 /* Subtitle for the row in the Point of Sale products list that opens the custom amount form. */
 "pos.itemList.customAmountEntryRow.subtitle" = "新增一次性費用。";
@@ -13263,6 +13251,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for an alert asking whether to cancel an in-progress POS refund before selecting another order. */
 "pos.ordersView.cancelRefundAlert.title" = "要取消此退款嗎？";
 
+/* Row subtitle in the Other Payment Methods sheet when the external Bluetooth card reader option is disabled because it is already active. */
+"pos.otherPaymentMethods.cardReader.disabled.subtitle" = "此付款已選取讀卡機。";
+
 /* Row subtitle in the Other Payment Methods sheet for connecting an external Bluetooth card reader. */
 "pos.otherPaymentMethods.cardReader.subtitle" = "連結藍牙讀卡機以收取卡片付款。";
 
@@ -13283,6 +13274,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the bottom sheet listing non-Tap-to-Pay payment methods on phone POS checkout. */
 "pos.otherPaymentMethods.sheet.title" = "其他付款方式";
+
+/* Row subtitle in the Other Payment Methods sheet when Tap to Pay is disabled because it is already selected. */
+"pos.otherPaymentMethods.tapToPay.disabled.subtitle" = "此付款已選取「卡緊收」。";
+
+/* Row subtitle in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.subtitle" = "使用這部 iPhone 收取卡片款項。";
+
+/* Row title in the Other Payment Methods sheet for switching card payments to Tap to Pay. */
+"pos.otherPaymentMethods.tapToPay.title" = "卡緊收";
 
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "可用選項";
@@ -13830,6 +13830,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text shown when update date cannot be determined. */
 "posSettingsLocalCatalogViewModel.syncDateUnavailable" = "無法更新日期";
+
+/* Footer text explaining how POS locking works, including auto-lock timeout. */
+"posStaffSettingsView.autoLockFooter" = "點選選單中的「鎖定 POS」時，POS 就會鎖住，閒置 5 分鐘後也會自動鎖住。";
+
+/* Button to open the WordPress admin staff management page in a web view. */
+"posStaffSettingsView.manageStaffWebButton" = "在網頁上管理員工";
+
+/* Navigation title for the web view showing WordPress admin staff management. */
+"posStaffSettingsView.manageStaffWebTitle" = "管理員工";
+
+/* Status label shown next to a staff member who does not have a PIN configured. */
+"posStaffSettingsView.noPINLabel" = "沒有 PIN";
+
+/* Status label shown next to a staff member who has a PIN configured. */
+"posStaffSettingsView.pinSetLabel" = "PIN 設定";
+
+/* Display name for the administrator role in the POS staff list. */
+"posStaffSettingsView.role.admin" = "管理員";
+
+/* Display name for the POS cashier role in the POS staff list. */
+"posStaffSettingsView.role.posCashier" = "POS 收銀員";
+
+/* Display name for the POS manager role in the POS staff list. */
+"posStaffSettingsView.role.posManager" = "POS 經理";
+
+/* Badge label shown next to the currently signed-in staff member in the POS staff list. */
+"posStaffSettingsView.signedInBadge" = "登入身分";
+
+/* Error message shown when the staff list fails to load from the server. */
+"posStaffSettingsView.staffLoadError" = "無法載入統計資料， 請檢查你的連線並再試一次。";
+
+/* Button to retry loading the staff list after a failure. */
+"posStaffSettingsView.staffLoadRetry" = "重試";
+
+/* Navigation title for the staff settings detail view in POS settings. */
+"posStaffSettingsView.staffTitle" = "員工";
 
 /* Error message when REST API discovery fails in the pre-login connectivity tool */
 "preLoginConnectivityTool.error.apiDiscoveryFailed" = "找不到 REST API 端點。";
@@ -14598,6 +14634,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "已評分一次";
+
+/* EMV account type line on a printed receipt. %1$@ is the account type. */
+"receipt.accountType" = "帳號類型：%1$@";
+
+/* EMV Application Identifier line on a printed receipt. %1$@ is the AID value. */
+"receipt.aid" = "AID：%1$@";
+
+/* EMV application name (card scheme app) line on a printed receipt. %1$@ is the application name. */
+"receipt.applicationName" = "應用程式名稱：%1$@";
+
+/* Card payment method on a printed receipt. %1$@ is the card brand, %2$@ is the last 4 digits. */
+"receipt.cardBrandAndLast4" = "%1$@ - %2$@";
+
+/* Label above the payment date on a printed receipt. */
+"receipt.datePaid" = "付款日期";
+
+/* A purchased line item on a printed receipt. %1$@ is the item title, %2$@ is the quantity. */
+"receipt.itemTitleAndQuantity" = "%1$@ x%2$@";
+
+/* A line item title with its product attributes on a printed receipt. %1$@ is the item title, %2$@ is the comma-separated attributes (e.g. variations). */
+"receipt.itemTitleWithAttributes" = "%1$@，%2$@";
+
+/* Label above the order note on a printed receipt. */
+"receipt.notes" = "備註";
+
+/* Order number line on a printed receipt. %1$@ is the order ID. */
+"receipt.orderNumber" = "訂單 #%1$@";
+
+/* Label above the card payment method on a printed receipt. */
+"receipt.paymentMethod" = "付款方式";
+
+/* Title of the view containing a receipt preview. */
+"receiptViewController.title" = "收據";
 
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
 "receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@：第 %2$@ 號訂單的收據";
@@ -16028,6 +16097,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when loading required data failed on the shipping label creation screen */
 "wooShipping.createLabels.missingDataError" = "無法載入所需資料";
+
+/* Notice when the origin (ship from) address is missing an email on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingEmail" = "寄件地址缺少電子郵件。";
+
+/* Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen */
+"wooShipping.createLabels.originAddress.missingPhone" = "寄件地址缺少電話號碼。";
 
 /* Button for dismissing the keyboard */
 "wooShipping.createLabels.package.done" = "完成";

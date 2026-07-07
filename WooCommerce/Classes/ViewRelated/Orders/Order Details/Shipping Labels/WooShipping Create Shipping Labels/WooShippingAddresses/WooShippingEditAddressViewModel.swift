@@ -529,6 +529,13 @@ extension WooShippingEditAddressViewModel {
         allFields.forEach { $0.validateField() }
     }
 
+    /// Re-validates all fields immediately (bypassing the per-field debounce) and returns the status.
+    /// Used on the confirm tap so a fast tap can't skip local validation. See WOOMOB-3446.
+    func validatedStatus() -> WooShippingAddressStatus {
+        validateAddress()
+        return status
+    }
+
     /// Validate the address field with the given type.
     func validate(_ field: WooShippingAddressFieldType) {
         allFields.first { $0.type == field }?.validateField()

@@ -6,6 +6,7 @@ struct POSOtherPaymentMethodsSheet: View {
     var isTapToPayAvailable: Bool = false
     var isTapToPayEnabled: Bool = true
     var onTapToPay: (() -> Void)?
+    var isCardReaderAvailable: Bool = true
     /// False while Bluetooth is already active for this payment.
     var isCardReaderEnabled: Bool = true
     let onCardReader: () -> Void
@@ -36,13 +37,15 @@ struct POSOtherPaymentMethodsSheet: View {
                 }
             }
 
-            row(systemImage: "creditcard",
-                title: Localization.cardReaderTitle,
-                subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
-                accessibilityIdentifier: "pos-other-payments-card-reader",
-                isEnabled: isCardReaderEnabled) {
-                dismiss()
-                onCardReader()
+            if isCardReaderAvailable {
+                row(systemImage: "creditcard",
+                    title: Localization.cardReaderTitle,
+                    subtitle: isCardReaderEnabled ? Localization.cardReaderSubtitle : Localization.cardReaderDisabledSubtitle,
+                    accessibilityIdentifier: "pos-other-payments-card-reader",
+                    isEnabled: isCardReaderEnabled) {
+                    dismiss()
+                    onCardReader()
+                }
             }
 
             if isScanToPayAvailable, let onScanToPay {
@@ -195,6 +198,17 @@ private extension POSOtherPaymentMethodsSheet {
 #Preview("Card reader disabled") {
     POSOtherPaymentMethodsSheet(
         isCardReaderEnabled: false,
+        onCardReader: {},
+        isScanToPayAvailable: true,
+        onScanToPay: {},
+        isMarkOrderAsPaidAvailable: true,
+        onMarkOrderAsPaid: {}
+    )
+}
+
+#Preview("Secondary methods only") {
+    POSOtherPaymentMethodsSheet(
+        isCardReaderAvailable: false,
         onCardReader: {},
         isScanToPayAvailable: true,
         onScanToPay: {},

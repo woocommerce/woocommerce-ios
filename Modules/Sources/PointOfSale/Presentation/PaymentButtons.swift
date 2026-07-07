@@ -26,18 +26,20 @@ struct PaymentsActionButtons: View {
 }
 
 private extension PaymentsActionButtons {
-    @ViewBuilder
     var receiptButtons: some View {
-        if usesSideBySideReceiptButtons {
-            HStack(spacing: Constants.receiptButtonRowSpacing) {
-                sendReceiptButton
-                printReceiptButton
-            }
-        } else {
+        receiptButtonLayout {
             sendReceiptButton
             if showsPrintReceipt {
                 printReceiptButton
             }
+        }
+    }
+
+    var receiptButtonLayout: AnyLayout {
+        if usesSideBySideReceiptButtons {
+            AnyLayout(HStackLayout(spacing: Constants.receiptButtonRowSpacing))
+        } else {
+            AnyLayout(VStackLayout(spacing: Constants.receiptButtonRowSpacing))
         }
     }
 

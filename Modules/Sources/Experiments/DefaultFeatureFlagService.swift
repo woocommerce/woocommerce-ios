@@ -73,18 +73,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleOrdersi1:
-            return true
-        case .pointOfSaleOrdersi2:
-            return true
         case .orderAddressMapSearch:
-            return true
-        case .pointOfSaleHistoricalOrdersi1:
             return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return !buildConfig.isProduction
+            return false
         case .pointOfSaleCatalogAPI:
             return true
         case .pointOfSaleRoles:
@@ -108,7 +102,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return true
         case .ciabBookingReschedule:
-            return !buildConfig.isProduction
+            return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         case .aiSupportChat:

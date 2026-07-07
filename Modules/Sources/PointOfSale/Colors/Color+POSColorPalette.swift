@@ -1,6 +1,5 @@
 // periphery:ignore:all
 import SwiftUI
-import WooFoundation
 
 extension Color {
     // MARK: - Primary Colors
@@ -56,10 +55,4 @@ extension Color {
 
     // MARK: - Other
     static var posShadow: Color { Color("posShadow", bundle: .module) }
-
-    // MARK: - Semantic Colors
-    static var posLinkCTA: Color {
-        Color(light: .withColorStudio(name: .wooCommercePurple, shade: .shade40),
-              dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30))
-    }
 }

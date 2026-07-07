@@ -538,6 +538,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
             ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.posIncludedMetaKeys,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
 
@@ -562,6 +563,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
             ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.posIncludedMetaKeys,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
         let path = Constants.ordersPath
@@ -614,6 +616,8 @@ public extension OrdersRemote {
         static let product = "product"
         static let createdVia = "created_via"
         static let decimalPlaces = "dp"
+        /// Limits which keys are returned in `meta_data`. Available since WooCommerce 7.0; older stores ignore it and return all metadata.
+        static let includeMeta = "include_meta"
     }
 
     enum ParameterValues {
@@ -626,6 +630,9 @@ public extension OrdersRemote {
         ]
         static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
+        /// POS order lists only consume `_payment_status` from order metadata (see `POSOrderMapper`),
+        /// so `meta_data` is limited to that key to keep responses small on stores with heavy metadata.
+        static let posIncludedMetaKeys = "_payment_status"
     }
 
     enum NestedFieldKeys {
@@ -687,7 +694,8 @@ public extension OrdersRemote {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.posIncludedMetaKeys
         ]
         let path = Constants.ordersPath
         let request = JetpackRequest(wooApiVersion: .mark3,

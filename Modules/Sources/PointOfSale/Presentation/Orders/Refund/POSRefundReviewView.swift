@@ -94,7 +94,7 @@ private extension POSRefundReviewView {
                 Button(action: onAddReason) {
                     Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
-                        .foregroundColor(.posPrimary)
+                        .foregroundColor(.posSecondary)
                 }
                 .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
             }

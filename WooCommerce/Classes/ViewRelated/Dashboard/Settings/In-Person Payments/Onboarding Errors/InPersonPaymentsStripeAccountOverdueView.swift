@@ -72,8 +72,10 @@ private enum Localization {
      )
 
     static let primaryButtonTitle = NSLocalizedString(
-        "Resolve Now",
-        comment: "Button to open a web view and resolve pending plugin requirements before using it.")
+        "cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton",
+        value: "Resolve Now",
+        comment: "Button to open a web view and resolve overdue requirements before continuing with In-Person Payments."
+    )
 
     static let skipButtonTitle = NSLocalizedString(
         "cardPresentPayments.onboarding.stripeAccountOverdue.skipButton",

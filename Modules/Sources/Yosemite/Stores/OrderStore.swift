@@ -244,26 +244,15 @@ private extension OrderStore {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
+    /// The order is always synced in full from remote, even when a copy exists in storage:
+    /// - Order list and search fetches omit `meta_data` (see `OrdersRemote.ParameterValues.listFieldValues`),
+    ///   so a stored order cannot be assumed to contain metadata-derived content
+    ///   (custom fields, attribution info, charge ID, subscription renewal).
+    /// - The previous `date_modified_gmt` probe shortcut could also serve stale metadata, since
+    ///   not all remote changes bump the order's modified date.
+    ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
-        // Check first if the order exists in storage. If it doesn't, fetch it from remote.
-        let storage = storageManager.viewStorage
-        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
-            return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
-        }
-
-        Task {
-            // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
-            let dateModified = try? await remote.fetchDateModified(for: siteID, orderID: orderID)
-
-            // If the stored order is up to date with remote, return it.
-            // Otherwise, fetch the updated order from remote.
-            await MainActor.run {
-                guard dateModified == storedOrder.dateModified else {
-                    return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
-                }
-                onCompletion(storedOrder, nil)
-            }
-        }
+        loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
     }
 
     func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping (Result<Order, Error>) -> Void) {

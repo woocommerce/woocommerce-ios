@@ -51,6 +51,26 @@ public class TracksProvider: NSObject, AnalyticsProvider {
     }
 }
 
+extension TracksProvider {
+    /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
+    /// without overwriting a value the event already provides.
+    ///
+    func trackWithHorizontalSizeClass(_ properties: [AnyHashable: Any]?,
+                                      sizeClass: UIUserInterfaceSizeClass = TracksProvider.horizontalSizeClass) -> [AnyHashable: Any]? {
+        guard sizeClass == .compact || sizeClass == .regular else {
+            return properties
+        }
+
+        var layoutProperties = properties ?? [:]
+        guard layoutProperties[Constants.horizontalSizeClassKey] == nil else {
+            return layoutProperties
+        }
+
+        layoutProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
+        return layoutProperties
+    }
+}
+
 
 // MARK: - AnalyticsProvider Conformance
 //
@@ -154,24 +174,6 @@ private extension TracksProvider {
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
             }
         }
-    }
-
-    /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
-    /// without overwriting a value the event already provides.
-    ///
-    func trackWithHorizontalSizeClass(_ properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        let sizeClass = Self.horizontalSizeClass
-        guard sizeClass == .compact || sizeClass == .regular else {
-            return properties
-        }
-
-        var layoutProperties = properties ?? [:]
-        guard layoutProperties[Constants.horizontalSizeClassKey] == nil else {
-            return layoutProperties
-        }
-
-        layoutProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
-        return layoutProperties
     }
 
     private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {

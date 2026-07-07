@@ -1,5 +1,6 @@
 import Combine
 import Experiments
+import TestKit
 import XCTest
 import Yosemite
 import YosemiteTestHelpers
@@ -750,6 +751,128 @@ final class PushNotificationsManagerTests: XCTestCase {
             }
             return false
         }))
+    }
+
+    // MARK: - Self-driven OFF: migrate Woo push registrations back to WPCom
+    //
+    // Sites with a WPCom fallback (visible + full Jetpack) are re-enabled on WPCom first and
+    // unregistered from their store only once that succeeds; sites without one (hidden,
+    // Jetpack CP, site-credentials) are unregistered unconditionally. The store-side record ID
+    // is recovered by re-registering (the create endpoint upserts) before deleting.
+
+    func test_registerDeviceToken_when_FF_off_with_prior_woo_registration_then_reenables_wpcom_and_deletes_woo_registration() async {
+        // Given — a fallback-capable site registered while the FF was ON; the device token is
+        // unchanged, so the migration must not wait for a rotation.
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        seedStoredDeviceToken(sampleTokenData.hexString)
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — WPCom re-enabled first, then the Woo record deleted and the local state cleared.
+        assertReenabledWPComPushNotifications()
+        assertDeletedWooPushToken(siteID: 99)
+        assertWooRegistrationCleared()
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_success"))
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_reenable_fails_then_keeps_fallback_site_on_woo_push() async {
+        // Given
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .failure(NSError(domain: "test", code: 1)))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — WPCom did not take over: the site stays on Woo push (which still delivers) and
+        // its store-side record is kept, so the next launch retries the migration.
+        XCTAssertFalse(dispatchedUnregisterWooPushToken)
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("wpcom_device_enable_push_notifications_error"))
+    }
+
+    func test_registerDeviceToken_when_FF_off_with_no_prior_woo_registration_then_registers_wpcom_without_settings_changes() async {
+        // Given — never used Woo-driven PNs.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        manager = await makeFallbackManagerWithFFOff()
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+
+        // Then — plain WPCom registration, no settings writes, no Woo deletes.
+        XCTAssertTrue(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+        XCTAssertFalse(dispatchedUnregisterWooPushToken)
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_site_credentials_user_then_deletes_woo_registration_without_wpcom_calls() async {
+        // Given
+        manager = await makeMigrationScenario(credentials: SessionSettings.applicationPasswordCredentials)
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — no WPCom fallback exists: the Woo registration is deleted unconditionally and
+        // no WPCom call is made.
+        assertDeletedWooPushToken(siteID: 99)
+        assertWooRegistrationCleared()
+        XCTAssertFalse(dispatchedRegisterDotcomDevice)
+        XCTAssertTrue(blogIDsWithWPComSettingsWrites.isEmpty)
+    }
+
+    func test_registerDeviceToken_when_FF_off_then_hidden_and_jetpack_cp_sites_are_deleted_without_wpcom_reenable() async {
+        // Given — 99 is fallback-capable, 100 is hidden, 101 is Jetpack CP (no Jetpack plugin,
+        // WPCom can't deliver to it).
+        manager = await makeMigrationScenario(registeredSiteIDs: "99,100,101", sites: [
+            (99, "https://example.com", true, true, true),
+            (100, "https://hidden.example.com", true, true, true),
+            (101, "https://jcp.example.com", false, false, true)
+        ])
+        UserDefaults.standard.saveHiddenStoreIDs([100])
+        addTeardownBlock {
+            UserDefaults.standard.saveHiddenStoreIDs([])
+        }
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions()
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.manager.siteIDsRegisteredForWooPNs.isEmpty }
+
+        // Then — only the fallback-capable site gets a WPCom settings write; all three Woo
+        // records are deleted and the local state is cleared.
+        assertReenabledWPComPushNotifications(blogID: 99)
+        XCTAssertEqual(blogIDsWithWPComSettingsWrites, [99])
+        [Int64(99), 100, 101].forEach { assertDeletedWooPushToken(siteID: $0) }
+        assertWooRegistrationCleared()
+    }
+
+    func test_registerDeviceToken_when_FF_off_and_woo_delete_fails_then_keeps_site_marked_for_retry() async {
+        // Given
+        manager = await makeMigrationScenario(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        stubUpdateNotificationSettings(result: .success(()))
+        stubFallbackWooActions(unregisterResult: .failure(NSError(domain: "test", code: 1)))
+
+        // When
+        manager.registerDeviceToken(with: sampleTokenData)
+        await until { self.dispatchedUnregisterWooPushToken }
+
+        // Then — the store still holds a live registration: the site stays marked so the delete
+        // retries on the next launch, and the failure is visible in Tracks.
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(manager.siteIDsRegisteredForWooPNs, [99])
+        XCTAssertEqual(manager.wooPushNotificationToken, "555")
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
     func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
@@ -2021,6 +2144,133 @@ final class PushNotificationsManagerTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    /// Seeds the local state left behind by a prior Woo-driven (FF ON) registration.
+    func seedPriorWooRegistration(siteIDs: String = "99", tokenID: String = "555", deviceID: String = "456") {
+        defaults.set(siteIDs, forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        defaults.set(tokenID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken)
+        defaults.set(deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+    }
+
+    /// Seeds the persisted APNS device token — differing from `sampleTokenData` to simulate a rotation.
+    func seedStoredDeviceToken(_ token: String) {
+        defaults.set(token, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+    }
+
+    /// Sets up an FF-off migration scenario: a prior Woo registration for `registeredSiteIDs`,
+    /// the given sites in storage, an authenticated session on store 99, and an FF-off manager.
+    func makeMigrationScenario(
+        registeredSiteIDs: String = "99",
+        sites: [(siteID: Int64, url: String, isWPCom: Bool, isJetpackInstalled: Bool, isJetpackConnected: Bool)] = [(99, "https://example.com", true, true, true)],
+        credentials: Credentials = SessionSettings.wpcomCredentials,
+        analytics: Analytics = ServiceLocator.analytics
+    ) async -> PushNotificationsManager {
+        seedPriorWooRegistration(siteIDs: registeredSiteIDs)
+        await insertSitesIntoStorageWithCapabilities(sites)
+        storesManager.authenticate(credentials: credentials)
+        storesManager.sessionManager.setStoreId(99)
+        return await makeFallbackManagerWithFFOff(analytics: analytics)
+    }
+
+    /// Creates a manager whose self-driven eligibility resolves to `false`, awaiting the resolution.
+    /// Seed any prior Woo state via `seedPriorWooRegistration()` before calling this.
+    func makeFallbackManagerWithFFOff(analytics: Analytics = ServiceLocator.analytics) async -> PushNotificationsManager {
+        let eligibilityExpectation = expectation(description: "Eligibility check completed")
+        eligibilityExpectation.assertForOverFulfill = false
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: { eligibilityExpectation.fulfill() })
+        let manager = makeManager(featureFlagService: MockFeatureFlagService(selfDrivenPushToken: false), analytics: analytics)
+        await fulfillment(of: [eligibilityExpectation], timeout: 1.0)
+        return manager
+    }
+
+    func stubUpdateNotificationSettings(result: Result<Void, Error>) {
+        storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
+            if case let .updateNotificationSettings(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Stubs the migration's NotificationActions: WPCom device registration succeeds with
+    /// deviceID "456", the Woo upsert returns record ID `siteID + 1000`, and the store-side
+    /// delete completes with `unregisterResult`.
+    func stubFallbackWooActions(unregisterResult: Result<Void, Error> = .success(())) {
+        guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "456"}"#.utf8)) else {
+            return XCTFail("Failed to decode DotcomDevice")
+        }
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDevice(_, _, _, onCompletion):
+                onCompletion(device, nil)
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
+                onCompletion(.success(siteID + 1000))
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
+                onCompletion(unregisterResult)
+            default:
+                break
+            }
+        }
+    }
+
+    var sampleTokenData: Data {
+        Data(Sample.deviceToken.utf8)
+    }
+
+    var dispatchedRegisterDotcomDevice: Bool {
+        storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case .registerDevice = $0 { return true }
+            return false
+        }
+    }
+
+    var dispatchedUnregisterWooPushToken: Bool {
+        storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case .unregisterFromSelfDrivenPushNotifications = $0 { return true }
+            return false
+        }
+    }
+
+    /// Blog IDs touched by any `updateNotificationSettings` action.
+    var blogIDsWithWPComSettingsWrites: [Int64] {
+        storesManager.receivedActions.compactMap { $0 as? AccountAction }.flatMap { action -> [Int64] in
+            guard case let .updateNotificationSettings(settings, _) = action else { return [] }
+            return settings.blogs.map(\.blogID)
+        }
+    }
+
+    /// Asserts the store-side Woo record was deleted for the site, with the record ID recovered
+    /// through the upsert (which `stubFallbackWooActions` answers with `siteID + 1000`).
+    func assertDeletedWooPushToken(siteID: Int64, file: StaticString = #filePath, line: UInt = #line) {
+        let deleted = storesManager.receivedActions.compactMap { $0 as? NotificationAction }.contains {
+            if case let .unregisterFromSelfDrivenPushNotifications(actionSiteID, tokenID, _, _) = $0 {
+                return actionSiteID == siteID && tokenID == siteID + 1000
+            }
+            return false
+        }
+        XCTAssertTrue(deleted, "Expected Woo push token delete for site \(siteID)", file: file, line: line)
+    }
+
+    /// Asserts an `updateNotificationSettings` action re-enabled WPCom PNs (newComment/storeOrder true).
+    func assertReenabledWPComPushNotifications(blogID: Int64 = 99,
+                                               deviceID: Int64 = 456,
+                                               file: StaticString = #filePath,
+                                               line: UInt = #line) {
+        let reenabled = storesManager.receivedActions.compactMap { $0 as? AccountAction }.contains {
+            guard case let .updateNotificationSettings(settings, _) = $0,
+                  let device = settings.blogs.first(where: { $0.blogID == blogID })?
+                      .devices.first(where: { $0.deviceID == deviceID }) else {
+                return false
+            }
+            return device.newComment == true && device.storeOrder == true
+        }
+        XCTAssertTrue(reenabled, "Expected WPCom PNs re-enabled for blog \(blogID)", file: file, line: line)
+    }
+
+    /// Asserts the local Woo registration state was cleared.
+    func assertWooRegistrationCleared(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertNil(manager.wooPushNotificationToken, file: file, line: line)
+        XCTAssertTrue(manager.siteIDsRegisteredForWooPNs.isEmpty, file: file, line: line)
+    }
+
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      storageManager: MockStorageManager? = nil,
                      pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,

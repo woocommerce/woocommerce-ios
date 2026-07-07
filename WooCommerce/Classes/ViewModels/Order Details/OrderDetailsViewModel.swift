@@ -980,11 +980,19 @@ private extension OrderDetailsViewModel {
 
     static let storeCountrySettingID = "woocommerce_default_country"
 
+    /// Fails open when the store country is unknown (not cached yet or unparseable) so a cache miss
+    /// can never hide the feature from an eligible store — the plugin eligibility check remains the
+    /// source of truth. Only a known-unsupported country skips the shipping label requests.
     var storeCountrySupportsShippingLabels: Bool {
         guard let countryCode = storeCountryCode else {
+            DDLogInfo("Store country unknown; deferring shipping label support to the plugin eligibility check.")
+            return true
+        }
+        guard Self.shippingLabelSupportedCountries.contains(countryCode) else {
+            DDLogInfo("Skipping shipping label requests: store country \(countryCode.rawValue) does not support shipping labels.")
             return false
         }
-        return Self.shippingLabelSupportedCountries.contains(countryCode)
+        return true
     }
 
     var storeCountryCode: CountryCode? {

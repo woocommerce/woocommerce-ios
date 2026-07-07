@@ -247,7 +247,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     }
 
     func test_syncShippingLabels_when_store_country_is_not_supported_does_not_dispatch_actions() async throws {
-        for storeCountry in ["FR", "DE", "BR", "IN", ""] {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
             // Given
             let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
                                                           handlesShipmentSync: true)
@@ -260,16 +260,27 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
     }
 
-    func test_syncShippingLabels_without_store_country_does_not_dispatch_actions() async throws {
-        // Given
-        let viewModel = configureShippingLabelContext(storeCountry: nil,
-                                                      handlesShipmentSync: true)
+    func test_syncShippingLabels_when_store_country_is_unknown_dispatches_actions() async throws {
+        for storeCountry in [nil, ""] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
 
-        // When
-        await viewModel.syncShippingLabelsOrShipments()
+            // When
+            await viewModel.syncShippingLabelsOrShipments()
 
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+            // Then
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected fail-open plugin fetch and shipment sync for \(String(describing: storeCountry))")
+
+            let action = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+            guard case let WooShippingAction.syncShipments(siteID, orderID, _) = action else {
+                XCTFail("Expected \(action) to be \(WooShippingAction.self)")
+                return
+            }
+
+            XCTAssertEqual(siteID, order.siteID)
+            XCTAssertEqual(orderID, order.orderID)
+        }
     }
 
     // MARK: - `checkShippingLabelCreationEligibility`
@@ -494,7 +505,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     }
 
     func test_checkShippingLabelCreationEligibility_when_store_country_is_not_supported_returns_false_without_dispatching_actions() async throws {
-        for storeCountry in ["FR", "DE", "BR", "IN", ""] {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
             // Given
             let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
                                                           handlesEligibilityCheck: true)
@@ -508,17 +519,19 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
     }
 
-    func test_checkShippingLabelCreationEligibility_without_store_country_returns_false_without_dispatching_actions() async throws {
-        // Given
-        let viewModel = configureShippingLabelContext(storeCountry: nil,
-                                                      handlesEligibilityCheck: true)
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_unknown_defers_to_eligibility_check() async throws {
+        for storeCountry in [nil, ""] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
-        // When
-        let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
 
-        // Then
-        XCTAssertFalse(isEligible)
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+            // Then
+            XCTAssertTrue(isEligible, "Expected fail-open eligibility result from action for \(String(describing: storeCountry))")
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected plugin fetch and eligibility check for \(String(describing: storeCountry))")
+        }
     }
 
     func test_checkShippingLabelCreationEligibility_when_store_country_is_supported_dispatches_action() async throws {

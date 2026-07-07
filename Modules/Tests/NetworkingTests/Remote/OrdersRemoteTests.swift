@@ -1029,6 +1029,45 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
         XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
         XCTAssertNotNil(parameters["_fields"] as? String)
+        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
+    }
+
+    func test_loadPOSOrders_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let pageNumber = 3
+        let pageSize = 25
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, pageNumber: pageNumber, pageSize: pageSize)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
+        XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
+        XCTAssertEqual(parameters["status"] as? String, "any")
+        XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
+        XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
+        XCTAssertNotNil(parameters["_fields"] as? String)
+        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
+    }
+
+    func test_loadPOSOrders_by_orderIDs_sends_include_meta_parameter() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, orderIDs: [sampleOrderID])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["include"] as? String, String(sampleOrderID))
+        XCTAssertNotNil(parameters["_fields"] as? String)
+        XCTAssertEqual(parameters["include_meta"] as? String, "_payment_status")
     }
 
     func test_searchPOSOrders_properly_relays_networking_error() async throws {

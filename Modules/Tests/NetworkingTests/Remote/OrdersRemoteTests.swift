@@ -1016,6 +1016,33 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(received, "true")
     }
 
+    // MARK: - Fetch Date Modified Tests
+
+    func test_fetchDateModified_properly_returns_date_modified() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)", filename: "date-modified-gmt")
+
+        // When
+        let date = try await remote.fetchDateModified(for: self.sampleSiteID, orderID: self.sampleOrderID)
+
+        // Then
+        let expectedDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
+        assertEqual(expectedDate, date)
+    }
+
+    func test_fetchDateModified_properly_relays_networking_errors() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)", error: expectedError)
+
+        // When & Then
+        await assertThrowsError({
+            _ = try await remote.fetchDateModified(for: self.sampleSiteID, orderID: self.sampleOrderID)
+        }, errorAssert: { ($0 as? NetworkError) == expectedError })
+    }
+
     // MARK: - POS Orders Tests
 
     func test_updatePOSOrder_encodes_cash_payment_change_due_amount() async throws {

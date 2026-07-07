@@ -402,13 +402,37 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Stored orders can be incomplete because the orders list omits `meta_data`, so `retrieveOrder`
-    /// always syncs the full order from remote instead of probing `date_modified_gmt` first.
-    ///
-    func test_retrieveOrder_when_order_exists_in_storage_then_fetches_full_order_from_remote() {
+    func test_retrieve_single_order_fetches_up_to_date_order_from_storage() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
+
+        let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
+        let order = sampleOrder().copy(dateModified: dateModified)
+        storageManager.insertSampleOrder(readOnlyOrder: order)
+
+        // When
+        let predicate = NSPredicate(format: "orderID = %ld", order.orderID)
+        let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
+
+        let fetchedOrder: Yosemite.Order? = waitFor { promise in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
+                promise(order)
+            }
+
+            orderStore.onAction(action)
+        }
+
+        // Then
+        assertEqual(storedOrder, fetchedOrder)
+    }
+
+    func test_retrieve_single_order_fetches_order_from_remote_when_stored_order_is_outdated() {
+        // Given
+        network = MockNetwork(useResponseQueue: true)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated())
 
@@ -422,10 +446,8 @@ final class OrderStoreTests: XCTestCase {
         }
 
         // Then
-        // The full order from remote is returned instead of the stored copy, and the order request
-        // is the only request made (no `date_modified_gmt` probe beforehand).
-        assertEqual(sampleOrder(), fetchedOrder)
-        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        let expectedOrder = sampleOrder()
+        assertEqual(expectedOrder, fetchedOrder)
     }
 
     // MARK: - OrderAction.retrieveOrderRemotely

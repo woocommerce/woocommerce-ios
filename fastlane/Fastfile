@@ -152,8 +152,6 @@ GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES = {
   'zh-tw' => 'zh-Hant'
 }.freeze
 
-ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
-
 CODE_SIGNING_STORAGE_OPTIONS = {
   storage_mode: 's3',
   s3_bucket: 'a8c-fastlane-match',
@@ -912,7 +910,7 @@ platform :ios do
     sh("rm #{archive_zip_path}")
 
     upload_to_testflight(
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       # Wait 2 hours for the build to process then time out
       wait_processing_timeout_duration: 7200,
       changelog: File.read(RELEASE_NOTES_PATH),
@@ -1052,7 +1050,7 @@ platform :ios do
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       force: options[:skip_confirm],
       copyright: "© #{Time.now.year} WooCommerce"
     )
@@ -1393,16 +1391,10 @@ platform :ios do
   #
   # @option [Boolean] readonly (default: true) Whether to only fetch existing certificates and profiles, without generating new ones.
   lane :update_certs_and_profiles_enterprise do |readonly: true|
-    if readonly
-      # In readonly mode, we can use the API key
-      api_key_path = ASC_KEY_PATH
-    else
+    unless readonly
       # The Enterprise account APIs do not support authentication via API key.
       # If we want to modify data (readonly = false) we need to authenticate manually.
       prompt_user_for_app_store_connect_credentials
-      # We also need to pass no API key path, otherwise Fastlane will give
-      # precedence to that authentication mode.
-      api_key_path = nil
     end
 
     sync_code_signing(
@@ -1410,7 +1402,7 @@ platform :ios do
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: api_key_path,
+      api_key: nil,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end
@@ -1425,7 +1417,7 @@ platform :ios do
       team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
       app_identifier: MAIN_BUNDLE_IDENTIFIERS,
       readonly: readonly,
-      api_key_path: ASC_KEY_PATH,
+      api_key: app_store_connect_api_key,
       **CODE_SIGNING_STORAGE_OPTIONS
     )
   end

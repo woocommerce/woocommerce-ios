@@ -3,6 +3,7 @@
 
 25.2
 -----
+- [*] Shipping Labels: Prevent skipping phone number validation when confirming an address by tapping too quickly. [https://github.com/woocommerce/woocommerce-ios/pull/17478]
 - [*] Fixed the card reader connection Cancel button being too small to tap in landscape on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17437]
 - [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
 - [Internal] Fix `push_notification_source` being logged as `wpcom` instead of `woo_driven` for Woo-driven notifications. [https://github.com/woocommerce/woocommerce-ios/pull/17463]

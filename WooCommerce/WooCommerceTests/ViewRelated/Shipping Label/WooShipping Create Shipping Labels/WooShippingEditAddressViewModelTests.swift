@@ -743,6 +743,32 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.status, .unverified)
     }
 
+    // MARK: - validatedStatus (WOOMOB-3446)
+
+    func test_validatedStatus_when_phone_edited_to_empty_within_debounce_then_returns_missingInformation() {
+        // Given a valid, verified US address (default 1s field validation debounce).
+        let viewModel = makeValidVerifiedUSViewModel()
+        XCTAssertEqual(viewModel.status, .verified)
+
+        // When the phone is cleared and confirmed immediately, before the debounce fires the field
+        // error is not yet set, so `status` is still stale and would allow the user to proceed.
+        viewModel.phone.value = ""
+        XCTAssertEqual(viewModel.status, .unverified, "Within the debounce window the stale status still allows confirming")
+
+        // Then re-validating on confirm surfaces the missing phone synchronously and blocks proceeding.
+        XCTAssertEqual(viewModel.validatedStatus(), .missingInformation)
+        XCTAssertEqual(viewModel.status, .missingInformation)
+    }
+
+    func test_validatedStatus_when_address_is_valid_and_verified_then_returns_verified() {
+        // Given a valid, verified US address with no edits.
+        let viewModel = makeValidVerifiedUSViewModel()
+
+        // When re-validating on confirm.
+        // Then a valid address is not falsely blocked.
+        XCTAssertEqual(viewModel.validatedStatus(), .verified)
+    }
+
     @MainActor
     func test_isLoading_set_during_and_after_remote_validation() async {
         // Given
@@ -1643,6 +1669,31 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(receivedIsVerified, "updateDestinationAddress should be called with isVerified: false when withoutVerification is true")
+    }
+}
+
+private extension WooShippingEditAddressViewModelTests {
+    /// Builds a view model for a valid, remotely verified US origin address, so a single invalid edit
+    /// (e.g. clearing the phone) is what turns it invalid. Uses the default field validation debounce.
+    func makeValidVerifiedUSViewModel() -> WooShippingEditAddressViewModel {
+        let storageManager = MockStorageManager()
+        let countries = [Country(code: "US", name: "United States", states: [StateOfACountry(code: "NY", name: "New York")])]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+        return WooShippingEditAddressViewModel(type: .origin,
+                                               id: "default_address",
+                                               name: "JANE DOE",
+                                               company: "HEADQUARTERS",
+                                               country: "US",
+                                               address: "15 ALGONKIN ST STE 100",
+                                               city: "TICONDEROGA",
+                                               state: "NY",
+                                               postalCode: "12883-1487",
+                                               email: "TEST@EXAMPLE.COM",
+                                               phone: "1-234-456-7890",
+                                               isDefaultAddress: true,
+                                               showCompanyField: true,
+                                               isVerified: true,
+                                               storageManager: storageManager)
     }
 }
 

@@ -13,7 +13,6 @@ struct POSRefundReviewView: View {
 
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -95,7 +94,7 @@ private extension POSRefundReviewView {
                 Button(action: onAddReason) {
                     Text(refundReason != nil ? Localization.editReasonButton : Localization.addReasonButton)
                         .font(.posBodyMediumRegular(underline: true))
-                        .foregroundColor(.posLinkCTA(for: colorScheme))
+                        .foregroundColor(.posOnSurface)
                 }
                 .accessibilityLabel(refundReason != nil ? Localization.editReasonAccessibilityLabel : Localization.addReasonAccessibilityLabel)
             }

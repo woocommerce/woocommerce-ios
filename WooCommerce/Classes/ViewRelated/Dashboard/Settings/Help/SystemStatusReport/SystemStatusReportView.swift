@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Hosting controller wrapper for `SystemStatusReportView`
 ///
-final class SystemStatusReportHostingController: UIHostingController<SystemStatusReportView> {
+final class SystemStatusReportHostingController: TabBarHidingHostingController<SystemStatusReportView> {
 
     init(siteID: Int64) {
         let viewModel = SystemStatusReportViewModel(siteID: siteID)
@@ -12,7 +12,7 @@ final class SystemStatusReportHostingController: UIHostingController<SystemStatu
         rootView.noticePresenter.presentingViewController = self
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

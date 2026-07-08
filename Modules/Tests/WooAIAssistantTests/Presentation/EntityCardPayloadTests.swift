@@ -128,6 +128,38 @@ struct EntityCardPayloadTests {
         #expect(product.isEmpty == false)
     }
 
+    @Test
+    func test_decodeProduct_when_payload_has_variations_count_then_field_is_decoded() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(101),
+            "name": .string("Hoodie"),
+            "type": .string("variable"),
+            "variations_count": .int(15)
+        ])
+
+        // When
+        let product = EntityCardPayload.decodeProduct(payload)
+
+        // Then
+        #expect(product?.variationsCount == 15)
+    }
+
+    @Test
+    func test_decodeProduct_when_payload_has_no_variations_count_then_field_is_nil() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(101),
+            "name": .string("Hoodie")
+        ])
+
+        // When
+        let product = EntityCardPayload.decodeProduct(payload)
+
+        // Then
+        #expect(product?.variationsCount == nil)
+    }
+
     // MARK: - CustomerCardPayload
 
     @Test
@@ -186,4 +218,37 @@ struct EntityCardPayloadTests {
         #expect(variation?.parentID == 99)
     }
 
+    @Test
+    func test_decodeProductVariation_when_payload_has_image_then_firstImageURL_is_built() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(202),
+            "parent_id": .int(99),
+            "image": .object([
+                "id": .int(404),
+                "src": .string("https://example.com/navy-blue.jpg")
+            ])
+        ])
+
+        // When
+        let variation = EntityCardPayload.decodeProductVariation(payload)
+
+        // Then
+        #expect(variation?.firstImageURL?.absoluteString == "https://example.com/navy-blue.jpg")
+    }
+
+    @Test
+    func test_decodeProductVariation_when_payload_has_no_image_then_firstImageURL_is_nil() {
+        // Given
+        let payload = AnyCodableJSON.object([
+            "id": .int(202),
+            "parent_id": .int(99)
+        ])
+
+        // When
+        let variation = EntityCardPayload.decodeProductVariation(payload)
+
+        // Then
+        #expect(variation?.firstImageURL == nil)
+    }
 }

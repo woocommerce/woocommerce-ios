@@ -49,12 +49,18 @@ final class AIAssistantSessionStore {
         }
         let host = AIAssistantNavigationHost()
         let dependencies = makeDependencies(host)
+        let telemetryTracker = SuppressibleAssistantTelemetryTracker(
+            underlying: WooAssistantTelemetryTracker(analytics: ServiceLocator.analytics)
+        )
         let backend = AgenticChatBackend(chatService: dependencies.chatService,
                                          toolRegistry: dependencies.toolRegistry,
                                          safetyPolicy: dependencies.safetyPolicy,
                                          systemPromptProvider: dependencies.systemPromptProvider,
-                                         maxIterations: dependencies.maxIterations)
-        let controller = AssistantController(backend: backend, context: dependencies.context)
+                                         maxIterations: dependencies.maxIterations,
+                                         telemetryTracker: telemetryTracker)
+        let controller = AssistantController(backend: backend,
+                                             context: dependencies.context,
+                                             telemetryTracker: telemetryTracker)
         entries[siteID] = Entry(controller: controller,
                                 dependencies: dependencies,
                                 navigationHost: host)

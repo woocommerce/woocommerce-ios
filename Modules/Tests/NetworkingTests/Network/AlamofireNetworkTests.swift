@@ -30,7 +30,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }
@@ -52,7 +52,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }
@@ -74,7 +74,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // When
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
-            network.responseData(for: request) { data, error in
+            network.responseData(for: request) { _, error in
                 promise(error)
             }
         }
@@ -315,7 +315,7 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_responseDataAndHeaders_retries_direct_request_when_converted_request_fails() async throws {
         // Given
         let siteID: Int64 = 101
-        let testParameters = ["name": "Test Product"]
+        let testParameters: RequestParameterDictionary = ["name": "Test Product"]
         let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
         let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
         let network = createNetworkWithSelectedSite(siteID: siteID)
@@ -909,7 +909,7 @@ private extension AlamofireNetworkTests {
         return Session(configuration: configuration)
     }
 
-    func createJetpackRequest(siteID: Int64, path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> JetpackRequest {
+    func createJetpackRequest(siteID: Int64, path: String, method: HTTPMethod = .get, parameters: RequestParameterDictionary? = nil) -> JetpackRequest {
         return JetpackRequest(wooApiVersion: .mark3,
                              method: method,
                              siteID: siteID,
@@ -918,7 +918,7 @@ private extension AlamofireNetworkTests {
                              availableAsRESTRequest: true)
     }
 
-    func createRESTRequest(path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> RESTRequest {
+    func createRESTRequest(path: String, method: HTTPMethod = .get, parameters: RequestParameterDictionary? = nil) -> RESTRequest {
         return RESTRequest(siteURL: "https://example.com",
                           wooApiVersion: .mark3,
                           method: method,

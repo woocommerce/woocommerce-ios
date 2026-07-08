@@ -67,7 +67,7 @@ extension ProductDownloadSettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        viewModel.completeUpdating() { [weak self] (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+        viewModel.completeUpdating() { [weak self] downloadLimit, downloadExpiry, hasUnsavedChanges in
             ServiceLocator.analytics.track(.productDownloadableFilesSettingsChanged)
             self?.onCompletion(downloadLimit, downloadExpiry, hasUnsavedChanges)
         }
@@ -152,7 +152,7 @@ private extension ProductDownloadSettingsViewController {
 
     func configureLimit(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadLimitViewModel(downloadLimit: viewModel.downloadLimit) { [weak self] value in
-            self?.viewModel.handleDownloadLimitChange(value) { [weak self] (isValid) in
+            self?.viewModel.handleDownloadLimitChange(value) { [weak self] isValid in
                 self?.enableDoneButton(isValid)
                 self?.getDownloadLimitCell()?.textFieldBecomeFirstResponder()
             }
@@ -162,7 +162,7 @@ private extension ProductDownloadSettingsViewController {
 
     func configureExpiry(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadExpiryViewModel(downloadExpiry: viewModel.downloadExpiry) { [weak self] value in
-            self?.viewModel.handleDownloadExpiryChange(value) { [weak self] (isValid) in
+            self?.viewModel.handleDownloadExpiryChange(value) { [weak self] isValid in
                 self?.enableDoneButton(isValid)
                 self?.getDownloadExpiryCell()?.textFieldBecomeFirstResponder()
             }

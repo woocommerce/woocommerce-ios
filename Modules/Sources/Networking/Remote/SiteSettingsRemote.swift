@@ -5,6 +5,8 @@ public protocol SiteSettingsRemoteProtocol {
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
     func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting
     func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting
+    func loadAnalyticsScheduledImport(for siteID: Int64) async throws -> SiteSetting
+    func updateAnalyticsScheduledImport(for siteID: Int64, value: String) async throws -> SiteSetting
 }
 
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
@@ -109,7 +111,7 @@ public class SiteSettingsRemote: Remote {
                               settingID: String,
                               value: String,
                               completion: @escaping (Result<SiteSetting, Error>) -> Void) {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + settingGroup.rawValue + "/" + settingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -161,7 +163,7 @@ public class SiteSettingsRemote: Remote {
     ///
     public func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         let value = enabled ? Constants.featureEnabledValue : Constants.featureDisabledValue
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup + "/woocommerce_feature_\(feature.rawValue)_enabled"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
@@ -208,8 +210,47 @@ public class SiteSettingsRemote: Remote {
     /// - Throws: An error if the request fails or the response cannot be parsed.
     ///
     public func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
         let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsOrderDateTypeSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Retrieves the current value of the WooCommerce Analytics scheduled-import setting.
+    ///
+    /// - Parameter siteID: Site for which we'll fetch the setting.
+    /// - Returns: The setting payload as returned by the wc-admin settings endpoint.
+    /// - Throws: An error if the request fails or the response cannot be parsed.
+    ///
+    public func loadAnalyticsScheduledImport(for siteID: Int64) async throws -> SiteSetting {
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsScheduledImportSettingID
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .custom(Constants.analyticsSettingsGroup))
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Updates the WooCommerce Analytics scheduled-import setting.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll update the setting.
+    ///   - value: New value for the setting (`yes` for scheduled updates, `no` for immediate updates).
+    /// - Returns: The setting payload as returned by the wc-admin settings endpoint.
+    /// - Throws: An error if the request fails or the response cannot be parsed.
+    ///
+    public func updateAnalyticsScheduledImport(for siteID: Int64, value: String) async throws -> SiteSetting {
+        let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]
+        let path = Constants.siteSettingsPath + Constants.analyticsSettingsGroup + "/" + Constants.analyticsScheduledImportSettingID
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .put,
                                      siteID: siteID,
@@ -243,6 +284,7 @@ private extension SiteSettingsRemote {
         static let pointOfSaleSettingsGroup: String = "point-of-sale"
         static let analyticsSettingsGroup: String = "wc_admin"
         static let analyticsOrderDateTypeSettingID: String = "woocommerce_date_type"
+        static let analyticsScheduledImportSettingID: String = "woocommerce_analytics_scheduled_import"
         static let valueParameter: String = "value"
         static let featureEnabledValue: String = "yes"
         static let featureDisabledValue: String = "no"

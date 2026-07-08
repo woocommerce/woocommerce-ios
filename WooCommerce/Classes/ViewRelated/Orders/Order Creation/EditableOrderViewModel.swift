@@ -18,7 +18,6 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let permissionChecker: CaptureDevicePermissionChecker
     private let posNotificationScheduler: POSNotificationScheduling
 
@@ -170,7 +169,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Whether manual order status editing is supported for the current site.
     ///
     var isOrderStatusEditingEnabled: Bool {
-        ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
+        true
     }
 
     /// Defines if the view should be disabled.
@@ -392,7 +391,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the customer note section.
     ///
-    lazy private(set) var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
+    private(set) lazy var noteViewModel = { OrderFormCustomerNoteViewModel(originalNote: customerNoteDataViewModel.customerNote) }()
 
     // MARK: Payment properties
 
@@ -466,7 +465,6 @@ final class EditableOrderViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          posNotificationScheduler: POSNotificationScheduling = POSNotificationScheduler(),
@@ -481,7 +479,6 @@ final class EditableOrderViewModel: ObservableObject {
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.posNotificationScheduler = posNotificationScheduler
@@ -1455,21 +1452,26 @@ private extension EditableOrderViewModel {
     /// - Parameters:
     ///   - products: Selected products
     ///   - variations: Selected product variations
+    ///   - consumingPendingBundleConfigurations: When `true`, clears the pending bundle configuration queue after building the inputs.
+    ///     Keep this `false` for preview checks like `isSyncRequired`, otherwise evaluating the Recalculate state can discard the configuration before sync.
     /// - Returns: [OrderSyncProductInput]
     ///
-    func productInputAdditionsToSync(products: [Product], variations: [ProductVariation]) -> [OrderSyncProductInput] {
+    func productInputAdditionsToSync(products: [Product],
+                                     variations: [ProductVariation],
+                                     consumingPendingBundleConfigurations: Bool = false) -> [OrderSyncProductInput] {
         var productInputs: [OrderSyncProductInput] = []
         var productVariationInputs: [OrderSyncProductInput] = []
+        var pendingBundleConfigurationsByProductID = productSelectorBundleConfigurationsByProductID
 
         let itemsInOrder = syncExistingSelectedProductsInOrder()
 
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
-                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
+                || pendingBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
                 switch product.productType {
                     case .bundle:
-                        if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {
+                        if let bundleConfiguration = pendingBundleConfigurationsByProductID[product.productID]?.popFirst() {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, bundleConfiguration: bundleConfiguration))
                         } else {
                             productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
@@ -1479,7 +1481,9 @@ private extension EditableOrderViewModel {
                 }
             }
         }
-        productSelectorBundleConfigurationsByProductID = [:]
+        if consumingPendingBundleConfigurations {
+            productSelectorBundleConfigurationsByProductID = [:]
+        }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
@@ -1524,7 +1528,6 @@ private extension EditableOrderViewModel {
         }
 
         return inputsToBeRemoved
-
     }
 
     /// Adds, or removes multiple products from an Order
@@ -1532,7 +1535,9 @@ private extension EditableOrderViewModel {
     func syncOrderItems(products: [Product], variations: [ProductVariation]) {
         // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
         // otherwise may ignore the subsequent values that are sent
-        let addedItemsToSync = productInputAdditionsToSync(products: products, variations: variations)
+        let addedItemsToSync = productInputAdditionsToSync(products: products,
+                                                           variations: variations,
+                                                           consumingPendingBundleConfigurations: true)
         let removedItemsToSync = productInputDeletionsToSync(products: products, variations: variations)
 
         guard (addedItemsToSync + removedItemsToSync).isNotEmpty else {
@@ -1951,8 +1956,7 @@ private extension EditableOrderViewModel {
     }
 
     func observeGiftCardStatesForAnalytics() {
-        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
-            .first()
+        $paymentDataViewModel.first(where: { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled })
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
@@ -2318,7 +2322,6 @@ private extension EditableOrderViewModel {
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))
-
         }
     }
 

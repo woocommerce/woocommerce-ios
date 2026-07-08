@@ -1,6 +1,20 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.1
+Phone POS is now available for UK-based stores. Product search when creating orders is easier with a new Products/SKU filter, and your payments balance summary splits out Total and Available funds. Product titles and order creation layouts are tidier, and picking images or viewing actions on iPad won’t crash your flow.
+
+## 25.0
+Now you can log in easily with a QR-code. Duplicating a product opens the new copy and preserves original images. Refunds for orders with multiple shipping lines, or duplicate line items, now work as they should. Your POS catalog downloads more quickly, and you'll see smoother resizing of the app on iPad.
+## 24.9
+Big news if you’re in Canada — Point of Sale is now available on iPad, and the refund flow is smoother for everyone. You can use our new troubleshooting and AI help tools in the support area. Plus, configure your Store Stats widget, try a new Trends widget on your lock screen, and more fixes for your daily tasks.
+
+## 24.8
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
+
+## 24.7
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+
 ## 24.6
 This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
 

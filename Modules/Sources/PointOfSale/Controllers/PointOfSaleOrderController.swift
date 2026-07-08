@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Observation
 import class WooFoundation.VersionHelpers
@@ -8,6 +9,7 @@ import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSVariation
 import struct Yosemite.CouponsError
@@ -40,6 +42,22 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+    /// Marks the order as paid manually.
+    ///
+    /// - Parameter note: Optional merchant-supplied free-form note (e.g. "Bank transfer from
+    ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
+    ///   `addOrderNote`, separately from the order completion call. The order's payment-method
+    ///   title stays "Other" regardless of the note's content.
+    func markOrderAsPaidManually(note: String?) async throws
+    /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
+    /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
+    func confirmScanToPayPayment() async throws
+    /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
+    /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
+    func reloadCurrentOrder() async throws -> Order
+    /// Promotes the cached `autoDraft` order to `.pending`. The returned order has
+    /// `paymentURL` populated by the WC backend. Idempotent.
+    func promoteCurrentOrderToPending() async throws -> Order
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -61,6 +79,12 @@ protocol PointOfSaleOrderControllerProtocol {
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
 
+    /// The custom amounts as they were on the last successful sync. Used to detect a "Charge
+    /// taxes" toggle on an otherwise-unchanged amount, which `POSCart.matches(order:)` cannot
+    /// see (it ignores `isTaxable`). Compared against the cart's intent — never the server's
+    /// returned tax status — so a legitimate server/cart tax divergence won't cause a resync loop.
+    private var lastSyncedCustomAmounts: [POSCustomAmount] = []
+
     private var currencyFormatter: CurrencyFormatter {
         CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     }
@@ -74,7 +98,13 @@ protocol PointOfSaleOrderControllerProtocol {
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
 
-        guard !orderState.isSyncing, !posCart.matches(order: order) else {
+        // `matches(order:)` ignores `isTaxable`, so a "Charge taxes" toggle on an otherwise-
+        // unchanged amount would short-circuit and never re-sync. Force a sync when the cart's
+        // taxable intent diverges from what we last synced.
+        let taxableIntentChanged = !posCart.customAmounts.taxableIntentMatches(lastSyncedCustomAmounts)
+
+        guard !orderState.isSyncing,
+              !posCart.matches(order: order) || taxableIntentChanged else {
             return .success(.orderNotChanged)
         }
 
@@ -84,11 +114,13 @@ protocol PointOfSaleOrderControllerProtocol {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
                                                                currency: storeCurrency)
             self.order = syncedOrder
+            self.lastSyncedCustomAmounts = posCart.customAmounts
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
             self.order = nil
+            self.lastSyncedCustomAmounts = []
             trackOrderCreationFailed(error: error)
             setOrderStateToError(error, retryHandler: retryHandler)
             return .failure(SyncOrderStateError.syncFailure)
@@ -115,6 +147,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     func clearOrder() {
         order = nil
+        lastSyncedCustomAmounts = []
         orderState = .idle
     }
 
@@ -131,6 +164,76 @@ protocol PointOfSaleOrderControllerProtocol {
             throw error
         }
     }
+
+    @MainActor
+    func markOrderAsPaidManually(note: String?) async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+
+        // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
+        // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
+        // through a single event. Re-throw so the model can roll back state.
+        try await orderService.markOrderAsCompletedManually(order: order)
+
+        // Order note attaches separately from completion. We only attempt it if the merchant
+        // supplied content; the order completion is the critical path, and a stale note can
+        // be added manually in admin if this network call drops, so we log-and-move-on rather
+        // than throwing the merchant back to a "retry" prompt.
+        let trimmed = note?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard trimmed.isEmpty == false else { return }
+        do {
+            try await orderService.addOrderNote(orderID: order.orderID,
+                                                isCustomerNote: false,
+                                                note: trimmed)
+        } catch {
+            DDLogWarn("⚠️ [MarkAsPaid] Order completed but failed to attach merchant note: \(error)")
+        }
+    }
+
+    @MainActor
+    func confirmScanToPayPayment() async throws {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        try await orderService.addOrderNote(orderID: order.orderID,
+                                            isCustomerNote: false,
+                                            note: Localization.scanToPayNote)
+    }
+
+    @MainActor
+    func reloadCurrentOrder() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        let refreshed = try await orderService.loadOrder(orderID: order.orderID)
+        self.order = refreshed
+        return refreshed
+    }
+
+    @MainActor
+    func promoteCurrentOrderToPending() async throws -> Order {
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
+        }
+        let promoted = try await orderService.promoteOrderToPending(order: order)
+        self.order = promoted
+        // Keep the loaded totals in sync; the order is the same, only its status changed.
+        if case let .loaded(totals, _) = orderState {
+            orderState = .loaded(totals, promoted)
+        }
+        return promoted
+    }
+}
+
+private extension PointOfSaleOrderController {
+    enum Localization {
+        static let scanToPayNote = NSLocalizedString(
+            "pointOfSale.scanToPay.orderNote",
+            value: "Customer paid via Scan to Pay",
+            comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
+        )
+    }
 }
 
 private extension PointOfSaleOrderController {
@@ -145,6 +248,8 @@ private extension PointOfSaleOrderController {
             orderTotalDecimal: totalsCalculator.orderTotal.decimalValue,
             discountTotal: formattedDiscount(totalsCalculator.discountTotal,
                                              currency: order.currency),
+            customAmountsTotal: formattedCustomAmounts(totalsCalculator.feesTotal,
+                                                       currency: order.currency),
             couponsTotals: couponsTotals(order))
     }
 
@@ -172,6 +277,17 @@ private extension PointOfSaleOrderController {
 
         return formattedDiscount
     }
+
+    /// Custom amounts are stored as order fees, so they are absent from the items subtotal
+    /// (`cartTotal`). We surface them on their own line, returning `nil` when there are none.
+    func formattedCustomAmounts(_ fees: NSDecimalNumber, currency: String) -> String? {
+        guard !fees.isZero(),
+              let formattedFees = formattedPrice(fees.stringValue, currency: currency) else {
+            return nil
+        }
+
+        return formattedFees
+    }
 }
 
 // MARK: - Error Handling
@@ -188,6 +304,9 @@ private extension PointOfSaleOrderController {
                 )
             }
             return .missingProducts(missingProductInfo)
+        }
+        else if case .orderDoesNotMatchCart = error as? POSOrderService.POSOrderServiceError {
+            return .orderDoesNotMatchCart
         }
         else if let couponsError = CouponsError(underlyingError: error) {
             return .invalidCoupon(couponsError.message)

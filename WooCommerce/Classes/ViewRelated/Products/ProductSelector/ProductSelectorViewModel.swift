@@ -84,7 +84,6 @@ final class ProductSelectorViewModel: ObservableObject {
         FilterProductListViewModel(
             filters: filtersSubject.value,
             siteID: siteID,
-            site: stores.sessionManager.defaultSite,
             stores: stores,
             storageManager: storageManager
         )
@@ -128,7 +127,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Ids of those products that were most or last sold among the cached orders
     ///
-    private var topProductsFromCachedOrders: ProductSelectorTopProducts = ProductSelectorTopProducts.empty
+    private var topProductsFromCachedOrders = ProductSelectorTopProducts.empty
 
     private let tracker: ProductSelectorViewModelTracker
 
@@ -804,6 +803,11 @@ private extension ProductSelectorViewModel {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
 
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
+            // Skips leading emissions with the default search term and filters. Otherwise, the initial emission
+            // resyncs the first page, duplicating the sync triggered by `onLoadTrigger` on first load.
+            .drop(while: { searchTerm, filters, productSearchFilter in
+                searchTerm.isEmpty && filters == FilterProductListViewModel.Filters() && productSearchFilter == .all
+            })
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self else { return }
                 Task { @MainActor in
@@ -889,7 +893,7 @@ private extension ProductSelectorViewModel {
     /// Resetting filters from local products settings helps to show the correct products in the main product list screen.
     ///
     func resetFiltersUsingLocalProductsSettings() {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {

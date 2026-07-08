@@ -313,11 +313,9 @@ private extension EmptyStateViewControllerTests {
     }
 
     func notifyWhenInteractionEnds(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
-
     }
 
     func notifyWhenInteractionChanges(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
-
     }
 
     let isAnimated: Bool = false
@@ -348,7 +346,7 @@ private extension EmptyStateViewControllerTests {
         nil
     }
 
-    let containerView: UIView = UIView()
+    let containerView = UIView()
 
     let targetTransform: CGAffineTransform = .identity
 }

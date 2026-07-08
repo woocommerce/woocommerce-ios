@@ -65,6 +65,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.authenticationManager.initialize()
         stores.initializeAfterDependenciesAreInitialized()
 
+        setupWidgetSiteListSync()
+
         setupAnalytics(analytics)
         setupCocoaLumberjack()
         setupLibraryLogger()
@@ -158,13 +160,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 await downloadCoordinator.handleBackgroundSessionEvent(
                     sessionIdentifier: identifier,
                     completionHandler: completionHandler,
-                    parseHandler: { fileURL, siteID in
+                    parseHandler: { fileURL, siteID, snapshotDate in
                         // Use the POS catalog sync coordinator to parse and persist
                         guard let coordinator = ServiceLocator.stores.posCatalogSyncCoordinator else {
                             throw NSError(domain: "com.woocommerce.pos", code: -1,
                                          userInfo: [NSLocalizedDescriptionKey: "POS catalog coordinator not available"])
                         }
-                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID)
+                        try await coordinator.processBackgroundDownload(fileURL: fileURL, siteID: siteID, snapshotDate: snapshotDate)
                     }
                 )
             }
@@ -281,6 +283,13 @@ extension AppDelegate {
 
     func setupUserNotificationCenter() {
         UNUserNotificationCenter.current().delegate = self
+    }
+
+    /// Starts the widget site list sync manager. The manager mirrors the user's selectable
+    /// WooCommerce sites into shared app-group `UserDefaults` for the widget site picker.
+    ///
+    func setupWidgetSiteListSync() {
+        ServiceLocator.widgetSiteListSyncManager.start()
     }
 
     /// Set up app review prompt
@@ -410,6 +419,7 @@ extension AppDelegate {
         let stores = ServiceLocator.stores
         if stores.isAuthenticatedWithoutWPCom == false {
             stores.listenToWPCOMInvalidWPCOMTokenNotification()
+            stores.listenToUnknownBlogNotification()
         }
     }
 
@@ -435,7 +445,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 // MARK: - Magic link
 extension AppDelegate {
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         if ServiceLocator.stores.isAuthenticated {
             let pendingAuthFlowStorage = PendingAuthFlowStorage()
             let flow = pendingAuthFlowStorage.current
@@ -445,10 +455,16 @@ extension AppDelegate {
             case .jetpackSetup:
                 return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
             case .none:
-                return false
+                // A woocommerce://qr-login deep link can arrive while signed in —
+                // offer to sign out and start the QR sign-in.
+                let handled = await ServiceLocator.authenticationManager.handleSignedInQRLoginDeepLink(url, rootViewController: rootViewController)
+                if handled == false {
+                    DDLogWarn("⚠️ Authentication URL received while signed in was not handled: \(url.scheme ?? "")://\(url.host ?? "")")
+                }
+                return handled
             }
         } else {
-            return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+            return await ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
     }
 

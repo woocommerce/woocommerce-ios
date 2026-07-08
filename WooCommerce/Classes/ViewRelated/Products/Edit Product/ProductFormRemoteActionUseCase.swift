@@ -63,6 +63,8 @@ final class ProductFormRemoteActionUseCase {
             let copiedProduct = originalProduct.product.copy(
                 productID: 0,
                 name: newName,
+                slug: "", // let the server assign a unique slug for the duplicate instead of reusing the original's
+                permalink: "", // derived server-side; cleared for local consistency
                 statusKey: ProductStatus.draft.rawValue,
                 sku: .some(nil), // just resetting SKU to nil for simplicity
                 password: password
@@ -318,7 +320,7 @@ private extension ProductFormRemoteActionUseCase {
                     let updatedProduct = EditableProductModel(product: productModel)
                     onCompletion(.success(updatedProduct))
                 }
-            } catch let error {
+            } catch {
                 await MainActor.run {
                     onCompletion(.failure(.unknown(error: AnyError(error))))
                 }
@@ -365,7 +367,9 @@ private extension ProductFormRemoteActionUseCase {
                            toProductID newProductID: Int64,
                            siteID: Int64) {
         if customFields.isEmpty { return }
-        let metadata: [[String: Any?]] = customFields.map { ["key": $0.key, "value": $0.value.stringValue] }
+        let metadata: [RequestParameterDictionary] = customFields.map {
+            ["key": .string($0.key), "value": .string($0.value.stringValue)]
+        }
         let action = MetaDataAction.updateMetaData(
             siteID: siteID,
             parentItemID: newProductID,
@@ -384,7 +388,7 @@ private extension ProductFormRemoteActionUseCase {
             let createAction = ProductVariationAction.createProductVariation(
                 siteID: parent.siteID,
                 productID: parent.productID,
-                newVariation: newVariation) { result in
+                newVariation: newVariation) { _ in
                 continuation.resume(returning: ())
             }
             DispatchQueue.main.async { [weak self] in

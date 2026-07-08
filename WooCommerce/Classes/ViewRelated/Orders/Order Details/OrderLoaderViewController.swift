@@ -100,7 +100,7 @@ private extension OrderLoaderViewController {
             return self.state = .success(order: storedOrder)
         }
 
-        let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] order, error in
             guard let self else {
                 return
             }
@@ -178,7 +178,7 @@ private extension OrderLoaderViewController {
     /// Displays the Loading Overlay.
     ///
     func displayFailureOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        let overlayView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("The Order couldn't be loaded!", comment: "Fetching an Order Failed")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")

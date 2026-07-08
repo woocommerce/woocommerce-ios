@@ -1,15 +1,22 @@
+import Foundation
+
 extension StoreStatsWidgetDateRange {
     /// Maps the user-selected widget range to the primitive parameters consumed by
-    /// `StoreInfoDataService.fetchStats(for:dateRange:)`.
-    ///
-    var serviceDateRange: StoreInfoDataService.DateRange {
+    /// `StoreInfoDataService.fetchStats(for:dateRange:)`, using the selected store's timezone.
+    func serviceDateRange(timezone: TimeZone = .current) -> StoreInfoDataService.DateRange {
         switch self {
         case .today:
-            return .today()
-        case .last7Days:
-            return .last7Days()
-        case .last30Days:
-            return .last30Days()
+            return .today(timezone: timezone)
+        case .yesterday:
+            return .yesterday(timezone: timezone)
+        case .lastWeek:
+            return .lastWeek(timezone: timezone)
+        case .lastMonth:
+            return .lastMonth(timezone: timezone)
+        case .weekToDate:
+            return .weekToDate(timezone: timezone)
+        case .monthToDate:
+            return .monthToDate(timezone: timezone)
         }
     }
 }

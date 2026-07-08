@@ -45,5 +45,4 @@ final class BillingAddressTableViewCellTests: XCTestCase {
     func testAddressLabelValues() {
         XCTAssertEqual(cell?.getAddressLabel().text, addressMock)
     }
-
 }

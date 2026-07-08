@@ -246,6 +246,9 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
+    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+
     // MARK: Site creation
     //
     case siteCreated = "login_woocommerce_site_created"
@@ -435,12 +438,6 @@ public enum WooAnalyticsStat: String {
     case orderDetailTrashButtonTapped = "order_detail_trash_tapped"
     case orderDetailEditAddressMapPickerTapped = "order_detail_edit_address_map_picker_tapped"
     case orderDetailEditAddressMapPickerUseAddressTapped = "order_detail_edit_address_map_picker_use_address_tapped"
-
-    // MARK: Test order
-    //
-    case orderListTestOrderDisplayed = "order_list_test_order_displayed"
-    case orderListTryTestOrderTapped = "order_list_try_test_order_tapped"
-    case testOrderStartTapped = "test_order_start_tapped"
 
     // MARK: Order Data/Action Events
     //
@@ -636,8 +633,12 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wooPushTokenDeleteSuccess = "woo_push_token_delete_success"
+    case wooPushTokenDeleteError = "woo_push_token_delete_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+    case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
+    case wpcomDeviceEnablePushNotificationsError = "wpcom_device_enable_push_notifications_error"
 
     case pushNotificationsCardView = "push_notifications_card_view"
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
@@ -1197,6 +1198,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Widgets
     case widgetTapped = "widget_tapped"
+    case storeStatsWidgetMetricTapped = "store_stats_widget_metric_tapped"
 
     // MARK: Application password Events
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
@@ -1252,7 +1254,6 @@ public enum WooAnalyticsStat: String {
     // MARK: Connectivity Tool
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
-    case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
     case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App
@@ -1299,6 +1300,17 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
     case pointOfSaleOtherPaymentMethodsTapped = "other_payment_methods_tapped"
+    case pointOfSaleCheckoutScanToPayPaymentTapped = "checkout_scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentTapped = "scan_to_pay_payment_tapped"
+    case pointOfSaleScanToPayPaymentFailed = "scan_to_pay_payment_failed"
+    case pointOfSaleScanToPayCollectPaymentSuccess = "scan_to_pay_collect_payment_success"
+    case pointOfSaleScanToPayPaymentDetectedViaPolling = "scan_to_pay_payment_detected_via_polling"
+    case pointOfSaleBackToCheckoutFromScanToPayTapped = "back_to_checkout_from_scan_to_pay"
+    case pointOfSaleCheckoutMarkAsPaidTapped = "checkout_mark_as_paid_tapped"
+    case pointOfSaleMarkAsPaidConfirmed = "mark_as_paid_confirmed"
+    case pointOfSaleMarkAsPaidFailed = "mark_as_paid_failed"
+    case pointOfSaleMarkAsPaidSuccess = "mark_as_paid_success"
+    case pointOfSaleBackToCheckoutFromMarkAsPaidTapped = "back_to_checkout_from_mark_as_paid"
     case pointOfSaleClearCartTapped = "clear_cart_tapped"
     case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
     case pointOfSaleExitConfirmed = "exit_confirmed"
@@ -1309,8 +1321,11 @@ public enum WooAnalyticsStat: String {
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
     case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
+    case pointOfSaleCheckoutTapToPayTapped = "checkout_tap_to_pay_tapped"
+    case pointOfSaleTapToPayNotAvailable = "tap_to_pay_not_available"
     case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
+    case pointOfSaleEditReceiptTapped = "edit_receipt_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
     case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
     case pointOfSaleItemsHeaderTapped = "items_header_tapped"
@@ -1370,6 +1385,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
     case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
     case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
+    case pointOfSaleLocalCatalogBlockedFellBackToRemote = "local_catalog_blocked_fell_back_to_remote"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
@@ -1399,6 +1415,21 @@ public enum WooAnalyticsStat: String {
     case wooShippingPaymentStep = "wcs_payment_step"
     case wooShippingPurchaseStep = "wcs_purchase_step"
     case wooShippingRefundRequested = "wcs_refund_requested"
+    case wooShippingCarrierTermsOfService = "wcs_carrier_tos"
+
+    // MARK: Support Chat events
+    case supportChatEntryPointTapped = "support_chat_entry_point_tapped"
+    case supportChatIssueSelected = "support_chat_issue_selected"
+    case supportChatTroubleshootingCompleted = "support_chat_troubleshooting_completed"
+    case supportChatMessageSent = "support_chat_message_sent"
+    case supportChatResponseReceived = "support_chat_response_received"
+    case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
+    case supportChatEscalationButtonShown = "support_chat_escalation_button_shown"
+    case supportChatEscalationTapped = "support_chat_escalation_tapped"
+    case supportChatTicketCreated = "support_chat_ticket_created"
+    case supportChatTicketCreationFailed = "support_chat_ticket_creation_failed"
+    case supportChatResolutionButtonShown = "support_chat_resolution_button_shown"
+    case supportChatMarkResolvedTapped = "support_chat_mark_resolved_tapped"
 }
 
 extension WooAnalyticsStat {
@@ -1427,10 +1458,11 @@ extension WooAnalyticsStat {
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
             return false
-        // Per-site push token registration events attribute properties to the target site via a factory,
-        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
+        // Per-site push token registration/deletion events attribute properties to the target site via a
+        // factory, so opt out of the default-site enrichment that would otherwise overwrite `blog_id` /
+        // `site_url` with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
+             .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
             return false
         default:
             return true

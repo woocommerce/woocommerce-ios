@@ -25,7 +25,7 @@ final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
                 }
             }
 
-            let task = imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
+            let task = imageService.downloadImage(with: url, shouldCacheImage: true) { image, _ in
                 guard let image else {
                     failure()
                     return

@@ -5,7 +5,7 @@ import Testing
 @Suite(.timeLimit(.minutes(1)))
 struct WriteResultMapperTests {
     @Test
-    func test_mapEntity_when_response_ok_then_returns_success_with_pruned_card_and_summary() {
+    func test_mapEntity_when_response_ok_then_returns_success_with_summary_and_nil_uiStructured() {
         // Given
         let body = """
         {
@@ -20,7 +20,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 family: .order,
                                                  summarize: { entity in
             if case .object(let dict) = entity, let status = dict["status"] {
                 return .object(["status": status])
@@ -33,19 +32,11 @@ struct WriteResultMapperTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let cards = success.uiStructured?.cards ?? []
-        #expect(cards.count == 1)
-        #expect(cards.first?.id == "42")
-        #expect(cards.first?.family == .order)
-        if case .object(let element) = cards.first?.element {
-            #expect(element["_links"] == nil)
-            #expect(element["meta_data"] == nil)
-            #expect(element["status"] == .string("completed"))
-        } else {
-            Issue.record("expected object element")
-        }
+        #expect(success.uiStructured == nil)
         if case .object(let summary) = success.structured {
             #expect(summary["status"] == .string("completed"))
+        } else {
+            Issue.record("expected object summary")
         }
     }
 
@@ -57,7 +48,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 family: .order,
                                                  summarize: { _ in .object([:]) })
 
         // Then
@@ -76,7 +66,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "products_update",
-                                                 family: .product,
                                                  summarize: { _ in .object([:]) })
 
         // Then
@@ -94,7 +83,6 @@ struct WriteResultMapperTests {
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 family: .order,
                                                  summarize: { _ in .object([:]) })
 
         // Then
@@ -106,14 +94,13 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapEntity_when_response_has_no_id_then_succeeds_without_card() {
+    func test_mapEntity_when_response_has_no_id_then_succeeds_with_nil_uiStructured() {
         // Given
         let response = WCRESTResponse(data: Data(#"{"name": "Foo"}"#.utf8), statusCode: 200)
 
         // When
         let result = WriteResultMapper.mapEntity(response,
                                                  toolName: "orders_update",
-                                                 family: .order,
                                                  summarize: { entity in entity })
 
         // Then
@@ -125,15 +112,21 @@ struct WriteResultMapperTests {
     }
 
     @Test
-    func test_mapBatch_when_all_entries_succeed_then_summary_lists_updated_ids_and_no_cards() {
+    func test_mapBatch_when_all_entries_succeed_then_summary_carries_counts_and_no_cards_are_built() {
         // Given
         let body = """
-        {"update": [{"id": 1, "status": "publish"}, {"id": 2, "status": "publish"}]}
+        {"update": [
+            {"id": 1, "status": "publish", "_links": {"self": []}},
+            {"id": 2, "status": "publish", "meta_data": [{"id": 9, "key": "_x", "value": "y"}]}
+        ]}
         """
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "products_bulk_update",
+                                                requestedCount: 2,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -143,17 +136,21 @@ struct WriteResultMapperTests {
         if case .object(let summary) = success.structured {
             #expect(summary["updated_count"] == .int(2))
             #expect(summary["failed_count"] == .int(0))
+            #expect(summary["requested_count"] == .int(2))
+            #expect(summary["partial_success"] == .bool(false))
+            #expect(summary["patch_keys"] == .array([.string("status")]))
             if case .array(let ids) = summary["updated_ids"] {
                 #expect(ids == [.int(1), .int(2)])
             } else {
                 Issue.record("expected updated_ids array")
             }
+            #expect(summary["failed"] == .array([]))
         }
         #expect(success.uiStructured == nil)
     }
 
     @Test
-    func test_mapBatch_when_partial_failure_then_summary_includes_failed_entries() {
+    func test_mapBatch_when_partial_failure_then_summary_separates_successes_and_failures_and_no_cards_are_built() {
         // Given
         let body = """
         {"update": [
@@ -164,7 +161,10 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "products_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "products_bulk_update",
+                                                requestedCount: 2,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .success(let success) = result else {
@@ -174,7 +174,42 @@ struct WriteResultMapperTests {
         if case .object(let summary) = success.structured {
             #expect(summary["updated_count"] == .int(1))
             #expect(summary["failed_count"] == .int(1))
+            #expect(summary["partial_success"] == .bool(true))
+            if case .array(let ids) = summary["updated_ids"] {
+                #expect(ids == [.int(1)])
+            } else {
+                Issue.record("expected updated_ids array")
+            }
         }
+        #expect(success.uiStructured == nil)
+    }
+
+    @Test
+    func test_mapBatch_when_no_entries_succeed_then_uiStructured_is_nil() {
+        // Given
+        let body = """
+        {"update": [
+            {"error": {"code": "rest_invalid", "message": "bad"}, "id": 1}
+        ]}
+        """
+        let response = WCRESTResponse(data: Data(body.utf8), statusCode: 200)
+
+        // When
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "orders_bulk_update",
+                                                requestedCount: 1,
+                                                patchKeys: ["status"])
+
+        // Then
+        guard case .success(let success) = result else {
+            Issue.record("expected success, got \(result)")
+            return
+        }
+        if case .object(let summary) = success.structured {
+            #expect(summary["updated_count"] == .int(0))
+            #expect(summary["failed_count"] == .int(1))
+        }
+        #expect(success.uiStructured == nil)
     }
 
     @Test
@@ -183,7 +218,10 @@ struct WriteResultMapperTests {
         let response = WCRESTResponse(data: Data(), statusCode: 408)
 
         // When
-        let result = WriteResultMapper.mapBatch(response, toolName: "orders_bulk_update")
+        let result = WriteResultMapper.mapBatch(response,
+                                                toolName: "orders_bulk_update",
+                                                requestedCount: 1,
+                                                patchKeys: ["status"])
 
         // Then
         guard case .failed(let failed) = result else {

@@ -249,5 +249,4 @@ final class SessionsReportCardViewModelTests: XCTestCase {
             XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
         }
     }
-
 }

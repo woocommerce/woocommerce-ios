@@ -1,60 +1,21 @@
 import Foundation
-import SwiftUI
 import Testing
 import enum WooFoundationCore.CurrencyCode
 import Yosemite
 @testable import PointOfSale
 
 struct PointOfSaleDashboardViewHelperTests {
-    // MARK: - Horizontal Size Class Tests
-
-    @Test func determineViewState_when_horizontalSizeClass_is_compact_returns_unsupportedWidth() async throws {
-        // Given
-        let eligibilityState: POSEligibilityState = .eligible
-        let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .compact
-
-        // When
-        let result = PointOfSaleDashboardViewHelper.determineViewState(
-            eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
-        )
-
-        // Then
-        #expect(result == .unsupportedWidth)
-    }
-
-    @Test func determineViewState_when_horizontalSizeClass_is_nil_returns_unsupportedWidth() async throws {
-        // Given
-        let eligibilityState: POSEligibilityState = .eligible
-        let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass? = nil
-
-        // When
-        let result = PointOfSaleDashboardViewHelper.determineViewState(
-            eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
-        )
-
-        // Then
-        #expect(result == .unsupportedWidth)
-    }
-
     // MARK: - Eligibility State Tests
 
     @Test func determineViewState_when_eligibilityState_is_nil_returns_loading() async throws {
         // Given
         let eligibilityState: POSEligibilityState? = nil
         let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -73,13 +34,11 @@ struct PointOfSaleDashboardViewHelperTests {
         // Given
         let eligibilityState: POSEligibilityState = .ineligible(reason: reason)
         let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -92,13 +51,11 @@ struct PointOfSaleDashboardViewHelperTests {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .loading()
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -109,13 +66,11 @@ struct PointOfSaleDashboardViewHelperTests {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -139,13 +94,11 @@ struct PointOfSaleDashboardViewHelperTests {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
         let itemsContainerState: ItemsContainerState = .error(errorState)
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -154,34 +107,15 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Priority Tests
 
-    @Test func determineViewState_horizontalSizeClass_takes_priority_over_eligibility_state() async throws {
-        // Given - compact size class should return unsupportedWidth regardless of eligibility
-        let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
-        let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .compact
-
-        // When
-        let result = PointOfSaleDashboardViewHelper.determineViewState(
-            eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
-        )
-
-        // Then
-        #expect(result == .unsupportedWidth)
-    }
-
     @Test func determineViewState_nil_eligibilityState_takes_priority_over_containerState() async throws {
         // Given - nil eligibility should return loading regardless of container state
         let eligibilityState: POSEligibilityState? = nil
         let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -192,13 +126,11 @@ struct PointOfSaleDashboardViewHelperTests {
         // Given - ineligible state should return ineligible regardless of container state
         let eligibilityState: POSEligibilityState = .ineligible(reason: .featureSwitchDisabled)
         let itemsContainerState: ItemsContainerState = .content
-        let horizontalSizeClass: UserInterfaceSizeClass = .regular
 
         // When
         let result = PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: eligibilityState,
-            itemsContainerState: itemsContainerState,
-            horizontalSizeClass: horizontalSizeClass
+            itemsContainerState: itemsContainerState
         )
 
         // Then
@@ -209,10 +141,9 @@ struct PointOfSaleDashboardViewHelperTests {
 
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.content, true),
-        (PointOfSaleDashboardView.ViewState.error(PointOfSaleErrorState.errorOnLoadingProducts()), true),
-        (PointOfSaleDashboardView.ViewState.unsupportedWidth, true)
+        (PointOfSaleDashboardView.ViewState.error(PointOfSaleErrorState.errorOnLoadingProducts()), true)
     ])
-    func showsFloatingControl_when_content_error_or_unsupportedWidth_returns_true(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
+    func showsFloatingControl_when_content_or_error_returns_true(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
         // When & Then
         #expect(viewState.showsFloatingControl == expected)
     }

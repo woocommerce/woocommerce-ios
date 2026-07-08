@@ -128,13 +128,8 @@ struct POSOrderServiceTests {
         #expect(delivery.taxStatus == .none)
     }
 
-    /// Locks in the documented behaviour for cart↔server fee mismatches: unlike a
-    /// missing line item (which throws), a custom amount discrepancy is recorded as
-    /// `customAmountsMatch == false` and only logged. The merchant-facing UX would
-    /// otherwise force a redundant resync each time the server's tax decision diverges
-    /// from the cart's intent (covered by `cart_matches_order_regardless_of_tax_status`).
     @Test
-    func syncOrder_when_returned_order_fees_dont_match_cart_then_does_not_throw() async throws {
+    func syncOrder_when_returned_order_fees_dont_match_cart_then_throws() async throws {
         // Given - cart has one fee, server returns the same order shape but with no fees
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
@@ -149,14 +144,15 @@ struct POSOrderServiceTests {
             )
         mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoFees)
 
-        // When / Then - returns the order without throwing despite the fee discrepancy
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
-        #expect(result.fees.isEmpty)
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
     }
 
     @Test
-    func syncOrder_when_returned_order_has_more_fees_than_cart_then_does_not_throw() async throws {
-        // Given - cart has one fee, server echoes back two
+    func syncOrder_when_returned_order_has_more_fees_than_cart_then_succeeds() async throws {
+        // Given - cart has one fee, server echoes back that fee plus a remote-added fee
         let cart = POSCart(
             items: [makePOSCartItem(productID: 100, quantity: 1)],
             customAmounts: [POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)]
@@ -173,9 +169,101 @@ struct POSOrderServiceTests {
             )
         mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraFee)
 
-        // When / Then - returns the order without throwing despite the count mismatch
-        let result = try await sut.syncOrder(cart: cart, currency: .USD)
-        #expect(result.fees.count == 2)
+        // When
+        let syncedOrder = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        #expect(syncedOrder.fees.count == 2)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_lower_product_quantity_than_cart_then_throws() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 2)])
+        let orderWithLowerProductQuantity = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithLowerProductQuantity)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_extra_product_not_in_cart_then_throws() async throws {
+        // Given
+        let cart = POSCart(items: [makePOSCartItem(productID: 100, quantity: 1)])
+        let orderWithExtraProduct = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1),
+                    OrderItem.fake().copy(productID: 200, quantity: 1)
+                ]
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraProduct)
+
+        let comparison = cart.compareWithOrder(orderWithExtraProduct)
+        #expect(comparison.extraItemsCount == 1)
+        #expect(comparison.hasDiscrepancies == true)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_omits_cart_coupon_then_throws() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
+        )
+        let orderWithMatchingItemsButNoCoupons = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [OrderItem.fake().copy(productID: 100, quantity: 1)],
+                coupons: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithMatchingItemsButNoCoupons)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
+    }
+
+    @Test
+    func syncOrder_when_returned_order_has_extra_product_and_omits_cart_coupon_then_throws() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            coupons: [.init(id: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "SAVE10")]
+        )
+        let orderWithExtraProductButNoCoupons = OrderFactory.newOrder(currency: .USD)
+            .copy(
+                siteID: 123,
+                status: .autoDraft,
+                items: [
+                    OrderItem.fake().copy(productID: 100, quantity: 1),
+                    OrderItem.fake().copy(productID: 200, quantity: 1)
+                ],
+                coupons: []
+            )
+        mockOrdersRemote.createPOSOrderResult = .success(orderWithExtraProductButNoCoupons)
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.syncOrder(cart: cart, currency: .USD)
+        }, throws: isOrderMismatchError)
     }
 
     @Test
@@ -629,3 +717,10 @@ private func makePOSCartItem(
             quantity: quantity
         )
     }
+
+private func isOrderMismatchError(_ error: Error) -> Bool {
+    if case .orderDoesNotMatchCart = error as? POSOrderService.POSOrderServiceError {
+        return true
+    }
+    return false
+}

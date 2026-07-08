@@ -139,22 +139,8 @@ class PasswordViewController: LoginViewController {
             }
         }
 
-        if let oauthError = error as? WordPressComOAuthError, case let .endpointError(failure) = oauthError, failure.kind == .invalidRequest {
-            // The only difference between an incorrect password error and exceeded login limit error
-            // is the actual error string. So check for "password" in the error string, and show the custom
-            // error message. Otherwise, show the actual response error.
-            var displayMessage: String {
-                // swiftlint:disable localization_comment
-                if let msg = failure.localizedErrorMessage, msg.contains(NSLocalizedString("password", comment: "")) {
-                // swiftlint:enable localization_comment
-                    return NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
-                }
-                if let msg = failure.localizedErrorMessage {
-                    return msg
-                }
-                return oauthError.localizedDescription
-            }
-            displayError(message: displayMessage, moveVoiceOverFocus: true)
+        if let oauthError = error as? WordPressComOAuthError, oauthError.authenticationFailureKind == .invalidRequest {
+            displayError(message: oauthError.loginErrorMessage, moveVoiceOverFocus: true)
         } else {
             displayError(error, sourceTag: sourceTag)
         }
@@ -162,7 +148,7 @@ class PasswordViewController: LoginViewController {
 
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         // The reason why this check is necessary is that we're calling this method
-        // with an empty error message when setting up the VC.  We don't want to track
+        // with an empty error message when setting up the VC. We don't want to track
         // an empty error when that happens.
         if !message.isEmpty {
             tracker.track(failure: message)
@@ -235,7 +221,6 @@ extension PasswordViewController: UITextFieldDelegate {
         }
         return true
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -252,7 +237,6 @@ extension PasswordViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Keyboard Notifications
@@ -266,7 +250,6 @@ extension PasswordViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 }
 
 // MARK: - Magic Link

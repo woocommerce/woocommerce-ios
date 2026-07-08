@@ -8,6 +8,7 @@ import Experiments
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
+import enum PointOfSale.POSLockStateKey
 
 
 /// Enum representing the individual tabs
@@ -98,7 +99,7 @@ final class MainTabBarController: UITabBarController {
     /// For picking up the child view controller's status bar styling
     /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
     ///
-    public override var childForStatusBarStyle: UIViewController? {
+    override public var childForStatusBarStyle: UIViewController? {
         return nil
     }
 
@@ -132,6 +133,11 @@ final class MainTabBarController: UITabBarController {
 
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
+
+    /// One-shot signal that the POS tab should auto-reopen at cold launch if the persisted
+    /// lock state for the active site is true. Flipped to false after the first attempt so
+    /// subsequent site switches don't keep yanking the user back into POS.
+    private var needsPOSAutoReopenCheck = true
 
     private let bookingsContainerController = TabContainerController()
 
@@ -189,7 +195,7 @@ final class MainTabBarController: UITabBarController {
           bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
           userDefaults: UserDefaults = .standard,
           // Injected for mocking in tests.
-          isPad: Bool = UIDevice.isPad()) {
+          isPad: Bool? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -203,7 +209,7 @@ final class MainTabBarController: UITabBarController {
             BookingsTabEligibilityChecker(site: site)
         }
         self.userDefaults = userDefaults
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         super.init(coder: coder)
     }
 
@@ -250,13 +256,17 @@ final class MainTabBarController: UITabBarController {
 
         startListeningToHubMenuTabBadgeUpdates()
 
-        fixTabBarTraitCollectionOnIpadForiOS18()
+        configureTabBarLayoutOnIpad()
         observeTraitChanges()
     }
 
     private func observeTraitChanges() {
         registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
-            self.fixTabBarTraitCollectionOnIpadForiOS18()
+            self.configureTabBarLayoutOnIpad()
+        }
+
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+            self.refreshLiquidGlassTabBarAppearanceOnIpad()
         }
     }
 
@@ -275,6 +285,22 @@ final class MainTabBarController: UITabBarController {
         super.viewDidAppear(animated)
 
         viewModel.onViewDidAppear()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate { [weak self] _ in
+            self?.configureTabBarLayoutOnIpad()
+        } completion: { [weak self] _ in
+            self?.configureTabBarLayoutOnIpad()
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        configureLiquidGlassTabBarLayoutOnIpad()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -335,28 +361,60 @@ final class MainTabBarController: UITabBarController {
         hubMenuTabCoordinator = nil
     }
 
-    // MARK: - iPadOS 18 tabs support
+    // MARK: - iPadOS tabs support
 
-    /// Force a previous bottom tab bar design on iPadOS 18 when built with Xcode 16
+    /// Uses the native iPad tab bar layout on iPadOS 26 and keeps the compact trait override as a fallback on iPadOS 18-25.
     ///
-    /// Override a trait collection for the tab bar controller to be compact to show the same tab layout as on iPhone
-    /// Set a trait collection to the default one for child view controllers to support split views
-    ///
-    /// The code is only executed when built with Xcode 16 and run on iPadOS 18
-    ///
-    /// The solution is borrowed from https://github.com/Automattic/pocket-casts-ios/pull/2077
-    private func fixTabBarTraitCollectionOnIpadForiOS18() {
-        if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
-            traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
-                tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
-                if let viewControllers {
-                    for vc in viewControllers {
-                        vc.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
-                    }
-                }
+    /// The fallback overrides the tab bar controller trait collection to compact to show the same bottom tab layout as on iPhone,
+    /// while restoring the real window size class for the tab bar and child view controllers so split-view layouts still work.
+    private func configureTabBarLayoutOnIpad() {
+        guard #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
+        if #available(iOS 26.0, *) {
+            configureLiquidGlassTabBarLayoutOnIpad()
+            return
+        }
+
+        traitOverrides.horizontalSizeClass = .compact
+        if let rootHorizontalSizeClass = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
+            tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
+            viewControllers?.forEach { viewController in
+                viewController.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
             }
         }
+    }
+
+    private func clearTabBarTraitOverridesOnIpad() {
+        traitOverrides.horizontalSizeClass = .unspecified
+        tabBar.traitOverrides.horizontalSizeClass = .unspecified
+        viewControllers?.forEach { viewController in
+            viewController.traitOverrides.horizontalSizeClass = .unspecified
+        }
+    }
+
+    private func configureLiquidGlassTabBarLayoutOnIpad() {
+        guard #available(iOS 26.0, *),
+              UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
+        mode = .tabBar
+        tabBar.isTranslucent = true
+        refreshLiquidGlassTabBarAppearanceOnIpad()
+        clearTabBarTraitOverridesOnIpad()
+    }
+
+    private func refreshLiquidGlassTabBarAppearanceOnIpad() {
+        guard #available(iOS 26.0, *),
+              UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
+        let appearance = UITabBar.wooAppearance()
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = appearance
     }
 
     private func setupConditionalTabsInitialVisibility() {
@@ -370,18 +428,12 @@ final class MainTabBarController: UITabBarController {
     private func setupConditionalTabsInitialVisibility(for siteID: Int64) {
         let isPOSTabVisible = POSTabVisibilityChecker.checkInitialVisibility(
             for: siteID,
+            userInterfaceIdiom: isPad ? .pad : .phone,
             eligibilityService: posEligibilityService
         )
-        let isBookingsFeatureAvailable = BookingsTabEligibilityChecker.checkInitialVisibility(
-            for: siteID,
-            in: userDefaults
-        )
-
-        self.isBookingsFeatureAvailable = isBookingsFeatureAvailable
-
         let isBookingsTabVisible = shouldShowBookingsTab(
             isPOSTabVisible: isPOSTabVisible,
-            bookingsFeatureAvailable: isBookingsFeatureAvailable
+            bookingsFeatureAvailable: false
         )
 
         updateTabViewControllers(
@@ -445,7 +497,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsSelectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -466,7 +518,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(MainTabBookingsReselectEvent())
+            ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
@@ -562,6 +614,8 @@ extension MainTabBarController {
             }
         case .blazeApprovedNote, .blazeRejectedNote, .blazeCancelledNote, .blazePerformedNote:
            navigateToBlazeCampaignDetails(using: notification)
+        case .storeStock:
+            navigateToProductDetails(using: notification)
         default:
             break
         }
@@ -648,6 +702,30 @@ extension MainTabBarController {
         })
     }
 
+    static func navigateToProductDetails(using notification: PushNotification) {
+        guard let productID = notification.meta?.identifier(forKey: .product) else {
+            DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its product ID!")
+            return
+        }
+
+        switchToProductsTab {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
+                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+            }
+        }
+    }
+
+    private static func presentProductDetails(productID: Int64, siteID: Int64) {
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+
+        let model: ProductLoaderViewController.Model = .product(productID: productID)
+        let productViewController = ProductLoaderViewController(model: model, siteID: siteID, forceReadOnly: false)
+        let productNavController = WooNavigationController(rootViewController: productViewController)
+        tabBar.rootTabViewController(tab: .products).present(productNavController, animated: true)
+    }
+
     static func navigateToBlazeCampaignCreation(for siteID: Int64) {
         showStore(with: Int64(siteID), onCompletion: { storeIsShown in
             // It failed to show the campaign's store.
@@ -723,11 +801,37 @@ extension MainTabBarController: DeepLinkNavigator {
             navigateTo(.orders) {
                 Self.ordersTabSplitViewWrapper()?.navigate(to: destination)
             }
+        case let analyticsDestination as AnalyticsHubDestination:
+            navigateTo(.myStore) { [weak self] in
+                self?.presentAnalyticsHub(for: analyticsDestination)
+            }
         case is POSPromotionDestination:
             presentPOSPromotionModal()
         default:
             return
         }
+    }
+
+    private func presentAnalyticsHub(for destination: AnalyticsHubDestination) {
+        let analyticsHubVC: AnalyticsHubHostingViewController
+        switch destination {
+        case .focusedCard(let card, let range):
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                selectionType: range,
+                focusedCard: card,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        case .defaultHub:
+            analyticsHubVC = AnalyticsHubHostingViewController(
+                siteID: stores.sessionManager.defaultStoreID ?? 0,
+                timeZone: .siteTimezone,
+                timeRange: .today,
+                usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()
+            )
+        }
+        dashboardNavigationController.pushViewController(analyticsHubVC, animated: true)
     }
 
     private func presentPOSPromotionModal() {
@@ -927,6 +1031,7 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
+        autoReopenPOSIfNeeded(siteID: siteID)
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -964,13 +1069,6 @@ private extension MainTabBarController {
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
         let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
         self.bookingsEligibilityChecker = bookingsEligibilityChecker
-
-        // Sets Bookings tab initial visibility based on cached value if available.
-        let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
-        isBookingsFeatureAvailable = initialVisibility
-        let initialBookingsTabVisibility = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
-                                                                 bookingsFeatureAvailable: initialVisibility)
-        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialBookingsTabVisibility)
 
         // Cancels any existing task.
         bookingsEligibilityCheckTask?.cancel()
@@ -1016,9 +1114,7 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        let isLiquidGlassDesignDisabled = Bundle.main.infoDictionary?["UIDesignRequiresCompatibility"] as? Bool ?? false
-
-        guard !isLiquidGlassDesignDisabled else {
+        guard #available(iOS 26.0, *) else {
             let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
             notificationsBadge.updateBadge(with: input)
             return
@@ -1160,6 +1256,25 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
         posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
+    }
+}
+
+private extension MainTabBarController {
+    /// Reopen POS on cold launch if the active site's persisted key says it was locked.
+    func autoReopenPOSIfNeeded(siteID: Int64) {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleRoles) else { return }
+        guard needsPOSAutoReopenCheck else { return }
+        // Consume the one-shot only when the active site is the locked one.
+        guard userDefaults.bool(forKey: POSLockStateKey.key(for: siteID)) else { return }
+        needsPOSAutoReopenCheck = false
+
+        // Capture the just-created coordinator weakly so a site change between
+        // scheduling and execution can't redirect this auto-reopen at a different
+        // coordinator. If the active site changes mid-flight the old coordinator
+        // is released and the closure no-ops.
+        DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
+            coordinator?.onTabSelected()
+        }
     }
 }
 

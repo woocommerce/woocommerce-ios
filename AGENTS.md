@@ -211,6 +211,10 @@ Modules/Tests/PointOfSaleTests/  # POS unit tests
 WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
 ```
 
+## WooAIAssistant Module
+
+The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.
+
 ## Git Conventions
 
 - **Main branch**: `trunk`
@@ -237,7 +241,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 
 ## Testing
 
-- **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
+- **New test files should only use Swift Testing** (`@Test`, `#expect()`). If this is not possible for any reason, share explicitly what the limitation is.
 - When adding to existing XCTest classes, follow that class's framework
 - **Naming**: snake_case — `test_<operation>_when_<condition>_then_<expected_result>()`
 - **Structure**: Given / When / Then blocks with comments

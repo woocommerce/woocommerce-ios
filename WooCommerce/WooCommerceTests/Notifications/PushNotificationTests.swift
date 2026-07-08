@@ -17,7 +17,7 @@ final class PushNotificationTests: XCTestCase {
             "alert": [
                 "body": "New order for $2.00 on the store",
                 "title": "You have a new order! 🎉"
-                ]
+            ]
         ],
         "type": "store_order",
         "blog_id": "205617935",
@@ -105,6 +105,57 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertNil(notification.note, "note should be nil when note data is missing required fields")
         XCTAssertNotNil(notification.meta, "meta should be successfully extracted even when note decoding fails")
         XCTAssertEqual(notification.meta?.identifier(forKey: .order), 306)
+    }
+
+    // MARK: Store Stock
+    //
+    func test_store_stock_user_info_is_parsed_correctly() throws {
+        // Given — mirrors the real server payload: `note_id` is null for Woo-driven
+        // stock notifications (they are not WPCom-stored notes).
+        let expectedSiteID: Int64 = 205617935
+        let expectedProductID = 42
+        let noteData: [String: Any] = [
+            "notes": [
+                [
+                    "id": NSNull(),
+                    "type": "store_stock",
+                    "meta": [
+                        "ids": [
+                            "site": expectedSiteID,
+                            "product": expectedProductID
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: noteData)
+        let compressedData = try (jsonData as NSData).compressed(using: .zlib)
+        var dataWithHeader = Data([0x78, 0x9C])
+        dataWithHeader.append(compressedData as Data)
+        let base64Encoded = dataWithHeader.base64EncodedString()
+
+        let userInfo: [AnyHashable: Any] = [
+            "blog": expectedSiteID,
+            "note_full_data": base64Encoded,
+            "aps": [
+                "alert": [
+                    "title": "Low stock alert"
+                ]
+            ],
+            "type": "store_stock",
+            "note_id": NSNull()
+        ]
+
+        // When
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: userInfo))
+
+        // Then
+        XCTAssertNil(notification.noteID)
+        XCTAssertEqual(notification.kind, Note.Kind.storeStock)
+        XCTAssertEqual(notification.siteID, expectedSiteID)
+        XCTAssertEqual(notification.meta?.identifier(forKey: .product), expectedProductID)
+        XCTAssertEqual(notification.meta?.identifier(forKey: .site), Int(expectedSiteID))
     }
 
     // MARK: Blaze

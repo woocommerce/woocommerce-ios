@@ -400,28 +400,6 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.applicationPasswordUnsupportedList])
     }
 
-    /// Verifies that image cache is cleared upon reset
-    ///
-    func test_cachedBookingsTabVisibility_is_cleared_upon_reset() throws {
-        // Given
-        let siteID: Int64 = 13
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[.ciabBookingsTabAvailable] = [siteID.description: true]
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.ciabBookingsTabAvailable] as? [String: Bool]), [siteID.description: true])
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.ciabBookingsTabAvailable])
-    }
-
     /// Verifies that flag to hide WPCom connection suggestion is cleared upon reset
     ///
     func test_hideWPComConnectionOnDashboard_is_cleared_upon_reset() throws {
@@ -441,6 +419,27 @@ final class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[.hideWPComConnectionOnDashboard])
+    }
+
+    /// Verifies that dashboard analytics update mode explanation state is cleared upon reset
+    ///
+    func test_hasOpenedDashboardAnalyticsUpdateModeInfo_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] = true
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo] as? Bool))
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.hasOpenedDashboardAnalyticsUpdateModeInfo])
     }
 
     func test_pendingMagicLinkFlow_is_cleared_upon_reset() throws {

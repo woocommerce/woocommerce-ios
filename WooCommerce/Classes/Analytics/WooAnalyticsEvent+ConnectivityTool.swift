@@ -41,10 +41,6 @@ extension WooAnalyticsEvent {
             .init(statName: .connectivityToolReadMoreTapped, properties: [:])
         }
 
-        static func contactSupportTapped() -> WooAnalyticsEvent {
-            .init(statName: .connectivityToolContactSupportTapped, properties: [:])
-        }
-
         static func preLoginRequestResponse(testName: String, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {
             .init(statName: .preLoginConnectivityToolRequestResponse,
                   properties: [

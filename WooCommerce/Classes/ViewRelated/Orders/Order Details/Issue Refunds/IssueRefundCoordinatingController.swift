@@ -51,7 +51,6 @@ private extension IssueRefundCoordinatingController {
             self?.navigateToItemQuantitySelection(using: command) { selectedQuantity in
                 issueRefundViewController?.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
             }
-
         }
 
         // Next action

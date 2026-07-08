@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Hosting Controller for the Support Form.
 ///
-final class SupportFormHostingController: UIHostingController<SupportForm> {
+final class SupportFormHostingController: TabBarHidingHostingController<SupportForm> {
 
     /// Custom notice presenter,
     ///
@@ -18,10 +18,9 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         rootView.onDismiss = { [weak self] in
             self?.dismissView()
         }
-        hidesBottomBarWhenPushed = true
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

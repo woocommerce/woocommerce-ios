@@ -40,7 +40,7 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword(locally: Bool) async throws
 }
 
-final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType
@@ -207,19 +207,27 @@ private extension DefaultApplicationPasswordUseCase {
 
     /// Helper method to construct network requests either directly with the remote site
     /// or through Jetpack proxy.
-    func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
+    func constructRequest(method: HTTPMethod, path: String, parameters: RequestParameterDictionary? = nil) -> Request {
+        constructRequest(method: method, path: path, requestParameters: parameters)
+    }
+
+    func constructRequest<Value: RequestParameterValueConvertible>(method: HTTPMethod, path: String, parameters: [String: Value]) -> Request {
+        constructRequest(method: method, path: path, requestParameters: parameters.requestParameterDictionary)
+    }
+
+    private func constructRequest(method: HTTPMethod, path: String, requestParameters: RequestParameterDictionary?) -> Request {
         switch authenticationType {
         case .wpcom(let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
                            siteID: siteID,
                            path: path,
-                           parameters: parameters)
+                           parameters: requestParameters)
         case .wporg(_, _, let siteAddress):
             RESTRequest(siteURL: siteAddress,
                         method: method,
                         path: path,
-                        parameters: parameters)
+                        parameters: requestParameters)
         }
     }
 

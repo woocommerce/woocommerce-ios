@@ -50,12 +50,16 @@ struct POSExternalViewKey: EnvironmentKey {
 
 /// Environment key for POS payment navigation router
 struct POSNavigationRouterKey: EnvironmentKey {
-    static let defaultValue: POSNavigationRouter = POSNavigationRouter(navigationPath: .constant([]))
+    static let defaultValue = POSNavigationRouter(navigationPath: .constant([]))
 }
 
 /// Environment key for POS search text field unfocused border color
 struct POSSearchTextFieldUnfocusedBorderColorKey: EnvironmentKey {
     static let defaultValue: Color = .posSurfaceBright
+}
+
+struct POSAccessSessionKey: EnvironmentKey {
+    static let defaultValue: POSAccessSession = UnrestrictedPOSAccessSession()
 }
 
 extension EnvironmentValues {
@@ -97,6 +101,11 @@ extension EnvironmentValues {
     var posSearchTextFieldUnfocusedBorderColor: Color {
         get { self[POSSearchTextFieldUnfocusedBorderColorKey.self] }
         set { self[POSSearchTextFieldUnfocusedBorderColorKey.self] = newValue }
+    }
+
+    var posAccessSession: POSAccessSession {
+        get { self[POSAccessSessionKey.self] }
+        set { self[POSAccessSessionKey.self] = newValue }
     }
 }
 

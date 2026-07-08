@@ -21,4 +21,6 @@ public extension Color {
     static let assistantSuccess = Color(.success)
     static let assistantWarning = Color(.warning)
     static let assistantInfo = Color(.info)
+    // Woo primary purple, used for markdown links in assistant messages.
+    static let assistantLink = Color(.accent)
 }

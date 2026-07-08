@@ -10,6 +10,5 @@ extension Bundle {
         }
 #endif
         return Bundle.module
-
     }
 }

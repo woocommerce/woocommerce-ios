@@ -17,7 +17,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: "Test Reason",
                                             automaticallyRefundsPayment: true,
                                             items: [],
-                                            shippingLine: nil,
+                                            shippingLines: [],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -40,7 +40,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
-                                            shippingLine: nil,
+                                            shippingLines: [],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -75,7 +75,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
-                                            shippingLine: nil,
+                                            shippingLines: [],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -101,7 +101,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: [],
-                                            shippingLine: shippingLine,
+                                            shippingLines: [shippingLine],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -121,6 +121,43 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].taxes[0].total, "0.99")
     }
 
+    func test_refund_shipping_values_with_multiple_shipping_lines_are_transformed_correctly() {
+        // Given
+        let firstShippingTaxes = ShippingLineTax(taxID: 2, subtotal: "", total: "0.99")
+        let secondShippingTaxes = ShippingLineTax(taxID: 3, subtotal: "", total: "0.49")
+        let shippingLines = [
+            ShippingLine(shippingID: 5, methodTitle: "", methodID: "", total: "7.00", totalTax: "0.99", taxes: [firstShippingTaxes]),
+            ShippingLine(shippingID: 6, methodTitle: "", methodID: "", total: "3.00", totalTax: "0.49", taxes: [secondShippingTaxes])
+        ]
+        let useCase = RefundCreationUseCase(amount: "11.48",
+                                            reason: nil,
+                                            automaticallyRefundsPayment: false,
+                                            items: [],
+                                            shippingLines: shippingLines,
+                                            fees: [],
+                                            currencyFormatter: formatter)
+
+        // When
+        let refund = useCase.createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.count, 2)
+
+        // First Shipping Line
+        XCTAssertEqual(refund.items[0].itemID, 5)
+        XCTAssertEqual(refund.items[0].quantity, 0)
+        XCTAssertEqual(refund.items[0].total, "7.00")
+        XCTAssertEqual(refund.items[0].taxes[0].taxID, 2)
+        XCTAssertEqual(refund.items[0].taxes[0].total, "0.99")
+
+        // Second Shipping Line
+        XCTAssertEqual(refund.items[1].itemID, 6)
+        XCTAssertEqual(refund.items[1].quantity, 0)
+        XCTAssertEqual(refund.items[1].total, "3.00")
+        XCTAssertEqual(refund.items[1].taxes[0].taxID, 3)
+        XCTAssertEqual(refund.items[1].taxes[0].total, "0.49")
+    }
+
     func test_refund_shipping_values_with_order_items_are_transformed_correctly() {
         // Given
         let items: [RefundableOrderItem] = [
@@ -133,7 +170,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
-                                            shippingLine: shippingLine,
+                                            shippingLines: [shippingLine],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -176,7 +213,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
-                                            shippingLine: nil,
+                                            shippingLines: [],
                                             fees: [],
                                             currencyFormatter: formatter)
 
@@ -206,7 +243,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
-                                            shippingLine: nil,
+                                            shippingLines: [],
                                             fees: fees,
                                             currencyFormatter: formatter)
 
@@ -242,6 +279,5 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[4].itemID, 7)
         XCTAssertEqual(refund.items[4].total, "65.00")
         XCTAssertEqual(refund.items[4].taxes, [expectedTransformedFeeTaxes])
-
     }
 }

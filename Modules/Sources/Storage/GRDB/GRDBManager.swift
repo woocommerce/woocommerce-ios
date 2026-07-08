@@ -6,7 +6,7 @@ public protocol GRDBManagerProtocol {
     func reset() throws
 }
 
-public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
+public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter {}
 
 public final class GRDBManager: GRDBManagerProtocol {
 

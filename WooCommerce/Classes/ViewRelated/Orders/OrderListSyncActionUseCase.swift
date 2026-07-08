@@ -1,9 +1,6 @@
 import Foundation
 
 import enum Yosemite.OrderAction
-import struct Yosemite.OrderStatus
-import class Yosemite.CIABEligibilityChecker
-import protocol Yosemite.CIABEligibilityCheckerProtocol
 
 /// Returns what `OrderAction` should be used when synchronizing a list of orders.
 ///
@@ -53,14 +50,11 @@ struct OrderListSyncActionUseCase {
     let siteID: Int64
     /// The current filters applied to the Order List
     let filters: FilterOrderListViewModel.Filters?
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(siteID: Int64,
-         filters: FilterOrderListViewModel.Filters?,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         filters: FilterOrderListViewModel.Filters?) {
         self.siteID = siteID
         self.filters = filters
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     /// Returns the action to use when synchronizing.
@@ -70,9 +64,7 @@ struct OrderListSyncActionUseCase {
                    lastFullSyncTimestamp: Date?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let filterStatuses = filters?.orderStatus ?? []
-        let statuses = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.resolveFilterStatuses(filterStatuses).map { $0.rawValue }
-            : filterStatuses.map { $0.rawValue }
+        let statuses = filterStatuses.map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate
         let productID = filters?.product?.id

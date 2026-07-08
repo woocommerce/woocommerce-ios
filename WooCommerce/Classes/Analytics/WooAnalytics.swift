@@ -25,16 +25,20 @@ final class WooAnalytics: Analytics {
 
     private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
 
+    /// Defaults database used to persist the analytics opt-in state
+    ///
+    private let userDefaults: UserDefaults
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
-            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
+            let optedIn: Bool? = userDefaults.object(forKey: .userOptedInAnalytics)
             return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
+            userDefaults.set(newValue, forKey: .userOptedInAnalytics)
         }
     }
 
@@ -43,8 +47,9 @@ final class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker, userDefaults: UserDefaults = .standard) {
         self.analyticsProvider = analyticsProvider
+        self.userDefaults = userDefaults
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -185,14 +190,18 @@ extension Analytics {
     }
 }
 
-// MARK: - EventHorizon Trackable Bridge
+// MARK: - EventHorizon Event Bridge
 
 extension Analytics {
-    /// Track a codegen'd Trackable event through the existing analytics pipeline.
-    func track(_ event: some Trackable) {
-        let properties = event.analyticsProperties as [AnyHashable: Any]
+    func track(_ event: Event) {
+        let properties = event.properties as [AnyHashable: Any]
         let enrichedProperties = appendSiteProperties(to: properties)
-        track(event.analyticsName, properties: enrichedProperties, error: nil)
+        track(event.name, properties: enrichedProperties, error: nil)
+    }
+
+    func track(_ eventName: String, withEventProperties properties: [String: any CustomStringConvertible]) {
+        let enrichedProperties = appendSiteProperties(to: properties as [AnyHashable: Any])
+        track(eventName, properties: enrichedProperties, error: nil)
     }
 }
 
@@ -279,22 +288,17 @@ private extension WooAnalytics {
 
             let applicationProperties = self.applicationOpenedProperties(configurationResult)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-                .configurableStoreStatsWidgets
-            ),
-               let infos = try? configurationResult.get() {
-                let snapshot = WidgetSnapshot(from: infos)
-                var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
-                if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
-                    properties.merge(diff.analyticsProperties) { _, new in new }
-                }
-                self.track(.applicationOpened, withProperties: properties)
-            } else {
-                self.track(
-                    .applicationOpened,
-                    withProperties: applicationProperties
-                )
+            guard let infos = try? configurationResult.get() else {
+                self.track(.applicationOpened, withProperties: applicationProperties)
+                return
             }
+
+            let snapshot = WidgetSnapshot(from: infos)
+            var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+            if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                properties.merge(diff.analyticsProperties) { _, new in new }
+            }
+            self.track(.applicationOpened, withProperties: properties)
         }
         applicationOpenedTime = Date()
     }
@@ -313,7 +317,7 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// Builds the necesary properties for the `application_opened` event.
+    /// Builds the necessary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
         guard let installedWidgets = try? configurationResult.get() else {
@@ -325,6 +329,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.storeTrendsWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.trends.rawValue)-\(widgetInfo.family)"
             case WooConstants.appLinkWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:

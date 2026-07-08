@@ -3,5 +3,4 @@ import CoreData
 
 @objc(WCAnalyticsCustomerSearchResult)
 public class WCAnalyticsCustomerSearchResult: NSManagedObject {
-
 }

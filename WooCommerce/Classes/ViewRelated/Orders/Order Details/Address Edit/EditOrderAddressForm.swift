@@ -45,7 +45,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -238,6 +238,12 @@ struct SingleAddressForm: View {
 
     var body: some View {
         content
+            .navigationDestination(isPresented: $showCountrySelector) {
+                FilterListSelector(viewModel: countryViewModelClosure())
+            }
+            .navigationDestination(isPresented: $showStateSelector) {
+                FilterListSelector(viewModel: stateViewModelClosure())
+            }
             .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
                 if let value {
                     titleWidth = value
@@ -290,7 +296,6 @@ struct SingleAddressForm: View {
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
-
             }
 
             if showPhoneCountryCodeField {
@@ -392,27 +397,6 @@ struct SingleAddressForm: View {
             }
 
             Group {
-                // Go to edit country
-                LazyNavigationLink(destination: FilterListSelector(viewModel: countryViewModelClosure()), isActive: $showCountrySelector) {
-                    EmptyView()
-                }
-
-                // Go to edit state
-                LazyNavigationLink(destination: FilterListSelector(viewModel: stateViewModelClosure()), isActive: $showStateSelector) {
-                    EmptyView()
-                }
-
-                ///
-                /// iOS 14.5 has a bug where
-                /// Pushing a view while having "exactly two" navigation links makes the pushed view to be popped when the initial view changes its state.
-                /// EG: AddressForm -> CountrySelector -> Country is selected -> AddressForm updates country -> CountrySelector is popped automatically.
-                /// Adding an extra and useless navigation link fixes the problem but throws a warning in the console.
-                /// Ref: https://forums.swift.org/t/14-5-beta3-navigationlink-unexpected-pop/45279
-                ///
-                NavigationLink(destination: EmptyView()) {
-                    EmptyView()
-                }
-
                 TitleAndValueRow(title: Localization.countryField,
                                  titleWidth: $titleWidth,
                                  value: .init(placeHolder: Localization.hintSelectOption, content: fields.country),
@@ -570,7 +554,7 @@ struct EditAddressForm_Previews: PreviewProvider {
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
-        NavigationView {
+        NavigationStack {
             EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }

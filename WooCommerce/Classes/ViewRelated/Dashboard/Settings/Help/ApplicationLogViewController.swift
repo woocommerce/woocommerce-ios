@@ -213,7 +213,7 @@ private extension ApplicationLogViewController {
         let logFileInfo = logFiles[row]
 
         do {
-            let contents = try String(contentsOfFile: logFileInfo.filePath)
+            let contents = try String(contentsOfFile: logFileInfo.filePath, encoding: .utf8)
             let date = dateFormatter.string(from: logFileInfo.creationDate ?? Date())
             let viewModel = ApplicationLogViewModel(logText: contents, logDate: date)
             let appLogDetailVC = ApplicationLogDetailViewController(viewModel: viewModel)
@@ -229,10 +229,9 @@ private extension ApplicationLogViewController {
         for logFileInfo in logFiles {
             do {
                 try FileManager.default.removeItem(atPath: logFileInfo.filePath)
-            } catch let error {
+            } catch {
                 DDLogError("⚠️ Error deleting log files \(error)")
             }
-
         }
 
         DDLogWarn("⚠️ All log files erased.")

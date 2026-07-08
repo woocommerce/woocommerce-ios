@@ -16,9 +16,9 @@ public enum ProductVariationsUpdateTool {
         the fields you want to change. Requires product_id (parent) and id \
         (variation). Only call when the merchant has explicitly requested a \
         change; never call to answer an information question. After a \
-        successful update, call `show_cards` with family `product_variation`, \
-        the updated variation id, and the parent product id so the merchant \
-        sees the new state.
+        successful update, call `show_cards` with family `variation` and \
+        an `id` that is the combined `{productID}/{variationID}` string so \
+        the merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -76,8 +76,17 @@ public enum ProductVariationsUpdateTool {
 
     private static let allowedStatuses = AllowedProductUpdateStatuses.values
     private static let allowedStockStatuses: Set<String> = ["instock", "outofstock", "onbackorder"]
+    private static let allowedArguments: Set<String> = [
+        "product_id", "id", "regular_price", "sale_price",
+        "stock_quantity", "stock_status", "sku", "status"
+    ]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -120,7 +129,6 @@ public enum ProductVariationsUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .productVariation,
-                                                          summarize: ProductSummary.make)
+                                                          summarize: ProductVariationDetailSummary.make)
     }
 }

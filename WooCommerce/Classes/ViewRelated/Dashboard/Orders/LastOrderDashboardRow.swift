@@ -2,7 +2,6 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 import NetworkingCore
-import Experiments
 
 struct LastOrderDashboardRow: View {
     let data: RowData
@@ -75,6 +74,9 @@ struct LastOrderDashboardRow: View {
                 }
                 .padding(.horizontal, Layout.padding)
                 .padding(.vertical, paddedRow ? Layout.chatRowVerticalPadding : 0)
+                // Make the whole row width the tap target, not just the rendered text.
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
 
                 if showDivider {
                     Divider()
@@ -122,11 +124,9 @@ private extension LastOrderDashboardRow {
 struct LastOrderDashboardRowViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     let order: Order
-    private let isCIAB: Bool
 
-    init(order: Order, isCIAB: Bool = false) {
+    init(order: Order) {
         self.order = order
-        self.isCIAB = isCIAB
     }
 
     var rowData: LastOrderDashboardRow.RowData {
@@ -137,19 +137,14 @@ struct LastOrderDashboardRowViewModel {
             total: total,
             statusDescription: statusDescription,
             statusBackgroundColor: statusBackgroundColor,
-            fulfillmentBadgeText: isFulfillmentStatusRequired ? fulfillmentBadgeText : nil,
-            fulfillmentBadgeBackgroundColor: isFulfillmentStatusRequired ? fulfillmentBadgeBackgroundColor : nil,
-            salesChannelText: shouldShowSalesChannel ? salesChannelText : nil
+            fulfillmentBadgeText: nil,
+            fulfillmentBadgeBackgroundColor: nil,
+            salesChannelText: isPOSOrder ? salesChannelText : nil
         )
     }
 
     var isPOSOrder: Bool {
         order.salesChannel == .pointOfSale
-    }
-
-    var isFulfillmentStatusRequired: Bool {
-        /// isCIAB gating is pending a planned refactoring
-        isCIAB && order.fulfillmentStatus != .unknown
     }
 
     var salesChannelText: String {
@@ -168,7 +163,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusDescription: String {
-        isCIAB ? CIABOrderStatusMapper.displayName(for: order.status) : order.status.description
+        order.status.description
     }
 
     /// The value will only include the year if the `createdDate` is not from the current year.
@@ -189,22 +184,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusBackgroundColor: Color {
-        let displayStatus = isCIAB ? CIABOrderStatusMapper.displayStatus(for: order.status) : order.status
-        return Color(uiColor: displayStatus.backgroundColor)
-    }
-
-    /// Returns the fulfillment badge text for CIAB orders, or `nil` if the badge should not be shown.
-    var fulfillmentBadgeText: String? {
-        order.fulfillmentStatus.badgeText()
-    }
-
-    /// Background color for the fulfillment badge.
-    var fulfillmentBadgeBackgroundColor: Color {
-        order.fulfillmentStatus.badgeBackgroundSwiftUIColor
-    }
-
-    private var shouldShowSalesChannel: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) && isPOSOrder
+        Color(uiColor: order.status.backgroundColor)
     }
 }
 

@@ -97,7 +97,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                 return
             }
 
-            self.observations.allStatusesUpdated[id] = { [weak self, weak observer] allStatuses in
+            self.observations.allStatusesUpdated[id] = { [weak self, weak observer] _ in
                 guard let self else {
                     return
                 }

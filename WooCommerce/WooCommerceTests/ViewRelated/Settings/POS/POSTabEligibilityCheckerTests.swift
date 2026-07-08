@@ -15,6 +15,7 @@ struct POSTabEligibilityCheckerTests {
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private var mockSiteSettingService: MockPOSSiteSettingService!
+    private var connectivityObserver: MockConnectivityObserver!
     private let site = Site.fake().copy(siteID: 2)
     private var siteID: Int64 { site.siteID }
     private let ineligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: false)
@@ -28,6 +29,8 @@ struct POSTabEligibilityCheckerTests {
         siteSettings = MockSelectedSiteSettings()
         mockSystemStatusService = MockPOSSystemStatusService()
         mockSiteSettingService = MockPOSSiteSettingService()
+        connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
         setupWooCommerceVersion()
     }
 
@@ -57,10 +60,7 @@ struct POSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -79,10 +79,7 @@ struct POSTabEligibilityCheckerTests {
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When - Call checkEligibility before site settings are available
         async let eligibilityTask = checker.checkEligibility()
@@ -102,15 +99,13 @@ struct POSTabEligibilityCheckerTests {
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
         (country: Country.pr, currency: CurrencyCode.USD),
-        (country: Country.gb, currency: CurrencyCode.GBP)
+        (country: Country.gb, currency: CurrencyCode.GBP),
+        (country: Country.ca, currency: CurrencyCode.CAD)
     ])
     fileprivate func is_eligible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -120,15 +115,12 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test(arguments: [
-        (country: Country.ca, currency: CurrencyCode.CAD),
         (country: Country.es, currency: CurrencyCode.EUR)
     ])
     fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
+        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
 
         // When
         let result = await checker.checkEligibility()
@@ -141,16 +133,15 @@ struct POSTabEligibilityCheckerTests {
         (country: Country.us, currency: CurrencyCode.GBP, expectedSupportedCurrencies: [CurrencyCode.USD]),
         (country: Country.us, currency: CurrencyCode.CAD, expectedSupportedCurrencies: [CurrencyCode.USD]),
         (country: Country.gb, currency: CurrencyCode.EUR, expectedSupportedCurrencies: [CurrencyCode.GBP]),
-        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP])
+        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP]),
+        (country: Country.ca, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.CAD])
     ])
     fileprivate func is_ineligible_when_currency_is_not_supported(country: Country,
                                                                   currency: CurrencyCode,
                                                                   expectedSupportedCurrencies: [CurrencyCode]) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -163,10 +154,7 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("9.5.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -179,10 +167,7 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -195,10 +180,7 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
@@ -211,16 +193,52 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility()
 
         // Then
         #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_connectivity_is_not_reachable() async throws {
+        // Given
+        let offlineConnectivityObserver = MockConnectivityObserver()
+        offlineConnectivityObserver.setStatus(.notReachable)
+        let checker = makeEligibilityChecker(connectivityObserver: offlineConnectivityObserver)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_system_status_request_fails_with_connectivity_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(URLError(.notConnectedToInternet))
+        setupCountry(country: .us, currency: .USD)
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_wooCommercePluginNotFound_when_system_status_request_fails_with_generic_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
+        setupCountry(country: .us, currency: .USD)
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
 
     // MARK: - `refreshEligibility` Tests
@@ -247,10 +265,7 @@ struct POSTabEligibilityCheckerTests {
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -274,17 +289,15 @@ struct POSTabEligibilityCheckerTests {
             switch action {
             case .synchronizeGeneralSiteSettings(_, let completion):
                 syncCalled = true
-                completion(NSError(domain: "test", code: 500)) // Network error
+                completion(NSError(domain: "test", code: 500)) // Generic error
             default:
                 break
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
+        let checker = makeEligibilityChecker()
 
-        // When & Then - Should throw the network error
+        // When & Then - Should throw the generic error
         #expect(syncCalled == false) // Not called yet
         await #expect(throws: NSError.self) {
             try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -292,16 +305,38 @@ struct POSTabEligibilityCheckerTests {
         #expect(syncCalled == true) // Called during the attempt
     }
 
+    @Test func refreshEligibility_returns_noInternetConnection_when_site_settings_sync_fails_with_connectivity_error() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0")
+
+        var syncCalled = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .synchronizeGeneralSiteSettings(_, let completion):
+                syncCalled = true
+                completion(URLError(.notConnectedToInternet))
+            default:
+                break
+            }
+        }
+
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .siteSettingsNotAvailable)
+
+        // Then
+        #expect(syncCalled == true)
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
     @Test func refreshEligibility_checks_eligibility_for_featureSwitchDisabled() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               siteSettingService: mockSiteSettingService)
+        let checker = makeEligibilityChecker(siteSettingService: mockSiteSettingService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .featureSwitchDisabled)
@@ -315,13 +350,24 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
+
+        // Then - Should check eligibility again (now eligible)
+        #expect(result == .eligible)
+    }
+
+    @Test func refreshEligibility_rechecks_eligibility_for_noInternetConnection() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
+
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .noInternetConnection)
 
         // Then - Should check eligibility again (now eligible)
         #expect(result == .eligible)
@@ -339,10 +385,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -361,10 +404,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -382,10 +422,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -404,10 +441,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -426,10 +460,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -447,10 +478,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -462,20 +490,15 @@ struct POSTabEligibilityCheckerTests {
     // MARK: - IPP Country Expansion Gate Tests
 
     @Test(arguments: [
-        (country: Country.de, currency: CurrencyCode.EUR),
-        (country: Country.es, currency: CurrencyCode.EUR),
-        (country: Country.fr, currency: CurrencyCode.EUR),
+        (country: Country.nl, currency: CurrencyCode.EUR),
         (country: Country.sg, currency: CurrencyCode.SGD),
-        (country: Country.nz, currency: CurrencyCode.NZD)
+        (country: Country.nz, currency: CurrencyCode.NZD),
+        (country: Country.au, currency: CurrencyCode.AUD)
     ])
     fileprivate func is_eligible_when_expansion_eligibility_is_enabled(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
         let result = await checker.checkEligibility()
@@ -485,20 +508,37 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test(arguments: [
-        Country.de,
-        Country.es,
+        Country.nl,
         Country.sg,
-        Country.nz
+        Country.nz,
+        Country.au
     ])
     fileprivate func is_ineligible_when_expansion_eligibility_is_disabled(country: Country) async throws {
         // Given - currencies that would be valid if eligibility were enabled
-        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : .EUR)
+        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : (country == .au ? .AUD : .EUR))
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: ineligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
+        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+
+    @Test(arguments: [
+        Country.at,
+        Country.be,
+        Country.de,
+        Country.es,
+        Country.fr,
+        Country.it,
+        Country.pt
+    ])
+    fileprivate func fiscalization_country_is_ineligible_when_expansion_eligibility_is_enabled(country: Country) async throws {
+        // Given
+        setupCountry(country: country, currency: .EUR)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
         let result = await checker.checkEligibility()
@@ -508,35 +548,15 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test func expansion_country_with_mismatched_currency_is_ineligible_when_expansion_eligibility_is_enabled() async throws {
-        // Given - DE store with USD currency (mismatch)
-        setupCountry(country: .de, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
+        // Given - NL store with USD currency (mismatch)
+        setupCountry(country: .nl, currency: .USD)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .DE, supportedCurrencies: [.EUR])))
-    }
-
-    @Test func australia_is_ineligible_even_when_expansion_eligibility_is_enabled() async throws {
-        // Given - Australia is intentionally excluded pending EFTPOS support (RSM-642 / RSM-643)
-        setupCountry(country: .au, currency: .AUD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
-
-        // When
-        let result = await checker.checkEligibility()
-
-        // Then
-        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .NL, supportedCurrencies: [.EUR])))
     }
 }
 
@@ -559,6 +579,21 @@ private final class StubCardPresentExpansionEligibilityService: CardPresentPayme
 }
 
 private extension POSTabEligibilityCheckerTests {
+    func makeEligibilityChecker(
+        siteSettingService: POSSiteSettingServiceProtocol? = nil,
+        connectivityObserver: ConnectivityObserver? = nil,
+        expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol =
+            CardPresentPaymentsCountryExpansionEligibilityService()
+    ) -> POSTabEligibilityChecker {
+        POSTabEligibilityChecker(siteID: siteID,
+                                 siteSettings: siteSettings,
+                                 stores: stores,
+                                 systemStatusService: mockSystemStatusService,
+                                 siteSettingService: siteSettingService,
+                                 connectivityObserver: connectivityObserver ?? self.connectivityObserver,
+                                 expansionEligibilityService: expansionEligibilityService)
+    }
+
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
         let countrySetting = mockCountrySetting(country: country)
         let currencySetting = mockCurrencySetting(currency: currency)
@@ -587,11 +622,16 @@ private extension POSTabEligibilityCheckerTests {
     enum Country: String {
         case us = "US:CA"
         case pr = "PR"
+        case at = "AT"
+        case be = "BE"
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
         case de = "DE"
         case fr = "FR"
+        case it = "IT"
+        case nl = "NL"
+        case pt = "PT"
         case sg = "SG"
         case nz = "NZ"
         case au = "AU"
@@ -602,6 +642,10 @@ private extension POSTabEligibilityCheckerTests {
                 return .US
             case .pr:
                 return .PR
+            case .at:
+                return .AT
+            case .be:
+                return .BE
             case .ca:
                 return .CA
             case .gb:
@@ -612,6 +656,12 @@ private extension POSTabEligibilityCheckerTests {
                 return .DE
             case .fr:
                 return .FR
+            case .it:
+                return .IT
+            case .nl:
+                return .NL
+            case .pt:
+                return .PT
             case .sg:
                 return .SG
             case .nz:

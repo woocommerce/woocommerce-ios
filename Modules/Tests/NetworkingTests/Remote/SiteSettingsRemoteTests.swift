@@ -29,7 +29,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load site settings")
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadGeneralSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(error)
             XCTAssertNotNil(siteSettings)
             XCTAssertEqual(siteSettings?.count, 20)
@@ -45,7 +45,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let remote = SiteSettingsRemote(network: network)
         let expectation = self.expectation(description: "Load site settings contains errors")
 
-        remote.loadGeneralSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadGeneralSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(siteSettings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -63,7 +63,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load product settings")
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadProductSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(error)
             XCTAssertNotNil(siteSettings)
             XCTAssertEqual(siteSettings?.count, 23)
@@ -79,7 +79,7 @@ final class SiteSettingsRemoteTests: XCTestCase {
         let remote = SiteSettingsRemote(network: network)
         let expectation = self.expectation(description: "Load product settings contains errors")
 
-        remote.loadProductSettings(for: sampleSiteID) { (siteSettings, error) in
+        remote.loadProductSettings(for: sampleSiteID) { siteSettings, error in
             XCTAssertNil(siteSettings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -333,6 +333,86 @@ final class SiteSettingsRemoteTests: XCTestCase {
         // When/Then
         do {
             _ = try await remote.updateAnalyticsOrderDateType(for: sampleSiteID, value: "date_paid")
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
+        }
+    }
+
+    // MARK: - `loadAnalyticsScheduledImport`
+
+    func test_loadAnalyticsScheduledImport_returns_parsed_setting() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-yes")
+
+        // When
+        let setting = try await remote.loadAnalyticsScheduledImport(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(setting.settingID, "woocommerce_analytics_scheduled_import")
+        XCTAssertEqual(setting.value, "yes")
+        XCTAssertEqual(setting.settingGroupKey, "wc_admin")
+    }
+
+    func test_loadAnalyticsScheduledImport_when_value_is_null_then_returns_empty_value() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-null")
+
+        // When
+        let setting = try await remote.loadAnalyticsScheduledImport(for: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(setting.settingID, "woocommerce_analytics_scheduled_import")
+        XCTAssertEqual(setting.value, "")
+    }
+
+    func test_loadAnalyticsScheduledImport_throws_error_when_network_fails() async {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                              error: error)
+
+        // When/Then
+        do {
+            _ = try await remote.loadAnalyticsScheduledImport(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
+        }
+    }
+
+    // MARK: - `updateAnalyticsScheduledImport`
+
+    func test_updateAnalyticsScheduledImport_returns_parsed_setting() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                                 filename: "setting-analytics-scheduled-import-no")
+
+        // When
+        let setting = try await remote.updateAnalyticsScheduledImport(for: sampleSiteID, value: "no")
+
+        // Then
+        XCTAssertEqual(setting.settingID, "woocommerce_analytics_scheduled_import")
+        XCTAssertEqual(setting.value, "no")
+        XCTAssertEqual(setting.settingGroupKey, "wc_admin")
+    }
+
+    func test_updateAnalyticsScheduledImport_throws_error_when_network_fails() async {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
+                              error: error)
+
+        // When/Then
+        do {
+            _ = try await remote.updateAnalyticsScheduledImport(for: sampleSiteID, value: "yes")
             XCTFail("Expected error to be thrown")
         } catch {
             XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))

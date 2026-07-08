@@ -17,5 +17,4 @@ final class UnderlyingError_StripeTests: XCTestCase {
         let expectedError = UnderlyingError.paymentDeclinedByPaymentProcessorAPI(declineReason: .cardNotSupported)
         XCTAssertEqual(sut, expectedError)
     }
-
 }

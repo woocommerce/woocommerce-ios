@@ -167,7 +167,7 @@ final class ShippingLabelFormViewModel {
 
     /// Current `ViewModel` state.
     ///
-    private(set) var state: State = State() {
+    private(set) var state = State() {
         didSet {
             onChange?()
         }
@@ -454,7 +454,7 @@ final class ShippingLabelFormViewModel {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let discount = currencyFormatter.formatAmount(Decimal(discountValue)) ?? nil
+        let discount = currencyFormatter.formatAmount(Decimal(discountValue))
 
         return discount
     }
@@ -529,7 +529,7 @@ private extension ShippingLabelFormViewModel {
         }
 
         var summarySection: Section?
-        if rows.allSatisfy({ (row) -> Bool in
+        if rows.allSatisfy({ row -> Bool in
             row.dataState == .validated && row.displayMode == .editable
         }) {
             summarySection = Section(title: Localization.orderSummaryHeader.uppercased(),
@@ -743,7 +743,7 @@ private extension ShippingLabelFormViewModel {
 extension ShippingLabelFormViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
-        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
+        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -773,7 +773,7 @@ extension ShippingLabelFormViewModel {
 
         updateValidatingAddressState(true, type: type)
 
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] result in
 
             guard let self else { return }
             switch result {
@@ -846,7 +846,7 @@ extension ShippingLabelFormViewModel {
             return
         }
 
-        let packages = selectedPackages.enumerated().compactMap { (index, package) -> ShippingLabelPackagePurchase? in
+        let packages = selectedPackages.enumerated().compactMap { _, package -> ShippingLabelPackagePurchase? in
             guard let selectedRate = selectedRates.first(where: { $0.packageID == package.id }),
                   let details = selectedPackagesDetails.first(where: { $0.id == package.id }) else {
                 return nil

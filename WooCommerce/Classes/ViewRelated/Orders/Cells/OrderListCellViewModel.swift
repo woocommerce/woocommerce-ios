@@ -8,12 +8,10 @@ import WooFoundationCore
 struct OrderListCellViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter
-    private let isCIAB: Bool
 
-    init(order: Order, currencySettings: CurrencySettings, isCIAB: Bool = false) {
+    init(order: Order, currencySettings: CurrencySettings) {
         self.order = order
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.isCIAB = isCIAB
     }
 
     /// For example, #560 Pamela Nguyen
@@ -56,16 +54,16 @@ struct OrderListCellViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
-    /// Status of the order (mapped for CIAB sites)
+    /// Status of the order.
     ///
     var status: OrderStatusEnum {
-        isCIAB ? CIABOrderStatusMapper.displayStatus(for: order.status) : order.status
+        order.status
     }
 
-    /// Textual representation of the status (mapped for CIAB sites)
+    /// Textual representation of the status.
     ///
     var statusString: String {
-        isCIAB ? CIABOrderStatusMapper.displayName(for: order.status) : order.status.localizedName
+        order.status.localizedName
     }
 
     /// Sales channel

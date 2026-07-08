@@ -18,7 +18,6 @@ final class OrderDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private(set) var order: Order
 
@@ -39,8 +38,7 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         pluginsService: PluginsServiceProtocol? = nil,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
+         pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -52,7 +50,6 @@ final class OrderDetailsViewModel {
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func update(order newOrder: Order) {
@@ -334,18 +331,6 @@ extension OrderDetailsViewModel {
             onReloadSections?()
         }
 
-        /// Temporary `ciabEligibilityChecker.isCurrentSiteCIAB`
-        // TODO: Rework CIAB gating in favour of new approach.
-        if ciabEligibilityChecker.isCurrentSiteCIAB {
-            group.enter()
-            Task { @MainActor in
-                defer {
-                    group.leave()
-                }
-                await syncOrderFulfillments()
-            }
-        }
-
         group.enter()
         syncSavedReceipts {_ in
             group.leave()
@@ -385,7 +370,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        syncOrder { [weak self] (order, error) in
+        syncOrder { [weak self] order, error in
             guard let self, let order else {
                 onCompletion?(error)
                 return
@@ -427,26 +412,6 @@ extension OrderDetailsViewModel {
 
                                                                    continuation.resume(returning: ())
                                                                }
-            )
-        }
-    }
-
-    /// Syncs order fulfillments from the fulfillments endpoint.
-    @MainActor
-    func syncOrderFulfillments() async {
-        let orderID = order.orderID
-        let siteID = order.siteID
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(
-                OrderFulfillmentAction.synchronizeOrderFulfillments(
-                    siteID: siteID,
-                    orderID: orderID
-                ) { error in
-                    if let error {
-                        DDLogError("⛔️ Error synchronizing order fulfillments: \(error.localizedDescription)")
-                    }
-                    continuation.resume(returning: ())
-                }
             )
         }
     }
@@ -660,7 +625,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { order, error in
             guard let _ = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(nil, error)
@@ -674,7 +639,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] orderNotes, error in
             guard let orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = []
@@ -692,7 +657,7 @@ extension OrderDetailsViewModel {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
@@ -727,7 +692,7 @@ extension OrderDetailsViewModel {
             return
         }
 
-        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)
@@ -908,7 +873,6 @@ extension OrderDetailsViewModel {
 
                                                                     ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
-
         }
 
         stores.dispatch(deleteTrackingAction)

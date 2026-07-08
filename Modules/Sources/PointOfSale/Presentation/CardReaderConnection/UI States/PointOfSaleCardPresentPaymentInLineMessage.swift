@@ -45,7 +45,6 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel, animation: animation)
         }
     }
-
 }
 
 #if DEBUG
@@ -56,6 +55,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         messageType: .processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()),
         animation: .init(namespace: namespace))
     .environment(model.paymentModel)
+    .environment(model)
 }
 #endif
 

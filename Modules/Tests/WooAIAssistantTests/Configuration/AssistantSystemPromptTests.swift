@@ -35,6 +35,7 @@ struct AssistantSystemPromptTests {
         #expect(analyticsPattern.contains("call `show_cards` to render the matching analytics card"))
         #expect(analyticsPattern.contains("grouping grain with a date window"))
         #expect(analyticsPattern.contains("Do not turn a monthly window into interval=month"))
+        #expect(analyticsPattern.contains("pass that id straight to `show_cards` rather than building one yourself"))
         #expect(directProseLines.allSatisfy { !$0.localizedCaseInsensitiveContains("analytics") })
     }
 
@@ -83,6 +84,40 @@ struct AssistantSystemPromptTests {
     }
 
     @Test
+    func test_build_documents_per_row_hidden_field_pattern_as_list_plus_show_cards() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let pattern1bSection = section(in: prompt, from: "Pattern 1b - Per-row fields the summary doesn't carry.", to: "Pattern 2 - Drill into a single entity")
+
+        #expect(pattern1bSection.contains("show me orders with customer emails"))
+        #expect(pattern1bSection.contains("list customers with phone numbers"))
+        #expect(pattern1bSection.contains("One list tool call, render via `show_cards`"))
+        #expect(pattern1bSection.contains("Tap any row to see emails"))
+        #expect(pattern1bSection.contains("without ever calling the list tool"))
+    }
+
+    @Test
+    func test_build_directs_writes_resolving_from_prior_context_for_superlatives_and_ordinals() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let reuseSection = section(in: prompt, from: "# Cross-turn context reuse", to: "Asking for clarification is a last resort")
+
+        #expect(reuseSection.contains("Same applies to write requests on prior context."))
+        #expect(reuseSection.contains("\"Mark the biggest one as completed\""))
+        #expect(reuseSection.contains("Don't refuse a write or punt to the native UI"))
+        #expect(reuseSection.contains("the antecedent is already in your context"))
+    }
+
+    @Test
+    func test_build_directs_list_plus_cards_for_summary_invisible_fields() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let hiddenFieldsSection = section(in: prompt, from: "# Don't invent hidden fields", to: "# Distinct quantities")
+
+        #expect(hiddenFieldsSection.contains("the answer is still a list tool call + `show_cards` + a one-line pointer"))
+        #expect(hiddenFieldsSection.contains("tap any row for billing details"))
+        #expect(hiddenFieldsSection.contains("Refusing the list call, or telling the merchant to open the Orders/Customers tab"))
+        #expect(hiddenFieldsSection.contains("the rendered cards are already tappable"))
+    }
+
+    @Test
     func test_build_keeps_remote_tool_names_out_of_prompt() {
         let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
         let remoteToolNames = [
@@ -90,7 +125,6 @@ struct AssistantSystemPromptTests {
             "orders_get",
             "products_list",
             "products_get",
-            "analytics_revenue",
             "analytics_orders",
             "analytics_stats",
             "orders_bulk_update",
@@ -100,6 +134,26 @@ struct AssistantSystemPromptTests {
 
         #expect(prompt.contains("`show_cards`"))
         #expect(remoteToolNames.allSatisfy { !prompt.contains($0) })
+    }
+
+    @Test
+    func test_build_documents_scope_and_off_topic_decline() {
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+        let scopeSection = section(in: prompt, from: "# Scope and off-topic requests", to: "# Where to send the merchant when no tool fits")
+
+        #expect(scopeSection.contains("apologise briefly and decline"))
+        #expect(scopeSection.contains("Call no tools, render no cards"))
+        #expect(scopeSection.contains("still in scope"))
+        #expect(prompt.contains("Off-topic / non-WooCommerce questions: apologise briefly and decline; no tools, no cards."))
+    }
+
+    @Test
+    func test_build_when_called_then_prompt_does_not_mention_extra_fields() {
+        // Given
+        let prompt = AssistantSystemPrompt.build(todayISODate: "2026-04-27")
+
+        // Then
+        #expect(!prompt.contains("extra_fields"))
     }
 
     private func section(in text: String, from startMarker: String, to endMarker: String) -> Substring {

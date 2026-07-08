@@ -56,6 +56,10 @@ final class StorePerformanceViewModel: ObservableObject {
     /// merchant initiates a new selection.
     @Published var orderTypeUpdateError: Error?
 
+    /// Currently applied analytics import update mode. `nil` until the value is loaded or seeded
+    /// from cache, so the scheduled-update info affordance only appears after a known `yes` value.
+    @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
+
     /// Tracks whether the merchant has manually picked an order type during this session.
     /// Prevents a late-arriving initial `loadOrderType` from clobbering a user selection.
     private var hasUserSelectedOrderType = false
@@ -86,6 +90,13 @@ final class StorePerformanceViewModel: ObservableObject {
 
     private var waitingTracker: WaitingTimeTracker?
     private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
+
+    /// Fires whenever the chart should drop any selected point (revenue switch, PTR, order type save).
+    /// Drives `StoreStatsChart.onReceive` so its local `@State` stays in sync with the header.
+    private let chartSelectionResetSubject = PassthroughSubject<Void, Never>()
+    var chartSelectionResetPublisher: AnyPublisher<Void, Never> {
+        chartSelectionResetSubject.eraseToAnyPublisher()
+    }
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -178,6 +189,9 @@ final class StorePerformanceViewModel: ObservableObject {
         chartValueSelectedEventsSubject.send(index)
         periodViewModel?.selectedIntervalIndex = index
         shouldHighlightStats = index != nil
+        if index == nil {
+            chartSelectionResetSubject.send()
+        }
 
         if unavailableVisitStatsDueToCustomRange {
             // If time range is less than 2 days, redact data when selected and show when deselected.
@@ -212,6 +226,11 @@ final class StorePerformanceViewModel: ObservableObject {
             return
         }
 
+        if forceRefresh {
+            // Forced refresh replaces the dataset; any selected point becomes meaningless.
+            didSelectStatsInterval(at: nil)
+        }
+
         syncingData = true
         loadingError = nil
         waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
@@ -228,6 +247,7 @@ final class StorePerformanceViewModel: ObservableObject {
             // Reload the Store Info Widget after syncing the today's stats.
             if case .today = timeRange {
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeTrendsWidgetKind)
             }
 
             syncingDidFinishPublisher.send(nil)
@@ -269,6 +289,10 @@ final class StorePerformanceViewModel: ObservableObject {
     /// Tracks the tap on the Performance card order date type selector label.
     func trackOrderDateTypeSelectorTapped() {
         analytics.track(event: .Dashboard.performanceCardOrderDateTypeSelectorTapped())
+    }
+
+    func trackAnalyticsImportUpdateModeInfoTapped() {
+        trackInteraction()
     }
 
     /// Switches the displayed revenue metric and persists the choice for next launch. No-op if the
@@ -336,6 +360,10 @@ final class StorePerformanceViewModel: ObservableObject {
             analytics.track(event: .Dashboard.performanceCardOrderDateTypeUpdateFailed(error: error))
         }
     }
+
+    func setAnalyticsImportUpdateMode(_ mode: AnalyticsImportUpdateMode) {
+        analyticsImportUpdateMode = mode
+    }
 }
 
 // MARK: - Data for `StorePerformanceView`
@@ -389,6 +417,14 @@ extension StorePerformanceViewModel {
             return false
         }
         return chartViewModel.hasRevenue
+    }
+
+    var shouldShowScheduledAnalyticsImportInfo: Bool {
+        analyticsImportUpdateMode == .scheduled
+    }
+
+    var shouldShowAnalyticsImportUpdateModeInfoButton: Bool {
+        analyticsImportUpdateMode != nil
     }
 }
 

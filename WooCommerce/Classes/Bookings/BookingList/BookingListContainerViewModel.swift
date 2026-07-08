@@ -153,7 +153,7 @@ final class BookingListContainerViewModel: ObservableObject {
     func setSelectedTab(to newTab: BookingListTab) {
         hasUserSwitchedTab = true
         selectedTab = newTab
-        analytics.track(BookingListTabSelectEvent(selectedTab: newTab.analyticsValue))
+        analytics.track(Event.bookingListTabSelect(selectedTab: newTab.analyticsValue))
         // Manually trigger onAppear as we are programaticcaly
         // changing the tab which will not trigger
         // onAppear on the View.
@@ -163,7 +163,7 @@ final class BookingListContainerViewModel: ObservableObject {
     func onAppear() {
         guard hasRestoredFilters else { return }
         let tabViewModel = listViewModel(for: selectedTab)
-        analytics.track(BookingListViewEvent(
+        analytics.track(Event.bookingListView(
             selectedTab: selectedTab.analyticsValue,
             isDefaultTab: !hasUserSwitchedTab && selectedTab == Self.defaultTab,
             isListEmpty: tabViewModel.bookings.isEmpty,
@@ -174,31 +174,31 @@ final class BookingListContainerViewModel: ObservableObject {
     func selectedBookingChanged() {
         let tabViewModel = listViewModel(for: selectedTab)
         let searchViewModel = searchViewModel(for: selectedTab)
-        analytics.track(BookingListBookingTapEvent(
+        analytics.track(Event.bookingListBookingTap(
             selectedTab: selectedTab.analyticsValue,
             isSearchActive: !searchViewModel.currentSearchQuery.isEmpty,
             isFilteringActive: tabViewModel.hasFilters))
     }
 
     func filtersTapped() {
-        analytics.track(BookingListFiltersTapEvent())
+        analytics.track(Event.bookingListFiltersTap)
     }
 
     func applyFiltersTapped() {
-        analytics.track(BookingListApplyFiltersEvent(selectedFilters: filters.analyticsFilterString))
+        analytics.track(Event.bookingListApplyFilters(selectedFilters: filters.analyticsFilterString))
     }
 
     func searchTapped() {
-        analytics.track(BookingListSearchTapEvent())
+        analytics.track(Event.bookingListSearchTap)
     }
 
     func sortByTapped() {
-        analytics.track(BookingListSortByTapEvent())
+        analytics.track(Event.bookingListSortByTap)
     }
 
     func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
         sortBy = option
-        analytics.track(BookingListSortByOptionTapEvent(sortOption: option.analyticsValue))
+        analytics.track(Event.bookingListSortByOptionTap(sortOption: option.analyticsValue))
     }
 }
 

@@ -9,7 +9,7 @@ public class AccountStore: Store {
     private let remote: AccountRemoteProtocol
     private var cancellables = Set<AnyCancellable>()
 
-    public convenience override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = AccountRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
@@ -56,6 +56,8 @@ public class AccountStore: Store {
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
         case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
             updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
+        case .updateCrashReportingOptOut(let optOut, let onCompletion):
+            updateCrashReportingOptOut(optOut: optOut, onCompletion: onCompletion)
         case let .loadNotificationSettings(deviceID, onCompletion):
             loadNotificationSettings(deviceID: deviceID, onCompletion: onCompletion)
         case .updateNotificationSettings(let notificationSettings, let onCompletion):
@@ -110,7 +112,7 @@ private extension AccountStore {
         if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly(), !forcedUpdate {
             onCompletion(.success(site))
         } else {
-            synchronizeSites(selectedSiteID: siteID) { [weak self] result in
+            synchronizeSites(selectedSiteID: siteID) { [weak self] _ in
                 guard let self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
@@ -160,8 +162,7 @@ private extension AccountStore {
                             let wcAvailabilityPublisher = self.remote.checkIfWooCommerceIsActive(for: site.siteID)
                             let wpSiteSettingsPublisher = self.remote.fetchWordPressSiteSettings(for: site.siteID)
                             return Publishers.Zip3(sitePublisher, wcAvailabilityPublisher, wpSiteSettingsPublisher)
-                                .map {
-                                    (site, isWooCommerceActiveResult, wpSiteSettingsResult) -> Site in
+                                .map {site, isWooCommerceActiveResult, wpSiteSettingsResult -> Site in
                                     var site = site
                                     guard case let .success(isWooCommerceActive) = isWooCommerceActiveResult,
                                           case let .success(wpSiteSettings) = wpSiteSettingsResult else {
@@ -225,6 +226,12 @@ private extension AccountStore {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Submits the crash reporting opt-in / opt-out setting to be synced globally.
+    ///
+    func updateCrashReportingOptOut(optOut: Bool, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        remote.updateCrashReportingOptOut(optOut: optOut, completion: onCompletion)
     }
 
     func loadNotificationSettings(deviceID: Int64, onCompletion: @escaping (Result<NotificationSettings, Error>) -> Void) {

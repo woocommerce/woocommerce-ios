@@ -21,10 +21,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.setUp()
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+            readOnlySite: Site.fake().copy(siteID: sampleSiteID)
         )
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()
@@ -219,6 +216,33 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // When
         viewModel.onLoadTrigger.send()
         viewModel.onLoadTrigger.send()
+
+        // Then
+        XCTAssertEqual(timesSynced, 1)
+    }
+
+    @MainActor
+    func test_initial_search_and_filters_emission_does_not_duplicate_first_page_sync() async throws {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        var timesSynced = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                timesSynced += 1
+                onCompletion(.success(true))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.onLoadTrigger.send()
+        // Waits beyond the search debounce interval so the initial search/filters emission would have fired a resync.
+        try await Task.sleep(nanoseconds: searchDebounceTime)
 
         // Then
         XCTAssertEqual(timesSynced, 1)
@@ -440,7 +464,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.filterListViewModel.criteria, FilterProductListViewModel.Filters())
     }
 
-    func test_clearing_search_returns_full_product_list() {
+    @MainActor
+    func test_clearing_search_returns_full_product_list() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  source: .orderForm(flow: .creation),
@@ -448,12 +473,13 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                  stores: stores)
         let expectation = expectation(description: "Cleared product search")
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
-        insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
+        insert([product.copy(productID: 1, name: "T-shirt"), product.copy(productID: 2, name: "Hoodie")])
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
-                self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
                 onCompletion(.success(false))
+            case let .searchProductsInCache(_, _, _, onCompletion):
+                onCompletion(false)
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(true))
                 expectation.fulfill()
@@ -464,8 +490,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.searchTerm = "shirt"
+        try await Task.sleep(nanoseconds: searchDebounceTime)
         viewModel.clearSearchAndFilters()
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        await fulfillment(of: [expectation], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 2)
@@ -1454,7 +1481,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productsSectionViewModels.count, 1)
-
     }
 
     @MainActor

@@ -32,7 +32,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { payload, _ in
             guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
                 XCTFail()
                 return
@@ -114,7 +114,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { _, _ in
             XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
             XCTAssertNotNil(mapper.input)
             expectation.fulfill()
@@ -143,6 +143,54 @@ final class RemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(mapper.input, Loader.contentsOf("order"))
         XCTAssertNotNil(mapper.input)
+    }
+
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a successful result on the main thread,
+    /// even though validation and parsing now run on a background queue.
+    ///
+    func test_enqueue_with_result_when_parsing_succeeds_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
+    }
+
+    /// Verifies that `enqueue:mapper:` with `Result` callback delivers a parsing failure on the main thread,
+    /// so the error-handling notifications keep firing on the main thread.
+    ///
+    func test_enqueue_with_result_when_parsing_fails_then_completion_is_called_on_main_thread() {
+        // Given
+        let network = MockNetwork()
+        let mapper = FailingDummyMapper()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        var isMainThread: Bool?
+        waitForExpectation { expectation in
+            remote.enqueue(request, mapper: mapper) { _ in
+                isMainThread = Thread.isMainThread
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(isMainThread, true)
     }
 
     /// Verifies that `enqueuePublisher` relays any received payload over to the Mapper.
@@ -187,6 +235,51 @@ final class RemoteTests: XCTestCase {
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `enqueue:` posts a `RemoteDidReceiveUnknownBlogError` Notification whenever the backend returns an
+    /// `unknown_blog` error.
+    ///
+    func test_enqueue_posts_unknown_blog_notification_when_the_response_contains_unknown_blog_error() async throws {
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveUnknownBlogError, object: nil, handler: nil)
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        do {
+            let _: String = try await remote.enqueue(request)
+        } catch {
+            let error = try XCTUnwrap(error as? DotcomError)
+            XCTAssertEqual(error, .unknownBlog())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that a network-level failure is only mapped and re-thrown: it is NOT routed through
+    /// `handleResponseError`, so no error notification is posted even for a failure that would map to one.
+    func test_enqueue_when_the_network_request_fails_then_does_not_post_an_error_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        // `request` is a JetpackRequest, so this would post a Jetpack-timeout notification if the
+        // network-failure path passed it to `handleResponseError` — which it must not.
+        network.simulateError(requestUrlSuffix: "something", error: DotcomError.requestFailed())
+
+        let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
+        expectationForNotification.isInverted = true
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then: the error is mapped and re-thrown as-is, without handling it.
+            XCTAssertEqual(error as? DotcomError, .requestFailed())
+        }
+
+        await fulfillment(of: [expectationForNotification], timeout: 1.0)
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
@@ -200,7 +293,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "something", filename: "timeout_error")
 
-        remote.enqueue(request, mapper: mapper) { (payload, error) in
+        remote.enqueue(request, mapper: mapper) { payload, error in
             XCTAssertNil(payload)
             XCTAssert(error is DotcomError)
             expectationForRequest.fulfill()
@@ -645,7 +738,7 @@ final class RemoteTests: XCTestCase {
             notification = returnedNotification
             return true
         })
-        let result: Result<Any, Error> = waitFor { promise in
+        let result: Result<Any, Error> = await waitForAsync { promise in
             remote.enqueueMultipartFormDataUpload(self.request, mapper: mapper, multipartFormData: { _ in }) { result in
                 promise(result)
             }

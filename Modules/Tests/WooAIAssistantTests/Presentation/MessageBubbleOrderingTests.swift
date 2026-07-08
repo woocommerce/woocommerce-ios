@@ -282,24 +282,24 @@ struct MessageBubbleOrderingTests {
     @Test
     func test_orderedSegments_when_synthetic_ids_contain_colons_then_dedupes_by_full_id() {
         // Given
-        let firstRevenueID = UUID()
-        let secondRevenueID = UUID()
-        let ordersID = UUID()
-        let revenueCardID = "analytics_revenue:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
-        let ordersCardID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let firstAprilID = UUID()
+        let secondAprilID = UUID()
+        let mayID = UUID()
+        let aprilCardID = "analytics_orders:after:2026-04-01:before:2026-04-30:interval:day:currency:none"
+        let mayCardID = "analytics_orders:after:2026-05-01:before:2026-05-31:interval:day:currency:none"
         let message = ChatMessage(role: .assistant, segments: [
-            .cardRender(id: firstRevenueID,
-                        toolCallID: "call_a:card:0:analytics_stats:\(revenueCardID)",
-                        toolName: "analytics_revenue",
-                        payload: .object(["id": .string(revenueCardID)])),
-            .cardRender(id: secondRevenueID,
-                        toolCallID: "call_b:card:0:analytics_stats:\(revenueCardID)",
-                        toolName: "analytics_revenue",
-                        payload: .object(["id": .string(revenueCardID)])),
-            .cardRender(id: ordersID,
-                        toolCallID: "call_c:card:0:analytics_stats:\(ordersCardID)",
+            .cardRender(id: firstAprilID,
+                        toolCallID: "call_a:card:0:analytics_stats:\(aprilCardID)",
                         toolName: "analytics_orders",
-                        payload: .object(["id": .string(ordersCardID)]))
+                        payload: .object(["id": .string(aprilCardID)])),
+            .cardRender(id: secondAprilID,
+                        toolCallID: "call_b:card:0:analytics_stats:\(aprilCardID)",
+                        toolName: "analytics_orders",
+                        payload: .object(["id": .string(aprilCardID)])),
+            .cardRender(id: mayID,
+                        toolCallID: "call_c:card:0:analytics_stats:\(mayCardID)",
+                        toolName: "analytics_orders",
+                        payload: .object(["id": .string(mayCardID)]))
         ], isStreaming: false)
 
         // When
@@ -307,7 +307,7 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [firstRevenueID, ordersID])
+        #expect(ids == [firstAprilID, mayID])
     }
 
     @Test
@@ -357,7 +357,7 @@ struct MessageBubbleOrderingTests {
     }
 
     @Test
-    func test_orderedSegments_when_multiple_toolCalls_then_only_last_pill_is_kept_in_place() {
+    func test_orderedSegments_when_multiple_toolCalls_then_all_are_filtered_out_of_segments() {
         // Given
         let firstCallID = UUID()
         let textID = UUID()
@@ -381,7 +381,154 @@ struct MessageBubbleOrderingTests {
         let ids = bubble.orderedSegments.map(\.id)
 
         // Then
-        #expect(ids == [textID, lastCallID])
+        #expect(ids == [textID])
+    }
+
+    @Test
+    func test_orderedSegments_when_completed_toolCall_and_cardRender_then_toolCall_filtered_out_but_others_render() {
+        // Given
+        let toolCallID = UUID()
+        let cardID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolCall(id: toolCallID,
+                      toolCallID: "c1",
+                      toolName: "orders_list",
+                      argumentsPreview: nil,
+                      status: .completed(summary: nil)),
+            .text(id: textID, content: "Here are the matching orders."),
+            .cardRender(id: cardID,
+                        toolCallID: "c1",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(!ids.contains(toolCallID))
+        #expect(ids.contains(cardID))
+        #expect(ids.contains(textID))
+    }
+
+    @Test
+    func test_orderedSegments_when_running_toolCall_and_cardRender_then_toolCall_filtered_out() {
+        // Given
+        let toolCallID = UUID()
+        let cardID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolCall(id: toolCallID,
+                      toolCallID: "c1",
+                      toolName: "orders_list",
+                      argumentsPreview: nil,
+                      status: .running),
+            .text(id: textID, content: "One moment."),
+            .cardRender(id: cardID,
+                        toolCallID: "c1",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(!ids.contains(toolCallID))
+        #expect(ids.contains(cardID))
+        #expect(ids.contains(textID))
+    }
+
+    @Test
+    func test_orderedSegments_when_failed_toolCall_then_toolCall_filtered_out() {
+        // Given
+        let toolCallID = UUID()
+        let cardID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolCall(id: toolCallID,
+                      toolCallID: "c1",
+                      toolName: "orders_list",
+                      argumentsPreview: nil,
+                      status: .failed(message: "boom")),
+            .text(id: textID, content: "Something went wrong."),
+            .cardRender(id: cardID,
+                        toolCallID: "c1",
+                        toolName: "show_cards.order",
+                        payload: .object(["id": .int(1)]))
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(!ids.contains(toolCallID))
+    }
+
+    @Test
+    func test_orderedSegments_when_completed_toolCall_and_no_card_then_toolCall_filtered_out_but_text_renders() {
+        // Given
+        let toolCallID = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolCall(id: toolCallID,
+                      toolCallID: "c1",
+                      toolName: "analytics_orders",
+                      argumentsPreview: nil,
+                      status: .completed(summary: nil)),
+            .text(id: textID, content: "Revenue dropped 4%.")
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.orderedSegments.map(\.id)
+
+        // Then
+        #expect(!ids.contains(toolCallID))
+        #expect(ids.contains(textID))
+    }
+
+    @Test
+    func test_toolCallSnapshots_when_multiple_parallel_calls_then_all_are_collected_in_order() {
+        // Given
+        let first = UUID()
+        let second = UUID()
+        let third = UUID()
+        let textID = UUID()
+        let message = ChatMessage(role: .assistant, segments: [
+            .toolCall(id: first, toolCallID: "c1", toolName: "orders_list",
+                      argumentsPreview: nil, status: .running),
+            .toolCall(id: second, toolCallID: "c2", toolName: "products_list",
+                      argumentsPreview: nil, status: .running),
+            .text(id: textID, content: "Working on it."),
+            .toolCall(id: third, toolCallID: "c3", toolName: "analytics_orders",
+                      argumentsPreview: nil, status: .running)
+        ], isStreaming: true)
+
+        // When
+        let bubble = MessageBubble(message: message)
+        let ids = bubble.toolCallSnapshots.map(\.id)
+
+        // Then
+        #expect(ids == [first, second, third])
+    }
+
+    @Test
+    func test_toolCallSnapshots_when_user_message_then_returns_empty() {
+        // Given
+        let message = ChatMessage(role: .user, segments: [
+            .text(id: UUID(), content: "How many orders today?")
+        ], isStreaming: false)
+
+        // When
+        let bubble = MessageBubble(message: message)
+
+        // Then
+        #expect(bubble.toolCallSnapshots.isEmpty)
     }
 
     @Test

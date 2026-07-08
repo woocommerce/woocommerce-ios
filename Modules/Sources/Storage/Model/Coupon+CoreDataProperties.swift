@@ -32,7 +32,6 @@ extension Coupon {
     @NSManaged public var excludedProducts: [Int64]?
     @NSManaged public var products: [Int64]?
     @NSManaged public var productCategories: [Int64]?
-
 }
 
 extension Coupon {
@@ -48,5 +47,4 @@ extension Coupon {
 
     @objc(removeSearchResults:)
     @NSManaged public func removeFromSearchResults(_ values: NSSet)
-
 }

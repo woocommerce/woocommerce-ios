@@ -20,7 +20,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     // Timezone of the website
     //
-    private let siteTimezone: TimeZone = TimeZone.siteTimezone
+    private let siteTimezone = TimeZone.siteTimezone
 
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
@@ -204,7 +204,8 @@ private extension DefaultProductFormTableViewModel {
                 priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
             }
 
-            if let signupFee = product.subscription?.signUpFee,
+            if product.isSubscriptionProduct,
+               let signupFee = product.subscription?.signUpFee,
                signupFee.isNotEmpty,
                let formattedFee = currencyFormatter.formatAmount(signupFee, with: currency) {
                 priceDetails.append(String.localizedStringWithFormat(Localization.subscriptionSignupFeeFormat, formattedFee))

@@ -30,5 +30,4 @@ struct LearnMoreViewModelTests {
             source: .aboutTapToPay,
             paymentGateway: .wcPay).formatText == "%1$@ about accepting payments with Tap to Pay on iPhone.")
     }
-
 }

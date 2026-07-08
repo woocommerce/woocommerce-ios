@@ -27,5 +27,4 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
                                expectedCount: 10,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
-
 }

@@ -27,7 +27,7 @@ final class BottomButtonContainerView: UIView {
         }
     }
 
-    private let button: UIButton = UIButton(type: .custom)
+    private let button = UIButton(type: .custom)
 
     private let viewModel: ViewModel
 

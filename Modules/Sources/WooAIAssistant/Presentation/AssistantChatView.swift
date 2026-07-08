@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 public struct AssistantChatView: View {
@@ -7,27 +8,32 @@ public struct AssistantChatView: View {
     @FocusState private var inputFocused: Bool
 
     private let onClose: () -> Void
+    private let onFeedbackTap: (() -> Void)?
 
     public init(controller: AssistantController,
-                onClose: @escaping () -> Void = {}) {
+                onClose: @escaping () -> Void = {},
+                onFeedbackTap: (() -> Void)? = nil) {
         self.controller = controller
         self.onClose = onClose
+        self.onFeedbackTap = onFeedbackTap
     }
 
     public var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                messageList
-
-                InputBar(draft: $draft,
-                         canSend: controller.canSend,
-                         isStreaming: isAssistantResponding,
-                         pendingConfirmation: hasPendingConfirmation,
-                         onSend: send,
-                         onStop: { controller.cancel() })
-                    .focused($inputFocused)
-            }
-            .background(Color.assistantSurface)
+            // Pin via safeAreaInset so the scroll content reserves matching
+            // bottom space instead of being obscured by the input bar.
+            messageList
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    InputBar(draft: $draft,
+                             canSend: controller.canSend,
+                             isStreaming: isAssistantResponding,
+                             pendingConfirmation: hasPendingConfirmation,
+                             onSend: send,
+                             onStop: { controller.cancel() })
+                        .focused($inputFocused)
+                        .background(Color.assistantSurface)
+                }
+                .background(Color.assistantSurface)
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -43,19 +49,33 @@ public struct AssistantChatView: View {
                     titleToolbarItem
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: newConversation) {
-                        Image(systemName: "square.and.pencil")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color(.accent))
+                    if !controller.conversation.messages.isEmpty {
+                        Button(action: newConversation) {
+                            Image(systemName: "square.and.pencil")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Color(.accent))
+                        }
+                        .accessibilityLabel(Localization.newConversation)
                     }
-                    .accessibilityLabel(Localization.newConversation)
-                    .disabled(!controller.canSend)
                 }
             }
+            .environment(\.openURL, OpenURLAction { url in
+                guard AssistantURLPolicy.allows(url) else {
+                    DDLogWarn("AI Assistant blocked link with disallowed scheme: \(url.scheme ?? "nil")")
+                    return .discarded
+                }
+                return .systemAction
+            })
             .environment(\.assistantConfirmationHandler,
                           AssistantConfirmationHandler(
                             onConfirm: { id in controller.confirmProposal(id) },
                             onCancel: { id in controller.cancelProposal(id) }))
+            .environment(\.assistantCardTelemetry,
+                          AssistantCardTelemetryDispatcher(
+                            tracker: controller.telemetryTracker,
+                            contextLookup: { [conversation = controller.conversation] messageID in
+                                conversation.telemetryContext(for: messageID)
+                            }))
             .onDisappear {
                 if !controller.canSend {
                     controller.cancel()
@@ -75,10 +95,16 @@ public struct AssistantChatView: View {
     }
 
     private var messageList: some View {
-        MessageListView(messages: controller.conversation.messages,
-                        streamingState: controller.conversation.streamingState,
-                        onPickPrompt: { draft = $0; inputFocused = true },
-                        onSendSuggestion: sendSuggestion)
+        // Always wire the retry handler so an error banner configured during the brief window
+        // where activeTask hasn't cleared yet still has a live closure. The controller no-ops
+        // internally when canSend is false.
+        let retryHandler: (() -> Void)? = { controller.retryLastFailedTurn() }
+        return MessageListView(messages: controller.conversation.messages,
+                               streamingState: controller.conversation.streamingState,
+                               onPickPrompt: { draft = $0; inputFocused = true },
+                               onSendSuggestion: sendSuggestion,
+                               onFeedbackTap: onFeedbackTap,
+                               onRetry: retryHandler)
             .background(
                 Color.clear
                     .contentShape(Rectangle())
@@ -105,10 +131,11 @@ public struct AssistantChatView: View {
         guard !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         controller.send(prompt)
         draft = ""
+        inputFocused = false
     }
 
-    private func sendSuggestion(_ suggestion: String) {
-        let trimmed = suggestion.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func sendSuggestion(_ prompt: String) {
+        let trimmed = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         controller.send(trimmed)
         draft = ""

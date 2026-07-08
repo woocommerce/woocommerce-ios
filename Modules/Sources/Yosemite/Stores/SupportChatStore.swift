@@ -8,7 +8,7 @@ import Storage
 public final class SupportChatStore: Store {
     private let remote: SupportChatRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = SupportChatRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -22,11 +22,11 @@ public final class SupportChatStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: SupportChatAction.self)
     }
 
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SupportChatAction else {
             assertionFailure("SupportChatStore received an unsupported action")
             return
@@ -35,23 +35,28 @@ public final class SupportChatStore: Store {
         switch action {
         case let .sendMessage(botSlug, message, chatID, sessionID, context, completion):
             sendMessage(botSlug: botSlug, message: message, chatID: chatID, sessionID: sessionID, context: context, completion: completion)
-        case let .fetchChat(botSlug, chatID, completion):
-            fetchChat(botSlug: botSlug, chatID: chatID, completion: completion)
-        case let .registerChat(chatID, siteID, wpcomUserID, botSlug, firstUserMessage, onCompletion):
+        case let .fetchChat(botSlug, chatID, sessionID, completion):
+            fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID, completion: completion)
+        case let .registerChat(chatID, siteID, wpcomUserID, botSlug, sessionID, firstUserMessage, onCompletion):
             registerChat(chatID: chatID,
                          siteID: siteID,
                          wpcomUserID: wpcomUserID,
                          botSlug: botSlug,
+                         sessionID: sessionID,
                          firstUserMessage: firstUserMessage,
                          onCompletion: onCompletion)
-        case let .touchChat(chatID, onCompletion):
-            touchChat(chatID: chatID, onCompletion: onCompletion)
+        case let .touchChat(chatID, sessionID, onCompletion):
+            touchChat(chatID: chatID, sessionID: sessionID, onCompletion: onCompletion)
         case let .loadChatHistory(siteID, onCompletion):
             loadChatHistory(siteID: siteID, onCompletion: onCompletion)
         case let .deleteChat(chatID, onCompletion):
             deleteChat(chatID: chatID, onCompletion: onCompletion)
         case let .markTicketCreated(chatID, onCompletion):
             markTicketCreated(chatID: chatID, onCompletion: onCompletion)
+        case let .markResolved(chatID, onCompletion):
+            markResolved(chatID: chatID, onCompletion: onCompletion)
+        case let .submitFeedback(botSlug, chatID, messageID, sessionID, upvoted, onCompletion):
+            submitFeedback(botSlug: botSlug, chatID: chatID, messageID: messageID, sessionID: sessionID, upvoted: upvoted, onCompletion: onCompletion)
         }
     }
 }
@@ -63,7 +68,7 @@ private extension SupportChatStore {
                      message: String,
                      chatID: Int64?,
                      sessionID: String?,
-                     context: [String: Any]?,
+                     context: RequestParameterDictionary?,
                      completion: @escaping (Result<SupportChatResponse, Error>) -> Void) {
         Task {
             let result = await Result {
@@ -82,14 +87,41 @@ private extension SupportChatStore {
 
     func fetchChat(botSlug: String,
                    chatID: Int64,
+                   sessionID: String?,
                    completion: @escaping (Result<SupportChatResponse, Error>) -> Void) {
         Task {
             let result = await Result {
-                try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
+                try await remote.fetchChat(botSlug: botSlug, chatID: chatID, sessionID: sessionID)
             }
 
             await MainActor.run {
                 completion(result)
+            }
+        }
+    }
+
+    func submitFeedback(botSlug: String,
+                        chatID: Int64,
+                        messageID: Int64,
+                        sessionID: String,
+                        upvoted: Bool,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task {
+            let result: Result<Void, Error> = await {
+                do {
+                    try await remote.submitFeedback(botSlug: botSlug,
+                                                    chatID: chatID,
+                                                    messageID: messageID,
+                                                    sessionID: sessionID,
+                                                    upvoted: upvoted)
+                    return .success(())
+                } catch {
+                    return .failure(error)
+                }
+            }()
+
+            await MainActor.run {
+                onCompletion(result)
             }
         }
     }
@@ -103,6 +135,7 @@ private extension SupportChatStore {
                       siteID: Int64,
                       wpcomUserID: Int64,
                       botSlug: String,
+                      sessionID: String?,
                       firstUserMessage: String,
                       onCompletion: @escaping () -> Void) {
         let title = Self.deriveTitle(from: firstUserMessage)
@@ -118,6 +151,7 @@ private extension SupportChatStore {
             chat.siteID = siteID
             chat.wpcomUserID = wpcomUserID
             chat.botSlug = botSlug
+            chat.sessionID = sessionID
             chat.title = title
             chat.createdAt = now
             chat.updatedAt = now
@@ -126,12 +160,15 @@ private extension SupportChatStore {
         }, on: .main)
     }
 
-    func touchChat(chatID: Int64, onCompletion: @escaping () -> Void) {
+    func touchChat(chatID: Int64, sessionID: String?, onCompletion: @escaping () -> Void) {
         let now = Date()
         storageManager.performAndSave({ storage in
             guard let chat = storage.loadSupportChat(chatID: chatID) else {
                 // Idempotent — row may have been deleted between turns.
                 return
+            }
+            if let sessionID {
+                chat.sessionID = sessionID
             }
             chat.updatedAt = now
         }, completion: {
@@ -161,6 +198,17 @@ private extension SupportChatStore {
                 return
             }
             chat.hasCreatedTicket = true
+        }, completion: {
+            onCompletion()
+        }, on: .main)
+    }
+
+    func markResolved(chatID: Int64, onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let chat = storage.loadSupportChat(chatID: chatID) else {
+                return
+            }
+            chat.isResolved = true
         }, completion: {
             onCompletion()
         }, on: .main)

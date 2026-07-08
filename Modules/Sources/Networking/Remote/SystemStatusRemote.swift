@@ -71,10 +71,10 @@ public class SystemStatusRemote: Remote {
                                                fields: [Field]? = nil,
                                                mapper: M) async throws -> T where M.Output == T {
         let path = Constants.systemStatusPath
-        let parameters: [String: Any]? = {
+        let parameters: RequestParameterDictionary? = {
             if let fields, !fields.isEmpty {
                 return [
-                    ParameterKeys.fields: fields.map(\.rawValue)
+                    ParameterKeys.fields: RequestParameterValue.array(fields.map(\.rawValue))
                 ]
             } else {
                 return nil

@@ -42,7 +42,7 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -94,7 +94,7 @@ struct BlazeCampaignListHostingControllerRepresentable: UIViewControllerRepresen
     func makeUIViewController(context: Context) -> BlazeCampaignListHostingController {
 
         let viewModel = BlazeCampaignListViewModel(siteID: siteID,
-                                                   selectedCampaignID: selectedCampaignID ?? nil)
+                                                   selectedCampaignID: selectedCampaignID)
         return BlazeCampaignListHostingController(viewModel: viewModel,
                                                   startsCampaignCreationOnAppear: startsCampaignCreationOnAppear)
     }

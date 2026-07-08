@@ -22,10 +22,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+            readOnlySite: Site.fake().copy(siteID: sampleSiteID)
         )
         let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,
@@ -1084,7 +1081,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
-
     }
 
     // MARK: - hasChanges Tests
@@ -2894,8 +2890,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 777, purchasable: true)
         insertProducts([nonBundleProduct,
-                                       // Product of the bundled item.
-                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+                        // Product of the bundled item.
+                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
             // Bundle product order item.
             .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
@@ -2962,8 +2958,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Non-bundle product is in storage but not part of the order.
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: itemProductID, purchasable: true)
         insertProducts([nonBundleProduct,
-                                       // Product of the bundled item.
-                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+                        // Product of the bundled item.
+                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
             // Bundle product order item.
@@ -3083,6 +3079,53 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(secondNewBundleOrderItem.quantity, 1)
     }
 
+    func test_when_selecting_bundle_with_recalculate_sync_then_bundle_configuration_is_preserved() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Product of the bundled item.
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
+        let bundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 5, isOptionalAndSelected: false)
+        ]
+
+        // When selecting and configuring a bundle product, then tapping recalculate
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: bundleConfiguration,
+                                            viewModel: viewModel)
+
+        XCTAssertTrue(viewModel.syncRequired)
+
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(order))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.onRecalculateTapped()
+        }
+
+        // Then order to be updated remotely contains the bundle product configuration
+        XCTAssertEqual(orderToUpdate.items.count, 1)
+
+        let newBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(newBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(newBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
+        XCTAssertEqual(newBundleOrderItem.quantity, 1)
+    }
+
     // No existing items —> select bundle A and configure in product selector -> close product selector
     // —> select bundle A and configure in product selector
     // —> order items to update remotely: bundle A with the latest bundle configuration
@@ -3151,7 +3194,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
         let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
@@ -3172,7 +3215,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
         let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
@@ -3190,8 +3233,8 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_createProductRowViewModel_sets_isReadOnly_to_false_for_non_bundle_parent_and_child_items() throws {
         // Given
         insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 1),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 2),
-                                       Product.fake().copy(siteID: sampleSiteID, productID: 3)])
+                        Product.fake().copy(siteID: sampleSiteID, productID: 2),
+                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
         // When
@@ -3253,7 +3296,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
         XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
         XCTAssertEqual(viewModel.customerDataViewModel.fullName, expectedFullName, "Customer details have been added to the order")
-
     }
 
     func test_when_saveInFlightOrderNotes_is_invoked_then_customer_note_is_updated() {
@@ -3467,30 +3509,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(mockScheduler.lastMerchantType)
     }
 
-    // MARK: - CIAB Order Status Editing
+    // MARK: - Order Status Editing
 
-    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+    func test_isOrderStatusEditingEnabled_returns_true() {
         // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
+                                               storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
-    }
-
-    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
-        // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
-
-        // Then
-        XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
     }
 }
 

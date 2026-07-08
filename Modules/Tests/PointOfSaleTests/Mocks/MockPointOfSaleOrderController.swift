@@ -15,6 +15,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?
     var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
+    var onSyncOrderCalled: (() async -> Void)?
 
     @discardableResult
     func syncOrder(for cart: Cart,
@@ -22,6 +23,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         syncOrderWasCalled = true
         spyCartProducts = cart.purchasableItems
         spyRetryHandler = retryHandler
+        await onSyncOrderCalled?()
 
         guard let orderStateToReturn else {
             orderState = .syncing
@@ -43,6 +45,50 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         sendReceiptWasCalled = true
         if let sendReceiptErrorToThrow {
             throw sendReceiptErrorToThrow
+        }
+    }
+
+    var markOrderAsPaidManuallyWasCalled = false
+    var markOrderAsPaidManuallyReceivedNote: String?
+    var markOrderAsPaidManuallyErrorToThrow: Error?
+    func markOrderAsPaidManually(note: String?) async throws {
+        markOrderAsPaidManuallyWasCalled = true
+        markOrderAsPaidManuallyReceivedNote = note
+        if let markOrderAsPaidManuallyErrorToThrow {
+            throw markOrderAsPaidManuallyErrorToThrow
+        }
+    }
+
+    var confirmScanToPayPaymentWasCalled = false
+    var confirmScanToPayPaymentErrorToThrow: Error?
+    func confirmScanToPayPayment() async throws {
+        confirmScanToPayPaymentWasCalled = true
+        if let confirmScanToPayPaymentErrorToThrow {
+            throw confirmScanToPayPaymentErrorToThrow
+        }
+    }
+
+    var reloadCurrentOrderWasCalled = false
+    var reloadCurrentOrderResult: Result<Order, Error> = .success(.fake())
+    func reloadCurrentOrder() async throws -> Order {
+        reloadCurrentOrderWasCalled = true
+        switch reloadCurrentOrderResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var promoteCurrentOrderToPendingWasCalled = false
+    var promoteCurrentOrderToPendingResult: Result<Order, Error> = .success(.fake())
+    func promoteCurrentOrderToPending() async throws -> Order {
+        promoteCurrentOrderToPendingWasCalled = true
+        switch promoteCurrentOrderToPendingResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
         }
     }
 }

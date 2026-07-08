@@ -121,7 +121,6 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             .selectedOptions(name: "Option 3"),
             .selectedOptions(name: "Option 1")
         ])
-
     }
 
     func test_reorder_option_with_same_indexes_do_not_reorders_section() throws {

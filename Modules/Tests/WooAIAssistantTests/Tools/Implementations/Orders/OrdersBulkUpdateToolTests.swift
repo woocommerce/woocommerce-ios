@@ -129,4 +129,215 @@ struct OrdersBulkUpdateToolTests {
         }
         #expect(failed.kind == .outcomeUnknown)
     }
+
+    @Test
+    func test_execute_when_all_patch_fields_succeed_then_receipt_includes_requested_count_and_updated_ids() async {
+        // Given
+        let body = #"{"update": [{"id": 1, "status": "completed"}, {"id": 2, "status": "completed"}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "completed"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["requested_count"] == .int(2))
+        #expect(summary["updated_count"] == .int(2))
+        #expect(summary["updated_ids"] == .array([.int(1), .int(2)]))
+        #expect(summary["partial_success"] == .bool(false))
+    }
+
+    @Test
+    func test_execute_when_some_entries_fail_then_partial_success_is_true() async {
+        // Given
+        let body = #"{"update": [{"id": 1, "status": "completed"}, {"id": 2, "error": {"code": "x"}}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1, 2], "patch": {"status": "completed"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["partial_success"] == .bool(true))
+        #expect(summary["failed_count"] == .int(1))
+    }
+
+    @Test
+    func test_execute_when_all_entries_succeed_then_partial_success_is_false() async {
+        // Given
+        let body = #"{"update": [{"id": 1, "status": "completed"}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"status": "completed"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["partial_success"] == .bool(false))
+    }
+
+    @Test
+    func test_execute_when_no_entries_succeed_then_partial_success_is_false_and_updated_ids_is_empty_array() async {
+        // Given
+        let body = #"{"update": [{"id": 1, "error": {"code": "x"}}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"status": "completed"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["partial_success"] == .bool(false))
+        #expect(summary["updated_ids"] == .array([]))
+    }
+
+    @Test
+    func test_execute_when_patch_has_status_and_customer_note_then_patch_keys_lists_them_in_canonical_order() async {
+        // Given
+        let body = #"{"update": [{"id": 1}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(
+            #"{"ids": [1], "patch": {"customer_note": "Hi", "status": "completed"}}"#,
+            client
+        )
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["patch_keys"] == .array([.string("status"), .string("customer_note")]))
+    }
+
+    @Test
+    func test_execute_when_patch_has_only_billing_email_then_patch_keys_contains_only_billing_email() async {
+        // Given
+        let body = #"{"update": [{"id": 1}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"billing_email": "a@b.c"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["patch_keys"] == .array([.string("billing_email")]))
+    }
+
+    @Test
+    func test_execute_when_patch_has_unknown_key_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"discount_total": "9.00"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("discount_total"))
+    }
+
+    @Test
+    func test_execute_when_response_succeeds_then_failed_is_emitted_as_array_even_when_empty() async {
+        // Given
+        let body = #"{"update": [{"id": 1, "status": "completed"}]}"#
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"status": "completed"}}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        #expect(summary["failed"] == .array([]))
+    }
+
+    @Test
+    func test_execute_when_patch_customer_note_exceeds_1000_chars_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+        let oversize = String(repeating: "a", count: 1001)
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"customer_note": "\#(oversize)"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "customer_note must be at most 1000 characters.")
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_patch_billing_email_exceeds_254_chars_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+        let oversize = String(repeating: "a", count: 245) + "@example.com"
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"billing_email": "\#(oversize)"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "billing_email must be at most 254 characters.")
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_execute_when_patch_billing_email_is_malformed_then_invalidToolCall_is_returned() async {
+        // Given
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
+        let tool = OrdersBulkUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"ids": [1], "patch": {"billing_email": "not-an-email"}}"#, client)
+
+        // Then
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed")
+            return
+        }
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "billing_email must be a valid email address.")
+        #expect(await client.calls.isEmpty)
+    }
 }

@@ -102,22 +102,23 @@ struct AnalyticsCardSpec: Sendable, Equatable {
     }
 }
 
+/// Only `orders` ships now - the `analytics_orders` report already returns
+/// revenue, orders, and average-order-value totals, so a separate revenue
+/// kind would be redundant. Kept as an enum (not a single constant) so a
+/// future Android-aligned analytics kind plugs in without reshaping callers.
 enum AnalyticsKind: String, Sendable, Equatable {
-    case revenue
     case orders
 
     /// Synthetic tool name the orchestrator emits so `MessageCardHost.statsView`
     /// reaches the right metrics through its exact-match dispatch arm.
     var renderToolName: String {
         switch self {
-        case .revenue: return AnalyticsRevenueTool.name
         case .orders: return AnalyticsOrdersTool.name
         }
     }
 
     var reportPath: String {
         switch self {
-        case .revenue: return "wc-analytics/reports/revenue/stats"
         case .orders: return "wc-analytics/reports/orders/stats"
         }
     }

@@ -41,7 +41,6 @@ struct MyStoreView: View {
             case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
                     .padding(.horizontal)
-
             }
         }
         .navigationBarTitleDisplayMode(.inline)
@@ -75,7 +74,6 @@ struct MyStoreView: View {
                     .font(.footnote)
 
                 Spacer()
-
             }
             .multilineTextAlignment(.center)
 

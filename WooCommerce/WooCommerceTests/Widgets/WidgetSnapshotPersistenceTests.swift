@@ -20,7 +20,7 @@ struct WidgetSnapshotPersistenceTests {
             WidgetSnapshot.Tile(
                 kind: WooConstants.storeInfoWidgetKind,
                 family: .systemMedium,
-                configuration: .storeStats(dateRange: .last7Days, metrics: [.orders, .revenue])
+                configuration: .storeStats(dateRange: .lastWeek, metrics: [.orders, .revenue])
             )
         ])
 
@@ -99,7 +99,7 @@ struct WidgetSnapshotPersistenceTests {
                 kind: WooConstants.storeInfoWidgetKind,
                 family: .systemLarge,
                 configuration: .storeStats(
-                    dateRange: .last30Days,
+                    dateRange: .lastMonth,
                     metrics: [.visitors, .conversion, .averageOrderValue]
                 )
             )
@@ -110,6 +110,26 @@ struct WidgetSnapshotPersistenceTests {
         let recovered = persistence.lastSnapshot
 
         // Then - tile order, metric order, and dateRange all preserved
+        #expect(recovered == original)
+    }
+
+    @Test func roundtrips_none_metric_through_userDefaults() {
+        // Given
+        let defaults = Self.makeIsolatedDefaults()
+        var persistence = UserDefaultsWidgetSnapshotPersistence(userDefaults: defaults)
+        let original = WidgetSnapshot(tiles: [
+            WidgetSnapshot.Tile(
+                kind: WooConstants.storeInfoWidgetKind,
+                family: .systemMedium,
+                configuration: .storeStats(dateRange: .today, metrics: [.revenue, .none, .orders])
+            )
+        ])
+
+        // When
+        persistence.lastSnapshot = original
+        let recovered = persistence.lastSnapshot
+
+        // Then
         #expect(recovered == original)
     }
 }

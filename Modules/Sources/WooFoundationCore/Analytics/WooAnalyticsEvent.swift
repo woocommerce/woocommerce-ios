@@ -68,7 +68,11 @@ extension WooAnalyticsEvent {
             static let pollAttempts = "poll_attempts"
             static let lastGenerationState = "last_generation_state"
             static let errorType = "error_type"
+            static let failureStage = "failure_stage"
+            static let httpStatusCode = "http_status_code"
+            static let responseContentType = "response_content_type"
             static let reason = "reason"
+            static let wooCommerceVersion = "woocommerce_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -156,7 +160,10 @@ extension WooAnalyticsEvent {
             error: Error,
             errorClassifier: (Error) -> String,
             pollAttempts: Int? = nil,
-            lastGenerationState: String? = nil
+            lastGenerationState: String? = nil,
+            failureStage: String? = nil,
+            httpStatusCode: Int? = nil,
+            responseContentType: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
             var properties: [String: WooAnalyticsEventPropertyType] = [
@@ -170,6 +177,15 @@ extension WooAnalyticsEvent {
             if let lastGenerationState {
                 properties[Key.lastGenerationState] = lastGenerationState
             }
+            if let failureStage {
+                properties[Key.failureStage] = failureStage
+            }
+            if let httpStatusCode {
+                properties[Key.httpStatusCode] = "\(httpStatusCode)"
+            }
+            if let responseContentType {
+                properties[Key.responseContentType] = responseContentType
+            }
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed, properties: properties, error: error)
         }
 
@@ -178,6 +194,15 @@ extension WooAnalyticsEvent {
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
                                            Key.syncStrategy: syncStrategy])
+        }
+
+        // MARK: - Host-Blocked Catalog File Events
+
+        /// Tracked once whenever a full sync falls back to the paginated sync because the host
+        /// blocks the catalog file (WC < 11, where the core `.htaccess` fix is unavailable).
+        public static func blockedFellBackToRemote(wooCommerceVersion: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogBlockedFellBackToRemote,
+                              properties: [Key.wooCommerceVersion: wooCommerceVersion ?? "unknown"])
         }
     }
 }

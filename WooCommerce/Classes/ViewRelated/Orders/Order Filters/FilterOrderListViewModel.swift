@@ -104,24 +104,19 @@ final class FilterOrderListViewModel: FilterListViewModel {
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        var allFilterViewModels = [orderStatusFilterViewModel,
-                                   dateRangeFilterViewModel,
-                                   customerFilterViewModel,
-                                   productFilterViewModel]
-
-        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
-            allFilterViewModels.append(salesChannelFilterViewModel)
-        }
-
-        filterTypeViewModels = allFilterViewModels
+        filterTypeViewModels = [orderStatusFilterViewModel,
+                                dateRangeFilterViewModel,
+                                customerFilterViewModel,
+                                productFilterViewModel,
+                                salesChannelFilterViewModel]
     }
 
     var criteria: Filters {
-        let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum] ?? nil
-        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
-        let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
-        let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
-        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter ?? nil
+        let orderStatus = orderStatusFilterViewModel.selectedValue as? [OrderStatusEnum]
+        let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter
+        let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct
+        let customer = customerFilterViewModel.selectedValue as? CustomerFilter
+        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,

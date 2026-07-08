@@ -57,7 +57,6 @@ final class BookingDetailsViewModel: ObservableObject {
     }
 
     /// Whether the Reschedule button should be shown.
-    /// Hidden for bookings with status: canceled, completed, failed, or in-cart.
     var shouldShowRescheduleButton: Bool {
         guard featureFlagService.isFeatureFlagEnabled(.ciabBookingReschedule) else {
             return false
@@ -288,11 +287,11 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
-        analytics.track(BookingDetailAttendanceStatusUpdateEvent(bookingStatus: newStatus.analyticsValue))
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: newStatus.analyticsValue))
     }
 
     func notesTapped() {
-        analytics.track(BookingDetailAddNoteTapEvent())
+        analytics.track(Event.bookingDetailAddNoteTap)
     }
 
     @MainActor
@@ -356,7 +355,7 @@ extension BookingDetailsViewModel {
                     analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .cancelBooking, error: error))
                 } else {
                     continuation.resume(returning: ())
-                    analytics.track(BookingDetailCancelBookingEvent())
+                    analytics.track(Event.bookingDetailCancelBooking)
                 }
             })
         }
@@ -517,13 +516,13 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
-        analytics.track(BookingDetailViewLinkedOrderTapEvent())
+        analytics.track(Event.bookingDetailViewLinkedOrderTap)
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 
     @MainActor
     func issueRefund() async {
-        analytics.track(BookingDetailRefundTapEvent())
+        analytics.track(Event.bookingDetailRefundTap)
 
         guard let order = storage.viewStorage.loadOrder(siteID: booking.siteID, orderID: booking.orderID)?.toReadOnly() else {
             DDLogError("⛔️ Order not found in storage for booking \(booking.bookingID)")
@@ -647,6 +646,5 @@ private extension BookingDetailsViewModel {
             value: "Retry",
             comment: "Retry Action"
         )
-
     }
 }

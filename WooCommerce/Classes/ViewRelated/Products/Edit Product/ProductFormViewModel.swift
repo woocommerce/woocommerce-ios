@@ -251,7 +251,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
@@ -542,7 +542,7 @@ extension ProductFormViewModel {
         }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
                                                       trialPeriod: trialPeriod,
-                                                      oneTimeShipping: oneTimeShipping ?? nil)
+                                                      oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 
@@ -633,8 +633,9 @@ extension ProductFormViewModel {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let data):
-                self.resetProduct(data.product)
-                self.resetPassword(data.password)
+                // Do not reset this form's baseline to the duplicate. This form still represents the original
+                // product; rebinding `originalProduct`/`originalPassword` to the duplicate corrupts change
+                // tracking and can leak the duplicate's images into the original via the shared image action handler.
                 onCompletion(.success(data.product))
             }
         }
@@ -661,7 +662,6 @@ private extension ProductFormViewModel {
         let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
-
     }
 
     func replaceProductID(productIDBeforeSave: Int64) {
@@ -842,7 +842,6 @@ private extension ProductFormViewModel {
     func configureResultsController() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
             self?.updateBlazeCampaignResult()
-
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
             self?.updateBlazeCampaignResult()

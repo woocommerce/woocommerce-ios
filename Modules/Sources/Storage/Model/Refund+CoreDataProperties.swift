@@ -20,7 +20,6 @@ extension Refund {
     @NSManaged public var supportShippingRefunds: Bool
     @NSManaged public var items: Set<OrderItemRefund>?
     @NSManaged public var shippingLines: Set<ShippingLine>?
-
 }
 
 // MARK: Generated accessors for items
@@ -37,7 +36,6 @@ extension Refund {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for shippingLines
@@ -54,5 +52,4 @@ extension Refund {
 
     @objc(removeShippingLines:)
     @NSManaged public func removeFromShippingLines(_ values: NSSet)
-
 }

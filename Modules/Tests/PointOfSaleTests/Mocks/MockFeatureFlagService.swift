@@ -21,8 +21,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
-    var isCIABBookingsEnabled: Bool
-    var isPointOfSaleRefundsi1Enabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -41,9 +39,7 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
-         isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false,
-         isPointOfSaleRefundsi1Enabled: Bool = false) {
+         isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -62,8 +58,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
-        self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.isPointOfSaleRefundsi1Enabled = isPointOfSaleRefundsi1Enabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -111,9 +105,9 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
-            return isCIABBookingsEnabled
-        case .pointOfSaleRefundsi1:
-            return isPointOfSaleRefundsi1Enabled
+            return false
+        case .ciabBookingReschedule:
+            return false
         default:
             return false
         }

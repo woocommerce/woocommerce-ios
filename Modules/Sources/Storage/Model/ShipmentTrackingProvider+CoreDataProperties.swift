@@ -12,5 +12,4 @@ extension ShipmentTrackingProvider {
     @NSManaged public var name: String?
     @NSManaged public var url: String?
     @NSManaged public var group: ShipmentTrackingProviderGroup?
-
 }

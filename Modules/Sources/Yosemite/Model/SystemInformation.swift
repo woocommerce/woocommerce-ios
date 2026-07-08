@@ -1,7 +1,7 @@
 import Networking
 import Codegen
 
-/// Store sytem information entity.
+/// Store system information entity.
 ///
 public struct SystemInformation: GeneratedFakeable, GeneratedCopiable {
     /// Store UUID

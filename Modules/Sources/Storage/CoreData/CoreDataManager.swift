@@ -174,7 +174,7 @@ public final class CoreDataManager: StorageManagerType {
                                                                  storeURL: storeURL,
                                                                  modelsInventory: modelsInventory)
 
-        container.loadPersistentStores { (storeDescription, error) in
+        container.loadPersistentStores { storeDescription, error in
             guard let persistentStoreLoadingError = error else {
                 return
             }
@@ -189,14 +189,13 @@ public final class CoreDataManager: StorageManagerType {
                                                                                 ofType: storeDescription.type,
                                                                                 options: nil)
                 NotificationCenter.default.post(name: .StorageManagerDidResetStorage, object: self)
-
             } catch {
                 persistentStoreRemovalError = error
             }
 
             /// Retry!
             ///
-            container.loadPersistentStores { (storeDescription, underlyingError) in
+            container.loadPersistentStores { _, underlyingError in
                 guard let underlyingError = underlyingError as NSError? else {
                     return
                 }
@@ -411,6 +410,5 @@ extension CoreDataManager {
                 self?.state = .isFinished
             }
         }
-
     }
 }

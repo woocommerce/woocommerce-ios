@@ -38,7 +38,7 @@ struct ShippingLabelCarriers: View {
                                                               edgeInsets: edgeInsets,
                                                               shippingMethod: viewModel.shippingMethod,
                                                               shippingCost: viewModel.shippingCost).renderedIf(viewModel.shouldDisplayTopBanner)
-                        ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { index, sectionVM in
+                        ForEach(Array(viewModel.sections.enumerated()), id: \.offset) { _, sectionVM in
                             ShippingLabelCarriersSection(section: sectionVM, safeAreaInsets: geometry.safeAreaInsets)
                                 .background(Color(.listForeground(modal: false)))
                             Spacer().frame(height: Constants.spaceBetweenSections)
@@ -142,7 +142,7 @@ struct ShippingLabelCarriers_Previews: PreviewProvider {
                                                 originAddress: shippingAddress,
                                                 destinationAddress: shippingAddress,
                                                 packages: [])
-        ShippingLabelCarriers(viewModel: vm) { (_) in
+        ShippingLabelCarriers(viewModel: vm) { _ in
         }
     }
 }

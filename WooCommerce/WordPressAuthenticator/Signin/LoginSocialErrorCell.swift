@@ -42,7 +42,7 @@ open class LoginSocialErrorCell: UITableViewCell {
         layoutLabels()
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         errorTitle = aDecoder.value(forKey: "errorTitle") as? String ?? ""
         errorDescription = aDecoder.value(forKey: "errorDescription") as? String ?? ""
         titleLabel = UILabel()
@@ -75,7 +75,7 @@ open class LoginSocialErrorCell: UITableViewCell {
             contentView.bottomAnchor.constraint(equalTo: labelStack.bottomAnchor, constant: Constants.labelVerticalMargin),
             contentView.layoutMarginsGuide.leadingAnchor.constraint(equalTo: labelStack.leadingAnchor),
             contentView.layoutMarginsGuide.trailingAnchor.constraint(equalTo: labelStack.trailingAnchor)
-            ])
+        ])
 
         titleLabel.text = errorTitle.localizedUppercase
         if let styledDescription = errorDescriptionStyled {

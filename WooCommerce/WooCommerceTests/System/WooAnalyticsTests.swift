@@ -20,6 +20,14 @@ class WooAnalyticsTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    /// Isolated defaults database so tests don't depend on the host's persisted analytics opt-in state.
+    ///
+    private var userDefaults: UserDefaults!
+
+    /// Suite name backing `userDefaults`, retained so the persistent domain can be cleared in tearDown.
+    ///
+    private var userDefaultsSuiteName: String!
+
     private let sampleSiteID: Int64 = 12345
 
     private let sampleSiteURL: String = "https://example.com"
@@ -35,10 +43,15 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
+        userDefaultsSuiteName = UUID().uuidString
+        userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults)
     }
 
     override func tearDown() {
+        userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
+        userDefaults = nil
+        userDefaultsSuiteName = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
     }
@@ -174,7 +187,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -212,7 +225,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -238,9 +251,9 @@ class WooAnalyticsTests: XCTestCase {
         }
     }
 
-    // MARK: - Trackable Bridge
+    // MARK: - Event Bridge
 
-    func test_track_Trackable_when_authenticated_then_includes_site_properties() {
+    func test_track_Event_when_authenticated_then_includes_site_properties() {
         // Given
         guard let testingProvider else {
             return XCTFail("Testing provider not available")
@@ -250,40 +263,38 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
-        analytics.track(MockTrackableEvent(analyticsName: "test_event",
-                                           analyticsProperties: ["key1": "value1"]))
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
 
         // Then
-        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
             return XCTFail("No properties found")
         }
-        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
     }
 
-    func test_track_Trackable_when_not_authenticated_then_skips_site_properties() {
+    func test_track_Event_when_not_authenticated_then_skips_site_properties() {
         // Given
         guard let testingProvider else {
             return XCTFail("Testing provider not available")
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
 
         // When
-        analytics.track(MockTrackableEvent(analyticsName: "test_event",
-                                           analyticsProperties: ["key1": "value1"]))
+        analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
 
         // Then
-        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        XCTAssertEqual(testingProvider.receivedEvents.first, "booking_detail_attendance_status_update")
         guard let receivedProperties = testingProvider.receivedProperties.first else {
             return XCTFail("No properties found")
         }
-        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertNil(receivedProperties["blog_id"])
     }
 }
@@ -303,22 +314,5 @@ private extension WooAnalyticsTests {
         static let testErrorReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain"]
 
         static let testErrorAndPropertyReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain", "prop-key1": "prop-value1"]
-    }
-}
-
-// MARK: - Mock Trackable
-
-private struct MockTrackableEvent: Trackable {
-    let analyticsName: String
-    let analyticsProperties: [String: any CustomStringConvertible]
-
-    var description: String { analyticsName }
-
-    static func == (lhs: MockTrackableEvent, rhs: MockTrackableEvent) -> Bool {
-        lhs.analyticsName == rhs.analyticsName
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(analyticsName)
     }
 }

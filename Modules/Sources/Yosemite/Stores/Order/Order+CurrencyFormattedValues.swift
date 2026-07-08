@@ -15,7 +15,7 @@ public extension Order {
     }
 
     var subtotal: Decimal {
-        let subtotal = items.reduce(.zero) { (output, item) in
+        let subtotal = items.reduce(.zero) { output, item in
             let itemSubtotal = Decimal(string: item.subtotal) ?? .zero
             return output + itemSubtotal
         }

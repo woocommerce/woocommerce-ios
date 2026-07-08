@@ -22,7 +22,7 @@ public final class MetaDataStore: Store {
     ///   - storageManager: The storage layer used to store and retrieve persisted MetaData for Orders and Products.
     ///   - network: The network layer used to update MetaData.
     ///
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
                                      network: Network) {
         self.init(dispatcher: dispatcher,
@@ -68,7 +68,7 @@ private extension MetaDataStore {
     func updateMetaData(siteID: Int64,
                         parentItemID: Int64,
                         metaDataType: MetaDataType,
-                        metadata: [[String: Any?]],
+                        metadata: [RequestParameterDictionary],
                         onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         switch metaDataType {
         case .order:
@@ -87,7 +87,7 @@ private extension MetaDataStore {
     ///
     func updateOrderMetaData(siteID: Int64,
                              orderID: Int64,
-                             metadata: [[String: Any?]],
+                             metadata: [RequestParameterDictionary],
                              onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -161,7 +161,7 @@ private extension MetaDataStore {
     ///
     func updateProductMetaData(siteID: Int64,
                                productID: Int64,
-                               metadata: [[String: Any?]],
+                               metadata: [RequestParameterDictionary],
                                onCompletion: @escaping (Result<[MetaData], Error>) -> Void) {
         Task { @MainActor in
             do {

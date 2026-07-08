@@ -4,7 +4,7 @@ import WebKit
 final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
 
-    private var printController: UIPrintInteractionController = UIPrintInteractionController.shared
+    private var printController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -71,6 +71,8 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     }
 
     private func configureNavigation() {
+        title = Localization.title
+
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
                                           target: self,
@@ -157,9 +159,17 @@ extension ReceiptViewController {
 extension ReceiptViewController {
     enum Constants {
         static let pointsPerInch: Int = 72
-        static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
-        static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
-        static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+        static let maximumReceiptContentWidth = CGFloat(4 * pointsPerInch)
+        static let maximumReceiptContentHeight = CGFloat(11 * pointsPerInch)
+        static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
         static let margin: CGFloat = 16
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "receiptViewController.title",
+            value: "Receipt",
+            comment: "Title of the view containing a receipt preview."
+        )
     }
 }

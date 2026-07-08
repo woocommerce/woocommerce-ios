@@ -44,6 +44,95 @@ struct AIAssistantExternalViewsAdaptorTests {
     }
 
     @Test
+    func test_productDetails_when_variable_product_with_multiple_variations_then_subtitle_appends_count_with_middle_dot() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = ProductCardPayload(
+            id: 101,
+            name: "Hoodie",
+            stockStatus: "instock",
+            variationsCount: 15
+        )
+
+        // When
+        let subtitle = sut.productDetails(for: payload)
+
+        // Then
+        #expect(subtitle == "In stock \u{00B7} 15 variations")
+    }
+
+    @Test
+    func test_productDetails_when_variable_product_with_single_variation_then_subtitle_uses_singular_phrase() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = ProductCardPayload(
+            id: 101,
+            name: "Hoodie",
+            stockStatus: "instock",
+            variationsCount: 1
+        )
+
+        // When
+        let subtitle = sut.productDetails(for: payload)
+
+        // Then
+        #expect(subtitle == "In stock \u{00B7} 1 variation")
+    }
+
+    @Test
+    func test_productDetails_when_simple_product_then_subtitle_omits_variations_segment() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = ProductCardPayload(
+            id: 101,
+            name: "Hoodie",
+            stockStatus: "instock",
+            variationsCount: nil
+        )
+
+        // When
+        let subtitle = sut.productDetails(for: payload)
+
+        // Then
+        #expect(subtitle == "In stock")
+    }
+
+    @Test
+    func test_productDetails_when_variations_count_is_zero_then_segment_is_omitted() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = ProductCardPayload(
+            id: 101,
+            name: "Hoodie",
+            stockStatus: "outofstock",
+            variationsCount: 0
+        )
+
+        // When
+        let subtitle = sut.productDetails(for: payload)
+
+        // Then
+        #expect(subtitle == "Out of stock")
+    }
+
+    @Test
+    func test_productDetails_when_no_stock_or_sku_but_variations_present_then_subtitle_is_just_variations() {
+        // Given
+        let sut = AIAssistantExternalViewsAdaptor()
+        let payload = ProductCardPayload(
+            id: 101,
+            name: "Hoodie",
+            variationsCount: 3
+        )
+
+        // When
+        let subtitle = sut.productDetails(for: payload)
+
+        // Then
+        #expect(subtitle == "3 variations")
+    }
+
+    @Test
     func test_customerRow_when_payload_has_name_fields_then_returns_anyview() {
         // Given
         let sut = AIAssistantExternalViewsAdaptor()
@@ -76,7 +165,7 @@ struct AIAssistantExternalViewsAdaptorTests {
     }
 
     @Test
-    func test_statsCardView_when_tool_is_analytics_revenue_with_totals_then_returns_anyview() {
+    func test_statsCardView_when_tool_is_analytics_orders_with_revenue_totals_then_returns_anyview() {
         // Given
         let sut = AIAssistantExternalViewsAdaptor()
         let payload = AnyCodableJSON.object([
@@ -89,7 +178,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         ])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
 
         // Then
         #expect(view != nil)
@@ -138,7 +227,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         ])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
         let leading = sut.testChartData(forKeys: ["total_sales", "gross_sales"], payload: payload)
         let trailing = sut.testChartData(forKeys: ["net_revenue"], payload: payload)
 
@@ -222,7 +311,7 @@ struct AIAssistantExternalViewsAdaptorTests {
         let payload = AnyCodableJSON.object(["unrelated": .string("garbage")])
 
         // When
-        let view = sut.statsCardView(toolName: "analytics_revenue", payload: payload)
+        let view = sut.statsCardView(toolName: "analytics_orders", payload: payload)
 
         // Then
         #expect(view == nil)

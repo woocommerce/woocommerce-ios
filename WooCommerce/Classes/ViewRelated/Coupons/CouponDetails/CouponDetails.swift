@@ -28,7 +28,7 @@ final class CouponDetailsHostingController: UIHostingController<CouponDetails> {
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -176,14 +176,14 @@ struct CouponDetails: View {
                     .confirmationDialog(Localization.manageCoupon, isPresented: $showingActionSheet, actions: {
                         actionSheetContent
                     })
+                    .shareView(isPresented: $showingShareSheet) {
+                        ShareSheet(activityItems: [viewModel.shareMessage], permittedArrowDirections: [])
+                    }
                 }
             }
         }
         .navigationTitle(viewModel.coupon.code)
         .wooNavigationBarStyle()
-        .shareSheet(isPresented: $showingShareSheet) {
-            ShareSheet(activityItems: [viewModel.shareMessage])
-        }
     }
 
     private var summarySection: some View {

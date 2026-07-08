@@ -2,21 +2,29 @@ import SwiftUI
 
 /// Logo-led header shared by all metric layouts.
 struct StoreInfoMetricsLogoHeader: View {
+    @Environment(\.storeWidgetTheme) private var theme
+
     let data: StoreInfoData
     private let showsRange: Bool
+    private let showsUpdatePrefix: Bool
 
-    init(data: StoreInfoData, showsRange: Bool = true) {
+    init(data: StoreInfoData,
+         showsRange: Bool = true,
+         showsUpdatePrefix: Bool = true) {
         self.data = data
         self.showsRange = showsRange
+        self.showsUpdatePrefix = showsUpdatePrefix
     }
 
     var body: some View {
         HStack(alignment: .top, spacing: Layout.logoSpacing) {
             Image("woo-mini-logo", bundle: nil)
+                .renderingMode(.template)
                 .resizable()
                 .scaledToFit()
                 .frame(width: Layout.logoWidth, height: Layout.logoHeight)
                 .padding(.top, Layout.logoTopInset)
+                .foregroundStyle(theme.logoTintColor)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.textSpacing) {
@@ -36,12 +44,21 @@ struct StoreInfoMetricsLogoHeader: View {
                     }
                 }
 
-                Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))
+                updatedTimeText
                     .statRangeStyle()
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private var updatedTimeText: some View {
+        if showsUpdatePrefix {
+            Text(StoreInfoMetricsView.Localization.updatedAt(data.updatedTime))
+        } else {
+            Text(data.updatedTime)
         }
     }
 

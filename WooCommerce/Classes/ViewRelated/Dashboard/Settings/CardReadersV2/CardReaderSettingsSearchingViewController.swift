@@ -11,9 +11,9 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private var viewModel: CardReaderSettingsSearchingViewModel
 
-    private lazy var alertsPresenter: CardPresentPaymentAlertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
+    private lazy var alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
 
-    private let alertsProvider: BluetoothReaderConnectionAlertsProvider = BluetoothReaderConnectionAlertsProvider()
+    private let alertsProvider = BluetoothReaderConnectionAlertsProvider()
 
     /// Connection Controller (helps connect readers)
     ///

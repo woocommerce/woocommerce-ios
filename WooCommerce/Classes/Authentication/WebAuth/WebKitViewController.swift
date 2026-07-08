@@ -127,7 +127,7 @@ class WebKitViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [
             progressView,
             webView
-            ])
+        ])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
@@ -149,7 +149,7 @@ class WebKitViewController: UIViewController {
         stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         stackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
 
-        // this constraint saved as a varible so it can be deactivated when the toolbar is hidden, to prevent unintended pinning to the safe area
+        // this constraint saved as a variable so it can be deactivated when the toolbar is hidden, to prevent unintended pinning to the safe area
         let stackViewBottom = stackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         stackViewBottomAnchor = stackViewBottom
         NSLayoutConstraint.activate([stackViewBottom])

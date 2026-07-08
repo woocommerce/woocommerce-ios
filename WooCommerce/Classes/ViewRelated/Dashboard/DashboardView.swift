@@ -91,35 +91,23 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: Layout.padding) {
-                // Store title
-                Text(currentSite?.name ?? Localization.title)
-                    .subheadlineStyle()
-                    .padding(Layout.sectionHeadingPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(verticalSizeClass == .regular)
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: Layout.padding) {
+                    // Store title
+                    Text(currentSite?.name ?? Localization.title)
+                        .subheadlineStyle()
+                        .padding(Layout.sectionHeadingPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .renderedIf(verticalSizeClass == .regular)
 
-                // Feature announcement if any.
-                featureAnnouncementCard
+                    // Feature announcement if any.
+                    featureAnnouncementCard
 
-                // Card views
-                Group {
-                    if horizontalSizeClass == .regular,
-                       !dynamicTypeSize.isAccessibilitySize,
-                       viewModel.showOnDashboardSecondColumn.isNotEmpty {
-                        // display cards in 2 columns for large screen sizes if there are more than 1 cards.
-                        HStack(alignment: .top, spacing: 0) {
-                            dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                            dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
-                        }
-                    } else {
-                        // display all cards in a single column
-                        dashboardCardList(with: viewModel.showOnDashboardCards)
-                    }
+                    dashboardCards(availableWidth: proxy.size.width)
                 }
+                .padding(.bottom, Layout.padding)
             }
-            .padding(.bottom, Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -163,8 +151,9 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            viewModel.onPullToRefresh()
+            await viewModel.onPullToRefresh()
         }
+        .notice($viewModel.notice)
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
@@ -202,6 +191,11 @@ struct DashboardView: View {
         .sheet(isPresented: $viewModel.showingTapToPayAwarenessMoment) {
             TapToPayAwarenessMomentView()
         }
+        .sheet(isPresented: $viewModel.showingAnalyticsImportUpdateModeInfo) {
+            AnalyticsUpdateModeBottomSheet(
+                viewModel: viewModel.makeAnalyticsUpdateModeBottomSheetViewModel()
+            )
+        }
         .onAppear {
             Task {
                 await viewModel.onViewAppear()
@@ -214,9 +208,36 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     @ViewBuilder
+    func dashboardCards(availableWidth: CGFloat) -> some View {
+        if shouldDisplayDashboardCardsInTwoColumns(availableWidth: availableWidth) {
+            // Display cards in 2 columns for large screen sizes if there are more than 1 cards.
+            HStack(alignment: .top, spacing: 0) {
+                dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+            }
+        } else {
+            // Display all cards in a single column.
+            dashboardCardList(with: viewModel.showOnDashboardCards)
+        }
+    }
+
+    func shouldDisplayDashboardCardsInTwoColumns(availableWidth: CGFloat) -> Bool {
+        let hasRegularWidth: Bool
+        if #available(iOS 26.0, *) {
+            hasRegularWidth = availableWidth >= NarrowWindowLayout.compactLayoutThreshold
+        } else {
+            hasRegularWidth = horizontalSizeClass == .regular
+        }
+
+        return hasRegularWidth &&
+            !dynamicTypeSize.isAccessibilitySize &&
+            viewModel.showOnDashboardSecondColumn.isNotEmpty
+    }
+
+    @ViewBuilder
     func dashboardCardList(with items: [DashboardCard]) -> some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(items.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(items.enumerated()), id: \.element.hashValue) { _, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:
@@ -238,11 +259,15 @@ private extension DashboardView {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .topPerformers:
                         TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        }, onAnalyticsImportUpdateModeInfoTapped: {
+                            viewModel.showAnalyticsImportUpdateModeInfo()
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel) {
@@ -511,7 +536,6 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
-
     }
 }
 

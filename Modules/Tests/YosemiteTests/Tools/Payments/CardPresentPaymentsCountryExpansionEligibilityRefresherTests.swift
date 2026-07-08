@@ -17,9 +17,17 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         }
     }
 
+    @Test("flag(for:) returns nil for fiscalization countries removed from support")
+    func test_flag_for_removed_fiscalization_countries() {
+        for country in [CountryCode.AT, .BE, .FR, .DE, .IT, .PT, .ES] {
+            #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country) == nil,
+                    "Expected \(country) to require no expansion flag after support removal")
+        }
+    }
+
     @Test("flag(for:) returns inPersonPaymentsCountryExpansion for the primary group")
     func test_flag_for_primary_expansion_group() {
-        for country in [CountryCode.FR, .DE, .IE, .NL, .SG, .NZ] {
+        for country in [CountryCode.IE, .NL, .SG, .NZ] {
             #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
                     == .inPersonPaymentsCountryExpansion,
                     "Expected \(country) to map to inPersonPaymentsCountryExpansion")
@@ -28,16 +36,16 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
 
     @Test("flag(for:) returns inPersonPaymentsCountryExpansionEUExtended for the EU extended group")
     func test_flag_for_eu_extended_expansion_group() {
-        for country in [CountryCode.AT, .BE, .FI, .IT, .LU, .PT, .ES] {
+        for country in [CountryCode.FI, .LU] {
             #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: country)
                     == .inPersonPaymentsCountryExpansionEUExtended,
                     "Expected \(country) to map to inPersonPaymentsCountryExpansionEUExtended")
         }
     }
 
-    @Test("flag(for:) returns nil for AU (intentionally excluded — RSM-642/643)")
-    func test_flag_for_excluded_australia() {
-        #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: .AU) == nil)
+    @Test("flag(for:) returns inPersonPaymentsAustraliaWooPayments for AU")
+    func test_flag_for_australia() {
+        #expect(CardPresentPaymentsCountryExpansionEligibilityRefresher.flag(for: .AU) == .inPersonPaymentsAustraliaWooPayments)
     }
 
     // MARK: - Refresh behaviour
@@ -46,11 +54,11 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
     func test_refresh_short_circuits_for_existing_country() async {
         // Given
         let service = SpyEligibilityService()
-        var providerInvocations: [RemoteFeatureFlag] = []
+        let providerInvocations = FlagRecorder()
         let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: service,
             remoteFeatureFlagProvider: { flag in
-                providerInvocations.append(flag)
+                await providerInvocations.append(flag)
                 return false
             }
         )
@@ -59,7 +67,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         await refresher.refresh(siteID: siteID, countryCode: .US)
 
         // Then
-        #expect(providerInvocations.isEmpty, "Existing supported country must not dispatch a flag check")
+        #expect(await providerInvocations.values.isEmpty, "Existing supported country must not dispatch a flag check")
         #expect(service.cachedValues == [siteID: true])
     }
 
@@ -76,7 +84,7 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         )
 
         // When
-        await refresher.refresh(siteID: siteID, countryCode: .FR)
+        await refresher.refresh(siteID: siteID, countryCode: .NL)
 
         // Then
         #expect(service.cachedValues == [siteID: true])
@@ -102,20 +110,41 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
     func test_refresh_dispatches_eu_extended_flag() async {
         // Given
         let service = SpyEligibilityService()
-        var dispatchedFlag: RemoteFeatureFlag?
+        let dispatchedFlags = FlagRecorder()
         let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: service,
             remoteFeatureFlagProvider: { flag in
-                dispatchedFlag = flag
+                await dispatchedFlags.append(flag)
                 return true
             }
         )
 
         // When
-        await refresher.refresh(siteID: siteID, countryCode: .ES)
+        await refresher.refresh(siteID: siteID, countryCode: .FI)
 
         // Then
-        #expect(dispatchedFlag == .inPersonPaymentsCountryExpansionEUExtended)
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsCountryExpansionEUExtended])
+        #expect(service.cachedValues == [siteID: true])
+    }
+
+    @Test("refresh dispatches inPersonPaymentsAustraliaWooPayments for AU")
+    func test_refresh_dispatches_australia_flag() async {
+        // Given
+        let service = SpyEligibilityService()
+        let dispatchedFlags = FlagRecorder()
+        let refresher = CardPresentPaymentsCountryExpansionEligibilityRefresher(
+            eligibilityService: service,
+            remoteFeatureFlagProvider: { flag in
+                await dispatchedFlags.append(flag)
+                return true
+            }
+        )
+
+        // When
+        await refresher.refresh(siteID: siteID, countryCode: .AU)
+
+        // Then
+        #expect(await dispatchedFlags.values == [.inPersonPaymentsAustraliaWooPayments])
         #expect(service.cachedValues == [siteID: true])
     }
 
@@ -129,8 +158,8 @@ struct CardPresentPaymentsCountryExpansionEligibilityRefresherTests {
         )
 
         // When
-        await refresher.refresh(siteID: 1, countryCode: .DE)
-        await refresher.refresh(siteID: 2, countryCode: .ES)
+        await refresher.refresh(siteID: 1, countryCode: .NL)
+        await refresher.refresh(siteID: 2, countryCode: .FI)
         await refresher.refresh(siteID: 3, countryCode: .US)
 
         // Then
@@ -149,5 +178,17 @@ private final class SpyEligibilityService: CardPresentPaymentsCountryExpansionEl
 
     func cacheEligibility(siteID: Int64, isEligible: Bool) {
         cachedValues[siteID] = isEligible
+    }
+}
+
+private actor FlagRecorder {
+    private var flags: [RemoteFeatureFlag] = []
+
+    var values: [RemoteFeatureFlag] {
+        flags
+    }
+
+    func append(_ flag: RemoteFeatureFlag) {
+        flags.append(flag)
     }
 }

@@ -36,8 +36,8 @@ extension WooShippingPackagePurchase {
         selectedRate.purchaseRate
     }
 
-    var selectedRateOptions: [String: Any] {
-        var rates: [String: Any] = [:]
+    var selectedRateOptions: RequestParameterDictionary {
+        var rates: RequestParameterDictionary = [:]
         if selectedRate.signatureRate != nil {
             rates[CodingKeys.signature.rawValue] = [
                 ParameterKeys.value: Values.yes,
@@ -141,49 +141,54 @@ extension WooShippingPackagePurchase: Encodable {
     /// Converts the shipment rate to a dictionary as the API expects it.
     /// Includes the shipment ID with the encoded rate.
     ///
-    public func encodedShipmentRate() throws -> [String: Any] {
+    public func encodedShipmentRate() throws -> RequestParameterDictionary {
         var purchaseRate = try selectedRate.purchaseRate.toDictionary()
 
         // Extra `type` param if a signature rate was selected
         if selectedRate.adultSignatureRate != nil {
-            purchaseRate[ParameterKeys.type] = Values.adultSignatureRequired
+            purchaseRate[ParameterKeys.type] = .string(Values.adultSignatureRequired)
         } else if selectedRate.signatureRate != nil {
-            purchaseRate[ParameterKeys.type] = Values.signatureRequired
+            purchaseRate[ParameterKeys.type] = .string(Values.signatureRequired)
         }
 
-        var rates = [ParameterKeys.rate: purchaseRate]
+        var rates: RequestParameterDictionary = [ParameterKeys.rate: .dictionary(purchaseRate)]
 
         // If a signature rate was selected, send the standard rate as the parent rate.
         if selectedRate.purchaseRate != selectedRate.rate {
-            rates[ParameterKeys.parent] = try selectedRate.rate.toDictionary()
+            rates[ParameterKeys.parent] = .dictionary(try selectedRate.rate.toDictionary())
         }
         return rates
     }
 
     /// Converts the hazmat settings to a dictionary as the API expects it.
     /// Includes the shipment ID if there are hazmat settings to report.
-    public func encodedHazmat() -> [String: Any] {
-        [formattedShipmentID: [
-            ParameterKeys.isHazmat: package.hazmatCategory != nil,
-            ParameterKeys.category: package.hazmatCategory ?? String()
-        ]]
+    public func encodedHazmat() -> RequestParameterDictionary {
+        [
+            formattedShipmentID: [
+                ParameterKeys.isHazmat: package.hazmatCategory != nil,
+                ParameterKeys.category: package.hazmatCategory ?? String()
+            ]
+        ]
     }
 
     /// Converts the customs form to a dictionary as the API expects it.
     /// Includes the shipment ID with the encoded customs form.
-    public func encodedCustomsForm() throws -> [String: Any] {
+    public func encodedCustomsForm() throws -> RequestParameterDictionary {
         guard let form = package.customsForm else {
-            return [formattedShipmentID: [:]]
+            return [formattedShipmentID: .dictionary([:])]
         }
-        return [formattedShipmentID: [
-            ParameterKeys.items: try form.items.map { try $0.toDictionary() },
-            ParameterKeys.contentsType: form.contentsType.rawValue,
-            ParameterKeys.contentsExplanation: form.contentExplanation,
-            ParameterKeys.restrictionType: form.restrictionType.rawValue,
-            ParameterKeys.restrictionComments: form.restrictionComments,
-            ParameterKeys.isReturnToSender: form.nonDeliveryOption == .return,
-            ParameterKeys.itn: form.itn
-        ]]
+
+        return [
+            formattedShipmentID: [
+                ParameterKeys.items: try form.items.map { try $0.toDictionary() },
+                ParameterKeys.contentsType: form.contentsType.rawValue,
+                ParameterKeys.contentsExplanation: form.contentExplanation,
+                ParameterKeys.restrictionType: form.restrictionType.rawValue,
+                ParameterKeys.restrictionComments: form.restrictionComments,
+                ParameterKeys.isReturnToSender: form.nonDeliveryOption == .return,
+                ParameterKeys.itn: form.itn
+            ]
+        ]
     }
 
     private enum CodingKeys: String, CodingKey {

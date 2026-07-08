@@ -3,5 +3,4 @@ import CoreData
 
 @objc(Account)
 public class Account: NSManagedObject {
-
 }

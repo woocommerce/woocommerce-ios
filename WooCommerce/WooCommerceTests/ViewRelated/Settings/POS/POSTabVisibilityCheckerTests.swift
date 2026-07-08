@@ -30,7 +30,8 @@ struct POSTabVisibilityCheckerTests {
     @Test(arguments: [
         (country: Country.us, currency: CurrencyCode.USD),
         (country: Country.pr, currency: CurrencyCode.USD),
-        (country: Country.gb, currency: CurrencyCode.GBP)
+        (country: Country.gb, currency: CurrencyCode.GBP),
+        (country: Country.ca, currency: CurrencyCode.CAD)
     ])
     fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -51,8 +52,8 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test(arguments: [
-        (country: Country.ca, currency: CurrencyCode.CAD),
-        (country: Country.es, currency: CurrencyCode.EUR)
+        (country: Country.es, currency: CurrencyCode.EUR),
+        (country: Country.au, currency: CurrencyCode.AUD)
     ])
     fileprivate func is_invisible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -77,7 +78,8 @@ struct POSTabVisibilityCheckerTests {
         (country: Country.us, currency: CurrencyCode.GBP),
         (country: Country.us, currency: CurrencyCode.CAD),
         (country: Country.gb, currency: CurrencyCode.EUR),
-        (country: Country.gb, currency: CurrencyCode.USD)
+        (country: Country.gb, currency: CurrencyCode.USD),
+        (country: Country.ca, currency: CurrencyCode.USD)
     ])
     fileprivate func is_visible_when_currency_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
@@ -117,8 +119,30 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test func is_visible_for_expansion_country_when_expansion_flag_enabled_even_with_empty_cache() async throws {
-        // Given - ES (an expansion country) with an empty expansion-eligibility cache,
+        // Given - NL (an expansion country) with an empty expansion-eligibility cache,
         // and the country-expansion remote feature flag enabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .nl, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
+        let expansionEligibilityService = MockCardPresentPaymentsCountryExpansionEligibilityService()
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              expansionEligibilityService: expansionEligibilityService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then - checkVisibility refreshes the expansion eligibility cache before validating,
+        // so NL is reported as visible without requiring a prior pre-warm.
+        #expect(result == true)
+        #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
+    }
+
+    @Test func is_invisible_for_spain_when_expansion_flag_enabled_even_with_empty_cache() async throws {
+        // Given - ES is a removed fiscalization country, even when the expansion flag is enabled.
         let featureFlagService = MockFeatureFlagService()
         setupCountry(country: .es, currency: .EUR)
         accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
@@ -133,16 +157,72 @@ struct POSTabVisibilityCheckerTests {
         // When
         let result = await checker.checkVisibility()
 
-        // Then - checkVisibility refreshes the expansion eligibility cache before validating,
-        // so ES is reported as visible without requiring a prior pre-warm.
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func is_visible_for_australia_when_au_feature_flag_enabled_even_with_empty_cache() async throws {
+        // Given - AU with an empty country-eligibility cache and the AU remote feature flag enabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .au, currency: .AUD)
+        accountWhitelistedInBackend(true, australiaWooPaymentsFlagEnabled: true)
+        let expansionEligibilityService = MockCardPresentPaymentsCountryExpansionEligibilityService()
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              expansionEligibilityService: expansionEligibilityService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
         #expect(result == true)
         #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
     }
 
-    @Test func is_invisible_for_expansion_country_when_expansion_flag_disabled() async throws {
-        // Given - ES (an expansion country) with the country-expansion remote feature flag disabled.
+    @Test func is_visible_on_iPad_when_operating_system_is_below_iOS_26_and_all_conditions_satisfied() async throws {
+        // Given
         let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .es, currency: .EUR)
+        setupCountry(country: .gb, currency: .GBP)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func is_invisible_for_australia_when_au_feature_flag_disabled_even_if_expansion_flags_are_enabled() async throws {
+        // Given - AU must be controlled by its own remote feature flag, not the broader expansion flags.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .au, currency: .AUD)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true, australiaWooPaymentsFlagEnabled: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func is_invisible_for_expansion_country_when_expansion_flag_disabled() async throws {
+        // Given - NL (an expansion country) with the country-expansion remote feature flag disabled.
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .nl, currency: .EUR)
         accountWhitelistedInBackend(true, expansionFlagsEnabled: false)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .pad,
@@ -184,10 +264,10 @@ struct POSTabVisibilityCheckerTests {
             mockCountrySetting(country: .us),
             mockCurrencySetting(currency: .USD)
         ]
-        // New settings - makes site ineligible (Canada).
+        // New settings - makes site ineligible (unsupported expansion country).
         let newSettings = [
-            mockCountrySetting(country: .ca),
-            mockCurrencySetting(currency: .USD)
+            mockCountrySetting(country: .es),
+            mockCurrencySetting(currency: .EUR)
         ]
         siteSettings.mockSettingsStream = [
             // Emits cached settings first (should be skipped).
@@ -206,7 +286,7 @@ struct POSTabVisibilityCheckerTests {
         // When
         let result = await checker.checkVisibility()
 
-        // Then - Should be invisible because fresh settings show CA (not cached US)
+        // Then - Should be invisible because fresh settings show unsupported ES (not cached US)
         #expect(result == false)
     }
 
@@ -220,6 +300,113 @@ struct POSTabVisibilityCheckerTests {
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_operating_system_is_below_iOS_26_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [
+        (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.pr, currency: CurrencyCode.USD),
+        (country: Country.ca, currency: CurrencyCode.CAD)
+    ])
+    func is_invisible_when_device_is_phone_and_store_is_supported_non_uk_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func is_invisible_when_device_is_phone_and_store_is_expansion_country() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: .nl, currency: .EUR)
+        accountWhitelistedInBackend(true, expansionFlagsEnabled: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_phonePrototype_flag_disabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -264,7 +451,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
 
         // When
@@ -276,7 +466,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
 
         // When
@@ -288,7 +481,10 @@ struct POSTabVisibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
         // Given
-        let checker = POSTabVisibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: nil)
 
         // When
@@ -297,9 +493,54 @@ struct POSTabVisibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func checkInitialVisibility_returns_false_on_phone_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func static_checkInitialVisibility_returns_true_on_iPad_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .pad,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func static_checkInitialVisibility_returns_false_on_phone_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = POSTabVisibilityChecker.checkInitialVisibility(for: siteID,
+                                                                    userInterfaceIdiom: .phone,
+                                                                    eligibilityService: eligibilityService)
+
+        // Then
+        #expect(result == false)
+    }
 }
 
-private extension POSTabVisibilityCheckerTests {
+extension POSTabVisibilityCheckerTests {
+    nonisolated static let phoneSupportedCountries: [(country: Country, currency: CurrencyCode)] = [
+        (country: .gb, currency: .GBP)
+    ]
+
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
         let countrySetting = mockCountrySetting(country: country)
         let currencySetting = mockCurrencySetting(currency: currency)
@@ -313,9 +554,11 @@ private extension POSTabVisibilityCheckerTests {
 
     /// Configures the mock stores to respond to `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
     /// `isAllowed` controls the `.pointOfSale` flag (whitelisting).
-    /// `expansionFlagsEnabled` controls the IPP country-expansion flags consulted by the
-    /// `CardPresentPaymentsCountryExpansionEligibilityRefresher` injected into the checker.
-    func accountWhitelistedInBackend(_ isAllowed: Bool = false, expansionFlagsEnabled: Bool = false) {
+    /// `expansionFlagsEnabled` controls the existing IPP country-expansion flags.
+    /// `australiaWooPaymentsFlagEnabled` separately controls the AU WooPayments flag.
+    func accountWhitelistedInBackend(_ isAllowed: Bool = false,
+                                     expansionFlagsEnabled: Bool = false,
+                                     australiaWooPaymentsFlagEnabled: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
             case let .isRemoteFeatureFlagEnabled(flag, _, _, completion):
@@ -324,6 +567,8 @@ private extension POSTabVisibilityCheckerTests {
                     completion(isAllowed)
                 case .inPersonPaymentsCountryExpansion, .inPersonPaymentsCountryExpansionEUExtended:
                     completion(expansionFlagsEnabled)
+                case .inPersonPaymentsAustraliaWooPayments:
+                    completion(australiaWooPaymentsFlagEnabled)
                 default:
                     completion(false)
                 }
@@ -341,6 +586,8 @@ private extension POSTabVisibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+        case nl = "NL"
+        case au = "AU"
 
         var countryCode: CountryCode {
             switch self {
@@ -354,6 +601,10 @@ private extension POSTabVisibilityCheckerTests {
                 return .GB
             case .es:
                 return .ES
+            case .nl:
+                return .NL
+            case .au:
+                return .AU
             }
         }
     }

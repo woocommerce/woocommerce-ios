@@ -7,7 +7,7 @@ import Foundation
 public class BackgroundDownloadService: NSObject {
     private var backgroundCompletionHandler: (() -> Void)?
     private var downloadTasks: [String: URLSessionDownloadTask] = [:]
-    private var downloadContinuations: [String: CheckedContinuation<URL, Error>] = [:]
+    private var downloadContinuations: [String: CheckedContinuation<BackgroundDownloadResult, Error>] = [:]
     private let fileManager: FileManager
 
     public init(fileManager: FileManager = .default) {
@@ -19,7 +19,7 @@ public class BackgroundDownloadService: NSObject {
 // MARK: - BackgroundDownloadProtocol
 
 extension BackgroundDownloadService: BackgroundDownloadProtocol {
-    public func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL {
+    public func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> BackgroundDownloadResult {
         try await withCheckedThrowingContinuation { continuation in
             let session = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
             let downloadTask = session.downloadTask(with: url)
@@ -50,12 +50,12 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
         setBackgroundCompletionHandler(completionHandler)
 
         // Create session with same identifier - this reconnects to the existing download
-        let session = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
+        _ = createBackgroundSession(identifier: sessionIdentifier, allowCellular: allowCellular)
 
         // Wait for delegate callbacks to complete
         return try? await withCheckedThrowingContinuation { continuation in
             downloadContinuations[sessionIdentifier] = continuation
-        }
+        }.fileURL
     }
 
     public func cancelDownloads(for sessionIdentifier: String) async {
@@ -85,7 +85,7 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
         return URLSession(configuration: config, delegate: self, delegateQueue: nil)
     }
 
-    private func handleDownloadCompletion(for sessionIdentifier: String, fileURL: URL?, error: Error?) {
+    private func handleDownloadCompletion(for sessionIdentifier: String, result: BackgroundDownloadResult?, error: Error?) {
         guard let continuation = downloadContinuations.removeValue(forKey: sessionIdentifier) else {
             return
         }
@@ -94,8 +94,8 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
 
         if let error {
             continuation.resume(throwing: BackgroundDownloadError.downloadFailed(error))
-        } else if let fileURL {
-            continuation.resume(returning: fileURL)
+        } else if let result {
+            continuation.resume(returning: result)
         } else {
             continuation.resume(throwing: BackgroundDownloadError.fileNotFound)
         }
@@ -114,6 +114,8 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
             DDLogError("🟣 Background download session missing identifier")
             return
         }
+
+        let httpResponse = downloadTask.response as? HTTPURLResponse
 
         do {
             // Move downloaded file to temporary directory to prevent iOS from cleaning it up
@@ -134,13 +136,19 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
 
             DDLogInfo("🟣 Background download completed, file moved to: \(persistentTempURL.path)")
 
+            let result = BackgroundDownloadResult(
+                fileURL: persistentTempURL,
+                statusCode: httpResponse?.statusCode,
+                contentType: httpResponse?.value(forHTTPHeaderField: "Content-Type")
+            )
+
             handleDownloadCompletion(for: sessionIdentifier,
-                                     fileURL: persistentTempURL,
+                                     result: result,
                                      error: nil)
         } catch {
             DDLogError("🟣 Failed to move downloaded file: \(error.localizedDescription)")
             handleDownloadCompletion(for: sessionIdentifier,
-                                     fileURL: nil,
+                                     result: nil,
                                      error: error)
         }
     }
@@ -173,7 +181,7 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
 
         if let error {
             handleDownloadCompletion(for: sessionIdentifier,
-                                     fileURL: nil,
+                                     result: nil,
                                      error: error)
         }
     }

@@ -390,10 +390,10 @@ private extension ShippingLabelPackagesFormViewModel {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
                                                                            storageManager: storageManager,
-           onProductReload: { [weak self] (products) in
+           onProductReload: { [weak self] products in
             guard let self else { return }
             self.products = products
-        }, onProductVariationsReload: { [weak self] (productVariations) in
+        }, onProductVariationsReload: { [weak self] productVariations in
             guard let self else { return }
             self.productVariations = productVariations
         })
@@ -407,7 +407,7 @@ private extension ShippingLabelPackagesFormViewModel {
 ///
 private extension ShippingLabelPackagesFormViewModel {
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { error in
             if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
@@ -611,10 +611,10 @@ extension ShippingLabelPackagesFormViewModel {
                                                                   title: "Small Flat Rate Box",
                                                                   isLetter: false,
                                                                   dimensions: "21.91 x 13.65 x 4.13"),
-                                  ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
-                                                                 title: "Medium Flat Rate Box 1, Top Loading",
-                                                                 isLetter: false,
-                                                                 dimensions: "28.57 x 22.22 x 15.24")]
+                                   ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
+                                                                  title: "Medium Flat Rate Box 1, Top Loading",
+                                                                  isLetter: false,
+                                                                  dimensions: "28.57 x 22.22 x 15.24")]
         let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
                                                               providerID: "USPS",
                                                               predefinedPackages: predefinedPackages1)

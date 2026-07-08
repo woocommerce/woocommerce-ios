@@ -30,6 +30,8 @@ public enum AssistantEvent: Equatable, Sendable {
     case completed(routeConfidence: Double?)
 
     case failed(AssistantError)
+
+    case terminated(LoopOutcome)
 }
 
 public struct ToolProposal: Equatable, Sendable {

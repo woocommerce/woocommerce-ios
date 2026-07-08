@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct InPersonPaymentsLearnMore: View {
-    @Environment(\.customOpenURL) var customOpenURL
+    @Environment(\.customOpenURL) private var customOpenURL
+    @Environment(\.openURL) private var openURL
 
     @ObservedObject private var viewModel: LearnMoreViewModel
     private let showInfoIcon: Bool
@@ -20,21 +21,32 @@ struct InPersonPaymentsLearnMore: View {
                 .frame(width: iconSize, height: iconSize)
                 .accessibilityHidden(true)
                 .renderedIf(showInfoIcon)
-            AttributedText(viewModel.learnMoreAttributedString)
-        }
-        .accessibilityHint(viewModel.learnMoreAttributedString.string)
-        .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
-            viewModel.learnMoreTapped()
-            customOpenURL?(viewModel.url)
-        }
-        .onTapGesture {
-            viewModel.learnMoreTapped()
-            customOpenURL?(viewModel.url)
+            LearnMoreAttributedText(format: viewModel.formatText,
+                                    tappableLearnMoreText: viewModel.linkText,
+                                    url: viewModel.url,
+                                    shouldUnderLine: false,
+                                    textColor: .textSubtle,
+                                    linkTextColor: .textLink,
+                                    onTapURL: { url in
+                                        openLearnMore(url: url)
+                                    })
+                .accessibilityAction(named: Localization.learnMoreAccessibilityAction) {
+                    openLearnMore(url: viewModel.url)
+                }
         }
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
+    }
+
+    private func openLearnMore(url: URL) {
+        viewModel.learnMoreTapped()
+        if let customOpenURL {
+            customOpenURL(url)
+        } else {
+            openURL(url)
+        }
     }
 }
 
@@ -47,11 +59,9 @@ struct InPersonPaymentsLearnMore_Previews: PreviewProvider {
     }
 }
 
-
-
 extension InPersonPaymentsLearnMore {
     enum Localization {
-        static let toggleEnableCashOnDeliveryLearnMoreAccessibilityAction = NSLocalizedString(
+        static let learnMoreAccessibilityAction = NSLocalizedString(
             "menu.payments.payInPerson.learnMore.link.accessibilityAction",
             value: "Learn more",
             comment: "Title for the accessibility action to open the learn more screen, showing information " +

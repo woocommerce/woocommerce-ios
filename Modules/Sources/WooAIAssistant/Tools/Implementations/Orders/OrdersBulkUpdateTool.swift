@@ -20,10 +20,13 @@ public enum OrdersBulkUpdateTool {
         every order id in the list. Per-order differences require separate \
         orders_update calls. Refunds are NOT supported - status cannot be \
         set to "refunded"; the merchant taps each order to issue a refund. \
-        Only call when the merchant has explicitly requested a bulk change \
-        with a concrete list of ids. After the bulk update succeeds, call \
-        `show_cards` with family `order` and the updated ids so the merchant \
-        sees the new state.
+        Only call when the merchant has explicitly requested a bulk change. \
+        Gather the ids from the merchant's message or, when they describe a \
+        selection ("the orders from yesterday", "all on-hold orders"), from \
+        a prior tool result - resolve the ids from orders_list rather than \
+        asking the merchant to type them. After the bulk update succeeds, \
+        call `show_cards` with family `order` and the updated ids so the \
+        merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -42,8 +45,15 @@ public enum OrdersBulkUpdateTool {
                             "type": .string("string"),
                             "enum": .array(allowedStatuses.sorted().map { .string($0) })
                         ]),
-                        "customer_note": .object(["type": .string("string")]),
-                        "billing_email": .object(["type": .string("string")])
+                        "customer_note": .object([
+                            "type": .string("string"),
+                            "maxLength": .int(Int64(OrderWriteArgumentValidation.customerNoteMaxLength))
+                        ]),
+                        "billing_email": .object([
+                            "type": .string("string"),
+                            "maxLength": .int(Int64(OrderWriteArgumentValidation.billingEmailMaxLength)),
+                            "format": .string("email")
+                        ])
                     ]),
                     "description": .string("Patch applied to every id. At least one field required.")
                 ])
@@ -75,8 +85,18 @@ public enum OrdersBulkUpdateTool {
     }
 
     private static let allowedStatuses = AllowedOrderUpdateStatuses.values
+    static let allowedArguments: Set<String> = ["ids", "patch"]
+    static let allowedPatchKeys: Set<String> = ["status", "customer_note", "billing_email"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
+        if let failed = patchKeyRejection(arguments: arguments) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -101,6 +121,10 @@ public enum OrdersBulkUpdateTool {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
+        }
+        if let reason = OrderWriteArgumentValidation.validate(customerNote: args.patch.customerNote,
+                                                              billingEmail: args.patch.billingEmail) {
+            return .failed(.init(toolName: name, kind: .invalidToolCall, reason: reason))
         }
         guard args.patch.hasAnyField else {
             return .failed(.init(toolName: name,
@@ -127,10 +151,34 @@ public enum OrdersBulkUpdateTool {
                                  kind: .toolFailed,
                                  reason: "could not serialize batch body"))
         }
+        let patchKeys = patchKeysInOrder(args.patch)
         return await RESTToolDispatch.dispatchBatchWrite(method: "POST",
                                                          path: "wc/v3/orders/batch",
                                                          body: payload,
                                                          client: client,
-                                                         toolName: name)
+                                                         toolName: name,
+                                                         requestedCount: args.ids.count,
+                                                         patchKeys: patchKeys)
+    }
+
+    private static func patchKeysInOrder(_ patch: Patch) -> [String] {
+        var keys: [String] = []
+        if patch.status != nil { keys.append("status") }
+        if patch.customerNote != nil { keys.append("customer_note") }
+        if patch.billingEmail != nil { keys.append("billing_email") }
+        return keys
+    }
+
+    private static func patchKeyRejection(arguments: String) -> ToolResult.Failed? {
+        guard let data = arguments.data(using: .utf8),
+              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let patch = parsed["patch"] as? [String: Any] else {
+            return nil
+        }
+        let unknown = patch.keys.filter { !allowedPatchKeys.contains($0) }.sorted()
+        guard !unknown.isEmpty else { return nil }
+        return .init(toolName: name,
+                     kind: .invalidToolCall,
+                     reason: "Unsupported \(name) argument(s): \(unknown.joined(separator: ", "))")
     }
 }

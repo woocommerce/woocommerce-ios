@@ -12,6 +12,9 @@ struct SupportAreaInfo {
     /// The confidence level of the area classification.
     let confidence: SupportAreaConfidence
 
+    /// The support topic returned by the bot for ticket tagging.
+    let topic: String?
+
     /// Full chat transcript.
     let transcript: String
 
@@ -25,11 +28,13 @@ struct SupportAreaInfo {
     init(areaType: SupportAreaType,
          area: SupportFormViewModel.Area,
          confidence: SupportAreaConfidence,
+         topic: String? = nil,
          transcript: String,
          systemStatusReport: String? = nil) {
         self.areaType = areaType
         self.area = area
         self.confidence = confidence
+        self.topic = topic
         self.transcript = transcript
         self.systemStatusReport = systemStatusReport
     }

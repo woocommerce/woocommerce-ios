@@ -47,7 +47,7 @@ final class ProductReviewsViewModelTests: XCTestCase {
         let storesManager = MockProductReviewsStoresManager()
         ServiceLocator.setStores(storesManager)
 
-        waitForExpectation { (expectation) in
+        waitForExpectation { expectation in
             viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, productID: productID) {
                 if storesManager.syncReviewsIsHit {
                     XCTAssertTrue(storesManager.syncReviewsIsHit)
@@ -117,7 +117,6 @@ final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
                    with syncingCoordinator: SyncingCoordinator) {}
 
     func refreshDataObservers() {}
-
 }
 
 final class MockProductReviewsStoresManager: DefaultStoresManager {

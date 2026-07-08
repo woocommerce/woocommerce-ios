@@ -5,5 +5,4 @@
 /// for which symbols it will generate a `.copy()` method for.
 ///
 public protocol GeneratedCopiable {
-
 }

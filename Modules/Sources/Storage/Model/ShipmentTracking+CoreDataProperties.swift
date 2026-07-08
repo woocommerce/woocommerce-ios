@@ -15,5 +15,4 @@ extension ShipmentTracking {
     @NSManaged public var trackingProvider: String?
     @NSManaged public var trackingURL: String?
     @NSManaged public var dateShipped: Date?
-
 }

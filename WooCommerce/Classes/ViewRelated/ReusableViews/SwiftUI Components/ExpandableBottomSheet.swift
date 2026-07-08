@@ -51,16 +51,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             Spacer()
 
             // Content that will expand/collapse
-            Group {
+            VStack(spacing: 0) {
                 VStack {
                     VStack {
-                        if isExpanded || revealContentDuringDrag {
-                            expandableContent()
-                                .transition(.move(edge: .bottom))
-                        }
+                        expandableContent()
                     }
                     .trackSize(size: $expandingContentSize)
                     .onChange(of: expandingContentSize) {
+                        guard hasMeasuredCollapsedContent else {
+                            return
+                        }
                         withAnimation {
                             panelHeight = calculateHeight()
                         }
@@ -71,11 +71,13 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 // This isn't ideal... it should be something we can specify as content,
                 // but it's here as it wants to be outside the scrollview.
                 Divider()
-                    .renderedIf(isExpanded || revealContentDuringDrag)
                     .padding([.bottom, .leading], Layout.dividerPadding)
             }
             .frame(maxWidth: .infinity)
+            .frame(height: expandableContentContainerHeight, alignment: .bottom)
             .clipped()
+            .accessibilityHidden(!shouldExposeExpandableContent)
+            .allowsHitTesting(shouldExposeExpandableContent)
 
             // Always visible content
             alwaysVisibleContent()
@@ -105,7 +107,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
-                .onChange(of: geometryProxy.size.height) { _, newValue in
+                .onChange(of: geometryProxy.size.height) { _, _ in
                     if !isDragging {
                         DispatchQueue.main.async {
                             withAnimation {
@@ -125,7 +127,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
-        .cornerRadius(Layout.sheetCornerRadius)
+        .clipShape(ExpandableBottomSheetShape(radius: Layout.sheetCornerRadius, corners: [.topLeft, .topRight]))
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
         .padding([.top], -Layout.shadowRadius) // ensure shadow overlays views "underneath" it
@@ -157,7 +159,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .background(Color(.listForeground(modal: false)))
+        .background(alignment: .bottom) {
+            bottomSafeAreaBackground
+        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
             /// This workaround cancels the dragging when the app re-enters the foreground
@@ -167,7 +171,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
         let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
         let maxExpandedHeight = screenHeight * 0.8
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
@@ -176,6 +179,46 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
         // Prevent the view from shrinking below the minHeight when dragging down.
         return max(collapsedHeight, dragAdjustedHeight)
+    }
+
+    private var collapsedHeight: CGFloat {
+        fixedContentSize.height + chevronSize.height + Layout.chevronPadding
+    }
+
+    private var expandableContentContainerHeight: CGFloat {
+        guard hasMeasuredCollapsedContent else {
+            return 0
+        }
+        return max(0, panelHeight - collapsedHeight)
+    }
+
+    private var shouldExposeExpandableContent: Bool {
+        isExpanded || revealContentDuringDrag
+    }
+
+    private var hasMeasuredCollapsedContent: Bool {
+        fixedContentSize.height > 0 && chevronSize.height > 0
+    }
+
+    @ViewBuilder private var bottomSafeAreaBackground: some View {
+        if safeAreaInsets.bottom > 0 {
+            Color(.listForeground(modal: false))
+                .frame(height: safeAreaInsets.bottom)
+                .offset(y: safeAreaInsets.bottom)
+                .ignoresSafeArea(edges: .bottom)
+                .allowsHitTesting(false)
+        }
+    }
+}
+
+private struct ExpandableBottomSheetShape: Shape {
+    let radius: CGFloat
+    let corners: UIRectCorner
+
+    func path(in rect: CGRect) -> Path {
+        Path(UIBezierPath(roundedRect: rect,
+                          byRoundingCorners: corners,
+                          cornerRadii: CGSize(width: radius, height: radius)).cgPath)
     }
 }
 
@@ -206,6 +249,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
         } expandableContent: {
             Text("Can be hidden")
         }
-
     }
 }

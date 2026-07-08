@@ -9,6 +9,7 @@ import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
 import enum NetworkingCore.RequestAuthenticationMode
+import enum PointOfSale.POSRolesPersistence
 
 // MARK: - DefaultStoresManager
 //
@@ -34,6 +35,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
 
+    /// Observes unknown blog notification
+    ///
+    private var unknownBlogNotificationObserver: NSObjectProtocol?
+
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
@@ -41,6 +46,8 @@ class DefaultStoresManager: StoresManager {
     /// Card present payment onboarding state
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
+
+    private let grdbManagerProvider: GRDBManagerProviding
 
     /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
     ///
@@ -155,12 +162,14 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
-         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
+         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+         grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.grdbManagerProvider = grdbManagerProvider
 
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
@@ -202,9 +211,10 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
+            listenToUnknownBlogNotification()
             startObservingNetworkNotifications()
         } else {
-            invalidWPCOMTokenNotificationObserver = nil
+            removeAuthenticationFailureObservers()
             stopObservingNetworkNotifications()
         }
 
@@ -214,11 +224,51 @@ class DefaultStoresManager: StoresManager {
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
-                                                                               queue: .main) { [weak self] note in
+                                                                               queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
+    }
+
+    /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification.
+    ///
+    /// WPCom no longer recognizes the selected site ID, so we clear it and route the user
+    /// to the store picker while keeping them authenticated.
+    ///
+    func listenToUnknownBlogNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveUnknownBlogError,
+                                                                         object: nil,
+                                                                         queue: .main) { [weak self] _ in
+            self?.resetSelectedStore()
+        }
+    }
+
+    /// Unregisters the WPCOM authentication-failure observers (invalid token and unknown blog).
+    ///
+    /// Block-based observers must be removed via `removeObserver`; setting the token to `nil` alone
+    /// leaves the registration live and firing.
+    ///
+    private func removeAuthenticationFailureObservers() {
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
+        invalidWPCOMTokenNotificationObserver = nil
+
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = nil
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -256,6 +306,33 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
     }
 
+    /// Resets the selected store while remaining authenticated, routing the user to the store picker.
+    ///
+    /// Triggered when WPCom returns an `unknown_blog` error, meaning the persisted site ID is no
+    /// longer recognized (stale state, Jetpack disconnect, or site deletion). Clearing
+    /// `defaultStoreID` makes `needsDefaultStore` emit `true`, which the `AppCoordinator` observes
+    /// to present the store picker.
+    ///
+    func resetSelectedStore() {
+        // Guard against repeated resets: many in-flight requests can fail with `unknown_blog`
+        // simultaneously, each posting a notification. Once the store is cleared, ignore the rest.
+        guard let siteID = sessionManager.defaultStoreID else {
+            return
+        }
+
+        ServiceLocator.analytics.track(event: .selectedSiteResetDueToUnknownBlog())
+
+        // Stop any ongoing catalog sync tasks for the site before clearing it.
+        Task {
+            await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+        }
+
+        removeDefaultStore()
+
+        sessionManager.defaultStoreID = nil
+        sessionManager.defaultSite = nil
+    }
+
     /// Fully deauthenticates the user, if needed.
     ///
     /// This handles the scenario where `DefaultStoresManager` can't be initialized
@@ -287,7 +364,7 @@ class DefaultStoresManager: StoresManager {
             _ = currentState
         }
 
-        invalidWPCOMTokenNotificationObserver = nil
+        removeAuthenticationFailureObservers()
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
 
@@ -296,12 +373,21 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
-        // Stop any ongoing catalog sync tasks before resetting session
-        if let siteID = sessionManager.defaultStoreID {
+        let siteIDForSync = sessionManager.defaultStoreID
+        let syncCoordinator = posCatalogSyncCoordinator
+        let grdbManager = grdbManagerProvider.initializedGRDBManager
+
+        // Stop any ongoing catalog sync tasks before resetting session.
+        if let siteID = siteIDForSync {
             Task {
-                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+                await syncCoordinator?.stopOngoingSyncs(for: siteID)
             }
         }
+
+        // Purge all persisted POS roles state (staff caches + lock flags for every site visited this
+        // session) so a different user signing in on this device can't inherit cached staff PINs or
+        // land on a previous store's lock screen.
+        POSRolesPersistence.clearAll()
 
         sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
@@ -311,13 +397,14 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
 
-        // Reset GRDB on a background thread to avoid blocking logout
-        // when there's a large catalog to delete
-        Task.detached(priority: .userInitiated) {
-            do {
-                try ServiceLocator.grdbManager.reset()
-            } catch {
-                DDLogError("Could not reset GRDB database: \(error)")
+        // Reset GRDB on a background thread to avoid blocking logout when there's a large catalog to delete.
+        if let grdbManager {
+            Task.detached(priority: .userInitiated) {
+                do {
+                    try grdbManager.reset()
+                } catch {
+                    DDLogError("Could not reset GRDB database: \(error)")
+                }
             }
         }
 
@@ -337,6 +424,16 @@ class DefaultStoresManager: StoresManager {
     /// In the case of a newly connected site, it synchronizes the site asynchronously and `site` observable is updated.
     ///
     func updateDefaultStore(storeID: Int64) {
+        // Stop any ongoing catalog sync tasks for the old site before switching.
+        // Without this, the in-flight sync continues polling but AlamofireNetwork's
+        // selectedSite publisher switches to the new site's credentials, causing
+        // the old task to download the wrong site's catalog and persist it under the old siteID.
+        if let oldSiteID = sessionManager.defaultStoreID {
+            Task {
+                await posCatalogSyncCoordinator?.stopOngoingSyncs(for: oldSiteID)
+            }
+        }
+
         sessionManager.defaultStoreID = storeID
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
@@ -454,6 +551,7 @@ private extension DefaultStoresManager {
                 if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+                    UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
                 }
                 onCompletion(.success(()))
             case .failure(let error):
@@ -465,7 +563,7 @@ private extension DefaultStoresManager {
     }
 
     /// Replaces the temporary UUID username in default credentials with the
-    /// actual username from the passed account.  This *shouldn't* be necessary
+    /// actual username from the passed account. This *shouldn't* be necessary
     /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///

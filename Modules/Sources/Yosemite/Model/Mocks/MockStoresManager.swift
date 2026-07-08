@@ -95,8 +95,8 @@ public class MockStoresManager: StoresManager {
 
     /// A mock session manager that aligns with our mock object graph
     ///
-    private(set)
-    lazy public var sessionManager: SessionManagerProtocol = {
+    public private(set)
+    lazy var sessionManager: SessionManagerProtocol = {
         return MockSessionManager(objectGraph: objectGraph)
     }()
 
@@ -258,6 +258,10 @@ public class MockStoresManager: StoresManager {
     }
 
     public func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // no-op
+    }
+
+    public func listenToUnknownBlogNotification() {
         // no-op
     }
 

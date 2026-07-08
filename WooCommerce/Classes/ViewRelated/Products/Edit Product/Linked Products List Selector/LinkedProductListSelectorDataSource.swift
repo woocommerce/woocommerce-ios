@@ -7,7 +7,7 @@ import Yosemite
 final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
-    lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
+    lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] lhs, rhs in
         guard let self else {
             return true
         }
@@ -24,7 +24,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     var productIDs: AnyPublisher<[Int64], Never> {
         productIDsSubject.eraseToAnyPublisher()
     }
-    private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
+    private let productIDsSubject = PassthroughSubject<[Int64], Never>()
 
     private let originalLinkedProductIDs: [Int64]
     private(set) var linkedProductIDs: [Int64] = [] {

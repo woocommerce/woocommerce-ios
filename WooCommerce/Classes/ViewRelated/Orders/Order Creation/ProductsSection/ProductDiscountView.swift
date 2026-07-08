@@ -22,7 +22,6 @@ struct ProductDiscountView: View {
                     ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                           productImageSize: Layout.productImageSize,
                                           scale: 1,
-                                          productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
@@ -60,7 +59,7 @@ struct ProductDiscountView: View {
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        if let price = viewModel.totalPricePreDiscount {
+                        if viewModel.totalPricePreDiscount != nil {
                             Text(discountDetailsViewModel.formattedPriceAfterDiscount)
                         }
                     }

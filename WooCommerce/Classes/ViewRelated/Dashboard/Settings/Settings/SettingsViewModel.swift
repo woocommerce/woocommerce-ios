@@ -104,8 +104,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
+    private var isSelfDrivenPNEligible = false
+    private var isSmarterNotificationsEnabled = false
     private var subscriptions: Set<AnyCancellable> = []
 
     /// Reference to the Zendesk shared instance
@@ -118,14 +120,14 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
-        self.ciabEligibilityChecker = ciabEligibilityChecker
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -165,6 +167,35 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadSites()
         reloadSettings()
         observeSelfDrivenPushTokenPersistence()
+        checkPushNotificationEligibility()
+    }
+
+    private func checkPushNotificationEligibility() {
+        Task { @MainActor in
+            isSelfDrivenPNEligible = await pushNotificationEligibilityChecker.checkEligibility()
+            isSmarterNotificationsEnabled = await checkSmarterNotificationsEligibility()
+            reloadSettings()
+        }
+    }
+
+    /// Resolves whether smarter (AI-powered) push notifications are enabled, letting the remote
+    /// feature flag override the local default.
+    @MainActor
+    private func checkSmarterNotificationsEligibility() async -> Bool {
+        let localDefault = featureFlagService.isFeatureFlagEnabled(.smarterNotifications)
+        guard stores.isAuthenticated else {
+            return localDefault
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .smarterNotifications,
+                defaultValue: localDefault,
+                useCache: true,
+                completion: { value in
+                    continuation.resume(returning: value)
+                })
+            )
+        }
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -207,7 +238,7 @@ private extension SettingsViewModel {
         pushNotesManager.siteIDsRegisteredForWooPNsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.reloadSettings()
+                self?.checkPushNotificationEligibility()
             }
             .store(in: &subscriptions)
     }
@@ -233,11 +264,6 @@ private extension SettingsViewModel {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
             guard stores.sessionManager.defaultRoles.contains(.administrator) else {
-                return nil
-            }
-
-            // Hide plugins section for CIAB sites
-            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
                 return nil
             }
 
@@ -307,10 +333,20 @@ private extension SettingsViewModel {
                 guard let siteID = stores.sessionManager.defaultSite?.siteID else {
                     return false
                 }
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) &&
+                return isSelfDrivenPNEligible &&
                 pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
-            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
+            let isRegisteredForWooDrivenPushes: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            let showPushNotificationPreferences = isRegisteredForWooDrivenPushes
+                && isSmarterNotificationsEnabled
+            if showPushNotificationPreferences {
+                rows = [.pushNotificationPreferences, .privacy]
+            } else if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
                 rows = [.notifications, .privacy]
             } else {
                 rows = [.privacy]
@@ -381,7 +417,7 @@ private extension SettingsViewModel {
             return false
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) else {
+        guard isSelfDrivenPNEligible else {
             return false
         }
 

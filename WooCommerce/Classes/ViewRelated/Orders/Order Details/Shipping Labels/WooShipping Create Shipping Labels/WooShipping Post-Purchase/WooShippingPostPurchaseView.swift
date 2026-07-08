@@ -187,9 +187,9 @@ private extension WooShippingPostPurchaseView {
 
 private extension WooShippingPostPurchaseView {
     enum Layout {
-        static let panelBackground: Color = Color(light: .withColorStudio(name: .green, shade: .shade0),
+        static let panelBackground = Color(light: .withColorStudio(name: .green, shade: .shade0),
                                                   dark: .withColorStudio(name: .green, shade: .shade100))
-        static let panelHighlight: Color = Color(light: .withColorStudio(name: .green, shade: .shade70),
+        static let panelHighlight = Color(light: .withColorStudio(name: .green, shade: .shade70),
                                                  dark: .withColorStudio(name: .green, shade: .shade50))
         static let buttonPressed: Color = .withColorStudio(name: .green, shade: .shade90)
     }

@@ -16,8 +16,14 @@ final class MockAuthentication: Authentication {
         // no-op
     }
 
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+    @MainActor
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         true
+    }
+
+    @MainActor
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) async -> Bool {
+        false
     }
 
     func authenticationUI() -> UIViewController {

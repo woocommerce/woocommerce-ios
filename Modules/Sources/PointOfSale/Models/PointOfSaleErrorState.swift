@@ -1,5 +1,6 @@
 import Foundation
 import enum Alamofire.AFError
+import Yosemite
 
 struct PointOfSaleErrorState: Equatable {
     enum ErrorType: Equatable {
@@ -99,7 +100,7 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersLoadError,
             title: Constants.failedToLoadOrdersTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnLoadingOrdersNextPage(error: Error? = nil) -> Self {
@@ -107,13 +108,13 @@ struct PointOfSaleErrorState: Equatable {
             errorType: .ordersNextPageError,
             title: Constants.failedToLoadOrdersNextPageTitle,
             subtitle: subtitle(for: error),
-            buttonText: Constants.retryButtonTitle)
+            buttonText: Constants.ordersTryAgainButtonTitle)
     }
 
     static func errorOnInitalCatalogSync(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .initialCatalogSyncError,
-            title: Constants.failedToSyncCatalogTitle,
+            title: title(for: error, default: Constants.failedToSyncCatalogTitle),
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
@@ -121,14 +122,25 @@ struct PointOfSaleErrorState: Equatable {
     static func errorOnRefreshingCatalog(error: Error? = nil) -> Self {
         PointOfSaleErrorState(
             errorType: .refreshCatalogSyncError,
-            title: Constants.failedToRefreshCatalogTitle,
+            title: title(for: error, default: Constants.failedToRefreshCatalogTitle),
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
 
+    private static func title(for error: Error?, default defaultTitle: String) -> String {
+        if let error, error.isPOSCatalogFileBlockedError {
+            return Constants.catalogBlockedTitle
+        }
+        return defaultTitle
+    }
+
     private static func subtitle(for error: Error?) -> String {
+        if let error, error.isPOSCatalogFileBlockedError {
+            return Constants.catalogBlockedSubtitle
+        }
+
         if let error, error.isConnectivityError {
-            return Constants.connectivityErrorSubtitle
+            return POSConnectivityErrorNotice.subtitle
         }
 
         return Constants.genericErrorSubtitle
@@ -213,10 +225,16 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to refresh coupons",
             comment: "Title appearing on the coupon list screen when there's an error refreshing coupons."
         )
-        static let connectivityErrorSubtitle = NSLocalizedString(
-            "pos.itemList.connectivityErrorSubtitle",
-            value: "Please check your internet connection and try again.",
-            comment: "Subtitle appearing on error screens when there is a network connectivity error."
+        static let catalogBlockedTitle = NSLocalizedString(
+            "pos.itemList.catalogBlockedTitle",
+            value: "Action needed on your store",
+            comment: "Title appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file."
+        )
+        static let catalogBlockedSubtitle = NSLocalizedString(
+            "pos.itemList.catalogBlockedSubtitle",
+            value: "Point of Sale can't access a file with your product information because your hosting provider is blocking it.\n" +
+            "Please ask them to allow access to it so Point of Sale keeps working properly.",
+            comment: "Subtitle appearing on POS local catalog sync error screens when the host blocks access to the generated catalog file."
         )
         static let failedToLoadOrdersTitle = NSLocalizedString(
             "pos.orderList.failedToLoadOrdersTitle",
@@ -228,6 +246,11 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to load more orders",
             comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
             "the first. Shown inline with the previously loaded orders above."
+        )
+        static let ordersTryAgainButtonTitle = NSLocalizedString(
+            "pos.orderList.tryAgainButtonTitle",
+            value: "Try again",
+            comment: "Button text to retry loading orders in Point of Sale."
         )
     }
 }

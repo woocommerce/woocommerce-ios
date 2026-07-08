@@ -57,9 +57,7 @@ extension ProductBundleItem {
 
     @objc(removeDefaultVariationAttributes:)
     @NSManaged public func removeFromDefaultVariationAttributes(_ values: NSOrderedSet)
-
 }
 
 extension ProductBundleItem: Identifiable {
-
 }

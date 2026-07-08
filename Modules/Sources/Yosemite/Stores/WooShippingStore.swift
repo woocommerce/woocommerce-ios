@@ -7,7 +7,7 @@ import Storage
 public final class WooShippingStore: Store {
     private let remote: WooShippingRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = WooShippingRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -446,7 +446,7 @@ private extension WooShippingStore {
             guard let self, let contents = try? result.get() else {
                 return completion(result)
             }
-            let shipments = contents.map { (index, items) in
+            let shipments = contents.map { index, items in
                 WooShippingShipment(siteID: siteID,
                                     orderID: orderID,
                                     index: index,
@@ -725,7 +725,6 @@ private extension WooShippingStore {
             storageShipment?.shippingLabel = storageShippingLabel
 
             return storageShippingLabel.toReadOnly()
-
         }, completion: { result in
             switch result {
             case .success(let label):

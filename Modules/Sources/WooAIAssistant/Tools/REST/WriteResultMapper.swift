@@ -5,7 +5,6 @@ import Foundation
 enum WriteResultMapper {
     static func mapEntity(_ response: WCRESTResponse,
                           toolName: String,
-                          family: CardFamilyID,
                           summarize: (AnyCodableJSON) -> AnyCodableJSON) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
@@ -20,21 +19,17 @@ enum WriteResultMapper {
         }
         let pruned = RESTPayloadPruning.prune(entity)
         let summary = summarize(pruned)
-        let uiStructured: UIStructured?
-        if let id = RESTResponseParsing.intField(pruned, "id").map(String.init) {
-            uiStructured = UIStructured(cards: [RenderedCardPayload(family: family, id: id, element: pruned)])
-        } else {
-            uiStructured = nil
-        }
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(summary, toolName: toolName),
-                              uiStructured: uiStructured))
+                              uiStructured: nil))
     }
 
     /// WC's batch endpoint returns 200 even when individual entries fail, so the summary
     /// counts and surfaces per-entry errors rather than trusting the envelope status.
     static func mapBatch(_ response: WCRESTResponse,
-                         toolName: String) -> ToolResult {
+                         toolName: String,
+                         requestedCount: Int,
+                         patchKeys: [String]) -> ToolResult {
         if let unknown = unknownOutcomeFailure(response: response, toolName: toolName) {
             return .failed(unknown)
         }
@@ -56,18 +51,17 @@ enum WriteResultMapper {
                 updatedIDs.append(identifier)
             }
         }
-        var summary: [String: AnyCodableJSON] = [
+        let partialSuccess = !updatedIDs.isEmpty && !failedEntries.isEmpty
+        let summary: [String: AnyCodableJSON] = [
             "tool": .string(toolName),
+            "requested_count": .int(Int64(requestedCount)),
             "updated_count": .int(Int64(updatedIDs.count)),
-            "failed_count": .int(Int64(failedEntries.count))
+            "failed_count": .int(Int64(failedEntries.count)),
+            "partial_success": .bool(partialSuccess),
+            "patch_keys": .array(patchKeys.map { .string($0) }),
+            "updated_ids": .array(updatedIDs.map { .int($0) }),
+            "failed": .array(failedEntries)
         ]
-        if !updatedIDs.isEmpty {
-            summary["updated_ids"] = .array(updatedIDs.map { .int($0) })
-        }
-        if !failedEntries.isEmpty {
-            summary["failed"] = .array(failedEntries)
-        }
-        // Batch envelope carries only ids; surfacing per-id cards would render empty entity rows.
         return .success(.init(toolName: toolName,
                               structured: LLMPayloadCap.capped(.object(summary), toolName: toolName),
                               uiStructured: nil))

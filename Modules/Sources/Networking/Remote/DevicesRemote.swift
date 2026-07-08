@@ -34,7 +34,7 @@ public class DevicesRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.register, parameters: parameters)
         let mapper = DotcomDeviceMapper()
 
-        enqueue(request, mapper: mapper) { (device, error) in
+        enqueue(request, mapper: mapper) { device, error in
             completion(device, error)
         }
     }
@@ -51,7 +51,7 @@ public class DevicesRemote: Remote {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
         let mapper = SuccessResultMapper()
 
-        enqueue(request, mapper: mapper) { (success, error) in
+        enqueue(request, mapper: mapper) { success, error in
             guard success == true else {
                 completion(error ?? DotcomError.empty())
                 return
@@ -82,16 +82,16 @@ public class DevicesRemote: Remote {
                                                        deviceLocale: String,
                                                        appVersion: String,
                                                        availableAsRESTRequest: Bool = false) async throws -> Int64 {
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.origin: applicationID,
             ParameterKeys.token: device.token,
             ParameterKeys.platform: Values.platform,
             ParameterKeys.deviceLocale: deviceLocale,
-            ParameterKeys.metadata: [
+            ParameterKeys.metadata: RequestParameterValue.dictionary([
                 ParameterKeys.applicationVersion: appVersion,
                 ParameterKeys.deviceModel: device.model,
                 ParameterKeys.deviceOSVersion: device.iOSVersion
-            ]
+            ])
         ]
 
         if let deviceUUID = device.identifierForVendor {

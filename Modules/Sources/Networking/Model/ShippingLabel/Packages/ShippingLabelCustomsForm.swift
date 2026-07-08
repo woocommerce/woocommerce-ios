@@ -61,7 +61,7 @@ public struct ShippingLabelCustomsForm: Hashable, Equatable, GeneratedFakeable, 
         self.items = items
     }
 
-    /// Convenient intializer
+    /// Convenient initializer
     ///
     public init(packageID: String, packageName: String, items: [Item]) {
         self.init(packageID: packageID,

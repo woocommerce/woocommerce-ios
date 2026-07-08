@@ -2711,7 +2711,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedTotals.value(forKey: "grossSales") as? NSDecimalNumber, NSDecimalNumber(value: 750))
     }
 
-    func test_migrating_from_137_to_138_adds_hasCreatedTicket_attribute_to_StoredSupportChat() throws {
+    func test_migrating_from_137_to_138_adds_new_attributes_to_StoredSupportChat() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 137")
         let sourceContext = sourceContainer.viewContext
@@ -2728,6 +2728,8 @@ final class MigrationTests: XCTestCase {
         try sourceContext.save()
 
         XCTAssertNil(chat.entity.attributesByName["hasCreatedTicket"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(chat.entity.attributesByName["sessionID"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(chat.entity.attributesByName["isResolved"], "Precondition. Attribute does not exist.")
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 138")
@@ -2737,15 +2739,58 @@ final class MigrationTests: XCTestCase {
         let migratedChat = try XCTUnwrap(targetContext.first(entityName: "StoredSupportChat"))
 
         XCTAssertNotNil(migratedChat.entity.attributesByName["hasCreatedTicket"])
+        XCTAssertNotNil(migratedChat.entity.attributesByName["sessionID"])
+        XCTAssertNotNil(migratedChat.entity.attributesByName["isResolved"])
 
-        // Default value should be false.
+        // Default values.
         XCTAssertEqual(migratedChat.value(forKey: "hasCreatedTicket") as? Bool, false)
+        XCTAssertNil(migratedChat.value(forKey: "sessionID"))
+        XCTAssertEqual(migratedChat.value(forKey: "isResolved") as? Bool, false)
 
-        // Verify a value can be set and saved.
+        // Verify values can be set and saved.
         migratedChat.setValue(true, forKey: "hasCreatedTicket")
+        migratedChat.setValue("session-abc", forKey: "sessionID")
+        migratedChat.setValue(true, forKey: "isResolved")
         try targetContext.save()
 
         XCTAssertEqual(migratedChat.value(forKey: "hasCreatedTicket") as? Bool, true)
+        XCTAssertEqual(migratedChat.value(forKey: "sessionID") as? String, "session-abc")
+        XCTAssertEqual(migratedChat.value(forKey: "isResolved") as? Bool, true)
+    }
+
+    func test_migrating_from_138_to_139_adds_crashReportingOptOut_attribute_to_AccountSettings() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 138")
+        let sourceContext = sourceContainer.viewContext
+
+        let accountSettings = NSEntityDescription.insertNewObject(forEntityName: "AccountSettings", into: sourceContext)
+        accountSettings.setValue(Int64(1234), forKey: "userID")
+        accountSettings.setValue(true, forKey: "tracksOptOut")
+        try sourceContext.save()
+
+        XCTAssertNil(accountSettings.entity.attributesByName["crashReportingOptOut"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 139")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSettings = try XCTUnwrap(targetContext.first(entityName: "AccountSettings"))
+
+        XCTAssertNotNil(migratedSettings.entity.attributesByName["crashReportingOptOut"])
+
+        // Default value: `nil`, meaning no choice has been recorded on the account yet.
+        XCTAssertNil(migratedSettings.value(forKey: "crashReportingOptOut"))
+
+        // Verify existing values survived the migration.
+        XCTAssertEqual(migratedSettings.value(forKey: "userID") as? Int64, 1234)
+        XCTAssertEqual(migratedSettings.value(forKey: "tracksOptOut") as? Bool, true)
+
+        // Verify the new value can be set and saved.
+        migratedSettings.setValue(true, forKey: "crashReportingOptOut")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedSettings.value(forKey: "crashReportingOptOut") as? Bool, true)
     }
 }
 

@@ -1,12 +1,14 @@
 import AppIntents
 
-/// Date ranges supported by the Store Stats widget.
-/// ("today / last 7 days / last 30 days") called out in the project's M1 scope.
-///
+/// Raw values mirror `AnalyticsHubTimeRangeSelection.SelectionType` so they round-trip
+/// through the per-cell deep-link URL into the in-app Analytics Hub.
 enum StoreStatsWidgetDateRange: String, AppEnum {
     case today
-    case last7Days
-    case last30Days
+    case yesterday
+    case lastWeek
+    case lastMonth
+    case weekToDate
+    case monthToDate
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "Date Range")
@@ -14,7 +16,10 @@ enum StoreStatsWidgetDateRange: String, AppEnum {
 
     static var caseDisplayRepresentations: [Self: DisplayRepresentation] = [
         .today: "Today",
-        .last7Days: "Last 7 Days",
-        .last30Days: "Last 30 Days"
+        .yesterday: "Yesterday",
+        .lastWeek: "Last Week",
+        .lastMonth: "Last Month",
+        .weekToDate: "Week to Date",
+        .monthToDate: "Month to Date"
     ]
 }

@@ -21,13 +21,16 @@ struct StorePerformanceView: View {
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
+    private let onAnalyticsImportUpdateModeInfoTapped: () -> Void
 
     init(viewModel: StorePerformanceViewModel,
          onCustomRangeRedactedViewTap: @escaping () -> Void,
-         onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
+         onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void,
+         onAnalyticsImportUpdateModeInfoTapped: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onCustomRangeRedactedViewTap = onCustomRangeRedactedViewTap
         self.onViewAllAnalytics = onViewAllAnalytics
+        self.onAnalyticsImportUpdateModeInfoTapped = onAnalyticsImportUpdateModeInfoTapped
     }
 
     var body: some View {
@@ -238,9 +241,26 @@ private extension StorePerformanceView {
     }
 
     var timestampView: some View {
-        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
-            .footnoteStyle()
-            .frame(maxWidth: .infinity, alignment: .center)
+        HStack(alignment: .center, spacing: Layout.timestampInfoSpacing) {
+            Text(viewModel.shouldShowScheduledAnalyticsImportInfo ?
+                 Localization.scheduledUpdatesDelayText :
+                 Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+                .footnoteStyle()
+
+            if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
+                Button {
+                    viewModel.trackAnalyticsImportUpdateModeInfoTapped()
+                    onAnalyticsImportUpdateModeInfoTapped()
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.footnote)
+                        .foregroundStyle(Color.accentColor)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Localization.scheduledUpdatesInfoAccessibilityLabel)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func statsItemView(title: String, value: String, redactMode: RedactMode) -> some View {
@@ -326,7 +346,8 @@ private extension StorePerformanceView {
         if let chartViewModel = viewModel.chartViewModel,
            chartViewModel.hasRevenue {
             VStack {
-                StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
+                StoreStatsChart(viewModel: chartViewModel,
+                                resetSignal: viewModel.chartSelectionResetPublisher) { selectedIndex in
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)
@@ -389,6 +410,7 @@ private extension StorePerformanceView {
         static let emptyViewSpacing: CGFloat = 24
         static let orderTypeChevronSpacing: CGFloat = 4
         static let orderTypeLabelMinScale: CGFloat = 0.7
+        static let timestampInfoSpacing: CGFloat = 4
     }
 
     enum Localization {
@@ -436,6 +458,11 @@ private extension StorePerformanceView {
             let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the performance card was last updated")
             return String.localizedStringWithFormat(format, time)
         }
+        static let scheduledUpdatesDelayText = NSLocalizedString(
+            "storePerformanceView.scheduledUpdatesDelayText",
+            value: "Stats may be up to 12 hours delayed",
+            comment: "Text shown on the Performance card instead of the last updated timestamp when analytics updates are scheduled."
+        )
         static let unavailableAnalytics = NSLocalizedString(
             "storePerformanceView.unavailableAnalyticsView.title",
             value: "Unable to display your store's performance",
@@ -461,6 +488,11 @@ private extension StorePerformanceView {
             value: "Revenue type",
             comment: "Accessibility label for the segmented control that switches between Gross, Net, and Total revenue on the Performance card."
         )
+        static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
+            "storePerformanceView.scheduledUpdatesInfoAccessibilityLabel",
+            value: "Analytics update details",
+            comment: "Accessibility label for the info button next to the Performance card's last updated timestamp."
+        )
     }
 }
 
@@ -468,5 +500,6 @@ private extension StorePerformanceView {
     StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123,
                                                               usageTracksEventEmitter: .init()),
                          onCustomRangeRedactedViewTap: {},
-                         onViewAllAnalytics: { _, _, _ in })
+                         onViewAllAnalytics: { _, _, _ in },
+                         onAnalyticsImportUpdateModeInfoTapped: {})
 }

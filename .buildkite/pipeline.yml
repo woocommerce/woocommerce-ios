@@ -70,6 +70,16 @@ steps:
           context: WordPressAuthenticator Unit Tests
 
   #################
+  # Ruby Automation Tests (Fastlane helpers)
+  #################
+  - label: ":ruby: Ruby Automation Tests"
+    command: .buildkite/commands/run-ruby-automation-tests.sh
+    plugins: [$CI_TOOLKIT]
+    notify:
+      - github_commit_status:
+          context: Ruby Automation Tests
+
+  #################
   # Linters
   #################
   - group: Linters
@@ -128,8 +138,8 @@ steps:
   - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
-    # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:
@@ -147,8 +157,8 @@ steps:
   - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
-    # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:

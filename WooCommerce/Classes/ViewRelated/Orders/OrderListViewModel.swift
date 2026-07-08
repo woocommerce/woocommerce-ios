@@ -33,27 +33,6 @@ final class OrderListViewModel {
     ///
     var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
 
-    /// URL to site
-    var siteURL: URL? {
-        guard let site = stores.sessionManager.defaultSite else {
-            return nil
-        }
-        return URL(string: site.url)
-    }
-
-    /// Whether the entry point to test order should be displayed on the empty state screen.
-    ///
-    var shouldEnableTestOrder: Bool {
-        guard let site = stores.sessionManager.defaultSite,
-              let url = siteURL,
-              UIApplication.shared.canOpenURL(url) else {
-            return false
-        }
-
-        /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
-    }
-
     /// Filters applied to the order list.
     ///
     private(set) var filters: FilterOrderListViewModel.Filters? {
@@ -65,26 +44,10 @@ final class OrderListViewModel {
     }
 
     private let siteID: Int64
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     /// Used for tracking whether the app was _previously_ in the background.
     ///
     private var isAppActive: Bool = true
-
-    /// Checks whether the site has set up any payment method.
-    ///
-    private var hasAnyPaymentGateways: Bool {
-        storageManager.viewStorage.loadAllPaymentGateways(siteID: siteID)
-            .contains(where: { $0.enabled })
-    }
-
-    /// Checks whether the site has published any product.
-    ///
-    private var hasAnyPublishedProducts: Bool {
-        (storageManager.viewStorage.loadProducts(siteID: siteID) ?? [])
-            .map { $0.toReadOnly() }
-            .contains(where: { $0.productStatus == .published })
-    }
 
     private var isIPPSupportedCountry: Bool {
         cardPresentPaymentsConfiguration.isSupportedCountry
@@ -130,8 +93,7 @@ final class OrderListViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          filters: FilterOrderListViewModel.Filters?,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -141,11 +103,9 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
-                                                                                                    filters: filters,
-                                                                                                    isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB))
+                                                                                                    filters: filters))
     }
 
     deinit {
@@ -168,24 +128,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-    }
-
-    /// Handles extra syncing upon pull-to-refresh.
-    func onPullToRefresh() {
-        /// syncs payment gateways
-        stores.dispatch(PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in }))
-
-        /// syncs first published product
-        stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
-                                                          pageNumber: Store.Default.firstPageNumber,
-                                                          pageSize: 1,
-                                                          stockStatus: nil,
-                                                          productStatus: .published,
-                                                          productType: nil,
-                                                          productCategory: nil,
-                                                          sortOrder: .dateDescending,
-                                                          shouldDeleteStoredProductsOnFirstPage: false,
-                                                          onCompletion: { _ in }))
     }
 
     /// Starts the snapshotsProvider, logging any errors.
@@ -220,8 +162,7 @@ final class OrderListViewModel {
                                lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 filters: filters,
-                                                 ciabEligibilityChecker: ciabEligibilityChecker)
+                                                 filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -232,13 +173,11 @@ final class OrderListViewModel {
     }
 
     private static func createQuery(siteID: Int64,
-                                     filters: FilterOrderListViewModel.Filters?,
-                                     isCIAB: Bool) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+                                     filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { statuses in
-                let resolved = isCIAB ? CIABOrderStatusMapper.resolveFilterStatuses(statuses) : statuses
-                return NSPredicate(format: "statusKey IN %@", resolved.map { $0.rawValue })
+                return NSPredicate(format: "statusKey IN %@", statuses.map { $0.rawValue })
             }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
@@ -359,8 +298,7 @@ extension OrderListViewModel {
         }
 
         return OrderListCellViewModel(order: order,
-                                      currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

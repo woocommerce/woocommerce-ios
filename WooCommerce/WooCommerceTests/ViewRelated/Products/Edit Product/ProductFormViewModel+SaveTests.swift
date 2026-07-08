@@ -79,7 +79,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .pending) { result in
+            viewModel.saveProductRemotely(status: .pending) { _ in
                 expectation.fulfill()
             }
         }
@@ -100,7 +100,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .pending) { result in
+            viewModel.saveProductRemotely(status: .pending) { _ in
                 expectation.fulfill()
             }
         }
@@ -227,7 +227,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // When
         waitForExpectation { expectation in
-            viewModel.saveProductRemotely(status: .published) { result in
+            viewModel.saveProductRemotely(status: .published) { _ in
                 expectation.fulfill()
             }
         }
@@ -262,6 +262,39 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
         // Then
         XCTAssertEqual(savedProduct?.status, .published)
+    }
+
+    // MARK: `duplicateProduct`
+
+    func test_duplicateProduct_does_not_change_original_form_baseline() throws {
+        // Given
+        let originalProduct = Product.fake().copy(productID: 123,
+                                                  name: "Original",
+                                                  statusKey: ProductStatus.published.rawValue)
+        let productImagesUploader = MockProductImageUploader()
+        let viewModel = createViewModel(product: originalProduct, formType: .edit, productImagesUploader: productImagesUploader)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let ProductAction.addProduct(productToSave, onCompletion) = action {
+                // Simulate the server returning the duplicate with a new ID and copied name.
+                onCompletion(.success(productToSave.copy(productID: 456, name: "Original Copy")))
+            }
+        }
+
+        // When
+        var duplicatedProduct: EditableProductModel?
+        waitForExpectation { expectation in
+            viewModel.duplicateProduct { result in
+                duplicatedProduct = try? result.get()
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        // The completion returns the duplicate...
+        XCTAssertEqual(duplicatedProduct?.productID, 456)
+        // ...but this form still represents the original product, so its baseline must be untouched.
+        XCTAssertEqual(viewModel.originalProductModel, EditableProductModel(product: originalProduct))
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
 }
 

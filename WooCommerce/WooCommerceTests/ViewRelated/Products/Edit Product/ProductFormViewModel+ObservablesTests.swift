@@ -131,7 +131,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -172,7 +172,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -212,7 +212,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.resetPassword("134")
 
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -256,7 +256,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler,
                                              productImagesUploader: mockProductImageUploader)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 

@@ -11,7 +11,7 @@ protocol SurveyViewControllersFactoryProtocol {
     func makeSurveyViewController(survey: SurveyViewController.Source,
                                   onCompletion: @escaping () -> Void) -> SurveyViewControllerOutputs
 
-    /// Creates a `ViewController` that conforms to`SurveySubmittedViewControllerOutputs` by providing the necesary actions
+    /// Creates a `ViewController` that conforms to`SurveySubmittedViewControllerOutputs` by providing the necessary actions
     ///
     func makeSurveySubmittedViewController(onContactUsAction: @escaping () -> Void,
                                            onBackToStoreAction: @escaping () -> Void) -> SurveySubmittedViewControllerOutputs

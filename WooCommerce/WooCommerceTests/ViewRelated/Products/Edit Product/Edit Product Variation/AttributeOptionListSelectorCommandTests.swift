@@ -93,7 +93,7 @@ final class AttributeOptionListSelectorCommandTests: XCTestCase {
                                          variation: true,
                                          options: ["Blue", "Red"])
         let command = AttributeOptionListSelectorCommand(attribute: attribute, selectedOption: nil)
-        let cell: BasicTableViewCell = BasicTableViewCell.instantiateFromNib()
+        let cell = BasicTableViewCell.instantiateFromNib()
 
         // When
         command.configureCell(cell: cell, model: .option("Red"))

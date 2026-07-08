@@ -94,7 +94,7 @@ class BordersView: UIView {
         }
     }
 
-    /// Overriden Frame Property!
+    /// Overridden Frame Property!
     ///
     override var frame: CGRect {
         didSet {
@@ -110,7 +110,7 @@ class BordersView: UIView {
         self.init(frame: .zero)
     }
 
-    required override init(frame: CGRect) {
+    override required init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
     }

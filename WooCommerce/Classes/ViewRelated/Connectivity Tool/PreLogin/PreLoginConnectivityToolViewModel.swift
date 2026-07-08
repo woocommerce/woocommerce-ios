@@ -1,11 +1,11 @@
 import Foundation
 import UIKit
+import Yosemite
 import class Networking.UserAgent
 import struct NetworkingCore.WordPressAPIDiscovery
 import protocol NetworkingCore.URLSessionProtocol
 import class WordPressAuthenticator.WordPressComSiteInfo
 import protocol WooFoundation.Analytics
-import protocol Experiments.FeatureFlagService
 
 /// Represents the state of a pre-login connectivity check.
 ///
@@ -80,17 +80,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     @Published private(set) var showChatButton = false
 
-    /// Whether the contact support button should be shown.
-    /// True when bot chat is NOT supported and all tests have completed.
-    ///
-    @Published private(set) var showContactSupportButton = false
-
-    /// Whether the AI support chat is supported.
-    ///
-    var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-    }
-
     /// The site URL being tested.
     ///
     let siteURL: URL
@@ -116,23 +105,17 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    /// Feature flag service for checking AI support chat availability.
-    ///
-    private let featureFlagService: FeatureFlagService
-
     private static let requestTimeout: TimeInterval = 15
 
     init(siteURL: URL,
          session: URLSessionProtocol = URLSession.shared,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          discoverAPIRoot: @escaping (String) async -> String? = {
              await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: $0)
          }) {
         self.siteURL = siteURL
         self.session = session
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.discoverAPIRoot = discoverAPIRoot
     }
 
@@ -149,7 +132,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         restAPIRootURL = nil
         restAPIRootJSON = nil
         showChatButton = false
-        showContactSupportButton = false
 
         for testCase in ConnectivityTest.allCases {
             let cardIndex = cards.count
@@ -164,9 +146,8 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
             trackResponseEvent(for: testCase, success: state.isSuccess, timeTaken: timeTaken)
         }
 
-        // Show appropriate support button after all tests complete
-        showChatButton = isBotChatSupported
-        showContactSupportButton = !isBotChatSupported
+        // Show the support chat button after all tests complete
+        showChatButton = true
     }
 
     /// Generates a text description of test results for support attachment.
@@ -184,19 +165,17 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
-    func makeSupportChatViewModel(
-        onContactHumanSupport: @escaping (_ chatID: Int64?, _ transcript: String, _ supportAreaInfo: SupportAreaInfo?) -> Void
-    ) -> SupportChatViewModel {
-        var context: [String: Any] = [:]
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
+        var context: RequestParameterDictionary = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshootingResults"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
-        context["site_url"] = siteURL.absoluteString
+        context["site_url"] = .string(siteURL.absoluteString)
 
         return SupportChatViewModel(
-            entryPoint: .connectivityTool,
+            entryPoint: .preLogin,
             initialContext: context,
             onContactHumanSupport: onContactHumanSupport
         )

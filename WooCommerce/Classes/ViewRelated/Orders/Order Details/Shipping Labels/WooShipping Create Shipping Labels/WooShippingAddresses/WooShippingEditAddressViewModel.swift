@@ -270,7 +270,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             }
             return newState.isEmpty ? Localization.Validation.state : nil
         }
-        self.phone.validate = { [weak self] newPhone in
+        self.phone.validate = { [weak self] _ in
             guard let self else {
                 return nil
             }
@@ -527,6 +527,13 @@ extension WooShippingEditAddressViewModel {
     /// Validate all fields in the address.
     func validateAddress() {
         allFields.forEach { $0.validateField() }
+    }
+
+    /// Re-validates all fields immediately (bypassing the per-field debounce) and returns the status.
+    /// Used on the confirm tap so a fast tap can't skip local validation. See WOOMOB-3446.
+    func validatedStatus() -> WooShippingAddressStatus {
+        validateAddress()
+        return status
     }
 
     /// Validate the address field with the given type.

@@ -3,6 +3,7 @@ import Storage
 import Hardware
 import Networking
 import Combine
+import enum WooFoundation.CountryCode
 
 // MARK: CardPresentPaymentStore
 ///
@@ -108,16 +109,33 @@ public final class CardPresentPaymentStore: Store {
             disconnect(onCompletion: completion)
         case .observeConnectedReaders(let completion):
             observeConnectedReaders(onCompletion: completion)
-        case .collectPayment(let siteID, let orderID, let parameters, let event, let processPaymentCompletion, let completion):
+        case .collectPayment(let siteID,
+                             let orderID,
+                             let parameters,
+                             let countryCode,
+                             let terminalPaymentPreparationEnabled,
+                             let event,
+                             let processPaymentCompletion,
+                             let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
                            parameters: parameters,
+                           countryCode: countryCode,
+                           terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
                            onCardReaderMessage: event,
                            onProcessingCompletion: processPaymentCompletion,
                            onCompletion: completion)
-        case .retryPayment(let siteID, let orderID, let event, let processPaymentCompletion, let completion):
+        case .retryPayment(let siteID,
+                           let orderID,
+                           let countryCode,
+                           let terminalPaymentPreparationEnabled,
+                           let event,
+                           let processPaymentCompletion,
+                           let completion):
             retryActivePayment(siteID: siteID,
                                orderID: orderID,
+                               countryCode: countryCode,
+                               terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
                                onCardReaderMessage: event,
                                onProcessingCompletion: processPaymentCompletion,
                                onCompletion: completion)
@@ -212,7 +230,7 @@ private extension CardPresentPaymentStore {
     func cancelCardReaderDiscovery(completion: @escaping (Result<Void, Error>) -> Void) {
         cardReaderService.cancelDiscovery()
             .subscribe(Subscribers.Sink(
-                receiveCompletion: { (result) in
+                receiveCompletion: { result in
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
@@ -231,13 +249,13 @@ private extension CardPresentPaymentStore {
         // https://github.com/woocommerce/woocommerce-ios/issues/3734
         // https://github.com/woocommerce/woocommerce-ios/issues/3741
         cardReaderService.connect(reader, options: options)
-            .subscribe(Subscribers.Sink(receiveCompletion: { (completion) in
+            .subscribe(Subscribers.Sink(receiveCompletion: { completion in
                 if case let .failure(underlyingError) = completion {
                     onCompletion(.failure(underlyingError))
                 }
                 // We don't want to propagate successful completion since we already did that by
                 // calling onCompletion when a value was received.
-            }, receiveValue: { (reader) in
+            }, receiveValue: { reader in
                 onCompletion(.success(reader))
             }))
     }
@@ -270,6 +288,8 @@ private extension CardPresentPaymentStore {
     func collectPayment(siteID: Int64,
                         orderID: Int64,
                         parameters: PaymentParameters,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
@@ -278,7 +298,13 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = handlePaymentEvents(from: cardReaderService.capturePayment(parameters),
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.capturePayment(parameters) { intent in
+            self.prepareTerminalPayment(siteID: siteID,
+                                        orderID: orderID,
+                                        paymentIntent: intent,
+                                        countryCode: countryCode,
+                                        terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
+        },
                                                  readerEventsSubscription: readerEventsSubscription,
                                                  siteID: siteID,
                                                  orderID: orderID,
@@ -327,6 +353,8 @@ private extension CardPresentPaymentStore {
 
     func retryActivePayment(siteID: Int64,
                             orderID: Int64,
+                            countryCode: CountryCode,
+                            terminalPaymentPreparationEnabled: Bool,
                             onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
                             onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                             onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
@@ -334,7 +362,13 @@ private extension CardPresentPaymentStore {
             onCardReaderMessage(event)
         }
 
-        paymentCancellable = handlePaymentEvents(from: cardReaderService.retryActivePaymentIntent(),
+        paymentCancellable = handlePaymentEvents(from: cardReaderService.retryActivePaymentIntent { intent in
+            self.prepareTerminalPayment(siteID: siteID,
+                                        orderID: orderID,
+                                        paymentIntent: intent,
+                                        countryCode: countryCode,
+                                        terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
+        },
                                                  readerEventsSubscription: readerEventsSubscription,
                                                  siteID: siteID,
                                                  orderID: orderID,
@@ -586,6 +620,33 @@ private extension CardPresentPaymentStore {
             .eraseToAnyPublisher()
     }
 
+    /// Prepares a WCPay terminal payment before the Terminal SDK confirms a collected payment intent.
+    func prepareTerminalPayment(siteID: Int64,
+                                orderID: Int64,
+                                paymentIntent: PaymentIntent,
+                                countryCode: CountryCode,
+                                terminalPaymentPreparationEnabled: Bool) -> AnyPublisher<Void, Error> {
+        guard usingBackend == .wcPay,
+              terminalPaymentPreparationEnabled,
+              paymentIntent.requiresTerminalPaymentPreparation(countryCode: countryCode) else {
+            return Just(())
+                .setFailureType(to: Error.self)
+                .eraseToAnyPublisher()
+        }
+
+        return remote.prepareTerminalPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
+            .tryMap { result in
+                switch result {
+                case .success:
+                    return ()
+                case .failure(let error):
+                    let error = PaymentsError(underlyingError: error)
+                    throw ServerSidePaymentCaptureError.terminalPaymentPreparation(error: error)
+                }
+            }
+            .eraseToAnyPublisher()
+    }
+
     func fetchCharge(siteID: Int64, chargeID: String, completion: @escaping (Result<WCPayCharge, Error>) -> Void) {
         switch usingBackend {
         case .wcPay:
@@ -611,6 +672,25 @@ private extension CardPresentPaymentStore {
     }
 }
 
+private extension PaymentIntent {
+    func requiresTerminalPaymentPreparation(countryCode: CountryCode) -> Bool {
+        switch paymentMethod() {
+        case .interacPresent:
+            return true
+        case .cardPresent(let details):
+            return countryCode == .AU && details.canProcessAsEftposAu
+        default:
+            return false
+        }
+    }
+}
+
+private extension CardPresentTransactionDetails {
+    var canProcessAsEftposAu: Bool {
+        brand == .eftposAu || availableNetworks?.contains(.eftposAu) == true
+    }
+}
+
 // MARK: Storage Methods
 private extension CardPresentPaymentStore {
     func upsertStoredAccountInBackground(readonlyAccount: PaymentGatewayAccount, onCompletion: @escaping () -> Void) {
@@ -623,7 +703,6 @@ private extension CardPresentPaymentStore {
 
             let storageAccount = storage.insertNewObject(ofType: Storage.PaymentGatewayAccount.self)
             storageAccount.update(with: readonlyAccount)
-
         }, completion: onCompletion, on: .main)
     }
 
@@ -702,12 +781,15 @@ private extension CardPresentPaymentStore {
 public enum ServerSidePaymentCaptureError: Error, LocalizedError {
     case paymentIntentNotSuccessful
     case paymentGateway(error: PaymentsError)
+    case terminalPaymentPreparation(error: PaymentsError)
 
     public var errorDescription: String? {
         switch self {
         case .paymentIntentNotSuccessful:
             return "Payment intent not successful"
         case .paymentGateway(error: let error):
+            return error.localizedDescription
+        case .terminalPaymentPreparation(error: let error):
             return error.localizedDescription
         }
     }

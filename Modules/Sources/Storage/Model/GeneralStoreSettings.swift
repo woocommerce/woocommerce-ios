@@ -102,16 +102,19 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
+    /// The last time the POS catalog file was blocked by the host during a sync attempt.
+    ///
+    public var posCatalogFileBlockedByHostAt: Date?
+
     /// The last time the sunset warning banner was dismissed for this store.
     /// Used to throttle the banner to once every 14 days.
     ///
     public var lastSunsetWarningDismissedDate: Date?
 
-    /// Whether this site is eligible for the In-Person Payments country expansion (RSM-637).
+    /// Whether this site is eligible for In-Person Payments countries gated by remote flags.
     /// `nil` until the eligibility refresher has run for the first time. Cached based on
-    /// the relevant remote feature flag (`inPersonPaymentsCountryExpansion` or
-    /// `inPersonPaymentsCountryExpansionEUExtended`) for the site's country, with US/PR/CA/GB
-    /// short-circuited to `true`.
+    /// the relevant remote feature flag for the site's country, with US/PR/CA/GB
+    /// short-circuited to `true`. Australia uses its own WooPayments-only flag.
     public var isCardPresentPaymentsCountryExpansionEligible: Bool?
 
     public init(storeID: String? = nil,
@@ -138,6 +141,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
+                posCatalogFileBlockedByHostAt: Date? = nil,
                 lastSunsetWarningDismissedDate: Date? = nil,
                 isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
         self.storeID = storeID
@@ -164,6 +168,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt
         self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
         self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
     }
@@ -191,6 +196,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              isPOSTabVisible: isPOSTabVisible,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+                             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
                              lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
                              isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
     }
@@ -231,6 +237,7 @@ extension GeneralStoreSettings {
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.posCatalogFileBlockedByHostAt = try container.decodeIfPresent(Date.self, forKey: .posCatalogFileBlockedByHostAt)
         self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
         self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
             Bool.self,

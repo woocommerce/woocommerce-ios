@@ -7,7 +7,7 @@ import Storage
 public final class ProductCategoryStore: Store {
     private let remote: ProductCategoriesRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductCategoriesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -91,7 +91,7 @@ private extension ProductCategoryStore {
     /// Synchronizes product categories associated with a given Site ID.
     ///
     func synchronizeProductCategories(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping ([ProductCategory]?, Error?) -> Void) {
-        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
+        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] productCategories, error in
             guard let productCategories else {
                 onCompletion(nil, error)
                 return

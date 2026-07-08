@@ -1,5 +1,5 @@
-import Yosemite
 import Foundation
+import Yosemite
 
 private extension CardPresentPaymentsPlugin {
     var setupURLSectionPath: String {
@@ -44,6 +44,16 @@ extension Site {
         case .stripe:
             return pluginSettingsSectionURL(from: .stripe) + "&panel=settings"
         }
+    }
+
+    /// Constructs the admin URL for editing POS receipt settings.
+    var receiptSettingsAdminURL: String {
+        adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
+    }
+
+    /// Constructs the admin URL for managing POS staff.
+    var posStaffManagementAdminURL: String {
+        adminURL + "admin.php?page=wc-settings&tab=point-of-sale&section=staff"
     }
 
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.

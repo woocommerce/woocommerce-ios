@@ -32,6 +32,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.lastIncrementalSyncDate.isEmpty)
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
+        #expect(sut.catalogRefreshProgress == nil)
         #expect(sut.catalogRefreshError == nil)
     }
 
@@ -192,6 +193,40 @@ struct POSSettingsLocalCatalogViewModelTests {
         // Then
         let catalogRefreshError = try #require(sut.catalogRefreshError)
         #expect(catalogRefreshError.errorState.errorType == .refreshCatalogSyncError)
+    }
+
+    @Test func refreshCatalog_when_sync_already_in_progress_does_not_set_refresh_error() async throws {
+        // Given
+        catalogSyncCoordinator.performFullSyncResult = .failure(POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        #expect(sut.catalogRefreshError == nil)
+    }
+
+    @Test func refreshCatalog_when_sync_already_in_progress_keeps_refreshing_state() async throws {
+        // Given
+        catalogSyncCoordinator.performFullSyncResult = .failure(POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        #expect(sut.isRefreshingCatalog == true)
+    }
+
+    @Test func refreshCatalog_when_request_cancelled_does_not_set_refresh_error() async throws {
+        // Given
+        catalogSyncCoordinator.performFullSyncResult = .failure(POSCatalogSyncError.requestCancelled)
+
+        // When
+        await sut.refreshCatalog()
+
+        // Then
+        #expect(sut.catalogRefreshError == nil)
+        #expect(sut.isRefreshingCatalog == false)
     }
 
     // MARK: - Test Concurrent Operations

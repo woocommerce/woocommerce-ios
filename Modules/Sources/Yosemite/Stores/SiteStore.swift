@@ -30,13 +30,13 @@ public final class SiteStore: Store {
                   network: network)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: SiteAction.self)
     }
 
     /// Called whenever a given Action is dispatched.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SiteAction else {
             assertionFailure("SiteStore received an unsupported action: \(action)")
             return

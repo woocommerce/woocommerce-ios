@@ -6,12 +6,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
     public func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         let buildConfig = BuildConfiguration.current
 
-        /// Whether this is a UI test run.
-        ///
-        /// This can be used to enable/disable a feature flag specifically for UI testing.
-        ///
-        let isUITesting = CommandLine.arguments.contains("-ui_testing")
-
         switch featureFlag {
         case .inbox:
             return true
@@ -79,44 +73,46 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleOrdersi1:
-            return true
-        case .pointOfSaleOrdersi2:
-            return true
         case .orderAddressMapSearch:
-            return true
-        case .pointOfSaleHistoricalOrdersi1:
             return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return !buildConfig.isProduction
-        case .pointOfSaleCatalogAPI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .pointOfSaleRefundsi1:
-            return true
-        case .pointOfSaleCustomAmounts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .pointOfSaleScanToPay:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .pointOfSaleMarkOrderAsPaid:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .selfDrivenPushToken:
             return false
+        case .pointOfSaleCatalogAPI:
+            return true
+        case .pointOfSaleRoles:
+            return false
+        case .pointOfSaleCustomAmounts:
+            return buildConfig == .localDeveloper
+        case .pointOfSalePhonePrototype:
+            return true
+        case .pointOfSaleScanToPay:
+            return buildConfig == .localDeveloper
+        case .pointOfSaleMarkOrderAsPaid:
+            return buildConfig == .localDeveloper
+        case .pointOfSaleTapToPay:
+            // Behind the flag while the TTP integration lands. localDeveloper-only so
+            // alpha and beta keep showing only Cash + Card reader for now.
+            return buildConfig == .localDeveloper
+        case .selfDrivenPushToken:
+            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .configurableStoreStatsWidgets:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
-            return false
+            return true
         case .ciabBookingReschedule:
-            return !buildConfig.isProduction
+            return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return !buildConfig.isProduction
         case .wooAIAssistant:
-            return !buildConfig.isProduction
+            return true
+        case .arParcelFitting:
+            return true
+        case .smarterNotifications:
+            return true
+        case .starReceiptPrinterSupport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

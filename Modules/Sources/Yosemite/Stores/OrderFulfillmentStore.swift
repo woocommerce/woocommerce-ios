@@ -8,7 +8,7 @@ import Storage
 public class OrderFulfillmentStore: Store {
     private let remote: OrderFulfillmentsRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrderFulfillmentsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -40,7 +40,7 @@ public class OrderFulfillmentStore: Store {
 private extension OrderFulfillmentStore {
 
     func synchronizeOrderFulfillments(siteID: Int64, orderID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        remote.loadOrderFulfillments(for: siteID, orderID: orderID) { [weak self] (fulfillments, error) in
+        remote.loadOrderFulfillments(for: siteID, orderID: orderID) { [weak self] fulfillments, error in
             guard let readOnlyFulfillments = fulfillments else {
                 onCompletion(error)
                 return

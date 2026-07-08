@@ -239,7 +239,6 @@ private extension OrderCustomAmountsSection {
         static let optionsBottomSheetSymbolLabelSpacing: CGFloat = 18
         static let optionsBottomSheetPadding: CGFloat = 16
         static let rowHeight: CGFloat = 56
-
     }
     enum Localization {
         static let addCustomAmount = NSLocalizedString("Add Custom Amount",
@@ -256,7 +255,6 @@ private extension OrderCustomAmountsSection {
         static let optionsDialogPercentageButtonTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogPercentageButtonTitle",
                                                         value: "A percentage of the order total",
                                                         comment: "Button title for the percentage option in the custom amounts option sheet.")
-
     }
 
     enum Accessibility {

@@ -49,7 +49,7 @@ struct WidgetSetupChangeTrackerTests {
         let previous = WidgetSnapshot(tiles: [Self.storeStatsTile()])
         let current = WidgetSnapshot(tiles: [
             Self.storeStatsTile(),
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last7Days, metrics: [.visitors])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastWeek, metrics: [.visitors])
         ])
         let stub = StubWidgetSnapshotPersistence()
         stub.lastSnapshot = previous
@@ -68,7 +68,7 @@ struct WidgetSetupChangeTrackerTests {
         // Given
         let previous = WidgetSnapshot(tiles: [Self.storeStatsTile()])
         let current = WidgetSnapshot(tiles: [
-            Self.storeStatsTile(family: .systemSmall, dateRange: .last30Days, metrics: [.orders])
+            Self.storeStatsTile(family: .systemSmall, dateRange: .lastMonth, metrics: [.orders])
         ])
         let stub = StubWidgetSnapshotPersistence()
         stub.lastSnapshot = previous

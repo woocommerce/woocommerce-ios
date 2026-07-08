@@ -167,27 +167,15 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables displaying Point Of Sale details in order list and order details
-    ///
-    case pointOfSaleOrdersi1
-
-    /// Enables displaying Point Of Sale as a filter in order list
-    ///
-    case pointOfSaleOrdersi2
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
-
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
 
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
     ///
     case pointOfSaleFTSSearch
 
-    /// Enables a new Bookings tab for CIAB sites
+    /// Legacy Bookings tab flag.
     ///
     case ciabBookings
 
@@ -195,13 +183,19 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCatalogAPI
 
-    /// Enables the refunds functionality within POS
+    /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
-    case pointOfSaleRefundsi1
+    case pointOfSaleRoles
 
     /// Enables adding custom amounts to the cart in Point of Sale
     ///
     case pointOfSaleCustomAmounts
+
+    /// Enables Point of Sale on iPhone (prototype).
+    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
+    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
+    ///
+    case pointOfSalePhonePrototype
 
     /// Enables Scan to Pay as a secondary payment method in Point of Sale.
     /// When enabled, the merchant can have the customer pay by scanning a QR code that
@@ -215,6 +209,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleMarkOrderAsPaid
 
+    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
+    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
+    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
+    ///
+    case pointOfSaleTapToPay
+
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken
@@ -223,16 +223,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case clientSideDashboardBanner
 
-    /// Enables configurable store stats widgets
-    ///
-    case configurableStoreStatsWidgets
-
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables the reschedule booking entry point in booking details
+    /// Legacy booking reschedule entry point flag.
     ///
     case ciabBookingReschedule
 
@@ -240,11 +236,23 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case loggedOutFFPanel
 
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
-
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
+
+    /// Enables smarter (AI-powered) push notifications.
+    ///
+    case smarterNotifications
+
+    /// Enables Star Micronics receipt printer support in Point of Sale.
+    /// Gates the feature's runtime behavior (printer setup and printing from the
+    /// order-complete screen) while it lands across stacked PRs. The StarIO10 SDK is
+    /// linked unconditionally; this flag only controls whether the feature is reachable.
+    /// Off by default until the stack is ready to enable for internal builds.
+    ///
+    case starReceiptPrinterSupport
 }

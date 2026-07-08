@@ -2,7 +2,7 @@ import Foundation
 
 /// Issue types that users can select when starting a support chat from Help & Support.
 ///
-enum SupportIssueType: Int, CaseIterable {
+enum SupportIssueType: String, CaseIterable {
     case loadingOrders
     case loadingProducts
     case loadingAnalytics
@@ -10,18 +10,18 @@ enum SupportIssueType: Int, CaseIterable {
     case other
 
     /// The diagnostic tests to run for this issue type.
-    /// Returns nil for `.other` (no diagnostics needed).
+    /// Returns nil for options that do not run diagnostics.
     ///
     var testsToRun: [SupportDiagnosticsService.Test]? {
         switch self {
         case .loadingOrders:
-            return [.internetConnection, .wpComServers, .site, .siteOrders]
+            return [.internetConnection, .site, .siteOrders]
         case .loadingProducts:
-            return [.internetConnection, .wpComServers, .site, .loadingProducts]
+            return [.internetConnection, .site, .loadingProducts]
         case .loadingAnalytics:
-            return [.internetConnection, .wpComServers, .site, .analyticsSetting]
+            return [.internetConnection, .site, .analyticsSetting]
         case .receivingNotifications:
-            return [.internetConnection, .wpComServers, .site, .notifications]
+            return [.internetConnection, .site, .notifications]
         case .other:
             return nil
         }
@@ -41,7 +41,6 @@ enum SupportIssueType: Int, CaseIterable {
             return Localization.other
         }
     }
-
 }
 
 // MARK: - Localization

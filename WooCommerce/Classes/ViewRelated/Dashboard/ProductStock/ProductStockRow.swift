@@ -74,6 +74,9 @@ struct ProductStockRow: View {
                 }
                 .padding(.horizontal, Layout.padding)
                 .padding(.vertical, paddedRow ? Layout.chatRowVerticalPadding : 0)
+                // Make the whole row width the tap target, not just the rendered text.
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
 
                 if showDivider {
                     Divider()

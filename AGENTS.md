@@ -112,7 +112,7 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
 
 If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
 
-Do not add `-sdk iphonesimulator` to these commands. It overrides the SDK for *every* target in the `WooCommerce` scheme — including the watchOS `WatchWidgetsExtension` — which then compiles the wrong `#if os(watchOS)` branch of `StoreWidgets/StoreWidgetTheme.swift` and fails with `reference to member 'accent' cannot be resolved`. `-destination` already selects the platform per target, so it is sufficient on its own.
+Do not add `-sdk iphonesimulator` to these commands. It overrides the SDK for *every* target in the `WooCommerce` scheme — including the watchOS `WatchWidgetsExtension` — which then compiles the wrong `#if os(watchOS)` branch of `WooCommerce/StoreWidgets/StoreWidgetTheme.swift` and fails with `reference to member 'accent' cannot be resolved`. `-destination` already selects the platform per target, so it is sufficient on its own.
 
 ## Architecture
 

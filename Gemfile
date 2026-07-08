@@ -6,7 +6,7 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 4.1'
 end
 
-gem 'danger-dangermattic', '~> 1.3'
+gem 'danger-dangermattic', '~> 1.4'
 gem 'dotenv'
 gem 'fastlane', '~> 2.237'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 1.0'

@@ -965,47 +965,27 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
-    /// Mirrors the Woo Shipping and legacy WCShip supported store-origin countries for shipping labels.
-    static let shippingLabelSupportedCountries: Set<CountryCode> = [
-        .US, // United States.
-        .AS, // American Samoa.
-        .PR, // Puerto Rico.
-        .VI, // United States Virgin Islands.
-        .GU, // Guam.
-        .MP, // Northern Mariana Islands.
-        .UM, // United States Minor Outlying Islands.
-        .FM, // Federated States of Micronesia.
-        .MH, // Marshall Islands.
-    ]
-
-    static let storeCountrySettingID = "woocommerce_default_country"
-
     /// Fails open when the store country is unknown (not cached yet or unparseable) so a cache miss
     /// can never hide the feature from an eligible store — the plugin eligibility check remains the
     /// source of truth. Only a known-unsupported country skips the shipping label requests.
     var storeCountrySupportsShippingLabels: Bool {
-        guard let countryCode = storeCountryCode else {
+        let countryCode = storeCountryCode
+        guard countryCode != .unknown else {
             DDLogInfo("Store country unknown; deferring shipping label support to the plugin eligibility check.")
             return true
         }
-        guard Self.shippingLabelSupportedCountries.contains(countryCode) else {
+        guard USPSDomesticMailCountries.countryCodes.contains(countryCode) else {
             DDLogInfo("Skipping shipping label requests: store country \(countryCode.rawValue) does not support shipping labels.")
             return false
         }
         return true
     }
 
-    var storeCountryCode: CountryCode? {
-        let predicate = NSPredicate(format: "siteID == %lld AND settingID == %@", order.siteID, Self.storeCountrySettingID)
+    var storeCountryCode: CountryCode {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
         let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [])
         try? resultsController.performFetch()
-
-        guard let countryAndState = resultsController.fetchedObjects.first?.value,
-              let country = countryAndState.components(separatedBy: ":").first?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() else {
-            return nil
-        }
-
-        return CountryCode(rawValue: country)
+        return SiteAddress(siteSettings: resultsController.fetchedObjects).countryCode
     }
 
     @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {

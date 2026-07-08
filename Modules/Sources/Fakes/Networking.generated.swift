@@ -56,6 +56,7 @@ extension Networking.AccountSettings {
         .init(
             userID: .fake(),
             tracksOptOut: .fake(),
+            crashReportingOptOut: .fake(),
             firstName: .fake(),
             lastName: .fake()
         )

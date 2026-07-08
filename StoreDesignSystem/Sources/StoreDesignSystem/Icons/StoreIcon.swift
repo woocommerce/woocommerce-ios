@@ -15,6 +15,11 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("AngleUp-Regular")
         public static let solid = StoreIconImage("AngleUp-Solid")
     }
+    public enum ArrowDown {
+        public static let light = StoreIconImage("ArrowDown-Light")
+        public static let regular = StoreIconImage("ArrowDown-Regular")
+        public static let solid = StoreIconImage("ArrowDown-Solid")
+    }
     public enum ArrowDownArrowUp {
         public static let light = StoreIconImage("ArrowDownArrowUp-Light")
         public static let regular = StoreIconImage("ArrowDownArrowUp-Regular")
@@ -25,6 +30,11 @@ public enum StoreIcon {
     }
     public enum ArrowTrendUp {
         public static let regular = StoreIconImage("ArrowTrendUp-Regular")
+    }
+    public enum ArrowUp {
+        public static let light = StoreIconImage("ArrowUp-Light")
+        public static let regular = StoreIconImage("ArrowUp-Regular")
+        public static let solid = StoreIconImage("ArrowUp-Solid")
     }
     public enum ArrowUpRight {
         public static let regular = StoreIconImage("ArrowUpRight-Regular")
@@ -101,6 +111,11 @@ public enum StoreIcon {
     public enum CaretRight {
         public static let solid = StoreIconImage("CaretRight-Solid")
     }
+    public enum ChartLineUp {
+        public static let light = StoreIconImage("ChartLineUp-Light")
+        public static let regular = StoreIconImage("ChartLineUp-Regular")
+        public static let solid = StoreIconImage("ChartLineUp-Solid")
+    }
     public enum ChartSimple {
         public static let regular = StoreIconImage("ChartSimple-Regular")
         public static let solid = StoreIconImage("ChartSimple-Solid")
@@ -120,6 +135,8 @@ public enum StoreIcon {
         public static let solid = StoreIconImage("CirclePlus-Solid")
     }
     public enum Clock {
+        public static let light = StoreIconImage("Clock-Light")
+        public static let regular = StoreIconImage("Clock-Regular")
         public static let solid = StoreIconImage("Clock-Solid")
     }
     public enum Cloud {
@@ -193,6 +210,11 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("LifeRing-Regular")
         public static let solid = StoreIconImage("LifeRing-Solid")
     }
+    public enum List {
+        public static let light = StoreIconImage("List-Light")
+        public static let regular = StoreIconImage("List-Regular")
+        public static let solid = StoreIconImage("List-Solid")
+    }
     public enum MagnifyingGlass {
         public static let regular = StoreIconImage("MagnifyingGlass-Regular")
         public static let solid = StoreIconImage("MagnifyingGlass-Solid")
@@ -227,6 +249,11 @@ public enum StoreIcon {
         public static let light = StoreIconImage("PointOfSale-Light")
         public static let regular = StoreIconImage("PointOfSale-Regular")
         public static let solid = StoreIconImage("PointOfSale-Solid")
+    }
+    public enum QRCode {
+        public static let light = StoreIconImage("QRCode-Light")
+        public static let regular = StoreIconImage("QRCode-Regular")
+        public static let solid = StoreIconImage("QRCode-Solid")
     }
     public enum Retweet {
         public static let regular = StoreIconImage("Retweet-Regular")

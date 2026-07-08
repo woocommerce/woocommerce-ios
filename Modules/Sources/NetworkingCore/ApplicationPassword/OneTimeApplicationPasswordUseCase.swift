@@ -63,15 +63,15 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw NetworkError.invalidURL
         }
 
-        guard !Constants.successStatusCodes.contains(httpResponse.statusCode) else {
-            return .valid
+        if !Constants.successStatusCodes.contains(httpResponse.statusCode) {
+            let error = networkError(statusCode: httpResponse.statusCode, response: data)
+            if isCredentialInvalid(error) {
+                return .invalid(error)
+            }
+            throw error
         }
 
-        let error = networkError(statusCode: httpResponse.statusCode, response: data)
-        if isCredentialInvalid(error) {
-            return .invalid(error)
-        }
-        throw error
+        return .valid
     }
 
     public func deletePassword(locally: Bool) async throws {

@@ -3,7 +3,9 @@ import UIKit
 
 public extension View {
     /// Applies a design-system text style (font, weight, line height, tracking) that
-    /// scales with Dynamic Type.
+    /// scales with Dynamic Type. Bold Text (Settings → Accessibility) is handled natively:
+    /// SwiftUI resolves system fonts one weight heavier when the setting is on, so no
+    /// manual weight mapping is needed (adding one would double-apply the emboldening).
     func storeTextStyle(_ style: StoreTextStyle) -> some View {
         modifier(StoreTextStyleModifier(style: style))
     }
@@ -11,9 +13,6 @@ public extension View {
 
 private struct StoreTextStyleModifier: ViewModifier {
     private let style: StoreTextStyle
-
-    // Tracks the iOS "Bold Text" accessibility setting (.bold when enabled).
-    @Environment(\.legibilityWeight) private var legibilityWeight
 
     // @ScaledMetric scales each value with Dynamic Type relative to .body (uniform scaling
     // across the scale; switch to per-style references if the design needs distinct curves).
@@ -36,19 +35,8 @@ private struct StoreTextStyleModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .font(.system(size: scaledSize, weight: resolvedWeight))
+            .font(.system(size: scaledSize, weight: style.weight))
             .tracking(scaledTracking)
             .lineSpacing(scaledLineSpacing)
-    }
-
-    /// When the user enables Bold Text (Settings → Accessibility → Bold Text), the design
-    /// shifts weights up: Medium → Semibold, Bold → Heavy (Regular stays Regular). Mirrors
-    /// the "iOS Extra bold" mode of the Figma Font theme. `Font.Weight` is a struct, not an
-    /// enum, so this compares with `==` rather than switching over cases.
-    private var resolvedWeight: Font.Weight {
-        guard legibilityWeight == .bold else { return style.weight }
-        if style.weight == .medium { return .semibold }
-        if style.weight == .bold { return .heavy }
-        return style.weight
     }
 }

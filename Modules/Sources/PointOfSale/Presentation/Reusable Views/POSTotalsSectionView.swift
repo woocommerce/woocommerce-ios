@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 import struct Yosemite.POSOrderRefund
 
 /// A reusable totals breakdown card used by both order details and booking details.
@@ -144,7 +143,7 @@ struct POSTotalsSectionView: View {
                 } label: {
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color(uiColor: .textLink))
+                        .foregroundStyle(Color.posLink)
                         .underline()
                 }
             }

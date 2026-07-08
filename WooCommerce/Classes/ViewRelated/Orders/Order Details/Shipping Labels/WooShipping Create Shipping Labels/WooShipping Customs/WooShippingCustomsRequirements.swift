@@ -34,8 +34,8 @@ struct WooShippingCustomsRequirements {
             return false
         }
 
-        return Constants.uspsDomesticMailCountries.contains(originCountry) &&
-            Constants.uspsDomesticMailCountries.contains(destinationCountry)
+        return USPSDomesticMailCountries.rawCountryCodes.contains(originCountry) &&
+            USPSDomesticMailCountries.rawCountryCodes.contains(destinationCountry)
     }
 }
 
@@ -67,17 +67,5 @@ private extension WooShippingCustomsRequirements {
         /// These US states are a special case because they represent military bases. They're considered "domestic",
         /// but they require a Customs form to ship from/to them.
         static let usMilitaryStates = ["AA", "AE", "AP"]
-
-        static let uspsDomesticMailCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP"  // Northern Mariana Islands
-        ]
     }
 }

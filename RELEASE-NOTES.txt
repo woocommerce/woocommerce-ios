@@ -10,7 +10,6 @@
 - [*] Fix duplicated products reusing the original product's slug, which could make the storefront preview open the wrong product. [https://github.com/woocommerce/woocommerce-ios/pull/17436]
 - [Internal] Fix `push_notification_source` being logged as `wpcom` instead of `woo_driven` for Woo-driven notifications. [https://github.com/woocommerce/woocommerce-ios/pull/17463]
 - [*] Fixed non-subscription products incorrectly showing recurring subscription pricing in the product editor. [https://github.com/woocommerce/woocommerce-ios/pull/17475]
-
 - [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
 
 25.1

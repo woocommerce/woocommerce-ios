@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSCustomAmount
@@ -196,6 +197,7 @@ protocol PointOfSaleAggregateModelProtocol {
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
+            receiptPrinter: receiptPrinter,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
@@ -511,6 +513,39 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
         try await paymentModel.sendReceipt(to: emailAddress)
+    }
+
+    @MainActor
+    func printReceipt() async throws {
+        // Refresh the store's receipt settings so the printout reflects any changes made this
+        // session. On failure the previously loaded values are kept, so printing still proceeds
+        // with the best available information.
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+    }
+
+    /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first
+    /// print has values ready without waiting on a fetch. The print flow refreshes these before
+    /// printing; this preload keeps a populated fallback for when that refresh fails. No-op when
+    /// receipt printing is unavailable; fails gracefully otherwise.
+    @MainActor
+    func preloadReceiptStoreInformation() async {
+        guard receiptPrinter != nil else { return }
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+    }
+
+    /// Best-effort store details for the printed receipt header, drawn from the POS settings store
+    /// view model. Falls back to the store name / address it exposes when receipt-specific settings
+    /// aren't populated.
+    @MainActor
+    private func receiptStoreInformation() -> ReceiptStoreInformation {
+        let storeViewModel = settingsController.storeViewModel
+        let receiptInformation = storeViewModel.receiptInformation
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.receiptStoreName,
+                                       storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
+                                       phone: receiptInformation.phone,
+                                       email: receiptInformation.email,
+                                       refundReturnsPolicy: receiptInformation.refundReturnsPolicy)
     }
 
     @MainActor

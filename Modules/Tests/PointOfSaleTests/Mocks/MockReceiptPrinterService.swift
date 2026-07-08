@@ -5,6 +5,7 @@ import protocol Yosemite.ReceiptPrinterServiceProtocol
 import struct Yosemite.ReceiptContent
 import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.CardPresentTransactionDetails
+import struct Yosemite.Order
 @testable import PointOfSale
 
 final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
@@ -46,6 +47,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private(set) var printedContent: ReceiptContent?
     private(set) var printedStoreInformation: ReceiptStoreInformation?
     private(set) var printedCardDetails: CardPresentTransactionDetails?
+    private(set) var printedOrder: Order?
 
     // MARK: - ReceiptPrinterServiceProtocol
 
@@ -107,6 +109,15 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
         printedContent = content
         printedStoreInformation = storeInformation
         printedCardDetails = cardDetails
+        if let printError {
+            throw printError
+        }
+    }
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {
+        printedOrder = order
+        printedStoreInformation = storeInformation
         if let printError {
             throw printError
         }

@@ -1250,7 +1250,6 @@ public enum WooAnalyticsStat: String {
     // MARK: Connectivity Tool
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
-    case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
     case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App

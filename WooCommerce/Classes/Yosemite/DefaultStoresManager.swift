@@ -551,6 +551,7 @@ private extension DefaultStoresManager {
                 if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+                    UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
                 }
                 onCompletion(.success(()))
             case .failure(let error):

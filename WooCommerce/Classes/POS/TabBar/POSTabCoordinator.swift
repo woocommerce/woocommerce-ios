@@ -155,8 +155,10 @@ final class POSTabCoordinator {
                 return
             }
 
-            // Check actual POS eligibility using the eligibility checker
-            let eligibilityState = await eligibilityChecker.checkEligibility()
+            // Check actual POS eligibility using the eligibility checker. This is the background
+            // re-validation checkpoint (site load and app resume), so it forces a remote check
+            // instead of the local state that POS entry can rely on.
+            let eligibilityState = await eligibilityChecker.checkEligibility(forceRemoteCheck: true)
             let isPOSEligible = eligibilityState == .eligible
             do {
                 try await catalogEligibilityService.updatePOSEligibility(isEligible: isPOSEligible,

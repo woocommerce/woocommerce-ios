@@ -558,7 +558,7 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 

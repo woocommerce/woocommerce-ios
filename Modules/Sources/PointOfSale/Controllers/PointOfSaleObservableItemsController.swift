@@ -175,8 +175,10 @@ private extension PointOfSaleObservableItemsController {
         case .initialSyncFailed(_, let error):
             return .failure(error)
         case .syncFailed(_, let error):
-            // If there's no catalog data, treat subsequent sync failures as critical
-            return dataSource.productItems.isEmpty ? .failure(error) : .success(())
+            // A sync failure is only critical when the loaded catalog has no data to fall back on.
+            // Before products load (e.g. entering offline while the entry sync fails fast), the
+            // local catalog from the previous full sync is about to be shown, so it's not an error.
+            return dataSource.productItems.isEmpty && loadingState.productsLoaded ? .failure(error) : .success(())
         case .syncCompleted:
             return .success(())
         default:

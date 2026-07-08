@@ -532,7 +532,8 @@ final class PointOfSaleObservableItemsControllerTests {
         let testError = NSError(domain: "test.sync", code: 500)
         coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
 
-        // When
+        // When: products are loaded and the catalog turns out to be empty
+        await sut.loadItems(base: .root)
         let containerState = sut.itemsViewState.containerState
 
         // Then
@@ -541,6 +542,26 @@ final class PointOfSaleObservableItemsControllerTests {
             return
         }
         #expect(errorState.errorType == .initialCatalogSyncError)
+    }
+
+    @Test func test_syncFailed_before_products_load_does_not_show_error() async {
+        // Given: a sync failure lands before the local catalog has loaded any products,
+        // e.g. entering POS offline where the entry sync fails fast
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.productItems = []
+        dataSource.isLoadingProducts = false
+        let testError = NSError(domain: "test.sync", code: 500)
+        coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
+
+        // When
+        let containerState = sut.itemsViewState.containerState
+
+        // Then: no error before the local catalog gets a chance to serve items
+        #expect(containerState == .content)
     }
 
     @Test func test_syncFailed_with_existing_catalog_shows_content() async {
@@ -602,7 +623,13 @@ final class PointOfSaleObservableItemsControllerTests {
         coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
         coordinator.performSmartSyncResult = .success(())
 
-        // When: Load items (should trigger reload because catalog is empty)
+        // Given: products have loaded once, so the catalog is known to be empty.
+        // (A sync failure before the catalog has loaded is not treated as critical,
+        // since the local catalog may be about to serve items.)
+        await sut.loadItems(base: .root)
+        #expect(coordinator.performSmartSyncInvocationCount == 0)
+
+        // When: Loading items with a known-empty catalog and a failed sync
         await sut.loadItems(base: .root)
 
         // Then: Should have called performSmartSync

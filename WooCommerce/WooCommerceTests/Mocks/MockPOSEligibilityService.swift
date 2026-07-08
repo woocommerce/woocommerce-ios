@@ -3,6 +3,7 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 
 final class MockPOSEligibilityService: POSEligibilityServiceProtocol {
     var cachedTabVisibility: [Int64: Bool] = [:]
+    var cachedLastKnownPOSEligibility: [Int64: Bool] = [:]
 
     func loadCachedPOSTabVisibility(siteID: Int64) -> Bool? {
         cachedTabVisibility[siteID]
@@ -10,5 +11,13 @@ final class MockPOSEligibilityService: POSEligibilityServiceProtocol {
 
     func cachePOSTabVisibility(siteID: Int64, isVisible: Bool) {
         cachedTabVisibility[siteID] = isVisible
+    }
+
+    func loadLastKnownPOSEligibility(siteID: Int64) -> Bool? {
+        cachedLastKnownPOSEligibility[siteID]
+    }
+
+    func cacheLastKnownPOSEligibility(siteID: Int64, isEligible: Bool) {
+        cachedLastKnownPOSEligibility[siteID] = isEligible
     }
 }

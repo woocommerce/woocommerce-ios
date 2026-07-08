@@ -24,7 +24,7 @@ begin
     report_path: report_path,
     baseline_report_path: baseline_report_path
   )
-rescue StandardError => e
+rescue ScriptError, StandardError => e
   # The guard is advisory-only: degrade malformed reports or unexpected
   # errors to "no comment" (the calling step then deletes any stale comment)
   # instead of failing the CI step.

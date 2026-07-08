@@ -72,7 +72,9 @@ if ! download_report "$BASELINE_REPORT_PATH"; then
   exit 0
 fi
 
-comment_body="$(ruby "$COMMANDS_DIR/compare-build-warnings.rb" "$REPORT_PATH" "$BASELINE_REPORT_PATH")"
+# Non-fatal: if the comparison crashes outright (interpreter or load failure),
+# fall through to the delete-stale-comment path instead of exiting early.
+comment_body="$(ruby "$COMMANDS_DIR/compare-build-warnings.rb" "$REPORT_PATH" "$BASELINE_REPORT_PATH")" || comment_body=""
 
 if [ -z "$comment_body" ]; then
   delete_existing_comment

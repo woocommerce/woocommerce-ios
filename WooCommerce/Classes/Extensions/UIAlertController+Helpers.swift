@@ -20,11 +20,7 @@ extension UIAlertController {
             onCancel?()
         }
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
+        actionSheet.centerActionSheet(in: viewController.view)
 
         viewController.present(actionSheet, animated: true)
     }
@@ -49,11 +45,7 @@ extension UIAlertController {
             onCancel?()
         }
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
+        actionSheet.centerActionSheet(in: viewController.view)
 
         viewController.present(actionSheet, animated: true)
     }
@@ -89,13 +81,6 @@ extension UIAlertController {
         viewController.present(alert, animated: true)
     }
 
-    override open func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        if let window = view.window {
-            popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
-        }
-    }
-
     static func presentExpiredWPComPlanAlert(from viewController: UIViewController,
                                              onDismiss: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: ExpiredWPComPlanAlert.title,
@@ -118,6 +103,34 @@ extension UIAlertController {
         alertController.addAction(action)
         alertController.addCancelActionWithTitle(ActionSheetStrings.cancel)
         viewController.present(alertController, animated: true)
+    }
+
+    /// Centers this action sheet's popover in `view` and keeps it centered across layout changes (e.g. rotation).
+    ///
+    /// A popover anchors to a fixed `sourceRect` captured at presentation time; when the source view's bounds
+    /// change while the sheet is presented, that rect is stale and the sheet drifts off-center. The reposition
+    /// delegate re-anchors to the view's current bounds whenever UIKit repositions the popover.
+    func centerActionSheet(in view: UIView) {
+        guard let popoverController = popoverPresentationController else {
+            return
+        }
+        popoverController.sourceView = view
+        popoverController.sourceRect = view.bounds
+        popoverController.permittedArrowDirections = []
+        popoverController.delegate = CenteredPopoverRepositioner.shared
+    }
+}
+
+/// Re-centers a centered action sheet popover when UIKit repositions it (e.g. after rotation) by re-anchoring
+/// to the source view's current bounds. `UIPopoverPresentationController` holds its delegate weakly, so the
+/// delegate must be retained elsewhere; this stateless shared instance lives for the app's lifetime.
+private final class CenteredPopoverRepositioner: NSObject, UIPopoverPresentationControllerDelegate {
+    static let shared = CenteredPopoverRepositioner()
+
+    func popoverPresentationController(_ popoverPresentationController: UIPopoverPresentationController,
+                                       willRepositionPopoverTo rect: UnsafeMutablePointer<CGRect>,
+                                       in view: AutoreleasingUnsafeMutablePointer<UIView>) {
+        rect.pointee = view.pointee.bounds
     }
 }
 

@@ -380,7 +380,6 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-        viewModel.onPullToRefresh()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }

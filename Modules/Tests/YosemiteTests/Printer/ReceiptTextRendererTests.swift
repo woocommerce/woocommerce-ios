@@ -237,6 +237,26 @@ struct ReceiptTextRendererTests {
             #expect(line.count <= ReceiptTextRenderer.Constants.defaultLineWidth)
         }
     }
+
+    @Test func test_makeReceiptText_when_store_address_is_multiline_then_each_line_is_centered_independently() {
+        // Given
+        let renderer = ReceiptTextRenderer(lineWidth: 20)
+        let storeInformation = ReceiptStoreInformation(storeName: nil,
+                                                       storeAddress: "AB\nCDEFGH",
+                                                       phone: nil,
+                                                       email: nil,
+                                                       refundReturnsPolicy: nil)
+        let content = makeContent(lineItems: [], cartTotals: [])
+
+        // When
+        let receipt = renderer.makeReceiptText(content: content, storeInformation: storeInformation, cardDetails: nil)
+
+        // Then — each address line is centered on its own, not laid out across the embedded newline
+        // (the second line previously printed flush-left).
+        let lines = receipt.components(separatedBy: "\n")
+        #expect(lines.contains(String(repeating: " ", count: 9) + "AB"))
+        #expect(lines.contains(String(repeating: " ", count: 7) + "CDEFGH"))
+    }
 }
 
 private extension ReceiptTextRendererTests {

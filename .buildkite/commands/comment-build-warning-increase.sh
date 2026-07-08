@@ -16,12 +16,16 @@ is_pull_request() {
   [[ "${BUILDKITE_PULL_REQUEST:-false}" =~ ^[0-9]+$ ]]
 }
 
+# The reports are dual-uploaded (toolkit S3 store and Buildkite artifacts),
+# so a failure of one download method falls back to the other.
 download_artifact_path() {
   local artifact_path=$1
 
-  if command -v download_artifact >/dev/null 2>&1; then
-    download_artifact "$artifact_path"
-  elif command -v buildkite-agent >/dev/null 2>&1; then
+  if command -v download_artifact >/dev/null 2>&1 && download_artifact "$artifact_path"; then
+    return 0
+  fi
+
+  if command -v buildkite-agent >/dev/null 2>&1; then
     buildkite-agent artifact download "$artifact_path" .
   else
     return 1

@@ -16,8 +16,6 @@ steps:
     key: build
     command: .buildkite/commands/build-for-testing.sh
     plugins: [$CI_TOOLKIT]
-    artifact_paths:
-      - fastlane/logs/*
     notify:
       - github_commit_status:
           context: Build

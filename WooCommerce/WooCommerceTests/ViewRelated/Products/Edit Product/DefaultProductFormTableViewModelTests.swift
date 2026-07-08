@@ -333,7 +333,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertFalse(hasOneTimeShippingEnabledLabel)
     }
 
-    // MARK: Price row subscription gating (WOOMOB-3432)
+    // MARK: Price row subscription gating
 
     func test_price_row_shows_recurring_price_for_subscription_product() throws {
         // Given

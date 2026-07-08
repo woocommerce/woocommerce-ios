@@ -408,9 +408,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
 
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
-        // The `chargeID` marks the stored order as containing metadata-derived values, making it
-        // eligible for the date-modified shortcut.
-        let order = sampleOrder().copy(dateModified: dateModified, chargeID: "ch_123")
+        let order = sampleOrder().copy(dateModified: dateModified).withMetadataDerivedValues()
         storageManager.insertSampleOrder(readOnlyOrder: order)
 
         // When
@@ -436,9 +434,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        // The `chargeID` marks the stored order as containing metadata-derived values, making it
-        // eligible for the date-modified shortcut.
-        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated().copy(chargeID: "ch_123"))
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated().withMetadataDerivedValues())
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
@@ -2070,5 +2066,15 @@ private extension OrderStoreTests {
         default:
             return nil
         }
+    }
+}
+
+private extension Networking.Order {
+    /// Returns a copy with a `chargeID`, marking the order as containing metadata-derived values so its
+    /// stored copy is eligible for the date-modified shortcut in `retrieveOrder`.
+    /// `MockStorageManager.insertSampleOrder` persists only scalar attributes (no relationships),
+    /// so the scalar `chargeID` is used as the marker.
+    func withMetadataDerivedValues() -> Networking.Order {
+        copy(chargeID: "ch_123")
     }
 }

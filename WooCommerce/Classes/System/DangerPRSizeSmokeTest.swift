@@ -454,4 +454,3 @@
 enum DangerPRSizeSmokeTest {
     static let countedLines = 3
 }
-

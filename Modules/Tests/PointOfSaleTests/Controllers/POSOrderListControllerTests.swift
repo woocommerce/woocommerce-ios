@@ -1599,6 +1599,97 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func test_selectOrder_when_reselecting_after_failed_refund_load_then_retries_loading() async throws {
+        // Given — a refund details fetch that failed
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsErrorToThrow = NSError(domain: "test", code: 1)
+        await sut.loadOrderRefunds()
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the order is selected again after the failure
+        refundsService.loadOrderRefundsErrorToThrow = nil
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        sut.selectOrder(order)
+
+        // Then — the failed state is cleared so the loading skeleton shows and a retry succeeds
+        #expect(sut.isLoadingOrderRefunds)
+        await sut.loadOrderRefunds()
+        #expect(!sut.isLoadingOrderRefunds)
+        #expect(sut.selectedOrder?.refunds.flatMap(\.items).count == 1)
+    }
+
+    @MainActor
+    @Test func test_updateOrder_when_refund_details_cached_then_drops_cache_and_shows_loading() async throws {
+        // Given — a selected refunded order with loaded refund details
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        await sut.loadOrderRefunds()
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the order is refetched with an extra refund whose details are summary-only
+        let refreshedOrder = order.copy(refunds: .some([
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00"),
+            POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")
+        ]))
+        orderListService.loadOrderResult = refreshedOrder
+        try await sut.updateOrder(orderID: order.id)
+
+        // Then — the cached details are dropped and the details section is loading again
+        #expect(sut.isLoadingOrderRefunds)
+        guard case .loading = sut.orderDetailsItemsState else {
+            Issue.record("Expected loading item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+    }
+
+    @MainActor
+    @Test func test_selectOrder_when_payload_refunds_carry_items_then_caches_them_for_summary_reselection() async throws {
+        // Given — an order whose payload refunds already include item details
+        let orderWithItems = makeOrder(refunds: [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ])
+        sut.selectOrder(orderWithItems)
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the same order is reselected from summary data, as a list refresh would provide
+        let summaryOrder = orderWithItems.copy(refunds: .some([
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")
+        ]))
+        sut.selectOrder(summaryOrder)
+
+        // Then — the cached details are reapplied without re-showing the loading skeleton
+        #expect(!sut.isLoadingOrderRefunds)
+        #expect(sut.selectedOrder?.refunds.flatMap(\.items).count == 1)
+    }
+
+    @MainActor
     @Test func test_selectOrder_then_new_order_has_no_refunded_items() async throws {
         // Given: Load some refunded products first
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])

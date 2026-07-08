@@ -345,6 +345,11 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             // Allow the skeleton and a retry when returning to an order whose refund fetch failed.
             refundDetailsByOrderID[order.id] = nil
         }
+        if let order, refundDetailsByOrderID[order.id] == nil, order.refunds.contains(where: { $0.items.isNotEmpty }) {
+            // Persist refund details that arrived pre-loaded in the payload, so list refreshes,
+            // which rebuild orders from summary data, don't re-show the skeleton and re-fetch.
+            refundDetailsByOrderID[order.id] = .loaded(order.refunds)
+        }
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false

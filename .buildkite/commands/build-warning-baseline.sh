@@ -1,6 +1,6 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
 
-set -o pipefail
+set -euo pipefail
 
 BASELINE_REPORT_PATH="${1:-base-build-warnings.json}"
 BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-trunk}"

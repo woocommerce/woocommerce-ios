@@ -1,6 +1,6 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
 
-set -o pipefail
+set -euo pipefail
 
 # Downloads the current and baseline build warning reports and posts (or
 # deletes) the PR comment. The comparison and comment rendering happen in

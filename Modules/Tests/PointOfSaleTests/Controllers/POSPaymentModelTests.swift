@@ -1171,7 +1171,7 @@ struct POSPaymentModelTests {
 
     @Test("reader disconnection observer does not restart card payment during cash flow")
     @MainActor
-    func test_observe_reader_reconnection_when_cash_active_then_does_not_start_card_payment_on_reconnect() async {
+    func test_observeReaderReconnection_when_cash_payment_active_then_does_not_start_card_payment_on_reconnect() async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
@@ -1196,7 +1196,7 @@ struct POSPaymentModelTests {
 
     @Test("reader disconnection observer does not restart card payment during scan-to-pay flow")
     @MainActor
-    func test_observe_reader_reconnection_when_scan_to_pay_active_then_does_not_start_card_payment_on_reconnect() async {
+    func test_observeReaderReconnection_when_scan_to_pay_active_then_does_not_start_card_payment_on_reconnect() async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
@@ -1223,7 +1223,7 @@ struct POSPaymentModelTests {
 
     @Test("reader disconnection observer does not restart card payment during mark-as-paid flow")
     @MainActor
-    func test_observe_reader_reconnection_when_mark_as_paid_active_then_does_not_start_card_payment_on_reconnect() async {
+    func test_observeReaderReconnection_when_mark_as_paid_active_then_does_not_start_card_payment_on_reconnect() async {
         // Given
         let service = MockCardPresentPaymentService()
         service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)

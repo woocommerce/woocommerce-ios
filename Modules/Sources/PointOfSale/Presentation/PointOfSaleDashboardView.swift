@@ -16,6 +16,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
+    @State private var overrideHandler = POSManagerOverrideHandler()
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var navigationPath: [POSNavigationDestination] = []
@@ -52,7 +53,7 @@ struct PointOfSaleDashboardView: View {
     // MARK: View State
 
     enum ViewState: Equatable {
-        case loading(isCatalogSyncing: Bool = false)
+        case loading(catalogSyncState: POSCatalogSyncViewState? = nil)
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
         case content
@@ -69,9 +70,9 @@ struct PointOfSaleDashboardView: View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
             switch viewState {
-            case .loading(let isCatalogSyncing):
+            case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
-                    isCatalogSyncing: isCatalogSyncing,
+                    catalogSyncState: catalogSyncState,
                     onExit: { dismiss() }
                 )
                     .transition(.opacity)
@@ -107,10 +108,10 @@ struct PointOfSaleDashboardView: View {
                     .accessibilitySortPriority(2)
             }
 
-            POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
+            POSFloatingControlView(onExitSelected: requestExitPermission,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings,
+                                   onSettingsSelected: requestSettingsPermission,
                                    onOrdersSelected: presentOrders)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
@@ -147,6 +148,7 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
+        .posManagerOverrideModal(handler: overrideHandler)
         .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
@@ -253,6 +255,21 @@ struct PointOfSaleDashboardView: View {
                 navigationRouter.pushCash(orderTotal: totals.orderTotal)
             }
         }
+        // Mirror tablet navigation so secondary payment state changes push their focused screens.
+        .onChange(of: posModel.paymentState.scanToPay) { oldValue, newValue in
+            if newValue.isShowingQRCode, !oldValue.isShowingQRCode,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushScanToPay(orderTotal: totals.orderTotal)
+            }
+        }
+        .onChange(of: posModel.paymentState.markAsPaid) { oldValue, newValue in
+            if newValue == .confirming, oldValue == .idle,
+               case .loaded(let totals) = posModel.orderState {
+                navigationRouter.pushMarkAsPaid(orderTotal: totals.orderTotal)
+            } else if newValue == .paymentSuccess {
+                navigationRouter.popToRoot()
+            }
+        }
         .onChange(of: posModel.orderStage) { _, newStage in
             // Dismiss the cart sheet automatically when checkout starts so the user lands
             // on the totals view rather than seeing cart fading away.
@@ -319,7 +336,8 @@ struct PointOfSaleDashboardView: View {
                     title: Localization.phoneCheckoutTitle,
                     backButtonConfiguration: .init(
                         state: canExitFinalizingOnPhone ? .enabled : .disabled,
-                        action: { posModel.addMoreToCart() }
+                        action: { posModel.addMoreToCart() },
+                        accessibilityIdentifier: "pos-cart-back-button"
                     )
                 )
             }
@@ -346,23 +364,23 @@ struct PointOfSaleDashboardView: View {
             }
             Button {
                 analytics.track(.pointOfSaleExitMenuItemTapped)
-                showExitPOSModal = true
+                requestExitPermission()
             } label: {
                 Label(Localization.phoneMenuExit, systemImage: "rectangle.portrait.and.arrow.forward")
             }
+            .accessibilityIdentifier("pos-exit-menu-item")
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
+                requestSettingsPermission()
             } label: {
                 Label(Localization.phoneMenuSettings, systemImage: "gearshape")
             }
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-                Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    presentOrders()
-                } label: {
-                    Label(Localization.phoneMenuOrders, systemImage: "text.document")
-                }
+            .accessibilityIdentifier("pos-settings-menu-item")
+            Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                presentOrders()
+            } label: {
+                Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
         } label: {
             Circle()
@@ -377,7 +395,7 @@ struct PointOfSaleDashboardView: View {
                 .fixedSize()
         }
         .accessibilityLabel(Localization.phoneMenuAccessibilityLabel)
-        .accessibilityIdentifier("pos-phone-overflow-menu")
+        .accessibilityIdentifier("pos-compact-overflow-menu")
     }
 
     private var phoneOverflowMenuConstrainedSize: CGFloat {
@@ -416,7 +434,7 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         }
-        .accessibilityIdentifier("pos-phone-cart-button")
+        .accessibilityIdentifier("pos-compact-cart-button")
     }
 
     private var phoneCartSheetView: some View {
@@ -584,6 +602,30 @@ private extension PointOfSaleDashboardView {
         posModel.cancelInFlightCheckout()
         showOrders = true
     }
+
+    /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
+    func requestSettingsPermission() {
+        overrideHandler.gate(.viewPOSSettings, reason: Localization.settingsOverrideDescription) { _ in
+            showSettings = true
+        }
+    }
+
+    /// Presents the exit confirmation, gated on `.exitPOS` via manager override.
+    func requestExitPermission() {
+        overrideHandler.gate(.exitPOS, reason: Localization.exitOverrideDescription) { viaOverride in
+            guard viaOverride else {
+                showExitPOSModal = true
+                return
+            }
+            // The override modal and the exit confirmation share the single POS modal manager, so
+            // present the confirmation only after the override modal has finished dismissing —
+            // presenting both together collides on the shared manager and drops the operator back into
+            // POS. Mirrors the cart-sheet → barcode-cover handoff in `phoneCartSheetView`.
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.exitOverrideHandoffDelay) {
+                showExitPOSModal = true
+            }
+        }
+    }
 }
 
 struct FloatingControlAreaSizeKey: EnvironmentKey {
@@ -606,6 +648,9 @@ private extension PointOfSaleDashboardView {
         static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
+        // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
+        // before the exit confirmation presents on the shared modal manager.
+        static let exitOverrideHandoffDelay: TimeInterval = 0.3
         static let supportTag = "origin:point-of-sale"
     }
 
@@ -634,6 +679,18 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.settings",
             value: "Settings",
             comment: "Phone-only overflow menu item to open Point of Sale settings."
+        )
+        static let settingsOverrideDescription = NSLocalizedString(
+            "pointOfSaleDashboard.settings.overrideReason",
+            value: "Opening settings requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "view-settings permission tries to open Point of Sale settings."
+        )
+        static let exitOverrideDescription = NSLocalizedString(
+            "pointOfSaleDashboard.exit.overrideReason",
+            value: "Exiting Point of Sale requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "exit permission tries to leave Point of Sale."
         )
         static let phoneMenuOrders = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.orders",

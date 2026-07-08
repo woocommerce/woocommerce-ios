@@ -99,15 +99,15 @@ extension ProductsTabProductTableViewCell {
             /// Make sure `productImageView` is laid out and gained bounds
             productImageView.layoutIfNeeded()
 
-            productImageView.image = .productsTabProductCellPlaceholderImage
+            productImageView.image = ProductThumbnailStyle.placeholderImage
             if let productURLString = viewModel.imageUrl {
                 imageService.downloadAndCacheImageForImageView(productImageView,
                                                                with: productURLString,
-                                                               placeholder: .productsTabProductCellPlaceholderImage,
+                                                               placeholder: ProductThumbnailStyle.placeholderImage,
                                                                progressBlock: nil) { [weak self] image, error in
                                                                 let success = image != nil && error == nil
                                                                 if success {
-                                                                    self?.productImageView.contentMode = .scaleAspectFill
+                                                                    self?.productImageView.showProductThumbnailImage()
                                                                 }
                 }
             }
@@ -151,8 +151,10 @@ private extension ProductsTabProductTableViewCell {
                                                                          bottom: Constants.stackViewInset,
                                                                          right: Constants.stackViewInset))
 
-        // Not initially enabled, saved for possible compact icon case
-        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+        // Not initially enabled, saved for the draggable (compact icon) case.
+        // Uses a fixed size rather than matching the row height so that taller rows (e.g. wrapping
+        // product names) don't widen the square icon and push the title to the right.
+        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalToConstant: Constants.draggableIconLength)
 
         // Assigning a minimum default height to the labels might be helpful (e.g for the ghosting placeholder animation)
         nameLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.nameLabelDefaultMinimumHeight).isActive = true
@@ -191,13 +193,7 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureProductImageView() {
-
-        productImageView.backgroundColor = Colors.imageBackgroundColor
-        productImageView.tintColor = Colors.imagePlaceholderTintColor
-        productImageView.layer.cornerRadius = Constants.cornerRadius
-        productImageView.layer.borderWidth = Constants.borderWidth
-        productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
-        productImageView.clipsToBounds = true
+        productImageView.applyProductThumbnailStyle()
 
         // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
         let widthConstraint = productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1)
@@ -269,7 +265,7 @@ private extension ProductsTabProductTableViewCell {
             UITraitAccessibilityContrast.self
         ]
         registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
-            self.productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
+            self.productImageView.refreshProductThumbnailBorderColor()
         }
     }
 }
@@ -278,17 +274,11 @@ private extension ProductsTabProductTableViewCell {
 ///
 private extension ProductsTabProductTableViewCell {
     enum Constants {
-        static let cornerRadius = CGFloat(2.0)
-        static let borderWidth = CGFloat(0.5)
         static let stackViewInset = CGFloat(16)
+        /// Fixed side length for the square drag-handle icon shown in draggable cells.
+        static let draggableIconLength = CGFloat(40)
         static let nameLabelDefaultMinimumHeight = CGFloat(20)
         static let detailsLabelDefaultMinimumHeight = CGFloat(16)
-    }
-
-    enum Colors {
-        static let imageBorderColor = UIColor.border
-        static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
-        static let imageBackgroundColor = UIColor.listForeground(modal: false)
     }
 }
 

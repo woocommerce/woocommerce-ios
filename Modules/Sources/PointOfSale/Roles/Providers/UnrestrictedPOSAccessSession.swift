@@ -1,3 +1,5 @@
+import struct Yosemite.POSStaffMember
+
 @MainActor
 final class UnrestrictedPOSAccessSession: POSAccessSession {
     nonisolated init() {}
@@ -12,4 +14,6 @@ final class UnrestrictedPOSAccessSession: POSAccessSession {
     func lock() {}
     func checkLockoutState() throws(POSAuthError) {}
     func refreshPINStatus() async {}
+    func refreshPINStatus(using staff: [POSStaffMember]) async {}
+    func clearStaffCache() {}
 }

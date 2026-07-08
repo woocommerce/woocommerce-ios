@@ -12,8 +12,8 @@ import class Networking.ProductsRemote
 import class Networking.UserAgent
 import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
-import protocol Experiments.FeatureFlagService
 
+@MainActor
 final class ConnectivityToolViewModel {
 
     /// Cards to be rendered by the view.
@@ -41,19 +41,6 @@ final class ConnectivityToolViewModel {
     ///
     @Published private(set) var showChatButton = false
 
-    /// Whether the contact support button should be shown.
-    /// True when bot chat is NOT supported and all tests have completed.
-    ///
-    @Published private(set) var showContactSupportButton = false
-
-    /// Whether the AI support chat is supported.
-    /// Only available when the feature flag is enabled and user is authenticated with WPCom
-    /// (not application password), since the chatbot requires WPCom authentication.
-    ///
-    var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-    }
-
     /// Remote used to check the connection to WPCom servers.
     ///
     private let announcementsRemote: AnnouncementsRemote
@@ -77,10 +64,6 @@ final class ConnectivityToolViewModel {
     /// Analytics tracker.
     ///
     private let analytics: Analytics
-
-    /// Feature flag service for checking AI support chat availability.
-    ///
-    private let featureFlagService: FeatureFlagService
 
     /// Adapter for checking notification authorization status.
     ///
@@ -121,7 +104,6 @@ final class ConnectivityToolViewModel {
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          network: Network? = nil) {
@@ -134,7 +116,6 @@ final class ConnectivityToolViewModel {
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
         self.siteURL = session.defaultSite?.url
@@ -146,8 +127,7 @@ final class ConnectivityToolViewModel {
     }
 
     private func updateShowChatButton() {
-        showChatButton = allTestsCompleted && isBotChatSupported
-        showContactSupportButton = allTestsCompleted && !isBotChatSupported
+        showChatButton = allTestsCompleted
     }
 
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
@@ -216,15 +196,15 @@ final class ConnectivityToolViewModel {
     ///
     @MainActor
     func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
-        var context: [String: Any] = [:]
+        var context: RequestParameterDictionary = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshootingResults"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["selectedSiteID"] = site.siteID
-            context["site_url"] = site.url
+            context["selectedSiteID"] = .int64(site.siteID)
+            context["site_url"] = .string(site.url)
         }
 
         return SupportChatViewModel(

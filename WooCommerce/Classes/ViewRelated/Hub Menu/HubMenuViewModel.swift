@@ -85,8 +85,6 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
-
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -138,13 +136,12 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
              BookingsTabEligibilityChecker(site: site)
          },
          // Injected for mocking in tests.
-         isPad: Bool = UIDevice.isPad(),
+         isPad: Bool? = nil,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -156,10 +153,9 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.posEligibilityService = posEligibilityService
         self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
-        self.isPad = isPad
+        self.isPad = isPad ?? UIDevice.isPad()
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.analytics = analytics
         observeSiteForUIUpdates()
@@ -225,14 +221,6 @@ final class HubMenuViewModel: ObservableObject {
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
         analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
-    }
-
-    /// Whether the current site is a CIAB (Commerce in a Box) site.
-    /// On CIAB sites, WC Admin opens in an SFSafariViewController (Safari sheet) instead of the
-    /// in-app webview, because the in-app webview hides the Admin navigation sidebar which is
-    /// needed for full WC Admin navigation.
-    func isCIABSite() -> Bool {
-        siteCIABEligibilityChecker.isCurrentSiteCIAB
     }
 
     func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {

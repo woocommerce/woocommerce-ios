@@ -55,6 +55,22 @@ class DotcomValidatorTests: XCTestCase {
         }
     }
 
+    /// Verifies that the DotcomValidator successfully extracts the `unknownBlog` Dotcom Error contained within a `Data` instance.
+    ///
+    func testUnknownBlogErrorIsProperlyExtractedFromData() {
+        guard let payloadAsData = Loader.contentsOf("unknown_blog_error", extension: "json")
+            else {
+            return XCTFail()
+        }
+
+        XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in
+            guard let dotcomError = error as? DotcomError else {
+                return XCTFail()
+            }
+            XCTAssertEqual(dotcomError, .unknownBlog())
+        }
+    }
+
     /// Verifies that the DotcomValidator successfully extracts the `statsModuleDisabled` Dotcom Error contained within a `Data` instance.
     ///
     func testStatsModuleDisabledErrorIsProperlyExtractedFromData() {

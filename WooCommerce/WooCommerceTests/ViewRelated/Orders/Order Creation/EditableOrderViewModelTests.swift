@@ -22,10 +22,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+            readOnlySite: Site.fake().copy(siteID: sampleSiteID)
         )
         let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,
@@ -3082,6 +3079,53 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(secondNewBundleOrderItem.quantity, 1)
     }
 
+    func test_when_selecting_bundle_with_recalculate_sync_then_bundle_configuration_is_preserved() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Product of the bundled item.
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
+        let bundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 5, isOptionalAndSelected: false)
+        ]
+
+        // When selecting and configuring a bundle product, then tapping recalculate
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: bundleConfiguration,
+                                            viewModel: viewModel)
+
+        XCTAssertTrue(viewModel.syncRequired)
+
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(order))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.onRecalculateTapped()
+        }
+
+        // Then order to be updated remotely contains the bundle product configuration
+        XCTAssertEqual(orderToUpdate.items.count, 1)
+
+        let newBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(newBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(newBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
+        XCTAssertEqual(newBundleOrderItem.quantity, 1)
+    }
+
     // No existing items —> select bundle A and configure in product selector -> close product selector
     // —> select bundle A and configure in product selector
     // —> order items to update remotely: bundle A with the latest bundle configuration
@@ -3465,30 +3509,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(mockScheduler.lastMerchantType)
     }
 
-    // MARK: - CIAB Order Status Editing
+    // MARK: - Order Status Editing
 
-    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+    func test_isOrderStatusEditingEnabled_returns_true() {
         // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
+                                               storageManager: storageManager)
 
         // Then
         XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
-    }
-
-    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
-        // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
-
-        // Then
-        XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
     }
 }
 

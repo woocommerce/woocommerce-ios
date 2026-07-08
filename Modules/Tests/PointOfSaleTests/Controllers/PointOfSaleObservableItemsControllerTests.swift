@@ -43,11 +43,11 @@ final class PointOfSaleObservableItemsControllerTests {
         let sut = PointOfSaleObservableItemsController(siteID: 123, dataSource: dataSource, catalogSyncCoordinator: coordinator)
 
         // Then
-        guard case .loading(let isCatalogSyncing) = sut.itemsViewState.containerState else {
+        guard case .loading(let catalogSyncState) = sut.itemsViewState.containerState else {
             Issue.record("Expected loading state")
             return
         }
-        #expect(isCatalogSyncing == false)
+        #expect(catalogSyncState == nil)
         #expect(sut.itemsViewState.itemsStack.root == .initial)
         #expect(sut.itemsViewState.itemsStack.itemStates.isEmpty)
     }
@@ -453,7 +453,7 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(coordinator.performIncrementalSyncInvocationCount == 5)
     }
 
-    @Test func test_container_state_includes_catalog_syncing_flag_when_initial_sync_in_progress() async {
+    @Test func test_container_state_includes_catalog_sync_state_when_initial_sync_in_progress() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -467,11 +467,32 @@ final class PointOfSaleObservableItemsControllerTests {
         let containerState = sut.itemsViewState.containerState
 
         // Then
-        guard case .loading(let isCatalogSyncing) = containerState else {
+        guard case .loading(let catalogSyncState) = containerState else {
             Issue.record("Expected loading state")
             return
         }
-        #expect(isCatalogSyncing == true)
+        #expect(catalogSyncState == POSCatalogSyncViewState())
+    }
+
+    @Test func test_container_state_includes_catalog_sync_progress_when_initial_sync_progress_is_available() async {
+        // Given
+        let dataSource = MockPOSObservableDataSource()
+        let coordinator = MockPOSCatalogSyncCoordinator()
+        let siteID: Int64 = 123
+        let sut = PointOfSaleObservableItemsController(siteID: siteID, dataSource: dataSource, catalogSyncCoordinator: coordinator)
+
+        dataSource.isLoadingProducts = true
+        coordinator.fullSyncStateModel.state[siteID] = .initialSyncProgress(siteID: siteID, progress: .itemCount(processed: 131, total: 4512))
+
+        // When
+        let containerState = sut.itemsViewState.containerState
+
+        // Then
+        guard case .loading(let catalogSyncState) = containerState else {
+            Issue.record("Expected loading state")
+            return
+        }
+        #expect(catalogSyncState == POSCatalogSyncViewState(progress: .itemCount(processed: 131, total: 4512)))
     }
 
     // MARK: - Initial Sync Error Handling Tests

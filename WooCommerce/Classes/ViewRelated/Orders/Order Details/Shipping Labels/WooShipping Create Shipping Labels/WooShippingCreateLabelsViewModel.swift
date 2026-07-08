@@ -114,8 +114,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         }
     }
 
-    /// This property can be set to display a notice with the provided label about the origin address status.
-    @Published var originAddressUnverifiedNoticeLabel: String?
+    /// This property can be set to display a notice with the provided label about the origin address status
+    /// (e.g. a missing phone number, missing email, or an unverified address).
+    @Published var originAddressNoticeLabel: String?
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
@@ -256,10 +257,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         )
     }()
 
-    /// Provides checks for CIAB
-    /// Used to determine "Split Shipments" feature availability
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
-
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          preselection: WooShippingCreateLabelSelection? = nil,
@@ -268,7 +265,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
@@ -285,7 +281,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.shippingSettingsService = shippingSettingsService
         self.weightUnit = shippingSettingsService.weightUnit ?? ""
         self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
@@ -567,20 +562,14 @@ extension WooShippingCreateLabelsViewModel {
         return itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
     }
 
-    private var splitShipmentsFeatureAvailable: Bool {
-        return siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.splitShipments)
-    }
-
     /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.
     var editSplitShipmentsOptionVisible: Bool {
-        splitShipmentsFeatureAvailable &&
         hasMultipleProducts &&
         hasUnfulfilledShipments
     }
 
     /// Determines if the "Split Shipments" row is visible above the "Products" section
     var splitShipmentsRowVisible: Bool {
-        splitShipmentsFeatureAvailable &&
         hasMultipleProducts &&
         shipments.count == 1 &&
         canViewLabel == false
@@ -718,8 +707,21 @@ private extension WooShippingCreateLabelsViewModel {
             .sink { [weak self] selectedOriginAddress in
                 guard let self else { return }
                 originAddress = selectedOriginAddress?.formattedPostalAddress ?? ""
-                originAddressUnverifiedNoticeLabel = {
-                    if let selectedOriginAddress, !selectedOriginAddress.isVerified {
+                originAddressNoticeLabel = {
+                    guard let selectedOriginAddress else {
+                        return nil
+                    }
+                    // A missing phone number or email is the only origin input that reliably fails rate loading,
+                    // so surface the specific missing field before falling back to the generic unverified notice.
+                    // Use the digit-based check (matching the destination phone notice) so whitespace/punctuation-only
+                    // phones, which the backend also rejects as empty, are treated as missing.
+                    if selectedOriginAddress.toWooShippingAddress().phoneDigits.isEmpty {
+                        return Localization.OriginAddress.missingPhone
+                    }
+                    if selectedOriginAddress.email.isEmpty {
+                        return Localization.OriginAddress.missingEmail
+                    }
+                    if !selectedOriginAddress.isVerified {
                         return Localization.OriginAddressStatus.unverified
                     }
                     return nil
@@ -929,6 +931,19 @@ private extension WooShippingCreateLabelsViewModel {
                 "wooShipping.createLabels.addressVerification.originUnverified",
                 value: "Origin address unverified",
                 comment: "Notice when a origin address is unverified on the shipping label creation screen"
+            )
+        }
+
+        enum OriginAddress {
+            static let missingPhone = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingPhone",
+                value: "Phone number is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing a phone number on the shipping label creation screen"
+            )
+            static let missingEmail = NSLocalizedString(
+                "wooShipping.createLabels.originAddress.missingEmail",
+                value: "Email is missing for the origin address.",
+                comment: "Notice when the origin (ship from) address is missing an email on the shipping label creation screen"
             )
         }
 

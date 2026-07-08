@@ -2,6 +2,7 @@ import CommonCrypto
 import Foundation
 import Testing
 import struct Yosemite.POSStaffMember
+import enum Yosemite.POSStaffPreset
 @testable import PointOfSale
 
 struct DefaultPOSPINAuthenticatorTests {
@@ -12,8 +13,8 @@ struct DefaultPOSPINAuthenticatorTests {
     @MainActor
     @Test func test_authenticate_when_pin_matches_a_cached_member_then_returns_that_staff() async throws {
         // Given a cached member whose PIN hash matches "1234"
-        let member = makeMember(userID: 7, displayName: "Manny", preset: "pos_manager",
-                                capabilities: ["pos_process_sales": true, "pos_issue_refunds": true],
+        let member = makeMember(userID: 7, displayName: "Manny", preset: .manager,
+                                capabilities: ["woocommerce_pos_issue_refunds": true],
                                 pin: pinDetails(forPIN: "1234"))
         let sut = makeSUT(cached: [member])
 
@@ -23,7 +24,7 @@ struct DefaultPOSPINAuthenticatorTests {
         // Then
         #expect(staff.userID == 7)
         #expect(staff.displayName == "Manny")
-        #expect(staff.preset == "pos_manager")
+        #expect(staff.preset == .manager)
     }
 
     @MainActor
@@ -88,8 +89,8 @@ struct DefaultPOSPINAuthenticatorTests {
         // Given a member with a granted known cap, a denied known cap, and an unknown cap
         let member = makeMember(userID: 1,
                                 capabilities: [
-                                    "pos_process_sales": true,
-                                    "pos_issue_refunds": false,
+                                    "woocommerce_pos_issue_refunds": true,
+                                    "woocommerce_pos_create_coupons": false,
                                     "some_unknown_cap": true
                                 ],
                                 pin: pinDetails(forPIN: "1234"))
@@ -99,9 +100,9 @@ struct DefaultPOSPINAuthenticatorTests {
         let staff = try await sut.authenticate(withPIN: "1234")
 
         // Then only the granted, recognized capability survives
-        #expect(staff.capabilities == ["pos_process_sales"])
-        #expect(staff.hasCapability(.processSales))
-        #expect(!staff.hasCapability(.issueRefunds))
+        #expect(staff.capabilities == ["woocommerce_pos_issue_refunds"])
+        #expect(staff.hasCapability(.issueRefunds))
+        #expect(!staff.hasCapability(.createCoupons))
     }
 
     @MainActor
@@ -124,8 +125,8 @@ struct DefaultPOSPINAuthenticatorTests {
 
     @MainActor
     @Test func test_verify_when_manager_holds_the_capability_then_does_not_throw() async throws {
-        let manager = makeMember(userID: 5, displayName: "Morgan", preset: "pos_manager",
-                                 capabilities: ["pos_issue_refunds": true],
+        let manager = makeMember(userID: 5, displayName: "Morgan", preset: .manager,
+                                 capabilities: ["woocommerce_pos_issue_refunds": true],
                                  pin: pinDetails(forPIN: "9999"))
         let sut = makeSUT(cached: [manager])
 
@@ -135,7 +136,7 @@ struct DefaultPOSPINAuthenticatorTests {
 
     @MainActor
     @Test func test_verify_when_manager_lacks_the_capability_then_throws_invalidPIN() async throws {
-        let cashier = makeMember(userID: 6, capabilities: ["pos_process_sales": true],
+        let cashier = makeMember(userID: 6, capabilities: [:],
                                  pin: pinDetails(forPIN: "9999"))
         let sut = makeSUT(cached: [cashier])
 
@@ -157,8 +158,8 @@ private extension DefaultPOSPINAuthenticatorTests {
 
     func makeMember(userID: Int64,
                     displayName: String = "User",
-                    preset: String = "pos_cashier",
-                    capabilities: [String: Bool] = ["pos_process_sales": true],
+                    preset: POSStaffPreset = .cashier,
+                    capabilities: [String: Bool] = ["woocommerce_pos_issue_refunds": true],
                     pin: POSStaffMember.PINDetails?) -> POSStaffMember {
         POSStaffMember(userID: userID, displayName: displayName, preset: preset,
                        capabilities: capabilities, pin: pin)
@@ -195,10 +196,4 @@ private extension DefaultPOSPINAuthenticatorTests {
                                          salt: saltBase64,
                                          hash: Data(derived).base64EncodedString())
     }
-}
-
-private final class InMemoryStaffStorage: POSStaffKeyValueStorage, @unchecked Sendable {
-    private var store: [String: String] = [:]
-    func string(forKey key: String) -> String? { store[key] }
-    func setString(_ value: String?, forKey key: String) { store[key] = value }
 }

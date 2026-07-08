@@ -22,8 +22,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
-    var isCIABBookingsEnabled: Bool
-    var isCIABBookingRescheduleEnabled: Bool
     var selfDrivenPushToken: Bool
     var smarterNotifications: Bool
 
@@ -45,8 +43,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false,
-         isCIABBookingRescheduleEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -67,8 +63,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
-        self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.isCIABBookingRescheduleEnabled = isCIABBookingRescheduleEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
         self.smarterNotifications = smarterNotifications
     }
@@ -118,9 +112,9 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
-            return isCIABBookingsEnabled
+            return false
         case .ciabBookingReschedule:
-            return isCIABBookingRescheduleEnabled
+            return false
         case .selfDrivenPushToken:
             return selfDrivenPushToken
         case .smarterNotifications:

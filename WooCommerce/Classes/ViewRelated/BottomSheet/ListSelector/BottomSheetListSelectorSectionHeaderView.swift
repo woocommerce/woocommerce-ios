@@ -28,7 +28,7 @@ private extension BottomSheetListSelectorSectionHeaderView {
         self.backgroundColor = backgroundColor
         contentView.backgroundColor = backgroundColor
 
-        var backgroundConfiguration = UIBackgroundConfiguration.listPlainHeaderFooter()
+        var backgroundConfiguration = UIBackgroundConfiguration.listHeader()
         backgroundConfiguration.backgroundColor = backgroundColor
         self.backgroundConfiguration = backgroundConfiguration
     }

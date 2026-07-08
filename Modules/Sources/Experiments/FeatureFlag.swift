@@ -167,37 +167,21 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables displaying Point Of Sale details in order list and order details
-    ///
-    case pointOfSaleOrdersi1
-
-    /// Enables displaying Point Of Sale as a filter in order list
-    ///
-    case pointOfSaleOrdersi2
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
-
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
 
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
     ///
     case pointOfSaleFTSSearch
 
-    /// Enables a new Bookings tab for CIAB sites
+    /// Legacy Bookings tab flag.
     ///
     case ciabBookings
 
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI
-
-    /// Enables the refunds functionality within POS
-    ///
-    case pointOfSaleRefundsi1
 
     /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
@@ -244,17 +228,13 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables the reschedule booking entry point in booking details
+    /// Legacy booking reschedule entry point flag.
     ///
     case ciabBookingReschedule
 
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel
-
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
 
     /// Enables the WooAI Assistant.
     ///
@@ -267,4 +247,12 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables smarter (AI-powered) push notifications.
     ///
     case smarterNotifications
+
+    /// Enables Star Micronics receipt printer support in Point of Sale.
+    /// Gates the feature's runtime behavior (printer setup and printing from the
+    /// order-complete screen) while it lands across stacked PRs. The StarIO10 SDK is
+    /// linked unconditionally; this flag only controls whether the feature is reachable.
+    /// Off by default until the stack is ready to enable for internal builds.
+    ///
+    case starReceiptPrinterSupport
 }

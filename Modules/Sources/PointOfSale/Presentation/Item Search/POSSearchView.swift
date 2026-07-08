@@ -61,6 +61,7 @@ struct POSSearchField: View {
             .onChange(of: searchTerm) { _, newValue in
                 handleSearchTermChange(newValue)
             }
+            .accessibilityIdentifier("pos-search-field")
         }
         .frame(maxWidth: .infinity)
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in

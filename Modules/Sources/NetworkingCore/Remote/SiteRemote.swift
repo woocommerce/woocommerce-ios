@@ -74,24 +74,26 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             break
         }
 
-        let parameters: [String: Any] = [
-            "blog_name": subdomainName ?? "",
+        let options: RequestParameterConvertibleDictionary = [
+            "default_annotation_as_primary_fallback": true,
+            "site_creation_flow": flow.flowID,
+            "site_information": [
+                "title": ""
+            ],
+            "theme": flow.theme,
+            "use_theme_annotation": false,
+            "wpcom_public_coming_soon": 1
+        ]
+
+        let parameters: RequestParameterConvertibleDictionary = [
+            "blog_name": subdomainName.map(String.init) ?? "",
             "blog_title": name,
             "client_id": dotcomClientID,
             "client_secret": dotcomClientSecret,
             "find_available_url": flow.useRandomURL,
             "public": 0,
             "validate": false,
-            "options": [
-                "default_annotation_as_primary_fallback": true,
-                "site_creation_flow": flow.flowID,
-                "site_information": [
-                    "title": ""
-                ],
-                "theme": flow.theme,
-                "use_theme_annotation": false,
-                "wpcom_public_coming_soon": 1
-            ] as [String: Any]
+            "options": RequestParameterValue.dictionary(options)
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
 
@@ -111,25 +113,26 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     }
 
     public func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws {
-        let parameters: [String: Any] = {
+        let parameters: RequestParameterConvertibleDictionary = {
             let industry: [String]? = {
                 guard let category = answers.category else {
                     return nil
                 }
                 return [category]
             }()
-            let onboarding: [String: Any?] = [
-                "industry": industry,
+
+            let onboarding: RequestParameterConvertibleDictionary = ([
                 "is_store_country_set": answers.countryCode != nil,
+                "industry": industry,
                 "business_choice": answers.sellingStatus?.remoteValue,
                 "selling_platforms": answers.sellingPlatforms
-            ]
+            ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
 
-            let params: [String: Any?] = [
-                "woocommerce_onboarding_profile": onboarding.compactMapValues { $0 },
+            let params: RequestParameterConvertibleDictionary = ([
+                "woocommerce_onboarding_profile": onboarding.requestParameterDictionary,
                 "woocommerce_default_country": answers.countryCode
-            ]
-            return params.compactMapValues { $0 }
+            ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
+            return params
         }()
 
         let request = JetpackRequest(wooApiVersion: .wcAdmin,
@@ -179,7 +182,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     public func finalizeJetpackConnection(siteID: Int64,
                                           siteURL: String,
                                           provisionResponse: JetpackConnectionProvisionResponse) async throws {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.secret: provisionResponse.secret,
             ParameterKey.scope: provisionResponse.scope,
             ParameterKey.externalUserID: provisionResponse.userId,
@@ -361,10 +364,7 @@ extension SiteRemote {
                 "capabilities",
                 "was_ecommerce_trial",
                 "plan",
-                "jetpack_modules",
-                "is_garden",
-                "garden_name",
-                "garden_partner"
+                "jetpack_modules"
             ].joined(separator: ",")
         }
         public enum Options {

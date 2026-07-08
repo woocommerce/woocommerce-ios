@@ -70,8 +70,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     var isSyncStaleResult: Bool = false
+    var onIsSyncStaleCalled: (() -> Void)?
 
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
+        onIsSyncStaleCalled?()
         return isSyncStaleResult
     }
 
@@ -88,7 +90,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private(set) var lastProcessedFileURL: URL?
     private(set) var lastProcessedSiteID: Int64?
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         processBackgroundDownloadCallCount += 1
         lastProcessedFileURL = fileURL
         lastProcessedSiteID = siteID

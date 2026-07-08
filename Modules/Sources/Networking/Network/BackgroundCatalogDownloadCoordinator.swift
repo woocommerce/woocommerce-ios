@@ -5,7 +5,17 @@ import CocoaLumberjackSwift
 /// but never finished its write transaction. The download itself is already complete —
 /// only the parse step is retried.
 public protocol BackgroundCatalogParseResuming {
-    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64) async throws -> Void) async
+    /// Retries the parse step for a previously-staged catalog file, if one exists.
+    /// - Parameter parseHandler: Closure that parses and persists the staged file. Receives the
+    ///   file URL, the site ID, and the moment the snapshot's download started. Callers use
+    ///   that date (not the current time) as the sync watermark, so a resumed snapshot never
+    ///   masquerades as fresher data than it is.
+    func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async
+
+    /// Discards a staged pending-parse file for the given site, if one exists.
+    /// Called after a full sync successfully persists: the fresh catalog supersedes the staged
+    /// snapshot, so retrying it would only overwrite newer data with older.
+    func discardPendingParse(for siteID: Int64)
 }
 
 /// Coordinates background catalog downloads, including handling app wake events.
@@ -38,7 +48,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     public func handleBackgroundSessionEvent(
         sessionIdentifier: String,
         completionHandler: @escaping () -> Void,
-        parseHandler: @escaping (URL, Int64) async throws -> Void
+        parseHandler: @escaping (URL, Int64, Date) async throws -> Void
     ) async {
         DDLogInfo("🟣 Handling background session event for: \(sessionIdentifier)")
 
@@ -63,21 +73,25 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         // Move to a durable staging path so the file survives if parse + persist is killed
         // by iOS. We retry on next foreground.
         let stagedURL: URL
+        let supersededPending = pendingCatalogFileStore.load()
         do {
             stagedURL = try stageDownloadedFile(fileURL, siteID: state.siteID)
-            pendingCatalogFileStore.save(.init(filePath: stagedURL.path, siteID: state.siteID))
+            pendingCatalogFileStore.save(.init(filePath: stagedURL.path,
+                                               siteID: state.siteID,
+                                               createdAt: state.downloadStartedAt))
+            removeSupersededPendingFile(supersededPending, replacingWith: stagedURL)
             DDLogInfo("🟣 Staged background catalog at: \(stagedURL.path)")
         } catch {
             DDLogError("⛔️ Failed to stage background download: \(error). Falling back to original URL.")
             // If staging fails we still attempt parse from the temp URL
             // Result ignored: no staged file was written, so there's nothing to clean up either way.
-            _ = await runParse(url: fileURL, siteID: state.siteID, parseHandler: parseHandler)
+            _ = await runParse(url: fileURL, siteID: state.siteID, snapshotDate: state.downloadStartedAt, parseHandler: parseHandler)
             backgroundDownloadStateStore.clear()
             return
         }
 
         // Attempt parse + persist within the 30s window.
-        let success = await runParse(url: stagedURL, siteID: state.siteID, parseHandler: parseHandler)
+        let success = await runParse(url: stagedURL, siteID: state.siteID, snapshotDate: state.downloadStartedAt, parseHandler: parseHandler)
 
         if success {
             try? fileManager.removeItem(at: stagedURL)
@@ -92,7 +106,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     /// the file on disk. Called on POS foreground entry — no iOS execution-time pressure here.
     /// Errors are logged but swallowed so normal sync can proceed.
     public func resumePendingParseIfNeeded(
-        parseHandler: @escaping (URL, Int64) async throws -> Void
+        parseHandler: @escaping (URL, Int64, Date) async throws -> Void
     ) async {
         guard let pending = pendingCatalogFileStore.load() else {
             return
@@ -107,7 +121,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         }
 
         DDLogInfo("🟣 Resuming pending catalog persist for site \(pending.siteID) from \(pending.filePath)")
-        let success = await runParse(url: fileURL, siteID: pending.siteID, parseHandler: parseHandler)
+        let success = await runParse(url: fileURL, siteID: pending.siteID, snapshotDate: pending.createdAt, parseHandler: parseHandler)
 
         if success {
             try? fileManager.removeItem(at: fileURL)
@@ -115,14 +129,27 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
         }
         // On failure: leave file + record in place for the next foreground entry.
     }
+
+    /// Discards the staged pending-parse file and its record if it belongs to the given site.
+    /// The pending store is single-slot across sites, so a pending file for a *different* site is
+    /// left untouched — its retry is still valid.
+    public func discardPendingParse(for siteID: Int64) {
+        guard let pending = pendingCatalogFileStore.load(), pending.siteID == siteID else {
+            return
+        }
+        DDLogInfo("🟣 Discarding pending catalog parse for site \(siteID): superseded by a completed full sync")
+        try? fileManager.removeItem(atPath: pending.filePath)
+        pendingCatalogFileStore.clear()
+    }
 }
 
 private extension BackgroundCatalogDownloadCoordinator {
     func runParse(url: URL,
                   siteID: Int64,
-                  parseHandler: @escaping (URL, Int64) async throws -> Void) async -> Bool {
+                  snapshotDate: Date,
+                  parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async -> Bool {
         do {
-            try await parseHandler(url, siteID)
+            try await parseHandler(url, siteID, snapshotDate)
             DDLogInfo("✅ Background catalog processing completed successfully")
             return true
         } catch {
@@ -151,5 +178,13 @@ private extension BackgroundCatalogDownloadCoordinator {
             try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
         }
         return directory
+    }
+
+    func removeSupersededPendingFile(_ pending: PendingCatalogFile?, replacingWith stagedURL: URL) {
+        guard let pending, pending.filePath != stagedURL.path else {
+            return
+        }
+        try? fileManager.removeItem(atPath: pending.filePath)
+        DDLogInfo("🟣 Removed superseded pending catalog file at: \(pending.filePath)")
     }
 }

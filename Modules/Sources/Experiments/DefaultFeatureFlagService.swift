@@ -73,34 +73,24 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleOrdersi1:
-            return true
-        case .pointOfSaleOrdersi2:
-            return true
         case .orderAddressMapSearch:
-            return true
-        case .pointOfSaleHistoricalOrdersi1:
             return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return !buildConfig.isProduction
+            return false
         case .pointOfSaleCatalogAPI:
-            return true
-        case .pointOfSaleRefundsi1:
             return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
         case .pointOfSalePhonePrototype:
-            // Behind the flag for now — gates and UI follow in stacked PRs. Default to
-            // localDeveloper only so alpha builds aren't affected until we're ready.
-            return buildConfig == .localDeveloper
+            return true
         case .pointOfSaleScanToPay:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return buildConfig == .localDeveloper
         case .pointOfSaleTapToPay:
             // Behind the flag while the TTP integration lands. localDeveloper-only so
             // alpha and beta keep showing only Cash + Card reader for now.
@@ -112,17 +102,17 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return true
         case .ciabBookingReschedule:
-            return !buildConfig.isProduction
+            return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:
             return true
         case .smarterNotifications:
             return true
+        case .starReceiptPrinterSupport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -6,7 +6,7 @@ let package = Package(
     name: "Modules",
     platforms: [
         // Keep in sync with Common.xcconfig
-        .iOS(.v17),
+        .iOS("18.0"),
         .macOS(.v10_14),
         .watchOS(.v9),
     ],
@@ -98,7 +98,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.0.4"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
-        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "4.2.0"),
+        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "4.3.1"),
         .package(url: "https://github.com/Automattic/Gridicons-iOS", revision: "c904cb73e26e86463a78e1335c6f4fd54a9e9223"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
@@ -112,13 +112,13 @@ let package = Package(
         .package(url: "https://github.com/krzysztofzablocki/Difference.git", branch: "master"),
         .package(url: "https://github.com/krzysztofzablocki/Inject.git", revision: "1.1.1"),
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
-        .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.0"),
         .package(url: "https://github.com/onevcat/Kingfisher", from: "7.6.2"),
         .package(url: "https://github.com/pmusolino/Wormholy", from: "2.0.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
+        .package(url: "https://github.com/star-micronics/StarXpand-SDK-iOS", from: "2.10.0"),
         .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "5.1.1"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
         .package(url: "https://github.com/wordpress-mobile/AztecEditor-iOS", revision: "d741e3cfaa74c99ef092e5fddb87d4314b63e3ed"),
@@ -156,7 +156,8 @@ let package = Package(
             dependencies: [
                 "Codegen",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
             resources: [.process("Resources")]
         ),
@@ -519,7 +520,6 @@ enum XcodeSupport {
                     "YosemiteTestHelpers",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
-                    .product(name: "ViewInspector", package: "ViewInspector"),
                     .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]

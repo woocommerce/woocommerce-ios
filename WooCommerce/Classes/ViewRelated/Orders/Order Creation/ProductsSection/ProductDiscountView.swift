@@ -22,7 +22,6 @@ struct ProductDiscountView: View {
                     ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                           productImageSize: Layout.productImageSize,
                                           scale: 1,
-                                          productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(viewModel.name)

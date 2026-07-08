@@ -6,7 +6,10 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import struct Networking.POSCatalogResponse
+import struct Networking.POSCatalogRequestResponse
 import enum Networking.POSCatalogStatus
+
+public typealias POSCatalogSyncProgressHandler = @Sendable (POSCatalogSyncProgress) async -> Void
 
 public protocol POSCatalogFullSyncServiceProtocol {
     /// Starts a full catalog sync process
@@ -15,8 +18,13 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - regenerateCatalog: Whether to force the catalog generation
     ///   - allowCellular: Should cellular data be used if required.
     ///   - isBackgroundSync: Whether this sync is running in a background task context. Limits polling attempts to stay within ~30s window.
+    ///   - onProgress: Optional callback invoked with catalog sync progress updates.
     /// - Returns: The synced catalog containing products and variations
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, isBackgroundSync: Bool) async throws -> POSCatalog
+    func startFullSync(for siteID: Int64,
+                       regenerateCatalog: Bool,
+                       allowCellular: Bool,
+                       isBackgroundSync: Bool,
+                       onProgress: POSCatalogSyncProgressHandler?) async throws -> POSCatalog
 
     /// Runs a full catalog sync using the legacy paginated REST endpoints, bypassing the catalog file API.
     /// Used as a fallback when the host blocks access to the generated catalog file.
@@ -30,8 +38,11 @@ public protocol POSCatalogFullSyncServiceProtocol {
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
+    ///   - snapshotDate: When the snapshot's download started. Used as the persisted sync
+    ///     watermark so a resumed snapshot doesn't claim to be current,
+    ///     keeping the next smart/incremental sync able to refetch everything since then.
     /// - Returns: The parsed catalog
-    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog
+    func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog
 }
 
 /// Metadata from file-based catalog sync, used for analytics tracking.
@@ -128,7 +139,8 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     public func startFullSync(for siteID: Int64,
                               regenerateCatalog: Bool = false,
                               allowCellular: Bool,
-                              isBackgroundSync: Bool) async throws -> POSCatalog {
+                              isBackgroundSync: Bool,
+                              onProgress: POSCatalogSyncProgressHandler? = nil) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
                   "allowCellular: \(allowCellular), isBackgroundSync: \(isBackgroundSync)")
 
@@ -141,7 +153,8 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                                                               syncRemote: syncRemote,
                                                               regenerateCatalog: regenerateCatalog,
                                                               allowCellular: allowCellular,
-                                                              maxAttempts: maxAttempts)
+                                                              maxAttempts: maxAttempts,
+                                                              onProgress: onProgress)
             } else {
                 catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
             }
@@ -170,16 +183,15 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         return catalog
     }
 
-    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+    public func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {
         DDLogInfo("🟣 Parsing background catalog download for site \(siteID)")
 
-        let syncStartDate = Date.now
         let catalogResponse = try await syncRemote.parseDownloadedCatalog(from: fileURL, siteID: siteID)
 
         let catalog = POSCatalog(
             products: catalogResponse.products,
             variations: catalogResponse.variations,
-            syncDate: syncStartDate
+            syncDate: snapshotDate
         )
 
         DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
@@ -216,22 +228,30 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products,
-                          variations: variations,
-                          syncDate: syncStartDate)
+
+        // Prefer the server's clock as the sync watermark (the earliest across responses), falling
+        // back to the device clock only when no `Date` header was provided. See PagedItems.serverDate.
+        let serverDates = [products.serverDate, variations.serverDate].compactMap { $0 }
+        let syncDate = serverDates.min() ?? syncStartDate
+
+        return POSCatalog(products: products.items,
+                          variations: variations.items,
+                          syncDate: syncDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,
                                    syncRemote: POSCatalogSyncRemoteProtocol,
                                    regenerateCatalog: Bool,
                                    allowCellular: Bool,
-                                   maxAttempts: Int) async throws -> POSCatalog {
+                                   maxAttempts: Int,
+                                   onProgress: POSCatalogSyncProgressHandler?) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
-        let (catalog, pollingResult) = try await downloadCatalog(for: siteID,
-                                                                 syncRemote: syncRemote,
-                                                                 regenerateCatalog: regenerateCatalog,
-                                                                 allowCellular: allowCellular,
-                                                                 maxAttempts: maxAttempts)
+        let (catalog, pollingResult, snapshotDate) = try await downloadCatalog(for: siteID,
+                                                                               syncRemote: syncRemote,
+                                                                               regenerateCatalog: regenerateCatalog,
+                                                                               allowCellular: allowCellular,
+                                                                               maxAttempts: maxAttempts,
+                                                                               onProgress: onProgress)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
         DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
@@ -240,7 +260,12 @@ private extension POSCatalogFullSyncService {
         let metadata = POSCatalogSyncMetadata(pollAttempts: pollingResult.pollAttempts,
                                               generationDurationMs: generationDurationMs)
 
-        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init(), syncMetadata: metadata)
+        // Use the server's `scheduled_at` as the sync watermark, not the device clock. The catalog
+        // file is a snapshot taken somewhere in [scheduled_at, completed_at]; `scheduled_at` is the
+        // only safe lower bound for the next incremental's `modified_after` cursor — anything modified
+        // during generation is then re-fetched rather than skipped. Falls back to the device clock if
+        // the server omitted/garbled the timestamp.
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: snapshotDate, syncMetadata: metadata)
     }
 
     /// Computes server-side generation duration in milliseconds from ISO8601 timestamp strings.
@@ -286,7 +311,8 @@ private extension POSCatalogFullSyncService {
                          syncRemote: POSCatalogSyncRemoteProtocol,
                          regenerateCatalog: Bool,
                          allowCellular: Bool,
-                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult) {
+                         maxAttempts: Int,
+                         onProgress: POSCatalogSyncProgressHandler?) async throws -> (POSCatalogResponse, CatalogPollingResult, Date) {
         DDLogInfo("🟣 Starting catalog request...")
 
         // 1. Requests catalog until download URL is available.
@@ -298,17 +324,23 @@ private extension POSCatalogFullSyncService {
                                                 scheduledAt: response.scheduledAt,
                                                 completedAt: response.completedAt)
         } else {
+            await reportProgress(for: response, onProgress: onProgress)
             // 2. Polls for completion until download URL is available.
             pollingResult = try await pollForCatalogCompletion(siteID: siteID,
                                                                syncRemote: syncRemote,
                                                                allowCellular: allowCellular,
-                                                               maxAttempts: maxAttempts)
+                                                               maxAttempts: maxAttempts,
+                                                               onProgress: onProgress)
         }
 
         // 3. Downloads catalog using the provided URL.
         DDLogInfo("🟣 Catalog ready for download: \(pollingResult.downloadURL)")
-        let catalog = try await syncRemote.downloadCatalog(for: siteID, downloadURL: pollingResult.downloadURL, allowCellular: allowCellular)
-        return (catalog, pollingResult)
+        let snapshotDate = pollingResult.scheduledAt.flatMap(Self.parseISO8601) ?? Date()
+        let catalog = try await syncRemote.downloadCatalog(for: siteID,
+                                                           downloadURL: pollingResult.downloadURL,
+                                                           allowCellular: allowCellular,
+                                                           snapshotDate: snapshotDate)
+        return (catalog, pollingResult, snapshotDate)
     }
 
     /// Polls for catalog generation completion using exponential backoff.
@@ -328,7 +360,8 @@ private extension POSCatalogFullSyncService {
     func pollForCatalogCompletion(siteID: Int64,
                                   syncRemote: POSCatalogSyncRemoteProtocol,
                                   allowCellular: Bool,
-                                  maxAttempts: Int) async throws -> CatalogPollingResult {
+                                  maxAttempts: Int,
+                                  onProgress: POSCatalogSyncProgressHandler?) async throws -> CatalogPollingResult {
         var attempts = 0
         var currentDelay = PollingConfig.initialDelay
         var lastStatus: POSCatalogStatus = .scheduled
@@ -352,6 +385,7 @@ private extension POSCatalogFullSyncService {
             case .scheduled, .inProgress:
                 DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1), " +
                           "progress: \(response.progress ?? -1), processed: \(response.processed ?? -1)/\(response.total ?? -1))")
+                await reportProgress(for: response, onProgress: onProgress)
 
                 try await Task.sleep(nanoseconds: UInt64(currentDelay) * NSEC_PER_SEC)
                 attempts += 1
@@ -365,5 +399,12 @@ private extension POSCatalogFullSyncService {
 
         DDLogWarn("🟣 Catalog polling timed out after \(attempts) attempts")
         throw POSCatalogSyncError.timeout(pollAttempts: attempts, lastGenerationState: lastStatus.rawValue)
+    }
+
+    func reportProgress(for response: POSCatalogRequestResponse, onProgress: POSCatalogSyncProgressHandler?) async {
+        guard let progress = POSCatalogSyncProgress(response: response) else {
+            return
+        }
+        await onProgress?(progress)
     }
 }

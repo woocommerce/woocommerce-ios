@@ -32,6 +32,16 @@ struct DefaultRetryErrorEvaluator: RetryErrorEvaluator {
     }
 }
 
+/// Result of a batched paginated load: the aggregated items plus the server's clock when it
+/// served the data, for use as a `modified_after` cursor (see `PagedItems.serverDate`).
+struct BatchedLoadResult<T> {
+    let items: [T]
+    /// Earliest HTTP `Date` header seen across the fetched pages, or `nil` if none provided one.
+    /// Earliest (not latest) is the safe choice for a cursor: the aggregated data is only as fresh
+    /// as the oldest page, so a later cursor could skip changes made between pages.
+    let serverDate: Date?
+}
+
 /// Generic utility for loading paginated data with batch processing and retry support.
 final class BatchedRequestLoader {
     private let batchSize: Int
@@ -52,9 +62,10 @@ final class BatchedRequestLoader {
     /// Loads all items using a paginated request function.
     /// - Parameters:
     ///   - makeRequest: Function that takes a page number and returns PagedItems<T>.
-    /// - Returns: Array of all loaded items.
-    func loadAll<T>(makeRequest: @escaping (Int) async throws -> PagedItems<T>) async throws -> [T] {
+    /// - Returns: All loaded items plus the earliest server date across the fetched pages.
+    func loadAll<T>(makeRequest: @escaping (Int) async throws -> PagedItems<T>) async throws -> BatchedLoadResult<T> {
         var allItems: [T] = []
+        var earliestServerDate: Date?
         var currentPage = 1
         var hasMorePages = true
 
@@ -86,12 +97,18 @@ final class BatchedRequestLoader {
             let newItems = batchResults.flatMap { $0.items.items }
             allItems.append(contentsOf: newItems)
 
+            // Track the earliest server date across all pages (safe cursor lower bound).
+            for result in batchResults {
+                guard let pageDate = result.items.serverDate else { continue }
+                earliestServerDate = earliestServerDate.map { min($0, pageDate) } ?? pageDate
+            }
+
             let highestPageResult = batchResults.last?.items
             hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newItems.isEmpty
             currentPage += batchSize
         }
 
-        return allItems
+        return BatchedLoadResult(items: allItems, serverDate: earliestServerDate)
     }
 
     private static func fetchPageWithRetry<T>(

@@ -40,30 +40,6 @@ public final class WordPressOrgNetwork: Network {
         self.requestConverter = RequestConverter(siteAddress: siteAddress)
     }
 
-    public func responseData(for request: URLRequestConvertible) async throws -> Data? {
-        let request = requestConverter.convert(request)
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self else { return }
-
-            self.alamofireSession.request(request)
-                .validate()
-                .responseData(completionHandler: { response in
-                switch response.result {
-                case .success(let responseObject):
-                    continuation.resume(returning: responseObject)
-                case .failure(let error):
-                    DDLogWarn("⚠️ Error requesting \(request.urlRequest?.url?.absoluteString ?? ""): \(error.localizedDescription)")
-                    do {
-                        try Self.validateResponse(response.data)
-                        continuation.resume(throwing: error)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }
-            })
-        }
-    }
-
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:

@@ -50,7 +50,6 @@ struct ProductRow: View {
             ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                   productImageSize: Layout.productImageSize,
                                   scale: scale,
-                                  productImageCornerRadius: Layout.cornerRadius,
                                   foregroundColor: Color(UIColor.listSmallIcon))
 
             // Product details
@@ -117,7 +116,6 @@ extension ProductRow {
 private extension ProductRow {
     enum Layout {
         static let productImageSize: CGFloat = 48.0
-        static let cornerRadius: CGFloat = 4.0
         static let checkImageSize: CGFloat = 24.0
     }
 }

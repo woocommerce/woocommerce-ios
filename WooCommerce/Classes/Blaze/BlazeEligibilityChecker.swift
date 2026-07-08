@@ -13,18 +13,15 @@ protocol BlazeEligibilityCheckerProtocol {
 /// Checks for Blaze eligibility for a site and its products.
 final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     /// In-flight eligibility checks keyed by siteID, shared across all instances.
     /// Thread-safe because all access is on @MainActor.
     private static var inFlightChecks: [Int64: Task<Bool, Never>] = [:]
 
     init(
-        stores: StoresManager = ServiceLocator.stores,
-        siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+        stores: StoresManager = ServiceLocator.stores
     ) {
         self.stores = stores
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks if the site is eligible for Blaze.
@@ -69,8 +66,7 @@ private extension BlazeEligibilityChecker {
     func checkSiteEligibility(_ site: Site) async -> Bool {
         guard
             site.isAdmin,
-            site.canBlaze,
-            siteCIABEligibilityChecker.isFeatureSupported(.blaze, for: site)
+            site.canBlaze
         else {
             return false
         }

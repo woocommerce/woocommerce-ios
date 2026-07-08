@@ -76,9 +76,7 @@ final class HelpAndSupportViewController: UIViewController {
         isMacCatalyst: isMacCatalyst,
         hasLoginSiteURL: loginSiteURL != nil,
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
-            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
-        isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-    )
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel))
 
     /// Retains the support escalation coordinator while the flow is active.
     private var supportEscalationCoordinator: SupportEscalationCoordinator?
@@ -384,13 +382,7 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
-        guard !viewModel.shouldOpenAIChatFromContactSupport else {
-            aiSupportChatWasPressed()
-            return
-        }
-
-        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
-        viewController.show(from: self)
+        aiSupportChatWasPressed()
     }
 
     /// User's contact email action
@@ -446,7 +438,6 @@ private extension HelpAndSupportViewController {
             return
         }
         let controller = SystemStatusReportHostingController(siteID: siteID)
-        controller.hidesBottomBarWhenPushed = true
         controller.setDismissAction { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }
@@ -467,8 +458,8 @@ private extension HelpAndSupportViewController {
         let entryPoint: SupportChatViewModel.EntryPoint = ServiceLocator.stores.isAuthenticated
             ? .helpAndSupport
             : .preLogin
-        let initialContext: [String: Any]? = loginSiteURL.map {
-            ["site_url": $0.absoluteString]
+        let initialContext: RequestParameterDictionary? = loginSiteURL.map {
+            ["site_url": .string($0.absoluteString)]
         }
         var viewModelHolder: SupportChatViewModel?
         let viewModel = SupportChatViewModel(

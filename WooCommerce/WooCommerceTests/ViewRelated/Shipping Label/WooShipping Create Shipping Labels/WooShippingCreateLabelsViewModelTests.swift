@@ -172,8 +172,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel2.isOrderCompleted)
     }
 
-    func test_origin_unverified_state_is_correct() {
-        // Given
+    /// Builds a view model whose store returns a single origin address with the given phone/email/verification state.
+    private func makeViewModelLoadingOriginAddress(phone: String,
+                                                   email: String,
+                                                   isVerified: Bool = false) -> WooShippingCreateLabelsViewModel {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let originAddress = WooShippingOriginAddress(siteID: 123,
                                                      id: "default_address",
@@ -184,12 +186,12 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                      state: "NY",
                                                      postcode: "12883-1487",
                                                      country: "US",
-                                                     phone: "223-456-7890",
+                                                     phone: phone,
                                                      firstName: "JANE",
                                                      lastName: "DOE",
-                                                     email: "TEST@EXAMPLE.COM",
+                                                     email: email,
                                                      defaultAddress: true,
-                                                     isVerified: false)
+                                                     isVerified: isVerified)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -202,21 +204,68 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
-        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+        return WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                shippingSettingsService: MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil),
+                                                stores: stores)
+    }
 
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         stores: stores)
+    func test_origin_unverified_state_is_correct() {
+        // Given
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "TEST@EXAMPLE.COM")
         XCTAssertFalse(viewModel.isOriginAddressUnverified)
-        XCTAssertNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNil(viewModel.originAddressNoticeLabel)
 
         // Then
         waitUntil {
             viewModel.originAddress.isNotEmpty
         }
         XCTAssertTrue(viewModel.isOriginAddressUnverified)
-        XCTAssertNotNil(viewModel.originAddressUnverifiedNoticeLabel)
+        XCTAssertNotNil(viewModel.originAddressNoticeLabel)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_is_empty() {
+        // Given
+        // A missing origin phone is surfaced specifically rather than the generic unverified notice.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_phone_when_origin_phone_has_no_digits() {
+        // Given
+        // A phone with no digits (whitespace/punctuation only) is rejected by the backend as empty.
+        let viewModel = makeViewModelLoadingOriginAddress(phone: " - ", email: "TEST@EXAMPLE.COM")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingPhone",
+                                         value: "Phone number is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
+    }
+
+    func test_origin_notice_shows_missing_email_when_origin_email_is_empty() {
+        // Given
+        // A present phone with a missing email surfaces the email notice (phone check takes precedence).
+        let viewModel = makeViewModelLoadingOriginAddress(phone: "223-456-7890", email: "")
+
+        // Then
+        let expected = NSLocalizedString("wooShipping.createLabels.originAddress.missingEmail",
+                                         value: "Email is missing for the origin address.",
+                                         comment: "")
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
     }
 
     func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
@@ -1409,72 +1458,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
-    func test_splitShipmentsRowVisible_is_false_when_split_shipments_feature_is_unavailable() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Is CIAB site with the `.splitShipments` disabled
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABDisabledFeatures: [.splitShipments]
-        )
-
-        /// Multiple products
-        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
-        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
-
-        storageManager.insertSampleProduct(readOnlyProduct: product1)
-        storageManager.insertSampleProduct(readOnlyProduct: product2)
-
-        let order = Order.fake().copy(
-            siteID: siteID,
-            orderID: orderID,
-            items: [
-                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
-                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
-            ])
-
-        /// Single unfulfilled shipment
-        let shipments = [
-            WooShippingShipment.fake().copy(
-                siteID: siteID,
-                orderID: orderID,
-                index: "shipment_0",
-                items: [
-                    .fake().copy(id: product1.productID),
-                    .fake().copy(id: product2.productID)
-                ])
-        ]
-        insert(shipments: shipments, order: order)
-
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            stores: stores,
-            storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
-            initialNoticeDelay: .seconds(0)
-        )
-
-        waitUntil {
-            viewModel.state == .ready
-        }
-
-        // Then
-        XCTAssertFalse(viewModel.splitShipmentsRowVisible)
-    }
-
     func test_splitShipmentsRowVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Single product
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1504,7 +1491,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1520,12 +1506,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1566,7 +1546,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1583,12 +1562,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
 
-        /// Non-CIAB site (feature available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
-
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
         let product2 = Product.fake().copy(siteID: siteID, productID: 2)
@@ -1622,7 +1595,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1634,72 +1606,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.splitShipmentsRowVisible)
     }
 
-    func test_editSplitShipmentsOptionVisible_is_false_when_split_shipments_feature_is_unavailable() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Is CIAB site with the `.splitShipments` disabled
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABDisabledFeatures: [.splitShipments]
-        )
-
-        /// Multiple products
-        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
-        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
-
-        storageManager.insertSampleProduct(readOnlyProduct: product1)
-        storageManager.insertSampleProduct(readOnlyProduct: product2)
-
-        let order = Order.fake().copy(
-            siteID: siteID,
-            orderID: orderID,
-            items: [
-                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
-                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
-            ])
-
-        /// Single unfulfilled shipment
-        let shipments = [
-            WooShippingShipment.fake().copy(
-                siteID: siteID,
-                orderID: orderID,
-                index: "shipment_0",
-                items: [
-                    .fake().copy(id: product1.productID),
-                    .fake().copy(id: product2.productID)
-                ])
-        ]
-        insert(shipments: shipments, order: order)
-
-        // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            stores: stores,
-            storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
-            initialNoticeDelay: .seconds(0)
-        )
-
-        waitUntil {
-            viewModel.state == .ready
-        }
-
-        // Then
-        XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
-    }
-
     func test_editSplitShipmentsOptionVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Single product
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1729,7 +1639,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1745,12 +1654,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1799,7 +1702,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 
@@ -1815,12 +1717,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         initialConfigurationForSplitShipmentsTest(stores: stores)
-
-        /// Non-CIAB site (split shipments available)
-        let mockSiteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-            mockedCIABDisabledFeatures: []
-        )
 
         /// Multiple products
         let product1 = Product.fake().copy(siteID: siteID, productID: 1)
@@ -1855,7 +1751,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             order: order,
             stores: stores,
             storageManager: storageManager,
-            siteCIABEligibilityChecker: mockSiteCIABChecker,
             initialNoticeDelay: .seconds(0)
         )
 

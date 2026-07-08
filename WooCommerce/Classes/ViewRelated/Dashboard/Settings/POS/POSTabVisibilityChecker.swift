@@ -25,6 +25,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
+    private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
+
+    private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -33,7 +36,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
-         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil) {
+         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil,
+         isOperatingSystemAtLeast: @escaping (OperatingSystemVersion) -> Bool = ProcessInfo.processInfo.isOperatingSystemAtLeast) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -41,14 +45,18 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.expansionEligibilityService = expansionEligibilityService
+        self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
         self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
             eligibilityService: expansionEligibilityService,
             remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
         )
     }
 
-    /// Checks the initial visibility of the POS tab without dependance on network requests.
+    /// Checks the initial visibility of the POS tab without dependence on network requests.
     func checkInitialVisibility() -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         guard userInterfaceIdiom != .phone else {
             return false
         }
@@ -62,6 +70,9 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()
     ) -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         guard userInterfaceIdiom != .phone else {
             return false
         }
@@ -70,8 +81,14 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
+            return true
+        }
         let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
+            return false
+        }
+        guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
             return false
         }
 
@@ -86,6 +103,10 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         }
 
         return await featureFlagEligibility == .eligible
+    }
+
+    private var isPhoneOperatingSystemEligible: Bool {
+        isOperatingSystemAtLeast(Self.minimumPhonePOSOperatingSystemVersion)
     }
 }
 

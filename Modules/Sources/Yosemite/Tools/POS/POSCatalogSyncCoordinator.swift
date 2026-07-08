@@ -65,7 +65,8 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Parameters:
     ///   - fileURL: Local file URL of the downloaded catalog
     ///   - siteID: Site ID for this catalog
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws
+    ///   - snapshotDate: When the download started — persisted as the sync watermark
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws
 
     /// Deletes specific products and/or variations from the local catalog
     /// - Parameters:
@@ -279,6 +280,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
 
+        // The fresh full sync supersedes any staged pending-parse snapshot for this site.
+        // Discard it so it can't be re-applied over the newer data.
+        pendingParseResumer.discardPendingParse(for: siteID)
+
         // Record first sync date if this was the first successful sync
         recordFirstSyncIfNeeded(for: siteID)
     }
@@ -293,13 +298,31 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                 regenerateCatalog: Bool,
                                                 allowCellular: Bool,
                                                 isBackgroundSync: Bool) async throws -> POSCatalog {
+        if shouldSkipFileSyncForPersistedBlockedHost(siteID: siteID,
+                                                     regenerateCatalog: regenerateCatalog,
+                                                     isBackgroundSync: isBackgroundSync) {
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Catalog file is blocked by host for site \(siteID); " +
+                      "skipping automatic file sync wait and falling back to paginated full sync")
+            let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
+                                                                               plugin: .wooCommerce,
+                                                                               isActive: true)?.version
+            trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
+            return try await fullSyncService.startPaginatedFullSync(for: siteID, allowCellular: allowCellular)
+        }
+
         do {
             let catalog = try await fullSyncService.startFullSync(for: siteID,
                                                                   regenerateCatalog: regenerateCatalog,
                                                                   allowCellular: allowCellular,
-                                                                  isBackgroundSync: isBackgroundSync)
+                                                                  isBackgroundSync: isBackgroundSync,
+                                                                  onProgress: { [weak self] progress in
+                await self?.emitFullSyncProgress(progress, for: siteID)
+            })
             // The file is accessible (again) — clear any blocked memory for the site.
             sitesWithBlockedCatalogFile.remove(siteID)
+            if syncStrategy == .localCatalogFile {
+                siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: nil)
+            }
             return catalog
         } catch where error.isPOSCatalogFileBlockedError {
             let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
@@ -307,6 +330,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                                                isActive: true)?.version
             let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
             sitesWithBlockedCatalogFile.insert(siteID)
+            siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: Date())
             guard Self.shouldFallBackToPaginatedSync(wooCommerceVersion: wooCommerceVersion) || isRetryWhileBlocked else {
                 throw error
             }
@@ -331,6 +355,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
+    private func shouldSkipFileSyncForPersistedBlockedHost(siteID: Int64, regenerateCatalog: Bool, isBackgroundSync: Bool) -> Bool {
+        syncStrategy == .localCatalogFile &&
+        !regenerateCatalog &&
+        !isBackgroundSync &&
+        siteSettings.isPOSCatalogFileBlockedByHost(siteID: siteID)
+    }
+
     /// The core fix for host-blocked catalog files ships in WooCommerce 11.0
     /// (the feed directory's `.htaccess` allows file access and is refreshed in place).
     /// Below 11.0 the block is expected, so the sync silently falls back to the paginated path;
@@ -351,9 +382,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // If a previous background download staged a catalog file but never finished
         // parse + persist (iOS killed the process within the ~30s window), retry it now that we're
         // in the foreground without time pressure. Errors are swallowed since a fresh sync would overwrite anyway.
-        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID in
+        await pendingParseResumer.resumePendingParseIfNeeded { [weak self] fileURL, pendingSiteID, snapshotDate in
             guard let self else { return }
-            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
+            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL,
+                                                                                 siteID: pendingSiteID,
+                                                                                 snapshotDate: snapshotDate)
         }
 
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
@@ -408,7 +441,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
         switch await fullSyncStateModel.state[siteID] {
-        case .syncStarted, .initialSyncStarted:
+        case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress:
             return true
         default:
             return false
@@ -648,7 +681,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // This will prevent new syncs from starting for this site
         if let currentState = await fullSyncStateModel.state[siteID] {
             switch currentState {
-            case .initialSyncStarted, .syncStarted:
+            case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress:
                 await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
                 DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
             default:
@@ -657,11 +690,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         }
     }
 
-    public func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    public func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         DDLogInfo("🟣 POSCatalogSyncCoordinator: Processing background download for site \(siteID)")
 
         // Parse and persist using the full sync service
-        let catalog = try await fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: siteID)
+        let catalog = try await fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL,
+                                                                                  siteID: siteID,
+                                                                                  snapshotDate: snapshotDate)
 
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 
@@ -879,6 +914,8 @@ private extension POSCatalogSyncCoordinator {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
+                .initialSyncProgress(let id, _),
+                .syncProgress(let id, _),
                 .syncCompleted(let id),
                 .initialSyncFailed(let id, _),
                 .syncFailed(let id, _),
@@ -887,6 +924,40 @@ private extension POSCatalogSyncCoordinator {
         }
 
         await fullSyncStateModel.updateState(state, for: siteID)
+    }
+
+    func emitFullSyncProgress(_ progress: POSCatalogSyncProgress, for siteID: Int64) async {
+        let currentState = await fullSyncStateModel.state[siteID]
+        let progress = currentState.progressByPreservingItemCount(whenReceiving: progress)
+        switch currentState {
+        case .initialSyncStarted, .initialSyncProgress, .syncNeverDone:
+            await emitSyncState(.initialSyncProgress(siteID: siteID, progress: progress))
+        case .syncStarted, .syncProgress:
+            await emitSyncState(.syncProgress(siteID: siteID, progress: progress))
+        default:
+            break
+        }
+    }
+}
+
+private extension Optional where Wrapped == POSCatalogSyncState {
+    func progressByPreservingItemCount(whenReceiving progress: POSCatalogSyncProgress) -> POSCatalogSyncProgress {
+        guard progress == .preparing else {
+            return progress
+        }
+
+        switch self {
+        case .some(.initialSyncProgress(_, let currentProgress)),
+                .some(.syncProgress(_, let currentProgress)):
+            switch currentProgress {
+            case .itemCount:
+                return currentProgress
+            case .preparing:
+                return progress
+            }
+        default:
+            return progress
+        }
     }
 }
 
@@ -906,6 +977,8 @@ public class POSCatalogSyncStateModel {
 public enum POSCatalogSyncState: Equatable {
     case initialSyncStarted(siteID: Int64)
     case syncStarted(siteID: Int64)
+    case initialSyncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
+    case syncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
     case syncCompleted(siteID: Int64)
     case initialSyncFailed(siteID: Int64, error: Error)
     case syncFailed(siteID: Int64, error: Error)
@@ -918,11 +991,36 @@ public enum POSCatalogSyncState: Equatable {
             (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)),
             (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
+        case (.initialSyncProgress(let lhsSiteID, let lhsProgress), .initialSyncProgress(let rhsSiteID, let rhsProgress)),
+            (.syncProgress(let lhsSiteID, let lhsProgress), .syncProgress(let rhsSiteID, let rhsProgress)):
+            return lhsSiteID == rhsSiteID && lhsProgress == rhsProgress
         case (.initialSyncFailed(let lhsSiteID, let lhsError), .initialSyncFailed(let rhsSiteID, let rhsError)),
             (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
             return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
         default:
             return false
+        }
+    }
+}
+
+public enum POSCatalogSyncProgress: Equatable, Sendable {
+    case preparing
+    case itemCount(processed: Int, total: Int)
+
+    init?(response: POSCatalogRequestResponse) {
+        switch response.status {
+        case .scheduled:
+            self = .preparing
+        case .inProgress:
+            guard let processed = response.processed,
+                  let total = response.total,
+                  total > 0 else {
+                self = .preparing
+                return
+            }
+            self = .itemCount(processed: processed, total: total)
+        case .completed, .failed:
+            return nil
         }
     }
 }

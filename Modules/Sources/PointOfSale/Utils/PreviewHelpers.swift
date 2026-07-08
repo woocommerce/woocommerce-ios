@@ -53,6 +53,12 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
+import enum Yosemite.PrinterConnectionStatus
+import struct Yosemite.PrinterDevice
+import struct Yosemite.ReceiptContent
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 
 // MARK: - PreviewProvider helpers
 //
@@ -232,7 +238,8 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil
+        sunsetWarningChecker: POSSunsetWarningChecking? = nil,
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -252,7 +259,8 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker
+            sunsetWarningChecker: sunsetWarningChecker,
+            receiptPrinter: receiptPrinter
         )
     }
 
@@ -744,7 +752,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
         // Preview implementation - no-op
     }
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         // no-op
     }
 
@@ -755,6 +763,48 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
+}
+
+final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
+    private let devices: [PrinterDevice]
+    private let keepDiscovering: Bool
+
+    /// - Parameters:
+    ///   - devices: printers the discovery stream yields, so previews can land on the found states.
+    ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
+    ///     scanning indicator visible instead of ending the scan.
+    init(devices: [PrinterDevice] = [], keepDiscovering: Bool = false) {
+        self.devices = devices
+        self.keepDiscovering = keepDiscovering
+    }
+
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { $0.yield(.idle) }
+    }
+
+    func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
+        AsyncThrowingStream { continuation in
+            for device in devices {
+                continuation.yield(device)
+            }
+            if !keepDiscovering {
+                continuation.finish()
+            }
+        }
+    }
+
+    func stopDiscovery() async {}
+
+    func connect(to printer: PrinterDevice) async throws {}
+
+    func disconnect() async {}
+
+    func printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {}
 }
 
 #endif

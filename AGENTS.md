@@ -66,32 +66,32 @@ ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s,
 ```bash
 # Build
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
 
 # Run all unit tests
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build test
+  -destination 'platform=iOS Simulator,name=iPhone 16' build test
 
 # Run single test class
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass"
 
 # Run single test method
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass/test_method_name"
 
 # Run module tests - use the module's own scheme for faster builds
 # When changes only affect a specific module (e.g. Yosemite, PointOfSale),
 # use that module's scheme instead of WooCommerce. Available schemes: Yosemite, PointOfSale, etc.
 xcodebuild -workspace WooCommerce.xcworkspace -scheme Yosemite \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"YosemiteTests/SomeTestClass"
 
 # Only use the WooCommerce scheme when changes span the main app target
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests"
 
 # Lint (SwiftLint via BuildTools plugin)
@@ -111,6 +111,8 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
 ```
 
 If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
+
+Do not add `-sdk iphonesimulator` to these commands. It overrides the SDK for *every* target in the `WooCommerce` scheme — including the watchOS `WatchWidgetsExtension` — which then compiles the wrong `#if os(watchOS)` branch of `StoreWidgets/StoreWidgetTheme.swift` and fails with `reference to member 'accent' cannot be resolved`. `-destination` already selects the platform per target, so it is sufficient on its own.
 
 ## Architecture
 
@@ -181,17 +183,17 @@ When working on POS, you can build and test the module in isolation for faster f
 ```bash
 # Build PointOfSale module only
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   build-for-testing -only-testing:"PointOfSaleTests"
 
 # Run POS tests only
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests"
 
 # Run a specific POS test class
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests/SomeTestClass"
 ```
 

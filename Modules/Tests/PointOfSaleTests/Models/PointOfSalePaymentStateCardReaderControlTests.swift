@@ -67,8 +67,12 @@ private extension PointOfSalePaymentState {
     static var automaticCardStartAllowedCases: [PointOfSalePaymentState] {
         let cardStates: [PointOfSaleCardPaymentState] = [
             .idle,
+            .validatingOrder,
             .validatingOrderError,
             .paymentIntentCreationError,
+            .preparingReader,
+            .acceptingCard,
+            .cardInserted,
             .paymentError
         ]
         return cardStates.map {
@@ -78,10 +82,6 @@ private extension PointOfSalePaymentState {
 
     static var automaticCardStartBlockedCases: [PointOfSalePaymentState] {
         let cardStates: [PointOfSaleCardPaymentState] = [
-            .validatingOrder,
-            .preparingReader,
-            .acceptingCard,
-            .cardInserted,
             .processingPayment,
             .cardPaymentSuccessful
         ]

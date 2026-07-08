@@ -51,7 +51,7 @@ struct PointOfSalePaymentState: Equatable {
         card.disablesCardReaderConnectionControl
     }
 
-    /// Restarts card collection after reader changes only when no alternate payment flow is active.
+    /// Lets reader changes recover card collection only when no alternate payment flow owns the screen.
     var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
         guard cash == .idle, scanToPay == .idle, markAsPaid == .idle else {
             return false
@@ -250,18 +250,19 @@ extension PointOfSaleCardPaymentState {
         }
     }
 
+    /// Card states where a reader change can safely kick card collection back into motion.
     var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
         switch self {
         case .idle,
+                .validatingOrder,
                 .validatingOrderError,
                 .paymentIntentCreationError,
-                .paymentError:
-            return true
-        case .validatingOrder,
                 .preparingReader,
                 .acceptingCard,
                 .cardInserted,
-                .processingPayment,
+                .paymentError:
+            return true
+        case .processingPayment,
                 .cardPaymentSuccessful:
             return false
         }

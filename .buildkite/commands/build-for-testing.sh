@@ -11,6 +11,9 @@ mkdir -pv ~/.configure/woocommerce-ios/secrets
 cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
 
 echo "--- :hammer_and_wrench: Building"
+# fastlane/logs feeds the warning count below; clear it so logs from a previous
+# build (or the screenshots lane) on a reused checkout can't leak into the report.
+rm -rf fastlane/logs || true
 bundle exec fastlane build_for_testing
 
 # Count warnings here rather than in the comparison step: the build log contains

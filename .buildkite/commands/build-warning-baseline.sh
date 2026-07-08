@@ -31,7 +31,8 @@ echo "Using $SHORT_BASE_COMMIT as the build warning baseline for $BASE_BRANCH."
 
 mkdir -p "$(dirname "$BASELINE_REPORT_PATH")"
 
-COUNT_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/count-build-warnings.sh" | awk '{print $1}')"
+# The counter is the wrapper plus the helper module it delegates to; hash both.
+COUNT_SCRIPT_HASH="$(cat "$COMMANDS_DIR/count-build-warnings.rb" "$REPO_ROOT/fastlane/helpers/build_warnings_helper.rb" | shasum | awk '{print $1}')"
 BASELINE_SCRIPT_HASH="$(shasum "$COMMANDS_DIR/build-warning-baseline.sh" | awk '{print $1}')"
 # The weekly epoch is for storage, not staleness: the key already pins the exact
 # base commit, image, and scripts, but rotating keys weekly stops baselines from
@@ -169,7 +170,7 @@ echo "--- :hammer_and_wrench: Building baseline"
 SCAN_BUILDLOG_PATH="$BASE_WORKTREE/fastlane/logs" bundle exec fastlane build_for_testing
 
 echo "--- :warning: Count baseline build warnings"
-BUILDKITE_BUILD_CHECKOUT_PATH="$BASE_WORKTREE" "$COMMANDS_DIR/count-build-warnings.sh" fastlane/logs "$ABSOLUTE_BASELINE_REPORT_PATH"
+BUILDKITE_BUILD_CHECKOUT_PATH="$BASE_WORKTREE" ruby "$COMMANDS_DIR/count-build-warnings.rb" fastlane/logs "$ABSOLUTE_BASELINE_REPORT_PATH"
 
 popd
 

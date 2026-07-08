@@ -47,7 +47,7 @@ download_report() {
 
 delete_existing_comment() {
   if command -v comment_on_pr >/dev/null 2>&1; then
-    comment_on_pr --id "$COMMENT_ID" --if-exist delete
+    comment_on_pr --id "$COMMENT_ID" --if-exist delete || echo "Failed to delete the existing build warning comment; continuing."
   fi
 }
 
@@ -76,7 +76,7 @@ if [ -z "$comment_body" ]; then
 fi
 
 if command -v comment_on_pr >/dev/null 2>&1; then
-  comment_on_pr --id "$COMMENT_ID" "$comment_body"
+  comment_on_pr --id "$COMMENT_ID" "$comment_body" || echo "Failed to post the build warning comment."
 else
   echo "$comment_body"
 fi

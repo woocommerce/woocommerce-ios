@@ -37,6 +37,9 @@ steps:
       - build
       - build-warning-baseline
     if: build.pull_request.id != null
+    # Advisory-only, like the baseline step: a failure here should never
+    # turn the PR build red.
+    soft_fail: true
     plugins: [$CI_TOOLKIT]
 
   #################

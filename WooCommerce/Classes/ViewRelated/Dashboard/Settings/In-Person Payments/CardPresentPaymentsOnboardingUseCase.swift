@@ -576,7 +576,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         account.wcpayStatus == .enabled ||
         account.wcpayStatus == .restrictedSoon ||
         account.wcpayStatus == .pendingVerification ||
-        (account.wcpayStatus == .restricted && overdueRequirementsStepSkipped)
+        (account.wcpayStatus == .restricted && (overdueRequirementsStepSkipped || pendingRequirementsStepSkipped))
     }
 
     func isNetworkError(_ error: Error) -> Bool {

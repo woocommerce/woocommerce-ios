@@ -890,6 +890,25 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
+    func test_onboarding_when_account_is_restricted_with_pending_requirements_skipped_for_wcpay_plugin_returns_complete() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: .restricted, hasPendingRequirements: true)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        useCase.skipPendingRequirements()
+        useCase.updateState()
+
+        let state = useCase.state
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
     func test_onboarding_returns_complete_when_account_status_is_enabled_using_wcpay_plugin() {
         // Given
         let accountStatus: WCPayAccountStatusEnum = .enabled

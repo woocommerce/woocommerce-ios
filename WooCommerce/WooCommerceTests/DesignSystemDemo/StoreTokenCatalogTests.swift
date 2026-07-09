@@ -11,19 +11,19 @@ import StoreDesignSystem
 /// matching catalog fails here.
 struct StoreTokenCatalogTests {
     @Test func color_catalog_enumerates_every_palette_token() throws {
-        let defined = try Self.declaredNames(in: "Color/Color+StoreColorPalette.swift",
+        let defined = try Self.declaredNames(in: "Tokens/Color/Color+StoreColorPalette.swift",
                                              pattern: #"static var (\w+): Color \{ bundledColor"#)
         #expect(Set(Color.storeColorCatalog.map(\.name)) == defined)
     }
 
     @Test func icon_catalog_enumerates_every_icon_token() throws {
-        let defined = try Self.declaredNames(in: "Icons/StoreIcon.swift",
+        let defined = try Self.declaredNames(in: "Tokens/Icons/StoreIcon.swift",
                                              pattern: #"    public enum (\w+) \{"#)
         #expect(Set(StoreIcon.catalog.map(\.name)) == defined)
     }
 
     @Test func text_style_catalog_enumerates_every_preset() throws {
-        let defined = try Self.declaredNames(in: "Typography/StoreTextStyle.swift",
+        let defined = try Self.declaredNames(in: "Tokens/Typography/StoreTextStyle.swift",
                                              pattern: #"static let (\w+) = StoreTextStyle\("#)
         #expect(Set(StoreTextStyle.catalog.map(\.name)) == defined)
     }

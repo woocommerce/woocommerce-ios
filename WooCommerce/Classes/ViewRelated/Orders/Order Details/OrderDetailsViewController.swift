@@ -260,9 +260,7 @@ private extension OrderDetailsViewController {
             // from the same event. Conversely, when no replacement exists (the order fell off the
             // first page, or was truly deleted), `onUpsert` never fired either, so the screen still
             // shows its last fully-synced in-memory order — no incomplete repaint to recover from.
-            let order = viewModel.order
-            let replacementExists = ServiceLocator.storageManager.containsStoredOrder(siteID: order.siteID, orderID: order.orderID)
-            guard replacementExists, viewIfLoaded?.window != nil else {
+            guard viewModel.isOrderStoredLocally, viewIfLoaded?.window != nil else {
                 return
             }
             syncEverything()

@@ -63,6 +63,16 @@ final class OrderDetailsViewModel {
         dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
     }
 
+    /// Whether an order with this view model's identifiers currently exists in local storage.
+    ///
+    /// Used when the stored order is observed to be deleted, to distinguish it being *replaced*
+    /// (the orders list deletes and re-inserts all stored orders on pull-to-refresh or new filters,
+    /// which strips metadata-derived data) from it being genuinely deleted — only a replacement
+    /// warrants a re-sync.
+    var isOrderStoredLocally: Bool {
+        storageManager.containsStoredOrder(siteID: order.siteID, orderID: order.orderID)
+    }
+
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")

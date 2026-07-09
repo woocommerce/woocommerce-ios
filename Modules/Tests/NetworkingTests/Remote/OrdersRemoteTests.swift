@@ -174,27 +174,27 @@ final class OrdersRemoteTests: XCTestCase {
 
     // MARK: - Load Orders by IDs Tests
 
-    func test_loadOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
+    func test_loadBookingOrders_by_ids_when_request_succeeds_returns_parsed_orders() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let orderIDs: [Int64] = [1, 2, 3]
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+        let orders = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: orderIDs)
 
         // Then
         XCTAssertEqual(orders.count, 4) // The sample file has 4 orders
     }
 
-    func test_loadOrders_by_ids_when_invoked_sends_correct_parameters() async throws {
+    func test_loadBookingOrders_by_ids_when_invoked_sends_correct_parameters() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let orderIDs: [Int64] = [1, 2, 3, 2] // with duplicate
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        _ = try await remote.loadOrders(for: sampleSiteID, orderIDs: orderIDs)
+        _ = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: orderIDs)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -209,13 +209,13 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["per_page"] as? String, "4") // per_page matches order ID count
     }
 
-    func test_loadOrders_by_ids_requests_meta_data_limited_to_payment_status() async throws {
+    func test_loadBookingOrders_by_ids_requests_meta_data_limited_to_payment_status() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        _ = try await remote.loadOrders(for: sampleSiteID, orderIDs: [1])
+        _ = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: [1])
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
@@ -224,12 +224,12 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters["include_meta"] as? String, "_payment_status")
     }
 
-    func test_loadOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
+    func test_loadBookingOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
         // When
-        let orders = try await remote.loadOrders(for: sampleSiteID, orderIDs: [])
+        let orders = try await remote.loadBookingOrders(for: sampleSiteID, orderIDs: [])
 
         // Then
         XCTAssertTrue(orders.isEmpty)

@@ -1,7 +1,9 @@
 import Foundation
 
-public protocol OrdersRemoteProtocol {
-    func loadOrders(
+/// Order fetching for the Bookings feature. `meta_data` in responses from this protocol is limited to
+/// `_payment_status` — the only metadata key Bookings consumes (via `BookingOrderInfo`).
+public protocol BookingOrdersRemoteProtocol {
+    func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order]
@@ -9,7 +11,7 @@ public protocol OrdersRemoteProtocol {
 
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote, OrdersRemoteProtocol {
+public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement
@@ -118,12 +120,12 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves specific `Order`s.
+    /// Retrieves specific `Order`s for the Bookings feature.
     ///
-    /// `meta_data` in the response is limited to `_payment_status` — the only metadata key consumed by
-    /// this method's callers (Bookings, via `BookingOrderInfo`). If a new caller needs other
+    /// `meta_data` in the response is limited to `_payment_status` — the only metadata key Bookings
+    /// consumes (via `BookingOrderInfo`). If another feature needs to fetch orders by IDs with other
     /// metadata-derived `Order` properties (custom fields, attribution, charge ID, subscription renewal),
-    /// extend the `include_meta` value accordingly.
+    /// add a separate method with the appropriate `include_meta` value instead of reusing this one.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
@@ -131,7 +133,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Returns: Array of orders.
     /// - Throws: Network or parsing errors.
     ///
-    public func loadOrders(
+    public func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order] {

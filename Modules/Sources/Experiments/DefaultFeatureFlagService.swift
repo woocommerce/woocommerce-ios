@@ -80,7 +80,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleCatalogAPI:
             return true
         case .pointOfSaleRoles:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
         case .pointOfSalePhonePrototype:

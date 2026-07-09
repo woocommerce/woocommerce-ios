@@ -83,9 +83,11 @@ private extension CookieNonceAuthenticator {
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
 
-                //  Complete the pending requests without retrying. This informs the clients waiting for response about the failure.
+                //  Reset the authenticating state and complete the pending requests without retrying.
+                //  Routing through `invalidateLoginSequence` is what clears `isAuthenticating`: without it, a
+                //  later request that hits a 401 enqueues a retry that never starts, leaving it hanging forever.
                 //
-                completeRequests(false)
+                invalidateLoginSequence(error: .unknown(error))
             }
         }
     }

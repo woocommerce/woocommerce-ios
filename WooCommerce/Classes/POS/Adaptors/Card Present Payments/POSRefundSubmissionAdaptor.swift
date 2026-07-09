@@ -111,7 +111,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws {
+                      reason: String?,
+                      auth: POSStaffAuth?) async throws {
         guard submissionUseCase == nil else {
             throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
         }
@@ -151,7 +152,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             details: .init(order: context.order,
                            charge: context.charge,
                            amount: amount,
-                           paymentGatewayAccount: context.paymentGatewayAccount),
+                           paymentGatewayAccount: context.paymentGatewayAccount,
+                           auth: auth),
             rootViewController: NullViewControllerPresenting(),
             alerts: POSRefundOrderDetailsPaymentAlerts(
                 stateModel: stateModel,

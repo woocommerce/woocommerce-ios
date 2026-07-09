@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import struct Yosemite.CardReaderInput
 import struct Yosemite.POSOrder
+import struct Yosemite.POSStaffAuth
 
 public struct POSRefundPreparation: Equatable {
     public let orderID: Int64
@@ -66,10 +67,15 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) -> POSRefundReviewData?
 
+    /// - Parameter auth: when non-nil, the resulting `POST /wc/v3/orders/{order_id}/refunds`
+    ///   request carries the `X-WC-POS-*` staff headers — `X-WC-POS-Staff-Id` for the actor
+    ///   (the operator, or the approving manager on an override refund) and `X-WC-POS-Initiator-Id`
+    ///   for the cashier who initiated an override refund.
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws
+                      reason: String?,
+                      auth: POSStaffAuth?) async throws
 }
 
 public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessing {
@@ -97,7 +103,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
     public func submitRefund(for order: POSOrder,
                              preparation: POSRefundPreparation,
                              selectedItems: [POSRefundSelectableItem],
-                             reason: String?) async throws {
+                             reason: String?,
+                             auth: POSStaffAuth?) async throws {
         stateModel.state = .completed
     }
 }

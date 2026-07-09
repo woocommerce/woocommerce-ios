@@ -10,21 +10,30 @@ public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with different types of items and quantities.
+    ///   - currency: The store's currency code.
+    ///   - staffUserID: When non-nil, sent as the `X-WC-POS-Staff-Id` request header so the
+    ///     order timeline records which staff member processed it.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
+    func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order
     func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
-    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
+    /// Completes the order with a cash payment.
+    /// - Parameter staffUserID: When non-nil, the current operator's user id is sent as the
+    ///   `X-WC-POS-Staff-Id` header so the server's timeline note attributes this update to them
+    ///   (otherwise the original attribution from the create call sticks).
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws
     /// Marks an order as completed when payment was collected out-of-band (external reader,
     /// gift card, account credit, etc.) and the merchant confirms it via the "Mark order as
     /// paid" flow. The order's `paymentMethodID` is set to `"other"` so reporting can
     /// distinguish it from cash and card-present payments.
-    func markOrderAsCompletedManually(order: Order) async throws
+    /// - Parameter staffUserID: See `markOrderAsCompletedWithCashPayment` above.
+    func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws
     /// Promotes an `autoDraft` order to `.pending` so the WC backend will populate `paymentURL`
     /// (the order becomes payable via the gateway's customer-facing checkout page). Used by the
     /// Scan to Pay flow to obtain a QR-encodeable URL for the order. Idempotent: if the order
     /// is already past `autoDraft` it returns the existing order without a network call.
-    func promoteOrderToPending(order: Order) async throws -> Order
+    /// - Parameter staffUserID: See `markOrderAsCompletedWithCashPayment` above.
+    func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order
     /// Adds a note to the order. Used to record an audit trail when the merchant confirms a
     /// scan-to-pay payment was received.
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws
@@ -66,7 +75,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
     }
 
     public func syncOrder(cart: POSCart,
-                          currency: CurrencyCode) async throws -> Order {
+                          currency: CurrencyCode,
+                          staffUserID: Int64?) async throws -> Order {
         let order = OrderFactory
             .newOrder(currency: currency)
             .copy(siteID: siteID, status: .autoDraft)
@@ -74,12 +84,15 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .addCoupons(cart.coupons)
             .addCustomAmounts(cart.customAmounts)
 
+        let customHeaders = Self.staffAuthHeaders(staffUserID: staffUserID)
+
         let createdOrder: Order
         do {
             createdOrder = try await ordersRemote.createPOSOrder(
                 siteID: siteID,
                 order: order,
-                fields: [.items, .status, .currency, .couponLines, .feeLines]
+                fields: [.items, .status, .currency, .couponLines, .feeLines],
+                customHeaders: customHeaders
             )
         } catch {
             // Check if this is a server validation error about missing products
@@ -126,7 +139,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
         }
     }
 
-    public func promoteOrderToPending(order: Order) async throws -> Order {
+    public func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order {
         // No-op when the order is already past auto-draft: the backend has already populated
         // `paymentURL`, no need for another round-trip.
         guard order.status == .autoDraft else {
@@ -138,7 +151,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 siteID: siteID,
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
-                fields: [.status]
+                fields: [.status],
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -156,7 +170,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
         }
     }
 
-    public func markOrderAsCompletedManually(order: Order) async throws {
+    public func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws {
         let fieldsToUpdate: [OrderUpdateField] = [
             .status,
             .paymentMethodID,
@@ -170,14 +184,15 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 siteID: siteID,
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: nil,
-                fields: fieldsToUpdate
+                fields: fieldsToUpdate,
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
     }
 
-    public func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {
+    public func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws {
         let fieldsToUpdate: [OrderUpdateField] = [
             .status,
             .paymentMethodID,
@@ -191,7 +206,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
                 siteID: siteID,
                 order: updatedOrder,
                 cashPaymentChangeDueAmount: changeDueAmount,
-                fields: fieldsToUpdate
+                fields: fieldsToUpdate,
+                customHeaders: Self.staffAuthHeaders(staffUserID: staffUserID)
             )
         } catch {
             throw POSOrderServiceError.updateOrderFailed
@@ -253,6 +269,16 @@ public extension POSOrderService {
                 return nil
             }
         }
+    }
+}
+
+private extension POSOrderService {
+    /// Returns the `X-WC-POS-*` staff attribution headers for the current operator, or an empty
+    /// dictionary when no staff user is signed in (so pre-roll-out clients send no POS headers).
+    /// Orders have no manager-override path, so the operator is always the actor.
+    static func staffAuthHeaders(staffUserID: Int64?) -> [String: String] {
+        guard let staffUserID else { return [:] }
+        return POSStaffAuth(actorUserID: staffUserID).headers
     }
 }
 

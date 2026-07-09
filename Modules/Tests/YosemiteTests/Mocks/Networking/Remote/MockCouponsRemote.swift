@@ -32,6 +32,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     var didCallCreateCoupon = false
     var spyCreateCoupon: Coupon?
+    var spyCreateCouponCustomHeaders: [String: String]?
 
     var didCallLoadCouponReport = false
     var spyLoadCouponReportDate: Date?
@@ -121,9 +122,11 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
 
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
+                      customHeaders: [String: String],
                       completion: @escaping (Result<Coupon, Error>) -> Void) {
         didCallCreateCoupon = true
         spyCreateCoupon = coupon
+        spyCreateCouponCustomHeaders = customHeaders
     }
 
     func loadCouponReport(for siteID: Int64, couponID: Int64, from startDate: Date, completion: @escaping (Result<CouponReport, Error>) -> Void) {

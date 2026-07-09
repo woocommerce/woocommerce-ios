@@ -93,11 +93,12 @@ public struct PointOfSaleEntryPointView: View {
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
-        self._accessSession = State(initialValue: POSAccessSessionFactory.make(
+        let accessSession = POSAccessSessionFactory.make(
             siteID: siteID,
             featureFlags: services.featureFlags,
             fetcher: staffFetcher
-        ))
+        )
+        self._accessSession = State(initialValue: accessSession)
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
 
@@ -140,7 +141,10 @@ public struct PointOfSaleEntryPointView: View {
         self.orderController = PointOfSaleOrderController(orderService: orderService,
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
-                                                          analytics: services.analytics)
+                                                          analytics: services.analytics,
+                                                          staffUserIDProvider: {
+                                                              accessSession.currentStaff?.userID
+                                                          })
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,
@@ -165,7 +169,8 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor,
+                                                      currentStaffProvider: { accessSession.currentStaff })
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)

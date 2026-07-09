@@ -148,6 +148,19 @@ struct DefaultPOSAccessSessionTests {
         }
     }
 
+    @Test func test_requestManagerApproval_when_authenticator_succeeds_then_returns_approving_staff() async throws {
+        // Given
+        let approver = makeStaff(userID: 44, capabilities: [POSCapability.issueRefunds.rawValue])
+        let authenticator = MockPOSPINAuthenticator(verifyResult: .success(approver))
+        let sut = makeSUT(authenticator: authenticator)
+
+        // When
+        let approvedStaff = try await sut.session.requestManagerApproval(withPIN: "1234", for: .issueRefunds)
+
+        // Then
+        #expect(approvedStaff == approver)
+    }
+
     @Test func test_allows_when_currentStaff_has_capability_then_returns_true() async throws {
         // Given
         let staff = makeStaff(capabilities: [POSCapability.issueRefunds.rawValue])
@@ -275,17 +288,45 @@ struct DefaultPOSAccessSessionTests {
 
     @Test func test_requestManagerApproval_when_pin_misses_stale_cache_then_refreshes_once_and_succeeds() async throws {
         // Given a verify that misses on the first try but matches after a refresh
+        let approver = makeStaff(userID: 45, capabilities: [POSCapability.issueRefunds.rawValue])
         let authenticator = MockPOSPINAuthenticator()
-        authenticator.verifyResultSequence = [.failure(.invalidPIN), .success(())]
+        authenticator.verifyResultSequence = [.failure(.invalidPIN), .success(approver)]
         let fetcher = MockPOSStaffFetcher(result: .success([]))
         let sut = makeSUT(authenticator: authenticator, fetcher: fetcher)
 
         // When
-        try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
+        let approvedStaff = try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
 
         // Then
         #expect(fetcher.callCount == 1)
         #expect(authenticator.verifyCallCount == 2)
+        #expect(approvedStaff == approver)
+    }
+
+    @Test func test_requestManagerApproval_when_refresh_fetch_hangs_then_times_out_and_fails() async {
+        // Given a verify that always misses (forcing refresh-on-miss) and a staff endpoint that never responds
+        let authenticator = MockPOSPINAuthenticator(verifyResult: .failure(.invalidPIN))
+        let fetcher = MockPOSStaffFetcher(result: .success([]))
+        fetcher.onFetchStaff = { try? await Task.sleep(nanoseconds: 60 * NSEC_PER_SEC) }
+        let sut = makeSUT(authenticator: authenticator, fetcher: fetcher, staffRefreshTimeout: 0.05)
+
+        // When / Then — the hung refresh times out and surfaces a fetch failure instead of blocking forever
+        await #expect(throws: POSAuthError.staffFetchFailed(.transient(retryable: true))) {
+            try await sut.session.requestManagerApproval(withPIN: "9999", for: .issueRefunds)
+        }
+    }
+
+    @Test func test_signIn_when_refresh_fetch_hangs_then_times_out_and_fails() async {
+        // Given an authenticator that always misses and a staff endpoint that never responds
+        let authenticator = MockPOSPINAuthenticator(authenticateResult: .failure(.invalidPIN))
+        let fetcher = MockPOSStaffFetcher(result: .success([]))
+        fetcher.onFetchStaff = { try? await Task.sleep(nanoseconds: 60 * NSEC_PER_SEC) }
+        let sut = makeSUT(authenticator: authenticator, fetcher: fetcher, staffRefreshTimeout: 0.05)
+
+        // When / Then — the lock screen recovers from a hung refresh rather than freezing
+        await #expect(throws: POSAuthError.staffFetchFailed(.transient(retryable: true))) {
+            try await sut.session.signIn(withPIN: "0000")
+        }
     }
 
     // MARK: - Cache-driven gating
@@ -446,7 +487,8 @@ private extension DefaultPOSAccessSessionTests {
     func makeSUT(authenticator: POSPINAuthenticating,
                  fetcher: POSStaffFetching = MockPOSStaffFetcher(),
                  cache: POSStaffCache = POSStaffCache(storage: InMemoryStaffStorage()),
-                 now: @escaping () -> Date = { Date() }) -> SUT {
+                 now: @escaping () -> Date = { Date() },
+                 staffRefreshTimeout: TimeInterval = DefaultPOSAccessSession.Constants.defaultStaffRefreshTimeout) -> SUT {
         let scope = UserDefaultsTestScope()
         let limiter = POSLocalRateLimiter(siteID: 123, userDefaults: scope.defaults, now: now)
         let session = DefaultPOSAccessSession(
@@ -455,7 +497,8 @@ private extension DefaultPOSAccessSessionTests {
             rateLimiter: limiter,
             cache: cache,
             fetcher: fetcher,
-            userDefaults: scope.defaults
+            userDefaults: scope.defaults,
+            staffRefreshTimeout: staffRefreshTimeout
         )
         return SUT(session: session, limiter: limiter, scope: scope, cache: cache)
     }

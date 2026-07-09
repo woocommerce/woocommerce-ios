@@ -4,19 +4,28 @@ import struct Yosemite.Coupon
 import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSStaffAuth
 
 extension View {
+    /// Presents the coupon-creation sheet.
+    /// - Parameter auth: when non-nil, the resulting `POST /wc/v3/coupons` request carries the
+    ///   `X-WC-POS-Staff-Id` header attributing the coupon to the operator who created it.
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
+        auth: POSStaffAuth? = nil,
         currencySettings: CurrencySettings,
         onSuccess: @escaping (POSItem) -> Void
     ) -> some View {
-        modifier(POSCouponCreationSheetModifier(isPresented: isPresented, currencySettings: currencySettings, onSuccess: onSuccess))
+        modifier(POSCouponCreationSheetModifier(isPresented: isPresented,
+                                                auth: auth,
+                                                currencySettings: currencySettings,
+                                                onSuccess: onSuccess))
     }
 }
 
 private struct POSCouponCreationSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
+    let auth: POSStaffAuth?
     let currencySettings: CurrencySettings
     let onSuccess: (POSItem) -> Void
 
@@ -31,6 +40,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                 externalViews.createCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
+                    auth: auth,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
                         addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))

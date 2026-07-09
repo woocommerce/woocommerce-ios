@@ -34,6 +34,7 @@ public protocol CouponsRemoteProtocol {
 
     func createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
+                      customHeaders: [String: String],
                       completion: @escaping (Result<Coupon, Error>) -> Void)
 
     func loadCouponReport(for siteID: Int64,
@@ -247,6 +248,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     public func createCoupon(_ coupon: Coupon,
                              siteTimezone: TimeZone? = nil,
+                             customHeaders: [String: String] = [:],
                              completion: @escaping (Result<Coupon, Error>) -> Void) {
         do {
             let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
@@ -255,6 +257,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             }
 
             let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+            // POS staff attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
             let siteID = coupon.siteID
             let path = Path.coupons
             let request = JetpackRequest(wooApiVersion: .mark3,
@@ -262,6 +265,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             let mapper = CouponMapper(siteID: siteID)
 

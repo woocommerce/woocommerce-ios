@@ -221,6 +221,22 @@ extension RefundSubmissionUseCase {
 
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
+
+        /// POS staff attribution forwarded to the create-refund request as `X-WC-POS-*` headers.
+        /// `nil` for non-POS refund flows.
+        let auth: POSStaffAuth?
+
+        init(order: Order,
+             charge: WCPayCharge?,
+             amount: String,
+             paymentGatewayAccount: PaymentGatewayAccount?,
+             auth: POSStaffAuth? = nil) {
+            self.order = order
+            self.charge = charge
+            self.amount = amount
+            self.paymentGatewayAccount = paymentGatewayAccount
+            self.auth = auth
+        }
     }
 }
 
@@ -398,7 +414,10 @@ private extension RefundSubmissionUseCase {
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
+        let action = RefundAction.createRefund(siteID: details.order.siteID,
+                                               orderID: details.order.orderID,
+                                               refund: refund,
+                                               auth: details.auth) { [weak self]
             refundData, error  in
 
             guard let self else { return }

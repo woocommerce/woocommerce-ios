@@ -223,6 +223,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             fields: [CreateOrderField],
                             source: OrderCreationSource = .storeManagement,
+                            customHeaders: [String: String] = [:],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = Constants.ordersPath
@@ -263,7 +264,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
-                // Set source type to mark the order as created from mobile
+                // Set source type to mark the order as created from mobile. POS staff attribution
+                // travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
                 let sourceTypeMetadata = MetaData(metadataID: 0,
                                                   key: OrderAttributionInfo.Keys.sourceType.rawValue,
                                                   value: OrderAttributionInfo.Values.mobileAppSourceType)
@@ -283,6 +285,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -330,6 +333,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
+                            customHeaders: [String: String] = [:],
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
@@ -373,10 +377,13 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                     params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
+                // Attach cash-change meta when present. POS staff attribution travels in
+                // `customHeaders` (the `X-WC-POS-*` headers), not the body.
                 if let cashPaymentChangeDueAmount {
-                    params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
-                                                                               key: NestedFieldKeys.cashPaymentChangeDueAmount,
-                                                                               value: cashPaymentChangeDueAmount).toDictionary()]
+                    let metadataEntries = [MetaData(metadataID: 0,
+                                                    key: NestedFieldKeys.cashPaymentChangeDueAmount,
+                                                    value: cashPaymentChangeDueAmount)]
+                    params[Order.CodingKeys.metadata.rawValue] = try metadataEntries.map { try $0.toDictionary() }
                 }
 
                 // Add decimal places parameter for better precision
@@ -390,6 +397,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -471,9 +479,17 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 }
 
 extension OrdersRemote: POSOrdersRemoteProtocol {
-    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+    public func createPOSOrder(siteID: Int64,
+                               order: Order,
+                               fields: [CreateOrderField],
+                               customHeaders: [String: String] = [:]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields, source: .pointOfSale) { result in
+            createOrder(siteID: siteID,
+                        order: order,
+                        giftCard: nil,
+                        fields: fields,
+                        source: .pointOfSale,
+                        customHeaders: customHeaders) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)
@@ -484,9 +500,18 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
-    public func updatePOSOrder(siteID: Int64, order: Order, cashPaymentChangeDueAmount: String? = nil, fields: [UpdateOrderField]) async throws -> Order {
+    public func updatePOSOrder(siteID: Int64,
+                               order: Order,
+                               cashPaymentChangeDueAmount: String? = nil,
+                               fields: [UpdateOrderField],
+                               customHeaders: [String: String] = [:]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
-            updateOrder(from: siteID, order: order, giftCard: nil, cashPaymentChangeDueAmount: cashPaymentChangeDueAmount, fields: fields) { result in
+            updateOrder(from: siteID,
+                        order: order,
+                        giftCard: nil,
+                        cashPaymentChangeDueAmount: cashPaymentChangeDueAmount,
+                        fields: fields,
+                        customHeaders: customHeaders) { result in
                 switch result {
                 case let .success(order):
                     continuation.resume(returning: order)

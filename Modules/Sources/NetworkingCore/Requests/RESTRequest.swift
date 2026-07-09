@@ -22,6 +22,12 @@ public struct RESTRequest: Request {
 
     let requestParameters: RequestParameters
 
+    /// Extra HTTP headers to attach to the underlying URL request. Used for request-level metadata
+    /// (e.g. the `X-WC-POS-*` POS staff headers) that the server reads off the request rather than
+    /// the body.
+    ///
+    let customHeaders: [String: String]
+
     /// Whether this request should allow cellular access.
     ///
     let allowsCellularAccess: Bool
@@ -31,12 +37,14 @@ public struct RESTRequest: Request {
                  method: HTTPMethod,
                  path: String,
                  requestParameters: RequestParameterDictionary? = nil,
+                 customHeaders: [String: String] = [:],
                  allowsCellularAccess: Bool = true) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
         self.requestParameters = RequestParameters(requestParameters)
+        self.customHeaders = customHeaders
         self.allowsCellularAccess = allowsCellularAccess
     }
 
@@ -45,14 +53,22 @@ public struct RESTRequest: Request {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - customHeaders: Extra HTTP headers to attach to the underlying URL request.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     public init(siteURL: String,
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         customHeaders: [String: String] = [:],
          allowsCellularAccess: Bool = true) {
-        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, requestParameters: parameters, allowsCellularAccess: allowsCellularAccess)
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  requestParameters: parameters,
+                  customHeaders: customHeaders,
+                  allowsCellularAccess: allowsCellularAccess)
     }
 
     public init<Value: RequestParameterValueConvertible>(siteURL: String,
@@ -87,6 +103,7 @@ public struct RESTRequest: Request {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - customHeaders: Extra HTTP headers to attach to the underlying URL request.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     init(siteURL: String,
@@ -94,12 +111,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         customHeaders: [String: String] = [:],
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
                   requestParameters: parameters,
+                  customHeaders: customHeaders,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -197,6 +216,9 @@ public struct RESTRequest: Request {
         let url = try components.joined(separator: "/").asURL()
         var request = try URLRequest(url: url, method: method)
         request.allowsCellularAccess = allowsCellularAccess
+        for (field, value) in customHeaders {
+            request.setValue(value, forHTTPHeaderField: field)
+        }
         let parameters = try requestParameters.validatedAlamofireParameters()
         switch method {
         case .post, .put, .patch:

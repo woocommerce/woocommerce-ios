@@ -29,31 +29,34 @@ struct POSManagerOverrideHandlerTests {
                                capabilities: [POSCapability.viewPOSSettings.rawValue])
         let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: manager))
         var performCount = 0
-        var capturedViaOverride: Bool?
+        var capturedApprover: POSStaff?
 
         // When
-        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { approver in
             performCount += 1
-            capturedViaOverride = viaOverride
+            capturedApprover = approver
         }
 
-        // Then it runs directly, flags no override, and presents no modal
+        // Then it runs directly with no approver and presents no modal
         #expect(performCount == 1)
-        #expect(capturedViaOverride == false)
+        #expect(capturedApprover == nil)
         #expect(sut.request == nil)
     }
 
     @Test func test_gate_when_session_denies_capability_then_presents_override_and_performs_on_approval() async {
         // Given an operator who lacks the capability
         let cashier = POSStaff(userID: 1, displayName: "Cassie", preset: .cashier, capabilities: [])
-        let sut = POSManagerOverrideHandler(session: MockPOSAccessSession(currentStaff: cashier))
+        let approver = POSStaff(userID: 2, displayName: "Morgan", preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+        let session = MockPOSAccessSession(currentStaff: cashier, managerApprovalResult: .success(approver))
+        let sut = POSManagerOverrideHandler(session: session)
         var performCount = 0
-        var capturedViaOverride: Bool?
+        var capturedApprover: POSStaff?
 
         // When the gate is requested for a capability the operator lacks
-        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { viaOverride in
+        sut.gate(.viewPOSSettings, reason: "Opening settings requires manager approval") { approver in
             performCount += 1
-            capturedViaOverride = viaOverride
+            capturedApprover = approver
         }
 
         // Then the override modal is presented and the action has not run yet
@@ -63,9 +66,9 @@ struct POSManagerOverrideHandlerTests {
         // When an authorized manager approves
         await sut.submit(pin: "1234")
 
-        // Then the action runs and flags that it came through the override
+        // Then the action runs, attributed to the approver
         #expect(performCount == 1)
-        #expect(capturedViaOverride == true)
+        #expect(capturedApprover == approver)
     }
 
     @Test func test_submit_when_started_then_sets_loading_state() async {
@@ -90,14 +93,20 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_submit_when_pin_is_valid_then_requests_approval_dismisses_and_runs_completion() async {
         // Given
+        let approver = POSStaff(userID: 88,
+                                displayName: "Morgan",
+                                preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
         var completionWasCalled = false
-        let session = MockPOSAccessSession()
+        var completionApprover: POSStaff?
+        let session = MockPOSAccessSession(managerApprovalResult: .success(approver))
         let sut = POSManagerOverrideHandler(session: session)
         sut.requestApproval(
             for: .viewPOSSettings,
             reason: "Viewing settings requires manager approval",
-            onApproved: {
+            onApproved: { approvedStaff in
                 completionWasCalled = true
+                completionApprover = approvedStaff
             }
         )
 
@@ -111,6 +120,7 @@ struct POSManagerOverrideHandlerTests {
         #expect(sut.request == nil)
         #expect(sut.pinEntryState == .idle)
         #expect(completionWasCalled)
+        #expect(completionApprover == approver)
     }
 
     @Test func test_submit_when_pin_is_invalid_then_shows_invalid_pin_error() async {
@@ -172,7 +182,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: {
+            onApproved: { _ in
                 firstCompletionWasCalled = true
             }
         )
@@ -180,7 +190,7 @@ struct POSManagerOverrideHandlerTests {
             sut.requestApproval(
                 for: .createCoupons,
                 reason: "Creating coupons requires manager approval",
-                onApproved: {
+                onApproved: { _ in
                     secondCompletionWasCalled = true
                 }
             )
@@ -206,7 +216,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: {
+            onApproved: { _ in
                 completionWasCalled = true
             }
         )
@@ -234,7 +244,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .issueRefunds,
             reason: "Refunding orders requires manager approval",
-            onApproved: {
+            onApproved: { _ in
                 firstCompletionWasCalled = true
             }
         )
@@ -244,7 +254,7 @@ struct POSManagerOverrideHandlerTests {
         sut.requestApproval(
             for: .createCoupons,
             reason: "Creating coupons requires manager approval",
-            onApproved: {
+            onApproved: { _ in
                 secondCompletionWasCalled = true
             }
         )

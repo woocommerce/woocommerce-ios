@@ -7,7 +7,7 @@ import struct NetworkingCore.OrderItem
 import PointOfSale
 
 final class POSOrderServiceUITestMock: POSOrderServiceProtocol {
-    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+    func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order {
         let orderItems = cart.items.enumerated().map { index, cartItem in
             makeOrderItem(from: cartItem, itemID: Int64(index + 1))
         }
@@ -60,16 +60,16 @@ final class POSOrderServiceUITestMock: POSOrderServiceProtocol {
     }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        try await syncOrder(cart: POSCart(items: [], coupons: []), currency: .USD)
+        try await syncOrder(cart: POSCart(items: [], coupons: []), currency: .USD, staffUserID: nil)
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
-    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {}
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws {}
 
-    func markOrderAsCompletedManually(order: Order) async throws {}
+    func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws {}
 
-    func promoteOrderToPending(order: Order) async throws -> Order { order }
+    func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 

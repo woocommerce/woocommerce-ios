@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import struct Yosemite.POSStaffAuth
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
@@ -101,8 +102,10 @@ struct ItemListView: View {
         )
     }
 
+    @Environment(\.posAccessSession) private var accessSession
     @State private var showCouponCreationModal: Bool = false
     @State private var couponOverrideHandler = POSManagerOverrideHandler()
+    @State private var couponOverrideApprover: POSStaff?
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -155,6 +158,7 @@ struct ItemListView: View {
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
         .posCouponCreationSheet(isPresented: $showCouponCreationModal,
+                                auth: couponCreationAuth(),
                                 currencySettings: currencyProvider.currencySettings,
                                 onSuccess: { couponItem in
             Task { @MainActor in
@@ -181,6 +185,14 @@ struct ItemListView: View {
             guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
             navigationResetID += 1
         }
+    }
+
+    /// Staff attribution for the coupon's create request, sent as `X-WC-POS-*` headers — the same
+    /// shape every POS write uses: on an override the approving manager is the actor and the operator
+    /// the initiator, otherwise the operator is the actor. `nil` when no operator is signed in, so the
+    /// network boundary sends no POS headers.
+    private func couponCreationAuth() -> POSStaffAuth? {
+        accessSession.currentStaff.map { POSStaffAttribution.authorized(operator: $0, approver: couponOverrideApprover) }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -494,9 +506,10 @@ private extension ItemListView {
 
     /// Gates coupon creation on `.createCoupons`. When the operator already holds it, the creation
     /// sheet opens immediately; otherwise the manager-override modal is presented and it opens once an
-    /// authorized staff member approves.
+    /// authorized staff member approves — the approver is recorded so the create request is attributed.
     private func requestCouponCreationPermission() {
-        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { approver in
+            couponOverrideApprover = approver
             showCouponCreationModal = true
         }
     }

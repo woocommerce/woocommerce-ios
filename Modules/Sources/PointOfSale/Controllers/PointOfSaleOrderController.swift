@@ -64,17 +64,22 @@ protocol PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
-         analytics: POSAnalyticsProviding) {
+         analytics: POSAnalyticsProviding,
+         staffUserIDProvider: @escaping () -> Int64? = { nil }) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
+        self.staffUserIDProvider = staffUserIDProvider
     }
 
     private let orderService: POSOrderServiceProtocol
     private let receiptSender: POSReceiptSending
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let analytics: POSAnalyticsProviding
+    /// Provides the current staff member's user ID, threaded into order creation as
+    /// `_pos_staff_user_id` metadata. Returns nil when no operator is signed in (e.g. tests).
+    private let staffUserIDProvider: () -> Int64?
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -112,7 +117,8 @@ protocol PointOfSaleOrderControllerProtocol {
 
         do {
             let syncedOrder = try await orderService.syncOrder(cart: posCart,
-                                                               currency: storeCurrency)
+                                                               currency: storeCurrency,
+                                                               staffUserID: staffUserIDProvider())
             self.order = syncedOrder
             self.lastSyncedCustomAmounts = posCart.customAmounts
             orderState = .loaded(totals(for: syncedOrder), syncedOrder)
@@ -158,7 +164,9 @@ protocol PointOfSaleOrderControllerProtocol {
         }
 
         do {
-            try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
+            try await orderService.markOrderAsCompletedWithCashPayment(order: order,
+                                                                       changeDueAmount: changeDueAmount,
+                                                                       staffUserID: staffUserIDProvider())
         } catch {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
@@ -174,7 +182,7 @@ protocol PointOfSaleOrderControllerProtocol {
         // Failure analytics is fired from `POSPaymentModel.confirmMarkAsPaidPayment()` so all
         // mark-as-paid failure paths (this call, plus `orderProvider.provideOrder()`) funnel
         // through a single event. Re-throw so the model can roll back state.
-        try await orderService.markOrderAsCompletedManually(order: order)
+        try await orderService.markOrderAsCompletedManually(order: order, staffUserID: staffUserIDProvider())
 
         // Order note attaches separately from completion. We only attempt it if the merchant
         // supplied content; the order completion is the critical path, and a stale note can
@@ -216,7 +224,7 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
-        let promoted = try await orderService.promoteOrderToPending(order: order)
+        let promoted = try await orderService.promoteOrderToPending(order: order, staffUserID: staffUserIDProvider())
         self.order = promoted
         // Keep the loaded totals in sync; the order is the same, only its status changed.
         if case let .loaded(totals, _) = orderState {

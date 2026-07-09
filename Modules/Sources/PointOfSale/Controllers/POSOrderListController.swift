@@ -9,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSStaffAuth
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
@@ -40,6 +41,10 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
+    /// Begins a refund action's attribution session, capturing the signed-in operator and the
+    /// `approver` who authorized it via manager override (`nil` when the operator performed it under
+    /// their own capability). Called when a refund starts; the session is cleared with the selection.
+    func beginRefundSession(approver: POSStaff?)
     func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
 }
@@ -105,7 +110,30 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
+    /// Resolves the signed-in operator when a refund action begins, so the controller owns refund
+    /// attribution end to end instead of receiving a pre-built `POSStaffAuth` from the view.
+    private let currentStaffProvider: () -> POSStaff?
+    /// Attribution snapshot for the in-progress refund, captured when the action begins so it stays a
+    /// single cohesive unit scoped to that one refund — rather than loose fields reset in many places.
+    /// `nil` between refund actions.
+    private var refundSession: RefundSession?
     private var isProcessingRefund = false
+
+    /// Identifies who is performing the current refund action: the signed-in `operatorStaff` and, when
+    /// a manager override authorized it, the `approver`. Built once at the start of the action. The
+    /// session only exists when an operator is signed in (POS roles enabled) — otherwise it stays
+    /// `nil` and the refund carries no attribution.
+    private struct RefundSession {
+        let operatorStaff: POSStaff
+        let approver: POSStaff?
+
+        /// Staff attribution for the refund's create request, sent as `X-WC-POS-*` headers. On an
+        /// override the approving manager is the actor and the operator the initiator; otherwise the
+        /// operator is the actor.
+        var auth: POSStaffAuth {
+            POSStaffAttribution.authorized(operator: operatorStaff, approver: approver)
+        }
+    }
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -118,12 +146,14 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          refundSubmissionProcessor: POSRefundSubmissionProcessing,
+         currentStaffProvider: @escaping () -> POSStaff? = { nil },
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
+        self.currentStaffProvider = currentStaffProvider
     }
 
     @MainActor
@@ -375,6 +405,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     func clearRefundSelection() {
         refundSelectableItems = []
         hasModifiedRefundSelection = false
+        // The refund session ends with the selection — the single place its lifetime is torn down.
+        refundSession = nil
     }
 
     @MainActor
@@ -409,6 +441,17 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Processing
 
     @MainActor
+    func beginRefundSession(approver: POSStaff?) {
+        // No signed-in operator (POS roles disabled, or not yet signed in) means no attribution at
+        // all, so there's no session to track.
+        guard let operatorStaff = currentStaffProvider() else {
+            refundSession = nil
+            return
+        }
+        refundSession = RefundSession(operatorStaff: operatorStaff, approver: approver)
+    }
+
+    @MainActor
     func processRefund(reason: String?) async throws {
         guard !isProcessingRefund else {
             throw POSRefundProcessingError.refundAlreadyInProgress
@@ -436,7 +479,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             for: order,
             preparation: preparation,
             selectedItems: selectedItems,
-            reason: reason
+            reason: reason,
+            auth: refundSession?.auth
         )
 
         clearRefundSelection()

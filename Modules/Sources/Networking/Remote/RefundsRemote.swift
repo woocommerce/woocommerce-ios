@@ -101,18 +101,21 @@ public final class RefundsRemote: Remote {
     public func createRefund(for siteID: Int64,
                              by orderID: Int64,
                              refund: Refund,
+                             customHeaders: [String: String] = [:],
                              completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
         do {
             let encodedJson = try mapper.map(refund: refund)
+            // POS staff attribution travels in `customHeaders` (the `X-WC-POS-*` headers), not the body.
             let parameters = try (JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any])?.requestParameterDictionaryFromJSONObject()
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         customHeaders: customHeaders,
                                          availableAsRESTRequest: true)
 
             enqueue(request, mapper: mapper) { result in

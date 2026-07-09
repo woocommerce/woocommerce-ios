@@ -150,7 +150,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                 let refund = refundUseCase.createRefund()
                 let refundAction = RefundAction.createRefund(siteID: siteID,
                                                              orderID: summaryViewModel.orderID,
-                                                             refund: refund) { [weak self] refund, error in
+                                                             refund: refund,
+                                                             auth: nil) { [weak self] refund, error in
                     guard let self else { return }
                     defer {
                         self.refundInProgress = false

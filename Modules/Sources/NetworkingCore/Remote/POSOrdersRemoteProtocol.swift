@@ -9,7 +9,8 @@ public protocol POSOrdersRemoteProtocol {
     func updatePOSOrder(siteID: Int64,
                         order: Order,
                         cashPaymentChangeDueAmount: String?,
-                        fields: [OrdersRemote.UpdateOrderField]) async throws -> Order
+                        fields: [OrdersRemote.UpdateOrderField],
+                        customHeaders: [String: String]) async throws -> Order
 
     func updatePOSOrderEmail(siteID: Int64,
                              orderID: Int64,
@@ -17,7 +18,8 @@ public protocol POSOrdersRemoteProtocol {
 
     func createPOSOrder(siteID: Int64,
                         order: Order,
-                        fields: [OrdersRemote.CreateOrderField]) async throws -> Order
+                        fields: [OrdersRemote.CreateOrderField],
+                        customHeaders: [String: String]) async throws -> Order
 
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order
 

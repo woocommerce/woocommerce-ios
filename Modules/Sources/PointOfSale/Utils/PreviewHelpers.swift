@@ -546,6 +546,8 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    func beginRefundSession(approver: POSStaff?) {}
+    @MainActor
     func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
@@ -585,7 +587,7 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
-    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+    func syncOrder(cart: POSCart, currency: CurrencyCode, staffUserID: Int64?) async throws -> Order {
         .empty
     }
 
@@ -595,11 +597,11 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
-    func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+    func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?, staffUserID: Int64?) async throws {}
 
-    func markOrderAsCompletedManually(order: Yosemite.Order) async throws {}
+    func markOrderAsCompletedManually(order: Yosemite.Order, staffUserID: Int64?) async throws {}
 
-    func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
+    func promoteOrderToPending(order: Yosemite.Order, staffUserID: Int64?) async throws -> Yosemite.Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 }

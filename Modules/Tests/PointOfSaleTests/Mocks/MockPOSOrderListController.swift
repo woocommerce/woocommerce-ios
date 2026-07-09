@@ -111,7 +111,14 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     var processRefundCalled = false
     var spyProcessRefundReason: String?
+    private(set) var spyBegunRefundSessionApprover: POSStaff?
+    private(set) var beginRefundSessionCallCount = 0
     var shouldThrowProcessRefundError = false
+
+    func beginRefundSession(approver: POSStaff?) {
+        beginRefundSessionCallCount += 1
+        spyBegunRefundSessionApprover = approver
+    }
 
     func processRefund(reason: String?) async throws {
         processRefundCalled = true

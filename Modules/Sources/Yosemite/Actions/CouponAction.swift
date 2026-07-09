@@ -42,10 +42,13 @@ public enum CouponAction: Action {
     ///
     /// - `coupon`: the coupon to be created.
     /// - `siteTimezone`: the timezone configured on the site (also know as local time of the site).
+    /// - `auth`: when non-nil, POS staff attribution sent as `X-WC-POS-*` request headers
+    ///   (`actorUserID` is the operator who created the coupon).
     /// - `onCompletion`: invoked when the creation finishes.
     ///
     case createCoupon(_ coupon: Coupon,
                       siteTimezone: TimeZone?,
+                      auth: POSStaffAuth? = nil,
                       onCompletion: (Result<Coupon, Error>) -> Void)
 
     /// Loads analytics report for a coupon with the specified coupon ID and site ID.

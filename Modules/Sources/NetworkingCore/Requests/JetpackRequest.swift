@@ -32,6 +32,12 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
 
     let requestParameters: RequestParameters
 
+    /// Extra HTTP headers to attach to the underlying URL request. Used for request-level metadata
+    /// (e.g. the `X-WC-POS-*` POS staff headers) that the server reads off the request rather than
+    /// the body.
+    ///
+    let customHeaders: [String: String]
+
     /// Whether this request should be transformed to a REST request if application password is available.
     ///
     private let availableAsRESTRequest: Bool
@@ -46,6 +52,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                  locale: String? = nil,
                  path: String,
                  requestParameters: RequestParameters,
+                 customHeaders: [String: String] = [:],
                  availableAsRESTRequest: Bool = false,
                  allowsCellularAccess: Bool = true) {
         if [.mark1, .mark2].contains(wooApiVersion) {
@@ -57,6 +64,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.locale = locale
         self.path = path
         self.requestParameters = requestParameters
+        self.customHeaders = customHeaders
         self.availableAsRESTRequest = availableAsRESTRequest
         self.allowsCellularAccess = allowsCellularAccess
     }
@@ -69,6 +77,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
+    ///     - customHeaders: Extra HTTP headers to attach to the underlying URL request.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
@@ -78,6 +87,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         customHeaders: [String: String] = [:],
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -86,6 +96,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  customHeaders: customHeaders,
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -96,6 +107,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: [String: Value],
+         customHeaders: [String: String] = [:],
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -104,6 +116,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  customHeaders: customHeaders,
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -114,6 +127,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: RequestParameterConvertibleDictionary,
+         customHeaders: [String: String] = [:],
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -122,6 +136,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  customHeaders: customHeaders,
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -130,7 +145,10 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     public func asURLRequest() throws -> URLRequest {
-        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
+        let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion,
+                                           method: dotcomMethod,
+                                           path: dotcomPath,
+                                           headers: customHeaders)
         var dotcomRequest = try dotcomEndpoint.asURLRequest()
         dotcomRequest.allowsCellularAccess = allowsCellularAccess
 
@@ -151,6 +169,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                            method: method,
                            path: path,
                            parameters: requestParameters.dictionary,
+                           customHeaders: customHeaders,
                            allowsCellularAccess: allowsCellularAccess)
     }
 }

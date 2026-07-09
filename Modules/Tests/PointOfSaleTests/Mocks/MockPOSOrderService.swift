@@ -13,15 +13,18 @@ class MockPOSOrderService: POSOrderServiceProtocol {
     var syncOrderCallCount = 0
     var updateOrderWasCalled = false
     var spySyncOrderCurrency: CurrencyCode?
+    var spySyncOrderStaffUserID: Int64?
     var spyCashPaymentChangeDueAmount: String?
 
     var onSyncOrderCalled: (@MainActor () async -> Void)?
 
     func syncOrder(cart: Yosemite.POSCart,
-                   currency: CurrencyCode) async throws -> Yosemite.Order {
+                   currency: CurrencyCode,
+                   staffUserID: Int64?) async throws -> Yosemite.Order {
         syncOrderWasCalled = true
         syncOrderCallCount += 1
         spySyncOrderCurrency = currency
+        spySyncOrderStaffUserID = staffUserID
 
         await onSyncOrderCalled?()
 
@@ -70,8 +73,10 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         orderToReturn = orderWithUpdatedEmail
     }
 
-    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws {
+    var spyCashPaymentStaffUserID: Int64?
+    func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?, staffUserID: Int64?) async throws {
         spyCashPaymentChangeDueAmount = changeDueAmount
+        spyCashPaymentStaffUserID = staffUserID
 
         switch resultToReturn {
         case .success:
@@ -83,9 +88,11 @@ class MockPOSOrderService: POSOrderServiceProtocol {
 
     var markOrderAsCompletedManuallyWasCalled = false
     var spyMarkOrderAsCompletedManuallyOrder: Order?
-    func markOrderAsCompletedManually(order: Order) async throws {
+    var spyMarkOrderAsCompletedManuallyStaffUserID: Int64?
+    func markOrderAsCompletedManually(order: Order, staffUserID: Int64?) async throws {
         markOrderAsCompletedManuallyWasCalled = true
         spyMarkOrderAsCompletedManuallyOrder = order
+        spyMarkOrderAsCompletedManuallyStaffUserID = staffUserID
         switch resultToReturn {
         case .success:
             return
@@ -96,10 +103,12 @@ class MockPOSOrderService: POSOrderServiceProtocol {
 
     var promoteOrderToPendingWasCalled = false
     var spyPromoteOrderToPendingOrder: Order?
+    var spyPromoteOrderToPendingStaffUserID: Int64?
     var promoteOrderToPendingOverride: Order?
-    func promoteOrderToPending(order: Order) async throws -> Order {
+    func promoteOrderToPending(order: Order, staffUserID: Int64?) async throws -> Order {
         promoteOrderToPendingWasCalled = true
         spyPromoteOrderToPendingOrder = order
+        spyPromoteOrderToPendingStaffUserID = staffUserID
         switch resultToReturn {
         case .success:
             return promoteOrderToPendingOverride ?? order

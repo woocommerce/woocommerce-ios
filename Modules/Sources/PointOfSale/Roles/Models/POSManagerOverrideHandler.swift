@@ -5,7 +5,7 @@ import Observation
 @MainActor
 final class POSManagerOverrideHandler {
     @ObservationIgnored private var session: POSAccessSession?
-    @ObservationIgnored private var onApproved: (() -> Void)?
+    @ObservationIgnored private var onApproved: ((POSStaff?) -> Void)?
 
     private(set) var request: POSManagerOverrideRequest?
     private(set) var pinEntryState: POSPINEntryState = .idle
@@ -28,7 +28,7 @@ final class POSManagerOverrideHandler {
         self.session = session
     }
 
-    func requestApproval(for capability: POSCapability, reason: String, onApproved: (() -> Void)? = nil) {
+    func requestApproval(for capability: POSCapability, reason: String, onApproved: ((POSStaff?) -> Void)? = nil) {
         request = POSManagerOverrideRequest(capability: capability, reason: reason)
         pinEntryState = .idle
         self.onApproved = onApproved
@@ -37,18 +37,18 @@ final class POSManagerOverrideHandler {
     /// Gates `capability`: runs `perform` immediately when the configured session already grants it —
     /// including when POS roles are off, where an unrestricted session grants everything — otherwise
     /// presents the override modal and runs `perform` once an authorized staff member approves.
-    /// `viaOverride` is `true` only on the approval path, so a caller can defer work that must wait for
-    /// the override modal to dismiss. No-ops until the handler has been configured with a session (the
-    /// override modal configures it on appear).
-    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ viaOverride: Bool) -> Void) {
+    /// `approver` is the staff who authorized via override, or `nil` when the operator already held the
+    /// capability (so callers can attribute the action and tell the two paths apart). No-ops until the
+    /// handler has been configured with a session (the override modal configures it on appear).
+    func gate(_ capability: POSCapability, reason: String, perform: @escaping (_ approver: POSStaff?) -> Void) {
         guard let session else {
             return
         }
         if session.allows(capability) {
-            perform(false)
+            perform(nil)
         } else {
-            requestApproval(for: capability, reason: reason) {
-                perform(true)
+            requestApproval(for: capability, reason: reason) { approver in
+                perform(approver)
             }
         }
     }
@@ -66,10 +66,10 @@ final class POSManagerOverrideHandler {
         pinEntryState = .loading
 
         do {
-            try await session.requestManagerApproval(withPIN: pin, for: request.capability)
+            let approver = try await session.requestManagerApproval(withPIN: pin, for: request.capability)
             guard self.request?.id == activeRequestID else { return true }
             dismiss()
-            activeOnApproved?()
+            activeOnApproved?(approver)
             return true
         } catch {
             guard self.request?.id == activeRequestID else { return true }

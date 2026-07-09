@@ -4,6 +4,7 @@ import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
 import struct NetworkingCore.Order
+import struct Yosemite.POSStaffAuth
 import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
@@ -1183,6 +1184,96 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func processRefund_when_no_approver_recorded_then_attributes_refund_to_the_operator() async throws {
+        // Given a controller that knows the signed-in operator and no override
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [POSCapability.issueRefunds.rawValue])
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: nil)
+        _ = await controller.startRefundFlow()
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — the operator is the actor; no initiator
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == POSStaffAuth(actorUserID: 42))
+    }
+
+    @MainActor
+    @Test func processRefund_when_override_approver_recorded_then_attributes_actor_to_approver_and_initiator_to_operator() async throws {
+        // Given a cashier operator and a manager who authorized the refund via override
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [])
+        let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: approver)
+        _ = await controller.startRefundFlow()
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — the approving manager is the actor, the operator the initiator
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == POSStaffAuth(actorUserID: 7, initiatorUserID: 42))
+    }
+
+    @MainActor
+    @Test func beginRefundSession_when_no_operator_is_signed_in_then_refund_carries_no_attribution() async throws {
+        // Given POS roles disabled / nobody signed in — the staff provider returns nil
+        let controller = makeRefundController(currentStaff: nil)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: nil)
+        _ = await controller.startRefundFlow()
+
+        // When
+        try await controller.processRefund(reason: nil)
+
+        // Then — no session is created, so the request carries no POS headers
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == nil)
+    }
+
+    @MainActor
+    @Test func processRefund_does_not_carry_an_earlier_override_approver_into_a_later_refund() async throws {
+        // Given a first refund authorized via override (its session ends when it submits)
+        let operatorStaff = POSStaff(userID: 42, displayName: "Cassie", preset: .cashier,
+                                     capabilities: [])
+        let approver = POSStaff(userID: 7, displayName: "Morgan", preset: .manager,
+                                capabilities: Set(POSCapability.allCases.map(\.rawValue)))
+        let controller = makeRefundController(currentStaff: operatorStaff)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        controller.selectOrder(order)
+        controller.beginRefundSession(approver: approver)
+        _ = await controller.startRefundFlow()
+        try await controller.processRefund(reason: nil)
+
+        // When a second refund runs without beginning a new session
+        controller.selectOrder(order)
+        _ = await controller.startRefundFlow()
+        try await controller.processRefund(reason: nil)
+
+        // Then the first refund's override approver does not leak into it
+        #expect(refundSubmissionProcessor.spySubmitRefundAuth == nil)
+    }
+
+    @MainActor
+    private func makeRefundController(currentStaff: POSStaff?) -> POSOrderListController {
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        return POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
+                                      refundsService: refundsService,
+                                      refundSubmissionProcessor: refundSubmissionProcessor,
+                                      currentStaffProvider: { currentStaff })
+    }
+
+    @MainActor
     @Test func processRefund_when_successful_then_clears_selection() async throws {
         // Given
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
@@ -1825,6 +1916,7 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     private(set) var spySubmitRefundItems: [POSRefundSelectableItem]?
     private(set) var spySubmitRefundReason: String?
     private(set) var spySubmitRefundIsAutomaticRefund: Bool?
+    private(set) var spySubmitRefundAuth: POSStaffAuth?
     var submitRefundErrorToThrow: Error?
 
     nonisolated init(refundsService: MockPOSRefundsService,
@@ -1895,7 +1987,8 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws {
+                      reason: String?,
+                      auth: POSStaffAuth?) async throws {
         onSubmitRefundStarted?()
         if shouldSuspendSubmitRefund {
             await withCheckedContinuation { continuation in
@@ -1908,6 +2001,8 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
         spySubmitRefundItems = selectedItems
         spySubmitRefundReason = reason
         spySubmitRefundIsAutomaticRefund = refundResultsByOrderID[preparation.orderID]?.supportsAutomaticRefund ?? true
+
+        spySubmitRefundAuth = auth
 
         if let error = submitRefundErrorToThrow {
             throw error

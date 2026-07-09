@@ -10,6 +10,8 @@ import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.POSReceiptInformation
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
@@ -522,6 +524,77 @@ struct PointOfSaleAggregateModelTests {
                 #expect(nsError.domain == expectedError.domain)
                 #expect(nsError.code == expectedError.code)
             }
+        }
+
+        @Test func printReceipt_when_invoked_then_prints_current_order_on_printer() async throws {
+            // Given
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then
+            #expect(printer.printedOrder?.orderID == 42)
+            #expect(printer.printedStoreInformation != nil)
+        }
+
+        @Test func printReceipt_refreshes_store_information_before_printing() async throws {
+            // Given a connected printer, a current order, and store settings that changed this session
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let settingsService = MockPointOfSaleSettingsService()
+            settingsService.retrievePointOfSaleSettingsResult = .success(
+                POSReceiptInformation(storeName: nil,
+                                      storeAddress: nil,
+                                      phone: "555-0100",
+                                      email: nil,
+                                      refundReturnsPolicy: nil))
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "99.0.0", active: true))
+            let settingsController = MockPOSSettingsController()
+            settingsController.storeViewModel = POSSettingsStoreViewModel(
+                siteID: 123,
+                settingsService: settingsService,
+                pluginsService: pluginsService,
+                defaultSiteName: "Sample Store",
+                siteSettings: [],
+                receiptSettingsAdminURL: "")
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                settingsController: settingsController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then the settings are re-fetched and the fresh values reach the printout
+            #expect(settingsService.retrievePointOfSaleSettingsWasCalled == true)
+            #expect(printer.printedStoreInformation?.phone == "555-0100")
         }
 
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
@@ -1659,4 +1732,19 @@ private func makePointOfSaleAggregateModel(
         sunsetWarningChecker: sunsetWarningChecker,
         receiptPrinter: receiptPrinter
     )
+}
+
+private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
+    var retrievePointOfSaleSettingsWasCalled = false
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
+
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        retrievePointOfSaleSettingsWasCalled = true
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
+        }
+    }
 }

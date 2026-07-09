@@ -7,10 +7,10 @@ Buat pesanan dari mana saja
 Setelah Anda membuat beberapa produk, selebihnya mudah. Pilih item dari katalog Anda, tambahkan pengiriman, lalu isi detail pelanggan untuk membuat pesanan secara cepat yang tersinkronisasi dengan inventaris Anda.
 
 Terima pembayaran secara langsung
-Terima pembayaran langsung menggunakan Pembayaran Langsung WooCommerce dan pembaca kartu di Australia, Austria, Belgia, Kanada, Finlandia, Prancis, Jerman, Irlandia, Italia, Luksemburg, Belanda, Selandia Baru, Portugal, Singapura, Spanyol, Inggris, dan Amerika Serikat. Ketuk untuk Bayar di iPhone tersedia di Inggris dan Amerika Serikat. Buat pesanan baru atau temukan pesanan yang belum dibayar, lalu terima pembayaran dengan lancar.
+Kumpulkan pembayaran fisik menggunakan WooCommerce In-Person Payments dan pembaca kartu di Australia, Kanada, Finlandia, Irlandia, Luksemburg, Belanda, Selandia Baru, Singapura, Inggris, dan Amerika Serikat. Ketuk untuk Bayar di iPhone tersedia di Inggris dan Amerika Serikat. Buat pesanan baru, atau cari pesanan yang masih menunggu pembayaran, lalu terima pembayaran dengan mudah.
 
-Perluas bisnis dari dunia maya ke toko nyata
-Jadikan tablet apa pun menjadi sistem point of sale yang andal dengan WooCommerce POS. Cari produk, pindai barcode, gunakan kupon, dan kirim tanda terima via email, dengan seluruh data penjualan online dan toko fisik yang tersinkronisasi secara real-time. Tersedia di Amerika Serikat dan Inggris.
+Beralih dari klik ke toko fisik
+Ubah tablet apa pun menjadi titik penjualan yang andal dengan WooCommerce POS. Cari produk, pindai barcode, gunakan kupon, dan kirim e-mail tanda terima, dengan semua penjualan online dan fisik Anda yang disinkronkan secara real time. Tersedia di Australia, Kanada, Finlandia, Irlandia, Luksemburg, Belanda, Selandia Baru, Singapura, Inggris, dan Amerika Serikat.
 
 Dapatkan pemberitahuan untuk setiap penjualan
 Kini setelah Anda aktif berjualan, jangan lewatkan pesanan atau ulasan. Terus pantau prosesnya dengan mengaktifkan peringatan real-time – dan dengarkan bunyi “cring-cring” setiap kali ada penjualan!

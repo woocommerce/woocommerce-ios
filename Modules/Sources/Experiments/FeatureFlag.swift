@@ -236,10 +236,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case loggedOutFFPanel
 
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
-
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant

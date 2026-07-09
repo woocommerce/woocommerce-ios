@@ -49,21 +49,6 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
-    /// Checks whether the site has set up any payment method.
-    ///
-    private var hasAnyPaymentGateways: Bool {
-        storageManager.viewStorage.loadAllPaymentGateways(siteID: siteID)
-            .contains(where: { $0.enabled })
-    }
-
-    /// Checks whether the site has published any product.
-    ///
-    private var hasAnyPublishedProducts: Bool {
-        (storageManager.viewStorage.loadProducts(siteID: siteID) ?? [])
-            .map { $0.toReadOnly() }
-            .contains(where: { $0.productStatus == .published })
-    }
-
     private var isIPPSupportedCountry: Bool {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
@@ -143,24 +128,6 @@ final class OrderListViewModel {
 
         observeForegroundRemoteNotifications()
         bindTopBannerState()
-    }
-
-    /// Handles extra syncing upon pull-to-refresh.
-    func onPullToRefresh() {
-        /// syncs payment gateways
-        stores.dispatch(PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in }))
-
-        /// syncs first published product
-        stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
-                                                          pageNumber: Store.Default.firstPageNumber,
-                                                          pageSize: 1,
-                                                          stockStatus: nil,
-                                                          productStatus: .published,
-                                                          productType: nil,
-                                                          productCategory: nil,
-                                                          sortOrder: .dateDescending,
-                                                          shouldDeleteStoredProductsOnFirstPage: false,
-                                                          onCompletion: { _ in }))
     }
 
     /// Starts the snapshotsProvider, logging any errors.

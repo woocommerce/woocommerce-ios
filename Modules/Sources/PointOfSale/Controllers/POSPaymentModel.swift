@@ -3,6 +3,8 @@ import Foundation
 import Combine
 
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import class Yosemite.PaymentCaptureCelebration
@@ -87,6 +89,9 @@ final class POSPaymentModel {
     private let scanToPayVerifier: POSScanToPayVerifying?
     private let markAsPaidHandler: POSMarkAsPaidHandling
     private let receiptSender: POSReceiptSending
+    /// Optional: nil when receipt printing is disabled (`.starReceiptPrinterSupport` off), matching
+    /// the aggregate model's `receiptPrinter`. The Print receipt button is hidden in that case.
+    private let receiptPrinter: ReceiptPrinterServiceProtocol?
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
     private let analytics: POSAnalyticsProviding
@@ -154,6 +159,7 @@ final class POSPaymentModel {
          scanToPayVerifier: POSScanToPayVerifying? = nil,
          markAsPaidHandler: POSMarkAsPaidHandling,
          receiptSender: POSReceiptSending,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
@@ -170,6 +176,7 @@ final class POSPaymentModel {
         self.scanToPayVerifier = scanToPayVerifier
         self.markAsPaidHandler = markAsPaidHandler
         self.receiptSender = receiptSender
+        self.receiptPrinter = receiptPrinter
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
         self.analytics = analytics
@@ -947,6 +954,18 @@ extension POSPaymentModel {
         }
         try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: emailAddress)
         currentOrder = order.copy(billingAddress: order.billingAddress?.copy(email: emailAddress))
+    }
+
+    /// Prints the current order's receipt on the connected printer. The aggregate model supplies
+    /// best-effort `storeInformation`; the printer assembles the receipt content from the order.
+    func printReceipt(storeInformation: ReceiptStoreInformation) async throws {
+        guard let order = currentOrder else {
+            throw POSPaymentError.noOrder
+        }
+        guard let receiptPrinter else {
+            return
+        }
+        try await receiptPrinter.printReceipt(order: order, storeInformation: storeInformation)
     }
 }
 

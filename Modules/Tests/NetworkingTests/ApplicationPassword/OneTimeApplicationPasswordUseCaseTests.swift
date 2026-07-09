@@ -62,6 +62,86 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         }
     }
 
+    // MARK: - Validate Password Tests
+
+    func test_validateApplicationPassword_returns_valid_when_introspection_succeeds() async throws {
+        // Given
+        simulateIntrospectResponse(uuid: "test-uuid")
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .valid = result else {
+            return XCTFail("Expected valid application password")
+        }
+        XCTAssertEqual(mockSession.requestCount, 1)
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, introspectURL())
+        XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Basic dGVzdHVzZXI6c2VjcmV0")
+    }
+
+    func test_validateApplicationPassword_throws_notSupported_when_password_is_missing() async {
+        // Given
+        let sut = createSUT()
+
+        // When/Then
+        do {
+            _ = try await sut.validateApplicationPassword()
+            XCTFail("Expected notSupported error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .notSupported)
+        }
+    }
+
+    func test_validateApplicationPassword_returns_invalid_when_introspection_returns_unauthorized_status() async throws {
+        // Given
+        mockSession.simulateResponse(for: introspectURL(), statusCode: 401)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .invalid(let error) = result else {
+            return XCTFail("Expected invalid application password")
+        }
+        XCTAssertEqual((error as? NetworkError)?.responseCode, 401)
+    }
+
+    func test_validateApplicationPassword_returns_invalid_when_introspection_returns_incorrect_password_code() async throws {
+        // Given
+        let response = try JSONSerialization.data(withJSONObject: ["code": "incorrect_password"])
+        mockSession.simulateResponse(for: introspectURL(), data: response, statusCode: 400)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .invalid(let error) = result else {
+            return XCTFail("Expected invalid application password")
+        }
+        XCTAssertEqual((error as? NetworkError)?.errorCode, "incorrect_password")
+    }
+
+    func test_validateApplicationPassword_throws_when_introspection_fails_with_unrelated_server_error() async throws {
+        // Given
+        mockSession.simulateResponse(for: introspectURL(), statusCode: 500)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        var thrownError: NetworkError?
+        do {
+            _ = try await sut.validateApplicationPassword()
+        } catch {
+            thrownError = error as? NetworkError
+        }
+
+        // Then
+        XCTAssertEqual(thrownError?.responseCode, 500)
+    }
+
     // MARK: - Delete Password Tests
 
     func test_deletePassword_locally_true_removes_from_storage_and_calls_api() async throws {

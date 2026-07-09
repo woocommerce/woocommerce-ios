@@ -134,6 +134,38 @@ struct ReceiptPrinterServiceTests {
             try await sut.printReceipt(content: content, storeInformation: .empty, cardDetails: nil)
         }
     }
+
+    @Test func test_printReceipt_with_order_assembles_content_and_forwards_rendered_text() async throws {
+        // Given
+        let sut = makeService()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "10.00")
+        let storeInformation = ReceiptStoreInformation(storeName: "My Store",
+                                                       storeAddress: nil,
+                                                       phone: nil,
+                                                       email: nil,
+                                                       refundReturnsPolicy: nil)
+
+        // When — the order-based path assembles the receipt content from the order internally.
+        try await sut.printReceipt(order: order, storeInformation: storeInformation)
+
+        // Then — finished text (store header, order number, amount paid) reaches the backend.
+        let printedText = try #require(printerDiscoveryService.printedText)
+        #expect(printedText.contains("My Store"))
+        #expect(printedText.contains("42"))
+        #expect(printedText.contains("10.00"))
+    }
+
+    @Test func test_printReceipt_with_order_when_service_throws_then_propagates_error() async {
+        // Given
+        let sut = makeService()
+        printerDiscoveryService.printError = SampleError.connectionFailed
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "10.00")
+
+        // When / Then
+        await #expect(throws: SampleError.connectionFailed) {
+            try await sut.printReceipt(order: order, storeInformation: .empty)
+        }
+    }
 }
 
 private extension ReceiptPrinterServiceTests {

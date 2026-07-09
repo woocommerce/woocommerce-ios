@@ -163,10 +163,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case productImageOptimizedHandling
 
-    /// Shows inventory levels and inventory status in POS item cards
-    ///
-    case inventoryProductLabelsInPOS
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
@@ -235,10 +231,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel
-
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
 
     /// Enables the WooAI Assistant.
     ///

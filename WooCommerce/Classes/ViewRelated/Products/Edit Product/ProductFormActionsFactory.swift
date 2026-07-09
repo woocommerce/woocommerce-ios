@@ -431,7 +431,7 @@ private extension ProductFormActionsFactory {
             return product.sku != nil || hasStockData
         case .shippingSettings:
             let shouldShowOneTimeShipping = {
-                guard product.productType == .subscription || product.productType == .variableSubscription else {
+                guard product.isSubscriptionProduct else {
                     return false
                 }
                 return product.subscription?.oneTimeShipping == true

@@ -1,4 +1,5 @@
 import SwiftUI
+import CocoaLumberjackSwift
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
@@ -42,12 +43,36 @@ struct PointOfSalePaymentSuccessView: View {
                 POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
             }
         }
+        .onChange(of: showPrinterSetupModal) { _, isShowing in
+            // The setup modal auto-dismisses when a printer connects, so the modal closing with a
+            // printer connected means setup succeeded — print the receipt the merchant asked for.
+            if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
+                isPresented: isShowing,
+                isPrinterConnected: posModel.isReceiptPrinterConnected) == .print {
+                printReceipt()
+            }
+        }
     }
 
     private func handlePrintReceiptTap() {
-        guard posModel.isReceiptPrinterConnected else {
+        switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
+        case .presentSetup:
             showPrinterSetupModal = true
-            return
+        case .print:
+            printReceipt()
+        case .none:
+            break
+        }
+    }
+
+    private func printReceipt() {
+        // Print-failure UX (retry + email fallback) is deferred to a follow-up; log for now.
+        Task {
+            do {
+                try await posModel.printReceipt()
+            } catch {
+                DDLogError("⛔️ POS receipt print failed: \(error)")
+            }
         }
     }
 

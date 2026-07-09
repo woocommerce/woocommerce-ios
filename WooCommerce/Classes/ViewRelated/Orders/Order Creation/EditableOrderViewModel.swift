@@ -2096,8 +2096,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     func trackCollectPaymentTapped() {
@@ -2110,8 +2109,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

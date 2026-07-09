@@ -1076,6 +1076,7 @@ extension POSPaymentModel {
                     // should stay out of the way — otherwise we race the
                     // session's chosen method and confuse the SDK.
                     guard self.currentPaymentMethod == nil else { return }
+                    guard self.paymentState.allowsAutomaticCardPaymentStartOnReaderChange else { return }
                     switch status {
                     case .disconnected:
                         // "Reader fell off the device" — re-enter the

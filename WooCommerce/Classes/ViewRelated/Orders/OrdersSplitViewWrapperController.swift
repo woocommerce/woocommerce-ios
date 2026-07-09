@@ -23,6 +23,23 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
     override func viewDidLoad() {
         super.viewDidLoad()
         configureChildViewController()
+
+        ordersViewController.onStoredOrdersReplaced = { [weak self] in
+            self?.resyncOrderDetailsAfterStoredOrdersReplaced()
+        }
+    }
+
+    /// Re-syncs the order details screen in the secondary column after the orders list replaced all
+    /// stored orders (pull-to-refresh or new filters), since the replacement strips detail-only data
+    /// such as order metadata from storage and a visible details screen wouldn't otherwise re-sync.
+    private func resyncOrderDetailsAfterStoredOrdersReplaced() {
+        guard let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
+              let orderDetailsViewController = secondaryNavigationController.viewControllers
+                  .compactMap({ $0 as? OrderDetailsViewController })
+                  .first else {
+            return
+        }
+        orderDetailsViewController.resyncAfterStoredOrdersReplaced()
     }
 
     /// Presents the Details for the Notification with the specified Identifier.

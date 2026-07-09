@@ -82,6 +82,10 @@ final class OrdersRootViewController: UIViewController {
 
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
+    /// Called after the order list replaced all stored orders (pull-to-refresh or new filters),
+    /// so the split view wrapper can re-sync a visible order details screen.
+    var onStoredOrdersReplaced: (() -> Void)?
+
 
     // MARK: View Lifecycle
 
@@ -509,6 +513,10 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
 
     func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date) {
         updateTimeoutText()
+    }
+
+    func orderListViewControllerDidReplaceStoredOrders(_ viewController: UIViewController) {
+        onStoredOrdersReplaced?()
     }
 
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {

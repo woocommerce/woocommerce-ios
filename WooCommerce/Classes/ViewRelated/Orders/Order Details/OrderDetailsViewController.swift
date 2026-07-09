@@ -89,8 +89,27 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
+        configureResyncObserver()
         trackGiftCardsShown()
         trackShippingShown()
+    }
+
+    /// Re-syncs the order when the orders list replaces all stored orders (pull-to-refresh or new
+    /// filters — see `OrderListSyncActionUseCase`), which strips detail-only data such as order
+    /// metadata from storage. Only a details screen shown side-by-side with the list (iPad split
+    /// view) can be visible when that happens — on iPhone the visibility guard filters the event out.
+    private func configureResyncObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(resyncAfterStoredOrdersReplaced),
+                                               name: .ordersListDidReplaceStoredOrders,
+                                               object: nil)
+    }
+
+    @objc private func resyncAfterStoredOrdersReplaced() {
+        guard viewIfLoaded?.window != nil else {
+            return
+        }
+        syncEverything()
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -468,6 +468,15 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                         self.lastFullSyncTimestamp = Date()
                     }
 
+                    if let syncReason = SyncReason(rawValue: reason ?? ""),
+                       syncReason == .pullToRefresh || syncReason == .newFiltersApplied {
+                        // These sync reasons delete all stored orders before saving the fetched page
+                        // (see `OrderListSyncActionUseCase`), which strips detail-only data such as
+                        // order metadata from storage. Notify a visible order details screen
+                        // (iPad split view) so it re-syncs and stays complete and fresh.
+                        NotificationCenter.default.post(name: .ordersListDidReplaceStoredOrders, object: nil)
+                    }
+
                     let totalCompletedOrderCount = self.viewModel.totalCompletedOrderCount(pageNumber: pageNumber)
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
@@ -1025,4 +1034,11 @@ private extension OrderListViewController {
         case results
         case empty
     }
+}
+
+extension Foundation.Notification.Name {
+    /// Posted after an orders list sync that replaced all stored orders (pull-to-refresh or new filters),
+    /// which strips detail-only data such as order metadata from storage. Observed by
+    /// `OrderDetailsViewController` to re-sync a visible details screen (iPad split view).
+    static let ordersListDidReplaceStoredOrders = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.ordersListDidReplaceStoredOrders")
 }

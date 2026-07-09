@@ -978,26 +978,6 @@ public extension POSCatalogSyncState {
             return nil
         }
     }
-
-    func isStale(maxDays: Int, now: Date = Date(), calendar: Calendar = .current) -> Bool {
-        guard let lastFullSyncDate else {
-            return true
-        }
-
-        guard let thresholdDate = calendar.date(byAdding: .day, value: -maxDays, to: now) else {
-            return false
-        }
-
-        return lastFullSyncDate < thresholdDate
-    }
-
-    func hoursSinceLastSync(now: Date = Date()) -> Int? {
-        guard let lastFullSyncDate else {
-            return nil
-        }
-
-        return Int(now.timeIntervalSince(lastFullSyncDate) / 3600)
-    }
 }
 
 public enum POSCatalogSyncProgress: Equatable, Sendable {

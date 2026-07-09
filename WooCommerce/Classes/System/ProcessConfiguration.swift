@@ -1,5 +1,8 @@
 import Foundation
 
+// DO NOT MERGE. Touching an app source file defeats `should-skip-job.sh`, so that
+// Prototype Build actually runs and exercises the Sentry 2.x dSYM upload.
+
 /// Provides process-based configurations for screenshot generation and UI tests.
 struct ProcessConfiguration {
     /// Returns `true` when generating screenshots.

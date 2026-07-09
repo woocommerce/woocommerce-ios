@@ -93,18 +93,6 @@ final class OrderDetailsViewController: UIViewController {
         trackShippingShown()
     }
 
-    /// Re-syncs the order after the orders list replaced all stored orders (pull-to-refresh or new
-    /// filters — see `OrderListSyncActionUseCase`), which strips detail-only data such as order
-    /// metadata from storage. Called by `OrdersSplitViewWrapperController` for the details screen in
-    /// the secondary column; the visibility guard skips the sync when this screen isn't on screen
-    /// (e.g. collapsed split view, or covered by a pushed child screen).
-    func resyncAfterStoredOrdersReplaced() {
-        guard viewIfLoaded?.window != nil else {
-            return
-        }
-        syncEverything()
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
@@ -254,6 +242,25 @@ private extension OrderDetailsViewController {
                     self?.reloadTableViewSectionsAndData()
                 }
             }
+        }
+
+        entityListener.onDelete = { [weak self] in
+            guard let self else {
+                return
+            }
+            // A deletion with a replacement in storage means the orders list replaced all stored
+            // orders (pull-to-refresh or new filters — see `OrderListSyncActionUseCase`), which
+            // re-inserts the order without metadata-derived data (custom fields, attribution,
+            // charge ID). Re-sync a visible screen so it stays complete and fresh. A genuinely
+            // deleted order has no replacement and is ignored here.
+            let order = viewModel.order
+            let predicate = NSPredicate(format: "siteID == %lld AND orderID == %lld", order.siteID, order.orderID)
+            let replacementExists = ServiceLocator.storageManager.viewStorage
+                .firstObject(ofType: StorageOrder.self, matching: predicate) != nil
+            guard replacementExists, viewIfLoaded?.window != nil else {
+                return
+            }
+            syncEverything()
         }
     }
 

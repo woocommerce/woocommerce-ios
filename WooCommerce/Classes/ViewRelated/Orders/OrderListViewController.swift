@@ -18,11 +18,6 @@ protocol OrderListViewControllerDelegate: AnyObject {
     ///
     func orderListViewControllerSyncTimestampChanged(_ syncTimestamp: Date)
 
-    /// Called after a sync that replaced all stored orders (pull-to-refresh or new filters) succeeds,
-    /// which strips detail-only data such as order metadata from storage.
-    ///
-    func orderListViewControllerDidReplaceStoredOrders(_ viewController: UIViewController)
-
     /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
     ///
     func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
@@ -471,15 +466,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
                         self.lastFullSyncTimestamp = Date()
-                    }
-
-                    if let syncReason = SyncReason(rawValue: reason ?? ""),
-                       syncReason == .pullToRefresh || syncReason == .newFiltersApplied {
-                        // These sync reasons delete all stored orders before saving the fetched page
-                        // (see `OrderListSyncActionUseCase`), which strips detail-only data such as
-                        // order metadata from storage. Notify the delegate so a visible order details
-                        // screen (iPad split view) re-syncs and stays complete and fresh.
-                        self.delegate?.orderListViewControllerDidReplaceStoredOrders(self)
                     }
 
                     let totalCompletedOrderCount = self.viewModel.totalCompletedOrderCount(pageNumber: pageNumber)

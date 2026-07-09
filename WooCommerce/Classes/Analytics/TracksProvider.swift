@@ -65,13 +65,13 @@ extension TracksProvider {
             return properties
         }
 
-        var layoutProperties = properties ?? [:]
-        guard layoutProperties[Constants.horizontalSizeClassKey] == nil else {
-            return layoutProperties
+        var decoratedProperties = properties ?? [:]
+        guard decoratedProperties[Constants.horizontalSizeClassKey] == nil else {
+            return decoratedProperties
         }
 
-        layoutProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
-        return layoutProperties
+        decoratedProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
+        return decoratedProperties
     }
 }
 

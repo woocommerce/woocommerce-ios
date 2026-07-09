@@ -58,6 +58,16 @@ struct TracksProviderHorizontalSizeClassTests {
         #expect(result?[key] as? String == "regular")
     }
 
+    @Test func test_currentHorizontalSizeClass_when_off_main_thread_then_returns_unspecified() async {
+        // When (read from a detached task, guaranteed off the main thread)
+        let result = await Task.detached { [sut] in
+            sut.currentHorizontalSizeClass()
+        }.value
+
+        // Then
+        #expect(result == .unspecified)
+    }
+
     @Test func test_addHorizontalSizeClass_when_nil_properties_and_concrete_sizeClass_then_returns_only_layout() {
         // When
         let result = sut.addHorizontalSizeClass(to: nil, sizeClass: .compact)

@@ -36,7 +36,6 @@ public class EntityListener<T: ReadOnlyType> {
     ///
     public var onReplace: ((T) -> Void)?
 
-
     /// Designated Initializer.
     ///
     public init(viewContext: NSManagedObjectContext, readOnlyEntity: T) {

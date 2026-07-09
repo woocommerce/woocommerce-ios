@@ -68,6 +68,13 @@ public extension ShapeStyle where Self == Color {
     static var storeOverlayOpacity20: Color { bundledColor("storeOverlayOpacity20") }
     static var storeOverlayOpacity50: Color { bundledColor("storeOverlayOpacity50") }
 
+    // MARK: - State Layers
+    // Translucent on-surface layers for interaction states (e.g. disabled), from the
+    // Figma "State Layers/On Surface" variables.
+    static var storeStateLayerOnSurface08: Color { bundledColor("storeStateLayerOnSurface08") }
+    static var storeStateLayerOnSurface10: Color { bundledColor("storeStateLayerOnSurface10") }
+    static var storeStateLayerOnSurface24: Color { bundledColor("storeStateLayerOnSurface24") }
+
     // MARK: - Palette
     static var storePaletteWooBlue20: Color { bundledColor("storePaletteWooBlue20") }
     static var storePaletteWooBlue40: Color { bundledColor("storePaletteWooBlue40") }

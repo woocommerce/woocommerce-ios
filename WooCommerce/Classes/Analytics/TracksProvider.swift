@@ -48,7 +48,7 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 extension TracksProvider {
     /// Read on the main thread only; UIKit trait reads are main-thread bound. Off the main thread
     /// (background BGTask/push events, where layout is irrelevant) it returns `.unspecified`, which
-    /// `trackWithHorizontalSizeClass` skips.
+    /// `addHorizontalSizeClass(to:sizeClass:)` skips.
     func currentHorizontalSizeClass() -> UIUserInterfaceSizeClass {
         guard Thread.isMainThread else {
             return .unspecified
@@ -59,8 +59,8 @@ extension TracksProvider {
     /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
     /// without overwriting a value the event already provides.
     ///
-    func trackWithHorizontalSizeClass(_ properties: [AnyHashable: Any]?,
-                                      sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
+    func addHorizontalSizeClass(to properties: [AnyHashable: Any]?,
+                                sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
         guard sizeClass == .compact || sizeClass == .regular else {
             return properties
         }
@@ -90,7 +90,7 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        let properties = trackWithHorizontalSizeClass(properties, sizeClass: currentHorizontalSizeClass())
+        let properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {

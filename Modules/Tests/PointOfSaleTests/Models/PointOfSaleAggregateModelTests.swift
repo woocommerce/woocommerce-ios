@@ -1473,6 +1473,26 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.showStaleSyncWarning == false)
         }
+
+        @Test func staleSyncWarning_when_never_synced_then_does_not_show_warning_or_track_shown_event() async {
+            // Given - no full sync has ever completed (no sync date)
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = nil
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
+        }
     }
 
     @MainActor struct SunsetWarningTests {

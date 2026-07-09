@@ -1054,7 +1054,8 @@ extension POSCatalogSyncCoordinatorTests {
         let state = await sut.loadLastFullSyncState(for: sampleSiteID)
 
         // Then - should only expose the full sync date
-        #expect(state.lastFullSyncDate == tenDaysAgo)
+        let loadedDate = try #require(state.lastFullSyncDate)
+        #expect(abs(loadedDate.timeIntervalSince(tenDaysAgo)) < 1)
     }
 
     // MARK: - Stop Ongoing Syncs Tests

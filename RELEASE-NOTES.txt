@@ -13,6 +13,7 @@
 - [*] Fixed non-subscription products incorrectly showing recurring subscription pricing in the product editor. [https://github.com/woocommerce/woocommerce-ios/pull/17475]
 - [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
 - [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
+- [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
 
 25.1
 -----

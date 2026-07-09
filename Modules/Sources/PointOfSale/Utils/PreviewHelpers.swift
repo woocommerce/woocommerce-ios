@@ -527,6 +527,13 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }

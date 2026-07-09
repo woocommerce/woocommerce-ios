@@ -105,8 +105,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:

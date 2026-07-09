@@ -3,12 +3,14 @@
 
 25.2
 -----
+- [Internal] Remove redundant API requests from orders pull-to-refresh and the order creation product selector. [https://github.com/woocommerce/woocommerce-ios/pull/17494]
 - [*] The "Report Crashes" privacy setting is now saved to your WordPress.com account, so it persists across devices and reinstalls. [https://github.com/woocommerce/woocommerce-ios/pull/17473]
 - [*] Shipping Labels: Prevent skipping phone number validation when confirming an address by tapping too quickly. [https://github.com/woocommerce/woocommerce-ios/pull/17478]
 - [*] Fixed the card reader connection Cancel button being too small to tap in landscape on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17437]
 - [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
 - [*] Fix duplicated products reusing the original product's slug, which could make the storefront preview open the wrong product. [https://github.com/woocommerce/woocommerce-ios/pull/17436]
 - [Internal] Fix `push_notification_source` being logged as `wpcom` instead of `woo_driven` for Woo-driven notifications. [https://github.com/woocommerce/woocommerce-ios/pull/17463]
+- [*] Fixed non-subscription products incorrectly showing recurring subscription pricing in the product editor. [https://github.com/woocommerce/woocommerce-ios/pull/17475]
 - [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
 
 25.1

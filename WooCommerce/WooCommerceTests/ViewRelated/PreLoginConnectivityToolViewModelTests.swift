@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import Experiments
 import WooFoundation
 @testable import WooCommerce
 
@@ -347,41 +346,23 @@ struct PreLoginConnectivityToolViewModelTests {
 
     // MARK: - AI Support Chat Button Visibility
 
-    @Test func test_startConnectivityTests_when_AI_chat_enabled_then_showChatButton_is_true() async {
+    @Test func test_startConnectivityTests_then_showChatButton_is_true() async {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let sut = makeSUTForButtonVisibilityTests(featureFlagService: featureFlagService)
+        let sut = makeSUTForButtonVisibilityTests()
 
         // When
         await sut.startConnectivityTests()
 
         // Then
         #expect(sut.showChatButton == true)
-        #expect(sut.showContactSupportButton == false)
     }
 
-    @Test func test_startConnectivityTests_when_AI_chat_disabled_then_showContactSupportButton_is_true() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = false
-        let sut = makeSUTForButtonVisibilityTests(featureFlagService: featureFlagService)
-
-        // When
-        await sut.startConnectivityTests()
-
-        // Then
-        #expect(sut.showChatButton == false)
-        #expect(sut.showContactSupportButton == true)
-    }
-
-    @Test func test_buttons_are_hidden_before_tests_complete() {
+    @Test func test_chat_button_is_hidden_before_tests_complete() {
         // Given
         let sut = makeSUT()
 
         // Then
         #expect(sut.showChatButton == false)
-        #expect(sut.showContactSupportButton == false)
     }
 }
 
@@ -394,20 +375,18 @@ private extension PreLoginConnectivityToolViewModelTests {
     func makeSUT(siteURL: URL = URL(string: "https://example.com")!,
                  session: MockURLSession = MockURLSession(),
                  analytics: Analytics = ServiceLocator.analytics,
-                 featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                  discoverAPIRoot: @escaping (String) async -> String? = { _ in nil }
     ) -> PreLoginConnectivityToolViewModel {
         PreLoginConnectivityToolViewModel(
             siteURL: siteURL,
             session: session,
             analytics: analytics,
-            featureFlagService: featureFlagService,
             discoverAPIRoot: discoverAPIRoot
         )
     }
 
     /// Creates a SUT with minimal mocking for button visibility tests (all tests pass quickly).
-    func makeSUTForButtonVisibilityTests(featureFlagService: FeatureFlagService) -> PreLoginConnectivityToolViewModel {
+    func makeSUTForButtonVisibilityTests() -> PreLoginConnectivityToolViewModel {
         let mockSession = MockURLSession()
 
         // Site info succeeds
@@ -430,7 +409,6 @@ private extension PreLoginConnectivityToolViewModelTests {
 
         return makeSUT(
             session: mockSession,
-            featureFlagService: featureFlagService,
             discoverAPIRoot: { _ in Self.discoveredAPIRoot }
         )
     }

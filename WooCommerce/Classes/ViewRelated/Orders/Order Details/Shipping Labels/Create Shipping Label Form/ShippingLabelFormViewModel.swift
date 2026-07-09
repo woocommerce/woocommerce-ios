@@ -481,7 +481,7 @@ final class ShippingLabelFormViewModel {
     func filteredCountries(for type: ShipType) -> [Country] {
         switch type {
         case .origin:
-            return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+            return countries.filter { USPSDomesticMailCountries.rawCountryCodes.contains($0.code) }
         case .destination:
             return countries
         }
@@ -973,21 +973,6 @@ private extension ShippingLabelFormViewModel {
     }
 
     enum Constants {
-        /// This is hardcoded for now based on: https://git.io/JBuja.
-        /// It would be great if this can be fetched remotely.
-        ///
-        static let acceptedUSPSCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP" // Northern Mariana Islands
-        ]
-
         /// Country code for US - to check for international shipment
         ///
         static let usCountryCode = "US"

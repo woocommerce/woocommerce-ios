@@ -539,6 +539,44 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    func test_it_deauthenticates_non_wpcom_session_upon_receiving_application_password_invalidated_notification() {
+        // Given
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
+
+    func test_it_does_not_deauthenticate_wpcom_session_upon_receiving_application_password_invalidated_notification() {
+        // Given
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
+    }
+
     /// Verifies that the selected store is reset—while keeping the user authenticated—upon receiving an unknown blog error notification.
     ///
     func test_it_resets_selected_store_and_stays_authenticated_upon_receiving_unknown_blog_error_notification() {

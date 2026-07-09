@@ -232,6 +232,107 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertFalse(mockRequestAuthenticator.generateApplicationPasswordCalled)
     }
 
+    // MARK: Validate application password
+    //
+    func test_application_password_is_validated_when_generation_is_not_available() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        mockRequestAuthenticator.mockedCanGenerateApplicationPassword = false
+        mockRequestAuthenticator.mockedCanValidateApplicationPassword = true
+        mockRequestAuthenticator.mockApplicationPasswordValidationResult = .valid
+
+        // When
+        let shouldRetry = waitFor { promise in
+            let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        XCTAssertTrue(mockRequestAuthenticator.validateApplicationPasswordCalled)
+        XCTAssertFalse(mockRequestAuthenticator.generateApplicationPasswordCalled)
+        XCTAssertNil(mockNotificationCenter.notificationName)
+    }
+
+    func test_application_password_invalidation_notification_is_posted_when_validation_finds_invalid_password() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let validationError = NetworkError.unacceptableStatusCode(statusCode: 401)
+        mockRequestAuthenticator.mockedCanGenerateApplicationPassword = false
+        mockRequestAuthenticator.mockedCanValidateApplicationPassword = true
+        mockRequestAuthenticator.mockApplicationPasswordValidationResult = .invalid(validationError)
+
+        // When
+        let shouldRetry = waitFor { promise in
+            let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        XCTAssertTrue(mockRequestAuthenticator.validateApplicationPasswordCalled)
+        XCTAssertEqual(mockNotificationCenter.notificationName, .ApplicationPasswordInvalidated)
+        XCTAssertEqual(mockNotificationCenter.notificationObject as? NetworkError, validationError)
+    }
+
+    func test_application_password_invalidation_notification_is_not_posted_when_validation_fails_with_network_error() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        mockRequestAuthenticator.mockedCanGenerateApplicationPassword = false
+        mockRequestAuthenticator.mockedCanValidateApplicationPassword = true
+        mockRequestAuthenticator.mockErrorWhileValidatingPassword = NetworkError.timeout()
+
+        // When
+        let shouldRetry = waitFor { promise in
+            let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        XCTAssertTrue(mockRequestAuthenticator.validateApplicationPasswordCalled)
+        XCTAssertNil(mockNotificationCenter.notificationName)
+    }
+
+    @MainActor
+    func test_concurrent_requests_share_single_application_password_validation() async throws {
+        // Given
+        mockRequestAuthenticator.mockedCanGenerateApplicationPassword = false
+        mockRequestAuthenticator.mockedCanValidateApplicationPassword = true
+        mockRequestAuthenticator.mockApplicationPasswordValidationResult = .valid
+        mockRequestAuthenticator.mockValidationDelayNanoseconds = 100_000_000
+
+        let completionExpectation = expectation(description: "All retry completions are called")
+        completionExpectation.expectedFulfillmentCount = 3
+        var retryResults: [RetryResult] = []
+
+        // When
+        for _ in 0..<3 {
+            let request = try mockRequest()
+            let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
+            sut.retry(request, for: session, dueTo: error) { result in
+                retryResults.append(result)
+                completionExpectation.fulfill()
+            }
+        }
+
+        await fulfillment(of: [completionExpectation], timeout: 2)
+
+        // Then
+        XCTAssertEqual(mockRequestAuthenticator.validateApplicationPasswordCallCount, 1)
+        XCTAssertEqual(retryResults.count, 3)
+        XCTAssertTrue(retryResults.allSatisfy { $0.retryRequired == false })
+    }
+
     // MARK: Notification center
     //
     func test_notification_is_posted_when_application_password_generation_is_successful() throws {
@@ -542,16 +643,26 @@ private extension RequestProcessorTests {
 
 private class MockRequestAuthenticator: RequestAuthenticator {
     var mockedShouldRetryValue: Bool?
+    var mockedCanGenerateApplicationPassword = true
+    var mockedCanValidateApplicationPassword = false
 
     private(set) var authenticateCalled = false
     private(set) var generateApplicationPasswordCalled = false
     private(set) var deleteApplicationPasswordCalled = false
+    private(set) var validateApplicationPasswordCallCount = 0
+
+    var validateApplicationPasswordCalled: Bool {
+        validateApplicationPasswordCallCount > 0
+    }
 
     var credentials: Networking.Credentials? = nil
     var jetpackSiteID: Int64?
 
     var mockErrorWhileGeneratingPassword: Error?
     var mockErrorWhileDeletingPassword: Error?
+    var mockErrorWhileValidatingPassword: Error?
+    var mockApplicationPasswordValidationResult: ApplicationPasswordValidationResult = .valid
+    var mockValidationDelayNanoseconds: UInt64?
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
@@ -559,7 +670,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 
     func canGenerateApplicationPassword() -> Bool {
-        return true
+        return mockedCanGenerateApplicationPassword
     }
 
     func generateApplicationPassword() async throws {
@@ -567,6 +678,21 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         if let mockErrorWhileGeneratingPassword {
             throw mockErrorWhileGeneratingPassword
         }
+    }
+
+    func canValidateApplicationPassword() -> Bool {
+        mockedCanValidateApplicationPassword
+    }
+
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        validateApplicationPasswordCallCount += 1
+        if let mockValidationDelayNanoseconds {
+            try? await Task.sleep(nanoseconds: mockValidationDelayNanoseconds)
+        }
+        if let mockErrorWhileValidatingPassword {
+            throw mockErrorWhileValidatingPassword
+        }
+        return mockApplicationPasswordValidationResult
     }
 
     func deleteApplicationPassword() async throws {

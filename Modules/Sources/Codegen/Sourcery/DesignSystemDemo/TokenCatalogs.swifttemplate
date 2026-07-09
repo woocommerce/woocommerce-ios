@@ -11,20 +11,20 @@
 // non-production builds and never ships in the App Store binary.
 // --------------------------------------------------------------------------------
 
-let colorTokens = types.all
+let colors = types.all
     .first { $0.kind == "extension" && $0.name == "ShapeStyle" }?
     .staticVariables
     .filter { $0.typeName.name == "Color" }
     .map { $0.name } ?? []
 
-let iconEnums = types.all
+let icons = types.all
     .filter { $0.kind == "enum" && $0.parentName == "StoreIcon" }
     .map { icon in
         (name: icon.localName,
          styles: icon.staticVariables.filter { $0.typeName.name == "StoreIconImage" }.map { $0.name })
     }
 
-let textStyleTokens = types.all
+let textStyles = types.all
     .first { $0.name == "StoreTextStyle" }?
     .staticVariables
     .filter { $0.typeName.name == "StoreTextStyle" }
@@ -62,7 +62,7 @@ lines.append("// MARK: - Colors")
 lines.append("")
 lines.append("extension Color {")
 lines.append("    static let storeColorCatalog: [StoreColorToken] = [")
-for name in colorTokens {
+for name in colors {
     lines.append("        StoreColorToken(name: \"\(name)\", color: .\(name)),")
 }
 lines.append("    ]")
@@ -72,7 +72,7 @@ lines.append("// MARK: - Icons")
 lines.append("")
 lines.append("extension StoreIcon {")
 lines.append("    static let catalog: [StoreIconToken] = [")
-for icon in iconEnums {
+for icon in icons {
     let variants = icon.styles.map { "StoreIcon.\(icon.name).\($0)" }.joined(separator: ", ")
     lines.append("        StoreIconToken(variants: [\(variants)]),")
 }
@@ -83,7 +83,7 @@ lines.append("// MARK: - Typography")
 lines.append("")
 lines.append("extension StoreTextStyle {")
 lines.append("    static let catalog: [StoreTextStyleToken] = [")
-for name in textStyleTokens {
+for name in textStyles {
     lines.append("        StoreTextStyleToken(name: \"\(name)\", style: .\(name)),")
 }
 lines.append("    ]")

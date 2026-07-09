@@ -8,6 +8,16 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        if isLoadingOrderRefunds {
+            return .loading(rowCount: displayedLineItems.count + displayedCustomAmounts.count)
+        }
+        return .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] = []
     var displayedCustomAmounts: [POSOrderCustomAmount] = []
     var refundActionAvailability: RefundActionAvailability = .available

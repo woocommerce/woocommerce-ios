@@ -80,6 +80,13 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
         useCase.skipPendingRequirements()
     }
 
+    /// Skips the Overdue Requirements step when the user taps `Skip`
+    ///
+    func skipOverdueRequirements() {
+        trackSkipped(state: useCase.state, remindLater: false)
+        useCase.skipOverdueRequirements()
+    }
+
     /// Selects the plugin to use as a payment gateway when there are multiple available
     ///
     func selectPlugin(_ plugin: CardPresentPaymentsPlugin) {

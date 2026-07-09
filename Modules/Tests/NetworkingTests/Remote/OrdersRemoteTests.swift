@@ -1083,7 +1083,46 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(parameters["status"] as? String, "any")
         XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
         XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
-        XCTAssertNotNil(parameters["_fields"] as? String)
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
+    }
+
+    func test_loadPOSOrders_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let pageNumber = 3
+        let pageSize = 25
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, pageNumber: pageNumber, pageSize: pageSize)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
+        XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
+        XCTAssertEqual(parameters["status"] as? String, "any")
+        XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
+        XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
+    }
+
+    func test_loadPOSOrders_by_orderIDs_excludes_meta_data_from_fields() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSOrders(siteID: sampleSiteID, orderIDs: [sampleOrderID])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["include"] as? String, String(sampleOrderID))
+        let fields = try XCTUnwrap(parameters["_fields"] as? String)
+        XCTAssertFalse(fields.contains("meta_data"))
     }
 
     func test_searchPOSOrders_properly_relays_networking_error() async throws {

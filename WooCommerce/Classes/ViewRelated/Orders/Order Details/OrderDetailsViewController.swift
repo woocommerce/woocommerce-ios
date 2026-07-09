@@ -261,9 +261,7 @@ private extension OrderDetailsViewController {
             // first page, or was truly deleted), `onUpsert` never fired either, so the screen still
             // shows its last fully-synced in-memory order — no incomplete repaint to recover from.
             let order = viewModel.order
-            let predicate = NSPredicate(format: "siteID == %lld AND orderID == %lld", order.siteID, order.orderID)
-            let replacementExists = ServiceLocator.storageManager.viewStorage
-                .firstObject(ofType: StorageOrder.self, matching: predicate) != nil
+            let replacementExists = ServiceLocator.storageManager.containsStoredOrder(siteID: order.siteID, orderID: order.orderID)
             guard replacementExists, viewIfLoaded?.window != nil else {
                 return
             }

@@ -31,6 +31,7 @@ private struct ComponentsView: View {
     var body: some View {
         List {
             NavigationLink("Button") { ButtonComponentView() }
+            NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
         }
         .navigationTitle("Components")
     }

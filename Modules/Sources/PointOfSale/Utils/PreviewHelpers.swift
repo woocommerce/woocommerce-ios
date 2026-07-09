@@ -809,6 +809,9 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
                       cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {}
 }
 
 #endif

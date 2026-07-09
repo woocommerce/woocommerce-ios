@@ -474,10 +474,9 @@ extension WooAnalyticsEvent {
             static let hasChangedData = "has_changed_data"
         }
 
-        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool, horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+        static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
-                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules,
-                                                                           "horizontal_size_class": horizontalSizeClass.nameForAnalytics])
+                                                                           "has_minmax_quantity_rules": hasMinMaxQuantityRules])
         }
 
         /// Tracks when the merchant previews a product draft.
@@ -639,31 +638,22 @@ extension WooAnalyticsEvent {
             static let usesGiftCard = "use_gift_card"
             static let taxStatus = "tax_status"
             static let expanded = "expanded"
-            static let horizontalSizeClass = "horizontal_size_class"
             static let shippingMethod = "shipping_method"
         }
 
-        static func ordersSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
-            return WooAnalyticsEvent(statName: .ordersSelected,
-                                     properties: [
-                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
-                                     ])
+        static func ordersSelected() -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .ordersSelected, properties: [:])
         }
 
-        static func ordersReselected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
-            return WooAnalyticsEvent(statName: .ordersReselected,
-                                     properties: [
-                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
-                                     ])
+        static func ordersReselected() -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .ordersReselected, properties: [:])
         }
 
-        static func orderOpen(order: Order,
-                              horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+        static func orderOpen(order: Order) -> WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderOpen,
                                      properties: [
                                         "id": order.orderID,
-                                        "status": order.status.rawValue,
-                                        Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                                        "status": order.status.rawValue
                                      ])
         }
 
@@ -858,8 +848,7 @@ extension WooAnalyticsEvent {
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
                                             hasShippingMethod: Bool,
-                                            products: [Product],
-                                            horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+                                            products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
@@ -867,8 +856,7 @@ extension WooAnalyticsEvent {
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
-                Keys.productTypes: productTypes(order: order, products: products),
-                Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                Keys.productTypes: productTypes(order: order, products: products)
             ])
         }
 
@@ -879,8 +867,7 @@ extension WooAnalyticsEvent {
                                                       hasCustomerDetails: Bool,
                                                       hasFees: Bool,
                                                       hasShippingMethod: Bool,
-                                                      products: [Product],
-                                                      horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+                                                      products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentTapped, properties: [
                 Keys.flow: Flow.creation.rawValue,
                 Keys.orderStatus: status.rawValue,
@@ -889,8 +876,7 @@ extension WooAnalyticsEvent {
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
-                Keys.productTypes: productTypes(order: order, products: products),
-                Keys.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                Keys.productTypes: productTypes(order: order, products: products)
             ])
         }
 
@@ -2730,11 +2716,10 @@ extension WooAnalyticsEvent {
     enum ProductsOnboarding {
         enum Keys: String {
             case type
-            case horizontalSizeClass = "horizontal_size_class"
         }
 
-        static func productListAddProductButtonTapped(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [Keys.horizontalSizeClass.rawValue: horizontalSizeClass.nameForAnalytics])
+        static func productListAddProductButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListAddProductTapped, properties: [:])
         }
     }
 }

@@ -57,7 +57,7 @@ struct POSFloatingControlView: View {
                 .foregroundStyle(fontColor)
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
-                .disabled(posModel.paymentState.shownFullScreen)
+                .disabled(posModel.paymentState.disablesCardReaderConnectionControl)
                 .disabled(horizontalSizeClass != .regular)
         }
         .posModal(isPresented: $showProductRestrictionsModal) {

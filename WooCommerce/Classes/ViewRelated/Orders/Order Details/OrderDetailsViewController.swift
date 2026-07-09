@@ -253,6 +253,13 @@ private extension OrderDetailsViewController {
             // re-inserts the order without metadata-derived data (custom fields, attribution,
             // charge ID). Re-sync a visible screen so it stays complete and fresh. A genuinely
             // deleted order has no replacement and is ignored here.
+            //
+            // The replacement is reliably queryable at this point: the list's delete + re-insert run
+            // in a single `performAndSave` save, which merges into the view context as one change
+            // notification — `onUpsert` (repainting with the replacement) and this `onDelete` fire
+            // from the same event. Conversely, when no replacement exists (the order fell off the
+            // first page, or was truly deleted), `onUpsert` never fired either, so the screen still
+            // shows its last fully-synced in-memory order — no incomplete repaint to recover from.
             let order = viewModel.order
             let predicate = NSPredicate(format: "siteID == %lld AND orderID == %lld", order.siteID, order.orderID)
             let replacementExists = ServiceLocator.storageManager.viewStorage

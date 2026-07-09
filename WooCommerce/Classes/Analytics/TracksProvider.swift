@@ -61,7 +61,7 @@ extension TracksProvider {
     ///
     func addHorizontalSizeClass(to properties: [AnyHashable: Any]?,
                                 sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
-        guard sizeClass == .compact || sizeClass == .regular else {
+        guard sizeClass != .unspecified else {
             return properties
         }
 

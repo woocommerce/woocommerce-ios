@@ -30,6 +30,7 @@ private struct TokenCategoriesView: View {
 private struct ComponentsView: View {
     var body: some View {
         List {
+            NavigationLink("Badge") { BadgeComponentView() }
             NavigationLink("Button") { ButtonComponentView() }
         }
         .navigationTitle("Components")

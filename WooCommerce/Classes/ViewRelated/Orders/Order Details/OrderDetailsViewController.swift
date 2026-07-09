@@ -244,23 +244,16 @@ private extension OrderDetailsViewController {
             }
         }
 
-        entityListener.onDelete = { [weak self] in
+        entityListener.onReplace = { [weak self] _ in
             guard let self else {
                 return
             }
-            // A deletion with a replacement in storage means the orders list replaced all stored
+            // The stored order is replaced when the orders list deletes and re-saves all stored
             // orders (pull-to-refresh or new filters — see `OrderListSyncActionUseCase`), which
-            // re-inserts the order without metadata-derived data (custom fields, attribution,
-            // charge ID). Re-sync a visible screen so it stays complete and fresh. A genuinely
-            // deleted order has no replacement and is ignored here.
-            //
-            // The replacement is reliably queryable at this point: the list's delete + re-insert run
-            // in a single `performAndSave` save, which merges into the view context as one change
-            // notification — `onUpsert` (repainting with the replacement) and this `onDelete` fire
-            // from the same event. Conversely, when no replacement exists (the order fell off the
-            // first page, or was truly deleted), `onUpsert` never fired either, so the screen still
-            // shows its last fully-synced in-memory order — no incomplete repaint to recover from.
-            guard viewModel.isOrderStoredLocally, viewIfLoaded?.window != nil else {
+            // re-inserts it without metadata-derived data (custom fields, attribution, charge ID).
+            // Re-sync a visible screen so it stays complete and fresh. A genuine deletion triggers
+            // `onDelete`, not this closure, and requires no action here.
+            guard viewIfLoaded?.window != nil else {
                 return
             }
             syncEverything()

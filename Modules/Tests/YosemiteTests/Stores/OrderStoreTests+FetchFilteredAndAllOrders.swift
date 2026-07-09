@@ -48,10 +48,9 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     }
 
     /// `OrderDetailsViewController` relies on the delete + re-insert of a `deleteAllBeforeSaving` sync
-    /// landing in a single save: its `EntityListener.onDelete` handler re-syncs only when the
-    /// replacement order is already queryable when the deletion is observed, which holds because both
-    /// changes merge into the view context as one change notification. Splitting them into separate
-    /// saves would silently break that pairing, so this test pins the single-save behavior.
+    /// landing in a single save: its `EntityListener.onReplace` handler only fires when both changes
+    /// merge into the view context as one change notification. Splitting them into separate saves
+    /// would silently break that pairing, so this test pins the single-save behavior.
     ///
     func test_fetchFilteredOrders_when_deleting_all_before_saving_then_it_writes_in_a_single_save() {
         // Given

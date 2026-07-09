@@ -34,19 +34,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager = nil
     }
 
-    func test_isOrderStoredLocally_when_order_is_not_in_storage_then_returns_false() {
-        // Then
-        XCTAssertFalse(viewModel.isOrderStoredLocally)
-    }
-
-    func test_isOrderStoredLocally_when_order_is_in_storage_then_returns_true() {
-        // Given
-        storageManager.insertSampleOrder(readOnlyOrder: order)
-
-        // Then
-        XCTAssertTrue(viewModel.isOrderStoredLocally)
-    }
-
     func test_deleteTracking_fires_orderTrackingDelete_Tracks_event() {
         // Given
         let mockShipmentTracking = ShipmentTracking(siteID: 1111,

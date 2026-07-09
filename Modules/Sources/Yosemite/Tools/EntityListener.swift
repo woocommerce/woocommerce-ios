@@ -25,8 +25,16 @@ public class EntityListener<T: ReadOnlyType> {
     public var onUpsert: ((T) -> Void)?
 
     /// Closure to be executed whenever the associated Storage.Entity gets Nuked from the ViewContext.
+    /// Not executed when the entity is replaced (see `onReplace`).
     ///
     public var onDelete: (() -> Void)?
+
+    /// Closure to be executed whenever the associated Storage.Entity is deleted and re-inserted within
+    /// a single change notification — i.e. replaced wholesale, such as when the orders list deletes all
+    /// stored orders and re-saves the fetched page in one save. Receives the replacement entity.
+    /// `onUpsert` is also executed in this scenario, with the same replacement entity.
+    ///
+    public var onReplace: ((T) -> Void)?
 
 
     /// Designated Initializer.
@@ -72,16 +80,26 @@ private extension EntityListener {
 
         /// Scenario: Upsert (Insert + Update + Refresh)
         ///
-        if let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
-            let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T {
-            readOnlyEntity = updatedEntity
+        let upsertedEntity: T? = {
+            guard let storageEntity = readOnlyConvertible(from: note.upsertedObjects, representing: readOnlyEntity),
+                  let updatedEntity = storageEntity.toTypeErasedReadOnly() as? T else {
+                return nil
+            }
+            return updatedEntity
+        }()
+        if let upsertedEntity {
+            readOnlyEntity = upsertedEntity
             onUpsert?(readOnlyEntity)
         }
 
-        /// Scenario: Nuked
+        /// Scenario: Nuked — or Replaced, when the same change set also re-inserts the entity.
         ///
-        if let _ = readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) {
-            onDelete?()
+        if readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) != nil {
+            if let upsertedEntity {
+                onReplace?(upsertedEntity)
+            } else {
+                onDelete?()
+            }
         }
     }
 

@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// The `ButtonStyle` backing ``StoreButton``. Applies the variant/size chrome to a native
-/// `Button` and derives the disabled presentation from the uniform Figma state-layer rule.
-/// Kept internal — callers use ``StoreButton`` rather than this style directly.
+/// The `ButtonStyle` backing ``StoreButton``. Kept internal — callers use ``StoreButton``.
+///
+/// - Note: Applies the variant/size chrome to a native `Button` and derives the disabled
+///   presentation from the uniform state-layer rule.
 struct StoreButtonStyle: ButtonStyle {
     let variant: StoreButtonVariant
     let size: StoreButtonSize
@@ -38,9 +39,6 @@ private struct StoreButtonStyleBody: View {
             .opacity(configuration.isPressed ? Constants.pressedOpacity : 1)
             .animation(.easeOut(duration: Constants.pressAnimationDuration), value: configuration.isPressed)
     }
-
-    // Disabled derives from the uniform state-layer rule: a fill becomes on-surface @ 8%,
-    // a border becomes @ 10%, and the label/icon becomes @ 24%.
 
     private var backgroundColor: Color {
         guard isEnabled else {

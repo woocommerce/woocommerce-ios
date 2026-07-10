@@ -2,11 +2,7 @@
 import SwiftUI
 import StoreDesignSystem
 
-/// Interactive playground for `StoreButton` in the Design System demo: choose a style, size,
-/// and toggles; the configured button renders in the scaffold's preview panel.
 struct ButtonComponentView: View {
-    // Demo-local enums mirror the `StoreButtonVariant` / `StoreButtonSize` presets so the pickers
-    // bind to type-safe values instead of array indices. Add a case when a new preset is added.
     private enum Style: String, CaseIterable, Identifiable {
         case filled = "Filled"
         case tonal = "Tonal"

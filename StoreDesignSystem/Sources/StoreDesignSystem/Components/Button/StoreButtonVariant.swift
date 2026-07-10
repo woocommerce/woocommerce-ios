@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// The visual variant of a ``StoreButton``. A closed type holding only the enabled color
-/// roles; the disabled presentation is derived uniformly by ``StoreButtonStyle`` from the
-/// Figma state-layer rule, so it isn't duplicated per variant.
+/// The visual variant of a ``StoreButton``.
+///
+/// - Note: A closed type holding only the enabled color roles; the disabled presentation is derived
+///   uniformly by ``StoreButtonStyle`` from the state-layer rule, so it isn't duplicated per variant.
 public struct StoreButtonVariant {
     /// The enabled-state color roles. `background` and `border` are optional: `nil` means
     /// the variant has no fill / no border.

@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// The size of a ``StoreButton``. A closed type: only the design sizes exist, and each
-/// carries its own typography, icon size, padding, and corner radius, so there are no
-/// per-size branches at the call site or in the style.
+/// The size of a ``StoreButton``.
+///
+/// - Note: A closed type — only the design sizes exist, each carrying its own typography, icon
+///   size, padding, and corner radius, so there are no per-size branches at the call site or style.
 public struct StoreButtonSize {
     let textStyle: StoreTextStyle
     let iconSize: StoreIconSize
@@ -22,8 +23,6 @@ public struct StoreButtonSize {
         self.cornerRadius = cornerRadius
     }
 
-    /// Small — ~32 pt tall. The resulting tap target is intentionally below the 44 pt HIG
-    /// minimum, matching the design spec.
     public static let small = StoreButtonSize(
         textStyle: .labelMedium.emphasized,
         iconSize: .extraSmall,
@@ -32,7 +31,6 @@ public struct StoreButtonSize {
         cornerRadius: StoreRadius.large
     )
 
-    /// Medium — ~56 pt tall.
     public static let medium = StoreButtonSize(
         textStyle: .labelLarge.emphasized,
         iconSize: .medium,

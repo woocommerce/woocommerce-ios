@@ -126,6 +126,7 @@ struct POSLocalCatalogEligibilityServiceTests {
     }
 
     @Test func test_catalogEligibility_when_size_check_fails_with_completed_full_sync_then_returns_eligible() async throws {
+        // Given
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .failure(NSError(domain: "test", code: 123, userInfo: nil))
         )
@@ -141,13 +142,15 @@ struct POSLocalCatalogEligibilityServiceTests {
         )
         try await service.updatePOSEligibility(isEligible: true, for: siteID)
 
-        // The previously synced catalog stays usable when the size re-check fails (e.g. offline).
+        // When
         let state = try await service.catalogEligibility(for: siteID)
 
+        // Then: the previously synced catalog stays usable when the size re-check fails (e.g. offline)
         #expect(state == .eligible)
     }
 
     @Test func test_catalogEligibility_when_version_check_fails_with_completed_full_sync_then_returns_eligible() async throws {
+        // Given
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 1, variationCount: 0))
         )
@@ -163,9 +166,10 @@ struct POSLocalCatalogEligibilityServiceTests {
         )
         try await service.updatePOSEligibility(isEligible: true, for: siteID)
 
-        // The previously synced catalog stays usable when the version re-check fails (e.g. offline).
+        // When
         let state = try await service.catalogEligibility(for: siteID)
 
+        // Then: the previously synced catalog stays usable when the version re-check fails (e.g. offline)
         #expect(state == .eligible)
     }
 

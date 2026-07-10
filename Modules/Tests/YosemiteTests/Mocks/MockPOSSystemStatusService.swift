@@ -40,6 +40,7 @@ final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
 
     var cachedPluginToReturn: SystemPlugin?
 
+    @MainActor
     func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
         cachedPluginToReturn
     }

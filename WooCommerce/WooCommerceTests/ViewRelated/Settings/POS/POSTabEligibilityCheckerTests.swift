@@ -911,6 +911,7 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
         }
     }
 
+    @MainActor
     func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
         cachedPluginToReturn
     }

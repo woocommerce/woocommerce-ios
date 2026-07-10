@@ -541,8 +541,11 @@ private extension SettingsViewController {
     }
 
     func debugPanelWasPressed() {
-        let hostingController = UIHostingController(rootView: DebugPanelView())
-        navigationController?.pushViewController(hostingController, animated: true)
+        let hostingController = UIHostingController(rootView: NavigationStack {
+            DebugPanelView()
+        })
+        hostingController.modalPresentationStyle = .fullScreen
+        present(hostingController, animated: true)
     }
 
     func whatsNewWasPressed() {

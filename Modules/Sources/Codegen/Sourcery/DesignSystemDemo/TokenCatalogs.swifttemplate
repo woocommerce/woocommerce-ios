@@ -1,0 +1,93 @@
+<%
+// --------------------------------------------------------------------------------
+// Generates the token catalogs for the in-app Design System demo by enumerating the
+// StoreDesignSystem token definitions:
+//   - Color roles:  `static var storeX: Color` in the `ShapeStyle` extension
+//   - Icons:        the nested enums of `StoreIcon` and their `StoreIconImage` statics
+//   - Text styles:  the `StoreTextStyle` static presets
+//
+// The demo needs the tokens as enumerable collections, which Swift cannot reflect from
+// static declarations — so this template transcribes them. Output is gated to
+// non-production builds and never ships in the App Store binary.
+// --------------------------------------------------------------------------------
+
+let colors = types.all
+    .first { $0.kind == "extension" && $0.name == "ShapeStyle" }?
+    .staticVariables
+    .filter { $0.typeName.name == "Color" }
+    .map { $0.name } ?? []
+
+let icons = types.all
+    .filter { $0.kind == "enum" && $0.parentName == "StoreIcon" }
+    .map { icon in
+        (name: icon.localName,
+         styles: icon.staticVariables.filter { $0.typeName.name == "StoreIconImage" }.map { $0.name })
+    }
+
+let textStyles = types.all
+    .first { $0.name == "StoreTextStyle" }?
+    .staticVariables
+    .filter { $0.typeName.name == "StoreTextStyle" }
+    .map { $0.name } ?? []
+
+var lines: [String] = []
+lines.append("// Enumerates the StoreDesignSystem tokens for the in-app Design System demo.")
+lines.append("// After changing any token, regenerate with `rake generate` (see AGENTS.md).")
+lines.append("#if DEBUG || ALPHA")
+lines.append("// swiftlint:disable line_length")
+lines.append("import SwiftUI")
+lines.append("import StoreDesignSystem")
+lines.append("")
+lines.append("// MARK: - Catalog entry types")
+lines.append("")
+lines.append("struct StoreColorToken: Identifiable {")
+lines.append("    let name: String")
+lines.append("    let color: Color")
+lines.append("    var id: String { name }")
+lines.append("}")
+lines.append("")
+lines.append("struct StoreIconToken: Identifiable {")
+lines.append("    let variants: [StoreIconImage]")
+lines.append("    var name: String { variants.first?.name ?? \"\" }")
+lines.append("    var id: String { name }")
+lines.append("}")
+lines.append("")
+lines.append("struct StoreTextStyleToken: Identifiable {")
+lines.append("    let name: String")
+lines.append("    let style: StoreTextStyle")
+lines.append("    var id: String { name }")
+lines.append("}")
+lines.append("")
+lines.append("// MARK: - Colors")
+lines.append("")
+lines.append("extension Color {")
+lines.append("    static let storeColorCatalog: [StoreColorToken] = [")
+for name in colors {
+    lines.append("        StoreColorToken(name: \"\(name)\", color: .\(name)),")
+}
+lines.append("    ]")
+lines.append("}")
+lines.append("")
+lines.append("// MARK: - Icons")
+lines.append("")
+lines.append("extension StoreIcon {")
+lines.append("    static let catalog: [StoreIconToken] = [")
+for icon in icons {
+    let variants = icon.styles.map { "StoreIcon.\(icon.name).\($0)" }.joined(separator: ", ")
+    lines.append("        StoreIconToken(variants: [\(variants)]),")
+}
+lines.append("    ]")
+lines.append("}")
+lines.append("")
+lines.append("// MARK: - Typography")
+lines.append("")
+lines.append("extension StoreTextStyle {")
+lines.append("    static let catalog: [StoreTextStyleToken] = [")
+for name in textStyles {
+    lines.append("        StoreTextStyleToken(name: \"\(name)\", style: .\(name)),")
+}
+lines.append("    ]")
+lines.append("}")
+lines.append("#endif")
+-%>
+<%= lines.joined(separator: "\n") %>

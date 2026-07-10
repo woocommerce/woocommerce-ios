@@ -43,9 +43,8 @@ tags:
     visible:
       id: "coupon-create-button"
     timeout: 10000
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "menu-coupons"
     timeout: 10000
-

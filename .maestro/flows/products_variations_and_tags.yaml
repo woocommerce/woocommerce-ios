@@ -28,14 +28,32 @@ tags:
       id: "products-table-view"
     timeout: 20000
 - tapOn:
-    id: "products-table-view"
-    retryTapIfNoChange: true
+    point: "50%,37%"
 - extendedWaitUntil:
     visible:
       id: "edit-product-more-options-button"
     timeout: 20000
 - tapOn:
     id: "edit-product-more-options-button"
+- extendedWaitUntil:
+    visible: "Product Settings"
+    timeout: 10000
+- tapOn: "Product Settings"
+- extendedWaitUntil:
+    visible: "PUBLISH SETTINGS"
+    timeout: 10000
+- assertVisible: "Status"
+- assertVisible: "Visibility"
+- tapOn: "Done"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Add more details"
+    direction: DOWN
+    timeout: 15000
+- tapOn: "Add more details"
 - extendedWaitUntil:
     visible: "Tags"
     timeout: 10000
@@ -48,7 +66,13 @@ tags:
 - assertVisible:
     id: "add-tags"
 - takeScreenshot: products_tags
-- back
+- tapOn:
+    point: "10%,12%"
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn: "Dismiss"
 - extendedWaitUntil:
     visible:
       id: "edit-product-more-options-button"
@@ -57,19 +81,16 @@ tags:
     element: "Variations"
     direction: DOWN
     timeout: 15000
+- assertVisible: "2 variations"
 - assertVisible: "Variations"
-- scrollUntilVisible:
-    element: "Variations Attributes"
-    direction: DOWN
-    timeout: 10000
-- assertVisible: "Variations Attributes"
 - tapOn: "Variations"
 - extendedWaitUntil:
     visible: "Variations"
     timeout: 20000
 - assertVisible: "Variations"
 - tapOn:
-    point: "50%,30%"
+    point: "93%,27%"
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Attributes"
     timeout: 20000
@@ -80,4 +101,3 @@ tags:
 - extendedWaitUntil:
     visible: "Variations"
     timeout: 10000
-

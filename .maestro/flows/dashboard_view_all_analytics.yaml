@@ -22,12 +22,13 @@ tags:
     visible: "Analytics"
     timeout: 20000
 - assertVisible: "Analytics"
-- assertVisible: "Date range"
-- assertVisible: "Revenue"
+- assertVisible: "Today"
+- assertVisible: "REVENUE"
+- assertVisible: "ORDERS"
+- assertVisible: "See report"
 - assertVisible: "Edit"
 - takeScreenshot: dashboard_view_all_analytics
 - back
 - extendedWaitUntil:
     visible: "My store"
     timeout: 10000
-

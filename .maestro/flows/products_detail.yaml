@@ -16,8 +16,19 @@ tags:
     id: "product-add-button"
     retryTapIfNoChange: true
 - extendedWaitUntil:
-    visible:
-      id: "product-creation-sheet"
+    visible: "Create Product|Select a product type"
+    timeout: 10000
+- runFlow:
+    when:
+      visible: "Create Product"
+    commands:
+      - tapOn: "Add manually"
+- extendedWaitUntil:
+    visible: "Select a product type"
+    timeout: 10000
+- assertVisible: "Select a product type"
+- extendedWaitUntil:
+    visible: "Physical product"
     timeout: 10000
 - tapOn: "Physical product"
 - extendedWaitUntil:
@@ -41,6 +52,37 @@ tags:
 - assertVisible: "Product type"
 - tapOn:
     id: "edit-product-more-options-button"
+- extendedWaitUntil:
+    visible: "Product Settings"
+    timeout: 10000
+- tapOn: "Product Settings"
+- extendedWaitUntil:
+    visible: "PUBLISH SETTINGS"
+    timeout: 10000
+- assertVisible: "Status"
+- assertVisible: "Visibility"
+- assertVisible: "Catalog Visibility"
+- assertVisible: "Virtual Product"
+- assertVisible: "Downloadable Product"
+- assertVisible: "Enable Reviews"
+- scrollUntilVisible:
+    element: "Slug"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "Slug"
+- assertVisible: "Purchase Note"
+- assertVisible: "Menu Order"
+- takeScreenshot: products_publish_settings
+- tapOn: "Done"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Add more details"
+    direction: DOWN
+    timeout: 10000
+- tapOn: "Add more details"
 - extendedWaitUntil:
     visible: "Shipping"
     timeout: 10000
@@ -66,12 +108,17 @@ tags:
     timeout: 10000
 - assertVisible: "Downloadable files"
 - takeScreenshot: products_detail_settings
-- back
+- tapOn: "Dismiss"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- tapOn: "Products"
 - runFlow:
     when:
-      visible: "Discard"
+      visible: "Discard changes"
     commands:
-      - tapOn: "Discard"
+      - tapOn: "Discard changes"
 - extendedWaitUntil:
     visible:
       id: "products-table-view"

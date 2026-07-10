@@ -24,7 +24,7 @@ tags:
 - assertVisible: "Customers"
 - assertVisible: "Search for customers"
 - takeScreenshot: hub_customers
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "menu-customers"
@@ -52,9 +52,8 @@ tags:
       - assertNotVisible:
           id: "menu-customers"
       - takeScreenshot: hub_inbox
-      - back
+      - tapOn: "Back"
       - extendedWaitUntil:
           visible:
             id: "menu-customers"
           timeout: 10000
-

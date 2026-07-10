@@ -42,7 +42,7 @@ tags:
 - assertVisible:
     id: "settings-log-out-button"
 - takeScreenshot: hub_settings
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "dashboard-settings-button"

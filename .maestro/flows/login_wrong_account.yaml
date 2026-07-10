@@ -69,8 +69,13 @@ tags:
     env:
       TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
 - hideKeyboard
-- tapOn:
-    id: "Continue Button"
+- runFlow:
+    when:
+      visible:
+        id: "Continue Button"
+    commands:
+      - tapOn:
+          id: "Continue Button"
 - runFlow:
     when:
       visible: "Save Password?"

@@ -27,7 +27,8 @@ tags:
 - assertVisible: "Top performers"
 - assertVisible: "Save"
 - takeScreenshot: dashboard_customize
-- back
+- tapOn:
+    point: "8%,12%"
 - extendedWaitUntil:
     visible: "My store"
     timeout: 10000

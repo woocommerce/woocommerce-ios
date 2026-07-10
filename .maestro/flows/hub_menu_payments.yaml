@@ -46,7 +46,7 @@ tags:
       - extendedWaitUntil:
           visible: "Payments"
           timeout: 10000
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "menu-payments"

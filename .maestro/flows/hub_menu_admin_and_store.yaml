@@ -24,7 +24,7 @@ tags:
 - assertNotVisible:
     id: "menu-view-store"
 - takeScreenshot: hub_view_store
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "menu-view-store"
@@ -38,7 +38,7 @@ tags:
 - assertNotVisible:
     id: "menu-woocommerce-admin"
 - takeScreenshot: hub_woocommerce_admin
-- back
+- tapOn: "Back"
 - extendedWaitUntil:
     visible:
       id: "store-title"
@@ -46,9 +46,10 @@ tags:
 - tapOn:
     id: "store-title"
 - extendedWaitUntil:
-    visible: "Connected Stores"
+    visible: "Select Store"
     timeout: 20000
-- assertVisible: "Connected Stores"
+- assertVisible: "Select Store"
+- assertVisible: "PICK STORE TO CONNECT"
 - assertVisible: "Dismiss"
 - takeScreenshot: hub_change_store
 - tapOn: "Dismiss"
@@ -56,4 +57,3 @@ tags:
     visible:
       id: "store-title"
     timeout: 10000
-

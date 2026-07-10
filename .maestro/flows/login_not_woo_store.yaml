@@ -52,7 +52,6 @@ tags:
 - extendedWaitUntil:
     visible: "Username|Email address"
     timeout: 30000
-
 - runFlow:
     when:
       visible:
@@ -108,8 +107,13 @@ tags:
           env:
             TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD}
       - hideKeyboard
-      - tapOn:
-          id: "Continue Button"
+      - runFlow:
+          when:
+            visible:
+              id: "Continue Button"
+          commands:
+            - tapOn:
+                id: "Continue Button"
       - runFlow:
           when:
             visible: "Save Password?"

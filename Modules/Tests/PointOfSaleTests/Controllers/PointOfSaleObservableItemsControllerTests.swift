@@ -520,7 +520,11 @@ final class PointOfSaleObservableItemsControllerTests {
         #expect(errorState.errorType == .initialCatalogSyncError)
     }
 
-    @Test func test_syncFailed_with_empty_catalog_shows_error() async {
+    // The next two tests pin the two sides of the sync-failure criticality condition
+    // (`productItems.isEmpty && loadingState.productsLoaded`) with an identical setup:
+    // the only difference is whether `loadItems` has run.
+
+    @Test func test_syncFailed_after_products_load_with_empty_catalog_shows_error() async {
         // Given
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()
@@ -532,7 +536,7 @@ final class PointOfSaleObservableItemsControllerTests {
         let testError = NSError(domain: "test.sync", code: 500)
         coordinator.fullSyncStateModel.state[siteID] = .syncFailed(siteID: siteID, error: testError)
 
-        // When: products are loaded and the catalog turns out to be empty
+        // When: products have loaded, so the catalog is known to be genuinely empty
         await sut.loadItems(base: .root)
         let containerState = sut.itemsViewState.containerState
 
@@ -545,7 +549,8 @@ final class PointOfSaleObservableItemsControllerTests {
     }
 
     @Test func test_syncFailed_before_products_load_does_not_show_error() async {
-        // Given: a sync failure lands before the local catalog has loaded any products,
+        // Given: the same setup as the test above, but `loadItems` has not run —
+        // a sync failure lands before the local catalog has loaded any products,
         // e.g. entering POS offline where the entry sync fails fast
         let dataSource = MockPOSObservableDataSource()
         let coordinator = MockPOSCatalogSyncCoordinator()

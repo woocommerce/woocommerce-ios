@@ -172,9 +172,7 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        analytics.track(event: .Orders.orderOpen(order: order))
     }
 
     /// Selects the order given the ID from the order list view if the order exists locally.
@@ -640,10 +638,7 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
-        ))
+        analytics.track(event: .Orders.orderOpen(order: order))
 
         ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
             onCompletion?(true)

@@ -143,7 +143,7 @@ struct POSTotalsSectionView: View {
                 } label: {
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posPrimary)
+                        .foregroundStyle(Color.posLink)
                         .underline()
                 }
             }

@@ -707,6 +707,10 @@ extension OrderDetailsViewModel {
     }
 
     @MainActor func syncShippingLabelsOrShipments() async {
+        guard storeCountrySupportsShippingLabels else {
+            return
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             /// old logic for syncing labels
@@ -790,6 +794,10 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
+        guard storeCountrySupportsShippingLabels else {
+            return false
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             if await localRequirementsForShippingLabelsAreFulfilled() {
@@ -957,6 +965,28 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+    /// Fails open when the store country is unknown (not cached yet or unparseable) so a cache miss
+    /// can never hide the feature from an eligible store — the plugin eligibility check remains the
+    /// source of truth. Only a known-unsupported country skips the shipping label requests.
+    var storeCountrySupportsShippingLabels: Bool {
+        let countryCode = storeCountryCode
+        guard countryCode != .unknown else {
+            DDLogInfo("Store country unknown; deferring shipping label support to the plugin eligibility check.")
+            return true
+        }
+        guard USPSDomesticMailCountries.countryCodes.contains(countryCode) else {
+            DDLogInfo("Skipping shipping label requests: store country \(countryCode.rawValue) does not support shipping labels.")
+            return false
+        }
+        return true
+    }
+
+    var storeCountryCode: CountryCode {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return SiteAddress(siteSettings: resultsController.fetchedObjects).countryCode
+    }
 
     @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
         await withCheckedContinuation { continuation in

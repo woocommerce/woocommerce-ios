@@ -80,6 +80,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_syncShippingLabels_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
@@ -93,6 +94,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_syncShippingLabels_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -147,6 +149,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -191,6 +194,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_disabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -242,10 +246,48 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
+    func test_syncShippingLabels_when_store_country_is_not_supported_does_not_dispatch_actions() async throws {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
+
+            // When
+            await viewModel.syncShippingLabelsOrShipments()
+
+            // Then
+            XCTAssertEqual(storesManager.receivedActions.count, 0, "Expected no actions for \(storeCountry)")
+        }
+    }
+
+    func test_syncShippingLabels_when_store_country_is_unknown_dispatches_actions() async throws {
+        for storeCountry in [nil, ""] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
+
+            // When
+            await viewModel.syncShippingLabelsOrShipments()
+
+            // Then
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected fail-open plugin fetch and shipment sync for \(String(describing: storeCountry))")
+
+            let action = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+            guard case let WooShippingAction.syncShipments(siteID, orderID, _) = action else {
+                XCTFail("Expected \(action) to be \(WooShippingAction.self)")
+                return
+            }
+
+            XCTAssertEqual(siteID, order.siteID)
+            XCTAssertEqual(orderID, order.orderID)
+        }
+    }
+
     // MARK: - `checkShippingLabelCreationEligibility`
 
     func test_checkShippingLabelCreationEligibility_without_a_non_virtual_product_returns_false() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
 
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
@@ -264,6 +306,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_a_non_virtual_product_returns_value_from_action() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
@@ -283,6 +326,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
@@ -302,6 +346,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -358,6 +403,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_wooshipping_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -404,6 +450,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_when_feature_flag_disabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -455,6 +502,60 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(orderID, order.orderID)
+    }
+
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_not_supported_returns_false_without_dispatching_actions() async throws {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
+
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+
+            // Then
+            XCTAssertFalse(isEligible, "Expected ineligible for \(storeCountry)")
+            XCTAssertEqual(storesManager.receivedActions.count, 0, "Expected no actions for \(storeCountry)")
+        }
+    }
+
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_unknown_defers_to_eligibility_check() async throws {
+        for storeCountry in [nil, "", "us", "Pr"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
+
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+
+            // Then
+            XCTAssertTrue(isEligible, "Expected fail-open eligibility result from action for \(String(describing: storeCountry))")
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected plugin fetch and eligibility check for \(String(describing: storeCountry))")
+        }
+    }
+
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_supported_dispatches_action() async throws {
+        for storeCountry in ["US", "PR", "VI", "GU", "AS", "MP", "UM", "FM", "MH"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
+
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+
+            // Then
+            XCTAssertTrue(isEligible, "Expected eligible result from action for \(storeCountry)")
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected plugin fetch and eligibility check for \(storeCountry)")
+
+            let action = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+            guard case let WooShippingAction.checkCreationEligibility(siteID, orderID, _) = action else {
+                XCTFail("Expected \(action) to be \(WooShippingAction.self)")
+                return
+            }
+
+            XCTAssertEqual(siteID, order.siteID)
+            XCTAssertEqual(orderID, order.orderID)
+        }
     }
 
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
@@ -758,6 +859,44 @@ private extension OrderDetailsViewModelTests {
         products.forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)
         }
+    }
+
+    func configureDefaultStoreCountry(_ country: String) {
+        let setting = SiteSetting.fake().copy(siteID: order.siteID,
+                                              settingID: "woocommerce_default_country",
+                                              value: country,
+                                              settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+    }
+
+    func configureShippingLabelContext(storeCountry: String?,
+                                       handlesEligibilityCheck: Bool = false,
+                                       handlesShipmentSync: Bool = false) -> OrderDetailsViewModel {
+        storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        storageManager = MockStorageManager()
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+
+        if let storeCountry {
+            configureDefaultStoreCountry(storeCountry)
+        }
+
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
+        if handlesEligibilityCheck {
+            whenCheckingShippingLabelCreationEligibility(thenReturn: true)
+        }
+        if handlesShipmentSync {
+            whenSyncingShipments(thenReturn: .success([]))
+        }
+        storesManager.reset()
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+        self.viewModel = viewModel
+        return viewModel
     }
 
     func whenFetchingSystemPlugin(path: String? = nil, thenReturn plugin: SystemPlugin?) {

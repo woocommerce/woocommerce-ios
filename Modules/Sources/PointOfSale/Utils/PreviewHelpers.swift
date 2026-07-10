@@ -527,6 +527,13 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
@@ -736,16 +743,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
-    }
-
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        return false
-    }
-
-    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        // Preview implementation - return 48 hours for testing stale warning
-        return 48
+        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID, syncDate: Date())
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {
@@ -802,6 +800,9 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
     func printReceipt(content: ReceiptContent,
                       storeInformation: ReceiptStoreInformation,
                       cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {}
 }
 
 #endif

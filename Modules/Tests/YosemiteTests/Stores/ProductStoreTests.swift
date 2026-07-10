@@ -950,8 +950,8 @@ final class ProductStoreTests: XCTestCase {
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 

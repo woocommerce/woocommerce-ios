@@ -24,15 +24,11 @@ public class EntityListener<T: ReadOnlyType> {
     ///
     public var onUpsert: ((T) -> Void)?
 
-    /// Closure to be executed whenever the associated Storage.Entity gets Nuked from the ViewContext.
-    /// Not executed when the entity is replaced (see `onReplace`).
-    ///
-    public var onDelete: (() -> Void)?
-
     /// Closure to be executed whenever the associated Storage.Entity is deleted and re-inserted within
     /// a single change notification — i.e. replaced wholesale, such as when the orders list deletes all
     /// stored orders and re-saves the fetched page in one save. Receives the replacement entity.
     /// `onUpsert` is also executed in this scenario, with the same replacement entity.
+    /// A deletion without a replacement executes no closure.
     ///
     public var onReplace: ((T) -> Void)?
 
@@ -91,14 +87,11 @@ private extension EntityListener {
             onUpsert?(readOnlyEntity)
         }
 
-        /// Scenario: Nuked — or Replaced, when the same change set also re-inserts the entity.
+        /// Scenario: Replaced — deleted while the same change set also re-inserts the entity.
         ///
-        if readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) != nil {
-            if let upsertedEntity {
-                onReplace?(upsertedEntity)
-            } else {
-                onDelete?()
-            }
+        if readOnlyConvertible(from: note.deletedObjects, representing: readOnlyEntity) != nil,
+           let upsertedEntity {
+            onReplace?(upsertedEntity)
         }
     }
 

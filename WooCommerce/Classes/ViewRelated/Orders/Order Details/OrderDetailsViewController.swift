@@ -251,8 +251,8 @@ private extension OrderDetailsViewController {
             // The stored order is replaced when the orders list deletes and re-saves all stored
             // orders (pull-to-refresh or new filters — see `OrderListSyncActionUseCase`), which
             // re-inserts it without metadata-derived data (custom fields, attribution, charge ID).
-            // Re-sync a visible screen so it stays complete and fresh. A genuine deletion triggers
-            // `onDelete`, not this closure, and requires no action here.
+            // Re-sync a visible screen so it stays complete and fresh. A genuine deletion does not
+            // trigger this closure and requires no action here.
             guard viewIfLoaded?.window != nil else {
                 return
             }

@@ -17,8 +17,7 @@ steps:
       echo '--- :ruby: Setup Ruby Tools'
       install_gems
 
-      echo '--- :closed_lock_with_key: Access Secrets'
-      bundle exec fastlane run configure_apply
+      .buildkite/commands/install-secrets.sh
 
       echo '--- :snowflake: Start Code Freeze'
       bundle exec fastlane start_code_freeze version:"${RELEASE_VERSION}" skip_confirm:true

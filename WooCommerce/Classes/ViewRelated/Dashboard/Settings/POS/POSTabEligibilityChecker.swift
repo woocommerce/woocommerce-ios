@@ -151,11 +151,15 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 // MARK: - Eligibility From Local State
 
 private extension POSTabEligibilityChecker {
-    /// Whether locally available state can support POS without remote checks:
-    /// no definite ineligibility was recorded by a previous online check, the locally synced
-    /// WooCommerce plugin (when available) still meets the requirements, the local catalog
-    /// feature is enabled, and a full catalog sync completed at some point so the local
-    /// catalog can serve items.
+    /// Whether locally available state can support POS without remote checks.
+    ///
+    /// This is not a local re-implementation of `checkOnlineEligibility` — the first criterion
+    /// is the persisted outcome of the *entire* last online check (site settings, currency,
+    /// plugin, feature switch, and any criteria added there in the future), so the two cannot
+    /// drift apart. The remaining criteria are refinements from signals the online outcome
+    /// cannot capture: plugin data that another flow synced more recently (validated with the
+    /// same rule the online check uses), and the local-catalog requirements (feature enabled,
+    /// full sync completed) that select local-catalog mode rather than POS eligibility itself.
     func canRunFromLocalCatalog() async -> Bool {
         // `!= false` rather than `== true`: nil (no definite result recorded yet, e.g. right
         // after updating to this version) must pass, because a completed full sync — required
@@ -171,17 +175,25 @@ private extension POSTabEligibilityChecker {
         return true
     }
 
-    /// Validates against plugin data synced into local storage by any part of the app, like
-    /// Android's cached version check: a plugin known locally to be inactive or below the minimum
-    /// version blocks entry from local state. When no plugin data has been synced, falls back to
-    /// the other locally recorded positive signals.
+    /// Validates against plugin data synced into local storage by any part of the app:
+    /// a plugin known locally to be inactive or below the minimum version blocks entry from
+    /// local state. When no plugin data has been synced, falls back to the persisted outcome
+    /// of the last online check (the first gate criterion).
+    ///
+    /// Reuses `checkWooCommercePluginEligibility` so the plugin rules live in a single place
+    /// shared with the online check. The feature switch cannot be read locally, so its pending
+    /// state falls back to the persisted outcome as well.
     @MainActor
     func cachedPluginSupportsPOS() -> Bool {
         guard let wcPlugin = systemStatusService.loadCachedWooCommercePlugin(siteID: siteID) else {
             return true
         }
-        return wcPlugin.active && VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                    minimumRequired: Constants.wcPluginMinimumVersion)
+        switch checkWooCommercePluginEligibility(wcPlugin: wcPlugin) {
+        case .eligible, .pendingFeatureSwitchCheck:
+            return true
+        case .ineligible:
+            return false
+        }
     }
 
     /// Persists definite results from online checks so offline eligibility stays available

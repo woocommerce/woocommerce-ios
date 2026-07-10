@@ -1,0 +1,28 @@
+# p2: orders.barcode.open-scanner
+# Camera barcode decoding is intentionally deferred. This flow proves the real
+# order-entry affordance opens the production scanner surface.
+appId: ${APP_ID}
+name: "iOS system - Order barcode scanner surface"
+tags:
+  - flaky_quarantine
+  - orders
+  - ios_system
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- assertVisible:
+    id: new-order-add-product-via-sku-scanner-button
+- tapOn:
+    id: new-order-add-product-via-sku-scanner-button
+- runFlow:
+    when:
+      visible: Allow
+    commands:
+      - tapOn: Allow
+- extendedWaitUntil:
+    visible: Scan barcode or QR Code
+    timeout: 15000
+- assertVisible: Scan product barcode or QR Code
+- takeScreenshot: order_barcode_scanner_surface

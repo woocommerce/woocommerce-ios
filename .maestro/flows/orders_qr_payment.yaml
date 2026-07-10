@@ -1,0 +1,58 @@
+# p2: orders.collect-payment.qr
+# Prerequisite: the configured store generates payment URLs for new orders.
+# External QR scanning and payment completion are intentionally out of scope.
+appId: ${APP_ID}
+name: "iOS system - Order QR payment surface"
+tags:
+  - flaky_quarantine
+  - destructive
+  - orders
+  - ios_system
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: QR ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+- tapOn:
+    id: order-details-collect-payment-button
+- assertVisible:
+    id: payment-methods-header-label
+- tapOn:
+    id: payment-methods-view-scan-to-pay-row
+- extendedWaitUntil:
+    visible:
+      id: scan-to-pay-qr-code
+    timeout: 15000
+- assertVisible: Scan QR and follow instructions
+- assertVisible:
+    id: scan-to-pay-done-button
+- takeScreenshot: order_qr_payment_surface

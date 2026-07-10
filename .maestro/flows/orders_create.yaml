@@ -1,0 +1,155 @@
+# p2: orders.create.products, orders.create.variable-products, orders.create.quantity, orders.create.product-discount, orders.create.custom-amount, orders.create.custom-amount-note, orders.create.shipping, orders.create.customer-add, orders.create.customer-edit, orders.create.note
+appId: ${APP_ID}
+name: Create a run-owned order with customer, shipping, discount, amount, and note
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - orders
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- assertVisible:
+    id: new-order-create-button
+
+# Add an exact real simple product and persist a quantity of two.
+- tapOn:
+    id: new-order-add-product-button
+- assertVisible:
+    id: product-selector-search-bar
+- tapOn:
+    id: product-selector-search-bar
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_SIMPLE_PRODUCT_NAME}
+- hideKeyboard
+- tapOn: ${MAESTRO_WOO_SIMPLE_PRODUCT_NAME}
+- tapOn:
+    id: product-multiple-selection-done-button
+- assertVisible: Quantity
+- tapOn:
+    text: "1"
+    below: Quantity
+- eraseText
+- inputText: "2"
+- tapOn: Done
+- assertVisible:
+    text: "2"
+    below: Quantity
+- assertVisible: Add Discount
+- tapOn: Add Discount
+- assertVisible: Enter amount
+- tapOn: Enter amount
+- inputText: "1"
+- tapOn: Add
+- assertVisible: Discount
+
+# Select an exact variable product, then an actual variation.
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-selector-search-bar
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
+- hideKeyboard
+- tapOn: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
+- extendedWaitUntil:
+    visible:
+      id: product-variation-item
+    timeout: 30000
+- tapOn:
+    id: product-variation-item
+    index: 0
+- tapOn: Back
+- tapOn:
+    id: product-multiple-selection-done-button
+- assertVisible: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
+
+# Select an existing customer, then edit the order-specific email field.
+- swipe:
+    direction: UP
+- tapOn: Add Customer Details
+- tapOn:
+    id: customer-search-screen-search-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
+- hideKeyboard
+- tapOn: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
+- assertVisible: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
+- tapOn: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
+- tapOn: Enter email address
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: maestro-${SUITE_RUN_ID}@example.com
+- hideKeyboard
+- assertVisible: maestro-${SUITE_RUN_ID}@example.com
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-shipping-button
+- inputText: "1"
+- tapOn:
+    id: add-shipping-name-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn:
+    id: add-shipping-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: new-order-add-custom-amount-button
+- tapOn:
+    id: custom-amount-fixed-button
+- inputText: "1"
+- tapOn:
+    id: order-add-custom-amount-name-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Custom amount ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn:
+    id: order-add-custom-amount-view-add-custom-amount-button
+- assertVisible: Custom amount ${SUITE_RUN_ID}
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro order ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+- tapOn:
+    id: new-order-create-button
+
+# Persisted order details, not the creation form, are the completion signal.
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- assertVisible:
+    id: summary-table-view-cell-title-label
+- scrollUntilVisible:
+    element:
+      text: Maestro order ${SUITE_RUN_ID}
+    direction: DOWN
+- assertVisible: Maestro order ${SUITE_RUN_ID}
+- assertVisible: Maestro ${SUITE_RUN_ID}
+- assertVisible: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
+- assertVisible: Custom amount ${SUITE_RUN_ID}

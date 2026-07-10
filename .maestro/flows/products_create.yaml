@@ -1,0 +1,44 @@
+# p2: products.create
+appId: ${APP_ID}
+name: Create and reopen a run-owned physical product
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - products
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_products.yaml
+- tapOn:
+    id: product-add-button
+- assertVisible:
+    id: product-creation-sheet
+- tapOn: Physical product
+- assertVisible:
+    id: product-form
+- tapOn:
+    id: product-title
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn:
+    id: publish-product-button
+- extendedWaitUntil:
+    visible:
+      id: save-product-button
+    timeout: 30000
+- assertVisible: Maestro ${SUITE_RUN_ID}
+- tapOn:
+    text: Products
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: Maestro ${SUITE_RUN_ID}
+    timeout: 30000
+- tapOn: Maestro ${SUITE_RUN_ID}
+- assertVisible:
+    id: save-product-button
+- assertVisible: Maestro ${SUITE_RUN_ID}

@@ -1,0 +1,69 @@
+# p2: orders.receipt, orders.note
+appId: ${APP_ID}
+name: Persist a run-owned order note and open its receipt
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - orders
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Details ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: Details ${SUITE_RUN_ID}
+    direction: DOWN
+- assertVisible: Details ${SUITE_RUN_ID}
+
+# Take a cash payment so this same run-owned order becomes receipt-eligible.
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+- tapOn:
+    id: order-details-collect-payment-button
+- assertVisible:
+    id: payment-methods-header-label
+- tapOn:
+    id: payment-methods-view-cash-row
+- assertVisible: Cash received
+- tapOn: Cash received
+- inputText: "9999"
+- tapOn: Mark Order as Complete
+- extendedWaitUntil:
+    visible:
+      text: See Receipt
+    timeout: 30000
+- tapOn: See Receipt
+- extendedWaitUntil:
+    visible:
+      text: Receipt
+    timeout: 30000
+- assertVisible: Receipt

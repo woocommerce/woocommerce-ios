@@ -1,0 +1,105 @@
+# p2: login.no-jetpack
+# Required fixture: a WooCommerce site without Jetpack and site-admin creds.
+appId: ${APP_ID}
+name: "Login - No Jetpack via site credentials"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- extendedWaitUntil:
+    visible:
+      id: "Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+- runFlow:
+    when:
+      visible:
+        id: "Login Onboarding Skip Button"
+    commands:
+      - tapOn:
+          id: "Login Onboarding Skip Button"
+- extendedWaitUntil:
+    visible:
+      id: "prologue-title-label"
+    timeout: 15000
+- tapOn:
+    id: "Prologue Self Hosted Button"
+- runFlow:
+    when:
+      visible: "No computer? Log in with site address"
+    commands:
+      - tapOn: "No computer? Log in with site address"
+- extendedWaitUntil:
+    visible:
+      id: "Site address"
+    timeout: 15000
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+
+# Some site configurations offer the credential path explicitly, while a
+# fully self-hosted site can route to it directly.
+- runFlow:
+    when:
+      visible:
+        id: "Sign in with site credentials Button"
+    commands:
+      - tapOn:
+          id: "Sign in with site credentials Button"
+
+- extendedWaitUntil:
+    visible:
+      id: "usernameField"
+    timeout: 30000
+- tapOn:
+    id: "usernameField"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME}
+- tapOn:
+    id: "passwordField"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "submitButton"
+
+- runFlow:
+    when:
+      visible:
+        id: "login-epilogue-continue-button"
+    commands:
+      - tapOn:
+          id: "login-epilogue-continue-button"
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"
+- runFlow:
+    when:
+      visible: "Not now"
+    commands:
+      - tapOn: "Not now"
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item"
+    timeout: 60000
+- assertVisible:
+    id: "tab-bar-orders-item"
+- assertVisible:
+    id: "tab-bar-products-item"
+- takeScreenshot: login_no_jetpack

@@ -1,0 +1,121 @@
+# p2: products.list, products.pagination, products.sort, products.search
+# Prerequisite: at least two products with distinct names are visible.
+appId: ${APP_ID}
+name: "Products - List, sort, filters, and search"
+tags:
+  - smoke_core
+  - products
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+- assertVisible:
+    id: "products-table-view"
+
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "products-table-view"
+    index: 0
+- evalScript: |
+    var name = String(maestro.copiedText || '').trim();
+    if (!name) {
+      throw new Error('First product row has an empty name');
+    }
+    output.productSearchText = name;
+    output.productSearchRegex = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    output.initialProductName = name;
+- takeScreenshot: products_list
+
+- scroll
+- scroll
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "products-table-view"
+    index: 0
+- evalScript: |
+    var afterScroll = String(maestro.copiedText || '').trim();
+    if (!afterScroll || afterScroll === output.initialProductName) {
+      throw new Error('Products list did not expose an additional row after scrolling');
+    }
+- takeScreenshot: products_list_scrolled
+
+# Establish deterministic opposite sort orders, then prove their first rows
+# differ. This avoids relying on the store's persisted initial sort setting.
+- tapOn: "Sort by"
+- extendedWaitUntil:
+    visible: "Title: A to Z"
+    timeout: 10000
+- assertVisible: "Title: Z to A"
+- tapOn: "Title: A to Z"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "products-table-view"
+    index: 0
+- evalScript: ${output.firstProductAscending = String(maestro.copiedText || '').trim()}
+
+- tapOn: "Sort by"
+- extendedWaitUntil:
+    visible: "Title: Z to A"
+    timeout: 10000
+- tapOn: "Title: Z to A"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "products-table-view"
+    index: 0
+- evalScript: |
+    var descending = String(maestro.copiedText || '').trim();
+    if (!descending || descending === output.firstProductAscending) {
+      throw new Error('Opposite product sort orders produced the same first row');
+    }
+- takeScreenshot: products_sorted
+
+- tapOn:
+    id: "product-search-button"
+- extendedWaitUntil:
+    visible:
+      id: "product-search-screen-search-field"
+    timeout: 15000
+- tapOn:
+    id: "product-search-screen-search-field"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${output.productSearchText}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: "updated-search-results-table-view"
+    timeout: 30000
+- assertVisible:
+    text: "${output.productSearchRegex}"
+    childOf:
+      id: "updated-search-results-table-view"
+- takeScreenshot: products_search_results
+- tapOn:
+    id: "product-search-screen-cancel-button"
+- assertVisible:
+    id: "products-table-view"
+
+- tapOn:
+    id: "product-filter-button"
+- extendedWaitUntil:
+    visible: "Stock Status"
+    timeout: 15000
+- assertVisible: "Show Products"
+- takeScreenshot: products_filters
+- back
+- assertVisible:
+    id: "products-table-view"

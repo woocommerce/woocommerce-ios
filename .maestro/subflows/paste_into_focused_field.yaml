@@ -1,0 +1,7 @@
+# Paste a caller-supplied value into the currently focused field without
+# replaying it character by character. The clipboard is cleared immediately.
+appId: ${APP_ID}
+---
+- setClipboard: ${TEXT_TO_PASTE}
+- pasteText
+- setClipboard: ""

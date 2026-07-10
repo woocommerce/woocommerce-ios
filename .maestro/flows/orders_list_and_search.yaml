@@ -1,0 +1,74 @@
+# p2: orders.list, orders.pagination, orders.search
+# Prerequisite: the live store has enough orders to expose additional rows.
+appId: ${APP_ID}
+name: "Orders - List, pagination, and search"
+tags:
+  - smoke_core
+  - orders
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_orders.yaml
+- assertVisible:
+    id: "orders-table-view"
+
+# Capture the first live order title (for example, "#560 Pamela Nguyen").
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "orders-table-view"
+    index: 0
+- evalScript: |
+    var title = String(maestro.copiedText || '').trim();
+    var match = title.match(/^#([^\s]+)/);
+    if (!match) {
+      throw new Error('First order row does not expose an order number');
+    }
+    output.initialOrderTitle = title;
+    output.orderSearchText = match[1];
+    output.initialOrderRegex = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+- takeScreenshot: orders_list
+
+# Moving to another live row proves the list is scrollable and populated past
+# its initial viewport. Stores without enough orders fail as a prerequisite.
+- scroll
+- scroll
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "orders-table-view"
+    index: 0
+- evalScript: |
+    var afterScroll = String(maestro.copiedText || '').trim();
+    if (!afterScroll || afterScroll === output.initialOrderTitle) {
+      throw new Error('Orders list did not expose an additional row after scrolling');
+    }
+- takeScreenshot: orders_list_scrolled
+
+- tapOn:
+    id: "order-search-button"
+- extendedWaitUntil:
+    visible:
+      id: "order-search-screen-search-field"
+    timeout: 15000
+- tapOn:
+    id: "order-search-screen-search-field"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${output.orderSearchText}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: "updated-search-results-table-view"
+    timeout: 30000
+- assertVisible:
+    text: "${output.initialOrderRegex}"
+    childOf:
+      id: "updated-search-results-table-view"
+- takeScreenshot: orders_search_results
+- tapOn:
+    id: "order-search-screen-cancel-button"
+- assertVisible:
+    id: "orders-table-view"

@@ -1,0 +1,24 @@
+# Preserve the current authenticated session. Recover through the shared login
+# only when the app is genuinely at a fresh-login surface.
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: false
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item|Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+
+- runFlow:
+    when:
+      notVisible:
+        id: "tab-bar-my-store-item"
+    commands:
+      - runFlow:
+          file: login.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item"
+    timeout: 60000

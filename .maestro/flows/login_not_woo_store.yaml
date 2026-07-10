@@ -1,0 +1,83 @@
+# p2: login.not-woo-store
+# Required fixture: a WP.com-accessible WordPress site without WooCommerce.
+appId: ${APP_ID}
+name: "Login - Not a WooCommerce store error"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- extendedWaitUntil:
+    visible:
+      id: "Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+- runFlow:
+    when:
+      visible:
+        id: "Login Onboarding Skip Button"
+    commands:
+      - tapOn:
+          id: "Login Onboarding Skip Button"
+- extendedWaitUntil:
+    visible:
+      id: "prologue-title-label"
+    timeout: 15000
+- tapOn:
+    id: "Prologue Self Hosted Button"
+- runFlow:
+    when:
+      visible: "No computer? Log in with site address"
+    commands:
+      - tapOn: "No computer? Log in with site address"
+- extendedWaitUntil:
+    visible:
+      id: "Site address"
+    timeout: 15000
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+- extendedWaitUntil:
+    visible:
+      id: "Email address"
+    timeout: 30000
+- tapOn:
+    id: "Email address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_EMAIL}
+- hideKeyboard
+- tapOn:
+    id: "Get Started Email Continue Button"
+- extendedWaitUntil:
+    visible:
+      id: "Password"
+    timeout: 30000
+- tapOn:
+    id: "Password"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "Continue Button"
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible: '.*is not a WooCommerce site\.'
+    timeout: 60000
+- assertVisible: "Log In With Another Account"
+- takeScreenshot: login_not_woo_store

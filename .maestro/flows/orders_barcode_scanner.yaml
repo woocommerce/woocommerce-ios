@@ -12,17 +12,15 @@ tags:
 - runFlow: ../subflows/navigate_to_orders.yaml
 - tapOn:
     id: new-order-type-sheet-button
-- assertVisible:
-    id: new-order-add-product-via-sku-scanner-button
-- tapOn:
-    id: new-order-add-product-via-sku-scanner-button
+- assertVisible: Scan barcode
+- tapOn: Scan barcode
 - runFlow:
     when:
       visible: Allow
     commands:
       - tapOn: Allow
 - extendedWaitUntil:
-    visible: Scan barcode or QR Code
+    visible: Scan product barcode or QR Code
     timeout: 15000
 - assertVisible: Scan product barcode or QR Code
 - takeScreenshot: order_barcode_scanner_surface

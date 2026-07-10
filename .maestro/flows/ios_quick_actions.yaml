@@ -10,6 +10,14 @@ tags:
 - runFlow: ../subflows/ensure_logged_in.yaml
 - stopApp
 - pressKey: HOME
+- tapOn:
+    text: Search
+    index: 0
+- inputText: Woo
+- hideKeyboard
+- extendedWaitUntil:
+    visible: "Woo.*"
+    timeout: 15000
 - longPressOn:
     text: "Woo.*"
     index: 0
@@ -18,7 +26,8 @@ tags:
 - assertVisible: Add a product
 - assertVisible: Collect Payment
 - takeScreenshot: ios_quick_actions
-- tapOn: New Order
+- tapOn:
+    point: "35%,24%"
 - extendedWaitUntil:
     visible:
       id: new-order-create-button

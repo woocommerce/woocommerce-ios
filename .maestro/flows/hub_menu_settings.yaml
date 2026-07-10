@@ -1,0 +1,49 @@
+# p2: hub.settings
+appId: ${APP_ID}
+name: "Hub Menu - Settings"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- assertVisible:
+    id: "dashboard-settings-button"
+- assertVisible:
+    id: "menu-payments"
+- tapOn:
+    id: "dashboard-settings-button"
+- extendedWaitUntil:
+    visible: "Help & Support"
+    timeout: 15000
+- assertVisible: "Settings"
+- assertVisible: "Help & Support"
+- assertVisible: "Troubleshoot Connection"
+- scrollUntilVisible:
+    element: "Privacy Settings"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "Privacy Settings"
+- assertVisible:
+    id: "settings-beta-features-button"
+- scrollUntilVisible:
+    element: "WooCommerce"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "WooCommerce"
+- scrollUntilVisible:
+    element:
+      id: "settings-log-out-button"
+    direction: DOWN
+    timeout: 10000
+- assertVisible:
+    id: "settings-log-out-button"
+- takeScreenshot: hub_settings
+- back
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-settings-button"
+    timeout: 10000

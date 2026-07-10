@@ -1,0 +1,33 @@
+# p2: dashboard.analytics
+# Prerequisite: store has at least one order, so the Performance analytics card is available.
+appId: ${APP_ID}
+name: "Dashboard - View all store analytics"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - dashboard
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- scrollUntilVisible:
+    element: "View all store analytics"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "View all store analytics"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Analytics"
+    timeout: 20000
+- assertVisible: "Analytics"
+- assertVisible: "Date range"
+- assertVisible: "Revenue"
+- assertVisible: "Edit"
+- takeScreenshot: dashboard_view_all_analytics
+- back
+- extendedWaitUntil:
+    visible: "My store"
+    timeout: 10000
+

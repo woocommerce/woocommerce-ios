@@ -1,0 +1,83 @@
+# p2: products.detail.tags, products.detail.variations, products.detail.variation-attributes
+# Prerequisite: store has an editable Variable product with at least one generated variation and attribute.
+appId: ${APP_ID}
+name: "Products - Variations and tags"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - products
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+- tapOn:
+    id: "product-filter-button"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Product Type"
+    timeout: 10000
+- tapOn: "Product Type"
+- extendedWaitUntil:
+    visible: "Variable"
+    timeout: 10000
+- tapOn: "Variable"
+- tapOn: "Show Products"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 20000
+- tapOn:
+    id: "products-table-view"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 20000
+- tapOn:
+    id: "edit-product-more-options-button"
+- extendedWaitUntil:
+    visible: "Tags"
+    timeout: 10000
+- tapOn: "Tags"
+- extendedWaitUntil:
+    visible:
+      id: "add-tags"
+    timeout: 15000
+- assertVisible: "Tags"
+- assertVisible:
+    id: "add-tags"
+- takeScreenshot: products_tags
+- back
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Variations"
+    direction: DOWN
+    timeout: 15000
+- assertVisible: "Variations"
+- scrollUntilVisible:
+    element: "Variations Attributes"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "Variations Attributes"
+- tapOn: "Variations"
+- extendedWaitUntil:
+    visible: "Variations"
+    timeout: 20000
+- assertVisible: "Variations"
+- tapOn:
+    point: "50%,30%"
+- extendedWaitUntil:
+    visible: "Attributes"
+    timeout: 20000
+- assertVisible: "Attributes"
+- assertVisible: "Enabled"
+- takeScreenshot: products_variation_detail
+- back
+- extendedWaitUntil:
+    visible: "Variations"
+    timeout: 10000
+

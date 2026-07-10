@@ -1,0 +1,52 @@
+# p2: hub.blaze.create
+# Blaze is a genuine store eligibility gate. When exposed, the flow reaches a creation-capable destination.
+appId: ${APP_ID}
+name: "Blaze - Campaign creation"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scroll
+- scroll
+- runFlow:
+    when:
+      notVisible:
+        id: "menu-blaze"
+    commands:
+      - evalScript: ${console.log('FEATURE_SKIPPED hub.blaze.create reason=store_not_eligible')}
+      - takeScreenshot: blaze_skipped
+- runFlow:
+    when:
+      visible:
+        id: "menu-blaze"
+    commands:
+      - evalScript: ${console.log('FEATURE_EXERCISED hub.blaze.create')}
+      - tapOn:
+          id: "menu-blaze"
+      - extendedWaitUntil:
+          visible: "Blaze Campaigns|Get your products seen by millions"
+          timeout: 25000
+      - assertNotVisible:
+          id: "menu-blaze"
+      - runFlow:
+          when:
+            visible: "Blaze Campaigns"
+          commands:
+            - assertVisible: "Create"
+      - runFlow:
+          when:
+            visible: "Get your products seen by millions"
+          commands:
+            - assertVisible: "Create Your Campaign"
+      - takeScreenshot: blaze_campaign_destination
+      - back
+      - extendedWaitUntil:
+          visible:
+            id: "menu-blaze"
+          timeout: 15000
+

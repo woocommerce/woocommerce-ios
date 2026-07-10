@@ -1,0 +1,59 @@
+# p2: hub.change-store, hub.wc-admin, hub.view-store
+appId: ${APP_ID}
+name: "Hub Menu - WooCommerce Admin, View Store, and change store"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-view-store"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    id: "menu-view-store"
+- extendedWaitUntil:
+    visible: "View Store"
+    timeout: 20000
+- assertVisible: "View Store"
+- assertNotVisible:
+    id: "menu-view-store"
+- takeScreenshot: hub_view_store
+- back
+- extendedWaitUntil:
+    visible:
+      id: "menu-view-store"
+    timeout: 15000
+- tapOn:
+    id: "menu-woocommerce-admin"
+- extendedWaitUntil:
+    visible: "WooCommerce Admin"
+    timeout: 20000
+- assertVisible: "WooCommerce Admin"
+- assertNotVisible:
+    id: "menu-woocommerce-admin"
+- takeScreenshot: hub_woocommerce_admin
+- back
+- extendedWaitUntil:
+    visible:
+      id: "store-title"
+    timeout: 15000
+- tapOn:
+    id: "store-title"
+- extendedWaitUntil:
+    visible: "Connected Stores"
+    timeout: 20000
+- assertVisible: "Connected Stores"
+- assertVisible: "Dismiss"
+- takeScreenshot: hub_change_store
+- tapOn: "Dismiss"
+- extendedWaitUntil:
+    visible:
+      id: "store-title"
+    timeout: 10000
+

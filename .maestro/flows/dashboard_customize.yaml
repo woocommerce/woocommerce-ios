@@ -1,0 +1,33 @@
+# p2: dashboard.customization
+# Prerequisite: authenticated Jetpack store. This flow does not persist changes.
+appId: ${APP_ID}
+name: "Dashboard - Customize cards"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - dashboard
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- assertVisible: "My store"
+- tapOn:
+    text: "Edit"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Customize"
+    timeout: 15000
+- assertVisible: "Customize"
+- assertVisible: "Performance"
+- scrollUntilVisible:
+    element: "Top performers"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "Top performers"
+- assertVisible: "Save"
+- takeScreenshot: dashboard_customize
+- back
+- extendedWaitUntil:
+    visible: "My store"
+    timeout: 10000

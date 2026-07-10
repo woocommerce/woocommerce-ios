@@ -1,0 +1,53 @@
+# p2: hub.payments
+# Card-reader rows are a genuine territory/store capability gate.
+appId: ${APP_ID}
+name: "Hub Menu - Payments"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- tapOn:
+    id: "menu-payments"
+- extendedWaitUntil:
+    visible: "Payments"
+    timeout: 20000
+- assertVisible: "Payments"
+- scroll
+- scroll
+- runFlow:
+    when:
+      notVisible:
+        id: "card-reader-manuals"
+    commands:
+      - evalScript: ${console.log('FEATURE_SKIPPED hub.payments.card-readers reason=unsupported_store_territory')}
+      - takeScreenshot: hub_payments_card_readers_skipped
+- runFlow:
+    when:
+      visible:
+        id: "card-reader-manuals"
+    commands:
+      - evalScript: ${console.log('FEATURE_EXERCISED hub.payments.card-readers')}
+      - assertVisible: "Order Card Reader"
+      - assertVisible: "Manage Card Reader"
+      - tapOn:
+          id: "card-reader-manuals"
+      - extendedWaitUntil:
+          visible: "Card Reader Manuals"
+          timeout: 15000
+      - assertVisible: "BBPOS Chipper 2X BT"
+      - assertVisible: "Stripe Reader M2"
+      - takeScreenshot: hub_payments_manuals
+      - back
+      - extendedWaitUntil:
+          visible: "Payments"
+          timeout: 10000
+- back
+- extendedWaitUntil:
+    visible:
+      id: "menu-payments"
+    timeout: 10000

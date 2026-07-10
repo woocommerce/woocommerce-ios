@@ -1,0 +1,60 @@
+# p2: hub.customers, hub.inbox
+# Inbox is a genuine feature gate based on store eligibility.
+appId: ${APP_ID}
+name: "Hub Menu - Customers and Inbox"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-customers"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    id: "menu-customers"
+- extendedWaitUntil:
+    visible: "Search for customers"
+    timeout: 20000
+- assertVisible: "Customers"
+- assertVisible: "Search for customers"
+- takeScreenshot: hub_customers
+- back
+- extendedWaitUntil:
+    visible:
+      id: "menu-customers"
+    timeout: 10000
+- scroll
+- runFlow:
+    when:
+      notVisible:
+        id: "menu-inbox"
+    commands:
+      - evalScript: ${console.log('FEATURE_SKIPPED hub.inbox reason=store_not_eligible')}
+      - takeScreenshot: hub_inbox_skipped
+- runFlow:
+    when:
+      visible:
+        id: "menu-inbox"
+    commands:
+      - evalScript: ${console.log('FEATURE_EXERCISED hub.inbox')}
+      - tapOn:
+          id: "menu-inbox"
+      - extendedWaitUntil:
+          visible: "Inbox"
+          timeout: 20000
+      - assertVisible: "Inbox"
+      - assertNotVisible:
+          id: "menu-customers"
+      - takeScreenshot: hub_inbox
+      - back
+      - extendedWaitUntil:
+          visible:
+            id: "menu-customers"
+          timeout: 10000
+

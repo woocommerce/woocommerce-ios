@@ -1,0 +1,43 @@
+# p2: hub.google-for-woo
+# Google for WooCommerce is a genuine plugin/account eligibility gate.
+appId: ${APP_ID}
+name: "Google for WooCommerce - Campaign webview"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scroll
+- scroll
+- runFlow:
+    when:
+      notVisible:
+        id: "menu-google-ads"
+    commands:
+      - evalScript: ${console.log('FEATURE_SKIPPED hub.google-for-woo reason=plugin_or_ads_account_not_eligible')}
+      - takeScreenshot: google_for_woo_skipped
+- runFlow:
+    when:
+      visible:
+        id: "menu-google-ads"
+    commands:
+      - evalScript: ${console.log('FEATURE_EXERCISED hub.google-for-woo')}
+      - tapOn:
+          id: "menu-google-ads"
+      - extendedWaitUntil:
+          visible: "Google for WooCommerce"
+          timeout: 30000
+      - assertVisible: "Google for WooCommerce"
+      - assertVisible: "Cancel"
+      - assertNotVisible:
+          id: "menu-google-ads"
+      - takeScreenshot: google_for_woo_webview
+      - tapOn: "Cancel"
+      - extendedWaitUntil:
+          visible:
+            id: "menu-google-ads"
+          timeout: 15000

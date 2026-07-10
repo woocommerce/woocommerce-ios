@@ -565,7 +565,10 @@ final class PointOfSaleObservableItemsControllerTests {
         // When
         let containerState = sut.itemsViewState.containerState
 
-        // Then: no error before the local catalog gets a chance to serve items
+        // Then: the failure verdict is deferred, not dropped — `.syncFailed` only exists when a
+        // previous full sync succeeded, so a full catalog is on disk and about to load. Erroring
+        // now would flash the sync-error screen on every offline entry. Once products load, the
+        // state resolves to content (items exist) or the sync error (genuinely empty, test above).
         #expect(containerState == .content)
     }
 

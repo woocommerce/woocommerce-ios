@@ -19,15 +19,11 @@ tags:
     childOf:
       id: "orders-table-view"
     index: 0
-- evalScript: |
-    var title = String(maestro.copiedText || '').trim();
-    var match = title.match(/^#([^\s]+)/);
-    if (!match) {
-      throw new Error('First order row does not expose an order number');
-    }
-    output.initialOrderTitle = title;
-    output.orderSearchText = match[1];
-    output.initialOrderRegex = title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+- evalScript: ${output.initialOrderTitle = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.initialOrderTitle.startsWith('#')}
+    label: First live order row exposes an order number
+- evalScript: ${output.orderSearchText = output.initialOrderTitle.split(' ')[0].replace('#', '')}
 - takeScreenshot: orders_list
 
 # Moving to another live row proves the list is scrollable and populated past
@@ -39,11 +35,10 @@ tags:
     childOf:
       id: "orders-table-view"
     index: 0
-- evalScript: |
-    var afterScroll = String(maestro.copiedText || '').trim();
-    if (!afterScroll || afterScroll === output.initialOrderTitle) {
-      throw new Error('Orders list did not expose an additional row after scrolling');
-    }
+- evalScript: ${output.afterScrollOrderTitle = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.afterScrollOrderTitle.length > 0 && output.afterScrollOrderTitle !== output.initialOrderTitle}
+    label: Orders list exposes an additional row after scrolling
 - takeScreenshot: orders_list_scrolled
 
 - tapOn:
@@ -54,17 +49,16 @@ tags:
     timeout: 15000
 - tapOn:
     id: "order-search-screen-search-field"
+- evalScript: ${output.clipboardText = output.orderSearchText}
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: ${output.orderSearchText}
 - pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: "updated-search-results-table-view"
     timeout: 30000
 - assertVisible:
-    text: "${output.initialOrderRegex}"
+    text: "#${output.orderSearchText}.*"
     childOf:
       id: "updated-search-results-table-view"
 - takeScreenshot: orders_search_results

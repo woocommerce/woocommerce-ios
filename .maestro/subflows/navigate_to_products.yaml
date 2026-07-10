@@ -2,6 +2,14 @@ appId: ${APP_ID}
 ---
 - tapOn:
     id: "tab-bar-products-item"
+- runFlow:
+    when:
+      visible: "Date: Newest to Oldest"
+    commands:
+      - swipe:
+          start: "50%,75%"
+          end: "50%,95%"
+          duration: 500
 - extendedWaitUntil:
     visible:
       id: "products-table-view"

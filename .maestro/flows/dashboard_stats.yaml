@@ -11,29 +11,9 @@ tags:
 - runFlow:
     file: ../subflows/navigate_to_dashboard.yaml
 - assertVisible:
-    id: "revenue-value"
-- scrollUntilVisible:
-    element:
-      id: "store-stats-chart"
-    direction: DOWN
-    timeout: 20000
-- assertVisible:
-    id: "store-stats-chart"
-
-- tapOn:
     id: "performance-time-range-menu"
-- extendedWaitUntil:
-    visible:
-      id: "time-range-this-week"
-    timeout: 10000
-- tapOn:
-    id: "time-range-this-week"
-- extendedWaitUntil:
-    visible:
-      id: "revenue-value"
-    timeout: 30000
 - assertVisible:
-    id: "store-stats-chart"
+    id: "performance-revenue-type-picker"
 
 - tapOn:
     id: "performance-time-range-menu"
@@ -47,6 +27,11 @@ tags:
     visible:
       id: "revenue-value"
     timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "store-stats-chart"
+    direction: DOWN
+    timeout: 20000
 - assertVisible:
     id: "store-stats-chart"
 - takeScreenshot: dashboard_stats

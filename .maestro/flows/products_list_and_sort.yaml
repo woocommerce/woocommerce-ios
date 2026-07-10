@@ -18,14 +18,11 @@ tags:
     childOf:
       id: "products-table-view"
     index: 0
-- evalScript: |
-    var name = String(maestro.copiedText || '').trim();
-    if (!name) {
-      throw new Error('First product row has an empty name');
-    }
-    output.productSearchText = name;
-    output.productSearchRegex = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    output.initialProductName = name;
+- evalScript: ${output.productSearchText = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.productSearchText.length > 0}
+    label: First live product row exposes a searchable name
+- evalScript: ${output.initialProductName = output.productSearchText}
 - takeScreenshot: products_list
 
 - scroll
@@ -35,21 +32,52 @@ tags:
     childOf:
       id: "products-table-view"
     index: 0
-- evalScript: |
-    var afterScroll = String(maestro.copiedText || '').trim();
-    if (!afterScroll || afterScroll === output.initialProductName) {
-      throw new Error('Products list did not expose an additional row after scrolling');
-    }
+- evalScript: ${output.afterScrollProductName = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.afterScrollProductName.length > 0 && output.afterScrollProductName !== output.initialProductName}
+    label: Products list exposes an additional row after scrolling
 - takeScreenshot: products_list_scrolled
 
 # Establish deterministic opposite sort orders, then prove their first rows
 # differ. This avoids relying on the store's persisted initial sort setting.
 - tapOn: "Sort by"
 - extendedWaitUntil:
+    visible: "Title: Z to A"
+    timeout: 10000
+- assertVisible: "Title: A to Z"
+- tapOn: "Title: Z to A"
+- runFlow:
+    when:
+      visible: "Date: Newest to Oldest"
+    commands:
+      - swipe:
+          start: "50%,75%"
+          end: "50%,95%"
+          duration: 500
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "products-table-view"
+    index: 0
+- evalScript: ${output.firstProductDescending = String(maestro.copiedText || '').trim()}
+
+- tapOn: "Sort by"
+- extendedWaitUntil:
     visible: "Title: A to Z"
     timeout: 10000
-- assertVisible: "Title: Z to A"
 - tapOn: "Title: A to Z"
+- runFlow:
+    when:
+      visible: "Date: Newest to Oldest"
+    commands:
+      - swipe:
+          start: "50%,75%"
+          end: "50%,95%"
+          duration: 500
 - extendedWaitUntil:
     visible:
       id: "products-table-view"
@@ -60,26 +88,9 @@ tags:
       id: "products-table-view"
     index: 0
 - evalScript: ${output.firstProductAscending = String(maestro.copiedText || '').trim()}
-
-- tapOn: "Sort by"
-- extendedWaitUntil:
-    visible: "Title: Z to A"
-    timeout: 10000
-- tapOn: "Title: Z to A"
-- extendedWaitUntil:
-    visible:
-      id: "products-table-view"
-    timeout: 30000
-- copyTextFrom:
-    text: ".+"
-    childOf:
-      id: "products-table-view"
-    index: 0
-- evalScript: |
-    var descending = String(maestro.copiedText || '').trim();
-    if (!descending || descending === output.firstProductAscending) {
-      throw new Error('Opposite product sort orders produced the same first row');
-    }
+- assertTrue:
+    condition: ${output.firstProductAscending.length > 0 && output.firstProductAscending !== output.firstProductDescending}
+    label: Opposite product sort orders produce different first rows
 - takeScreenshot: products_sorted
 
 - tapOn:
@@ -90,17 +101,16 @@ tags:
     timeout: 15000
 - tapOn:
     id: "product-search-screen-search-field"
+- evalScript: ${output.clipboardText = output.productSearchText}
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: ${output.productSearchText}
 - pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: "updated-search-results-table-view"
     timeout: 30000
 - assertVisible:
-    text: "${output.productSearchRegex}"
+    text: "${output.productSearchText}"
     childOf:
       id: "updated-search-results-table-view"
 - takeScreenshot: products_search_results
@@ -116,6 +126,6 @@ tags:
     timeout: 15000
 - assertVisible: "Show Products"
 - takeScreenshot: products_filters
-- back
+- tapOn: "Dismiss"
 - assertVisible:
     id: "products-table-view"

@@ -2,6 +2,6 @@
 # replaying it character by character. The clipboard is cleared immediately.
 appId: ${APP_ID}
 ---
-- setClipboard: ${TEXT_TO_PASTE}
+- setClipboard: '${typeof TEXT_TO_PASTE === "undefined" ? output.clipboardText : TEXT_TO_PASTE}'
 - pasteText
 - setClipboard: ""

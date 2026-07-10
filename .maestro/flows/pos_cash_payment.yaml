@@ -1,0 +1,74 @@
+# p2: pos.add-products, pos.pay-cash
+# Prerequisites: an authenticated, genuinely POS-eligible store on an iPad
+# with at least one purchasable product and cash payments available.
+appId: ${APP_ID}
+name: "POS - Cash payment and new order"
+tags:
+  - flaky_quarantine
+  - destructive
+  - pos_ipad
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- tapOn:
+    id: tab-bar-pos-item
+- extendedWaitUntil:
+    visible:
+      id: "pos-product-card-.*|pos-ineligible-view"
+    timeout: 90000
+- assertNotVisible:
+    id: pos-ineligible-view
+# Give the created POS order an unmistakable run-owned line item.
+- tapOn:
+    id: pos-custom-amount-entry-row
+- tapOn:
+    id: pos-custom-amount-amount-field
+- inputText: "1"
+- tapOn:
+    id: pos-custom-amount-name-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn:
+    id: pos-add-custom-amount-submit-button
+- assertVisible:
+    id: pos-custom-amount-row
+- tapOn:
+    id: "pos-product-card-.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"
+    timeout: 30000
+- tapOn:
+    id: pos-checkout-button
+- extendedWaitUntil:
+    visible:
+      id: pos-total-field
+    timeout: 30000
+- assertVisible:
+    id: pos-cash-payment-button
+- tapOn:
+    id: pos-cash-payment-button
+- assertVisible:
+    id: pos-mark-payment-complete-button
+- tapOn:
+    id: pos-mark-payment-complete-button
+- extendedWaitUntil:
+    visible:
+      id: pos-payment-success-view
+    timeout: 45000
+- assertVisible:
+    id: pos-email-receipt-button
+- assertVisible:
+    id: pos-new-order-button
+- takeScreenshot: pos_cash_payment_success
+- tapOn:
+    id: pos-new-order-button
+- extendedWaitUntil:
+    visible:
+      id: "pos-product-card-.*"
+    timeout: 30000
+- assertNotVisible:
+    id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"

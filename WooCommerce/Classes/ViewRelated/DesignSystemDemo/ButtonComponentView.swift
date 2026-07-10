@@ -54,7 +54,7 @@ struct ButtonComponentView: View {
             Toggle("Enabled", isOn: $isEnabled)
         } preview: {
             StoreButton("Label",
-                        icon: showsIcon ? StoreIcon.Plus.regular : nil,
+                        icon: showsIcon ? StoreIcon.Star.regular : nil,
                         variant: style.variant,
                         size: size.value) {}
                 .disabled(!isEnabled)

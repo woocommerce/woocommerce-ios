@@ -25,6 +25,32 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][3])
         self.assertNotIn("flaky_quarantine", RUNNER.PROFILES["release"][0])
 
+    def test_sanitize_artifacts_redacts_text_and_removes_login_images(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "commands.json").write_text('{"email":"merchant@example.com"}')
+            (root / "screen.png").write_bytes(b"image")
+            RUNNER.sanitize_artifacts(
+                root,
+                {"MAESTRO_WOO_LAB_WPCOM_EMAIL": "merchant@example.com"},
+                remove_images=True,
+            )
+            self.assertNotIn("merchant@example.com", (root / "commands.json").read_text())
+            self.assertFalse((root / "screen.png").exists())
+
+    def test_app_identifier_is_dynamic(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            app = Path(directory) / "Prototype.app"
+            app.mkdir()
+            (app / "Info.plist").write_text(
+                '<?xml version="1.0" encoding="UTF-8"?>'
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" '
+                '"http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+                '<plist version="1.0"><dict><key>CFBundleIdentifier</key>'
+                '<string>com.automattic.alpha.woocommerce</string></dict></plist>'
+            )
+            self.assertEqual("com.automattic.alpha.woocommerce", RUNNER.app_identifier(app))
+
 
 if __name__ == "__main__":
     unittest.main()

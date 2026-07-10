@@ -226,6 +226,25 @@ def redact(text: str, values: dict[str, str]) -> str:
     return text
 
 
+def sanitize_artifacts(root: Path, values: dict[str, str], *, remove_images: bool = False) -> None:
+    """Redact Maestro's generated text evidence and suppress login screenshots."""
+    text_suffixes = {".html", ".json", ".log", ".txt", ".xml", ".yaml", ".yml"}
+    image_suffixes = {".heic", ".jpeg", ".jpg", ".png", ".webp"}
+    if not root.exists():
+        return
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        if remove_images and path.suffix.lower() in image_suffixes:
+            path.unlink()
+            continue
+        if path.suffix.lower() in text_suffixes:
+            original = path.read_text(errors="replace")
+            sanitized = redact(original, values)
+            if sanitized != original:
+                path.write_text(sanitized, encoding="utf-8")
+
+
 def write_combined_junit(attempts: list[Attempt], destination: Path) -> tuple[int, int, int]:
     suites = ET.Element("testsuites")
     tests = failures = skipped = 0
@@ -317,9 +336,15 @@ def main() -> int:
                     log = output / "logs" / f"{prefix}.log"
                     debug = output / "diagnostics" / prefix
                     debug.mkdir()
-                    command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(output / "screenshots"), *env_args, str(flow)]
+                    screenshot_dir = output / "screenshots" / prefix
+                    screenshot_dir.mkdir()
+                    command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(screenshot_dir), *env_args, str(flow)]
                     completed = run(command, check=False)
                     log.write_text(redact(completed.stdout + completed.stderr, values), encoding="utf-8")
+                    is_login = "login" in flow_tags(flow)
+                    sanitize_artifacts(debug, values, remove_images=is_login)
+                    sanitize_artifacts(screenshot_dir, values, remove_images=is_login)
+                    sanitize_artifacts(junit.parent, values)
                     attempts.append(Attempt(flow, repetition, attempt_number, completed.returncode, junit, log, debug))
                     if completed.returncode == 0:
                         break
@@ -333,6 +358,7 @@ def main() -> int:
     report_attempts = list(final_by_flow_run.values())
     tests, failures, skipped = write_combined_junit(report_attempts, output / "report.xml")
     write_html(output / "report.html", run_id=run_id, app=app, app_id=app_id, simulator=simulator, profile=args.profile, attempts=attempts, tests=tests, failures=failures, skipped=skipped)
+    sanitize_artifacts(output, values)
     print(f"Maestro artifacts: {output}")
     print(f"Simulator: {simulator['name']} ({simulator['udid']})")
     print(f"Bundle identifier: {app_id}")

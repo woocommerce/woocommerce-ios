@@ -34,8 +34,8 @@ public struct StoreButtonSize {
     public static let medium = StoreButtonSize(
         textStyle: .labelLarge.emphasized,
         iconSize: .medium,
-        horizontalPadding: StorePadding.p6,
-        verticalPadding: StorePadding.p5,
+        horizontalPadding: StorePadding.p5,
+        verticalPadding: StorePadding.p6,
         cornerRadius: StoreRadius.extraLarge
     )
 }

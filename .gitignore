@@ -89,10 +89,12 @@ default.profraw
 # Ignore Local Configuration files (like the ones used for Fastlane)
 .env
 
-# All secrets should be stored under .configure-files
-# Everything without a .enc extension is ignored
-.configure-files/*
-!.configure-files/*.enc
+# a8c-secrets decrypts into ~/.a8c-secrets/<repo-id>/, outside the checkout.
+# In-repo, track only the repo id, the public keys, and the encrypted *.age blobs.
+.a8c-secrets/*
+!.a8c-secrets/repo-id
+!.a8c-secrets/keys.pub
+!.a8c-secrets/*.age
 
 # Can't imagine ever needing to commit one of these
 *.bak

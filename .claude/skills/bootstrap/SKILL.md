@@ -30,4 +30,4 @@ bundle install && bundle exec rake dependencies
 If the command fails:
 1. Report the failing step and error output
 2. If `Bundler::GemNotFound` or wrong Ruby version errors appear, ensure the correct Ruby version is active and retry
-3. If `configure_apply` (fastlane credentials) fails with exit 128, this is a git-crypt/mobile-secrets issue — it does not block building or testing, only internal credentials are missing
+3. If `configure_secrets` (fastlane credentials) fails, this is an a8c-secrets issue (tool missing or no decryption key) — it does not block building or testing, only internal credentials are missing; the build falls back to templated credentials

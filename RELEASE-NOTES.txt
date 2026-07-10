@@ -3,7 +3,7 @@
 
 25.3
 -----
-- [*] Point of Sale: POS now opens while offline using the locally synced catalog when the store was previously eligible and a full catalog sync has completed. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
+- [*] Point of Sale: once the local catalog has fully synced, POS opens instantly without waiting on network checks and also works offline. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
 
 25.2
 -----

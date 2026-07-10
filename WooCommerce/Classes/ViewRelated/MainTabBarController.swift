@@ -109,10 +109,6 @@ final class MainTabBarController: UITabBarController {
         .default
     }
 
-    /// Notifications badge
-    ///
-    private let notificationsBadge = NotificationsBadgeController()
-
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
@@ -1128,11 +1124,6 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        guard #available(iOS 26.0, *) else {
-            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
-            notificationsBadge.updateBadge(with: input)
-            return
-        }
 
         switch action {
         case .show:

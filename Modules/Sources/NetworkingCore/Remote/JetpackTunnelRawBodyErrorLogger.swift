@@ -5,8 +5,6 @@ protocol JetpackTunnelRawBodyErrorLogging {
 }
 
 struct JetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging {
-    private typealias JSONDictionary = [String: Any]
-
     private let maxSnippetLength: Int
     private let warningSink: (String) -> Void
 
@@ -25,27 +23,121 @@ struct JetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging {
         warningSink(message)
     }
 
-    func buildMessage(responseData: Data, request: JetpackRequest, transportStatus: Int?) -> String? {
+    private func buildMessage(responseData: Data, request: JetpackRequest, transportStatus: Int?) -> String? {
         guard let rawBodyError = rawBodyErrorContext(from: responseData) else {
             return nil
         }
 
         let snippet = sanitizedSnippet(rawBodyError.rawBody)
-        return [
-            "Jetpack Tunnel raw_body error:",
-            "method=\(sanitize(request.method.rawValue.uppercased())),",
-            "path=\(sanitize(normalizedPath(for: request))),",
-            "transport_status=\(transportStatus.map { String($0) } ?? "nil"),",
-            "proxy_status=\(rawBodyError.proxyStatus.map { String($0) } ?? "nil"),",
-            "error_code=\(sanitize(rawBodyError.errorCode ?? "nil")),",
-            "error_message=\(sanitize(rawBodyError.errorMessage ?? "nil")),",
-            "raw_body_truncated=\(snippet.truncated),",
+        let fields = [
+            "method=\(request.method.rawValue.uppercased())",
+            "path=\(sanitize(normalizedPath(for: request)))",
+            transportStatus.map { "transport_status=\($0)" },
+            rawBodyError.proxyStatus.map { "proxy_status=\($0)" },
+            "error_code=\(sanitize(rawBodyError.errorCode))",
+            "error_message=\(sanitize(rawBodyError.errorMessage))",
+            "raw_body_truncated=\(snippet.truncated)",
             "raw_body_snippet=\(snippet.value)"
-        ].joined(separator: " ")
+        ].compactMap { $0 }
+
+        return "Jetpack Tunnel raw_body error: \(fields.joined(separator: ", "))"
     }
 }
 
 private extension JetpackTunnelRawBodyErrorLogger {
+    struct RawBodyErrorResponse: Decodable {
+        let payload: RawBodyErrorPayload
+        let body: RawBodyErrorBody?
+
+        init(from decoder: Decoder) throws {
+            payload = try RawBodyErrorPayload(from: decoder)
+
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            body = try? container.decodeIfPresent(RawBodyErrorBody.self, forKey: .body)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case body
+        }
+    }
+
+    struct RawBodyErrorPayload: Decodable {
+        let error: String?
+        let code: String?
+        let message: String?
+        let status: Int?
+        let data: RawBodyErrorData?
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            error = try? container.decodeIfPresent(String.self, forKey: .error)
+            code = try? container.decodeIfPresent(String.self, forKey: .code)
+            message = try? container.decodeIfPresent(String.self, forKey: .message)
+            status = container.failsafeDecodeIfPresent(integerForKey: .status)
+            data = try? container.decodeIfPresent(RawBodyErrorData.self, forKey: .data)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case error
+            case code
+            case message
+            case status
+            case data
+        }
+    }
+
+    struct RawBodyErrorData: Decodable {
+        let status: Int?
+        let rawBody: String?
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            status = container.failsafeDecodeIfPresent(integerForKey: .status)
+            rawBody = try? container.decodeIfPresent(String.self, forKey: .rawBody)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case status
+            case rawBody = "raw_body"
+        }
+    }
+
+    enum RawBodyErrorBody: Decodable {
+        case payload(RawBodyErrorPayload)
+        case jsonString(String)
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+
+            if let payload = try? container.decode(RawBodyErrorPayload.self) {
+                self = .payload(payload)
+                return
+            }
+
+            if let jsonString = try? container.decode(String.self) {
+                self = .jsonString(jsonString)
+                return
+            }
+
+            throw DecodingError.typeMismatch(
+                RawBodyErrorBody.self,
+                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected object or stringified JSON body")
+            )
+        }
+
+        var payload: RawBodyErrorPayload? {
+            switch self {
+            case .payload(let payload):
+                return payload
+            case .jsonString(let jsonString):
+                guard let data = jsonString.data(using: .utf8) else {
+                    return nil
+                }
+                return try? JSONDecoder().decode(RawBodyErrorPayload.self, from: data)
+            }
+        }
+    }
+
     struct RawBodyErrorContext {
         let errorCode: String?
         let errorMessage: String?
@@ -60,95 +152,53 @@ private extension JetpackTunnelRawBodyErrorLogger {
 
     private static let redactionPatterns: [RedactionPattern] = [
         RedactionPattern(
-            expression: #"(?i)(authorization\s*[:=]\s*(?:[a-z]+\s+)?)[^\s<>,;"\\]+(?=\\[nrtvf]|\s|[<>,;"]|$)"#,
-            replacement: "$1[redacted]"
+            expression: #"(?i)\bBearer\s+[^\s,;]+"#,
+            replacement: "Bearer [redacted]"
         ),
         RedactionPattern(
-            expression: #"(?i)\b((?:set-cookie|cookie)\s*[:=]\s*).*?(?=\\[nrtvf]|\s*(?:authorization|set-cookie|cookie)\s*[:=]|[<>]|$)"#,
-            replacement: "$1[redacted]"
+            expression: #"(?i)\b(Cookie|Set-Cookie):\s*[^\n\r,]+"#,
+            replacement: "$1: [redacted]"
         ),
         RedactionPattern(
             expression: #"(?i)("(?:consumer_key|consumer_secret|access_token|token|application_password|password)"\s*:\s*")[^"]*(")"#,
             replacement: "$1[redacted]$2"
         ),
         RedactionPattern(
-            expression: #"(?i)\b((?:consumer_key|consumer_secret|access_token|token|application_password|password)\s*[=:]\s*)[^&\s;'",<>\\]+"#,
-            replacement: "$1[redacted]"
-        ),
-        RedactionPattern(
-            expression: #"(?i)\b((?:session|wordpress_logged_in[\w-]*)\s*=\s*)[^&\s;'",<>\\]+"#,
-            replacement: "$1[redacted]"
+            expression: #"(?i)(^|[?&;\s])((?:consumer_key|consumer_secret|access_token|token|application_password|password)=)[^&;\s,"'}]+"#,
+            replacement: "$1$2[redacted]"
         )
     ]
 
-    private static let readableBoundaryPatterns: [RedactionPattern] = [
-        RedactionPattern(
-            expression: #"(?i)([^\s<>,;:"'=])((?:authorization|set-cookie|cookie)\s*[:=])"#,
-            replacement: "$1 $2"
-        ),
-        RedactionPattern(
-            expression: #"(?i)([^A-Za-z_\s<>,;:"'=])((?:session|wordpress_logged_in[\w-]*)\s*=)"#,
-            replacement: "$1 $2"
-        )
-    ]
+    private static let whitespacePattern = #"\s+"#
 
     private func rawBodyErrorContext(from responseData: Data) -> RawBodyErrorContext? {
-        guard let rootDictionary = jsonDictionary(from: responseData) else {
+        guard let response = try? JSONDecoder().decode(RawBodyErrorResponse.self, from: responseData) else {
             return nil
         }
 
-        if let rootError = rawBodyErrorContext(from: rootDictionary, fallbackProxyStatus: intValue(rootDictionary["status"])) {
+        if let rootError = rawBodyErrorContext(from: response.payload, fallbackProxyStatus: response.payload.status) {
             return rootError
         }
 
-        let envelopeStatus = intValue(rootDictionary["status"])
-        if let bodyDictionary = rootDictionary["body"] as? JSONDictionary {
-            return rawBodyErrorContext(from: bodyDictionary, fallbackProxyStatus: envelopeStatus)
-        }
-
-        if let bodyString = rootDictionary["body"] as? String,
-           let bodyData = bodyString.data(using: .utf8),
-           let bodyDictionary = jsonDictionary(from: bodyData) {
-            return rawBodyErrorContext(from: bodyDictionary, fallbackProxyStatus: envelopeStatus)
+        if let bodyPayload = response.body?.payload {
+            return rawBodyErrorContext(from: bodyPayload, fallbackProxyStatus: response.payload.status)
         }
 
         return nil
     }
 
-    private func rawBodyErrorContext(from dictionary: JSONDictionary, fallbackProxyStatus: Int?) -> RawBodyErrorContext? {
-        guard let data = dictionary["data"] as? JSONDictionary,
-              let rawBody = data["raw_body"] as? String,
-              rawBody.isEmpty == false else {
+    private func rawBodyErrorContext(from payload: RawBodyErrorPayload, fallbackProxyStatus: Int?) -> RawBodyErrorContext? {
+        guard let rawBody = payload.data?.rawBody,
+              rawBody.contains(where: { $0.isWhitespace == false }) else {
             return nil
         }
 
         return RawBodyErrorContext(
-            errorCode: dictionary["error"] as? String ?? dictionary["code"] as? String,
-            errorMessage: dictionary["message"] as? String,
-            proxyStatus: intValue(data["status"]) ?? fallbackProxyStatus,
+            errorCode: payload.error ?? payload.code,
+            errorMessage: payload.message,
+            proxyStatus: payload.data?.status ?? fallbackProxyStatus,
             rawBody: rawBody
         )
-    }
-
-    private func jsonDictionary(from data: Data) -> JSONDictionary? {
-        guard let object = try? JSONSerialization.jsonObject(with: data),
-              let dictionary = object as? JSONDictionary else {
-            return nil
-        }
-        return dictionary
-    }
-
-    private func intValue(_ value: Any?) -> Int? {
-        switch value {
-        case let value as Int:
-            return value
-        case let value as NSNumber:
-            return value.intValue
-        case let value as String:
-            return Int(value)
-        default:
-            return nil
-        }
     }
 
     private func normalizedPath(for request: JetpackRequest) -> String {
@@ -176,32 +226,15 @@ private extension JetpackTunnelRawBodyErrorLogger {
         return (String(sanitized.prefix(maxSnippetLength)), truncated)
     }
 
-    private func sanitize(_ value: String) -> String {
-        let readableValue = Self.readableBoundaryPatterns.reduce(singleLineReadableValue(value)) { partialResult, pattern in
+    private func sanitize(_ value: String?) -> String {
+        Self.redactionPatterns.reduce(value ?? "") { partialResult, pattern in
             partialResult.replacingOccurrences(
                 of: pattern.expression,
                 with: pattern.replacement,
                 options: .regularExpression
             )
         }
-
-        return Self.redactionPatterns.reduce(readableValue) { partialResult, pattern in
-            partialResult.replacingOccurrences(
-                of: pattern.expression,
-                with: pattern.replacement,
-                options: .regularExpression
-            )
-        }.trimmingCharacters(in: .whitespaces)
-    }
-
-    private func singleLineReadableValue(_ value: String) -> String {
-        value
-            .replacingOccurrences(of: "\r\n", with: "\\n")
-            .replacingOccurrences(of: "\n", with: "\\n")
-            .replacingOccurrences(of: "\r", with: "\\r")
-            .replacingOccurrences(of: "\t", with: "\\t")
-            .replacingOccurrences(of: "\u{0B}", with: "\\v")
-            .replacingOccurrences(of: "\u{0C}", with: "\\f")
-            .replacingOccurrences(of: #" {2,}"#, with: " ", options: .regularExpression)
+        .replacingOccurrences(of: Self.whitespacePattern, with: " ", options: .regularExpression)
+        .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

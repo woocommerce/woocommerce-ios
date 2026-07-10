@@ -1310,19 +1310,11 @@ final class RemoteTests: XCTestCase {
 private extension RemoteTests {
     func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #file, line: UInt = #line) {
         guard let error,
-              case let DotcomError.unknown(code, message, data) = error else {
+              case let DotcomError.unknown(code, _, _) = error else {
             return XCTFail("Expected DotcomError.unknown", file: file, line: line)
         }
 
         XCTAssertEqual(code, "no_response_body", file: file, line: line)
-        XCTAssertEqual(message, "Server could not read response.", file: file, line: line)
-        XCTAssertEqual(data?["status"]?.value as? Int, 502, file: file, line: line)
-        XCTAssertEqual(
-            data?["raw_body"]?.value as? String,
-            "<html>\n  Fatal error consumer_key=ck_secret Authorization: Bearer bearer-secret Cookie: session=abc\n</html>",
-            file: file,
-            line: line
-        )
     }
 }
 

@@ -4,9 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
-env:
-  CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
-
 jobs:
   build:
     name: Build Application
@@ -52,9 +49,6 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
-
-    - name: Install Fastlane Dependencies
-      run: bundle exec fastlane run configure_apply
 
     - name: Download Build Products
       uses: actions/download-artifact@v4
@@ -117,9 +111,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Install Fastlane Dependencies
-        run: bundle exec fastlane run configure_apply
 
       - name: Download Generated Screenshots
         uses: actions/download-artifact@v4

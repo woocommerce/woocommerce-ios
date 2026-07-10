@@ -10,7 +10,7 @@ fi
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
-SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
+SECRETS_PATH="${HOME}/.a8c-secrets/woocommerce-ios@github.com@woocommerce/woo_app_credentials.json"
 
 ## Collect output paths from the per-target build phase's `outputPaths`.
 ## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
@@ -31,7 +31,7 @@ done
 ##
 if [ ! -f "$SECRETS_PATH" ]; then
 
-    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
+    echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane configure_secrets\` to update your secrets"
 
     echo ">> Using Templated Secrets"
 

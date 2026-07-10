@@ -10,13 +10,6 @@ public protocol POSEntryPointEligibilityCheckerProtocol {
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
 }
 
-public extension POSEntryPointEligibilityCheckerProtocol {
-    /// Determines whether the site is eligible for POS, using locally available state when possible.
-    func checkEligibility() async -> POSEligibilityState {
-        await checkEligibility(forceRemoteCheck: false)
-    }
-}
-
 @Observable final class POSEntryPointController {
     private(set) var eligibilityState: POSEligibilityState?
     private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
@@ -25,7 +18,7 @@ public extension POSEntryPointEligibilityCheckerProtocol {
         self.posEligibilityChecker = eligibilityChecker
 
         Task { @MainActor in
-            eligibilityState = await posEligibilityChecker.checkEligibility()
+            eligibilityState = await posEligibilityChecker.checkEligibility(forceRemoteCheck: false)
         }
     }
 

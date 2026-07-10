@@ -63,7 +63,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -86,7 +86,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When - Call checkEligibility before site settings are available
-        async let eligibilityTask = checker.checkEligibility()
+        async let eligibilityTask = checker.checkEligibility(forceRemoteCheck: false)
 
         // Simulate site settings becoming available after methods are called. The stream is left
         // open so a late subscriber still receives the replayed value; the eligibility check
@@ -113,7 +113,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -128,7 +128,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -149,7 +149,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: country.countryCode, supportedCurrencies: expectedSupportedCurrencies)))
@@ -162,7 +162,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
@@ -175,7 +175,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -188,7 +188,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
@@ -201,7 +201,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -214,7 +214,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(connectivityObserver: offlineConnectivityObserver)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -227,7 +227,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -238,7 +238,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog(hasCompletedFullSync: false)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -249,7 +249,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog(isLocalCatalogFeatureEnabled: false)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -261,7 +261,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -273,7 +273,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -285,7 +285,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then: the locally known ineligibility blocks entry from local state
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -297,7 +297,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeOfflineCheckerWithSyncedCatalog()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -315,7 +315,7 @@ struct POSTabEligibilityCheckerTests {
         )
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then: the remote check ran instead of entering from local state
         #expect(result == .eligible)
@@ -332,7 +332,7 @@ struct POSTabEligibilityCheckerTests {
         )
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then: entry comes from local state without waiting on the remote checks
         #expect(result == .eligible)
@@ -364,7 +364,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -379,7 +379,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
@@ -394,7 +394,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then: a check that could not determine eligibility does not downgrade the last known value
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -408,7 +408,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .noInternetConnection))
@@ -421,7 +421,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
@@ -687,7 +687,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -706,7 +706,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -727,7 +727,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -739,7 +739,7 @@ struct POSTabEligibilityCheckerTests {
         let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .NL, supportedCurrencies: [.EUR])))

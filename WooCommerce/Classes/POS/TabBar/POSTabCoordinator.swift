@@ -203,7 +203,7 @@ private extension POSTabCoordinator {
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility()
+                let posState = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
                 try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
 
                 // Retry transient failures before using the value

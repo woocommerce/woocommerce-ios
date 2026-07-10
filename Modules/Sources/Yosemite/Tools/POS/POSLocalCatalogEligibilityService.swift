@@ -93,10 +93,11 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         // Store the POS eligibility state for this site
         posEligibilityStates[siteID] = isEligible
 
-        // When nothing changed and a state is already cached, keep the cached state so POS entry
+        // When nothing changed and an eligible state is already cached, keep it so POS entry
         // (like Android) doesn't wait on remote re-checks that a previous refresh already ran.
-        // Callers that need fresh validation can call refreshEligibilityState directly.
-        if previousEligibility == isEligible, eligibilityStates[siteID] != nil {
+        // Cached ineligible states always re-validate, so recoverable conditions (e.g. the beta
+        // toggle turning on, or a transient check failure) are picked up without an app restart.
+        if previousEligibility == isEligible, eligibilityStates[siteID] == .eligible {
             return
         }
 
@@ -162,11 +163,14 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {
-            // A completed full sync implies the version requirement was met when the catalog
-            // was synced, so a failing re-check (e.g. offline) should not drop POS to remote
-            // mode. The tolerant result is not cached so the next refresh re-validates.
+            // Loading the plugin info for the version check failed (e.g. offline or a server
+            // error) — the version itself could not be determined. A completed full sync implies
+            // the version requirement was met when the catalog was synced, so this should not
+            // drop POS to remote mode. The tolerant result is not cached so the next refresh
+            // re-validates.
             if await syncStatusChecker?.hasCompletedFullSync(for: siteID) == true {
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: Version check failed for site \(siteID), using previously synced catalog: \(error)")
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: Failed to load plugin info for the version check " +
+                          "for site \(siteID), using previously synced catalog: \(error)")
                 return .eligible
             }
             let errorString = String(describing: error)

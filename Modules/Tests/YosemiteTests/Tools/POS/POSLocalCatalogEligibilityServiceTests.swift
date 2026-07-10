@@ -194,6 +194,34 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(try await service.catalogEligibility(for: siteID) == .eligible)
     }
 
+    @Test func test_updatePOSEligibility_when_value_unchanged_and_cached_state_is_ineligible_then_revalidates() async throws {
+        // Given: the first check fails and caches an ineligible state
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 1, variationCount: 0))
+        )
+        let systemStatusService = MockPOSSystemStatusService(pluginInfoToReturn: .failure(NSError(domain: "test", code: 500)))
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+        guard case .ineligible = try await service.catalogEligibility(for: siteID) else {
+            Issue.record("Expected an ineligible state to be cached")
+            return
+        }
+
+        // When: the condition recovers and POS eligibility is reported again with the same value
+        systemStatusService.pluginInfoToReturn = MockPOSSystemStatusService().pluginInfoToReturn
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // Then: the cached ineligible state is re-validated instead of kept for the session
+        #expect(try await service.catalogEligibility(for: siteID) == .eligible)
+    }
+
     @Test func test_updatePOSEligibility_when_value_changes_then_revalidates() async throws {
         // Given
         let sizeChecker = MockPOSCatalogSizeChecker(

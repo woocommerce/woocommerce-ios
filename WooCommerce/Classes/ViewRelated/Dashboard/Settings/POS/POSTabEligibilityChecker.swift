@@ -128,7 +128,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .siteSettingsNotAvailable, .unsupportedCurrency:
             do {
                 try await syncSiteSettingsRemotely()
-                return await checkEligibility()
+                return await checkEligibility(forceRemoteCheck: false)
             } catch POSTabEligibilityCheckerError.selfDeallocated {
                 return .ineligible(reason: .selfDeallocated)
             } catch {
@@ -138,12 +138,12 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
                 throw error
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .noInternetConnection:
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
         case .featureSwitchDisabled:
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
         case .selfDeallocated:
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
         }
     }
 }

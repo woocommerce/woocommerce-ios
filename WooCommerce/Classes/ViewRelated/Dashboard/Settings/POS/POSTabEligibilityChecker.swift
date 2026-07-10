@@ -157,6 +157,10 @@ private extension POSTabEligibilityChecker {
     /// feature is enabled, and a full catalog sync completed at some point so the local
     /// catalog can serve items.
     func canRunFromLocalCatalog() async -> Bool {
+        // `!= false` rather than `== true`: nil (no definite result recorded yet, e.g. right
+        // after updating to this version) must pass, because a completed full sync — required
+        // below — already implies the store was eligible when the catalog synced. The flag is
+        // a veto for stores definitely known to be ineligible, not a required positive.
         guard eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) != false,
               await cachedPluginSupportsPOS(),
               let localCatalogEligibilityService,

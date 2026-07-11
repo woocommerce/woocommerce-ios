@@ -33,7 +33,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+        path: DerivedData/Build/Products/Debug-iphonesimulator/
         retention-days: 1
 
   capture:
@@ -58,7 +58,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+        path: DerivedData/Build/Products/Debug-iphonesimulator/
 
     - name: Generate Screenshots
       run: |

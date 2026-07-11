@@ -19,6 +19,8 @@ jobs:
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
+        # TODO: Drop once #17484 bumps `.ruby-version` to 3.4.9 (setup-ruby then reads it by default).
+        ruby-version: 3.4.9
         bundler-cache: true
 
     - name: Install App Dependencies
@@ -48,6 +50,8 @@ jobs:
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
+        # TODO: Drop once #17484 bumps `.ruby-version` to 3.4.9 (setup-ruby then reads it by default).
+        ruby-version: 3.4.9
         bundler-cache: true
 
     - name: Download Build Products
@@ -110,6 +114,8 @@ jobs:
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1
         with:
+          # TODO: Drop once #17484 bumps `.ruby-version` to 3.4.9 (setup-ruby then reads it by default).
+          ruby-version: 3.4.9
           bundler-cache: true
 
       - name: Download Generated Screenshots

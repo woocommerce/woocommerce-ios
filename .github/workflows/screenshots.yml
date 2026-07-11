@@ -71,6 +71,14 @@ jobs:
         name: "screenshot-log-${{ matrix.language }}-${{ matrix.mode }}"
         path: fastlane/logs
 
+    # TODO: Temporary — drop once the failing `testScreenshots()` UI test is diagnosed (AINFRA-2680).
+    - name: Store Test Results
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: "screenshot-xcresult-${{ matrix.language }}-${{ matrix.mode }}"
+        path: fastlane/screenshots/test_output/
+
     - name: Archive Generated Screenshots
       uses: actions/upload-artifact@v4
       with:

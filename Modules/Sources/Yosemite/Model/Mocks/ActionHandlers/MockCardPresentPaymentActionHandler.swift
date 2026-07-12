@@ -27,6 +27,9 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             // This immediately brings up the `CardPresentModalTapCard` screen, which is used by
             // `WooCommerceScreenshots` to display it for screenshotting purpose.
             onCardReaderMessage(.waitingForInput([.tap, .swipe, .insert]))
+        case .cancelReconnection(let onCompletion):
+            // No real reader to reconnect in the mock, so there's nothing to cancel.
+            onCompletion(.success(()))
         default:
             unimplementedAction(action: action)
         }

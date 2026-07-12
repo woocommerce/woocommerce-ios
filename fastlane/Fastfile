@@ -1117,10 +1117,12 @@ platform :ios do
       # Output the simulator logs for debugging
       buildlog_path: File.join(FASTLANE_DIR, 'logs'),
       output_simulator_logs: true,
-      result_bundle: true,
       namespace_log_files: true,
 
-      concurrent_simulators: true,
+      # Boot one simulator at a time so the Accessibility subsystem has enough
+      # headroom to come up — under concurrent boots it times out ("Timed out
+      # waiting for AX loaded notification") and the test runner fails to init.
+      concurrent_simulators: false,
 
       # Explicitly set the iOS version to ensure we match the created simulators
       ios_version: latest_ios_simulator_runtime.version,

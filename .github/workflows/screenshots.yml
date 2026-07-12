@@ -29,11 +29,15 @@ jobs:
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
 
+    # upload-artifact drops symlinks and executable bits, which corrupts the `.app`/`.xctest`
+    # bundles and makes the test bundle fail to load in the capture job. Tar preserves both.
     - name: Archive Build Products
+      run: tar -cf build-products.tar -C DerivedData/Build/Products Debug-iphonesimulator
+    - name: Upload Build Products
       uses: actions/upload-artifact@v4
       with:
         name: screenshot-build-products
-        path: DerivedData/Build/Products/Debug-iphonesimulator/
+        path: build-products.tar
         retention-days: 1
 
   capture:
@@ -58,7 +62,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: screenshot-build-products
-        path: DerivedData/Build/Products/Debug-iphonesimulator/
+    - name: Extract Build Products
+      run: |
+        mkdir -p DerivedData/Build/Products
+        tar -xf build-products.tar -C DerivedData/Build/Products
 
     - name: Generate Screenshots
       run: |

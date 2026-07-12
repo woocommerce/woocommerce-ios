@@ -1130,7 +1130,11 @@ platform :ios do
       # Erase the simulator prior to booting the app
       erase_simulator: true,
 
-      # Retry a few times if something is a little flaky
+      # Retry a few times if something is a little flaky. The known flake here is a slow
+      # "snapshot of accessibility hierarchy" on the iOS 26.x simulator, where WebKit and
+      # WebCore both register `UIAccessibilityLoaderWebShared` — the duplicate class makes AX
+      # queries intermittently time out. The app itself is fine; the retries usually absorb it,
+      # but a locale can still occasionally fail. Revisit once CI moves to a newer Xcode (#17484).
       number_of_retries: 3,
 
       # But fail completely after those 3 retries

@@ -120,6 +120,9 @@ public enum StoreIcon {
         public static let regular = StoreIconImage("ChartSimple-Regular")
         public static let solid = StoreIconImage("ChartSimple-Solid")
     }
+    public enum Check {
+        public static let solid = StoreIconImage("Check-Solid")
+    }
     public enum ChevronDown {
         public static let regular = StoreIconImage("ChevronDown-Regular")
     }
@@ -221,6 +224,9 @@ public enum StoreIcon {
     }
     public enum MessageLines {
         public static let solid = StoreIconImage("MessageLines-Solid")
+    }
+    public enum Minus {
+        public static let solid = StoreIconImage("Minus-Solid")
     }
     public enum Mobile {
         public static let regular = StoreIconImage("Mobile-Regular")

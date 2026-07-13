@@ -482,6 +482,38 @@ extension ProductFormViewController: ProductFormNavigating {
     func openAILegalPage(url: URL) {
         WebviewHelper.launch(url.absoluteString, with: self)
     }
+
+    func displayBlaze() {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        guard let navigationController else {
+            DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form.")
+            return
+        }
+
+        let coordinator = BlazeCampaignCreationCoordinator(
+            siteID: site.siteID,
+            siteURL: site.url,
+            productID: product.productID,
+            source: .productDetailPromoteButton,
+            shouldShowIntro: viewModel.shouldShowBlazeIntroView,
+            navigationController: navigationController,
+            onCampaignCreated: { [weak self] in
+                /// Re-sync Blaze campaigns to update storage items.
+                ServiceLocator.stores.dispatch(BlazeAction.synchronizeCampaignsList(
+                    siteID: site.siteID,
+                    skip: 0,
+                    limit: PaginationTracker.Defaults.pageSize) { _ in
+                        self?.updateFormTableContent()
+                    }
+                )
+            }
+        )
+        coordinator.start()
+        blazeCampaignCreationCoordinator = coordinator
+    }
 }
 
 // MARK: - Configuration
@@ -871,7 +903,7 @@ private extension ProductFormViewController {
 
 // MARK: Navigation actions
 //
-extension ProductFormViewController {
+private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
@@ -1108,38 +1140,6 @@ extension ProductFormViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
 
-    func displayBlaze() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-
-        guard let navigationController else {
-            DDLogError("⛔️ Missing parent controller to show Blaze campaign creation form.")
-            return
-        }
-
-        let coordinator = BlazeCampaignCreationCoordinator(
-            siteID: site.siteID,
-            siteURL: site.url,
-            productID: product.productID,
-            source: .productDetailPromoteButton,
-            shouldShowIntro: viewModel.shouldShowBlazeIntroView,
-            navigationController: navigationController,
-            onCampaignCreated: { [weak self] in
-                /// Re-sync Blaze campaigns to update storage items.
-                ServiceLocator.stores.dispatch(BlazeAction.synchronizeCampaignsList(
-                    siteID: site.siteID,
-                    skip: 0,
-                    limit: PaginationTracker.Defaults.pageSize) { _ in
-                        self?.updateFormTableContent()
-                    }
-                )
-            }
-        )
-        coordinator.start()
-        blazeCampaignCreationCoordinator = coordinator
-    }
-
     func trackVariationRemoveButtonTapped() {
         guard let variation = (product as? EditableProductVariationModel)?.productVariation else {
             return
@@ -1318,7 +1318,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(imagesViewController, animated: true)
     }
 
-    func onEditProductImagesCompletion(images: [ProductImage], hasChangedData: Bool) {
+    private func onEditProductImagesCompletion(images: [ProductImage], hasChangedData: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
         }
@@ -1361,7 +1361,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(editorViewController, animated: true)
     }
 
-    func onEditProductDescriptionCompletion(newDescription: String) {
+    private func onEditProductDescriptionCompletion(newDescription: String) {
         let hasChangedData = newDescription != product.description
         ServiceLocator.analytics.track(.productDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
@@ -1412,7 +1412,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
 
-    func onEditPriceSettingsCompletion(regularPrice: String?,
+    private func onEditPriceSettingsCompletion(regularPrice: String?,
                                        subscriptionPeriod: SubscriptionPeriod?,
                                        subscriptionPeriodInterval: String?,
                                        subscriptionSignupFee: String?,
@@ -1533,7 +1533,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
     }
 
-    func onEditShippingSettingsCompletion(weight: String?,
+    private func onEditShippingSettingsCompletion(weight: String?,
                                           dimensions: ProductDimensions,
                                           oneTimeShipping: Bool?,
                                           shippingClass: String?,
@@ -1565,7 +1565,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 
-    func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
+    private func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
         defer {
             navigationController?.popViewController(animated: true)
         }
@@ -1597,7 +1597,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(editorViewController, animated: true)
     }
 
-    func onEditShortDescriptionCompletion(newShortDescription: String) {
+    private func onEditShortDescriptionCompletion(newShortDescription: String) {
         defer {
             navigationController?.popViewController(animated: true)
         }
@@ -1626,7 +1626,7 @@ extension ProductFormViewController {
         show(categoryListViewController, sender: self)
     }
 
-    func onEditCategoriesCompletion(categories: [ProductCategory]) {
+    private func onEditCategoriesCompletion(categories: [ProductCategory]) {
         guard let product = product as? EditableProductModel else {
             return
         }
@@ -1657,7 +1657,7 @@ extension ProductFormViewController {
         show(tagsViewController, sender: self)
     }
 
-    func onEditTagsCompletion(tags: [ProductTag]) {
+    private func onEditTagsCompletion(tags: [ProductTag]) {
         guard let product = product as? EditableProductModel else {
             return
         }
@@ -1687,7 +1687,7 @@ extension ProductFormViewController {
         show(viewController, sender: self)
     }
 
-    func onEditInventoryCompletion(sku: String?, globalUniqueIdentifier: String?) {
+    private func onEditInventoryCompletion(sku: String?, globalUniqueIdentifier: String?) {
         defer {
             navigationController?.popViewController(animated: true)
         }
@@ -1710,7 +1710,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(linkedProductsViewController, animated: true)
     }
 
-    func onEditLinkedProductsCompletion(upsellIDs: [Int64],
+    private func onEditLinkedProductsCompletion(upsellIDs: [Int64],
                                         crossSellIDs: [Int64],
                                         hasUnsavedChanges: Bool) {
         defer {
@@ -1745,7 +1745,7 @@ extension ProductFormViewController {
         show(viewController, sender: self)
     }
 
-    func onEditGroupedProductsCompletion(groupedProductIDs: [Int64]) {
+    private func onEditGroupedProductsCompletion(groupedProductIDs: [Int64]) {
         guard let product = product as? EditableProductModel else {
             return
         }
@@ -1775,7 +1775,7 @@ extension ProductFormViewController {
         show(viewController, sender: self)
     }
 
-    func onEditExternalLinkCompletion(externalURL: String?, buttonText: String) {
+    private func onEditExternalLinkCompletion(externalURL: String?, buttonText: String) {
         guard let product = product as? EditableProductModel else {
             return
         }
@@ -1813,7 +1813,7 @@ extension ProductFormViewController {
         navigationController?.pushViewController(downloadFileListViewController, animated: true)
     }
 
-    func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData,
+    private func onAddEditDownloadsCompletion(data: ProductDownloadsEditableData,
                                       hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)
@@ -1846,7 +1846,7 @@ extension ProductFormViewController {
 
     /// Navigate to edit product attributes
     ///
-    func editProductAttributes() {
+    private func editProductAttributes() {
         guard let productModel = product as? EditableProductModel else {
             return
         }
@@ -1858,7 +1858,7 @@ extension ProductFormViewController {
         show(attributesViewController, sender: self)
     }
 
-    func editVariationAttributes() {
+    private func editVariationAttributes() {
         guard let productVariationModel = product as? EditableProductVariationModel else {
             return
         }
@@ -1869,7 +1869,7 @@ extension ProductFormViewController {
         show(attributePickerViewController, sender: self)
     }
 
-    func onEditVariationAttributesCompletion(attributes: [ProductVariationAttribute]) {
+    private func onEditVariationAttributesCompletion(attributes: [ProductVariationAttribute]) {
         guard let productVariation = product as? EditableProductVariationModel else {
             return
         }
@@ -1887,7 +1887,7 @@ extension ProductFormViewController {
 
     /// Perform necessary actions when an attribute is created or updated.
     ///
-    func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
+    private func onAttributeUpdated(attributesViewController: UIViewController, updatedProduct: Product) {
         viewModel.updateProductVariations(from: updatedProduct)
         navigationController?.popToViewController(attributesViewController, animated: true)
     }
@@ -1966,7 +1966,7 @@ extension ProductFormViewController {
         show(viewController, sender: self)
     }
 
-    func onEditSubscriptionFreeTrialSettings(trialLength: String,
+    private func onEditSubscriptionFreeTrialSettings(trialLength: String,
                                              trialPeriod: SubscriptionPeriod,
                                              hasUnsavedChanges: Bool) {
         defer {
@@ -1998,7 +1998,7 @@ extension ProductFormViewController {
         show(viewController, sender: self)
     }
 
-    func onEditSubscriptionExpirySettings(length: String,
+    private func onEditSubscriptionExpirySettings(length: String,
                                           hasUnsavedChanges: Bool) {
         defer {
             navigationController?.popViewController(animated: true)

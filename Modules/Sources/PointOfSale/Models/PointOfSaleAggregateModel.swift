@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSCustomAmount
@@ -108,8 +109,6 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
-    private var fullSyncStateObservationTask: Task<Void, Never>?
-
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
 
@@ -124,15 +123,23 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 
     // Track stale sync warning (only relevant when using local catalog)
-    var isSyncStale: Bool = false
     var isStaleSyncWarningDismissed: Bool = false
+    private var hasTrackedStaleSyncWarningShown = false
+    private var lastKnownFullSyncDate: Date?
 
+    @MainActor
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
             return false
         }
-        return isSyncStale && !isStaleSyncWarningDismissed
+
+        guard let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate,
+              let thresholdDate = Calendar.current.date(byAdding: .day, value: -Constants.staleSyncThresholdDays, to: Date()) else {
+            return false
+        }
+
+        return syncDate < thresholdDate && !isStaleSyncWarningDismissed
     }
 
     var showSunsetWarning: Bool = false
@@ -196,6 +203,7 @@ protocol PointOfSaleAggregateModelProtocol {
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
+            receiptPrinter: receiptPrinter,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
@@ -213,7 +221,6 @@ protocol PointOfSaleAggregateModelProtocol {
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
         subscribeToCartProductUpdates()
-        startObservingFullSyncCompletionForStaleStatus()
         performInitialSyncIfNeeded()
     }
 }
@@ -514,6 +521,39 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func printReceipt() async throws {
+        // Refresh the store's receipt settings so the printout reflects any changes made this
+        // session. On failure the previously loaded values are kept, so printing still proceeds
+        // with the best available information.
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+    }
+
+    /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first
+    /// print has values ready without waiting on a fetch. The print flow refreshes these before
+    /// printing; this preload keeps a populated fallback for when that refresh fails. No-op when
+    /// receipt printing is unavailable; fails gracefully otherwise.
+    @MainActor
+    func preloadReceiptStoreInformation() async {
+        guard receiptPrinter != nil else { return }
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+    }
+
+    /// Best-effort store details for the printed receipt header, drawn from the POS settings store
+    /// view model. Falls back to the store name / address it exposes when receipt-specific settings
+    /// aren't populated.
+    @MainActor
+    private func receiptStoreInformation() -> ReceiptStoreInformation {
+        let storeViewModel = settingsController.storeViewModel
+        let receiptInformation = storeViewModel.receiptInformation
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.receiptStoreName,
+                                       storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
+                                       phone: receiptInformation.phone,
+                                       email: receiptInformation.email,
+                                       refundReturnsPolicy: receiptInformation.refundReturnsPolicy)
+    }
+
+    @MainActor
     func cancelThenCollectPayment() {
         paymentModel.cancelThenCollectPayment()
     }
@@ -684,7 +724,6 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         paymentModel.tearDown()
         cancellables.forEach { $0.cancel() }
-        fullSyncStateObservationTask?.cancel()
 
         // Stop the GRDB observation so stale cart IDs are not watched after dismissal.
         cartProductObserver?.observe(productIDs: [], variationIDs: [])
@@ -744,69 +783,29 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
-        let isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
-        let wasShowingStaleSyncWarning = showStaleSyncWarning
 
-        self.isSyncStale = isSyncStale
+        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        lastKnownFullSyncDate = syncState.lastFullSyncDate
 
-        await trackStaleSyncWarningShownIfNeeded(wasShowing: wasShowingStaleSyncWarning)
+        trackStaleSyncWarningShownIfNeeded()
     }
 
-    /// Calculates the number of hours since the last catalog sync
-    /// - Returns: Hours since last sync, or nil if no sync date is available
-    func hoursSinceLastSync() async -> Int? {
-        guard let catalogSyncCoordinator else { return nil }
-        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
-    }
-
-    private func trackStaleSyncWarningShownIfNeeded(wasShowing: Bool) async {
-        guard !wasShowing,
+    @MainActor
+    private func trackStaleSyncWarningShownIfNeeded() {
+        guard !hasTrackedStaleSyncWarningShown,
               showStaleSyncWarning,
-              let hours = await hoursSinceLastSync() else {
+              let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate else {
             return
         }
 
+        hasTrackedStaleSyncWarningShown = true
+        let hours = Int(Date().timeIntervalSince(syncDate) / 3600)
         analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
     }
 
     @MainActor
     private var currentFullSyncState: POSCatalogSyncState? {
         catalogSyncCoordinator?.fullSyncStateModel.state[siteID]
-    }
-
-    @MainActor
-    private func startObservingFullSyncCompletionForStaleStatus() {
-        guard catalogSyncCoordinator != nil else { return }
-
-        fullSyncStateObservationTask = Task { @MainActor [weak self] in
-            var previousState = self?.currentFullSyncState
-
-            while !Task.isCancelled {
-                await self?.observeNextFullSyncStateChange()
-                guard let self, !Task.isCancelled else { return }
-
-                let newState = currentFullSyncState
-                guard newState != previousState else { continue }
-
-                previousState = newState
-
-                if case .some(.syncCompleted) = newState {
-                    await checkStaleSyncStatus()
-                }
-            }
-        }
-    }
-
-    /// Waits for the next full sync state change from the shared coordinator model.
-    @MainActor
-    private func observeNextFullSyncStateChange() async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            withObservationTracking {
-                _ = currentFullSyncState
-            } onChange: {
-                continuation.resume()
-            }
-        }
     }
 }
 

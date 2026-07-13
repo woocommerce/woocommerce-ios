@@ -717,8 +717,7 @@ extension ProductFormViewModel {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.canEditQuantityRules
         analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
-                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules,
-                                                                      horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                                                     hasMinMaxQuantityRules: hasMinMaxQuantityRules))
     }
 }
 

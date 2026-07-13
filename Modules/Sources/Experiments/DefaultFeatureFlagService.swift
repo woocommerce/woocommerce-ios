@@ -69,8 +69,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inventoryProductLabelsInPOS:
-            return false
         case .productImageOptimizedHandling:
             return true
         case .orderAddressMapSearch:
@@ -105,8 +103,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:

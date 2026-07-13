@@ -1,34 +1,206 @@
 # p2: dashboard.customization
-# Prerequisite: authenticated Jetpack store. This flow does not persist changes.
+# Reviews and Coupons are always available in DashboardViewModel. The flow
+# derives their persisted selection from rendered dashboard cards, normalizes
+# Reviews off and Coupons on, and restores that state at the end.
 appId: ${APP_ID}
-name: "Dashboard - Customize cards"
+name: "Dashboard - Customize, persist, reorder, and restore cards"
 tags:
   - smoke_extended
   - flaky_quarantine
   - dashboard
 ---
-- runFlow:
-    file: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/ensure_logged_in.yaml
 - runFlow:
     file: ../subflows/navigate_to_dashboard.yaml
 - assertVisible: "My store"
+
+# Normalize Reviews off. Card presence is the existing app-owned signal that
+# the persisted dashboard selection contains Reviews.
+- scrollUntilVisible:
+    element:
+      text: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      visible: "Most recent reviews"
+    commands:
+      - tapOn:
+          text: "Edit"
+      - extendedWaitUntil:
+          visible: "Customize"
+          timeout: 15000
+      - scrollUntilVisible:
+          element: "Most recent reviews"
+          direction: DOWN
+          timeout: 15000
+      - tapOn: "Most recent reviews"
+      - tapOn: "Save"
+      - extendedWaitUntil:
+          visible: "My store"
+          timeout: 15000
+
+# Normalize Coupons on. If its dashboard card is absent, select it once.
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- scrollUntilVisible:
+    element:
+      text: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      notVisible: "Most active coupons"
+    commands:
+      - tapOn:
+          text: "Edit"
+      - extendedWaitUntil:
+          visible: "Customize"
+          timeout: 15000
+      - scrollUntilVisible:
+          element: "Most active coupons"
+          direction: DOWN
+          timeout: 15000
+      - tapOn: "Most active coupons"
+      - tapOn: "Save"
+      - extendedWaitUntil:
+          visible: "My store"
+          timeout: 15000
+
+# Toggle Reviews on and prove persistence after an app restart.
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
 - tapOn:
     text: "Edit"
-    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Customize"
     timeout: 15000
-- assertVisible: "Customize"
-- assertVisible: "Performance"
 - scrollUntilVisible:
-    element: "Top performers"
+    element: "Most recent reviews"
     direction: DOWN
-    timeout: 10000
-- assertVisible: "Top performers"
-- assertVisible: "Save"
-- takeScreenshot: dashboard_customize
+    timeout: 15000
+- tapOn: "Most recent reviews"
+- tapOn: "Save"
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most recent reviews"
+- stopApp
+- launchApp
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most recent reviews"
+
+# Reviews and Coupons are adjacent in the normalized selected-card ordering.
+# Drag the native trailing reorder control one row upward.
 - tapOn:
-    point: "8%,12%"
+    text: "Edit"
 - extendedWaitUntil:
-    visible: "My store"
-    timeout: 10000
+    visible: "Customize"
+    timeout: 15000
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    below:
+      text: "Most active coupons"
+- swipe:
+    start: "92%,42%"
+    end: "92%,36%"
+    duration: 2000
+- assertVisible:
+    text: "Most recent reviews"
+    above:
+      text: "Most active coupons"
+- tapOn: "Save"
+
+# Downward-only traversal proves the rendered card order.
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most recent reviews"
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most active coupons"
+- stopApp
+- launchApp
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- tapOn:
+    text: "Edit"
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    above:
+      text: "Most active coupons"
+
+# Restore Coupons before Reviews, save, and prove persistence.
+- swipe:
+    start: "92%,36%"
+    end: "92%,42%"
+    duration: 2000
+- assertVisible:
+    text: "Most recent reviews"
+    below:
+      text: "Most active coupons"
+- tapOn: "Save"
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most active coupons"
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most recent reviews"
+- stopApp
+- launchApp
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- tapOn:
+    text: "Edit"
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    below:
+      text: "Most active coupons"
+
+# Restore Reviews to hidden, restart, and assert the restored dashboard state.
+- tapOn: "Most recent reviews"
+- tapOn: "Save"
+- stopApp
+- launchApp
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Most active coupons"
+- scrollUntilVisible:
+    element:
+      text: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+    optional: true
+- assertNotVisible: "Most recent reviews"
+- takeScreenshot: dashboard_customize_restored

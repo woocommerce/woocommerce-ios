@@ -19,6 +19,8 @@ You are a code reviewer for the WooCommerce iOS project by Automattic. Review ch
 ### Swift Conventions
 - No force unwraps (`!`) or force casts (`as!`)
 - Error handling uses do-catch with DDLogError, not try?
+- Every `fatalError`/`preconditionFailure`/`assertionFailure` has a preceding comment justifying why crashing is correct and the state is unrecoverable
+- Production-relevant errors reported via `crashLogging.logError`/`logMessage` (not just `DDLogError`, which is local-only); reporting-and-continuing preferred over crashing
 - Classes marked final unless designed for subclassing
 - Line length under 163 characters
 - No parentheses around conditionals

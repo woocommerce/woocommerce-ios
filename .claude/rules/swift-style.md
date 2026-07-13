@@ -13,6 +13,14 @@ These rules are enforced by SwiftLint (see `.swiftlint.yml` for the full configu
 - Never use `as!` or force unwrap with `!`. Use `as?` with guard/if-let
 - Avoid `try?` for silent failure. Use `do-catch` and log errors with `DDLogError`
 
+## Error Handling and Crash Logging
+- `DDLog*` writes to the local console only — it is NOT reported to Sentry
+- Report production-relevant errors to the crash-logging system: `ServiceLocator.crashLogging.logError(_:userInfo:level:)` or `logMessage(_:properties:level:)` (`SeverityLevel` = `.fatal/.error/.warning/.info/.debug`)
+- Fail fast: crash (`fatalError`) when the app reaches a genuinely unrecoverable or corrupted state. For recoverable errors, report a handled event (`logError`/`logMessage`) rather than silently swallowing it — never swallow
+- Every `fatalError` / `preconditionFailure` / `assertionFailure` MUST have a preceding comment justifying why crashing is correct and the state is unrecoverable
+- To report AND terminate on a truly unrecoverable state, use `crashLogging.logFatalErrorAndExit(_:userInfo:)` rather than a bare `fatalError` — it delivers the event to Sentry with metadata before exit
+- See `docs/coding-style-guide.md` (Error Handling) for examples
+
 ## Access Control
 - Use the most restrictive access level possible
 - Mark classes `final` unless designed for subclassing

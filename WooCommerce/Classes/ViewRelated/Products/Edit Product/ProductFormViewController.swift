@@ -17,6 +17,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
 
+    /// Routes interactions with the form content (rows, inline cell actions, more-details sheet) to navigation.
+    private lazy var rowActionHandler = ProductFormRowActionHandler(analytics: ServiceLocator.analytics,
+                                                                    eventLogger: eventLogger,
+                                                                    navigator: self)
+
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -448,175 +453,34 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let section = tableViewModel.sections[indexPath.section]
         switch section {
         case .primaryFields(let rows):
-            let row = rows[indexPath.row]
-            switch row {
-            case .images(_, let isStorePublic, _, _):
-                guard isStorePublic else {
-                    presentURL(URLs.wpComPrivacySettings)
-                    return
-                }
-            case .description(_, let isEditable, _):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logDescriptionTapped()
-                editProductDescription()
-            case .promoteWithBlaze:
-                if !viewModel.shouldShowBlazeIntroView {
-                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
-                }
-                displayBlaze()
-            default:
-                break
-            }
+            rowActionHandler.handlePrimaryFieldRowSelection(rows[indexPath.row],
+                                                            shouldShowBlazeIntroView: viewModel.shouldShowBlazeIntroView)
         case .settings(let rows):
-            let row = rows[indexPath.row]
-            switch row {
-            case .price(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logPriceSettingsTapped()
-                editPriceSettings()
-            case .customFields:
-                ServiceLocator.analytics.track(.productDetailCustomFieldsTapped)
-                showCustomFields()
-            case .reviews:
-                ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
-                showReviews()
-            case .downloadableFiles(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
-                showDownloadableFiles()
-            case .linkedProducts(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
-                editLinkedProducts()
-            case .productType(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
-                let cell = tableView.cellForRow(at: indexPath)
-                editProductType(cell: cell)
-            case .shipping(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logShippingSettingsTapped()
-                editShippingSettings()
-            case .inventory(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                eventLogger.logInventorySettingsTapped()
-                editInventorySettings()
-            case .addOns(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
-                navigateToAddOns()
-            case .categories(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
-                editCategories()
-            case .tags(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewTagsTapped)
-                editTags()
-            case .shortDescription(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                editShortDescription()
-            case .externalURL(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
-                editExternalLink()
-                break
-            case .simplifiedInventory(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                editSimplifiedInventory()
-                break
-            case .groupedProducts(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
-                editGroupedProducts()
-                break
-            case .variations(let row):
-                guard row.isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                showVariations()
-            case .noPriceWarning(let viewModel):
-                guard viewModel.isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                showVariations()
-            case .attributes(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-                editAttributes()
-            case .status:
-                break
-            case .bundledProducts(_, let isActionable):
-                guard isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetail.bundledProductsTapped())
-                showBundledProducts()
-            case .components(_, let isActionable):
-                guard isActionable else {
-                    return
-                }
-                ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
-                showCompositeComponents()
-            case .subscriptionFreeTrial(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-
-                eventLogger.logSubscriptionsFreeTrialTapped()
-                showSubscriptionFreeTrialSettings()
-            case .subscriptionExpiry(_, let isEditable):
-                guard isEditable else {
-                    return
-                }
-
-                eventLogger.logSubscriptionsExpirationDateTapped()
-                showSubscriptionExpirySettings()
-            case .noVariationsWarning:
-                return // This warning is not actionable.
-            case .quantityRules:
-                eventLogger.logQuantityRulesTapped()
-                showQuantityRules()
-                return
-            }
+            rowActionHandler.handleSettingsRowSelection(rows[indexPath.row],
+                                                        productID: product.productID,
+                                                        sourceView: tableView.cellForRow(at: indexPath))
         }
     }
 
     @objc private func shareProduct() {
         displayShareProduct(from: shareBarButtonItem, analyticSource: .productForm)
+    }
+}
+
+// MARK: - ProductFormNavigating
+//
+// Navigation performed in response to interactions with the form content, routed via
+// `ProductFormRowActionHandler`. The remaining navigation methods that satisfy this protocol
+// live in the `MARK: Action - …` extensions below.
+extension ProductFormViewController: ProductFormNavigating {
+    /// Opens the WP.com privacy settings, shown when the images row is tapped on a private store.
+    func openPrivacySettings() {
+        presentURL(URLs.wpComPrivacySettings)
+    }
+
+    /// Opens the legal page linked from the AI-generated content disclaimer.
+    func openAILegalPage(url: URL) {
+        WebviewHelper.launch(url.absoluteString, with: self)
     }
 }
 
@@ -958,16 +822,14 @@ private extension ProductFormViewController {
             self?.showProductDescriptionAI()
         }
         tableViewDataSource.openAILegalPageAction = { [weak self] url in
-            guard let self else { return }
-            WebviewHelper.launch(url.absoluteString, with: self)
+            self?.openAILegalPage(url: url)
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
             self?.onEditStatusCompletion(isEnabled: isEnabled)
         }, onAddImage: { [weak self] in
-            self?.eventLogger.logImageTapped()
-            self?.showProductImages()
+            self?.rowActionHandler.handleAddImageTapped()
         }, onFailedImageUpload: { [weak self] asset, error in
             self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
@@ -993,39 +855,9 @@ private extension ProductFormViewController {
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let actions = viewModel.actionsFactory.bottomSheetActions()
         let dataSource = ProductFormBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
-                                                                    self?.dismiss(animated: true) { [weak self] in
-                                                                        switch action {
-                                                                        case .editInventorySettings:
-                                                                            self?.eventLogger.logInventorySettingsTapped()
-                                                                            self?.editInventorySettings()
-                                                                        case .editShippingSettings:
-                                                                            self?.eventLogger.logShippingSettingsTapped()
-                                                                            self?.editShippingSettings()
-                                                                        case .editCategories:
-                                                                            ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
-                                                                            self?.editCategories()
-                                                                        case .editTags:
-                                                                            ServiceLocator.analytics.track(.productDetailViewTagsTapped)
-                                                                            self?.editTags()
-                                                                        case .editShortDescription:
-                                                                            ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
-                                                                            self?.editShortDescription()
-                                                                        case .editSimplifiedInventory:
-                                                                            ServiceLocator.analytics.track(.productDetailViewSKUTapped)
-                                                                            self?.editSimplifiedInventory()
-                                                                        case .editLinkedProducts:
-                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
-                                                                            self?.editLinkedProducts()
-                                                                        case .editReviews:
-                                                                            ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
-                                                                            self?.showReviews()
-                                                                        case .editDownloadableFiles:
-                                                                            ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
-                                                                            self?.showDownloadableFiles()
-                                                                        case .editCustomFields:
-                                                                            self?.showCustomFields()
-                                                                        }
-                                                                    }
+            self?.dismiss(animated: true) { [weak self] in
+                self?.rowActionHandler.handleMoreDetailsAction(action)
+            }
         }
         let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
         listSelectorPresenter.show(from: self, sourceView: button.titleLabel ?? button, arrowDirections: .down)
@@ -1039,7 +871,7 @@ private extension ProductFormViewController {
 
 // MARK: Navigation actions
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void = { _ in }) {
         let productStatus = status ?? product.status
         let messageType = viewModel.saveMessageType(for: productStatus)
@@ -1476,7 +1308,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Images
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showProductImages() {
         let imagesViewController = ProductImagesViewController(product: product,
                                                                productImageActionHandler: productImageActionHandler,
@@ -1512,7 +1344,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Description
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editProductDescription() {
         let isAIGenerationEnabled = aiEligibilityChecker.isFeatureEnabled(.description)
         let editorViewController = EditorFactory().productDescriptionEditor(product: product,
@@ -1542,7 +1374,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Product Description AI
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showProductDescriptionAI() {
         guard let navigationController else {
             return
@@ -1563,7 +1395,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Price Settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self] in
             self?.onEditPriceSettingsCompletion(regularPrice: $0,
@@ -1612,7 +1444,7 @@ private extension ProductFormViewController {
 }
 
 // MARK: Action - Show Custom Fields
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showCustomFields() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1639,7 +1471,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Product Reviews Settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showReviews() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1652,8 +1484,8 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Type Settings
 //
-private extension ProductFormViewController {
-    func editProductType(cell: UITableViewCell?) {
+extension ProductFormViewController {
+    func editProductType(sourceView: UIView?) {
         let title = NSLocalizedString("Change product type",
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
@@ -1681,13 +1513,13 @@ private extension ProductFormViewController {
             })
         }
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command, initialPosition: .expanded)
-        productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
+        productTypesListPresenter.show(from: self, sourceView: sourceView, arrowDirections: .any)
     }
 }
 
 // MARK: Action - Edit Product Shipping Settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) {
             [weak self] weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges in
@@ -1725,7 +1557,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Inventory Settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editInventorySettings() {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
             self?.onEditInventorySettingsCompletion(data: data)
@@ -1757,7 +1589,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Short Description
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editShortDescription() {
         let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content, _ in
             self?.onEditShortDescriptionCompletion(newShortDescription: content)
@@ -1782,7 +1614,7 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Categories
 //
 
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editCategories() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1813,7 +1645,7 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Tags
 //
 
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editTags() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1843,7 +1675,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product SKU
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editSimplifiedInventory() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1870,7 +1702,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Linked Products
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editLinkedProducts() {
         let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] upsellIDs, crossSellIDs, hasUnsavedChanges in
             self?.onEditLinkedProductsCompletion(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs, hasUnsavedChanges: hasUnsavedChanges)
@@ -1896,7 +1728,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Grouped Products (Grouped Products Only)
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editGroupedProducts() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1931,7 +1763,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product External Link
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func editExternalLink() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1969,7 +1801,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Downloads
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showDownloadableFiles() {
         guard let product = product as? EditableProductModel else {
             return
@@ -1996,7 +1828,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Edit Product Variation Attributes
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     /// Edit the product attributes or the variation attributes depending on the product model type.
     ///
     func editAttributes() {
@@ -2063,7 +1895,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - View Add-ons
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func navigateToAddOns() {
         guard let product = product as? EditableProductModel else {
             return
@@ -2076,7 +1908,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Product Variations
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showVariations() {
         guard let currentProduct = viewModel.productModel as? EditableProductModel else {
             return
@@ -2094,7 +1926,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Bundled Products
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showBundledProducts() {
         guard let product = product as? EditableProductModel else {
             return
@@ -2107,7 +1939,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Composite Product Components
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showCompositeComponents() {
         guard let product = product as? EditableProductModel else {
             return
@@ -2120,7 +1952,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Subscription Free trial Settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showSubscriptionFreeTrialSettings() {
         guard let subscription = product.subscription else {
             return
@@ -2153,7 +1985,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Subscription expiry settings
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showSubscriptionExpirySettings() {
         guard let subscription = product.subscription else {
             return
@@ -2183,7 +2015,7 @@ private extension ProductFormViewController {
 
 // MARK: Action - Show Quantity Rules
 //
-private extension ProductFormViewController {
+extension ProductFormViewController {
     func showQuantityRules() {
         let quantityRulesViewModel = QuantityRulesViewModel(product: product) { [weak self] rules, hasUnsavedChanges in
             defer {

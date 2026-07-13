@@ -7,28 +7,45 @@ tags:
   - destructive
   - orders
 ---
+- stopApp
 - runFlow: ../subflows/ensure_logged_in.yaml
+
 - runFlow: ../subflows/navigate_to_orders.yaml
 - tapOn:
     id: new-order-type-sheet-button
 - assertVisible:
     id: new-order-create-button
 
-# Add an exact real simple product and persist a quantity of two.
+# Discover a live variable product directly in the order selector, then use an
+# actual variation as the order's primary line item. This proves the product is
+# orderable and avoids both a named fixture and remote-search differences.
 - tapOn:
     id: new-order-add-product-button
-- assertVisible:
-    id: product-selector-search-bar
+- scrollUntilVisible:
+    element:
+      text: ".*[1-9][0-9]* variations?.*"
+      childOf:
+        id: product-item
+    direction: DOWN
+    timeout: 30000
 - tapOn:
-    id: product-selector-search-bar
-- runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_SIMPLE_PRODUCT_NAME}
-- hideKeyboard
-- tapOn: ${MAESTRO_WOO_SIMPLE_PRODUCT_NAME}
+    text: ".*[1-9][0-9]* variations?.*"
+    childOf:
+      id: product-item
+- extendedWaitUntil:
+    visible:
+      id: product-variation-item
+    timeout: 30000
+- tapOn:
+    id: product-variation-item
+    index: 0
+- tapOn: Back
 - tapOn:
     id: product-multiple-selection-done-button
+- assertVisible:
+    id: product-item
+
+# Persist quantity and discount on the selected real variation.
 - assertVisible: Quantity
 - tapOn:
     text: "1"
@@ -47,53 +64,76 @@ tags:
 - tapOn: Add
 - assertVisible: Discount
 
-# Select an exact variable product, then an actual variation.
-- tapOn:
-    id: new-order-add-product-button
-- tapOn:
-    id: product-selector-search-bar
-- runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
-- hideKeyboard
-- tapOn: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
-- extendedWaitUntil:
-    visible:
-      id: product-variation-item
-    timeout: 30000
-- tapOn:
-    id: product-variation-item
-    index: 0
-- tapOn: Back
-- tapOn:
-    id: product-multiple-selection-done-button
-- assertVisible: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
-
-# Select an existing customer, then edit the order-specific email field.
+# Select the first real customer exposed by the live store. Source inspection
+# confirms Edit Customer Details writes only the draft order's copied billing
+# and shipping snapshot; it never dispatches a customer-update action.
 - swipe:
     direction: UP
 - tapOn: Add Customer Details
+- runFlow:
+    when:
+      visible: Add Customer Details
+    commands:
+      - tapOn: Add Customer Details
+- extendedWaitUntil:
+    visible:
+      id: default-search-results-table-view
+    timeout: 30000
+- copyTextFrom:
+    text: ".+@.+"
+    childOf:
+      id: default-search-results-table-view
+    index: 0
+- evalScript: ${output.selectedCustomerEmail = (String(maestro.copiedText || '').match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+/) || [''])[0]}
+- assertTrue:
+    condition: ${output.selectedCustomerEmail.length > 0}
+    label: "External prerequisite: the live store must expose at least one existing customer with an email address"
 - tapOn:
     id: customer-search-screen-search-field
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
-- hideKeyboard
-- tapOn: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
-- assertVisible: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
-- tapOn: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
-- tapOn: Enter email address
+      TEXT_TO_PASTE: ${output.selectedCustomerEmail}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: updated-search-results-table-view
+    timeout: 30000
+- tapOn:
+    text: "${output.selectedCustomerEmail}"
+    childOf:
+      id: updated-search-results-table-view
+- extendedWaitUntil:
+    visible: Edit Customer Details
+    timeout: 30000
+- tapOn: Edit Customer Details
+- assertVisible:
+    id: order-address-form-first-name-field
+- assertVisible:
+    text: ".+@.+"
+# The existing identifier belongs to the whole row, so focus the editable
+# value area explicitly without changing the app's accessibility contract.
+- tapOn:
+    point: "72%,24%"
 - eraseText
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: maestro-${SUITE_RUN_ID}@example.com
-- hideKeyboard
-- assertVisible: maestro-${SUITE_RUN_ID}@example.com
-- swipe:
-    direction: UP
+      TEXT_TO_PASTE: Maestro-${SUITE_RUN_ID}
+- tapOn:
+    id: order-customer-details-done-button
+- assertVisible:
+    text: '[\s\S]*Maestro-${SUITE_RUN_ID}[\s\S]*'
+- runFlow:
+    when:
+      visible: Hide details
+    commands:
+      - tapOn: Hide details
+- scrollUntilVisible:
+    element:
+      id: add-shipping-button
+    direction: DOWN
+    timeout: 30000
 - tapOn:
     id: add-shipping-button
 - inputText: "1"
@@ -106,8 +146,11 @@ tags:
 - hideKeyboard
 - tapOn:
     id: add-shipping-done-button
-- swipe:
-    direction: UP
+- scrollUntilVisible:
+    element:
+      id: new-order-add-custom-amount-button
+    direction: DOWN
+    timeout: 30000
 - tapOn:
     id: new-order-add-custom-amount-button
 - tapOn:
@@ -123,8 +166,11 @@ tags:
 - tapOn:
     id: order-add-custom-amount-view-add-custom-amount-button
 - assertVisible: Custom amount ${SUITE_RUN_ID}
-- swipe:
-    direction: UP
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    timeout: 30000
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -150,6 +196,21 @@ tags:
       text: Maestro order ${SUITE_RUN_ID}
     direction: DOWN
 - assertVisible: Maestro order ${SUITE_RUN_ID}
-- assertVisible: Maestro ${SUITE_RUN_ID}
-- assertVisible: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}
 - assertVisible: Custom amount ${SUITE_RUN_ID}
+- scrollUntilVisible:
+    element:
+      text: "View Billing Information"
+      below:
+        text: "CUSTOMER"
+    direction: DOWN
+- tapOn:
+    text: "View Billing Information"
+    below:
+      text: "CUSTOMER"
+- extendedWaitUntil:
+    visible: "Billing Information"
+    timeout: 15000
+- assertVisible:
+    text: '[\s\S]*Maestro-${SUITE_RUN_ID}[\s\S]*'
+- assertVisible:
+    text: "Email: ${output.selectedCustomerEmail}"

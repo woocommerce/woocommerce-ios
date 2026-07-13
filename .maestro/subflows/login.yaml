@@ -71,7 +71,15 @@ appId: ${APP_ID}
       TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
 - hideKeyboard
 - extendedWaitUntil:
-    visible: "Continue|Manage Privacy"
+    visible: "Continue|Manage Privacy|Save Password.*|My store"
+    timeout: 15000
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible: "Continue|Manage Privacy|My store"
     timeout: 15000
 - runFlow:
     when:
@@ -89,12 +97,6 @@ appId: ${APP_ID}
     commands:
       - tapOn:
           id: "Continue Button"
-
-- runFlow:
-    when:
-      visible: "Save Password?"
-    commands:
-      - tapOn: "Not Now"
 
 # The site-address route normally shows an epilogue. Validate that it selected
 # the caller's store before continuing; some returning accounts skip it.

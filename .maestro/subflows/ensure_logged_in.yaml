@@ -6,7 +6,7 @@ appId: ${APP_ID}
     clearState: false
 
 - extendedWaitUntil:
-    visible: "Manage Privacy|My store|Log In"
+    visible: "Manage Privacy|My store|Log In|Skip"
     timeout: 45000
 - runFlow:
     when:

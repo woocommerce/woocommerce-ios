@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// Provides process-based configurations for screenshot generation and UI tests.
 struct ProcessConfiguration {
@@ -59,4 +60,31 @@ struct ProcessConfiguration {
     static var shouldUseMockCardPresentPayment: Bool {
         ProcessInfo.processInfo.arguments.contains("use-mocked-card-present-payment")
     }
+
+    #if DEBUG
+    /// Credentials to auto-authenticate with at launch, for local debugging against a real store
+    /// (e.g. a Jurassic Ninja site) without going through the login UI. Only ever populated when
+    /// running a DEBUG build with the required environment variables set on a personal Xcode scheme
+    /// or `simctl launch` invocation — never checked into the repo.
+    static var debugAutoLoginCredentials: Credentials? {
+        let env = ProcessInfo.processInfo.environment
+        guard let username = env["DEBUG_LOGIN_USERNAME"],
+              let secret = env["DEBUG_LOGIN_SECRET"],
+              let siteAddress = env["DEBUG_LOGIN_SITE_ADDRESS"] else {
+            return nil
+        }
+        switch env["DEBUG_LOGIN_AUTH_TYPE"] {
+        case "wpcom":
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        default:
+            return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+        }
+    }
+
+    /// Store ID to select alongside `debugAutoLoginCredentials`. Defaults to the self-hosted
+    /// placeholder ID, which is correct for application-password logins.
+    static var debugAutoLoginStoreID: Int64 {
+        ProcessInfo.processInfo.environment["DEBUG_LOGIN_STORE_ID"].flatMap(Int64.init) ?? WooConstants.placeholderStoreID
+    }
+    #endif
 }

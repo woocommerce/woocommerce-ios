@@ -33,6 +33,7 @@ private struct ComponentsView: View {
             NavigationLink("Badge") { BadgeComponentView() }
             NavigationLink("Button") { ButtonComponentView() }
             NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
+            NavigationLink("Tooltip") { TooltipComponentView() }
         }
         .navigationTitle("Components")
     }

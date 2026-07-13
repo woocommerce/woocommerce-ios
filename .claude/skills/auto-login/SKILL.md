@@ -1,9 +1,9 @@
 ---
 name: auto-login
-description: Launch the WooCommerce app on a simulator already authenticated into a given store (application password or WPCom), skipping the manual login UI. Meant to be referenced by other skills/workflows that need a logged-in session fast, but also directly runnable.
+description: Launch the WooCommerce app on a simulator already authenticated into a given store (site credentials, application password, or WPCom), skipping the manual login UI. Meant to be referenced by other skills/workflows that need a logged-in session fast, but also directly runnable.
 user-invocable: true
 allowed-tools: "Bash"
-argument-hint: "<UDID> <site-address> <username> <secret> [auth-type: applicationPassword|wpcom] [store-id]"
+argument-hint: "<UDID> <site-address> <username> <secret> [auth-type: wporg|applicationPassword|wpcom] [store-id]"
 ---
 
 # Auto-Login
@@ -21,8 +21,12 @@ the caller's responsibility (see `/build`, `/simulator`, and JN site provisionin
 - The app already built **and installed** for that simulator, from a `DEBUG` configuration (the default for
   simulator builds). If not installed yet, build first and `xcrun simctl install <UDID> <path-to-.app>`.
 - Credentials for the target store:
-  - `applicationPassword` (default) — a wp-admin username + an application password created on that site.
-    This is the right choice for a self-hosted/Jurassic Ninja site with no Jetpack connection.
+  - `wporg` (default) — the wp-admin username + real password (e.g. a fresh Jurassic Ninja site's admin
+    credentials). Works with no extra setup: the app's networking layer automatically does the
+    cookie/nonce handshake and generates+stores a proper application password on the first REST call.
+  - `applicationPassword` — a wp-admin username + an application password created on that site (e.g. via
+    `wp user application-password create <user> <name> --porcelain` over SSH). Use this if `wporg` doesn't
+    work for some reason (e.g. a security plugin blocking the wp-login.php handshake).
   - `wpcom` — a WordPress.com username + auth token, plus the store's real numeric site ID (`store-id`).
 
 ## Usage
@@ -33,8 +37,11 @@ bash .claude/skills/auto-login/Scripts/launch.sh <UDID> <site-address> <username
 
 Examples:
 ```bash
-# Self-hosted / JN site via application password (auth-type defaults to applicationPassword)
-bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example-jn-site.com admin "abcd 1234 efgh 5678"
+# Self-hosted / JN site via its real admin username+password (auth-type defaults to wporg)
+bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example-jn-site.com admin "real-admin-password"
+
+# Self-hosted site via an application password instead
+bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example-jn-site.com admin "abcd 1234 efgh 5678" applicationPassword
 
 # WPCom-connected site (needs the real site ID)
 bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example.com someuser somewpcomtoken wpcom 123456789
@@ -69,5 +76,8 @@ These stem from the app-side `DEBUG` shortcut itself and are accepted tradeoffs,
 - **No error is surfaced on bad credentials.** Unlike the real login UI, this shortcut doesn't validate role
   eligibility, WooCommerce installation, or application-password validity. Bad credentials just produce a
   blank/broken dashboard — check the simulator's console log (`DDLogError`) if the store doesn't load.
+- **`wporg` needs the wp-login.php cookie/nonce handshake to succeed on first REST call.** If a security
+  plugin (e.g. Jetpack's account-protection module) blocks that handshake, `wporg` will silently fail the
+  same way as any other bad credentials — fall back to `applicationPassword` in that case.
 - If you also pass `logout-at-launch` in the same launch, auto-login will silently re-authenticate right
   after it deauthenticates — the two aren't designed to be combined.

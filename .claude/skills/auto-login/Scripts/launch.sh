@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage: launch.sh <udid> <site-address> <username> <secret> [auth-type] [store-id]
 
 if [ "$#" -lt 4 ]; then
-  echo "Usage: $0 <udid> <site-address> <username> <secret> [auth-type: applicationPassword|wpcom] [store-id]" >&2
+  echo "Usage: $0 <udid> <site-address> <username> <secret> [auth-type: wporg|applicationPassword|wpcom] [store-id]" >&2
   exit 1
 fi
 
@@ -13,13 +13,13 @@ UDID="$1"
 SITE_ADDRESS="$2"
 USERNAME="$3"
 SECRET="$4"
-AUTH_TYPE="${5:-applicationPassword}"
+AUTH_TYPE="${5:-wporg}"
 STORE_ID="${6:-}"
 
 BUNDLE_ID="com.automattic.woocommerce"
 
-if [ "$AUTH_TYPE" != "applicationPassword" ] && [ "$AUTH_TYPE" != "wpcom" ]; then
-  echo "Unrecognized auth-type '$AUTH_TYPE' — must be exactly 'applicationPassword' or 'wpcom'" >&2
+if [ "$AUTH_TYPE" != "wporg" ] && [ "$AUTH_TYPE" != "applicationPassword" ] && [ "$AUTH_TYPE" != "wpcom" ]; then
+  echo "Unrecognized auth-type '$AUTH_TYPE' — must be exactly 'wporg', 'applicationPassword', or 'wpcom'" >&2
   exit 1
 fi
 

@@ -76,13 +76,15 @@ struct ProcessConfiguration {
         switch env["DEBUG_LOGIN_AUTH_TYPE"] {
         case "wpcom":
             return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
-        default:
+        case "applicationPassword":
             return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+        default:
+            return .wporg(username: username, password: secret, siteAddress: siteAddress)
         }
     }
 
     /// Store ID to select alongside `debugAutoLoginCredentials`. Defaults to the self-hosted
-    /// placeholder ID, which is correct for application-password logins.
+    /// placeholder ID, which is correct for wporg/application-password logins.
     static var debugAutoLoginStoreID: Int64 {
         ProcessInfo.processInfo.environment["DEBUG_LOGIN_STORE_ID"].flatMap(Int64.init) ?? WooConstants.placeholderStoreID
     }

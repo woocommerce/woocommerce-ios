@@ -21,6 +21,9 @@ struct TooltipLayout {
         static let screenMargin: CGFloat = 8
         /// A small gap between the arrow tip and the anchor edge.
         static let anchorGap: CGFloat = 4
+        /// The closest the arrow tip may sit to a bubble corner before its base would overlap the
+        /// rounded corner.
+        static let minArrowTipInset: CGFloat = StoreRadius.large + TooltipArrowShape.base / 2
     }
 
     /// The bubble edge the arrow renders on: a preferred placement is honored unless its side lacks
@@ -46,8 +49,8 @@ struct TooltipLayout {
         return switch arrowEdge {
         case .top: bounds.maxY - anchorFrame.maxY < requiredHeight
         case .bottom: anchorFrame.minY - bounds.minY < requiredHeight
-        case .leading: bounds.maxX - anchorFrame.maxX - TooltipMetrics.arrowDepth < Constants.minBubbleWidth
-        case .trailing: anchorFrame.minX - bounds.minX - TooltipMetrics.arrowDepth < Constants.minBubbleWidth
+        case .leading: bounds.maxX - anchorFrame.maxX - TooltipArrowShape.depth < Constants.minBubbleWidth
+        case .trailing: anchorFrame.minX - bounds.minX - TooltipArrowShape.depth < Constants.minBubbleWidth
         }
     }
 
@@ -59,8 +62,8 @@ struct TooltipLayout {
         let rightLimit = bounds.maxX - Constants.screenMargin
         let room: CGFloat = switch arrowEdge {
         case .top, .bottom: rightLimit - leftLimit
-        case .leading: rightLimit - anchorFrame.maxX - TooltipMetrics.arrowDepth
-        case .trailing: anchorFrame.minX - TooltipMetrics.arrowDepth - leftLimit
+        case .leading: rightLimit - anchorFrame.maxX - TooltipArrowShape.depth
+        case .trailing: anchorFrame.minX - TooltipArrowShape.depth - leftLimit
         }
         return min(Constants.maxBubbleWidth, max(Constants.minBubbleWidth, room))
     }
@@ -91,7 +94,7 @@ struct TooltipLayout {
     func arrowTipAlongEdge(for arrowEdge: Edge, bubbleSize: CGSize, bubbleOffset: CGSize) -> CGFloat {
         let isHorizontalEdge = arrowEdge == .top || arrowEdge == .bottom
         let length = isHorizontalEdge ? bubbleSize.width : bubbleSize.height
-        let minInset = TooltipMetrics.minArrowTipInset
+        let minInset = Constants.minArrowTipInset
         // Too small to inset from both ends — leave the arrow centered.
         guard length > 2 * minInset else { return length / 2 }
         // The bubble is centered on the anchor then shifted by the offset's cross component; undoing

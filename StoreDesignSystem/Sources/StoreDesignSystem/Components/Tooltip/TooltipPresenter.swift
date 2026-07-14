@@ -13,15 +13,9 @@ struct TooltipRequest {
     static let empty = TooltipRequest(id: UUID(), title: "", message: nil, preferredPlacement: nil, anchorFrame: .zero)
 }
 
-/// Hosts a ``StoreTooltip`` in a dedicated window above the app so it is never clipped by a
-/// scroll view, navigation bar, or any other container the anchor happens to live in.
-///
-/// A leaf `.overlay` on the anchor cannot escape its host — a `ScrollView` clips it to the viewport
-/// and a `UINavigationBar` clips it to a sliver — so the bubble is rendered in a separate,
-/// pass-through window instead. Placement comes entirely from ``TooltipLayout`` in global (window)
-/// coordinates, so the bubble tracks the anchor as it scrolls while staying on screen.
-///
-/// Only one tooltip shows at a time (matching the design guidance); the most recent presenter wins.
+/// Hosts a ``StoreTooltip`` in a dedicated pass-through window above the app, so no scroll view,
+/// navigation bar, or other container of the anchor clips it. Placement comes from ``TooltipLayout``
+/// in global coordinates; only one tooltip shows at a time — the most recent presenter wins.
 @MainActor
 final class TooltipPresenter {
     static let shared = TooltipPresenter()

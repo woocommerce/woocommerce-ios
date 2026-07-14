@@ -14,7 +14,7 @@ struct StoreTooltip: View {
 
     var body: some View {
         bubble
-            .padding(Edge.Set(arrowEdge), TooltipMetrics.arrowDepth)
+            .padding(Edge.Set(arrowEdge), TooltipArrowShape.depth)
             .overlay(alignment: arrowCorner) {
                 TooltipArrowShape(edge: arrowEdge)
                     .fill(Color.storeInverseSurface)
@@ -46,11 +46,11 @@ private extension StoreTooltip {
     }
 
     var arrowWidth: CGFloat {
-        isHorizontalEdge ? TooltipMetrics.arrowBase : TooltipMetrics.arrowDepth
+        isHorizontalEdge ? TooltipArrowShape.base : TooltipArrowShape.depth
     }
 
     var arrowHeight: CGFloat {
-        isHorizontalEdge ? TooltipMetrics.arrowDepth : TooltipMetrics.arrowBase
+        isHorizontalEdge ? TooltipArrowShape.depth : TooltipArrowShape.base
     }
 
     /// The arrow is pinned to its edge's leading/top corner and slid along the edge by ``arrowOffset``.
@@ -66,7 +66,7 @@ private extension StoreTooltip {
     /// Moves the corner-pinned arrow so its tip lands ``arrowTip`` points along the edge (the base
     /// spans the arrow width, so shift by half of that to center the tip on the target).
     var arrowOffset: CGSize {
-        let alongEdge = arrowTip - TooltipMetrics.arrowBase / 2
+        let alongEdge = arrowTip - TooltipArrowShape.base / 2
         return isHorizontalEdge ? CGSize(width: alongEdge, height: 0) : CGSize(width: 0, height: alongEdge)
     }
 }

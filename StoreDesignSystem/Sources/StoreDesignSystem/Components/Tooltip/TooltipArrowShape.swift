@@ -3,6 +3,11 @@ import SwiftUI
 /// The tooltip's triangular arrow. The apex points away from the bubble along `edge`, the base sits
 /// flush against the bubble, and only the tip is rounded.
 struct TooltipArrowShape: Shape {
+    /// Triangle base width, along the edge.
+    static let base: CGFloat = 22
+    /// Triangle protrusion, perpendicular to the edge.
+    static let depth: CGFloat = 10
+
     let edge: Edge
     var tipRadius: CGFloat = 1.5
 

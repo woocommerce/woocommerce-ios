@@ -3,14 +3,10 @@ import SwiftUI
 public extension View {
     /// Presents a tooltip anchored to this view while `isPresented` is `true`.
     ///
-    /// The tooltip is hosted in a window above the app, so it is never clipped by a scroll view,
-    /// navigation bar, or other container the anchor lives in; it tracks the anchor as it scrolls
-    /// and hides itself while the anchor is off screen. It is non-modal: it does not block the rest
-    /// of the UI. Tapping it dismisses it; showing it — and any other dismissal (on navigation,
-    /// scroll, etc.) — is the caller's job through `isPresented`. The presenter positions the bubble
-    /// so it stays on screen, with the arrow pointing at this view's center. Pass
-    /// `preferredPlacement` to request a side; it is honored unless that side lacks room, in which
-    /// case the presenter flips to the opposite side.
+    /// The tooltip is non-modal, shows in a window above the app (so nothing clips it), and stays
+    /// on screen with the arrow pointing at this view. Tapping it dismisses it; showing it is the
+    /// caller's job through `isPresented`. `preferredPlacement` requests a side, flipped only when
+    /// that side lacks room.
     func storeTooltip(isPresented: Binding<Bool>,
                       preferredPlacement: StoreTooltipPlacement? = nil,
                       title: String,

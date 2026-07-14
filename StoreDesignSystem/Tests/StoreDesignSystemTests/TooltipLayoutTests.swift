@@ -165,7 +165,7 @@ import Testing
         let tip = sut.arrowTipAlongEdge(for: .top, bubbleSize: bubble, bubbleOffset: offset)
         #expect(tip == 118)
         // …but not all the way to the corner, since this clamp is mild
-        #expect(tip < 200 - TooltipMetrics.minArrowTipInset)
+        #expect(tip < 200 - TooltipLayout.Constants.minArrowTipInset)
     }
 
     @Test func test_arrowTip_never_slides_closer_than_min_inset() {
@@ -175,7 +175,7 @@ import Testing
         // When placing the arrow / Then it stops at the closest it may sit to the rounded corner
         let offset = sut.bubbleOffset(for: .top, bubbleSize: bubble)
         let tip = sut.arrowTipAlongEdge(for: .top, bubbleSize: bubble, bubbleOffset: offset)
-        #expect(tip == 200 - TooltipMetrics.minArrowTipInset)
+        #expect(tip == 200 - TooltipLayout.Constants.minArrowTipInset)
     }
 
     @Test func test_arrowTip_slides_along_the_vertical_edge_for_a_side_placement() {

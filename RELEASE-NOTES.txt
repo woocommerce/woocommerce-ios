@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Fixed product saves replacing shortcode-based short descriptions with their rendered output. [https://github.com/woocommerce/woocommerce-ios/pull/17543]
 
 
 25.2

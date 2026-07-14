@@ -28,6 +28,11 @@ ENV_FILE = MAESTRO_DIR / ".env.local"
 CONFIG_FILE = MAESTRO_DIR / "config.yaml"
 LINT_ENV = SCRIPT_DIR / "lint-env.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
+NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
+NOT_WOO_STORE_WPCOM_FALLBACK = {
+    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
+    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
+}
 
 PROFILES = {
     "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], 1, "iphone"),
@@ -230,7 +235,10 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
             continue
         visited.add(path)
         text = path.read_text(errors="replace")
-        required.update(ENV_REFERENCE_RE.findall(text))
+        references = set(ENV_REFERENCE_RE.findall(text))
+        if path.name == NOT_WOO_STORE_FLOW:
+            references.difference_update(NOT_WOO_STORE_WPCOM_FALLBACK)
+        required.update(references)
         for reference in SUBFLOW_REFERENCE_RE.findall(text):
             paths.append((path.parent / reference).resolve())
     if seed:
@@ -242,6 +250,10 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
     missing = sorted(name for name in required_environment(flows, seed=seed) if not values.get(name))
     if missing:
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
+    if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
+        configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
+        if any(configured_fallback) and not all(configured_fallback):
+            raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
 
 
 def maestro_env_args(values: dict[str, str], app_id: str, run_id: str) -> list[str]:

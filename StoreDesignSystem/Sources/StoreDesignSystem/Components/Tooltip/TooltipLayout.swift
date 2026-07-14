@@ -1,9 +1,9 @@
-import CoreGraphics
+import SwiftUI
 
-/// Pure geometry for presenting a ``StoreTooltip``: given where the anchor sits on screen, it decides
-/// which arrow to use, how wide the bubble may be, and how far to offset it. Extracted from the view
-/// layer so this logic — which is easy to get subtly wrong and hard to eyeball — can be unit-tested
-/// without SwiftUI.
+/// Pure geometry for presenting a ``StoreTooltip``: given where the anchor sits on screen, it
+/// decides which side to open on, how wide the bubble may be, how far to offset it, and where the
+/// arrow sits so it points at the anchor. Extracted from the view layer so this logic — which is
+/// easy to get subtly wrong and hard to eyeball — can be unit-tested without SwiftUI.
 struct TooltipLayout {
     /// The anchor's frame in the same space as `bounds` (global/screen).
     let anchorFrame: CGRect
@@ -16,30 +16,34 @@ struct TooltipLayout {
         /// Bubble width bounds and the inset kept from the screen edges.
         static let maxBubbleWidth: CGFloat = 300
         static let minBubbleWidth: CGFloat = 80
-        static let screenMargin: CGFloat = 16
+        /// Kept small so a bubble anchored to a screen-edge element (e.g. a nav-bar button) can sit
+        /// close enough to the edge for its arrow to reach the anchor.
+        static let screenMargin: CGFloat = 8
         /// A small gap between the arrow tip and the anchor edge.
         static let anchorGap: CGFloat = 4
     }
 
-    /// The arrow to render: a preferred placement is honored unless its side lacks room (then it
-    /// flips); with no preference the presenter picks a side from the anchor's position.
-    func resolvedArrow(preferred: StoreTooltipArrow?, bubbleSize: CGSize = .zero) -> StoreTooltipArrow {
+    /// The bubble edge the arrow renders on: a preferred placement is honored unless its side lacks
+    /// room (then it flips); with no preference the bubble opens toward the roomier vertical side.
+    func resolvedArrowEdge(preferred: Edge?, bubbleSize: CGSize = .zero) -> Edge {
         guard anchorFrame != .zero else {
-            return preferred ?? .topCenter
+            return preferred ?? .top
         }
         if let preferred {
-            return shouldFlip(preferred, bubbleSize: bubbleSize) ? preferred.flipped : preferred
+            return shouldFlip(preferred, bubbleSize: bubbleSize) ? preferred.opposite : preferred
         }
-        return autoArrow()
+        let roomBelow = bounds.maxY - anchorFrame.maxY
+        let roomAbove = anchorFrame.minY - bounds.minY
+        return roomBelow >= roomAbove ? .top : .bottom
     }
 
     /// A preferred placement is flipped when its side can't fit the bubble. The width adapts to the
     /// room on a leading/trailing side, so those only flip when truly cramped; a top/bottom bubble's
     /// height doesn't adapt, so it flips against the measured height (falling back to a nominal one
     /// before the first measurement) rather than assuming the bubble is short.
-    func shouldFlip(_ arrow: StoreTooltipArrow, bubbleSize: CGSize = .zero) -> Bool {
+    func shouldFlip(_ arrowEdge: Edge, bubbleSize: CGSize = .zero) -> Bool {
         let requiredHeight = bubbleSize.height > 0 ? bubbleSize.height : Constants.estimatedHeight
-        return switch arrow.edge {
+        return switch arrowEdge {
         case .top: bounds.maxY - anchorFrame.maxY < requiredHeight
         case .bottom: anchorFrame.minY - bounds.minY < requiredHeight
         case .leading: bounds.maxX - anchorFrame.maxX - TooltipMetrics.arrowDepth < Constants.minBubbleWidth
@@ -47,96 +51,65 @@ struct TooltipLayout {
         }
     }
 
-    /// With no preference, open toward whichever vertical side has more room and align the arrow
-    /// toward the anchor's horizontal third so the bubble stays on screen.
-    func autoArrow() -> StoreTooltipArrow {
-        let roomBelow = bounds.maxY - anchorFrame.maxY
-        let roomAbove = anchorFrame.minY - bounds.minY
-        let edge: StoreTooltipArrow.Edge = roomBelow >= roomAbove ? .top : .bottom
-        return StoreTooltipArrow(edge: edge, alignment: horizontalAlignment())
-    }
-
-    func horizontalAlignment() -> StoreTooltipArrow.Alignment {
-        let third = bounds.width / 3
-        if anchorFrame.midX < bounds.minX + third {
-            return .start
-        }
-        if anchorFrame.midX > bounds.maxX - third {
-            return .end
-        }
-        return .center
-    }
-
-    /// The width the bubble may occupy before it would spill off screen. For a top/bottom arrow the
-    /// bubble grows sideways from the arrow — which sits over the anchor's center — so the room
-    /// depends on where along the edge the arrow is; for a leading/trailing arrow it is the space on
-    /// the anchor's chosen side.
-    func availableBubbleWidth(for arrow: StoreTooltipArrow) -> CGFloat {
+    /// The width the bubble may occupy before it would spill off screen: the full width for a
+    /// top/bottom placement (the bubble slides along the edge as needed), or the room on the
+    /// anchor's chosen side for a leading/trailing one.
+    func availableBubbleWidth(for arrowEdge: Edge) -> CGFloat {
         let leftLimit = bounds.minX + Constants.screenMargin
         let rightLimit = bounds.maxX - Constants.screenMargin
-        let room: CGFloat
-        switch arrow.edge {
-        case .top, .bottom:
-            switch arrow.alignment {
-            case .center:
-                room = 2 * min(anchorFrame.midX - leftLimit, rightLimit - anchorFrame.midX)
-            case .start: // arrow near the bubble's leading edge; bubble extends toward the trailing side
-                room = rightLimit - (anchorFrame.midX - TooltipMetrics.arrowTipInset)
-            case .end: // arrow near the bubble's trailing edge; bubble extends toward the leading side
-                room = (anchorFrame.midX + TooltipMetrics.arrowTipInset) - leftLimit
-            }
-        case .leading: // bubble sits on the anchor's trailing side
-            room = rightLimit - anchorFrame.maxX - TooltipMetrics.arrowDepth
-        case .trailing: // bubble sits on the anchor's leading side
-            room = anchorFrame.minX - TooltipMetrics.arrowDepth - leftLimit
+        let room: CGFloat = switch arrowEdge {
+        case .top, .bottom: rightLimit - leftLimit
+        case .leading: rightLimit - anchorFrame.maxX - TooltipMetrics.arrowDepth
+        case .trailing: anchorFrame.minX - TooltipMetrics.arrowDepth - leftLimit
         }
         return min(Constants.maxBubbleWidth, max(Constants.minBubbleWidth, room))
     }
 
-    /// Offset from a bubble centered on the anchor: pushes it fully onto the arrow's side (main axis)
-    /// and slides it along the edge so the arrow tip meets the anchor's center (cross axis), then
-    /// clamps the whole bubble back on screen.
-    func bubbleOffset(for arrow: StoreTooltipArrow, bubbleSize: CGSize) -> CGSize {
-        clamped(rawBubbleOffset(for: arrow, bubbleSize: bubbleSize), bubbleSize: bubbleSize)
-    }
-
-    /// The ideal offset, before clamping — arrow tip exactly on the anchor's edge center.
-    func rawBubbleOffset(for arrow: StoreTooltipArrow, bubbleSize: CGSize) -> CGSize {
+    /// Offset from a bubble centered on the anchor: pushes it fully onto the arrow's side, then
+    /// clamps it back within the screen margins on both axes. In the common case the bubble already
+    /// fits and the clamp is a no-op; near a screen edge it shifts the bubble and the arrow slides
+    /// to compensate.
+    func bubbleOffset(for arrowEdge: Edge, bubbleSize: CGSize) -> CGSize {
         // The bubble frame already includes the arrow strip, so half the anchor plus half the bubble
         // puts the arrow tip on the anchor's edge; a small gap lifts it just clear.
         let mainOffset = { (anchorExtent: CGFloat, bubbleExtent: CGFloat) in
             anchorExtent / 2 + bubbleExtent / 2 + Constants.anchorGap
         }
-        switch arrow.edge {
-        case .top:
-            return CGSize(width: crossShift(along: bubbleSize.width, alignment: arrow.alignment),
-                          height: mainOffset(anchorFrame.height, bubbleSize.height))
-        case .bottom:
-            return CGSize(width: crossShift(along: bubbleSize.width, alignment: arrow.alignment),
-                          height: -mainOffset(anchorFrame.height, bubbleSize.height))
-        case .leading:
-            return CGSize(width: mainOffset(anchorFrame.width, bubbleSize.width),
-                          height: crossShift(along: bubbleSize.height, alignment: arrow.alignment))
-        case .trailing:
-            return CGSize(width: -mainOffset(anchorFrame.width, bubbleSize.width),
-                          height: crossShift(along: bubbleSize.height, alignment: arrow.alignment))
+        let raw: CGSize = switch arrowEdge {
+        case .top: CGSize(width: 0, height: mainOffset(anchorFrame.height, bubbleSize.height))
+        case .bottom: CGSize(width: 0, height: -mainOffset(anchorFrame.height, bubbleSize.height))
+        case .leading: CGSize(width: mainOffset(anchorFrame.width, bubbleSize.width), height: 0)
+        case .trailing: CGSize(width: -mainOffset(anchorFrame.width, bubbleSize.width), height: 0)
         }
+        return clamped(raw, bubbleSize: bubbleSize)
     }
 
-    /// Shift along the edge so a start/end arrow still points at the anchor's center.
-    func crossShift(along length: CGFloat, alignment: StoreTooltipArrow.Alignment) -> CGFloat {
-        switch alignment {
-        case .center: 0
-        case .start: length / 2 - TooltipMetrics.arrowTipInset
-        case .end: -(length / 2 - TooltipMetrics.arrowTipInset)
-        }
+    /// Where the arrow tip sits along the bubble's edge, measured from the bubble's leading/top
+    /// corner, so it points at the anchor's center: the middle when the bubble is centered on the
+    /// anchor (the common case), sliding toward a corner — never closer than ``minArrowTipInset`` —
+    /// when the on-screen clamp shifted the bubble.
+    func arrowTipAlongEdge(for arrowEdge: Edge, bubbleSize: CGSize, bubbleOffset: CGSize) -> CGFloat {
+        let isHorizontalEdge = arrowEdge == .top || arrowEdge == .bottom
+        let length = isHorizontalEdge ? bubbleSize.width : bubbleSize.height
+        let minInset = TooltipMetrics.minArrowTipInset
+        // Too small to inset from both ends — leave the arrow centered.
+        guard length > 2 * minInset else { return length / 2 }
+        // The bubble is centered on the anchor then shifted by the offset's cross component; undoing
+        // that shift lands the tip back on the anchor's center.
+        let crossShift = isHorizontalEdge ? bubbleOffset.width : bubbleOffset.height
+        return min(max(length / 2 - crossShift, minInset), length - minInset)
     }
 
-    /// Nudges the offset so the whole bubble stays within the margins on both axes. In the common
-    /// case the bubble already fits and this is a no-op; only when the anchor is close to an edge
-    /// does it kick in, trading a small arrow-to-anchor drift for keeping the bubble on screen.
-    func clamped(_ offset: CGSize, bubbleSize: CGSize) -> CGSize {
+    /// Nudges the offset so the whole bubble stays within the margins on both axes.
+    private func clamped(_ offset: CGSize, bubbleSize: CGSize) -> CGSize {
         guard bubbleSize != .zero else { return offset }
+        func clampCenter(_ center: CGFloat, half: CGFloat, low: CGFloat, high: CGFloat) -> CGFloat {
+            let minCenter = low + half
+            let maxCenter = high - half
+            // If the bubble is larger than the space, there is nothing to clamp to — leave it centered.
+            guard minCenter <= maxCenter else { return center }
+            return min(max(center, minCenter), maxCenter)
+        }
         let clampedX = clampCenter(anchorFrame.midX + offset.width,
                                    half: bubbleSize.width / 2,
                                    low: bounds.minX + Constants.screenMargin,
@@ -146,13 +119,5 @@ struct TooltipLayout {
                                    low: bounds.minY + Constants.screenMargin,
                                    high: bounds.maxY - Constants.screenMargin)
         return CGSize(width: clampedX - anchorFrame.midX, height: clampedY - anchorFrame.midY)
-    }
-
-    private func clampCenter(_ center: CGFloat, half: CGFloat, low: CGFloat, high: CGFloat) -> CGFloat {
-        let minCenter = low + half
-        let maxCenter = high - half
-        // If the bubble is larger than the space, there is nothing to clamp to — leave it centered.
-        guard minCenter <= maxCenter else { return center }
-        return min(max(center, minCenter), maxCenter)
     }
 }

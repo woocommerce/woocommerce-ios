@@ -1,28 +1,25 @@
 import SwiftUI
 
 /// A contextual overlay that surfaces supporting information, anchored to a target element via a
-/// directional arrow.
-///
-/// - Note: A passive visual (bubble + arrow); presenting and anchoring it over a target is the
-///   caller's responsibility. It hugs its content — apply `.frame(maxWidth:)` to wrap long text.
-public struct StoreTooltip: View {
-    private let title: String
-    private let message: String?
-    private let arrow: StoreTooltipArrow
+/// directional arrow. A passive visual — it is presented over an anchor with
+/// `storeTooltip(isPresented:preferredPlacement:title:message:)`, which computes the arrow edge and
+/// tip position.
+struct StoreTooltip: View {
+    let title: String
+    let message: String?
+    /// The bubble edge the arrow sits on.
+    let arrowEdge: Edge
+    /// The arrow tip's offset along that edge, from the bubble's leading/top corner.
+    let arrowTip: CGFloat
 
-    public init(_ title: String,
-                message: String? = nil,
-                arrow: StoreTooltipArrow = .topCenter) {
-        self.title = title
-        self.message = message
-        self.arrow = arrow
-    }
-
-    public var body: some View {
+    var body: some View {
         bubble
-            .padding(stripEdge, TooltipMetrics.arrowDepth)
-            .overlay(alignment: overlayAlignment) {
-                arrowView
+            .padding(Edge.Set(arrowEdge), TooltipMetrics.arrowDepth)
+            .overlay(alignment: arrowCorner) {
+                TooltipArrowShape(edge: arrowEdge)
+                    .fill(Color.storeInverseSurface)
+                    .frame(width: arrowWidth, height: arrowHeight)
+                    .offset(arrowOffset)
             }
     }
 
@@ -40,77 +37,36 @@ public struct StoreTooltip: View {
         .background(Color.storeInverseSurface)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.large))
     }
-
-    private var arrowView: some View {
-        TooltipArrowShape(edge: arrow.edge)
-            .fill(Color.storeInverseSurface)
-            .frame(width: arrowWidth, height: arrowHeight)
-            .padding(insetEdge, insetAmount)
-    }
 }
 
-// MARK: - Layout derivation
+// MARK: - Arrow positioning
 private extension StoreTooltip {
-    var isVerticalArrow: Bool {
-        arrow.edge == .top || arrow.edge == .bottom
+    var isHorizontalEdge: Bool {
+        arrowEdge == .top || arrowEdge == .bottom
     }
 
     var arrowWidth: CGFloat {
-        isVerticalArrow ? TooltipMetrics.arrowBase : TooltipMetrics.arrowDepth
+        isHorizontalEdge ? TooltipMetrics.arrowBase : TooltipMetrics.arrowDepth
     }
 
     var arrowHeight: CGFloat {
-        isVerticalArrow ? TooltipMetrics.arrowDepth : TooltipMetrics.arrowBase
+        isHorizontalEdge ? TooltipMetrics.arrowDepth : TooltipMetrics.arrowBase
     }
 
-    /// The bubble edge on which the arrow's protrusion is reserved.
-    var stripEdge: Edge.Set {
-        switch arrow.edge {
-        case .top: .top
-        case .bottom: .bottom
-        case .leading: .leading
-        case .trailing: .trailing
+    /// The arrow is pinned to its edge's leading/top corner and slid along the edge by ``arrowOffset``.
+    var arrowCorner: Alignment {
+        switch arrowEdge {
+        case .top: .topLeading
+        case .bottom: .bottomLeading
+        case .leading: .topLeading
+        case .trailing: .topTrailing
         }
     }
 
-    /// Anchors the arrow to the correct edge and position; SwiftUI resolves the coordinates.
-    var overlayAlignment: Alignment {
-        switch arrow.edge {
-        case .top: Alignment(horizontal: alongEdgeHorizontal, vertical: .top)
-        case .bottom: Alignment(horizontal: alongEdgeHorizontal, vertical: .bottom)
-        case .leading: Alignment(horizontal: .leading, vertical: alongEdgeVertical)
-        case .trailing: Alignment(horizontal: .trailing, vertical: alongEdgeVertical)
-        }
-    }
-
-    var alongEdgeHorizontal: HorizontalAlignment {
-        switch arrow.alignment {
-        case .start: .leading
-        case .center: .center
-        case .end: .trailing
-        }
-    }
-
-    var alongEdgeVertical: VerticalAlignment {
-        switch arrow.alignment {
-        case .start: .top
-        case .center: .center
-        case .end: .bottom
-        }
-    }
-
-    /// Insets the arrow from the corner for the start/end placements.
-    var insetEdge: Edge.Set {
-        switch (isVerticalArrow, arrow.alignment) {
-        case (true, .start): .leading
-        case (true, .end): .trailing
-        case (false, .start): .top
-        case (false, .end): .bottom
-        default: []
-        }
-    }
-
-    var insetAmount: CGFloat {
-        arrow.alignment == .center ? 0 : TooltipMetrics.cornerInset
+    /// Moves the corner-pinned arrow so its tip lands ``arrowTip`` points along the edge (the base
+    /// spans the arrow width, so shift by half of that to center the tip on the target).
+    var arrowOffset: CGSize {
+        let alongEdge = arrowTip - TooltipMetrics.arrowBase / 2
+        return isHorizontalEdge ? CGSize(width: alongEdge, height: 0) : CGSize(width: 0, height: alongEdge)
     }
 }

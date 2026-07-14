@@ -3,7 +3,7 @@ import SwiftUI
 /// The tooltip's triangular arrow. The apex points away from the bubble along `edge`, the base sits
 /// flush against the bubble, and only the tip is rounded.
 struct TooltipArrowShape: Shape {
-    let edge: StoreTooltipArrow.Edge
+    let edge: Edge
     var tipRadius: CGFloat = 1.5
 
     func path(in rect: CGRect) -> Path {

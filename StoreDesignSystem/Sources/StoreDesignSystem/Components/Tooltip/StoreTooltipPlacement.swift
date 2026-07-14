@@ -1,34 +1,36 @@
-/// Where a ``StoreTooltip`` sits relative to the view it is anchored to, when presented with
+import SwiftUI
+
+/// Which side of its anchor a tooltip opens on, when presented with
 /// `storeTooltip(isPresented:preferredPlacement:title:message:)`.
 ///
-/// - Note: This describes the bubble's position relative to the anchor (the arrow always points back
-///   at the anchor). It is the inverse of ``StoreTooltipArrow``, which names where the arrow sits on
-///   the bubble — a `.below` placement uses a `.top` arrow, and so on. The presenter maps the chosen
-///   placement to the matching arrow.
-public struct StoreTooltipPlacement: Sendable {
-    let arrow: StoreTooltipArrow
+/// The placement names the side only: where the bubble and its arrow sit along that side is
+/// computed by the presenter so the arrow points at the anchor and the bubble stays on screen.
+public enum StoreTooltipPlacement: Sendable {
+    case above
+    case below
+    case leading
+    case trailing
 
-    private init(arrow: StoreTooltipArrow) {
-        self.arrow = arrow
+    /// The bubble edge the arrow renders on — the inverse side, since the arrow points back at
+    /// the anchor.
+    var arrowEdge: Edge {
+        switch self {
+        case .above: .bottom
+        case .below: .top
+        case .leading: .trailing
+        case .trailing: .leading
+        }
     }
+}
 
-    /// Below the anchor.
-    public static let belowLeading = StoreTooltipPlacement(arrow: .topLeading)
-    public static let belowCenter = StoreTooltipPlacement(arrow: .topCenter)
-    public static let belowTrailing = StoreTooltipPlacement(arrow: .topTrailing)
-
-    /// Above the anchor.
-    public static let aboveLeading = StoreTooltipPlacement(arrow: .bottomLeading)
-    public static let aboveCenter = StoreTooltipPlacement(arrow: .bottomCenter)
-    public static let aboveTrailing = StoreTooltipPlacement(arrow: .bottomTrailing)
-
-    /// On the anchor's leading side.
-    public static let leadingTop = StoreTooltipPlacement(arrow: .trailingTop)
-    public static let leadingCenter = StoreTooltipPlacement(arrow: .trailingCenter)
-    public static let leadingBottom = StoreTooltipPlacement(arrow: .trailingBottom)
-
-    /// On the anchor's trailing side.
-    public static let trailingTop = StoreTooltipPlacement(arrow: .leadingTop)
-    public static let trailingCenter = StoreTooltipPlacement(arrow: .leadingCenter)
-    public static let trailingBottom = StoreTooltipPlacement(arrow: .leadingBottom)
+extension Edge {
+    /// The opposite edge, used to flip a placement whose side lacks room for the bubble.
+    var opposite: Edge {
+        switch self {
+        case .top: .bottom
+        case .bottom: .top
+        case .leading: .trailing
+        case .trailing: .leading
+        }
+    }
 }

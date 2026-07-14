@@ -7,8 +7,7 @@ enum TooltipMetrics {
     static let arrowBase: CGFloat = 22
     /// Triangle protrusion, perpendicular to the edge.
     static let arrowDepth: CGFloat = 10
-    /// Distance from the bubble corner to the nearest base corner for start/end placements.
-    static let cornerInset: CGFloat = 20
-    /// Distance from the near edge to the arrow tip for start/end placements.
-    static let arrowTipInset: CGFloat = cornerInset + arrowBase / 2
+    /// The closest the arrow tip may sit to a bubble corner before its base would overlap the
+    /// rounded corner.
+    static let minArrowTipInset: CGFloat = StoreRadius.large + arrowBase / 2
 }

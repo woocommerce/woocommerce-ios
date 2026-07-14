@@ -11,44 +11,29 @@ struct TooltipComponentView: View {
     }
 
     private enum Placement: String, CaseIterable, Identifiable {
-        case belowLeading = "Below Leading"
-        case belowCenter = "Below Center"
-        case belowTrailing = "Below Trailing"
-        case aboveLeading = "Above Leading"
-        case aboveCenter = "Above Center"
-        case aboveTrailing = "Above Trailing"
-        case leadingTop = "Leading Top"
-        case leadingCenter = "Leading Center"
-        case leadingBottom = "Leading Bottom"
-        case trailingTop = "Trailing Top"
-        case trailingCenter = "Trailing Center"
-        case trailingBottom = "Trailing Bottom"
+        case above = "Above"
+        case below = "Below"
+        case leading = "Leading"
+        case trailing = "Trailing"
 
         var id: Self { self }
 
         var value: StoreTooltipPlacement {
             switch self {
-            case .belowLeading: .belowLeading
-            case .belowCenter: .belowCenter
-            case .belowTrailing: .belowTrailing
-            case .aboveLeading: .aboveLeading
-            case .aboveCenter: .aboveCenter
-            case .aboveTrailing: .aboveTrailing
-            case .leadingTop: .leadingTop
-            case .leadingCenter: .leadingCenter
-            case .leadingBottom: .leadingBottom
-            case .trailingTop: .trailingTop
-            case .trailingCenter: .trailingCenter
-            case .trailingBottom: .trailingBottom
+            case .above: .above
+            case .below: .below
+            case .leading: .leading
+            case .trailing: .trailing
             }
         }
     }
 
     @State private var mode: Mode = .manual
-    @State private var placement: Placement = .belowCenter
+    @State private var placement: Placement = .below
     @State private var showsMessage = true
     @State private var manualPresented = false
     @State private var automaticPresented: Int?
+    @State private var navbarPresented = false
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var message: String? {
@@ -71,7 +56,11 @@ struct TooltipComponentView: View {
                 }
             }
             .pickerStyle(.segmented)
-            if mode == .manual {
+            .onChange(of: mode) { _, _ in
+                manualPresented = false
+                automaticPresented = nil
+            }
+            if mode != .automatic {
                 Picker("Preferred placement", selection: $placement) {
                     ForEach(Placement.allCases) { option in
                         Text(option.rawValue).tag(option)
@@ -86,11 +75,25 @@ struct TooltipComponentView: View {
             case .automatic: automaticPreview
             }
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    navbarPresented.toggle()
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                // No preferred placement: the presenter auto-picks a side that keeps the bubble
+                // on screen — important for a nav-bar button sitting in a screen corner.
+                .storeTooltip(isPresented: $navbarPresented,
+                              title: "Title",
+                              message: message)
+            }
+        }
     }
 
     private var manualPreview: some View {
         anchor
-            .onLongPressGesture { manualPresented = true }
+            .onTapGesture { manualPresented = true }
             .storeTooltip(isPresented: $manualPresented,
                           preferredPlacement: placement.value,
                           title: "Title",
@@ -104,7 +107,7 @@ struct TooltipComponentView: View {
                     ForEach(0..<3) { column in
                         let index = row * 3 + column
                         anchor
-                            .onLongPressGesture { automaticPresented = index }
+                            .onTapGesture { automaticPresented = index }
                             .storeTooltip(isPresented: binding(for: index),
                                           title: "Title",
                                           message: message)

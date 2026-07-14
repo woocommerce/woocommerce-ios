@@ -27,10 +27,10 @@ public struct RefundPreview: Decodable, Equatable, GeneratedFakeable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.init(subtotal: container.decimalFromMoneyString(forKey: .subtotal),
-                  tax: container.decimalFromMoneyString(forKey: .tax),
-                  total: container.decimalFromMoneyString(forKey: .total),
-                  maxRefundable: container.decimalFromMoneyString(forKey: .maxRefundable),
+        self.init(subtotal: container.failsafeDecodeIfPresent(decimalForKey: .subtotal) ?? .zero,
+                  tax: container.failsafeDecodeIfPresent(decimalForKey: .tax) ?? .zero,
+                  total: container.failsafeDecodeIfPresent(decimalForKey: .total) ?? .zero,
+                  maxRefundable: container.failsafeDecodeIfPresent(decimalForKey: .maxRefundable) ?? .zero,
                   breakdown: (try? container.decodeIfPresent(Breakdown.self, forKey: .breakdown)) ?? .empty)
     }
 
@@ -91,9 +91,9 @@ public extension RefundPreview {
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.init(items: (try? container.decodeIfPresent([Item].self, forKey: .items)) ?? [],
-                      subtotal: container.decimalFromMoneyString(forKey: .subtotal),
-                      tax: container.decimalFromMoneyString(forKey: .tax),
-                      total: container.decimalFromMoneyString(forKey: .total))
+                      subtotal: container.failsafeDecodeIfPresent(decimalForKey: .subtotal) ?? .zero,
+                      tax: container.failsafeDecodeIfPresent(decimalForKey: .tax) ?? .zero,
+                      total: container.failsafeDecodeIfPresent(decimalForKey: .total) ?? .zero)
         }
 
         private enum CodingKeys: String, CodingKey {
@@ -134,9 +134,9 @@ public extension RefundPreview {
             self.init(id: try container.decode(Int64.self, forKey: .id),
                       name: (try? container.decodeIfPresent(String.self, forKey: .name)) ?? "",
                       quantity: try? container.decodeIfPresent(Decimal.self, forKey: .quantity),
-                      subtotal: container.decimalFromMoneyString(forKey: .subtotal),
-                      tax: container.decimalFromMoneyString(forKey: .tax),
-                      total: container.decimalFromMoneyString(forKey: .total),
+                      subtotal: container.failsafeDecodeIfPresent(decimalForKey: .subtotal) ?? .zero,
+                      tax: container.failsafeDecodeIfPresent(decimalForKey: .tax) ?? .zero,
+                      total: container.failsafeDecodeIfPresent(decimalForKey: .total) ?? .zero,
                       productID: try? container.decodeIfPresent(Int64.self, forKey: .productID))
         }
 
@@ -149,15 +149,5 @@ public extension RefundPreview {
             case total
             case productID = "product_id"
         }
-    }
-}
-
-private extension KeyedDecodingContainer {
-    /// Decodes an API money value that arrives as a string; null, missing, or unparseable values become zero.
-    func decimalFromMoneyString(forKey key: Key) -> Decimal {
-        guard let string = try? decodeIfPresent(String.self, forKey: key) else {
-            return .zero
-        }
-        return Decimal(string: string) ?? .zero
     }
 }

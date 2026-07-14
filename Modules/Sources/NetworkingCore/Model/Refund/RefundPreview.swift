@@ -116,7 +116,7 @@ public extension RefundPreview {
         public let tax: Decimal
         public let total: Decimal
 
-        /// Nil for lines that aren't products (fees/shipping).
+        /// Product or variation ID for product lines. Nil for lines that aren't products (fees/shipping).
         public let productID: Int64?
 
         public init(id: Int64, name: String, quantity: Decimal?, subtotal: Decimal, tax: Decimal, total: Decimal, productID: Int64?) {

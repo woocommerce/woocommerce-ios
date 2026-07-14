@@ -103,6 +103,26 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
+    /// Maps the selected refundable rows to the simplified v4 line items: products send
+    /// `line_item_id` + quantity; fees send `line_item_id` + a tax-inclusive `refund_total`.
+    /// The server computes the monetary values from these, so no client-calculated amount is sent.
+    func refundV4LineItems(from selectedItems: [POSRefundSelectableItem],
+                           context: PreparedRefundContext) -> [RefundV4LineItem] {
+        let components = refundComponents(from: selectedItems, context: context)
+
+        let productLines = components.items.map {
+            RefundV4LineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
+        }
+
+        let feeLines = components.fees.map { fee -> RefundV4LineItem in
+            let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+            let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+            return RefundV4LineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
+        }
+
+        return productLines + feeLines
+    }
+
     func refundValues(items: [RefundableOrderItem], fees: [OrderFeeLine]) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
         let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()

@@ -1,6 +1,6 @@
 # p2: login.not-woo-store
-# Required fixture: a WordPress site without WooCommerce. Site-admin
-# credentials are preferred, with WP.com credentials available as fallback.
+# Required fixture: a WordPress site without WooCommerce and its site-admin
+# credentials. WP.com email/password are an optional fallback pair.
 appId: ${APP_ID}
 name: "Login - Not a WooCommerce store error"
 tags:

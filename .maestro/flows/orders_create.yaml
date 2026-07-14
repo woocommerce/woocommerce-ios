@@ -56,6 +56,15 @@ tags:
 - assertVisible:
     text: "2"
     below: Quantity
+- tapOn:
+    text: "2"
+    below: Quantity
+- eraseText
+- inputText: "1"
+- tapOn: Done
+- assertVisible:
+    text: "1"
+    below: Quantity
 - assertVisible: Add Discount
 - tapOn: Add Discount
 - assertVisible: Enter amount

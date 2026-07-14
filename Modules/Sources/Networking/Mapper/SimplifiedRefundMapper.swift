@@ -41,33 +41,32 @@ private extension SimplifiedRefundMapper {
         Refund(refundID: response.id,
                orderID: orderID,
                siteID: siteID,
-               dateCreated: response.dateCreated ?? Date(),
-               amount: response.amount ?? "0",
-               reason: response.reason ?? "",
+               dateCreated: response.dateCreated,
+               amount: response.amount,
+               reason: response.reason,
                refundedByUserID: 0,
                isAutomated: response.refundedPayment,
                createAutomated: nil,
-               items: (response.lineItems ?? []).map(item(from:)),
+               items: response.lineItems.map(item(from:)),
                shippingLines: [],
                feeLines: [])
     }
 
     /// Maps one merged v4 line into an `OrderItemRefund`, negating the magnitudes per the v3 storage contract.
     func item(from line: SimplifiedRefundResponse.LineItem) -> OrderItemRefund {
-        let subtotal = line.refundTotal.flatMap { Decimal(string: $0) } ?? .zero
-        let totalTax = (line.refundTax ?? []).reduce(Decimal.zero) { sum, tax in
-            sum + (tax.refundTotal.flatMap { Decimal(string: $0) } ?? .zero)
+        let subtotal = Decimal(string: line.refundTotal) ?? .zero
+        let totalTax = line.refundTax.reduce(Decimal.zero) { sum, tax in
+            sum + (Decimal(string: tax.refundTotal) ?? .zero)
         }
         let total = subtotal + totalTax
-        let quantity = line.quantity ?? .zero
 
-        return OrderItemRefund(itemID: line.id ?? 0,
-                               refundedItemID: line.lineItemID.map(String.init),
-                               quantity: -quantity,
+        return OrderItemRefund(itemID: line.id,
+                               refundedItemID: String(line.lineItemID),
+                               quantity: -line.quantity,
                                subtotal: (-subtotal).description,
-                               taxes: (line.refundTax ?? []).map { tax in
-                                   let taxTotal = tax.refundTotal.flatMap { Decimal(string: $0) } ?? .zero
-                                   return OrderItemTaxRefund(taxID: tax.id ?? 0,
+                               taxes: line.refundTax.map { tax in
+                                   let taxTotal = Decimal(string: tax.refundTotal) ?? .zero
+                                   return OrderItemTaxRefund(taxID: tax.id,
                                                              subtotal: "",
                                                              total: (-taxTotal).description)
                                },
@@ -79,20 +78,23 @@ private extension SimplifiedRefundMapper {
 
 /// v4 simplified create response. Line items merge products/fees/shipping with no type marker.
 ///
+/// WooCommerce core's v4 refund schema does not mark these response fields as nullable, and the
+/// response builder emits them from concrete refund values. The fields are required here so mapping
+/// fails loudly if the API contract changes or returns a malformed create response.
 private struct SimplifiedRefundResponse: Decodable {
     let id: Int64
-    let dateCreated: Date?
-    let amount: String?
-    let reason: String?
-    let refundedPayment: Bool?
-    let lineItems: [LineItem]?
+    let dateCreated: Date
+    let amount: String
+    let reason: String
+    let refundedPayment: Bool
+    let lineItems: [LineItem]
 
     struct LineItem: Decodable {
-        let id: Int64?
-        let lineItemID: Int64?
-        let quantity: Decimal?
-        let refundTotal: String?
-        let refundTax: [LineItemTax]?
+        let id: Int64
+        let lineItemID: Int64
+        let quantity: Decimal
+        let refundTotal: String
+        let refundTax: [LineItemTax]
 
         enum CodingKeys: String, CodingKey {
             case id
@@ -104,8 +106,8 @@ private struct SimplifiedRefundResponse: Decodable {
     }
 
     struct LineItemTax: Decodable {
-        let id: Int64?
-        let refundTotal: String?
+        let id: Int64
+        let refundTotal: String
 
         enum CodingKeys: String, CodingKey {
             case id
@@ -125,11 +127,11 @@ private struct SimplifiedRefundResponse: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int64.self, forKey: .id)
-        dateCreated = try? container.decodeIfPresent(Date.self, forKey: .dateCreated)
-        amount = try? container.decodeIfPresent(String.self, forKey: .amount)
-        reason = try? container.decodeIfPresent(String.self, forKey: .reason)
-        refundedPayment = try? container.decodeIfPresent(Bool.self, forKey: .refundedPayment)
-        lineItems = try? container.decodeIfPresent([LineItem].self, forKey: .lineItems)
+        dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+        amount = try container.decode(String.self, forKey: .amount)
+        reason = try container.decode(String.self, forKey: .reason)
+        refundedPayment = try container.decode(Bool.self, forKey: .refundedPayment)
+        lineItems = try container.decode([LineItem].self, forKey: .lineItems)
     }
 }
 

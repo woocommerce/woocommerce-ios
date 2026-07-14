@@ -21,7 +21,7 @@
             {
                 "id": 91,
                 "line_item_id": 51,
-                "quantity": null,
+                "quantity": 0,
                 "refund_total": "74.00",
                 "refund_tax": []
             }

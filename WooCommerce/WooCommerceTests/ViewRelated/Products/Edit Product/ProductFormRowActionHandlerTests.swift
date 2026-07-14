@@ -276,7 +276,7 @@ struct ProductFormRowActionHandlerTests {
         }
     }
 
-    // MARK: - Add image CTA
+    // MARK: - Inline cell actions
 
     @Test func addImageTapped_logs_then_navigates() {
         // Given
@@ -287,6 +287,42 @@ struct ProductFormRowActionHandlerTests {
 
         // Then
         #expect(env.recorder.events == ["log:image", "showProductImages"])
+    }
+
+    @Test func descriptionAITapped_navigates_without_tracking() {
+        // Given
+        let (handler, env) = makeHandler()
+
+        // When
+        handler.handleDescriptionAITapped()
+
+        // Then
+        #expect(env.recorder.events == ["showProductDescriptionAI"])
+        #expect(env.analyticsProvider.receivedEvents.isEmpty)
+    }
+
+    @Test func linkedProductsPromoTapped_navigates_without_tracking() {
+        // Given
+        let (handler, env) = makeHandler()
+
+        // When
+        handler.handleLinkedProductsPromoTapped()
+
+        // Then
+        #expect(env.recorder.events == ["editLinkedProducts"])
+        #expect(env.analyticsProvider.receivedEvents.isEmpty)
+    }
+
+    @Test func aiLegalPageTapped_navigates_without_tracking() {
+        // Given
+        let (handler, env) = makeHandler()
+
+        // When
+        handler.handleAILegalPageTapped(url: URL(string: "https://automattic.com/ai-guidelines/")!)
+
+        // Then
+        #expect(env.recorder.events == ["openAILegalPage"])
+        #expect(env.analyticsProvider.receivedEvents.isEmpty)
     }
 }
 

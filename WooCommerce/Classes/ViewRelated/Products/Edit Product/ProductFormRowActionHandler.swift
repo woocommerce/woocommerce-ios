@@ -231,4 +231,19 @@ final class ProductFormRowActionHandler {
         eventLogger.logImageTapped()
         navigator?.showProductImages()
     }
+
+    /// Handles the "Write with AI" button in the description cell.
+    func handleDescriptionAITapped() {
+        navigator?.showProductDescriptionAI()
+    }
+
+    /// Handles the call-to-action of the linked-products promo card.
+    func handleLinkedProductsPromoTapped() {
+        navigator?.editLinkedProducts()
+    }
+
+    /// Handles the "Learn more" link in the AI-generated content disclaimer.
+    func handleAILegalPageTapped(url: URL) {
+        navigator?.openAILegalPage(url: url)
+    }
 }

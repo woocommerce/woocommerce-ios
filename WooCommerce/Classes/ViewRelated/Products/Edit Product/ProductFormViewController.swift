@@ -842,19 +842,22 @@ private extension ProductFormViewController {
         updateTooltipPresenter()
     }
 
+    /// Content interactions route through `rowActionHandler`. The exceptions stay VC-bound on
+    /// purpose: `onNameChange`/`onStatusChange` are view-model data mutations (not navigation),
+    /// `reloadLinkedPromoAction` is a table rebuild, and `onFailedImageUpload` presents error UI.
     func updateDataSourceActions() {
         tableViewDataSource.openLinkedProductsAction = { [weak self] in
-            self?.editLinkedProducts()
+            self?.rowActionHandler.handleLinkedProductsPromoTapped()
         }
         tableViewDataSource.reloadLinkedPromoAction = { [weak self] in
             guard let self else { return }
             self.reloadLinkedPromoCell()
         }
         tableViewDataSource.descriptionAIAction = { [weak self] in
-            self?.showProductDescriptionAI()
+            self?.rowActionHandler.handleDescriptionAITapped()
         }
         tableViewDataSource.openAILegalPageAction = { [weak self] url in
-            self?.openAILegalPage(url: url)
+            self?.rowActionHandler.handleAILegalPageTapped(url: url)
         }
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")

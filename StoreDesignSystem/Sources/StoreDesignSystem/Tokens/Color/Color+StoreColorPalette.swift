@@ -1,9 +1,11 @@
 //  Color+StoreColorPalette.swift
 //
-//  Color roles from the Figma variables export (Mobile Design System, "Woo theme").
-//  Light + Dark only; high contrast is intentionally not modeled yet. NOTE: the Dark
-//  values are provisional — design is still revising them; re-sync from a fresh
-//  export when the revision lands.
+//  Color roles from the Figma variables export (Mobile Design System).
+//  Two tiers per WOOMOB-3558: a raw `Colors` primitive palette (`storePalette…`) and the
+//  `Woo theme` semantic roles that reference it. Light + Dark values are both real (from the
+//  export); high contrast is intentionally not modeled yet. The `// alias:` comments record the
+//  primitive each semantic maps to in Figma — the asset catalog stores flattened values, so these
+//  keep the mapping greppable for a future palette refactor. Re-sync from a fresh export on change.
 
 import SwiftUI
 
@@ -12,20 +14,24 @@ import SwiftUI
 /// .storePrimary`, and `.foregroundStyle(.storePrimary)`.
 public extension ShapeStyle where Self == Color {
     // MARK: - Background
-    static var storeSectionBackground: Color { bundledColor("storeSectionBackground") }
-    static var storeOnSectionBackground: Color { bundledColor("storeOnSectionBackground") }
-    static var storeSectionBackgroundVariant: Color { bundledColor("storeSectionBackgroundVariant") }
+    static var storeSectionBackground: Color { bundledColor("storeSectionBackground") } // alias L: raw / D: Gray 100
+    static var storeOnSectionBackground: Color { bundledColor("storeOnSectionBackground") } // alias L: raw / D: White
+    static var storeSectionBackgroundVariant: Color { bundledColor("storeSectionBackgroundVariant") } // alias L: raw / D: Gray 100
     static var storeOnSectionBackgroundVariant: Color { bundledColor("storeOnSectionBackgroundVariant") }
 
     // MARK: - Primary & Secondary
-    static var storePrimary: Color { bundledColor("storePrimary") }
-    static var storeOnPrimary: Color { bundledColor("storeOnPrimary") }
-    static var storeSecondary: Color { bundledColor("storeSecondary") }
-    static var storeOnSecondary: Color { bundledColor("storeOnSecondary") }
-    static var storePrimaryContainer: Color { bundledColor("storePrimaryContainer") }
-    static var storeOnPrimaryContainer: Color { bundledColor("storeOnPrimaryContainer") }
-    static var storeSecondaryContainer: Color { bundledColor("storeSecondaryContainer") }
-    static var storeOnSecondaryContainer: Color { bundledColor("storeOnSecondaryContainer") }
+    static var storePrimary: Color { bundledColor("storePrimary") } // alias: Purple 40
+    static var storeOnPrimary: Color { bundledColor("storeOnPrimary") } // alias: White
+    static var storeSecondary: Color { bundledColor("storeSecondary") } // alias L: Purple 60 / D: raw
+    static var storeOnSecondary: Color { bundledColor("storeOnSecondary") } // alias L: White / D: raw
+    static var storePrimaryContainer: Color { bundledColor("storePrimaryContainer") } // alias L: Purple 20 / D: White
+    static var storeOnPrimaryContainer: Color { bundledColor("storeOnPrimaryContainer") } // alias L: Purple 90 / D: White
+    static var storeSecondaryContainer: Color { bundledColor("storeSecondaryContainer") } // alias L: Purple 0 / D: Purple 80
+    static var storeOnSecondaryContainer: Color { bundledColor("storeOnSecondaryContainer") } // alias L: Purple 40 / D: Purple 20
+
+    // MARK: - Error
+    static var storeError: Color { bundledColor("storeError") }
+    static var storeOnError: Color { bundledColor("storeOnError") } // alias: White
 
     // MARK: - Alerts
     static var storeErrorContainer: Color { bundledColor("storeErrorContainer") }
@@ -41,63 +47,77 @@ public extension ShapeStyle where Self == Color {
     static var storeNeutralContainer: Color { bundledColor("storeNeutralContainer") }
     static var storeOnNeutralContainer: Color { bundledColor("storeOnNeutralContainer") }
     static var storeAlertRed: Color { bundledColor("storeAlertRed") }
-    static var storeOnAlertRed: Color { bundledColor("storeOnAlertRed") }
-    static var storeAlertOrange: Color { bundledColor("storeAlertOrange") }
-    static var storeOnAlertOrange: Color { bundledColor("storeOnAlertOrange") }
+    static var storeOnAlertRed: Color { bundledColor("storeOnAlertRed") } // alias L: White / D: raw
+    static var storeAlertOrange: Color { bundledColor("storeAlertOrange") } // alias L: Orange 40 / D: raw
+    static var storeOnAlertOrange: Color { bundledColor("storeOnAlertOrange") } // alias L: White / D: raw
     static var storeAlertGreen: Color { bundledColor("storeAlertGreen") }
-    static var storeOnAlertGreen: Color { bundledColor("storeOnAlertGreen") }
+    static var storeOnAlertGreen: Color { bundledColor("storeOnAlertGreen") } // alias L: White / D: raw
     static var storeAlertBlue: Color { bundledColor("storeAlertBlue") }
-    static var storeOnAlertBlue: Color { bundledColor("storeOnAlertBlue") }
+    static var storeOnAlertBlue: Color { bundledColor("storeOnAlertBlue") } // alias L: White / D: raw
 
     // MARK: - Outline
-    static var storeOutline: Color { bundledColor("storeOutline") }
-    static var storeOutlineVariant: Color { bundledColor("storeOutlineVariant") }
+    static var storeOutline: Color { bundledColor("storeOutline") } // alias L: Gray 40 / D: raw
+    static var storeOutlineVariant: Color { bundledColor("storeOutlineVariant") } // alias L: Gray 5 / D: raw
 
     // MARK: - Surface
-    static var storeSurfaceDim: Color { bundledColor("storeSurfaceDim") }
-    static var storeSurfaceBright: Color { bundledColor("storeSurfaceBright") }
-    static var storeSurface: Color { bundledColor("storeSurface") }
-    static var storeSurfaceContainerHighest: Color { bundledColor("storeSurfaceContainerHighest") }
-    static var storeOnSurface: Color { bundledColor("storeOnSurface") }
-    static var storeOnSurfaceVariant: Color { bundledColor("storeOnSurfaceVariant") }
-    static var storeOnSurfaceVariantLowest: Color { bundledColor("storeOnSurfaceVariantLowest") }
-    static var storeInverseSurface: Color { bundledColor("storeInverseSurface") }
-    static var storeOnInverseSurface: Color { bundledColor("storeOnInverseSurface") }
+    static var storeSurfaceDim: Color { bundledColor("storeSurfaceDim") } // alias L: Gray 0 / D: Gray 80
+    static var storeSurfaceBright: Color { bundledColor("storeSurfaceBright") } // alias L: White / D: Gray 90
+    static var storeSurface: Color { bundledColor("storeSurface") } // alias L: White / D: Gray 100
+    static var storeSurfaceContainerHighest: Color { bundledColor("storeSurfaceContainerHighest") } // alias L: Gray 30 / D: Gray 100
+    static var storeOnSurface: Color { bundledColor("storeOnSurface") } // alias L: Black / D: White
+    static var storeOnSurfaceVariant: Color { bundledColor("storeOnSurfaceVariant") } // alias L: Gray 80 / D: raw
+    static var storeOnSurfaceVariantLowest: Color { bundledColor("storeOnSurfaceVariantLowest") } // alias L: Gray 60 / D: Gray 20
+    static var storeInverseSurface: Color { bundledColor("storeInverseSurface") } // alias L: Black / D: White
+    static var storeOnInverseSurface: Color { bundledColor("storeOnInverseSurface") } // alias L: White / D: Black
 
     // MARK: - Overlay
     static var storeOverlayOpacity20: Color { bundledColor("storeOverlayOpacity20") }
     static var storeOverlayOpacity50: Color { bundledColor("storeOverlayOpacity50") }
 
-    // MARK: - Palette
-    static var storePaletteWooBlue20: Color { bundledColor("storePaletteWooBlue20") }
-    static var storePaletteWooBlue40: Color { bundledColor("storePaletteWooBlue40") }
-    static var storePaletteWooBlue60: Color { bundledColor("storePaletteWooBlue60") }
-    static var storePaletteWooGreen20: Color { bundledColor("storePaletteWooGreen20") }
-    static var storePaletteWooGreen40: Color { bundledColor("storePaletteWooGreen40") }
-    static var storePaletteWooGreen60: Color { bundledColor("storePaletteWooGreen60") }
-    static var storePaletteWooOrange20: Color { bundledColor("storePaletteWooOrange20") }
-    static var storePaletteWooOrange40: Color { bundledColor("storePaletteWooOrange40") }
-    static var storePaletteWooOrange60: Color { bundledColor("storePaletteWooOrange60") }
-    static var storePaletteWooPink20: Color { bundledColor("storePaletteWooPink20") }
-    static var storePaletteWooPink40: Color { bundledColor("storePaletteWooPink40") }
-    static var storePaletteWooPink60: Color { bundledColor("storePaletteWooPink60") }
-    static var storePaletteWooPurple0: Color { bundledColor("storePaletteWooPurple0") }
-    static var storePaletteWooPurple5: Color { bundledColor("storePaletteWooPurple5") }
-    static var storePaletteWooPurple10: Color { bundledColor("storePaletteWooPurple10") }
-    static var storePaletteWooPurple20: Color { bundledColor("storePaletteWooPurple20") }
-    static var storePaletteWooPurple30: Color { bundledColor("storePaletteWooPurple30") }
-    static var storePaletteWooPurple40: Color { bundledColor("storePaletteWooPurple40") }
-    static var storePaletteWooPurple50: Color { bundledColor("storePaletteWooPurple50") }
-    static var storePaletteWooPurple60: Color { bundledColor("storePaletteWooPurple60") }
-    static var storePaletteWooPurple70: Color { bundledColor("storePaletteWooPurple70") }
-    static var storePaletteWooPurple80: Color { bundledColor("storePaletteWooPurple80") }
-    static var storePaletteWooPurple90: Color { bundledColor("storePaletteWooPurple90") }
-    static var storePaletteWooPurple100: Color { bundledColor("storePaletteWooPurple100") }
-    static var storePaletteWooSandstone5: Color { bundledColor("storePaletteWooSandstone5") }
-    static var storePaletteWooSandstone10: Color { bundledColor("storePaletteWooSandstone10") }
-    static var storePaletteWooSandstone20: Color { bundledColor("storePaletteWooSandstone20") }
-    static var storePaletteWooSandstone40: Color { bundledColor("storePaletteWooSandstone40") }
-    static var storePaletteWooSandstone60: Color { bundledColor("storePaletteWooSandstone60") }
+    // MARK: - State Layers
+    static var storeStateLayerOnSurfaceOpacity08: Color { bundledColor("storeStateLayerOnSurfaceOpacity08") }
+    static var storeStateLayerOnSurfaceOpacity10: Color { bundledColor("storeStateLayerOnSurfaceOpacity10") }
+    static var storeStateLayerOnSurfaceOpacity16: Color { bundledColor("storeStateLayerOnSurfaceOpacity16") }
+    static var storeStateLayerOnSurfaceOpacity24: Color { bundledColor("storeStateLayerOnSurfaceOpacity24") }
+
+    // MARK: - Tint Layers
+    static var storeTintLayerPrimaryContainerOpacity08: Color { bundledColor("storeTintLayerPrimaryContainerOpacity08") }
+    static var storeTintLayerPrimaryContainerOpacity10: Color { bundledColor("storeTintLayerPrimaryContainerOpacity10") }
+    static var storeTintLayerPrimaryContainerOpacity16: Color { bundledColor("storeTintLayerPrimaryContainerOpacity16") }
+    static var storeTintLayerPrimaryContainerOpacity24: Color { bundledColor("storeTintLayerPrimaryContainerOpacity24") }
+
+    // MARK: - Palette (primitives)
+    static var storePaletteWhite: Color { bundledColor("storePaletteWhite") }
+    static var storePaletteBlack: Color { bundledColor("storePaletteBlack") }
+    static var storePaletteBlue20: Color { bundledColor("storePaletteBlue20") }
+    static var storePaletteBlue40: Color { bundledColor("storePaletteBlue40") }
+    static var storePaletteBlue60: Color { bundledColor("storePaletteBlue60") }
+    static var storePaletteGreen20: Color { bundledColor("storePaletteGreen20") }
+    static var storePaletteGreen40: Color { bundledColor("storePaletteGreen40") }
+    static var storePaletteGreen60: Color { bundledColor("storePaletteGreen60") }
+    static var storePaletteOrange20: Color { bundledColor("storePaletteOrange20") }
+    static var storePaletteOrange40: Color { bundledColor("storePaletteOrange40") }
+    static var storePaletteOrange60: Color { bundledColor("storePaletteOrange60") }
+    static var storePalettePink20: Color { bundledColor("storePalettePink20") }
+    static var storePalettePink40: Color { bundledColor("storePalettePink40") }
+    static var storePalettePink60: Color { bundledColor("storePalettePink60") }
+    static var storePalettePurple0: Color { bundledColor("storePalettePurple0") }
+    static var storePalettePurple5: Color { bundledColor("storePalettePurple5") }
+    static var storePalettePurple10: Color { bundledColor("storePalettePurple10") }
+    static var storePalettePurple20: Color { bundledColor("storePalettePurple20") }
+    static var storePalettePurple30: Color { bundledColor("storePalettePurple30") }
+    static var storePalettePurple40: Color { bundledColor("storePalettePurple40") }
+    static var storePalettePurple50: Color { bundledColor("storePalettePurple50") }
+    static var storePalettePurple60: Color { bundledColor("storePalettePurple60") }
+    static var storePalettePurple70: Color { bundledColor("storePalettePurple70") }
+    static var storePalettePurple80: Color { bundledColor("storePalettePurple80") }
+    static var storePalettePurple90: Color { bundledColor("storePalettePurple90") }
+    static var storePalettePurple100: Color { bundledColor("storePalettePurple100") }
+    static var storePaletteSandstone5: Color { bundledColor("storePaletteSandstone5") }
+    static var storePaletteSandstone10: Color { bundledColor("storePaletteSandstone10") }
+    static var storePaletteSandstone20: Color { bundledColor("storePaletteSandstone20") }
+    static var storePaletteSandstone40: Color { bundledColor("storePaletteSandstone40") }
+    static var storePaletteSandstone60: Color { bundledColor("storePaletteSandstone60") }
     static var storePaletteGray0: Color { bundledColor("storePaletteGray0") }
     static var storePaletteGray5: Color { bundledColor("storePaletteGray5") }
     static var storePaletteGray10: Color { bundledColor("storePaletteGray10") }

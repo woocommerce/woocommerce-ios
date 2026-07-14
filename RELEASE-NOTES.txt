@@ -3,7 +3,7 @@
 
 25.3
 -----
-- [Internal] POS: integrate the WooCommerce v4 refunds API behind the posRefundsV4 flag (dev/alpha builds only) — server-calculated refund preview and simplified creation, with transparent v3 fallback on stores without the v4 endpoints. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
+- [Internal] POS: integrate the WooCommerce v4 refunds API behind the posRefundsV4 flag (dev/alpha builds only) — server-calculated refund preview and simplified creation, with transparent v3 fallback on stores without the v4 endpoints. [https://github.com/woocommerce/woocommerce-ios/pull/17541]
 
 
 25.2

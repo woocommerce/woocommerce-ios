@@ -3,7 +3,7 @@
         "id": 3266,
         "date_created": "2026-06-26T08:20:53",
         "amount": "96.00",
-        "reason": "Simplified refund",
+        "reason": "V4 refund",
         "refunded_payment": true,
         "line_items": [
             {

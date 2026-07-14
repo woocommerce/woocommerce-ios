@@ -152,7 +152,7 @@ public final class RefundsRemote: Remote {
         return try await enqueue(request, mapper: RefundPreviewMapper())
     }
 
-    /// Creates a refund via the v4 simplified endpoint `POST /wc/v4/refunds` (WC 10.9.0+ behind the server
+    /// Creates a refund via the v4 endpoint `POST /wc/v4/refunds` (WC 10.9.0+ behind the server
     /// `rest-api-v4` flag). Sends only *what* to refund — no client-calculated `amount`; the server owns the math.
     /// On stores where the route is not registered the request fails with `DotcomError.noRestRoute`.
     ///
@@ -165,24 +165,24 @@ public final class RefundsRemote: Remote {
     ///       v4 defaults it to `false`, unlike v3's `restock_items`.
     ///     - lineItems: What to refund; the server computes all monetary values.
     ///
-    public func createSimplifiedRefund(for siteID: Int64,
-                                       orderID: Int64,
-                                       reason: String,
-                                       automaticRefund: Bool,
-                                       restockItems: Bool,
-                                       lineItems: [RefundV4LineItem]) async throws -> Refund {
-        let body = SimplifiedRefundBody(orderID: orderID,
-                                        reason: reason,
-                                        apiRefund: String(automaticRefund),
-                                        apiRestock: String(restockItems),
-                                        lineItems: lineItems)
+    public func createRefundV4(for siteID: Int64,
+                               orderID: Int64,
+                               reason: String,
+                               automaticRefund: Bool,
+                               restockItems: Bool,
+                               lineItems: [RefundV4LineItem]) async throws -> Refund {
+        let body = RefundV4Body(orderID: orderID,
+                                reason: reason,
+                                apiRefund: String(automaticRefund),
+                                apiRestock: String(restockItems),
+                                lineItems: lineItems)
         let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
                                      siteID: siteID,
                                      path: Path.refunds,
                                      parameters: try parameters(from: body),
                                      availableAsRESTRequest: true)
-        return try await enqueue(request, mapper: SimplifiedRefundMapper(siteID: siteID, orderID: orderID))
+        return try await enqueue(request, mapper: RefundV4Mapper(siteID: siteID, orderID: orderID))
     }
 
     /// Serializes an encodable request body into the parameter dictionary `JetpackRequest` expects.
@@ -205,7 +205,7 @@ private struct PreviewRefundBody: Encodable {
     }
 }
 
-private struct SimplifiedRefundBody: Encodable {
+private struct RefundV4Body: Encodable {
     let orderID: Int64
     let reason: String
     let apiRefund: String

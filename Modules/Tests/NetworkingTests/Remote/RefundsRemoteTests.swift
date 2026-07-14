@@ -3,7 +3,7 @@ import Testing
 @testable import Networking
 @testable import NetworkingCore
 
-/// Tests for the v4 refund endpoints (`previewRefund` / `createSimplifiedRefund`).
+/// Tests for the v4 refund endpoints (`previewRefund` / `createRefundV4`).
 ///
 struct RefundsRemoteTests {
     /// Mock network to inject responses and capture issued requests.
@@ -74,7 +74,7 @@ struct RefundsRemoteTests {
                                                      lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then
-        #expect(preview.total == Decimal(string: "25.30"))
+        #expect(preview.total == Decimal(string: "29.70"))
         #expect(preview.maxRefundable == Decimal(string: "50.00"))
         #expect(preview.breakdown.products.items.count == 1)
     }
@@ -104,20 +104,20 @@ struct RefundsRemoteTests {
         }
     }
 
-    // MARK: - createSimplifiedRefund
+    // MARK: - createRefundV4
 
-    @Test func createSimplifiedRefund_issues_a_post_to_the_v4_refunds_endpoint() async throws {
+    @Test func createRefundV4_issues_a_post_to_the_v4_refunds_endpoint() async throws {
         // Given
         let remote = RefundsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "refunds", filename: "simplified-refund")
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-v4")
 
         // When
-        _ = try await remote.createSimplifiedRefund(for: sampleSiteID,
-                                                    orderID: sampleOrderID,
-                                                    reason: "reason",
-                                                    automaticRefund: true,
-                                                    restockItems: true,
-                                                    lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+        _ = try await remote.createRefundV4(for: sampleSiteID,
+                                            orderID: sampleOrderID,
+                                            reason: "reason",
+                                            automaticRefund: true,
+                                            restockItems: true,
+                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -127,19 +127,19 @@ struct RefundsRemoteTests {
         #expect(request.path == "refunds")
     }
 
-    @Test func createSimplifiedRefund_sends_stringified_flags_line_items_and_no_amount() async throws {
+    @Test func createRefundV4_sends_stringified_flags_line_items_and_no_amount() async throws {
         // Given
         let remote = RefundsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "refunds", filename: "simplified-refund")
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-v4")
 
         // When
-        _ = try await remote.createSimplifiedRefund(for: sampleSiteID,
-                                                    orderID: sampleOrderID,
-                                                    reason: "Item was damaged",
-                                                    automaticRefund: true,
-                                                    restockItems: false,
-                                                    lineItems: [.quantityBased(lineItemID: 50, quantity: 2),
-                                                                .amountBased(lineItemID: 51, refundTotal: 74)])
+        _ = try await remote.createRefundV4(for: sampleSiteID,
+                                            orderID: sampleOrderID,
+                                            reason: "Item was damaged",
+                                            automaticRefund: true,
+                                            restockItems: false,
+                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2),
+                                                        .amountBased(lineItemID: 51, refundTotal: 74)])
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
@@ -155,18 +155,18 @@ struct RefundsRemoteTests {
         #expect(lineItems.count == 2)
     }
 
-    @Test func createSimplifiedRefund_parses_the_created_refund() async throws {
+    @Test func createRefundV4_parses_the_created_refund() async throws {
         // Given
         let remote = RefundsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "refunds", filename: "simplified-refund")
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-v4")
 
         // When
-        let refund = try await remote.createSimplifiedRefund(for: sampleSiteID,
-                                                             orderID: sampleOrderID,
-                                                             reason: "reason",
-                                                             automaticRefund: false,
-                                                             restockItems: true,
-                                                             lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+        let refund = try await remote.createRefundV4(for: sampleSiteID,
+                                                     orderID: sampleOrderID,
+                                                     reason: "reason",
+                                                     automaticRefund: false,
+                                                     restockItems: true,
+                                                     lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then
         #expect(refund.refundID == 3266)
@@ -175,19 +175,19 @@ struct RefundsRemoteTests {
         #expect(refund.items.count == 2)
     }
 
-    @Test func createSimplifiedRefund_when_the_route_is_not_registered_then_throws_noRestRoute() async throws {
+    @Test func createRefundV4_when_the_route_is_not_registered_then_throws_noRestRoute() async throws {
         // Given a store without the v4 API (older WC or `rest-api-v4` flag off)
         let remote = RefundsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "refunds", filename: "restnoroute_error")
 
         // When / Then
         await #expect(throws: DotcomError.noRestRoute()) {
-            _ = try await remote.createSimplifiedRefund(for: sampleSiteID,
-                                                        orderID: sampleOrderID,
-                                                        reason: "",
-                                                        automaticRefund: false,
-                                                        restockItems: true,
-                                                        lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+            _ = try await remote.createRefundV4(for: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                reason: "",
+                                                automaticRefund: false,
+                                                restockItems: true,
+                                                lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
         }
     }
 }

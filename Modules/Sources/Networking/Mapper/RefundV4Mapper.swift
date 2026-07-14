@@ -1,14 +1,14 @@
 import Foundation
 
 
-/// Mapper: v4 `POST refunds` (simplified create) response → existing `Refund` model.
+/// Mapper: v4 `POST refunds` response → existing `Refund` model.
 ///
 /// The v4 response cannot be decoded with `Refund`'s v3 decoder: it merges products, fees and
 /// shipping into a single `line_items` array with no type discriminator, and returns positive
 /// magnitudes (v3 stores them negative). Every line is mapped into `items`
 /// with negated values, and `shippingLines`/`feeLines` are left empty.
 ///
-struct SimplifiedRefundMapper: Mapper {
+struct RefundV4Mapper: Mapper {
 
     /// Site Identifier associated to the refund that will be parsed.
     /// Injected because it is not returned by the endpoint.
@@ -26,18 +26,18 @@ struct SimplifiedRefundMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
-        let simplified: SimplifiedRefundResponse
+        let refundV4: RefundV4Response
         if hasDataEnvelope(in: response) {
-            simplified = try decoder.decode(SimplifiedRefundEnvelope.self, from: response).refund
+            refundV4 = try decoder.decode(RefundV4Envelope.self, from: response).refund
         } else {
-            simplified = try decoder.decode(SimplifiedRefundResponse.self, from: response)
+            refundV4 = try decoder.decode(RefundV4Response.self, from: response)
         }
-        return refund(from: simplified)
+        return refund(from: refundV4)
     }
 }
 
-private extension SimplifiedRefundMapper {
-    func refund(from response: SimplifiedRefundResponse) -> Refund {
+private extension RefundV4Mapper {
+    func refund(from response: RefundV4Response) -> Refund {
         Refund(refundID: response.id,
                orderID: orderID,
                siteID: siteID,
@@ -53,7 +53,7 @@ private extension SimplifiedRefundMapper {
     }
 
     /// Maps one merged v4 line into an `OrderItemRefund`, negating the magnitudes per the v3 storage contract.
-    func item(from line: SimplifiedRefundResponse.LineItem) -> OrderItemRefund {
+    func item(from line: RefundV4Response.LineItem) -> OrderItemRefund {
         let subtotal = Decimal(string: line.refundTotal) ?? .zero
         let totalTax = line.refundTax.reduce(Decimal.zero) { sum, tax in
             sum + (Decimal(string: tax.refundTotal) ?? .zero)
@@ -76,12 +76,12 @@ private extension SimplifiedRefundMapper {
 }
 
 
-/// v4 simplified create response. Line items merge products/fees/shipping with no type marker.
+/// v4 create response. Line items merge products/fees/shipping with no type marker.
 ///
 /// WooCommerce core's v4 refund schema does not mark these response fields as nullable, and the
 /// response builder emits them from concrete refund values. The fields are required here so mapping
 /// fails loudly if the API contract changes or returns a malformed create response.
-private struct SimplifiedRefundResponse: Decodable {
+private struct RefundV4Response: Decodable {
     let id: Int64
     let dateCreated: Date
     let amount: String
@@ -136,10 +136,10 @@ private struct SimplifiedRefundResponse: Decodable {
 }
 
 
-/// SimplifiedRefundEnvelope Disposable Entity
+/// RefundV4Envelope Disposable Entity
 ///
-private struct SimplifiedRefundEnvelope: Decodable {
-    let refund: SimplifiedRefundResponse
+private struct RefundV4Envelope: Decodable {
+    let refund: RefundV4Response
 
     private enum CodingKeys: String, CodingKey {
         case refund = "data"

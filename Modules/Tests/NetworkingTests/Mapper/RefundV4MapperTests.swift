@@ -3,20 +3,20 @@ import Testing
 @testable import Networking
 @testable import NetworkingCore
 
-/// SimplifiedRefundMapper Unit Tests
+/// RefundV4Mapper Unit Tests
 ///
-struct SimplifiedRefundMapperTests {
+struct RefundV4MapperTests {
 
     private let sampleSiteID: Int64 = 1234
     private let sampleOrderID: Int64 = 560
 
-    private var mapper: SimplifiedRefundMapper {
-        SimplifiedRefundMapper(siteID: sampleSiteID, orderID: sampleOrderID)
+    private var mapper: RefundV4Mapper {
+        RefundV4Mapper(siteID: sampleSiteID, orderID: sampleOrderID)
     }
 
     @Test func map_injects_site_and_order_identifiers_and_parses_top_level_fields() throws {
         // Given
-        let response = try #require(Loader.contentsOf("simplified-refund"))
+        let response = try #require(Loader.contentsOf("refund-v4"))
 
         // When
         let refund = try mapper.map(response: response)
@@ -26,14 +26,14 @@ struct SimplifiedRefundMapperTests {
         #expect(refund.siteID == sampleSiteID)
         #expect(refund.orderID == sampleOrderID)
         #expect(refund.amount == "96.00")
-        #expect(refund.reason == "Simplified refund")
+        #expect(refund.reason == "V4 refund")
         #expect(refund.isAutomated == true)
         #expect(refund.dateCreated == DateFormatter.Defaults.dateTimeFormatter.date(from: "2026-06-26T08:20:53"))
     }
 
     @Test func map_negates_line_values_per_the_v3_storage_contract() throws {
         // Given a v4 response with positive magnitudes (quantity 2, refund_total 20.00, tax 2.00)
-        let response = try #require(Loader.contentsOf("simplified-refund"))
+        let response = try #require(Loader.contentsOf("refund-v4"))
 
         // When
         let refund = try mapper.map(response: response)
@@ -54,7 +54,7 @@ struct SimplifiedRefundMapperTests {
 
     @Test func map_when_refund_tax_is_empty_then_tax_is_zero() throws {
         // Given the second line (refund_total 74.00, no quantity, empty refund_tax)
-        let response = try #require(Loader.contentsOf("simplified-refund"))
+        let response = try #require(Loader.contentsOf("refund-v4"))
 
         // When
         let refund = try mapper.map(response: response)
@@ -72,7 +72,7 @@ struct SimplifiedRefundMapperTests {
 
     @Test func map_puts_all_merged_lines_into_items_and_leaves_typed_lines_empty() throws {
         // Given v4 merges products/fees/shipping into `line_items` with no type discriminator
-        let response = try #require(Loader.contentsOf("simplified-refund"))
+        let response = try #require(Loader.contentsOf("refund-v4"))
 
         // When
         let refund = try mapper.map(response: response)

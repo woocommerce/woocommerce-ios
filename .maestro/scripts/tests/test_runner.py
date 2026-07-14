@@ -20,6 +20,11 @@ class RunnerTests(unittest.TestCase):
         values = {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": "do-not-print"}
         self.assertEqual("failure: <redacted>", RUNNER.redact("failure: do-not-print", values))
 
+    def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
+        self.assertEqual("PASS", RUNNER.flow_status([0]))
+        self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))
+        self.assertEqual("FAIL", RUNNER.flow_status([1, 1]))
+
     def test_profile_contract(self) -> None:
         self.assertEqual("iphone", RUNNER.PROFILES["core"][3])
         self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][3])

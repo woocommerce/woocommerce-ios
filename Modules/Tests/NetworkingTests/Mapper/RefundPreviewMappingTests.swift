@@ -3,16 +3,18 @@ import Testing
 @testable import Networking
 @testable import NetworkingCore
 
-/// RefundPreviewMapper Unit Tests
+/// RefundPreview mapping tests.
 ///
-struct RefundPreviewMapperTests {
+struct RefundPreviewMappingTests {
+
+    private let mapper = SingleItemMapper<RefundPreview>(siteID: 1234)
 
     @Test func map_parses_all_totals_and_breakdown_sections() throws {
         // Given
         let response = try #require(Loader.contentsOf("refund-preview"))
 
         // When
-        let preview = try RefundPreviewMapper().map(response: response)
+        let preview = try mapper.map(response: response)
 
         // Then
         #expect(preview.subtotal == Decimal(string: "27.00"))
@@ -54,7 +56,7 @@ struct RefundPreviewMapperTests {
         let response = try #require(Loader.contentsOf("refund-preview"))
 
         // When
-        let preview = try RefundPreviewMapper().map(response: response)
+        let preview = try mapper.map(response: response)
 
         // Then
         let shippingItem = try #require(preview.breakdown.shipping.items.first)
@@ -68,7 +70,7 @@ struct RefundPreviewMapperTests {
         let response = try #require(Loader.contentsOf("refund-preview-nulls"))
 
         // When
-        let preview = try RefundPreviewMapper().map(response: response)
+        let preview = try mapper.map(response: response)
 
         // Then
         #expect(preview.breakdown.fees.items.isEmpty)
@@ -82,7 +84,7 @@ struct RefundPreviewMapperTests {
         let response = try #require(Loader.contentsOf("refund-preview-nulls"))
 
         // When
-        let preview = try RefundPreviewMapper().map(response: response)
+        let preview = try mapper.map(response: response)
 
         // Then
         #expect(preview.subtotal == .zero)

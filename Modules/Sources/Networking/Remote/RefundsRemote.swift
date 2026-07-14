@@ -149,7 +149,7 @@ public final class RefundsRemote: Remote {
                                      path: Path.refundsPreview,
                                      parameters: try parameters(from: body),
                                      availableAsRESTRequest: true)
-        return try await enqueue(request, mapper: RefundPreviewMapper())
+        return try await enqueue(request, mapper: SingleItemMapper<RefundPreview>(siteID: siteID))
     }
 
     /// Creates a refund via the v4 endpoint `POST /wc/v4/refunds` (WC 10.9.0+ behind the server

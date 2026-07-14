@@ -23,10 +23,16 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private let refundMapping: POSRefundSubmissionMapping
     private let analytics: Analytics
     private let refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
+    private let v4RefundPreviewUseCase: POSV4RefundPreviewUseCase
 
     private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
     private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
     private var preparedContexts: [Int64: POSRefundSubmissionMapping.PreparedRefundContext] = [:]
+    /// Server-calculated refund total per order, captured when review preparation got a v4 preview.
+    /// Its presence routes the matching submission through the simplified v4 create, and it is the
+    /// amount the in-person (card reader) refund charges — so the reader always refunds exactly
+    /// what the review step displayed and what the server will record.
+    private var serverPreviewTotals: [Int64: Decimal] = [:]
     private var submissionUseCase: RefundSubmissionUseCase<CardPresentPaymentBluetoothReaderConnectionAlertsProvider, POSRefundCardPresentPaymentAlertsPresenter>?
     private var onboardingSubscription: AnyCancellable?
 
@@ -35,7 +41,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer()) {
+         refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         v4RefundPreviewUseCase: POSV4RefundPreviewUseCase? = nil) {
         self.orderService = orderService
         self.stores = stores
         self.storageManager = storageManager
@@ -45,6 +52,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         self.refundMapping = POSRefundSubmissionMapping(currencyFormatter: currencyFormatter)
         self.analytics = analytics
         self.refundOptionsDeterminer = refundOptionsDeterminer
+        self.v4RefundPreviewUseCase = v4RefundPreviewUseCase ?? POSV4RefundPreviewUseCase(stores: stores)
     }
 
     func preloadRefund(for order: POSOrder) async {
@@ -91,21 +99,55 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     func prepareReviewData(for order: POSOrder,
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
-                           reason: String?) -> POSRefundReviewData? {
+                           reason: String?) async throws -> POSRefundReviewData? {
         guard let context = preparedContexts[preparation.orderID] else {
             return nil
         }
 
-        let components = refundMapping.refundComponents(from: selectedItems, context: context)
-        let values = refundMapping.refundValues(items: components.items, fees: components.fees)
-        return POSRefundReviewData(itemsCount: selectedItems.count,
-                                   formattedItemsSubtotal: currencyFormatter.formatAmount(values.subtotal, with: context.order.currency) ?? "",
-                                   formattedTax: currencyFormatter.formatAmount(values.tax, with: context.order.currency) ?? "",
-                                   formattedRefundTotal: currencyFormatter.formatAmount(values.total, with: context.order.currency) ?? "",
-                                   paymentMethodDescription: preparation.paymentMethodDescription,
-                                   customerEmail: preparation.customerEmail,
-                                   refundReason: reason,
-                                   isFullRefund: selectedItems.count == preparation.selectableItems.count)
+        let lineItems = refundMapping.refundV4LineItems(from: selectedItems, context: context)
+        switch await v4RefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
+                                                          orderID: context.order.orderID,
+                                                          lineItems: lineItems) {
+        case .serverCalculated(let preview):
+            serverPreviewTotals[preparation.orderID] = preview.total
+            return reviewData(subtotal: preview.subtotal,
+                              tax: preview.tax,
+                              total: preview.total,
+                              context: context,
+                              preparation: preparation,
+                              selectedItems: selectedItems,
+                              reason: reason)
+        case .fallbackToLocal:
+            serverPreviewTotals[preparation.orderID] = nil
+            let components = refundMapping.refundComponents(from: selectedItems, context: context)
+            let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+            return reviewData(subtotal: values.subtotal,
+                              tax: values.tax,
+                              total: values.total,
+                              context: context,
+                              preparation: preparation,
+                              selectedItems: selectedItems,
+                              reason: reason)
+        case .error:
+            throw POSRefundSubmissionError.refundPreviewFailed
+        }
+    }
+
+    private func reviewData(subtotal: Decimal,
+                            tax: Decimal,
+                            total: Decimal,
+                            context: POSRefundSubmissionMapping.PreparedRefundContext,
+                            preparation: POSRefundPreparation,
+                            selectedItems: [POSRefundSelectableItem],
+                            reason: String?) -> POSRefundReviewData {
+        POSRefundReviewData(itemsCount: selectedItems.count,
+                            formattedItemsSubtotal: currencyFormatter.formatAmount(subtotal, with: context.order.currency) ?? "",
+                            formattedTax: currencyFormatter.formatAmount(tax, with: context.order.currency) ?? "",
+                            formattedRefundTotal: currencyFormatter.formatAmount(total, with: context.order.currency) ?? "",
+                            paymentMethodDescription: preparation.paymentMethodDescription,
+                            customerEmail: preparation.customerEmail,
+                            refundReason: reason,
+                            isFullRefund: selectedItems.count == preparation.selectableItems.count)
     }
 
     func submitRefund(for order: POSOrder,
@@ -122,7 +164,12 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
 
         let components = refundMapping.refundComponents(from: selectedItems, context: context)
         let values = refundMapping.refundValues(items: components.items, fees: components.fees)
-        let amount = refundMapping.apiAmountString(for: values.total)
+        // When review preparation obtained a v4 preview for this order, submit via the simplified
+        // v4 create (no client-calculated amount) and charge the reader the server total, so the
+        // reader, the review screen, and the recorded refund all agree. Otherwise, v3 as before.
+        let serverPreviewTotal = serverPreviewTotals[preparation.orderID]
+        let v4LineItems = serverPreviewTotal != nil ? refundMapping.refundV4LineItems(from: selectedItems, context: context) : nil
+        let amount = refundMapping.apiAmountString(for: serverPreviewTotal ?? values.total)
         let refund = RefundCreationUseCase(amount: amount,
                                            reason: reason,
                                            automaticallyRefundsPayment: refundMapping.gatewaySupportsAutomaticRefunds(context: context),
@@ -151,7 +198,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             details: .init(order: context.order,
                            charge: context.charge,
                            amount: amount,
-                           paymentGatewayAccount: context.paymentGatewayAccount),
+                           paymentGatewayAccount: context.paymentGatewayAccount,
+                           v4LineItems: v4LineItems),
             rootViewController: NullViewControllerPresenting(),
             alerts: POSRefundOrderDetailsPaymentAlerts(
                 stateModel: stateModel,
@@ -204,6 +252,7 @@ private extension POSRefundSubmissionAdaptor {
         preloadedRefundSnapshots[orderID] = nil
         preloadTasks[orderID]?.task.cancel()
         preloadTasks[orderID] = nil
+        serverPreviewTotals[orderID] = nil
     }
 
     func removePreloadedRefunds(except orderID: Int64) {

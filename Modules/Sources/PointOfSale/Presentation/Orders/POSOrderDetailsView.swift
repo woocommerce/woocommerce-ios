@@ -145,6 +145,9 @@ struct POSOrderDetailsView: View {
                 }
             }
         }
+        .onChange(of: orderListModel.ordersController.refundReviewPreparationState) { _, newState in
+            handleRefundReviewPreparationChange(newState)
+        }
         .posFullScreenCover(isPresented: isRefundModalPresented) {
             if let state = refundModalState {
                 POSRefundModalContentView(
@@ -623,13 +626,25 @@ private extension POSOrderDetailsView {
         }
     }
 
+    /// Kicks off async review preparation (which may fetch a server-calculated preview); the flow
+    /// advances when `refundReviewPreparationState` becomes `.ready` (observed via `onChange`).
     func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+        orderListModel.ordersController.prepareRefundReview()
+    }
+
+    func handleRefundReviewPreparationChange(_ state: POSRefundReviewPreparationState) {
+        switch state {
+        case .ready(var reviewData):
+            reviewData.refundReason = currentRefundReason
+            refundModalState = .review(reviewData)
+            orderListModel.ordersController.resetRefundReviewPreparation()
+        case .preparationError:
             refundSelectionState = .preparationError
-            return
+            orderListModel.ordersController.resetRefundReviewPreparation()
+        case .idle, .loading, .previewError:
+            // Rendered inline by the item-selection step (loading button / inline error with retry).
+            break
         }
-        reviewData.refundReason = currentRefundReason
-        refundModalState = .review(reviewData)
     }
 
     func returnToRefundSelection() {

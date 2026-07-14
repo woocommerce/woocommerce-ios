@@ -14,6 +14,10 @@ struct POSRefundItemsSelectionView: View {
         orderListModel.ordersController.refundSelectableItems
     }
 
+    private var reviewPreparationState: POSRefundReviewPreparationState {
+        orderListModel.ordersController.refundReviewPreparationState
+    }
+
     private var selectedItems: [POSRefundSelectableItem] {
         refundSelectableItems.filter { $0.isSelected }
     }
@@ -114,11 +118,25 @@ private extension POSRefundItemsSelectionView {
     }
 
     var continueButton: some View {
-        Button(Localization.continueButton) {
-            onContinue()
+        VStack(spacing: POSSpacing.small) {
+            if reviewPreparationState == .previewError {
+                Text(Localization.previewError)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posError)
+                    .multilineTextAlignment(.center)
+
+                Button(Localization.retryButton) {
+                    onContinue()
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            }
+
+            Button(Localization.continueButton) {
+                onContinue()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
+            .disabled(!hasSelectedItems || reviewPreparationState == .loading || reviewPreparationState == .previewError)
         }
-        .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .disabled(!hasSelectedItems)
     }
 }
 
@@ -136,6 +154,16 @@ private extension POSRefundItemsSelectionView {
             "pos.refundItemsSelectionView.continueButton",
             value: "Continue",
             comment: "Button to continue with selected items for refund"
+        )
+        static let previewError = NSLocalizedString(
+            "pos.refundItemsSelectionView.previewError",
+            value: "Couldn't calculate the refund total. Please try again.",
+            comment: "Error shown on the refund item-selection step when fetching the server-calculated refund total fails"
+        )
+        static let retryButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.retryButton",
+            value: "Retry",
+            comment: "Button to retry fetching the server-calculated refund total on the refund item-selection step"
         )
 
         static let backButtonAccessibilityLabel = NSLocalizedString(

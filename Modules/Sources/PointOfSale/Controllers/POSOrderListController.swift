@@ -41,7 +41,9 @@ protocol POSOrderListControllerProtocol {
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
-    func preparePOSRefundReviewData() -> POSRefundReviewData?
+    var refundReviewPreparationState: POSRefundReviewPreparationState { get }
+    func prepareRefundReview()
+    func resetRefundReviewPreparation()
     func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
 }
@@ -56,6 +58,19 @@ enum POSOrderListSelectedOrderRefundsState {
     case loading
     case loaded(POSRefundPreparation)
     case failed(Error)
+}
+
+/// State of the refund review preparation triggered by the Continue button on the item-selection
+/// step. Preparation may call the network (server-calculated refund preview), so it is async.
+enum POSRefundReviewPreparationState: Equatable {
+    case idle
+    case loading
+    /// Review data is ready — the flow should advance to the review step.
+    case ready(POSRefundReviewData)
+    /// The refund preview failed for a recoverable reason — stay on the selection step and offer a retry.
+    case previewError
+    /// Refund preparation data is missing — the flow can't continue from the selection step.
+    case preparationError
 }
 
 enum POSOrderDetailsItemsState: Equatable {
@@ -128,6 +143,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedRefundSelection = false
+    private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
+    private var refundReviewPreparationTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
@@ -420,6 +437,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
         refundSelectableItems = preparation.selectableItems
         hasModifiedRefundSelection = false
+        resetRefundReviewPreparation()
 
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
@@ -430,12 +448,14 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         guard refundSelectableItems.indices.contains(index) else { return }
         refundSelectableItems[index].isSelected.toggle()
         hasModifiedRefundSelection = true
+        resetRefundReviewPreparation()
     }
 
     @MainActor
     func clearRefundSelection() {
         refundSelectableItems = []
         hasModifiedRefundSelection = false
+        resetRefundReviewPreparation()
     }
 
     @MainActor
@@ -447,24 +467,59 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             refundSelectableItems[index].isSelected = newSelectionState
         }
         hasModifiedRefundSelection = true
+        resetRefundReviewPreparation()
     }
 
     // MARK: - Refund Review Data Preparation
 
+    /// Starts preparing the refund review data for the current selection. Preparation may call the
+    /// network (server-calculated refund preview), so progress is exposed via
+    /// `refundReviewPreparationState`. Starting a new preparation cancels any in-flight one, and a
+    /// result is dropped when the selection changed while it was in flight (the toggle handlers
+    /// reset the state, so a stale result never advances the flow or leaves a hung loading button).
     @MainActor
-    func preparePOSRefundReviewData() -> POSRefundReviewData? {
-        guard let order = selectedOrder else { return nil }
-        guard case .loaded(let preparation) = selectedOrderRefundsState else { return nil }
+    func prepareRefundReview() {
+        refundReviewPreparationTask?.cancel()
+
+        guard let order = selectedOrder,
+              case .loaded(let preparation) = selectedOrderRefundsState else {
+            refundReviewPreparationState = .preparationError
+            return
+        }
 
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else { return nil }
+        guard !selectedItems.isEmpty else {
+            refundReviewPreparationState = .preparationError
+            return
+        }
 
-        return refundSubmissionProcessor.prepareReviewData(
-            for: order,
-            preparation: preparation,
-            selectedItems: selectedItems,
-            reason: nil
-        )
+        let selectionSnapshot = refundSelectableItems
+        refundReviewPreparationState = .loading
+        refundReviewPreparationTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let reviewData = try await refundSubmissionProcessor.prepareReviewData(
+                    for: order,
+                    preparation: preparation,
+                    selectedItems: selectedItems,
+                    reason: nil
+                )
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return }
+                refundReviewPreparationState = reviewData.map { .ready($0) } ?? .preparationError
+            } catch {
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return }
+                refundReviewPreparationState = .previewError
+            }
+        }
+    }
+
+    /// Resets the review preparation, cancelling any in-flight work. Called when the selection
+    /// changes (a pending result would be stale) and when the flow consumed a `.ready` result.
+    @MainActor
+    func resetRefundReviewPreparation() {
+        refundReviewPreparationTask?.cancel()
+        refundReviewPreparationTask = nil
+        refundReviewPreparationState = .idle
     }
 
     // MARK: - Refund Processing

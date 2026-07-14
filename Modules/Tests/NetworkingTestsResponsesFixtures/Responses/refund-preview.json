@@ -33,11 +33,26 @@
                 "tax": "0.30",
                 "total": "3.30"
             },
-            "fees": null
+            "fees": {
+                "items": [
+                    {
+                        "id": 3,
+                        "name": "Custom amount",
+                        "quantity": null,
+                        "subtotal": "4.00",
+                        "tax": "0.40",
+                        "total": "4.40",
+                        "product_id": null
+                    }
+                ],
+                "subtotal": "4.00",
+                "tax": "0.40",
+                "total": "4.40"
+            }
         },
-        "subtotal": "23.00",
-        "tax": "2.30",
-        "total": "25.30",
+        "subtotal": "27.00",
+        "tax": "2.70",
+        "total": "29.70",
         "max_refundable": "50.00"
     }
 }

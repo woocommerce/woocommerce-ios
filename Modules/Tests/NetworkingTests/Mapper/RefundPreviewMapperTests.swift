@@ -15,9 +15,9 @@ struct RefundPreviewMapperTests {
         let preview = try RefundPreviewMapper().map(response: response)
 
         // Then
-        #expect(preview.subtotal == Decimal(string: "23.00"))
-        #expect(preview.tax == Decimal(string: "2.30"))
-        #expect(preview.total == Decimal(string: "25.30"))
+        #expect(preview.subtotal == Decimal(string: "27.00"))
+        #expect(preview.tax == Decimal(string: "2.70"))
+        #expect(preview.total == Decimal(string: "29.70"))
         #expect(preview.maxRefundable == Decimal(string: "50.00"))
 
         let products = preview.breakdown.products
@@ -33,6 +33,20 @@ struct RefundPreviewMapperTests {
         #expect(productItem.tax == Decimal(string: "2.00"))
         #expect(productItem.total == Decimal(string: "22.00"))
         #expect(productItem.productID == 10)
+
+        let fees = preview.breakdown.fees
+        #expect(fees.subtotal == Decimal(string: "4.00"))
+        #expect(fees.tax == Decimal(string: "0.40"))
+        #expect(fees.total == Decimal(string: "4.40"))
+
+        let feeItem = try #require(fees.items.first)
+        #expect(feeItem.id == 3)
+        #expect(feeItem.name == "Custom amount")
+        #expect(feeItem.quantity == nil)
+        #expect(feeItem.subtotal == Decimal(string: "4.00"))
+        #expect(feeItem.tax == Decimal(string: "0.40"))
+        #expect(feeItem.total == Decimal(string: "4.40"))
+        #expect(feeItem.productID == nil)
     }
 
     @Test func map_when_item_fields_are_null_then_maps_to_nil() throws {
@@ -50,8 +64,8 @@ struct RefundPreviewMapperTests {
     }
 
     @Test func map_when_a_section_is_null_then_maps_to_an_empty_section() throws {
-        // Given a response whose `fees` section is null
-        let response = try #require(Loader.contentsOf("refund-preview"))
+        // Given a response with null breakdown sections
+        let response = try #require(Loader.contentsOf("refund-preview-nulls"))
 
         // When
         let preview = try RefundPreviewMapper().map(response: response)

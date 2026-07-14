@@ -1,6 +1,10 @@
 {
     "data": {
-        "breakdown": null,
+        "breakdown": {
+            "products": null,
+            "shipping": null,
+            "fees": null
+        },
         "subtotal": null,
         "tax": null,
         "total": null,

@@ -189,46 +189,52 @@ struct ProductFormRowActionHandlerTests {
     // MARK: - Primary field rows (every actionable case)
 
     @Test func primary_description_respects_editability_and_logs_before_navigating() {
-        // Editable
+        // Given
         let (editableHandler, editableEnv) = makeHandler()
+        let (blockedHandler, blockedEnv) = makeHandler()
+
+        // When
         editableHandler.handlePrimaryFieldRowSelection(.description(description: "x", isEditable: true, isDescriptionAIEnabled: false),
                                                        shouldShowBlazeIntroView: false)
-        #expect(editableEnv.recorder.events == ["log:description", "editProductDescription"])
-
-        // Not editable
-        let (blockedHandler, blockedEnv) = makeHandler()
         blockedHandler.handlePrimaryFieldRowSelection(.description(description: "x", isEditable: false, isDescriptionAIEnabled: false),
                                                       shouldShowBlazeIntroView: false)
+
+        // Then — editable logs then navigates; non-editable is a no-op.
+        #expect(editableEnv.recorder.events == ["log:description", "editProductDescription"])
         #expect(blockedEnv.recorder.events.isEmpty)
         #expect(blockedEnv.analyticsProvider.receivedEvents.isEmpty)
     }
 
     @Test func primary_images_opens_privacy_settings_only_on_private_store() {
-        // Private store — images row opens privacy settings.
-        let (privateHandler, privateEnv) = makeHandler()
-        privateHandler.handlePrimaryFieldRowSelection(
+        // Given
+        let (privateStoreHandler, privateStoreEnv) = makeHandler()
+        let (publicStoreHandler, publicStoreEnv) = makeHandler()
+
+        // When
+        privateStoreHandler.handlePrimaryFieldRowSelection(
             .images(isEditable: true, isStorePublic: false, allowsMultiple: true, isVariation: false),
             shouldShowBlazeIntroView: false)
-        #expect(privateEnv.recorder.events == ["openPrivacySettings"])
-
-        // Public store — images row is not selectable.
-        let (publicHandler, publicEnv) = makeHandler()
-        publicHandler.handlePrimaryFieldRowSelection(
+        publicStoreHandler.handlePrimaryFieldRowSelection(
             .images(isEditable: true, isStorePublic: true, allowsMultiple: true, isVariation: false),
             shouldShowBlazeIntroView: false)
-        #expect(publicEnv.recorder.events.isEmpty)
+
+        // Then — a private store's images row opens privacy settings; a public store's is not selectable.
+        #expect(privateStoreEnv.recorder.events == ["openPrivacySettings"])
+        #expect(publicStoreEnv.recorder.events.isEmpty)
     }
 
     @Test func primary_promoteWithBlaze_tracks_entry_point_only_when_intro_is_not_shown() {
-        // Intro path navigates without tracking the entry-point-tapped event.
+        // Given
         let (introHandler, introEnv) = makeHandler()
+        let (directHandler, directEnv) = makeHandler()
+
+        // When
         introHandler.handlePrimaryFieldRowSelection(.promoteWithBlaze, shouldShowBlazeIntroView: true)
+        directHandler.handlePrimaryFieldRowSelection(.promoteWithBlaze, shouldShowBlazeIntroView: false)
+
+        // Then — the intro path navigates without tracking; the direct path tracks the entry-point event, then navigates.
         #expect(introEnv.recorder.events == ["displayBlaze"])
         #expect(introEnv.analyticsProvider.receivedEvents.isEmpty)
-
-        // Direct path tracks exactly the entry-point event, then navigates.
-        let (directHandler, directEnv) = makeHandler()
-        directHandler.handlePrimaryFieldRowSelection(.promoteWithBlaze, shouldShowBlazeIntroView: false)
         #expect(directEnv.recorder.events == ["displayBlaze"])
         #expect(directEnv.analyticsProvider.receivedEvents ==
                 [WooAnalyticsEvent.Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton).statName.rawValue])
@@ -358,9 +364,12 @@ private extension ProductFormRowActionHandlerTests {
         let eventLogger = SpyProductFormEventLogger(recorder: recorder)
         let analyticsProvider = MockAnalyticsProvider()
         // Isolated opt-in defaults so events are not dropped by `WooAnalytics`'s opt-in gate,
-        // regardless of the simulator's ambient analytics setting.
-        let userDefaults = UserDefaults(suiteName: "ProductFormRowActionHandlerTests-\(UUID().uuidString)")!
-        userDefaults.set(true, forKey: "userOptedInAnalytics")
+        // regardless of the simulator's ambient analytics setting. The suite name is fixed and
+        // wiped before use so runs don't accumulate persistent domains.
+        let suiteName = "ProductFormRowActionHandlerTests"
+        let userDefaults = UserDefaults(suiteName: suiteName)!
+        userDefaults.removePersistentDomain(forName: suiteName)
+        userDefaults[.userOptedInAnalytics] = true
         let handler = ProductFormRowActionHandler(analytics: WooAnalytics(analyticsProvider: analyticsProvider,
                                                                           userDefaults: userDefaults),
                                                   eventLogger: eventLogger,

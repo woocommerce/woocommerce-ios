@@ -13,7 +13,7 @@ final class ProductFormRowActionHandler {
     private let eventLogger: ProductFormEventLoggerProtocol
     private weak var navigator: ProductFormNavigating?
 
-    init(analytics: Analytics,
+    init(analytics: Analytics = ServiceLocator.analytics,
          eventLogger: ProductFormEventLoggerProtocol,
          navigator: ProductFormNavigating?) {
         self.analytics = analytics

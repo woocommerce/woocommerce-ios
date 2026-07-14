@@ -18,8 +18,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let eventLogger: ProductFormEventLoggerProtocol
 
     /// Routes interactions with the form content (rows, inline cell actions, more-details sheet) to navigation.
-    private lazy var rowActionHandler = ProductFormRowActionHandler(analytics: ServiceLocator.analytics,
-                                                                    eventLogger: eventLogger,
+    private lazy var rowActionHandler = ProductFormRowActionHandler(eventLogger: eventLogger,
                                                                     navigator: self)
 
     private var product: ProductModel {

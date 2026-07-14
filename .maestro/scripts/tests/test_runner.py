@@ -68,6 +68,17 @@ class RunnerTests(unittest.TestCase):
             self.assertIn("MAESTRO_WOO_VARIABLE_PRODUCT_NAME", required)
             self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", required)
 
+    def test_not_woo_store_requires_its_dedicated_credentials(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
+
+        required = RUNNER.required_environment([flow], seed=False)
+
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_URL", required)
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL", required)
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD", required)
+        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_EMAIL", required)
+        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_PASSWORD", required)
+
     def test_seed_explicitly_requires_consumer_keys(self) -> None:
         required = RUNNER.required_environment([], seed=True)
         self.assertIn("MAESTRO_WOO_CONSUMER_KEY", required)

@@ -1,5 +1,5 @@
 # p2: hub.customers, hub.inbox
-# Inbox is a genuine feature gate based on store eligibility.
+# Inbox eligibility is a required fixture capability for extended smoke runs.
 appId: ${APP_ID}
 name: "Hub Menu - Customers and Inbox"
 tags:
@@ -29,31 +29,23 @@ tags:
     visible:
       id: "menu-customers"
     timeout: 10000
-- scroll
-- runFlow:
-    when:
-      notVisible:
-        id: "menu-inbox"
-    commands:
-      - evalScript: ${console.log('FEATURE_SKIPPED hub.inbox reason=store_not_eligible')}
-      - takeScreenshot: hub_inbox_skipped
-- runFlow:
-    when:
-      visible:
-        id: "menu-inbox"
-    commands:
-      - evalScript: ${console.log('FEATURE_EXERCISED hub.inbox')}
-      - tapOn:
-          id: "menu-inbox"
-      - extendedWaitUntil:
-          visible: "Inbox"
-          timeout: 20000
-      - assertVisible: "Inbox"
-      - assertNotVisible:
-          id: "menu-customers"
-      - takeScreenshot: hub_inbox
-      - tapOn: "Back"
-      - extendedWaitUntil:
-          visible:
-            id: "menu-customers"
-          timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: "menu-inbox"
+    direction: DOWN
+    timeout: 15000
+    label: "Require an Inbox-eligible extended-smoke store"
+- tapOn:
+    id: "menu-inbox"
+- extendedWaitUntil:
+    visible: "Inbox"
+    timeout: 20000
+- assertVisible: "Inbox"
+- assertNotVisible:
+    id: "menu-customers"
+- takeScreenshot: hub_inbox
+- tapOn: "Back"
+- extendedWaitUntil:
+    visible:
+      id: "menu-customers"
+    timeout: 10000

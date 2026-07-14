@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.3
+-----
+
+
 25.2
 -----
 - [Internal] Remove redundant API requests from orders pull-to-refresh and the order creation product selector. [https://github.com/woocommerce/woocommerce-ios/pull/17494]
@@ -12,6 +16,8 @@
 - [Internal] Fix `push_notification_source` being logged as `wpcom` instead of `woo_driven` for Woo-driven notifications. [https://github.com/woocommerce/woocommerce-ios/pull/17463]
 - [*] Fixed non-subscription products incorrectly showing recurring subscription pricing in the product editor. [https://github.com/woocommerce/woocommerce-ios/pull/17475]
 - [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
+- [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
+- [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
 
 25.1
 -----
@@ -32,6 +38,7 @@
 - [*] Add support for Liquid Glass on iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/17337]
 - [*] Order Creation: fixed visual issues with screen layout [https://github.com/woocommerce/woocommerce-ios/pull/17346]
 - [internal] Make API request parameters Sendable [https://github.com/woocommerce/woocommerce-ios/pull/17370]
+- [*] POS: Allow disconnecting a card reader from cash payment, payment success, and email receipt screens. [https://github.com/woocommerce/woocommerce-ios/pull/17454]
 - [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
 - [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
 - [Internal] Improved site-credential login nonce retrieval by handling redirects explicitly, reducing HTTP 429 failures during login. [https://github.com/woocommerce/woocommerce-ios/pull/17376]

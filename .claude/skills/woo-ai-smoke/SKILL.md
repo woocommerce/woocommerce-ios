@@ -308,7 +308,6 @@ struct SmokeRun {
 xcodebuild -workspace WooCommerce.xcworkspace \
   -scheme WooAIAssistant \
   -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -sdk iphonesimulator \
   test -only-testing:"WooAIAssistantTests/SmokeRun" 2>&1 \
   | tee /tmp/woo-ai-smoke.log \
   | grep -E "\[smoke\||passed after|failed after|Test run with|error:"

@@ -1,0 +1,8 @@
+{
+  "error": "no_response_body",
+  "message": "Server could not read response.",
+  "data": {
+    "status": 502,
+    "raw_body": "<html>\n  Fatal error consumer_key=ck_secret Authorization: Bearer bearer-secret Cookie: session=abc\n</html>"
+  }
+}

@@ -1,5 +1,6 @@
 # p2: login.not-woo-store
-# Required fixture: a WP.com-accessible WordPress site without WooCommerce.
+# Required fixture: a WP.com-accessible WordPress site without WooCommerce,
+# with the WP.com credentials that can access it.
 appId: ${APP_ID}
 name: "Login - Not a WooCommerce store error"
 tags:
@@ -54,7 +55,7 @@ tags:
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_EMAIL}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL}
 - hideKeyboard
 - tapOn:
     id: "Get Started Email Continue Button"
@@ -67,7 +68,7 @@ tags:
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD}
 - hideKeyboard
 - tapOn:
     id: "Continue Button"

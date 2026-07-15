@@ -28,10 +28,6 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
     private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
     private var preparedContexts: [Int64: POSRefundSubmissionMapping.PreparedRefundContext] = [:]
-    /// Server-calculated refund total per order, captured when review preparation got a v4 preview.
-    /// Its presence routes the matching submission through the simplified v4 create, and it is the
-    /// amount the in-person (card reader) refund charges — so the reader always refunds exactly
-    /// what the review step displayed and what the server will record.
     private var serverPreviewTotals: [Int64: Decimal] = [:]
     private var submissionUseCase: RefundSubmissionUseCase<CardPresentPaymentBluetoothReaderConnectionAlertsProvider, POSRefundCardPresentPaymentAlertsPresenter>?
     private var onboardingSubscription: AnyCancellable?
@@ -104,10 +100,6 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             return nil
         }
 
-        // Only the latest preview may populate the stash: clear it up front, and bail before any
-        // write when this preparation was superseded (cancelled) while the request was in flight —
-        // otherwise a late response could overwrite a newer selection's total and desync the
-        // reader charge from the reviewed amount.
         serverPreviewTotals[preparation.orderID] = nil
 
         let lineItems = refundMapping.refundV4LineItems(from: selectedItems, context: context)
@@ -173,9 +165,6 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
 
         let components = refundMapping.refundComponents(from: selectedItems, context: context)
         let values = refundMapping.refundValues(items: components.items, fees: components.fees)
-        // When review preparation obtained a v4 preview for this order, submit via the simplified
-        // v4 create (no client-calculated amount) and charge the reader the server total, so the
-        // reader, the review screen, and the recorded refund all agree. Otherwise, v3 as before.
         let serverPreviewTotal = serverPreviewTotals[preparation.orderID]
         let v4LineItems = serverPreviewTotal != nil ? refundMapping.refundV4LineItems(from: selectedItems, context: context) : nil
         let amount = refundMapping.apiAmountString(for: serverPreviewTotal ?? values.total)

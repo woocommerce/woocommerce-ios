@@ -41,7 +41,6 @@ public enum POSRefundSubmissionState {
 
 public enum POSRefundSubmissionError: Error, Equatable {
     case canceledByUser
-    /// The server-calculated refund preview failed for a recoverable reason; the caller should offer a retry.
     case refundPreviewFailed
 }
 
@@ -63,10 +62,6 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation
 
-    /// Builds the data shown on the refund review step. Implementations may call the network (e.g.
-    /// a server-calculated refund preview), so this is async. Returns `nil` when refund preparation
-    /// data is missing, and throws `POSRefundSubmissionError.refundPreviewFailed` when a preview
-    /// failed for a recoverable reason (the caller should offer a retry).
     func prepareReviewData(for order: POSOrder,
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],

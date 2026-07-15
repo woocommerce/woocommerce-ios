@@ -60,16 +60,11 @@ enum POSOrderListSelectedOrderRefundsState {
     case failed(Error)
 }
 
-/// State of the refund review preparation triggered by the Continue button on the item-selection
-/// step. Preparation may call the network (server-calculated refund preview), so it is async.
 enum POSRefundReviewPreparationState: Equatable {
     case idle
     case loading
-    /// Review data is ready — the flow should advance to the review step.
     case ready(POSRefundReviewData)
-    /// The refund preview failed for a recoverable reason — stay on the selection step and offer a retry.
     case previewError
-    /// Refund preparation data is missing — the flow can't continue from the selection step.
     case preparationError
 }
 
@@ -473,11 +468,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
     // MARK: - Refund Review Data Preparation
 
-    /// Starts preparing the refund review data for the current selection. Preparation may call the
-    /// network (server-calculated refund preview), so progress is exposed via
-    /// `refundReviewPreparationState`. Starting a new preparation cancels any in-flight one, and a
-    /// result is dropped when the selection changed while it was in flight (the toggle handlers
-    /// reset the state, so a stale result never advances the flow or leaves a hung loading button).
     @MainActor
     func prepareRefundReview() {
         refundReviewPreparationTask?.cancel()
@@ -514,8 +504,6 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         }
     }
 
-    /// Resets the review preparation, cancelling any in-flight work. Called when the selection
-    /// changes (a pending result would be stale) and when the flow consumed a `.ready` result.
     @MainActor
     func resetRefundReviewPreparation() {
         refundReviewPreparationTask?.cancel()

@@ -626,8 +626,6 @@ private extension POSOrderDetailsView {
         }
     }
 
-    /// Kicks off async review preparation (which may fetch a server-calculated preview); the flow
-    /// advances when `refundReviewPreparationState` becomes `.ready` (observed via `onChange`).
     func navigateToRefundReview() {
         orderListModel.ordersController.prepareRefundReview()
     }
@@ -642,7 +640,6 @@ private extension POSOrderDetailsView {
             refundSelectionState = .preparationError
             orderListModel.ordersController.resetRefundReviewPreparation()
         case .idle, .loading, .previewError:
-            // Rendered inline by the item-selection step (loading button / inline error with retry).
             break
         }
     }

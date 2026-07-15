@@ -13,6 +13,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        MockURLProtocol.Mocks.reset()
         userDefaults = UserDefaults(suiteName: UUID().uuidString)
     }
 
@@ -599,6 +600,84 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertNotNil(result.1)
         let networkError = result.1 as? NetworkError
         XCTAssertEqual(networkError?.errorCode, "failed")
+    }
+
+    func test_duplicateProduct_direct_failure_remains_NetworkError_when_conversion_switches_to_tunnel_while_request_is_in_flight() throws {
+        // Given
+        let siteID: Int64 = 112
+        let productID: Int64 = 282
+        let path = "products/\(productID)/duplicate"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true,
+                                     shouldRetryViaJetpackOnRESTFailure: false)
+        let directRequest = try XCTUnwrap(request.asRESTRequest(with: "https://example.com")?.asURLRequest())
+        let tunnelRequest = try request.asURLRequest()
+        MockURLProtocol.Mocks.mockResponse(["error": "rest_no_route", "message": "No route found"], statusCode: 500, for: directRequest)
+        MockURLProtocol.Mocks.mockResponse(["id": 3946], statusCode: 200, for: tunnelRequest)
+        let selectedSite = CurrentValueSubject<JetpackSite?, Never>(
+            JetpackSite(siteID: siteID, siteAddress: "https://example.com", applicationPasswordAvailable: true)
+        )
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: selectedSite.eraseToAnyPublisher(),
+                                       appPasswordSupportState: Just(true).eraseToAnyPublisher(),
+                                       userDefaults: userDefaults,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = ProductsRemote(network: network)
+        let conversionSwitched = expectation(description: "Conversion changed to the Jetpack tunnel")
+        MockURLProtocol.Mocks.whenRequestIsReceived { receivedRequest in
+            guard receivedRequest.url == directRequest.url else { return }
+            selectedSite.send(nil)
+            conversionSwitched.fulfill()
+        }
+
+        // When
+        let result = waitFor { promise in
+            remote.duplicateProduct(siteID: siteID, productID: productID, completion: promise)
+        }
+        wait(for: [conversionSwitched], timeout: 1)
+
+        // Then
+        XCTAssertEqual((result.failure as? NetworkError)?.responseCode, 500)
+        XCTAssertEqual((result.failure as? NetworkError)?.errorCode, "rest_no_route")
+        let directRequests = MockURLProtocol.Mocks.requests.filter { $0.url == directRequest.url }
+        let tunnelRequests = MockURLProtocol.Mocks.requests.filter { $0.url == tunnelRequest.url }
+        XCTAssertEqual(directRequests.count, 1)
+        XCTAssertEqual(directRequests.first?.httpMethod, "POST")
+        XCTAssertTrue(directRequests.first?.httpBody?.isEmpty ?? true)
+        XCTAssertTrue(tunnelRequests.isEmpty)
+    }
+
+    func test_duplicateProduct_tunneled_no_route_response_maps_to_DotcomError() throws {
+        // Given
+        let siteID: Int64 = 113
+        let productID: Int64 = 282
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: "products/\(productID)/duplicate",
+                                     parameters: nil,
+                                     availableAsRESTRequest: true,
+                                     shouldRetryViaJetpackOnRESTFailure: false)
+        let tunnelRequest = try request.asURLRequest()
+        MockURLProtocol.Mocks.mockResponse(["error": "rest_no_route", "message": "No route found"], statusCode: 200, for: tunnelRequest)
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.duplicateProduct(siteID: siteID, productID: productID, completion: promise)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? DotcomError, DotcomError.noRestRoute())
+        XCTAssertEqual(MockURLProtocol.Mocks.requests.filter { $0.url == tunnelRequest.url }.count, 1)
     }
 
     func test_responseData_does_not_retry_when_credentials_not_wpcom() throws {

@@ -5,22 +5,55 @@ import XCTest
 extension MockURLProtocol {
     /// Stores the mocks for `URLRequest`s in memory to be used in `MockURLProtocol`.
     final class Mocks {
+        private static let lock = NSLock()
         private static var responsesByRequestURL: [String: (response: AnyCodable, statusCode: Int)] = [:]
+        private static var recordedRequests: [URLRequest] = []
+        private static var requestReceivedHandler: ((URLRequest) -> Void)?
+
+        static var requests: [URLRequest] {
+            lock.lock()
+            defer { lock.unlock() }
+            return recordedRequests
+        }
+
+        static func reset() {
+            lock.lock()
+            defer { lock.unlock() }
+            responsesByRequestURL.removeAll()
+            recordedRequests.removeAll()
+            requestReceivedHandler = nil
+        }
+
+        /// Installs a hook invoked after a request is recorded and before its mocked response is delivered.
+        static func whenRequestIsReceived(_ handler: @escaping (URLRequest) -> Void) {
+            lock.lock()
+            defer { lock.unlock() }
+            requestReceivedHandler = handler
+        }
 
         /// Mocks the response of a given request.
         static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest) {
             guard let url = request.url?.absoluteString else {
                 return
             }
+            lock.lock()
+            defer { lock.unlock() }
             responsesByRequestURL[url] = (response: response, statusCode: statusCode)
         }
 
         /// Returns the response for a request if it has been mocked.
         static func response(for request: URLRequest) -> (response: Data?, statusCode: Int)? {
-            guard let url = request.url?.absoluteString,
-                  let response = responsesByRequestURL[url] else {
+            guard let url = request.url?.absoluteString else {
                 return nil
             }
+            let result: (response: (response: AnyCodable, statusCode: Int)?, handler: ((URLRequest) -> Void)?) = {
+                lock.lock()
+                defer { lock.unlock() }
+                recordedRequests.append(request)
+                return (responsesByRequestURL[url], requestReceivedHandler)
+            }()
+            result.handler?(request)
+            guard let response = result.response else { return nil }
 
             do {
                 let encoder = JSONEncoder()

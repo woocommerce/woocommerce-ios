@@ -140,6 +140,124 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - Duplicate Product
+
+    func test_duplicateProduct_maps_only_the_product_ID_from_the_raw_core_response() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/duplicate", filename: "product-duplicate")
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(try result?.get(), 3946)
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.path, "products/\(sampleProductID)/duplicate")
+        XCTAssertEqual(request.method, .post)
+        XCTAssertTrue(request.requestParameters.isEmpty)
+        let directRequest = try XCTUnwrap(request.asRESTRequest(with: "https://example.com")?.asURLRequest())
+        XCTAssertNil(directRequest.httpBody)
+    }
+
+    func test_duplicateProduct_maps_only_the_product_ID_from_a_tunneled_response_envelope() throws {
+        // Given
+        let response = Data(#"{"data":{"id":3946,"name":"Product (Copy)","meta_data":[{"key":"custom","value":"value"}]}}"#.utf8)
+
+        // When
+        let productID = try ProductDuplicateMapper().map(response: response)
+
+        // Then
+        XCTAssertEqual(productID, 3946)
+    }
+
+    func test_duplicateProduct_rejects_an_invalid_product_ID() {
+        // Given
+        let response = Data(#"{"id":0,"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_negative_product_ID() {
+        // Given
+        let response = Data(#"{"id":-1,"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_missing_product_ID() {
+        // Given
+        let response = Data(#"{"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_malformed_response() {
+        // Given
+        let response = Data("not-json".utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_nonpositive_product_IDs_in_a_tunneled_response_envelope() {
+        for productID in [0, -1] {
+            // Given
+            let response = Data(#"{"data":{"id":\#(productID),"name":"Product (Copy)"}}"#.utf8)
+
+            // Then
+            XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+        }
+    }
+
+    func test_duplicateProduct_relays_direct_REST_notFound_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":404}}"#.utf8)
+        let expectedError = NetworkError.notFound(response: response)
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)/duplicate", error: expectedError)
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.failure as? NetworkError, expectedError)
+    }
+
+    func test_duplicateProduct_relays_tunneled_noRestRoute_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedError = DotcomError.noRestRoute()
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)/duplicate", error: expectedError)
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.failure as? DotcomError, expectedError)
+    }
+
     // MARK: - Delete Product
 
     func test_deleteProduct_with_success_mock_returns_a_product() {

@@ -52,39 +52,31 @@ final class POSV4RefundPreviewUseCase {
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem]) async -> Result {
         guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4) else {
-            DDLogDebug("🔍 POSV4RefundPreview: falling back to v3 — posRefundsV4 flag is off")
             return .fallbackToLocal
         }
 
         let cachedAvailability = availabilityCache.isV4Available(siteID: siteID)
         if cachedAvailability == false {
-            DDLogDebug("🔍 POSV4RefundPreview: falling back to v3 — v4 cached unavailable for site \(siteID) (an app restart clears the session cache)")
             return .fallbackToLocal
         }
 
         if cachedAvailability == nil, isWooVersionBelowV4Support() {
-            let version = stores.sessionManager.cachedWooCommerceVersion ?? "nil"
-            DDLogDebug("🔍 POSV4RefundPreview: falling back to v3 — cached WooCommerce version \(version) is below \(minimumWooVersion); probe skipped")
             return .fallbackToLocal
         }
 
         guard lineItems.isNotEmpty else {
-            DDLogDebug("🔍 POSV4RefundPreview: falling back to v3 — no line items to preview")
             return .fallbackToLocal
         }
 
         switch await dispatchPreview(siteID: siteID, orderID: orderID, lineItems: lineItems) {
         case .success(let preview):
-            DDLogDebug("🔍 POSV4RefundPreview: server preview succeeded — using v4 for site \(siteID)")
             availabilityCache.markV4Available(siteID: siteID)
             return .serverCalculated(preview)
         case .failure(let error):
             if isRouteNotRegistered(error) {
-                DDLogDebug("🔍 POSV4RefundPreview: store doesn't register the v4 route (rest_no_route) — marking site \(siteID) unavailable for this session, falling back to v3")
                 availabilityCache.markV4Unavailable(siteID: siteID)
                 return .fallbackToLocal
             }
-            DDLogDebug("🔍 POSV4RefundPreview: preview failed (\(error)) — surfacing retryable error")
             return .error
         }
     }

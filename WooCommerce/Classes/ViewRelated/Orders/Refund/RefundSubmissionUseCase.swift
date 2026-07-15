@@ -448,7 +448,9 @@ private extension RefundSubmissionUseCase {
     /// the server computes all monetary values. `refund` carries the reason and gateway-refund
     /// choice; its client-calculated amount is not sent.
     ///
-    /// `restockItems` is always sent as `true` to preserve the v3 behaviour (v4 defaults it to `false`).
+    /// `restockItems` is always sent as `true` to preserve the v3 server default (WooCommerce core
+    /// defaults `api_restock` to `true` on v3 and `false` on v4; the Android client makes the same
+    /// choice for the same reason).
     private func submitRefundV4ToSite(refund: Refund,
                                       lineItems: [RefundV4LineItem],
                                       onCompletion: @escaping (Result<Void, Error>) -> Void) {

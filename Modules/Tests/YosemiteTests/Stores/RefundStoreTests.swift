@@ -146,6 +146,32 @@ class RefundStoreTests: XCTestCase {
     }
 
 
+    /// Verifies that `RefundAction.previewRefund` forwards failures other than `noRestRoute` unchanged.
+    ///
+    func test_previewRefund_relays_generic_failures() {
+        // Given
+        let expectation = self.expectation(description: "Preview refund generic failure")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateError(requestUrlSuffix: "refunds/preview", error: NetworkError.timeout())
+
+        // When
+        let action = RefundAction.previewRefund(siteID: sampleSiteID,
+                                                orderID: sampleOrderID,
+                                                lineItems: [.quantityBased(lineItemID: 50, quantity: 2)]) { result in
+            // Then
+            switch result {
+            case .success:
+                XCTFail("Expected a failure")
+            case .failure(let error):
+                XCTAssertEqual(error as? NetworkError, .timeout())
+            }
+            expectation.fulfill()
+        }
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - RefundAction.createRefundV4
 
     /// Verifies that `RefundAction.createRefundV4` persists the created refund.
@@ -168,6 +194,11 @@ class RefundStoreTests: XCTestCase {
             switch result {
             case .success(let refund):
                 XCTAssertEqual(refund.refundID, 3266)
+                // The v4 response carries no display fields: items follow the v3 negation contract
+                // but keep empty names and zero prices until `retrieveRefund` backfills them.
+                XCTAssertEqual(refund.items.count, 2)
+                XCTAssertEqual(refund.items.first?.quantity, -2)
+                XCTAssertEqual(refund.items.first?.name.isEmpty, true)
                 XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 1)
             case .failure(let error):
                 XCTFail("Expected a refund, got error: \(error)")

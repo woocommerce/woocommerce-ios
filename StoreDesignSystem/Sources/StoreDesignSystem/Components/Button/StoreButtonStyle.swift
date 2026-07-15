@@ -36,7 +36,7 @@ private struct StoreButtonStyleBody: View {
                 }
             }
             .contentShape(Rectangle())
-            .opacity(configuration.isPressed ? Constants.pressedOpacity : 1)
+            .opacity(configuration.isPressed ? Constants.pressedOpacity : Constants.fullOpacity)
             .animation(.easeOut(duration: Constants.pressAnimationDuration), value: configuration.isPressed)
     }
 
@@ -61,6 +61,7 @@ private struct StoreButtonStyleBody: View {
 
 private extension StoreButtonStyleBody {
     enum Constants {
+        static let fullOpacity: Double = 1
         static let pressedOpacity: Double = 0.7
         static let pressAnimationDuration: TimeInterval = 0.15
     }

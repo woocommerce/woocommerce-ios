@@ -14,7 +14,7 @@ These rules are enforced by SwiftLint (see `.swiftlint.yml` for the full configu
 - Avoid `try?` for silent failure. Use `do-catch` and log errors with `DDLogError`
 
 ## Error Handling and Crash Logging
-- `DDLog*` writes to the local console only — it is NOT reported to Sentry
+- `DDLog*` writes to the CocoaLumberjack logs — the Xcode console and the local log files shown in Settings → Help → Application Logs, which are also attached to support requests and uploaded alongside crash reports. It does NOT create a Sentry issue by itself, so a `DDLogError` alone is not searchable or alertable in production
 - Report production-relevant errors to the crash-logging system: `ServiceLocator.crashLogging.logError(_:userInfo:level:)` or `logMessage(_:properties:level:)` (`SeverityLevel` = `.fatal/.error/.warning/.info/.debug`)
 - Fail fast: crash (`fatalError`) when the app reaches a genuinely unrecoverable or corrupted state. For recoverable errors, report a handled event (`logError`/`logMessage`) rather than silently swallowing it — never swallow
 - Every `fatalError` / `preconditionFailure` / `assertionFailure` MUST have a preceding comment justifying why crashing is correct and the state is unrecoverable

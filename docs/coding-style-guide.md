@@ -107,7 +107,9 @@ let fetchResults = try? resultsController.performFetch()
 
 ### Reporting handled errors (crash logging)
 
-`DDLogError` only writes to the local console — it is **not** reported anywhere. When an error matters in production (it signals a real problem rather than an expected/recoverable condition), also report it to the crash-logging system so it surfaces in Sentry as a handled, non-crash event while the app keeps running:
+`DDLogError` writes to the CocoaLumberjack logs: the Xcode console and the rotating local log files surfaced in Settings → Help → Application Logs. Those files travel with support requests, and `WCEventLoggingDataSource` attaches the most recent one to crash reports, so the text is not lost — but `DDLogError` does **not** create a Sentry issue by itself, which means nothing is searchable, alertable, or countable in production. It only helps once you already know which install to look at.
+
+When an error matters in production (it signals a real problem rather than an expected/recoverable condition), also report it to the crash-logging system so it surfaces in Sentry as a handled, non-crash event while the app keeps running:
 
 ```swift
 // An Error worth surfacing in production:
@@ -121,7 +123,7 @@ ServiceLocator.crashLogging.logMessage("Payment intent had no id", properties: n
 
 | Goal | Use |
 |------|-----|
-| Local-only console log (development) | `DDLogError` / `DDLogWarn` / … |
+| Console + local log file; no Sentry issue | `DDLogError` / `DDLogWarn` / … |
 | Report to Sentry, keep running | `crashLogging.logError(_:userInfo:level:)` / `logMessage(_:properties:level:)` |
 | Report to Sentry, then terminate | `crashLogging.logFatalErrorAndExit(_:userInfo:)` |
 

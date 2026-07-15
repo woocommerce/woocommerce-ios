@@ -283,20 +283,20 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         guard originalProduct.product.existsRemotely else {
             return
         }
-        let action = ProductAction.retrieveProduct(siteID: originalProduct.siteID,
-                                                   productID: originalProduct.productID) { [weak self] result in
+        let productID = originalProduct.productID
+        let siteID = originalProduct.siteID
+        Task { @MainActor [weak self] in
             guard let self else { return }
-            switch result {
-            case .success(let refreshedProduct):
+            do {
+                let refreshedProduct = try await self.remoteActionUseCase.retrieveProduct(id: productID, siteID: siteID)
                 guard !self.hasUnsavedChanges() else {
                     return
                 }
                 self.originalProduct = EditableProductModel(product: refreshedProduct)
-            case .failure(let error):
+            } catch {
                 DDLogError("⛔️ Error refreshing product on product detail: \(error)")
             }
         }
-        stores.dispatch(action)
     }
 }
 

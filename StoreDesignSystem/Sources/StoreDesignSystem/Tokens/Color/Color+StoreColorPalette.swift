@@ -1,11 +1,3 @@
-//  Color+StoreColorPalette.swift
-//
-//  Color roles from the Figma variables export (Mobile Design System).
-//  Two tiers per WOOMOB-3558: a raw `Colors` primitive palette (`storePalette…`) and the
-//  `Woo theme` semantic roles that reference it. Light + Dark values are both real (from the
-//  export); high contrast is intentionally not modeled yet. The asset catalog stores flattened
-//  values (the export resolves aliases to hex). Re-sync from a fresh export on change.
-
 import SwiftUI
 
 /// The design system's color roles. Declared on `ShapeStyle where Self == Color` so a

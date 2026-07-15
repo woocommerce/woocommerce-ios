@@ -327,6 +327,10 @@ private extension Remote {
     /// Maps an error from `network.responseData` so that the request's corresponding error can be returned.
     ///
     func mapNetworkError(error: Error, for request: Request) -> Error {
+        if let contextualError = error as? NonReplayableRESTRequestError {
+            return contextualError.networkError
+        }
+
         guard let networkError = error as? NetworkError else {
             return error
         }

@@ -57,6 +57,7 @@ final class AlamofireNetworkErrorHandler {
                                    failure: Error?) -> Bool {
         guard let error = failure,
               let request = originalRequest as? JetpackRequest,
+              request.shouldRetryViaJetpackOnRESTFailure,
               convertedRequest is RESTRequest,
               let convertedURLRequest = try? convertedRequest.asURLRequest(),
               case .some(.wpcom) = self.credentials else {

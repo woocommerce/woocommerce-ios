@@ -102,6 +102,22 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         }
     }
 
+    func test_shouldRetryJetpackRequest_returns_false_when_request_disallows_retry_through_jetpack() {
+        // Given
+        let jetpackRequest = createJetpackRequest(siteID: 123, shouldRetryViaJetpackOnRESTFailure: false)
+        let restRequest = createRESTRequest()
+
+        // When
+        let shouldRetry = errorHandler.shouldRetryJetpackRequest(
+            originalRequest: jetpackRequest,
+            convertedRequest: restRequest,
+            failure: createNetworkError()
+        )
+
+        // Then
+        XCTAssertFalse(shouldRetry)
+    }
+
     func test_shouldRetryJetpackRequest_returns_false_for_unexpected_errors() {
         // Given
         let jetpackRequest = createJetpackRequest(siteID: 123)
@@ -717,13 +733,14 @@ private extension AlamofireNetworkErrorHandlerTests {
         return Credentials.wpcom(username: "test", authToken: "token", siteAddress: "https://example.com")
     }
 
-    func createJetpackRequest(siteID: Int64) -> JetpackRequest {
+    func createJetpackRequest(siteID: Int64, shouldRetryViaJetpackOnRESTFailure: Bool = true) -> JetpackRequest {
         return JetpackRequest(
             wooApiVersion: .mark3,
             method: .get,
             siteID: siteID,
             path: "test",
-            availableAsRESTRequest: true
+            availableAsRESTRequest: true,
+            shouldRetryViaJetpackOnRESTFailure: shouldRetryViaJetpackOnRESTFailure
         )
     }
 

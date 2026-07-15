@@ -182,7 +182,10 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            completion(response.value, response.networkingError)
+                            let error = self?.transportOriginErrorIfNeeded(response.networkingError,
+                                                                           originalRequest: request,
+                                                                           convertedRequest: convertedRequest)
+                            completion(response.value, error ?? response.networkingError)
                         }
                     )
                 }
@@ -212,7 +215,11 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            if let error = response.networkingError {
+                            let error = self?.transportOriginErrorIfNeeded(response.networkingError,
+                                                                           originalRequest: request,
+                                                                           convertedRequest: convertedRequest)
+                                ?? response.networkingError
+                            if let error {
                                 completion(.failure(error))
                             } else {
                                 completion(response.result.mapError { $0 })
@@ -242,7 +249,9 @@ public class AlamofireNetwork: Network {
         errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
 
         if let error = response.networkingError {
-            throw error
+            throw transportOriginErrorIfNeeded(error,
+                                               originalRequest: request,
+                                               convertedRequest: convertedRequest) ?? error
         }
         switch response.result {
             case .success(let data):
@@ -279,7 +288,11 @@ public class AlamofireNetwork: Network {
                                 }
                             },
                             onCompletion: {
-                                if let error = response.networkingError {
+                                let error = self?.transportOriginErrorIfNeeded(response.networkingError,
+                                                                               originalRequest: request,
+                                                                               convertedRequest: convertedRequest)
+                                    ?? response.networkingError
+                                if let error {
                                     promise(.success(.failure(error)))
                                 } else {
                                     promise(.success(response.result.mapError { $0 }))
@@ -379,6 +392,20 @@ private extension AlamofireNetwork {
 // MARK: Helper methods for error handling
 //
 private extension AlamofireNetwork {
+    /// Attaches the effective transport to errors from non-replayable requests after retry classification.
+    /// The immutable `convertedRequest` is the request that actually produced the response.
+    func transportOriginErrorIfNeeded(_ error: Error?,
+                                      originalRequest: URLRequestConvertible,
+                                      convertedRequest: URLRequestConvertible) -> Error? {
+        guard let networkError = error as? NetworkError,
+              convertedRequest is RESTRequest,
+              let jetpackRequest = originalRequest as? JetpackRequest,
+              jetpackRequest.shouldRetryViaJetpackOnRESTFailure == false else {
+            return nil
+        }
+        return NonReplayableRESTRequestError(networkError: networkError)
+    }
+
     func convertRequestIfNeeded(_ request: URLRequestConvertible) -> URLRequestConvertible {
         if errorHandler.isRequestRetried(request) {
             return request // do not convert
@@ -403,6 +430,11 @@ private extension AlamofireNetwork {
         guard request is RESTRequest, let discoveryTask else { return }
         await discoveryTask.value
     }
+}
+
+/// Carries the immutable effective transport of a non-replayable request to `Remote` error mapping.
+struct NonReplayableRESTRequestError: Error {
+    let networkError: NetworkError
 }
 
 // MARK: `RequestProcessorDelegate` conformance

@@ -36,6 +36,10 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///
     private let availableAsRESTRequest: Bool
 
+    /// Whether a converted REST request may be retried through the Jetpack tunnel after a failure.
+    ///
+    let shouldRetryViaJetpackOnRESTFailure: Bool
+
     /// Whether this request should allow cellular access.
     ///
     private let allowsCellularAccess: Bool
@@ -47,6 +51,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                  path: String,
                  requestParameters: RequestParameters,
                  availableAsRESTRequest: Bool = false,
+                 shouldRetryViaJetpackOnRESTFailure: Bool = true,
                  allowsCellularAccess: Bool = true) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
@@ -58,6 +63,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.path = path
         self.requestParameters = requestParameters
         self.availableAsRESTRequest = availableAsRESTRequest
+        self.shouldRetryViaJetpackOnRESTFailure = shouldRetryViaJetpackOnRESTFailure
         self.allowsCellularAccess = allowsCellularAccess
     }
 
@@ -70,6 +76,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
+    ///     - shouldRetryViaJetpackOnRESTFailure: Whether a failed converted REST request may be retried through the Jetpack tunnel.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     public init(wooApiVersion: WooAPIVersion,
@@ -79,6 +86,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          path: String,
          parameters: RequestParameterDictionary? = nil,
          availableAsRESTRequest: Bool = false,
+         shouldRetryViaJetpackOnRESTFailure: Bool = true,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
                   method: method,
@@ -87,6 +95,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   path: path,
                   requestParameters: RequestParameters(parameters),
                   availableAsRESTRequest: availableAsRESTRequest,
+                  shouldRetryViaJetpackOnRESTFailure: shouldRetryViaJetpackOnRESTFailure,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -97,6 +106,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          path: String,
          parameters: [String: Value],
          availableAsRESTRequest: Bool = false,
+         shouldRetryViaJetpackOnRESTFailure: Bool = true,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
                   method: method,
@@ -105,6 +115,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   path: path,
                   requestParameters: RequestParameters(parameters),
                   availableAsRESTRequest: availableAsRESTRequest,
+                  shouldRetryViaJetpackOnRESTFailure: shouldRetryViaJetpackOnRESTFailure,
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -115,6 +126,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          path: String,
          parameters: RequestParameterConvertibleDictionary,
          availableAsRESTRequest: Bool = false,
+         shouldRetryViaJetpackOnRESTFailure: Bool = true,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
                   method: method,
@@ -123,6 +135,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   path: path,
                   requestParameters: RequestParameters(parameters),
                   availableAsRESTRequest: availableAsRESTRequest,
+                  shouldRetryViaJetpackOnRESTFailure: shouldRetryViaJetpackOnRESTFailure,
                   allowsCellularAccess: allowsCellularAccess)
     }
 

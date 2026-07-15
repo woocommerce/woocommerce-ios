@@ -43,6 +43,27 @@ tags:
     visible:
       id: "store-title"
     timeout: 15000
+- copyTextFrom:
+    id: "store-title"
+- evalScript: |
+    output.storeOriginalName = String(maestro.copiedText || '').trim();
+- copyTextFrom:
+    id: "store-url"
+- evalScript: |
+    function host(value) {
+      return String(value || '').trim().toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .split('/')[0]
+        .split('?')[0]
+        .split('#')[0]
+        .replace(/:\d+$/, '')
+        .replace(/\.$/, '');
+    }
+    output.storeOriginalURL = String(maestro.copiedText || '').trim();
+    output.storeOriginalHost = host(output.storeOriginalURL);
+    if (!output.storeOriginalHost) {
+      throw new Error('Current Hub store URL is empty');
+    }
 - tapOn:
     id: "store-title"
 - extendedWaitUntil:
@@ -50,10 +71,111 @@ tags:
     timeout: 20000
 - assertVisible: "Select Store"
 - assertVisible: "PICK STORE TO CONNECT"
-- assertVisible: "Dismiss"
-- takeScreenshot: hub_change_store
-- tapOn: "Dismiss"
+- copyTextFrom:
+    id: "url-label"
+    index: 0
+- evalScript: |
+    output.storeFirstURL = String(maestro.copiedText || '').trim();
+- copyTextFrom:
+    id: "name-label"
+    index: 0
+- evalScript: |
+    output.storeFirstName = String(maestro.copiedText || '').trim();
+- evalScript: |
+    function host(value) {
+      return String(value || '').trim().toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .split('/')[0]
+        .split('?')[0]
+        .split('#')[0]
+        .replace(/:\d+$/, '')
+        .replace(/\.$/, '');
+    }
+    output.storeTargetHost = host(output.storeFirstURL);
+    output.storeTargetName = output.storeFirstName;
+    if (!output.storeTargetHost || output.storeTargetHost === output.storeOriginalHost) {
+      throw new Error('Store picker must expose a different Woo store in its first row');
+    }
+- takeScreenshot: hub_store_picker_discovery
+- tapOn:
+    point: "50%,43%"
+- takeScreenshot: hub_store_picker_target_selected
+- extendedWaitUntil:
+    visible:
+      id: "login-epilogue-continue-button"
+      enabled: true
+    timeout: 10000
+- tapOn:
+    id: "login-epilogue-continue-button"
+- extendedWaitUntil:
+    visible: "Menu"
+    timeout: 90000
+- tapOn: "Menu"
 - extendedWaitUntil:
     visible:
       id: "store-title"
+    timeout: 30000
+- copyTextFrom:
+    id: "store-url"
+- assertTrue:
+    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') !== String(MAESTRO_WOO_LAB_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    label: Hub identity changed to the dynamically selected store
+- tapOn: "Products"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- assertVisible:
+    id: "products-table-view"
+- takeScreenshot: hub_change_store_target_loaded
+
+# Restore the shared account's original store immediately after the target
+# store-backed surface has loaded, then prove the original identity returned.
+- tapOn: "Menu"
+- extendedWaitUntil:
+    visible:
+      id: "store-title"
+    timeout: 20000
+- tapOn:
+    id: "store-title"
+- extendedWaitUntil:
+    visible: "Select Store"
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: "url-label"
+      text: ".*${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}.*"
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn:
+    point: "50%,75%"
+- takeScreenshot: hub_store_picker_original_selected
+- extendedWaitUntil:
+    visible:
+      id: "login-epilogue-continue-button"
+      enabled: true
     timeout: 10000
+- tapOn:
+    id: "login-epilogue-continue-button"
+- extendedWaitUntil:
+    visible: "Menu"
+    timeout: 90000
+- tapOn: "Menu"
+- extendedWaitUntil:
+    visible:
+      id: "store-url"
+    timeout: 30000
+- copyTextFrom:
+    id: "store-url"
+- assertTrue:
+    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') === String(MAESTRO_WOO_LAB_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    label: Original Hub store identity is restored
+- tapOn: "Products"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+- assertVisible:
+    id: "products-table-view"
+- takeScreenshot: hub_change_store_restored

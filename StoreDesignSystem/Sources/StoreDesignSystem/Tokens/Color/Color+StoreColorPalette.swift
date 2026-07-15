@@ -3,9 +3,8 @@
 //  Color roles from the Figma variables export (Mobile Design System).
 //  Two tiers per WOOMOB-3558: a raw `Colors` primitive palette (`storePalette…`) and the
 //  `Woo theme` semantic roles that reference it. Light + Dark values are both real (from the
-//  export); high contrast is intentionally not modeled yet. The `// alias:` comments record the
-//  primitive each semantic maps to in Figma — the asset catalog stores flattened values, so these
-//  keep the mapping greppable for a future palette refactor. Re-sync from a fresh export on change.
+//  export); high contrast is intentionally not modeled yet. The asset catalog stores flattened
+//  values (the export resolves aliases to hex). Re-sync from a fresh export on change.
 
 import SwiftUI
 
@@ -14,24 +13,24 @@ import SwiftUI
 /// .storePrimary`, and `.foregroundStyle(.storePrimary)`.
 public extension ShapeStyle where Self == Color {
     // MARK: - Background
-    static var storeSectionBackground: Color { bundledColor("storeSectionBackground") } // alias L: raw / D: Gray 100
-    static var storeOnSectionBackground: Color { bundledColor("storeOnSectionBackground") } // alias L: raw / D: White
-    static var storeSectionBackgroundVariant: Color { bundledColor("storeSectionBackgroundVariant") } // alias L: raw / D: Gray 100
+    static var storeSectionBackground: Color { bundledColor("storeSectionBackground") }
+    static var storeOnSectionBackground: Color { bundledColor("storeOnSectionBackground") }
+    static var storeSectionBackgroundVariant: Color { bundledColor("storeSectionBackgroundVariant") }
     static var storeOnSectionBackgroundVariant: Color { bundledColor("storeOnSectionBackgroundVariant") }
 
     // MARK: - Primary & Secondary
-    static var storePrimary: Color { bundledColor("storePrimary") } // alias: Purple 40
-    static var storeOnPrimary: Color { bundledColor("storeOnPrimary") } // alias: White
-    static var storeSecondary: Color { bundledColor("storeSecondary") } // alias L: Purple 60 / D: raw
-    static var storeOnSecondary: Color { bundledColor("storeOnSecondary") } // alias L: White / D: raw
-    static var storePrimaryContainer: Color { bundledColor("storePrimaryContainer") } // alias L: Purple 20 / D: White
-    static var storeOnPrimaryContainer: Color { bundledColor("storeOnPrimaryContainer") } // alias L: Purple 90 / D: White
-    static var storeSecondaryContainer: Color { bundledColor("storeSecondaryContainer") } // alias L: Purple 0 / D: Purple 80
-    static var storeOnSecondaryContainer: Color { bundledColor("storeOnSecondaryContainer") } // alias L: Purple 40 / D: Purple 20
+    static var storePrimary: Color { bundledColor("storePrimary") }
+    static var storeOnPrimary: Color { bundledColor("storeOnPrimary") }
+    static var storeSecondary: Color { bundledColor("storeSecondary") }
+    static var storeOnSecondary: Color { bundledColor("storeOnSecondary") }
+    static var storePrimaryContainer: Color { bundledColor("storePrimaryContainer") }
+    static var storeOnPrimaryContainer: Color { bundledColor("storeOnPrimaryContainer") }
+    static var storeSecondaryContainer: Color { bundledColor("storeSecondaryContainer") }
+    static var storeOnSecondaryContainer: Color { bundledColor("storeOnSecondaryContainer") }
 
     // MARK: - Error
     static var storeError: Color { bundledColor("storeError") }
-    static var storeOnError: Color { bundledColor("storeOnError") } // alias: White
+    static var storeOnError: Color { bundledColor("storeOnError") }
 
     // MARK: - Alerts
     static var storeErrorContainer: Color { bundledColor("storeErrorContainer") }
@@ -47,28 +46,28 @@ public extension ShapeStyle where Self == Color {
     static var storeNeutralContainer: Color { bundledColor("storeNeutralContainer") }
     static var storeOnNeutralContainer: Color { bundledColor("storeOnNeutralContainer") }
     static var storeAlertRed: Color { bundledColor("storeAlertRed") }
-    static var storeOnAlertRed: Color { bundledColor("storeOnAlertRed") } // alias L: White / D: raw
-    static var storeAlertOrange: Color { bundledColor("storeAlertOrange") } // alias L: Orange 40 / D: raw
-    static var storeOnAlertOrange: Color { bundledColor("storeOnAlertOrange") } // alias L: White / D: raw
+    static var storeOnAlertRed: Color { bundledColor("storeOnAlertRed") }
+    static var storeAlertOrange: Color { bundledColor("storeAlertOrange") }
+    static var storeOnAlertOrange: Color { bundledColor("storeOnAlertOrange") }
     static var storeAlertGreen: Color { bundledColor("storeAlertGreen") }
-    static var storeOnAlertGreen: Color { bundledColor("storeOnAlertGreen") } // alias L: White / D: raw
+    static var storeOnAlertGreen: Color { bundledColor("storeOnAlertGreen") }
     static var storeAlertBlue: Color { bundledColor("storeAlertBlue") }
-    static var storeOnAlertBlue: Color { bundledColor("storeOnAlertBlue") } // alias L: White / D: raw
+    static var storeOnAlertBlue: Color { bundledColor("storeOnAlertBlue") }
 
     // MARK: - Outline
-    static var storeOutline: Color { bundledColor("storeOutline") } // alias L: Gray 40 / D: raw
-    static var storeOutlineVariant: Color { bundledColor("storeOutlineVariant") } // alias L: Gray 5 / D: raw
+    static var storeOutline: Color { bundledColor("storeOutline") }
+    static var storeOutlineVariant: Color { bundledColor("storeOutlineVariant") }
 
     // MARK: - Surface
-    static var storeSurfaceDim: Color { bundledColor("storeSurfaceDim") } // alias L: Gray 0 / D: Gray 80
-    static var storeSurfaceBright: Color { bundledColor("storeSurfaceBright") } // alias L: White / D: Gray 90
-    static var storeSurface: Color { bundledColor("storeSurface") } // alias L: White / D: Gray 100
-    static var storeSurfaceContainerHighest: Color { bundledColor("storeSurfaceContainerHighest") } // alias L: Gray 30 / D: Gray 100
-    static var storeOnSurface: Color { bundledColor("storeOnSurface") } // alias L: Black / D: White
-    static var storeOnSurfaceVariant: Color { bundledColor("storeOnSurfaceVariant") } // alias L: Gray 80 / D: raw
-    static var storeOnSurfaceVariantLowest: Color { bundledColor("storeOnSurfaceVariantLowest") } // alias L: Gray 60 / D: Gray 20
-    static var storeInverseSurface: Color { bundledColor("storeInverseSurface") } // alias L: Black / D: White
-    static var storeOnInverseSurface: Color { bundledColor("storeOnInverseSurface") } // alias L: White / D: Black
+    static var storeSurfaceDim: Color { bundledColor("storeSurfaceDim") }
+    static var storeSurfaceBright: Color { bundledColor("storeSurfaceBright") }
+    static var storeSurface: Color { bundledColor("storeSurface") }
+    static var storeSurfaceContainerHighest: Color { bundledColor("storeSurfaceContainerHighest") }
+    static var storeOnSurface: Color { bundledColor("storeOnSurface") }
+    static var storeOnSurfaceVariant: Color { bundledColor("storeOnSurfaceVariant") }
+    static var storeOnSurfaceVariantLowest: Color { bundledColor("storeOnSurfaceVariantLowest") }
+    static var storeInverseSurface: Color { bundledColor("storeInverseSurface") }
+    static var storeOnInverseSurface: Color { bundledColor("storeOnInverseSurface") }
 
     // MARK: - Overlay
     static var storeOverlayOpacity20: Color { bundledColor("storeOverlayOpacity20") }

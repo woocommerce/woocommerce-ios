@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Order Creation: Fixed Collect Payment not opening payment methods after creating an order on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17552]
 
 
 25.2

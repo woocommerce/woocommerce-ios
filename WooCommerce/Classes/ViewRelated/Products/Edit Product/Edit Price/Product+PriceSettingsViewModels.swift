@@ -137,7 +137,7 @@ extension CurrencySettings {
     /// Price inputs render the amount and currency symbol in separate views, so Unicode bidirectional reordering
     /// cannot move a strong RTL currency symbol to the same visual side as formatted display strings.
     var priceInputUnitPosition: UnitInputViewModel.UnitPosition {
-        switch (currencyPosition, currencySymbol.containsStrongRightToLeftCharacter) {
+        switch (currencyPosition, BidirectionalText.containsStrongRightToLeftCharacter(in: currencySymbol)) {
         case (.left, false), (.right, true):
             return .beforeInputWithoutSpace
         case (.leftSpace, false), (.rightSpace, true):
@@ -146,19 +146,6 @@ extension CurrencySettings {
             return .afterInputWithoutSpace
         case (.rightSpace, false), (.leftSpace, true):
             return .afterInput
-        }
-    }
-}
-
-private extension String {
-    var containsStrongRightToLeftCharacter: Bool {
-        unicodeScalars.contains { scalar in
-            switch scalar.value {
-            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
-                return true
-            default:
-                return false
-            }
         }
     }
 }

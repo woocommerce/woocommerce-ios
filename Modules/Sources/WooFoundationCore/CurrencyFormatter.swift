@@ -123,7 +123,7 @@ public class CurrencyFormatter {
         // We want to position the minus sign manually.
         let amount = amount.replacingOccurrences(of: "-", with: "")
 
-        if isNegative && symbol.containsStrongRightToLeftCharacter {
+        if isNegative && BidirectionalText.containsStrongRightToLeftCharacter(in: symbol) {
             return formatNegativeCurrencyWithStrongRightToLeftSymbol(using: amount,
                                                                      currencyPosition: position,
                                                                      currencySymbol: symbol,
@@ -149,17 +149,17 @@ public class CurrencyFormatter {
                                                                    currencySymbol symbol: String,
                                                                    space: String) -> String {
         // Preserve the symbol's RTL base direction while keeping the signed Western-number amount together.
-        let signedAmount = "\(DirectionalControl.leftToRightIsolate)-\(amount)\(DirectionalControl.popDirectionalIsolate)"
+        let signedAmount = BidirectionalText.isolateLeftToRight("-\(amount)")
 
         switch position {
         case .left:
-            return DirectionalControl.rightToLeftMark + symbol + signedAmount
+            return BidirectionalText.rightToLeftMark + symbol + signedAmount
         case .right:
-            return DirectionalControl.rightToLeftMark + signedAmount + symbol
+            return BidirectionalText.rightToLeftMark + signedAmount + symbol
         case .leftSpace:
-            return DirectionalControl.rightToLeftMark + symbol + space + signedAmount
+            return BidirectionalText.rightToLeftMark + symbol + space + signedAmount
         case .rightSpace:
-            return DirectionalControl.rightToLeftMark + signedAmount + space + symbol
+            return BidirectionalText.rightToLeftMark + signedAmount + space + symbol
         }
     }
 
@@ -168,7 +168,7 @@ public class CurrencyFormatter {
             return "-"
         }
 
-        return DirectionalControl.leftToRightMark + "-"
+        return BidirectionalText.leftToRightMark + "-"
     }
 
     /// Applies currency option settings to the amount (as String) for the given currency.
@@ -353,26 +353,6 @@ public class CurrencyFormatter {
                      locale: locale,
                      numberOfDecimals: numberOfDecimals,
                      isNegative: isNegative)
-    }
-}
-
-private enum DirectionalControl {
-    static let leftToRightMark = "\u{200E}"
-    static let rightToLeftMark = "\u{200F}"
-    static let leftToRightIsolate = "\u{2066}"
-    static let popDirectionalIsolate = "\u{2069}"
-}
-
-private extension String {
-    var containsStrongRightToLeftCharacter: Bool {
-        unicodeScalars.contains { scalar in
-            switch scalar.value {
-            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
-                return true
-            default:
-                return false
-            }
-        }
     }
 }
 

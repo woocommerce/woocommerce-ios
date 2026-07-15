@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// This numeric Text Field updates the user input to show the formatted amount
 ///
@@ -27,7 +28,8 @@ struct FormattableAmountTextField: View {
                 .environment(\.layoutDirection, .leftToRight)
                 .opacity(0)
 
-            Text(viewModel.formattedAmount.leftToRightIsolatedNumericRuns)
+            Text(BidirectionalText.isolateLeftToRightNumericRuns(in: viewModel.formattedAmount,
+                                                                 separators: viewModel.numericTextSeparators))
                 .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
@@ -57,46 +59,6 @@ extension FormattableAmountTextField {
             textAlignment: .leading,
             font: nil
         )
-    }
-}
-
-private extension String {
-    var leftToRightIsolatedNumericRuns: String {
-        var result = ""
-        var currentRun = ""
-        let characters = Array(self)
-
-        for (index, character) in characters.enumerated() {
-            if character.isNumber || shouldTreatAsNumericSeparator(character, at: index, in: characters) {
-                currentRun.append(character)
-            } else {
-                result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
-                currentRun = ""
-                result.append(character)
-            }
-        }
-
-        result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
-        return result
-    }
-
-    private func shouldTreatAsNumericSeparator(_ character: Character, at index: Int, in characters: [Character]) -> Bool {
-        guard character == "." || character == "," || character == "-" else {
-            return false
-        }
-
-        let previousCharacterIsNumber = index > 0 && characters[index - 1].isNumber
-        let nextCharacterIsNumber = index < characters.count - 1 && characters[index + 1].isNumber
-
-        return previousCharacterIsNumber || nextCharacterIsNumber
-    }
-
-    mutating func appendLeftToRightIsolatedRunIfNeeded(_ run: String) {
-        guard run.isNotEmpty else {
-            return
-        }
-
-        append("\u{2066}\(run)\u{2069}")
     }
 }
 

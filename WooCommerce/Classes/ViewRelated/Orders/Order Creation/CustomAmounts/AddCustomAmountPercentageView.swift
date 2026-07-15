@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
@@ -74,7 +75,8 @@ private extension AddCustomAmountPercentageView {
                 .environment(\.layoutDirection, .leftToRight)
                 .opacity(0)
 
-                Text((text + "%").leftToRightIsolatedNumericRuns)
+                Text(BidirectionalText.isolateLeftToRightNumericRuns(in: text + "%",
+                                                                     separators: numericTextSeparators))
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
@@ -89,45 +91,11 @@ private extension AddCustomAmountPercentageView {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
-    }
-}
 
-private extension String {
-    var leftToRightIsolatedNumericRuns: String {
-        var result = ""
-        var currentRun = ""
-        let characters = Array(self)
-
-        for (index, character) in characters.enumerated() {
-            if character.isNumber || shouldTreatAsNumericSeparator(character, at: index, in: characters) {
-                currentRun.append(character)
-            } else {
-                result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
-                currentRun = ""
-                result.append(character)
-            }
+        private var numericTextSeparators: Set<Character> {
+            BidirectionalText.numericSeparators(including: [
+                Locale.autoupdatingCurrent.decimalSeparator ?? ""
+            ])
         }
-
-        result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
-        return result
-    }
-
-    private func shouldTreatAsNumericSeparator(_ character: Character, at index: Int, in characters: [Character]) -> Bool {
-        guard character == "." || character == "," || character == "-" else {
-            return false
-        }
-
-        let previousCharacterIsNumber = index > 0 && characters[index - 1].isNumber
-        let nextCharacterIsNumber = index < characters.count - 1 && characters[index + 1].isNumber
-
-        return previousCharacterIsNumber || nextCharacterIsNumber
-    }
-
-    mutating func appendLeftToRightIsolatedRunIfNeeded(_ run: String) {
-        guard run.isNotEmpty else {
-            return
-        }
-
-        append("\u{2066}\(run)\u{2069}")
     }
 }

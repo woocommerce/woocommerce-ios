@@ -28,6 +28,10 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         priceFieldFormatter.formattedAmount
     }
 
+    var numericTextSeparators: Set<Character> {
+        priceFieldFormatter.numericTextSeparators
+    }
+
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {

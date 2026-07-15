@@ -738,7 +738,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
-                                                                  productSubscriptionDetails: product.subscription,
+                                                                  productSubscriptionDetails: product.productType.isSubscription ? product.subscription : nil,
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,

@@ -60,9 +60,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let price: String?
 
-    /// Product discount. `0` means no discount.
-    ///
-    let discount: Decimal
+    /// Discount attributed to this product line, derived as `OrderItem.subtotal − total`
+    /// and excluding any order-level coupon effect (see `EditableOrderViewModel.currentProductDiscount(on:)`).
+    /// The API has no per-item discount field — an absent discount is simply equal subtotal/total,
+    /// so `0` (not nil) is the natural "no discount" value.
+    let productDiscount: Decimal
 
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
@@ -210,7 +212,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          sku: String?,
          price: String?,
          pricedIndividually: Bool = true,
-         discount: Decimal = .zero,
+         productDiscount: Decimal = .zero,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -231,7 +233,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.imageURL = imageURL
         self.name = name
         self.price = price
-        self.discount = discount
+        self.productDiscount = productDiscount
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
@@ -282,7 +284,7 @@ extension CollapsibleProductRowCardViewModel {
             return nil
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting(discount as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting(productDiscount as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(totalPriceAfterDiscount)
     }
@@ -290,14 +292,14 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted discount label for an individual product
     ///
     var discountLabel: String? {
-        guard discount > 0 else {
+        guard productDiscount > 0 else {
             return nil
         }
-        return currencyFormatter.formatAmount(discount)
+        return currencyFormatter.formatAmount(productDiscount)
     }
 
     var hasDiscount: Bool {
-        discount > 0
+        productDiscount > 0
     }
 }
 

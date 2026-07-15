@@ -629,7 +629,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         let expectedDiscount: Decimal = 1 // Order item subtotal - total
-        assertEqual(expectedDiscount, productRow?.productRow.discount)
+        assertEqual(expectedDiscount, productRow?.productRow.productDiscount)
     }
 
     func test_createProductRowViewModel_when_order_item_has_no_discount_then_discount_is_zero() {
@@ -644,7 +644,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        assertEqual(0, productRow?.productRow.discount)
+        assertEqual(0, productRow?.productRow.productDiscount)
         XCTAssertFalse(productRow?.productRow.hasDiscount ?? true)
     }
 
@@ -660,7 +660,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        assertEqual(0, productRow?.productRow.discount)
+        assertEqual(0, productRow?.productRow.productDiscount)
         XCTAssertFalse(productRow?.productRow.hasDiscount ?? true)
     }
 
@@ -679,7 +679,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        assertEqual(0, productRow?.productRow.discount)
+        assertEqual(0, productRow?.productRow.productDiscount)
     }
 
     func test_updating_product_quantity_does_not_preserve_coupon_discount_as_product_discount() throws {
@@ -701,7 +701,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitUntil {
             viewModel.productRows[0].productRow.stepperViewModel.quantity == 2
         }
-        XCTAssertEqual(viewModel.productRows[0].productRow.discount, 0)
+        XCTAssertEqual(viewModel.productRows[0].productRow.productDiscount, 0)
     }
 
     func test_view_model_is_updated_when_custom_amount_is_added_to_order() {

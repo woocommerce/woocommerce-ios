@@ -684,7 +684,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
-                                           discount: discount,
+                                           productDiscount: discount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

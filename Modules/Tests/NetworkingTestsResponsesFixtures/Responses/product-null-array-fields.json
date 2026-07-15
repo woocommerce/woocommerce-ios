@@ -1,0 +1,249 @@
+{
+  "data": {
+    "id": 282,
+    "name": "Book the Green Room",
+    "slug": "book-the-green-room",
+    "permalink": "https://example.com/product/book-the-green-room/",
+    "date_created": "2019-02-19T17:33:31",
+    "date_created_gmt": "2019-02-19T17:33:31",
+    "date_modified": "2019-02-19T17:48:01",
+    "date_modified_gmt": "2019-02-19T17:48:01",
+    "type": "booking",
+    "status": "publish",
+    "featured": false,
+    "catalog_visibility": "visible",
+    "description": "<p>This is the party room!</p>\n",
+    "short_description": "[contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n",
+    "sku": "",
+    "post_password": "Fortuna Major",
+    "price": "0",
+    "regular_price": "",
+    "sale_price": "",
+    "date_on_sale_from": null,
+    "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+    "date_on_sale_to": null,
+    "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+    "price_html": "Free",
+    "on_sale": false,
+    "purchasable": true,
+    "total_sales": 0,
+    "virtual": true,
+    "downloadable": true,
+    "downloads": null,
+    "download_limit": 1,
+    "download_expiry": 1,
+    "external_url": "http://somewhere.com",
+    "button_text": "",
+    "tax_status": "taxable",
+    "tax_class": "",
+    "manage_stock": false,
+    "stock_quantity": null,
+    "stock_status": "instock",
+    "backorders": "no",
+    "backorders_allowed": false,
+    "backordered": false,
+    "sold_individually": true,
+    "weight": "213",
+    "dimensions": {
+      "length": "12",
+      "width": "33",
+      "height": "54"
+    },
+    "shipping_required": false,
+    "shipping_taxable": false,
+    "shipping_class": "",
+    "shipping_class_id": 134,
+    "reviews_allowed": true,
+    "average_rating": "4.30",
+    "rating_count": 23,
+    "related_ids": null,
+    "upsell_ids": null,
+    "cross_sell_ids": null,
+    "parent_id": 0,
+    "purchase_note": "Thank you!",
+    "categories": null,
+    "tags": null,
+    "images": null,
+    "attributes": null,
+    "default_attributes": null,
+    "variations": [
+      192,
+      194,
+      193
+    ],
+    "grouped_products": null,
+    "menu_order": 0,
+    "meta_data": [
+      {
+        "id": 190,
+        "key": "_headstart_post",
+        "value": "_hs_extra"
+      },
+      {
+        "id": 6779,
+        "key": "_wpas_done_all",
+        "value": "1"
+      },
+      {
+        "id": 6780,
+        "key": "_g_feedback_shortcode_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+        "value": "[contact-field label=\"Name\" type=\"name\" required=\"1\"][contact-field label=\"Email\" type=\"email\" required=\"1\"][contact-field label=\"Phone Number\" type=\"text\" required=\"1\"][contact-field label=\"Group or Organization Name (if any)\" type=\"text\"][contact-field label=\"Special Requests / Event Notes\" type=\"textarea\"]"
+      },
+      {
+        "id": 6781,
+        "key": "_g_feedback_shortcode_atts_5368fb4ef32094b7055b8732bb77a337bdd9331d",
+        "value": {
+          "to": "thuy.copeland@automattic.com",
+          "subject": "Booking Event",
+          "show_subject": "no",
+          "widget": 0,
+          "id": 282,
+          "submit_button_text": "Submit"
+        }
+      },
+      {
+        "id": 6471,
+        "key": "_product_addons",
+        "value": [
+          {
+            "description": "Pizza topping",
+            "title_format": "label",
+            "required": 0,
+            "restrictions": 0,
+            "position": 0,
+            "display": "radiobutton",
+            "restrictions_type": "any_text",
+            "min": 0,
+            "max": 0,
+            "options": [
+              {
+                "label": "Peperoni",
+                "price_type": "flat_fee",
+                "price": "3",
+                "image": ""
+              },
+              {
+                "label": "Extra cheese",
+                "price_type": "flat_fee",
+                "price": "4",
+                "image": ""
+              },
+              {
+                "label": "Salami",
+                "price_type": "flat_fee",
+                "price": "3",
+                "image": ""
+              },
+              {
+                "label": "Ham",
+                "price_type": "flat_fee",
+                "price": "3",
+                "image": ""
+              }
+            ],
+            "type": "checkbox",
+            "price": "",
+            "price_type": "flat_fee",
+            "adjust_price": 0,
+            "name": "Topping",
+            "description_enable": 1
+          },
+          {
+            "description": "",
+            "title_format": "label",
+            "required": 0,
+            "restrictions": 1,
+            "position": 1,
+            "display": "select",
+            "restrictions_type": "any_text",
+            "min": 0,
+            "max": 3,
+            "options": [
+              {
+                "label": "",
+                "price_type": "flat_fee",
+                "price": "",
+                "image": ""
+              }
+            ],
+            "type": "input_multiplier",
+            "price": "2",
+            "price_type": "quantity_based",
+            "adjust_price": 1,
+            "name": "Soda",
+            "description_enable": 0
+          },
+          {
+            "description": "",
+            "title_format": "label",
+            "required": 1,
+            "restrictions": 0,
+            "position": 2,
+            "display": "radiobutton",
+            "restrictions_type": "any_text",
+            "min": 0,
+            "max": 0,
+            "options": [
+              {
+                "label": "Yes",
+                "price_type": "flat_fee",
+                "price": "5",
+                "image": ""
+              },
+              {
+                "label": "No",
+                "price_type": "flat_fee",
+                "price": "",
+                "image": ""
+              }
+            ],
+            "type": "multiple_choice",
+            "price": "",
+            "price_type": "flat_fee",
+            "adjust_price": 0,
+            "name": "Delivery",
+            "description_enable": 0
+          }
+        ]
+      },
+      {
+        "id": 6000,
+        "key": "just_a_custom_field",
+        "value": "10"
+      }
+    ],
+    "composite_virtual": false,
+    "composite_layout": "",
+    "composite_add_to_cart_form_location": "",
+    "composite_editable_in_cart": false,
+    "composite_sold_individually_context": "",
+    "composite_shop_price_calc": "",
+    "composite_components": [],
+    "composite_scenarios": [],
+    "bundled_by": [],
+    "bundle_stock_status": "instock",
+    "bundle_stock_quantity": null,
+    "bundle_virtual": false,
+    "bundle_layout": "",
+    "bundle_add_to_cart_form_location": "",
+    "bundle_editable_in_cart": false,
+    "bundle_sold_individually_context": "",
+    "bundle_item_grouping": "",
+    "bundle_min_size": "",
+    "bundle_max_size": "",
+    "bundled_items": [],
+    "jetpack_publicize_connections": [],
+    "_links": {
+      "self": [
+        {
+          "href": "https://example.com/wp-json/wc/v3/products/282"
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://example.com/wp-json/wc/v3/products"
+        }
+      ]
+    }
+  }
+}

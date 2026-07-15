@@ -130,16 +130,19 @@ private struct TooltipOverlayRootView: View {
                     // The title/message text hit-tests independently and would swallow the dismiss
                     // tap; the content shape below owns the whole bubble instead.
                     .allowsHitTesting(false)
-                    // `idealWidth` + `fixedSize` lets the bubble hug short text yet wrap before it
-                    // would spill off the chosen side.
-                    .frame(idealWidth: layout.availableBubbleWidth(for: arrowEdge))
-                    .fixedSize()
+                    // Measured and tappable here — on the bubble itself — because the width-cap
+                    // frame below is wider than a short bubble that hugs its text, and the layout
+                    // math, arrow, and tap region must all use the bubble's real frame.
                     .onGeometryChange(for: CGRect.self, of: { $0.frame(in: .global) }) { frame in
                         bubbleSize = frame.size
                         model.bubbleFrame = frame
                     }
                     .contentShape(Rectangle())
                     .onTapGesture { model.onDismiss() }
+                    // `idealWidth` + `fixedSize` lets the bubble hug short text yet wrap before it
+                    // would spill off the chosen side; the bubble centers in this invisible frame.
+                    .frame(idealWidth: layout.availableBubbleWidth(for: arrowEdge))
+                    .fixedSize()
                     // Centered on the anchor, then pushed fully onto the arrow's side (local space
                     // matches global on this full-window reader, minus its origin).
                     .position(x: anchorFrame.midX + offset.width - bounds.minX,

@@ -275,6 +275,29 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                        originalImages: originalProduct.images)
         return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
     }
+
+    /// Re-fetches the product from the server so the detail screen reflects remote changes (e.g. new reviews or
+    /// an updated price) made since it was cached. The fresh product is only applied when there are no unsaved
+    /// local edits, so an in-progress edit is never clobbered.
+    func refreshProduct() {
+        guard originalProduct.product.existsRemotely else {
+            return
+        }
+        let action = ProductAction.retrieveProduct(siteID: originalProduct.siteID,
+                                                   productID: originalProduct.productID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let refreshedProduct):
+                guard !self.hasUnsavedChanges() else {
+                    return
+                }
+                self.originalProduct = EditableProductModel(product: refreshedProduct)
+            case .failure(let error):
+                DDLogError("⛔️ Error refreshing product on product detail: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - More menu

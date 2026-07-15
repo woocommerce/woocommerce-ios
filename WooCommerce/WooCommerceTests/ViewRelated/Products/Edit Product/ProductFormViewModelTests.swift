@@ -807,6 +807,74 @@ final class ProductFormViewModelTests: XCTestCase {
     }
 
 
+    // MARK: `refreshProduct`
+
+    func test_refreshProduct_updates_product_from_remote_when_no_unsaved_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 22, name: "Album", averageRating: "0.00", ratingCount: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .retrieveProduct(_, _, onCompletion) = action {
+                onCompletion(.success(product.copy(averageRating: "5.00", ratingCount: 1)))
+            }
+        }
+
+        // When
+        viewModel.refreshProduct()
+
+        // Then
+        waitUntil {
+            viewModel.productModel.product.ratingCount == 1
+        }
+        XCTAssertEqual(viewModel.productModel.product.averageRating, "5.00")
+        XCTAssertEqual(viewModel.originalProductModel.product.ratingCount, 1)
+    }
+
+    func test_refreshProduct_does_not_override_unsaved_local_edits() {
+        // Given
+        let product = Product.fake().copy(productID: 22, name: "Old name", ratingCount: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
+        var retrieveInvoked = false
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .retrieveProduct(_, _, onCompletion) = action {
+                retrieveInvoked = true
+                onCompletion(.success(product.copy(name: "Remote name", ratingCount: 1)))
+            }
+        }
+
+        // When
+        viewModel.updateName("Locally edited name")
+        viewModel.refreshProduct()
+
+        // Then
+        waitUntil {
+            retrieveInvoked
+        }
+        XCTAssertEqual(viewModel.productModel.name, "Locally edited name")
+        XCTAssertEqual(viewModel.productModel.product.ratingCount, 0)
+    }
+
+    func test_refreshProduct_does_not_fetch_for_product_that_does_not_exist_remotely() {
+        // Given
+        let product = Product.fake().copy(productID: 0)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = createViewModel(product: product, formType: .add, stores: stores)
+        var retrieveInvoked = false
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case .retrieveProduct = action {
+                retrieveInvoked = true
+            }
+        }
+
+        // When
+        viewModel.refreshProduct()
+
+        // Then
+        XCTAssertFalse(retrieveInvoked)
+    }
+
     // MARK: Subscription Free trial
 
     func test_updateSubscriptionFreeTrialSettings_sets_subscription_free_trial_info() throws {

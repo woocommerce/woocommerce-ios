@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Product duplication now uses WooCommerce's built-in copy flow when available, with compatibility support for older stores. [https://github.com/woocommerce/woocommerce-ios/pull/17553]
 
 
 25.2

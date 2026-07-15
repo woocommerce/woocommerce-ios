@@ -17,7 +17,9 @@ These rules are enforced by SwiftLint (see `.swiftlint.yml` for the full configu
 - `DDLog*` writes to the CocoaLumberjack logs — the Xcode console and the local log files shown in Settings → Help → Application Logs, which are also attached to support requests and uploaded alongside crash reports. It does NOT create a Sentry issue by itself, so a `DDLogError` alone is not searchable or alertable in production
 - Report production-relevant errors to the crash-logging system: `ServiceLocator.crashLogging.logError(_:userInfo:level:)` or `logMessage(_:properties:level:)` (`SeverityLevel` = `.fatal/.error/.warning/.info/.debug`)
 - Fail fast: crash (`fatalError`) when the app reaches a genuinely unrecoverable or corrupted state. For recoverable errors, report a handled event (`logError`/`logMessage`) rather than silently swallowing it — never swallow
-- Every `fatalError` / `preconditionFailure` / `assertionFailure` MUST have a preceding comment justifying why crashing is correct and the state is unrecoverable
+- From now on, every `fatalError` / `preconditionFailure` / `assertionFailure` you add or modify MUST have a preceding comment justifying why crashing is correct and the state is unrecoverable. A descriptive message is not a substitute: the message says what broke, the comment says why crashing beats recovering
+- The codebase still has many un-commented crash sites predating this rule. They are NOT a precedent to copy — do not treat existing bare `fatalError()` calls as the house style, and do not go fix them in unrelated PRs either
+- Exempt: the UIKit-mandated `required init?(coder:)` / `fatalError("init(coder:) has not been implemented")` boilerplate, which encodes no decision worth justifying
 - To report AND terminate on a truly unrecoverable state, use `crashLogging.logFatalErrorAndExit(_:userInfo:)` rather than a bare `fatalError` — it delivers the event to Sentry with metadata before exit
 - See `docs/coding-style-guide.md` (Error Handling) for examples
 

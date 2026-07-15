@@ -129,12 +129,24 @@ ServiceLocator.crashLogging.logMessage("Payment intent had no id", properties: n
 
 ### Crashing with `fatalError`
 
-Every `fatalError` (and `preconditionFailure` / `assertionFailure`) must be preceded by a comment justifying **why crashing is the correct response** and why the state is genuinely unrecoverable. If the app can keep running, report the error via `crashLogging.logError` / `logMessage` instead of crashing.
+From now on, every `fatalError` (and `preconditionFailure` / `assertionFailure`) **you add or modify** must be preceded by a comment justifying **why crashing is the correct response** and why the state is genuinely unrecoverable. If the app can keep running, report the error via `crashLogging.logError` / `logMessage` instead of crashing.
 
 ```swift
 // fatalError: the app cannot function without a valid managed object model. This only
 // happens on a corrupt or incompatible install, which cannot be recovered at runtime.
 fatalError("Could not load the Core Data model")
+```
+
+A descriptive message does not satisfy this on its own. `fatalError("Could not load the Core Data model")` says *what* failed; the comment is where you argue that crashing beats recovering, which is the part a future reader cannot reconstruct from the code.
+
+This rule applies going forward, not retroactively. The codebase contains many crash sites that predate it, including bare `fatalError()` calls with no message at all — they are not the house style, and this is not a request to go comment them all. Fix them when you are already changing that code; otherwise leave them.
+
+The UIKit-mandated boilerplate is exempt, since it encodes no decision worth justifying:
+
+```swift
+required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+}
 ```
 
 When you must both report *and* terminate on a truly unrecoverable state, prefer `crashLogging.logFatalErrorAndExit(_:userInfo:)` (today used only by `CoreDataManager` for launch-time Core Data failures) over a bare `fatalError`, so the incident reaches Sentry with its metadata before the process exits.

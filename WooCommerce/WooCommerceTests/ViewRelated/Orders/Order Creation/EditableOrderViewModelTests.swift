@@ -645,7 +645,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         assertEqual(0, productRow?.productRow.productDiscount)
-        XCTAssertFalse(productRow?.productRow.hasDiscount ?? true)
+        XCTAssertFalse(productRow?.productRow.hasProductDiscount ?? true)
     }
 
     func test_createProductRowViewModel_when_order_item_amounts_are_unparseable_then_discount_is_zero() {
@@ -661,7 +661,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         assertEqual(0, productRow?.productRow.productDiscount)
-        XCTAssertFalse(productRow?.productRow.hasDiscount ?? true)
+        XCTAssertFalse(productRow?.productRow.hasProductDiscount ?? true)
     }
 
     func test_createProductRowViewModel_does_not_set_product_discount_when_order_has_coupon() throws {

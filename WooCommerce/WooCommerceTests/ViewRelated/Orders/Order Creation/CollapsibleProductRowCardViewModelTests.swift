@@ -117,22 +117,22 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
     }
 
-    // MARK: - `hasDiscount`
+    // MARK: - `hasProductDiscount`
 
-    func test_when_discount_is_zero_then_viewModel_hasDiscount_is_false() {
+    func test_when_productDiscount_is_zero_then_viewModel_hasProductDiscount_is_false() {
         // Given
-        let viewModel = createViewModel(discount: 0)
+        let viewModel = createViewModel(productDiscount: 0)
 
         // Then
-        XCTAssertFalse(viewModel.hasDiscount)
+        XCTAssertFalse(viewModel.hasProductDiscount)
     }
 
-    func test_when_discount_is_greater_than_zero_then_viewModel_hasDiscount() {
+    func test_when_productDiscount_is_greater_than_zero_then_viewModel_hasProductDiscount() {
         // Given
-        let viewModel = createViewModel(discount: 0.50)
+        let viewModel = createViewModel(productDiscount: 0.50)
 
         // Then
-        XCTAssertTrue(viewModel.hasDiscount)
+        XCTAssertTrue(viewModel.hasProductDiscount)
     }
 
     // MARK: - `totalPriceAfterDiscountLabel`
@@ -143,7 +143,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let discount: Decimal = 0.50
 
         // When
-        let viewModel = createViewModel(price: price, discount: discount)
+        let viewModel = createViewModel(price: price, productDiscount: discount)
 
         // Then
         assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
@@ -157,7 +157,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // When
         let viewModel = createViewModel(price: price,
-                                        discount: discount,
+                                        productDiscount: discount,
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
@@ -663,7 +663,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
-                         discount: Decimal = .zero,
+                         productDiscount: Decimal = .zero,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -684,7 +684,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
-                                           productDiscount: discount,
+                                           productDiscount: productDiscount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

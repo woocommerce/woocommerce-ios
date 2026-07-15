@@ -274,9 +274,14 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         let productImagesUploader = MockProductImageUploader()
         let viewModel = createViewModel(product: originalProduct, formType: .edit, productImagesUploader: productImagesUploader)
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
-            if case let ProductAction.addProduct(productToSave, onCompletion) = action {
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(productToSave, onCompletion):
                 // Simulate the server returning the duplicate with a new ID and copied name.
                 onCompletion(.success(productToSave.copy(productID: 456, name: "Original Copy")))
+            default:
+                break
             }
         }
 

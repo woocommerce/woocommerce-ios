@@ -3,7 +3,7 @@
 
 25.3
 -----
-
+- [*] Product details now refresh when you reopen a product, so review counts, price, and other fields stay up to date without restarting the app. [https://github.com/woocommerce/woocommerce-ios/pull/17546]
 
 25.2
 -----

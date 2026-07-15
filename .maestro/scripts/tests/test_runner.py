@@ -51,6 +51,15 @@ class RunnerTests(unittest.TestCase):
             )
             self.assertEqual("com.automattic.alpha.woocommerce", RUNNER.app_identifier(app))
 
+    def test_maestro_env_args_derives_lab_store_host(self) -> None:
+        args = RUNNER.maestro_env_args(
+            {"MAESTRO_WOO_LAB_JETPACK_STORE_URL": "http://shop.example.com/path"},
+            "com.example.app",
+            "run-1",
+        )
+
+        self.assertIn("MAESTRO_WOO_LAB_JETPACK_STORE_HOST=shop.example.com", args)
+
 
 if __name__ == "__main__":
     unittest.main()

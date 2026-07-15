@@ -17,6 +17,7 @@ import sys
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -210,8 +211,17 @@ def select_flows(args: argparse.Namespace, include: list[str], exclude: list[str
     return selected
 
 
+def normalized_store_host(value: str) -> str:
+    candidate = value.strip()
+    parsed = urlsplit(candidate if "://" in candidate else f"//{candidate}")
+    return (parsed.hostname or "").lower().rstrip(".")
+
+
 def maestro_env_args(values: dict[str, str], app_id: str, run_id: str) -> list[str]:
     exported = {name: value for name, value in values.items() if name.startswith("MAESTRO_") and value}
+    lab_store_url = values.get("MAESTRO_WOO_LAB_JETPACK_STORE_URL", "")
+    if lab_store_host := normalized_store_host(lab_store_url):
+        exported["MAESTRO_WOO_LAB_JETPACK_STORE_HOST"] = lab_store_host
     exported.update({"APP_ID": app_id, "SUITE_RUN_ID": run_id, "MAESTRO_SUITE_RUN_ID": run_id})
     result: list[str] = []
     for name in sorted(exported):

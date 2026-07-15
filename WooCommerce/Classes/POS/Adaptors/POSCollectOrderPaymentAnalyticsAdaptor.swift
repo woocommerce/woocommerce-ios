@@ -101,7 +101,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 
     func trackPaymentFailure(with error: any Error) { }
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
-    func trackEmailTapped() { }
+    func trackEmailTapped(currency: String?, paymentMethod: PaymentMethod?) { }
     func trackReceiptPrintTapped() { }
     func trackReceiptPrintSuccess() { }
     func trackReceiptPrintCanceled() { }

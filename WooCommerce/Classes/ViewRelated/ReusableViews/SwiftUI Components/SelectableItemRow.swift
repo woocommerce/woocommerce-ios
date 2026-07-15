@@ -36,6 +36,7 @@ struct SelectableItemRow: View {
                 Text(title)
                     .bodyStyle(isEnabled)
                     .multilineTextAlignment(.leading)
+                    .accessibilityIdentifier(selected ? "selectable-item-selected" : "selectable-item-unselected")
                 subtitle.map {
                     Text($0)
                         .footnoteStyle(isEnabled: isEnabled)

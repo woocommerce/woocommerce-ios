@@ -110,7 +110,7 @@ public class CurrencyFormatter {
     ///     - currencyPosition: the currency position enum, either right, left, right_space, or left_space.
     ///     - currencySymbol: the currency symbol as a string, to be used with the amount.
     ///     - isNegative: whether the value is negative or not.
-    ///     - locale: the locale that is used to format the currency amount string.
+    ///     - locale: Locale used to protect signed numeric values in right-to-left language contexts. Currency order is derived from store settings.
     ///
     public func formatCurrency(using amount: String,
                                currencyPosition position: CurrencySettings.CurrencyPosition,
@@ -118,46 +118,57 @@ public class CurrencyFormatter {
                                isNegative: Bool,
                                locale: Locale = .current) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
-        let negative = isNegative ? "-" : ""
 
         // Remove all occurrences of the minus sign from the string amount.
         // We want to position the minus sign manually.
         let amount = amount.replacingOccurrences(of: "-", with: "")
 
-        // We're relying on the phone's Locale to assist with language direction
-        let languageCode = locale.language.languageCode?.identifier
-
-        // Detect the language direction
-        var languageDirection: Locale.LanguageDirection = .unknown
-        if let language = languageCode {
-            languageDirection = Locale.Language(identifier: language).characterDirection
+        if isNegative && symbol.containsStrongRightToLeftCharacter {
+            return formatNegativeCurrencyWithStrongRightToLeftSymbol(using: amount,
+                                                                     currencyPosition: position,
+                                                                     currencySymbol: symbol,
+                                                                     space: space)
         }
 
-        // For left-to-right languages, such as English
-        guard languageDirection == .rightToLeft else {
-            switch position {
-            case .left:
-                return negative + symbol + amount
-            case .right:
-                return negative + amount + symbol
-            case .leftSpace:
-                return negative + symbol + space + amount
-            case .rightSpace:
-                return negative + amount + space + symbol
-            }
-        }
+        let negative = isNegative ? negativePrefix(for: locale) : ""
 
-        // For right-to-left languages, such as Arabic
         switch position {
         case .left:
-            return amount + negative + symbol
+            return negative + symbol + amount
         case .right:
-            return symbol + negative + amount
+            return negative + amount + symbol
         case .leftSpace:
-            return amount + negative + space + symbol
+            return negative + symbol + space + amount
         case .rightSpace:
-            return symbol + space + negative + amount
+            return negative + amount + space + symbol
         }
+    }
+
+    private func formatNegativeCurrencyWithStrongRightToLeftSymbol(using amount: String,
+                                                                   currencyPosition position: CurrencySettings.CurrencyPosition,
+                                                                   currencySymbol symbol: String,
+                                                                   space: String) -> String {
+        // Preserve the symbol's RTL base direction while keeping the signed Western-number amount together.
+        let signedAmount = "\(DirectionalControl.leftToRightIsolate)-\(amount)\(DirectionalControl.popDirectionalIsolate)"
+
+        switch position {
+        case .left:
+            return DirectionalControl.rightToLeftMark + symbol + signedAmount
+        case .right:
+            return DirectionalControl.rightToLeftMark + signedAmount + symbol
+        case .leftSpace:
+            return DirectionalControl.rightToLeftMark + symbol + space + signedAmount
+        case .rightSpace:
+            return DirectionalControl.rightToLeftMark + signedAmount + space + symbol
+        }
+    }
+
+    private func negativePrefix(for locale: Locale) -> String {
+        guard locale.usesRightToLeftLanguage else {
+            return "-"
+        }
+
+        return DirectionalControl.leftToRightMark + "-"
     }
 
     /// Applies currency option settings to the amount (as String) for the given currency.
@@ -342,5 +353,35 @@ public class CurrencyFormatter {
                      locale: locale,
                      numberOfDecimals: numberOfDecimals,
                      isNegative: isNegative)
+    }
+}
+
+private enum DirectionalControl {
+    static let leftToRightMark = "\u{200E}"
+    static let rightToLeftMark = "\u{200F}"
+    static let leftToRightIsolate = "\u{2066}"
+    static let popDirectionalIsolate = "\u{2069}"
+}
+
+private extension String {
+    var containsStrongRightToLeftCharacter: Bool {
+        unicodeScalars.contains { scalar in
+            switch scalar.value {
+            case 0x0590...0x08FF, 0xFB1D...0xFDFF, 0xFE70...0xFEFF:
+                return true
+            default:
+                return false
+            }
+        }
+    }
+}
+
+private extension Locale {
+    var usesRightToLeftLanguage: Bool {
+        guard let languageCode = language.languageCode?.identifier else {
+            return false
+        }
+
+        return Locale.Language(identifier: languageCode).characterDirection == .rightToLeft
     }
 }

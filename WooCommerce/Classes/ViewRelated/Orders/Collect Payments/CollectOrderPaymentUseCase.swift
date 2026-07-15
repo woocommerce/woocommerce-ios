@@ -738,7 +738,7 @@ private extension CollectOrderPaymentUseCase {
 
                 switch result {
                 case let .success(receipt):
-                    presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                    presentBackendReceiptModally(receipt: receipt, paymentMethod: paymentMethod, onCompleted: onCompleted)
                 case let .failure(error):
                     presentReceiptFailedNotice(with: error, onCompleted: onCompleted)
                 }
@@ -832,11 +832,12 @@ private extension CollectOrderPaymentUseCase {
 private extension CollectOrderPaymentUseCase {
     /// Prepares and presents the backend receipt modally
     ///
-    func presentBackendReceiptModally(receipt: Receipt, onCompleted: @escaping (() -> Void)) {
+    func presentBackendReceiptModally(receipt: Receipt, paymentMethod: PaymentMethod?, onCompleted: @escaping (() -> Void)) {
         let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                 orderID: order.orderID,
                                                 siteName: stores.sessionManager.defaultSite?.name,
-                                                currency: order.currency)
+                                                currency: order.currency,
+                                                paymentMethod: paymentMethod)
         let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDisappear: {
             onCompleted()
         })

@@ -43,6 +43,23 @@ struct WooAnalyticsEvent_ReceiptTests {
         #expect(event.properties["payment_method_type"] as? String == "card_interac")
     }
 
+    @Test func test_receiptPrintTapped_when_backend_receipt_after_card_payment_then_includes_payment_method_type() {
+        // Given a backend receipt shown right after collecting a card payment, the payment method is known.
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+
+        // When
+        let event = WooAnalyticsEvent.InPersonPayments.receiptPrintTapped(countryCode: nil,
+                                                                          cardReaderModel: nil,
+                                                                          source: .backend,
+                                                                          currency: "USD",
+                                                                          paymentMethod: paymentMethod)
+
+        // Then
+        #expect(event.properties["source"] as? String == "backend")
+        #expect(event.properties["currency"] as? String == "USD")
+        #expect(event.properties["payment_method_type"] as? String == "card")
+    }
+
     // MARK: - currency
 
     @Test func test_receiptViewTapped_when_backend_without_paymentMethod_then_includes_currency_and_omits_payment_method_type() {

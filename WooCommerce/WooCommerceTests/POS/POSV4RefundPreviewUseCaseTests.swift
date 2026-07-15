@@ -55,7 +55,7 @@ struct POSV4RefundPreviewUseCaseTests {
         #expect(cache.isV4Available(siteID: siteID) == nil)
 
         // When the cached version is corrected, the next call probes normally.
-        stores.sessionManager.cachedWooCommerceVersion = "10.9.0"
+        (stores.sessionManager as? SessionManager)?.cachedWooCommerceVersion = "10.9.0"
         let secondResult = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then

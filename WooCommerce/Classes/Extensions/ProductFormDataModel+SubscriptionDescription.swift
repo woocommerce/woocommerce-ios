@@ -2,14 +2,6 @@ import Foundation
 import enum Yosemite.SubscriptionPeriod
 import enum Yosemite.ProductType
 
-extension ProductType {
-
-    /// Whether this product type represents a subscription (simple or variable subscription).
-    var isSubscription: Bool {
-        self == .subscription || self == .variableSubscription
-    }
-}
-
 extension ProductFormDataModel {
 
     /// Whether to treat this product as a subscription for display purposes.

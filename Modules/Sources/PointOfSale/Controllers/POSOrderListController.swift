@@ -370,6 +370,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false
+        resetRefundReviewPreparation()
     }
 
     @MainActor

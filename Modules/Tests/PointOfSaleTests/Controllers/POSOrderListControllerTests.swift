@@ -1162,6 +1162,23 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func prepareRefundReview_when_order_changes_mid_flight_then_preparation_is_cancelled_and_reset() async throws {
+        // Given
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.onPrepareReviewDataCalled = { [weak sut] in
+            sut?.selectOrder(nil)
+        }
+
+        // When
+        let state = await awaitReviewPreparation(sut)
+
+        // Then the order switch cancelled the in-flight preparation and reset the state
+        #expect(state == .idle)
+    }
+
+    @MainActor
     @Test func prepareRefundReview_when_no_preparation_loaded_then_state_is_preparationError() async throws {
         // Given no selected order / no started refund flow
 

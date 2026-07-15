@@ -104,10 +104,19 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             return nil
         }
 
+        // Only the latest preview may populate the stash: clear it up front, and bail before any
+        // write when this preparation was superseded (cancelled) while the request was in flight —
+        // otherwise a late response could overwrite a newer selection's total and desync the
+        // reader charge from the reviewed amount.
+        serverPreviewTotals[preparation.orderID] = nil
+
         let lineItems = refundMapping.refundV4LineItems(from: selectedItems, context: context)
-        switch await v4RefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
-                                                          orderID: context.order.orderID,
-                                                          lineItems: lineItems) {
+        let previewResult = await v4RefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
+                                                                       orderID: context.order.orderID,
+                                                                       lineItems: lineItems)
+        try Task.checkCancellation()
+
+        switch previewResult {
         case .serverCalculated(let preview):
             serverPreviewTotals[preparation.orderID] = preview.total
             return reviewData(subtotal: preview.subtotal,
@@ -257,6 +266,7 @@ private extension POSRefundSubmissionAdaptor {
 
     func removePreloadedRefunds(except orderID: Int64) {
         preloadedRefundSnapshots = preloadedRefundSnapshots.filter { $0.key == orderID }
+        serverPreviewTotals = serverPreviewTotals.filter { $0.key == orderID }
         for preloadedOrderID in Array(preloadTasks.keys) where preloadedOrderID != orderID {
             removePreloadedRefund(for: preloadedOrderID)
         }

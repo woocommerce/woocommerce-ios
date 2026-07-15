@@ -135,7 +135,19 @@ private extension POSRefundItemsSelectionView {
                 onContinue()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
-            .disabled(!hasSelectedItems || reviewPreparationState == .loading || reviewPreparationState == .previewError)
+            .disabled(isContinueDisabled)
+        }
+    }
+
+    var isContinueDisabled: Bool {
+        guard hasSelectedItems else {
+            return true
+        }
+        switch reviewPreparationState {
+        case .loading, .previewError, .preparationError:
+            return true
+        case .idle, .ready:
+            return false
         }
     }
 }

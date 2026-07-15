@@ -41,18 +41,53 @@ struct POSV4RefundPreviewUseCaseTests {
         #expect(stores.receivedActions.isEmpty)
     }
 
-    @Test func previewRefund_when_wc_version_below_minimum_then_marks_unavailable_and_falls_back_without_dispatch() async {
+    @Test func previewRefund_when_wc_version_below_minimum_then_falls_back_without_writing_cache() async {
         // Given
         let cache = V4RefundAvailabilityCache()
-        let (sut, stores, _) = makeSUT(cachedWooVersion: "10.8.0", cache: cache)
+        let (sut, stores, _) = makeSUT(cachedWooVersion: "10.8.0", cache: cache, previewResult: .success(preview()))
+
+        // When
+        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the version hint skips the probe but never carries a probe's permanence.
+        #expect(result == .fallbackToLocal)
+        #expect(stores.receivedActions.isEmpty)
+        #expect(cache.isV4Available(siteID: siteID) == nil)
+
+        // When the cached version is corrected, the next call probes normally.
+        stores.sessionManager.cachedWooCommerceVersion = "10.9.0"
+        let secondResult = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(secondResult == .serverCalculated(preview()))
+        #expect(cache.isV4Available(siteID: siteID) == true)
+    }
+
+    @Test func previewRefund_when_site_cached_available_then_stale_version_hint_is_ignored() async {
+        // Given a server-confirmed site and a (stale) below-minimum version string
+        let cache = V4RefundAvailabilityCache()
+        cache.markV4Available(siteID: siteID)
+        let (sut, _, _) = makeSUT(cachedWooVersion: "10.8.0", cache: cache, previewResult: .success(preview()))
+
+        // When
+        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the probe runs and the confirmed availability is not downgraded.
+        #expect(result == .serverCalculated(preview()))
+        #expect(cache.isV4Available(siteID: siteID) == true)
+    }
+
+    @Test func previewRefund_when_wc_version_is_prerelease_of_minimum_then_probes() async {
+        // Given a beta of the minimum version (10.9.0-beta1 must not read as below 10.9.0)
+        let cache = V4RefundAvailabilityCache()
+        let (sut, _, _) = makeSUT(cachedWooVersion: "10.9.0-beta1", cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
-        #expect(result == .fallbackToLocal)
-        #expect(stores.receivedActions.isEmpty)
-        #expect(cache.isV4Available(siteID: siteID) == false)
+        #expect(result == .serverCalculated(preview()))
+        #expect(cache.isV4Available(siteID: siteID) == true)
     }
 
     @Test func previewRefund_when_wc_version_unknown_then_probes_instead_of_falling_back() async {
@@ -120,6 +155,20 @@ struct POSV4RefundPreviewUseCaseTests {
         // Then
         #expect(result == .fallbackToLocal)
         #expect(cache.isV4Available(siteID: siteID) == false)
+    }
+
+    @Test func previewRefund_when_404_without_rest_no_route_then_returns_error_without_marking_unavailable() async {
+        // Given a genuine missing-resource 404 (not a missing route)
+        let cache = V4RefundAvailabilityCache()
+        let response = Data(#"{"code":"woocommerce_rest_shop_order_invalid_id"}"#.utf8)
+        let (sut, _, _) = makeSUT(cache: cache, previewResult: .failure(NetworkError.notFound(response: response)))
+
+        // When
+        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then v4 stays enabled for the session; only `rest_no_route` may disable it.
+        #expect(result == .error)
+        #expect(cache.isV4Available(siteID: siteID) == nil)
     }
 
     @Test func previewRefund_when_other_error_then_returns_error_without_marking_unavailable() async {

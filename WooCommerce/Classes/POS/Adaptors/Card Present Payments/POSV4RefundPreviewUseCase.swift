@@ -12,7 +12,10 @@ import class WooFoundation.VersionHelpers
 /// Gating order (cheapest first):
 /// 1. `posRefundsV4` feature flag off → fall back (no network).
 /// 2. v4 already cached unavailable for this site → fall back (no network).
-/// 3. cached WooCommerce version older than 10.9.0 (where v4 shipped) → mark unavailable, fall back.
+/// 3. not yet probed and the cached WooCommerce version is older than 10.9.0 (where v4 shipped)
+///    → fall back without touching the availability cache: the version string is only a cheap,
+///    possibly-stale hint, so the probe stays the single authority on availability, and a
+///    server-confirmed site skips this check entirely.
 /// 4. no line items to preview → fall back.
 /// 5. probe `POST wc/v4/refunds/preview`: a `rest_no_route` response marks v4 unavailable and falls
 ///    back; any other error is surfaced as `.error`; success caches availability and returns totals.
@@ -34,6 +37,9 @@ final class POSV4RefundPreviewUseCase {
     private let availabilityCache: V4RefundAvailabilityCache
     private let minimumWooVersion: String
 
+    /// The `.shared` default argument touches MainActor-isolated state; that's safe because default
+    /// arguments are evaluated at the call site and every caller of this MainActor-isolated
+    /// initializer is itself MainActor-isolated.
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          availabilityCache: V4RefundAvailabilityCache = .shared,
@@ -49,12 +55,12 @@ final class POSV4RefundPreviewUseCase {
             return .fallbackToLocal
         }
 
-        if availabilityCache.isV4Available(siteID: siteID) == false {
+        let cachedAvailability = availabilityCache.isV4Available(siteID: siteID)
+        if cachedAvailability == false {
             return .fallbackToLocal
         }
 
-        if isWooVersionBelowV4Support() {
-            availabilityCache.markV4Unavailable(siteID: siteID)
+        if cachedAvailability == nil, isWooVersionBelowV4Support() {
             return .fallbackToLocal
         }
 
@@ -80,7 +86,11 @@ final class POSV4RefundPreviewUseCase {
         guard let version = stores.sessionManager.cachedWooCommerceVersion else {
             return false
         }
-        return !VersionHelpers.isVersionSupported(version: version, minimumRequired: minimumWooVersion)
+        // Include dev/beta versions so a `10.9.0-beta`/`-rc` store isn't treated as below 10.9.0
+        // (same choice as `POSTabEligibilityChecker`).
+        return !VersionHelpers.isVersionSupported(version: version,
+                                                  minimumRequired: minimumWooVersion,
+                                                  includesDevAndBetaVersions: true)
     }
 
     /// `true` only when the store genuinely doesn't register the v4 route (`rest_no_route`), so a

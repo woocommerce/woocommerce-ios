@@ -117,8 +117,6 @@ private struct CollapsibleProductRowCard: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
-    private let minusSign: String = NumberFormatter().minusSign
-
     private func dismissTooltip() {
         if shouldShowInfoTooltip {
             shouldShowInfoTooltip = false
@@ -359,11 +357,9 @@ private extension CollapsibleProductRowCard {
                     })
                     .disabled(isLoading)
                     Spacer()
-                    if let productDiscountLabel = viewModel.productDiscountLabel {
-                        Text(minusSign + productDiscountLabel)
-                            .foregroundColor(.green)
-                            .shimmering(active: isLoading)
-                    }
+                    Text(viewModel.productDiscountLabel)
+                        .foregroundColor(.green)
+                        .shimmering(active: isLoading)
                 }
                 // Redacts the discount editing row while product data is reloaded during remote sync.
                 // This avoids showing an out-of-date discount while hasn't synched

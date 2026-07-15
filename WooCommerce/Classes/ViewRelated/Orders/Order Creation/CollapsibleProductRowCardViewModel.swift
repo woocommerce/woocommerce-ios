@@ -291,11 +291,12 @@ extension CollapsibleProductRowCardViewModel {
 
     /// Formatted discount label for an individual product
     ///
-    var productDiscountLabel: String? {
-        guard productDiscount > 0 else {
-            return nil
+    var productDiscountLabel: String {
+        guard productDiscount > 0,
+              let formattedDiscount = currencyFormatter.formatAmount(productDiscount) else {
+            return ""
         }
-        return currencyFormatter.formatAmount(productDiscount)
+        return NumberFormatter().minusSign + formattedDiscount
     }
 
     var hasProductDiscount: Bool {

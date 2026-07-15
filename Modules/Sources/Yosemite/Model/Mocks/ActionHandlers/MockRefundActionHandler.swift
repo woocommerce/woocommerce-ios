@@ -26,9 +26,6 @@ struct MockRefundActionHandler: MockActionHandler {
 
 private extension MockRefundActionHandler {
 
-    /// Returns a deterministic, locally computed preview so mocked flows never hang on an
-    /// unresolved completion: quantity-based lines are priced from the mock order's items,
-    /// amount-based lines use their own total, and tax is zero.
     func previewRefund(siteID: Int64,
                        orderID: Int64,
                        lineItems: [RefundV4LineItem],
@@ -50,8 +47,6 @@ private extension MockRefundActionHandler {
         onCompletion(.success(preview))
     }
 
-    /// Returns a deterministic created refund (no storage side effects), mirroring what the v4
-    /// endpoint would acknowledge for the requested lines.
     func createRefundV4(siteID: Int64,
                         orderID: Int64,
                         reason: String,

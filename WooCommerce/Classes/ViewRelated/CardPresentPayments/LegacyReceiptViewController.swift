@@ -75,7 +75,9 @@ private extension LegacyReceiptViewController {
     @objc func emailReceipt() {
         emailDataSubscription = viewModel.emailReceiptTapped().sink { [weak self] data, countryCode in
             guard let self else { return }
-            let emailCoordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: countryCode, cardReaderModel: nil)
+            let emailCoordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: countryCode,
+                                                                             cardReaderModel: nil,
+                                                                             currency: data.order.currency)
             self.emailCoordinator = emailCoordinator
             emailCoordinator.presentEmailForm(data: data,
                                               from: self,

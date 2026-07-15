@@ -34,8 +34,11 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         spyPaymentCancelationSource = cancelationSource
     }
 
-    func trackEmailTapped() {
-        // no-op
+    var spyTrackEmailTappedCurrency: String? = nil
+    var spyTrackEmailTappedPaymentMethod: PaymentMethod? = nil
+    func trackEmailTapped(currency: String?, paymentMethod: PaymentMethod?) {
+        spyTrackEmailTappedCurrency = currency
+        spyTrackEmailTappedPaymentMethod = paymentMethod
     }
 
     func trackReceiptPrintTapped() {

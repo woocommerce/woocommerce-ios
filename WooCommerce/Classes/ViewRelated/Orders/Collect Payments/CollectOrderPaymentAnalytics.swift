@@ -15,7 +15,7 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource)
 
-    func trackEmailTapped()
+    func trackEmailTapped(currency: String?, paymentMethod: PaymentMethod?)
 
     func trackReceiptPrintTapped()
 
@@ -110,11 +110,13 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
                                                                                          siteID: siteID))
     }
 
-    func trackEmailTapped() {
+    func trackEmailTapped(currency: String?, paymentMethod: PaymentMethod?) {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: configuration.countryCode,
                                 cardReaderModel: connectedReader?.readerType.model ?? "",
-                                source: .local))
+                                source: .local,
+                                currency: currency,
+                                paymentMethod: paymentMethod))
     }
 
     func trackReceiptPrintTapped() {

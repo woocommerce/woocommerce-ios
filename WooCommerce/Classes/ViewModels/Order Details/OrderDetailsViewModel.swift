@@ -555,7 +555,9 @@ extension OrderDetailsViewModel {
 
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode,
+                                                                                     source: .backend,
+                                                                                     currency: order.currency))
 
             guard let cell = tableView.cellForRow(at: indexPath) as? TwoColumnHeadlineFootnoteTableViewCell else {
                 return
@@ -570,12 +572,13 @@ extension OrderDetailsViewModel {
                     let siteName = stores.sessionManager.defaultSite?.name
                     let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                             orderID: orderID,
-                                                            siteName: siteName)
+                                                            siteName: siteName,
+                                                            currency: order.currency)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                     cell.stopLoading()
                 case let .failure(error):
-                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
+                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error, currency: order.currency))
                     self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
                     cell.stopLoading()
                 }
@@ -583,7 +586,9 @@ extension OrderDetailsViewModel {
             ServiceLocator.stores.dispatch(action)
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode,
+                                                                                     source: .local,
+                                                                                     currency: order.currency))
             guard let receipt else {
                 return
             }

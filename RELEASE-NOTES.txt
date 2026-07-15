@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/PENDING]
 
 
 25.2

@@ -2,6 +2,7 @@ import MessageUI
 import UIKit
 import SwiftUI
 import struct Yosemite.Order
+import enum Hardware.PaymentMethod
 import WooFoundation
 
 /// Coordinates the navigation from a given view controller to present a mail composer for a card-present payment receipt.
@@ -9,6 +10,8 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     private let analytics: Analytics
     private let countryCode: CountryCode
     private let cardReaderModel: String?
+    private let currency: String?
+    private let paymentMethod: PaymentMethod?
 
     private var completion: (() -> Void)?
 
@@ -24,10 +27,16 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         let storeName: String?
     }
 
-    init(analytics: Analytics = ServiceLocator.analytics, countryCode: CountryCode, cardReaderModel: String?) {
+    init(analytics: Analytics = ServiceLocator.analytics,
+         countryCode: CountryCode,
+         cardReaderModel: String?,
+         currency: String? = nil,
+         paymentMethod: PaymentMethod? = nil) {
         self.analytics = analytics
         self.countryCode = countryCode
         self.cardReaderModel = cardReaderModel
+        self.currency = currency
+        self.paymentMethod = paymentMethod
     }
 
     /// Presents the native email client with the provided receipt content in HTML.
@@ -71,7 +80,9 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         analytics.track(event: .InPersonPayments.receiptEmailTapped(
             countryCode: countryCode,
             cardReaderModel: cardReaderModel,
-            source: .api)
+            source: .api,
+            currency: currency,
+            paymentMethod: paymentMethod)
         )
 
         let noticePresenter = DefaultNoticePresenter()
@@ -83,7 +94,9 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
                 analytics.track(event: .InPersonPayments.receiptEmailSuccess(
                     countryCode: countryCode,
                     cardReaderModel: cardReaderModel,
-                    source: .api)
+                    source: .api,
+                    currency: currency,
+                    paymentMethod: paymentMethod)
                 )
                 onCompleted(order)
             case .failure(let error):
@@ -91,14 +104,18 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
                     error: error,
                     countryCode: countryCode,
                     cardReaderModel: cardReaderModel,
-                    source: .api)
+                    source: .api,
+                    currency: currency,
+                    paymentMethod: paymentMethod)
                 )
                 noticePresenter.enqueue(notice: Notice(title: Localization.errorNotice, feedbackType: .error))
             case .canceled:
                 analytics.track(event: .InPersonPayments.receiptEmailCanceled(
                     countryCode: countryCode,
                     cardReaderModel: cardReaderModel,
-                    source: .api)
+                    source: .api,
+                    currency: currency,
+                    paymentMethod: paymentMethod)
                 )
                 onCompleted(nil)
             }
@@ -117,17 +134,23 @@ extension CardPresentPaymentReceiptEmailCoordinator: MFMailComposeViewController
         case .cancelled:
             analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: countryCode,
                                                                           cardReaderModel: cardReaderModel,
-                                                                          source: .local))
+                                                                          source: .local,
+                                                                          currency: currency,
+                                                                          paymentMethod: paymentMethod))
         case .sent, .saved:
             analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: countryCode,
                                                                          cardReaderModel: cardReaderModel,
-                                                                         source: .local))
+                                                                         source: .local,
+                                                                         currency: currency,
+                                                                         paymentMethod: paymentMethod))
         case .failed:
             analytics.track(event: .InPersonPayments
                 .receiptEmailFailed(error: error ?? UnknownEmailError(),
                                     countryCode: countryCode,
                                     cardReaderModel: cardReaderModel,
-                                    source: .local))
+                                    source: .local,
+                                    currency: currency,
+                                    paymentMethod: paymentMethod))
         @unknown default:
             assertionFailure("MFMailComposeViewController finished with an unknown result type")
         }

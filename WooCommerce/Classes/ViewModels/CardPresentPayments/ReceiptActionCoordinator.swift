@@ -7,11 +7,14 @@ struct ReceiptActionCoordinator {
                              params: CardPresentReceiptParameters,
                              countryCode: CountryCode,
                              cardReaderModel: String?,
+                             paymentMethod: PaymentMethod? = nil,
                              stores: StoresManager,
                              analytics: Analytics = ServiceLocator.analytics) async {
         analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: countryCode,
                                                                     cardReaderModel: cardReaderModel,
-                                                                    source: .local))
+                                                                    source: .local,
+                                                                    currency: order.currency,
+                                                                    paymentMethod: paymentMethod))
 
          await withCheckedContinuation { continuation in
             let action = ReceiptAction.print(order: order, parameters: params) { result in
@@ -19,16 +22,22 @@ struct ReceiptActionCoordinator {
                 case .success:
                     analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: countryCode,
                                                                                  cardReaderModel: cardReaderModel,
-                                                                                 source: .local))
+                                                                                 source: .local,
+                                                                                 currency: order.currency,
+                                                                                 paymentMethod: paymentMethod))
                 case .cancel:
                     analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: countryCode,
                                                                                   cardReaderModel: cardReaderModel,
-                                                                                  source: .local))
+                                                                                  source: .local,
+                                                                                  currency: order.currency,
+                                                                                  paymentMethod: paymentMethod))
                 case .failure(let error):
                     analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
                                                                                 countryCode: countryCode,
                                                                                 cardReaderModel: cardReaderModel,
-                                                                                source: .local))
+                                                                                source: .local,
+                                                                                currency: order.currency,
+                                                                                paymentMethod: paymentMethod))
                     DDLogError("⛔️ Failed to print receipt: \(error.localizedDescription)")
                 }
 

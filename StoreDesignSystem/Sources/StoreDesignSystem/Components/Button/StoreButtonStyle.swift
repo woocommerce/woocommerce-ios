@@ -42,20 +42,20 @@ private struct StoreButtonStyleBody: View {
 
     private var backgroundColor: Color {
         guard isEnabled else {
-            return variant.enabled.background == nil ? .clear : .storeStateLayerOnSurface08
+            return variant.enabled.background == nil ? .clear : .storeStateLayerOnSurfaceOpacity08
         }
         return variant.enabled.background ?? .clear
     }
 
     private var foregroundColor: Color {
-        isEnabled ? variant.enabled.foreground : .storeStateLayerOnSurface24
+        isEnabled ? variant.enabled.foreground : .storeStateLayerOnSurfaceOpacity24
     }
 
     private var borderColor: Color? {
         guard variant.enabled.border != nil else {
             return nil
         }
-        return isEnabled ? variant.enabled.border : .storeStateLayerOnSurface10
+        return isEnabled ? variant.enabled.border : .storeStateLayerOnSurfaceOpacity10
     }
 }
 

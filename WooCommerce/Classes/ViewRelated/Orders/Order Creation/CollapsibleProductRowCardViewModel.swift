@@ -278,15 +278,15 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
-    var totalPriceAfterProductDiscountLabel: String? {
+    var totalPriceAfterProductDiscountLabel: String {
         guard let price,
               let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
+            return ""
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
         let totalPriceAfterDiscount = subtotalDecimal.subtracting(productDiscount as NSDecimalNumber)
 
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount) ?? ""
     }
 
     /// Formatted discount label for an individual product

@@ -252,10 +252,5 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case starReceiptPrinterSupport
 
-    /// Enables the WooCommerce v4 refunds API in Point of Sale (server-calculated preview and
-    /// simplified refund creation). When the store doesn't expose the v4 endpoints (older
-    /// WooCommerce or the `rest-api-v4` flag off), POS transparently falls back to the v3 flow.
-    /// Mirrors the Android `WOO_POS_REFUND_V4` work. Off by default until the stack is ready.
-    ///
     case posRefundsV4
 }

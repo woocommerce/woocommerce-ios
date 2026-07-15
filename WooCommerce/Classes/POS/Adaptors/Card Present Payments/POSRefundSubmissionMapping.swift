@@ -103,9 +103,6 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
-    /// Maps the selected refundable rows to the simplified v4 line items: products send
-    /// `line_item_id` + quantity; fees send `line_item_id` + a tax-inclusive `refund_total`.
-    /// The server computes the monetary values from these, so no client-calculated amount is sent.
     func refundV4LineItems(from selectedItems: [POSRefundSelectableItem],
                            context: PreparedRefundContext) -> [RefundV4LineItem] {
         let components = refundComponents(from: selectedItems, context: context)

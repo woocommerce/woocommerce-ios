@@ -72,12 +72,6 @@ private extension RefundStore {
         }
     }
 
-    /// Requests a server-calculated refund preview via the v4 endpoint.
-    ///
-    /// Preview is read-only and has no side effects, so the result is forwarded as-is without
-    /// touching storage. A missing v4 route surfaces as `DotcomError.noRestRoute` (Jetpack-tunneled)
-    /// or `NetworkError.notFound` with the `rest_no_route` error code (direct REST).
-    ///
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem], onCompletion: @escaping (Result<RefundPreview, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -89,12 +83,6 @@ private extension RefundStore {
         }
     }
 
-    /// Creates a new Refund via the simplified v4 endpoint, then upserts the result.
-    ///
-    /// The v4 response has no display fields, so the upserted items carry empty names and zero
-    /// prices, and fee/shipping refunds are merged into `items` (see `RefundV4Mapper`). Callers
-    /// rendering the refund from storage should follow up with `retrieveRefund` to backfill it.
-    ///
     func createRefundV4(siteID: Int64,
                         orderID: Int64,
                         reason: String,

@@ -209,7 +209,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal)
 
         guard let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal),
-              let discount,
+              discount > 0,
               let discountLabelComponent = currencyFormatter.formatAmount(discount) else {
             return priceLabelComponent
         }
@@ -217,7 +217,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    private(set) var discount: Decimal?
+    private(set) var discount: Decimal
 
     /// Whether product discounts are disallowed,
     /// defaults to `false`
@@ -318,7 +318,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          sku: String?,
          productTypeLabel: String? = nil,
          price: String?,
-         discount: Decimal? = nil,
+         discount: Decimal = .zero,
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
@@ -360,7 +360,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      product: Product,
-                     discount: Decimal? = nil,
+                     discount: Decimal = .zero,
                      quantity: Decimal = 1,
                      productSubscriptionDetails: ProductSubscription? = nil,
                      selectedState: ProductRow.SelectedState = .notSelected,
@@ -449,7 +449,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      productVariation: ProductVariation,
-                     discount: Decimal? = nil,
+                     discount: Decimal = .zero,
                      name: String,
                      quantity: Decimal = 1,
                      productSubscriptionDetails: ProductSubscription? = nil,

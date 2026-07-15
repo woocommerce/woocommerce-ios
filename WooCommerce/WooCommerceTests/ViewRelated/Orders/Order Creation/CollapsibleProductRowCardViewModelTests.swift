@@ -119,15 +119,15 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     // MARK: - `hasDiscount`
 
-    func test_when_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+    func test_when_discount_is_zero_then_viewModel_hasDiscount_is_false() {
         // Given
-        let viewModel = createViewModel(discount: nil)
+        let viewModel = createViewModel(discount: 0)
 
         // Then
         XCTAssertFalse(viewModel.hasDiscount)
     }
 
-    func test_when_discount_is_not_nil_then_viewModel_hasDiscount() {
+    func test_when_discount_is_greater_than_zero_then_viewModel_hasDiscount() {
         // Given
         let viewModel = createViewModel(discount: 0.50)
 
@@ -663,7 +663,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
-                         discount: Decimal? = nil,
+                         discount: Decimal = .zero,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,

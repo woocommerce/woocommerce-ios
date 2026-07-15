@@ -677,8 +677,7 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        let itemDiscount = currentProductDiscount(on: item)
-        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+        let passingDiscountValue = currentProductDiscount(on: item)
 
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {

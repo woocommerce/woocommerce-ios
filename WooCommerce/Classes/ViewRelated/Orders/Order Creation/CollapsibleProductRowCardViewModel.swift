@@ -60,9 +60,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let price: String?
 
-    /// Product discount
+    /// Product discount. `0` means no discount.
     ///
-    let discount: Decimal?
+    let discount: Decimal
 
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
@@ -210,7 +210,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          sku: String?,
          price: String?,
          pricedIndividually: Bool = true,
-         discount: Decimal? = nil,
+         discount: Decimal = .zero,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -282,7 +282,7 @@ extension CollapsibleProductRowCardViewModel {
             return nil
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting(discount as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(totalPriceAfterDiscount)
     }
@@ -290,14 +290,14 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted discount label for an individual product
     ///
     var discountLabel: String? {
-        guard let discount else {
+        guard discount > 0 else {
             return nil
         }
         return currencyFormatter.formatAmount(discount)
     }
 
     var hasDiscount: Bool {
-        discount != nil
+        discount > 0
     }
 }
 

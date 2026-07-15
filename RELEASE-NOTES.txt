@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Order Creation: fixed custom amount fields losing entered values and keyboard focus after rotating an iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17550]
 
 
 25.2

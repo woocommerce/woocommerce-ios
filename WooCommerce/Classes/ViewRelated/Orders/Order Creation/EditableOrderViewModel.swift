@@ -210,6 +210,8 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var editingFee: OrderFeeLine? = nil
+    private var activeAddCustomAmountViewModel: AddCustomAmountViewModel?
+
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -1012,6 +1014,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onDismissAddCustomAmountView() {
         editingFee = nil
+        activeAddCustomAmountViewModel = nil
     }
 
     func onAddCustomAmountButtonTapped() {
@@ -1066,6 +1069,11 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+        if customAmountsSectionViewModel.showCustomAmountView,
+           let activeAddCustomAmountViewModel {
+            return activeAddCustomAmountViewModel
+        }
+
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
@@ -1088,6 +1096,10 @@ final class EditableOrderViewModel: ObservableObject {
         if let editingFee {
             viewModel.preset(with: editingFee)
             self.editingFee = nil
+        }
+
+        if customAmountsSectionViewModel.showCustomAmountView {
+            activeAddCustomAmountViewModel = viewModel
         }
 
         return viewModel

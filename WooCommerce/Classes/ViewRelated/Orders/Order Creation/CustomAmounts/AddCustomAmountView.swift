@@ -2,9 +2,14 @@ import SwiftUI
 import WooFoundation
 
 struct AddCustomAmountView: View {
-    @ObservedObject private(set) var viewModel: AddCustomAmountViewModel
+    @StateObject private var viewModel: AddCustomAmountViewModel
 
     @Environment(\.dismiss) var dismiss
+    @FocusState private var focusedField: AddCustomAmountViewModel.FocusedField?
+
+    init(viewModel: AddCustomAmountViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationStack {
@@ -14,16 +19,22 @@ struct AddCustomAmountView: View {
                         Text(Localization.amountTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
-                        FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel)
+                        FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
+                                                   isFocused: inputFocusBinding)
                     }
                 }
 
                 if let percentageViewModel = viewModel.percentageViewModel {
-                    AddCustomAmountPercentageView(viewModel: percentageViewModel)
+                    AddCustomAmountPercentageView(viewModel: percentageViewModel,
+                                                  isFocused: inputFocusBinding)
                 }
 
                 Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
                     .font(.title3)
+                    .onChange(of: viewModel.isTaxable) {
+                        focusedField = nil
+                        viewModel.clearFocus()
+                    }
 
                 VStack(alignment: .leading) {
                     Text(Localization.nameTitle)
@@ -32,6 +43,12 @@ struct AddCustomAmountView: View {
                     TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                         .secondaryTitleStyle()
                         .foregroundColor(Color(.textSubtle))
+                        .focused($focusedField, equals: .name)
+                        .onChange(of: focusedField) { _, focusedField in
+                            guard focusedField == .name else { return }
+                            viewModel.focusName()
+                        }
+                        .restoresInputFocus(when: viewModel.focusedField == .name, restoreFocus: restoreNameFocus)
                 }
 
                 Button(Localization.deleteButtonTitle) {
@@ -69,6 +86,29 @@ struct AddCustomAmountView: View {
             }
         }
         .wooNavigationBarStyle()
+    }
+}
+
+private extension AddCustomAmountView {
+    var inputFocusBinding: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.focusedField == .input
+            },
+            set: { isFocused in
+                if isFocused {
+                    focusedField = nil
+                    viewModel.focusInput()
+                } else {
+                    viewModel.clearInputFocus()
+                }
+            }
+        )
+    }
+
+    func restoreNameFocus() {
+        guard viewModel.focusedField == .name else { return }
+        focusedField = .name
     }
 }
 

@@ -71,9 +71,10 @@ private extension AddCustomAmountPercentageView {
                 .focused()
                 .focused($focusPercentageInput)
                 .keyboardType(.decimalPad)
+                .environment(\.layoutDirection, .leftToRight)
                 .opacity(0)
 
-                Text(text + "%")
+                Text((text + "%").leftToRightIsolatedNumericRuns)
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
@@ -88,5 +89,45 @@ private extension AddCustomAmountPercentageView {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+private extension String {
+    var leftToRightIsolatedNumericRuns: String {
+        var result = ""
+        var currentRun = ""
+        let characters = Array(self)
+
+        for (index, character) in characters.enumerated() {
+            if character.isNumber || shouldTreatAsNumericSeparator(character, at: index, in: characters) {
+                currentRun.append(character)
+            } else {
+                result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
+                currentRun = ""
+                result.append(character)
+            }
+        }
+
+        result.appendLeftToRightIsolatedRunIfNeeded(currentRun)
+        return result
+    }
+
+    private func shouldTreatAsNumericSeparator(_ character: Character, at index: Int, in characters: [Character]) -> Bool {
+        guard character == "." || character == "," || character == "-" else {
+            return false
+        }
+
+        let previousCharacterIsNumber = index > 0 && characters[index - 1].isNumber
+        let nextCharacterIsNumber = index < characters.count - 1 && characters[index + 1].isNumber
+
+        return previousCharacterIsNumber || nextCharacterIsNumber
+    }
+
+    mutating func appendLeftToRightIsolatedRunIfNeeded(_ run: String) {
+        guard run.isNotEmpty else {
+            return
+        }
+
+        append("\u{2066}\(run)\u{2069}")
     }
 }

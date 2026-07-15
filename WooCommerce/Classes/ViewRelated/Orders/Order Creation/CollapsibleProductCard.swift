@@ -237,7 +237,7 @@ private struct CollapsibleProductRowCard: View {
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
-                    Text(viewModel.totalPriceAfterDiscountLabel ?? "")
+                    Text(viewModel.totalPriceAfterProductDiscountLabel ?? "")
                         .redacted(reason: isLoading ? .placeholder : [])
                         .shimmering(active: isLoading)
                 }

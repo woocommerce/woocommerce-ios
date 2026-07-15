@@ -135,9 +135,9 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasProductDiscount)
     }
 
-    // MARK: - `totalPriceAfterDiscountLabel`
+    // MARK: - `totalPriceAfterProductDiscountLabel`
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let discount: Decimal = 0.50
@@ -146,10 +146,10 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let viewModel = createViewModel(price: price, productDiscount: discount)
 
         // Then
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$2.00", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let quantity: Decimal = 10
@@ -163,7 +163,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                                 quantityUpdatedCallback: { _ in }))
 
         // Then
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$24.50", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
     // MARK: - `isConfigurable`

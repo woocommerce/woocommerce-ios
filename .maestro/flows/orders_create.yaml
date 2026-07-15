@@ -16,55 +16,95 @@ tags:
 - assertVisible:
     id: new-order-create-button
 
-# Discover a live variable product directly in the order selector, then use an
-# actual variation as the order's primary line item. This proves the product is
-# orderable and avoids both a named fixture and remote-search differences.
+# Discover a live variable product directly in the order selector, then select
+# two distinct purchasable variations. This proves both line items are real,
+# avoids a named fixture, and guarantees one or more variable-product lines.
 - tapOn:
     id: new-order-add-product-button
 - scrollUntilVisible:
     element:
-      text: ".*[1-9][0-9]* variations?.*"
+      text: ".*(?:[2-9]|[1-9][0-9]+) variations.*"
       childOf:
         id: product-item
     direction: DOWN
     timeout: 30000
 - tapOn:
-    text: ".*[1-9][0-9]* variations?.*"
+    text: ".*(?:[2-9]|[1-9][0-9]+) variations.*"
     childOf:
       id: product-item
 - extendedWaitUntil:
     visible:
       id: product-variation-item
     timeout: 30000
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: product-variation-item
+    index: 0
+- evalScript: |
+    output.orderVariationOne = String(maestro.copiedText || '').trim();
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: product-variation-item
+    index: 1
+- evalScript: |
+    output.orderVariationTwo = String(maestro.copiedText || '').trim();
+    function escaped(value) {
+      return String(value)
+        .replace(/[.*+?^$()|[\]\\]/g, '\\$&')
+        .replace(/[{}]/g, '\\$&');
+    }
+    output.orderVariationOnePattern = '^' + escaped(output.orderVariationOne.replace(/ - /g, ', ')) + '(?: • .+)?$';
+    output.orderVariationTwoPattern = '^' + escaped(output.orderVariationTwo.replace(/ - /g, ', ')) + '(?: • .+)?$';
+- assertTrue:
+    condition: ${output.orderVariationOne.length > 0 && output.orderVariationTwo.length > 0 && output.orderVariationOne !== output.orderVariationTwo}
+    label: Two distinct purchasable variation rows are exposed
 - tapOn:
     id: product-variation-item
     index: 0
+- tapOn:
+    id: product-variation-item
+    index: 1
 - tapOn: Back
 - tapOn:
     id: product-multiple-selection-done-button
+- extendedWaitUntil:
+    visible:
+      text: "${output.orderVariationOnePattern}"
+    timeout: 30000
 - assertVisible:
-    id: product-item
+    text: "${output.orderVariationTwoPattern}"
+- takeScreenshot: order_two_distinct_variation_line_items
 
-# Persist quantity and discount on the selected real variation.
-- assertVisible: Quantity
+# Persist quantity and discount on the selected real variation. The quantity
+# field is exposed only after expanding its initially collapsed line-item card.
+- tapOn:
+    text: ".*, 1 × .*"
+    index: 0
+    point: "96%,20%"
+- extendedWaitUntil:
+    visible: Order Count
+    timeout: 15000
 - tapOn:
     text: "1"
-    below: Quantity
+    below: Order Count
+    above: Price
 - eraseText
 - inputText: "2"
 - tapOn: Done
 - assertVisible:
     text: "2"
-    below: Quantity
+    below: Order Count
 - tapOn:
     text: "2"
-    below: Quantity
+    below: Order Count
 - eraseText
 - inputText: "1"
 - tapOn: Done
 - assertVisible:
     text: "1"
-    below: Quantity
+    below: Order Count
 - assertVisible: Add Discount
 - tapOn: Add Discount
 - assertVisible: Enter amount

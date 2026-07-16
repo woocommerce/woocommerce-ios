@@ -86,13 +86,31 @@ private extension OrdersSplitViewWrapperController {
             .viewControllers.contains(where: { $0 is EmptyStateViewController }) == true
     }
 
-    func showSecondaryView(_ viewController: UIViewController) {
+    func showSecondaryView(_ viewController: UIViewController, onCompletion: (() -> Void)? = nil) {
         // added to remove double details presented bug #11752 https://github.com/woocommerce/woocommerce-ios/pull/11753#discussion_r1463020153
         // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
         ordersViewController.navigationController?.popToRootViewController(animated: false)
 
         ordersSplitViewController.setViewController(viewController, for: .secondary)
         ordersSplitViewController.show(.secondary)
+        completeAfterShowingSecondary(onCompletion)
+    }
+
+    func completeAfterShowingSecondary(_ completion: (() -> Void)?) {
+        guard let completion else {
+            return
+        }
+
+        if let transitionCoordinator = ordersSplitViewController.transitionCoordinator,
+           transitionCoordinator.animate(alongsideTransition: nil, completion: { _ in
+                completion()
+           }) {
+            return
+        }
+
+        DispatchQueue.main.async {
+            completion()
+        }
     }
 
     /// This is to update the order detail in split view
@@ -136,8 +154,9 @@ private extension OrdersSplitViewWrapperController {
         else {
             // When showing an order without quick navigation, it simply sets the order details to the secondary view.
             let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-            showSecondaryView(orderDetailsNavigationController)
-            onCompletion?(true)
+            showSecondaryView(orderDetailsNavigationController) {
+                onCompletion?(true)
+            }
             return
         }
 
@@ -150,7 +169,9 @@ private extension OrdersSplitViewWrapperController {
         }
 
         ordersSplitViewController.show(.secondary)
-        onCompletion?(true)
+        completeAfterShowingSecondary {
+            onCompletion?(true)
+        }
     }
 }
 

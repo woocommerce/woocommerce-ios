@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Order Creation: Fixed Collect Payment not opening payment methods after creating an order on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17552]
 
 - [*] Fixed RTL currency values showing the currency symbol and minus sign in the wrong order. [https://github.com/woocommerce/woocommerce-ios/pull/17547]
 

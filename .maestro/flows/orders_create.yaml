@@ -17,10 +17,28 @@ tags:
     id: new-order-create-button
 
 # Discover a live variable product directly in the order selector, then select
-# two distinct purchasable variations. This proves both line items are real,
-# avoids a named fixture, and guarantees one or more variable-product lines.
+# two distinct purchasable variations. The store must expose a published,
+# in-stock Variable product with at least two priced variations; unpriced or
+# out-of-stock shared products are intentionally not mutated by this flow.
 - tapOn:
     id: new-order-add-product-button
+- extendedWaitUntil:
+    visible: Filter
+    timeout: 15000
+- tapOn: Filter
+- extendedWaitUntil:
+    visible: Product Type
+    timeout: 15000
+- tapOn: Product Type
+- extendedWaitUntil:
+    visible: Variable
+    timeout: 15000
+- tapOn: Variable
+- tapOn: Show Products
+- extendedWaitUntil:
+    visible:
+      id: product-item
+    timeout: 30000
 - scrollUntilVisible:
     element:
       text: ".*(?:[2-9]|[1-9][0-9]+) variations.*"

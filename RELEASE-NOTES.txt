@@ -3,7 +3,7 @@
 
 25.3
 -----
-- [Internal] Reduce app binary size by right-sizing the Tap to Pay education artwork (~30 MB smaller compiled asset catalog). [https://github.com/woocommerce/woocommerce-ios/pull/17560]
+- [Internal] Reduce app binary size by converting the Tap to Pay education artwork to PNGs (~45 MB smaller compiled asset catalog). [https://github.com/woocommerce/woocommerce-ios/pull/17560]
 
 25.2
 -----

@@ -90,13 +90,24 @@ final class BulkUpdatePriceSettingsViewModel {
             return
         }
 
+        guard let currentPrice else {
+            return
+        }
+
         analytics.track(event: .Variations.bulkUpdateFieldTapped(field: .regularPrice))
 
         saveButtonState = .loading
 
+        let productVariations: [UpdateProductVariation]
+        switch editingPriceType {
+        case .regular:
+            productVariations = bulkUpdateOptionsModel.productVariations.map {
+                UpdateProductVariation(productVariationID: $0.productVariationID, regularPrice: currentPrice)
+            }
+        }
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,
                                                                     productID: productID,
-                                                                    productVariations: variationsWithUpdatedPrice()) { [weak self] result in
+                                                                    productVariations: productVariations) { [weak self] result in
             guard let self else { return }
 
             switch result {
@@ -134,15 +145,6 @@ final class BulkUpdatePriceSettingsViewModel {
             saveButtonState = .enabled
         } else {
             saveButtonState = .disabled
-        }
-    }
-
-    /// Generates a new array of variations that have the new price.
-    ///
-    private func variationsWithUpdatedPrice() -> [ProductVariation] {
-        switch editingPriceType {
-        case .regular:
-            return bulkUpdateOptionsModel.productVariations.map { $0.copy(regularPrice: currentPrice) }
         }
     }
 

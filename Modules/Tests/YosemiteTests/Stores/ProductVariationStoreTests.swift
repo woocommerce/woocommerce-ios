@@ -931,12 +931,14 @@ final class ProductVariationStoreTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1])
         assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
 
+        let updateVariations = variationIDs.map { UpdateProductVariation(productVariationID: $0, regularPrice: "1") }
+
         // When
         var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
         waitForExpectation { expectation in
             let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
                                                                         productID: sampleProductID,
-                                                                        productVariations: variations) { aResult in
+                                                                        productVariations: updateVariations) { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -970,12 +972,14 @@ final class ProductVariationStoreTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[1])
         assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
 
+        let updateVariations = variationIDs.map { UpdateProductVariation(productVariationID: $0, regularPrice: "1") }
+
         // When
         var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
         waitForExpectation { expectation in
             let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
                                                                         productID: sampleProductID,
-                                                                        productVariations: productVariations) { aResult in
+                                                                        productVariations: updateVariations) { aResult in
                 result = aResult
                 expectation.fulfill()
             }

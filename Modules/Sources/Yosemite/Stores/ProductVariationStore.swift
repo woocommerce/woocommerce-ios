@@ -265,7 +265,7 @@ private extension ProductVariationStore {
     ///
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [UpdateProductVariation],
                                  onCompletion: @escaping (Result<[ProductVariation], ProductUpdateError>) -> Void) {
         remote.updateProductVariations(siteID: siteID,
                                        productID: productID,

@@ -199,7 +199,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [UpdateProductVariation],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

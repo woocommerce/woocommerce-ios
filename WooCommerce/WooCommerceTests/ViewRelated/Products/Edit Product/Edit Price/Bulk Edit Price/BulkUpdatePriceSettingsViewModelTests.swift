@@ -243,11 +243,11 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         let dateOnSaleStart = Date()
         let dateOnSaleEnd = dateOnSaleStart
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, salePrice: "9")]
-        var updatedVariations: [ProductVariation] = []
+        var updatedVariations: [UpdateProductVariation] = []
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .updateProductVariations(_, _, variations, onCompletion):
-                updatedVariations = variations
+            case let .updateProductVariations(_, _, productVariations, onCompletion):
+                updatedVariations = productVariations
                 onCompletion(.success([]))
             default:
                 XCTFail("Unsupported Action")
@@ -269,8 +269,8 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         waitUntil {
             updatedVariations.isNotEmpty
         }
-        let expectedVariation = variations.map { $0.copy(regularPrice: "42") }
-        assertEqual(updatedVariations, expectedVariation)
+        let expectedVariations = variations.map { UpdateProductVariation(productVariationID: $0.productVariationID, regularPrice: "42") }
+        assertEqual(updatedVariations, expectedVariations)
     }
 }
 

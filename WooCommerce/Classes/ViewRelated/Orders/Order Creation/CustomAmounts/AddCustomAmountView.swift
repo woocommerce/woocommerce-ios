@@ -109,6 +109,10 @@ private extension AddCustomAmountView {
     func restoreNameFocus() {
         guard viewModel.focusedField == .name else { return }
         focusedField = .name
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            guard viewModel.focusedField == .name else { return }
+            focusedField = .name
+        }
     }
 }
 

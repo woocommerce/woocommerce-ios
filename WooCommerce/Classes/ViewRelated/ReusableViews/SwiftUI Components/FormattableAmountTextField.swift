@@ -197,7 +197,12 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
             guard handledFocusRequestID != requestID else { return }
 
             handledFocusRequestID = requestID
-            DispatchQueue.main.async { [weak textField] in
+            DispatchQueue.main.async { [weak self, weak textField] in
+                guard self?.parent.isFocused == true,
+                      self?.handledFocusRequestID == requestID else {
+                    return
+                }
+
                 textField?.becomeFirstResponder()
             }
         }

@@ -1,4 +1,4 @@
-# p2: products.detail.description, products.detail.price, products.detail.inventory, products.detail.categories, products.detail.type, products.detail.shipping, products.detail.short-description, products.detail.linked, products.detail.downloads
+# p2: products.detail.inventory, products.detail.categories, products.detail.shipping
 # Uses an unsaved Physical-product detail form so every empty-field entry point
 # is deterministic; the flow exits without publishing or leaving store data.
 appId: ${APP_ID}

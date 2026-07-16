@@ -1,44 +1,487 @@
-# p2: products.create
+# p2: products.create, products.detail.description, products.detail.price, products.detail.type, products.detail.tags, products.detail.short-description, products.detail.linked, products.detail.downloads
 appId: ${APP_ID}
-name: Create and reopen a run-owned physical product
+name: Create, publish, and verify a run-owned product lifecycle
 tags:
   - smoke_extended
   - flaky_quarantine
   - destructive
   - products
 ---
+- stopApp
 - runFlow: ../subflows/ensure_logged_in.yaml
 - runFlow: ../subflows/navigate_to_products.yaml
+- extendedWaitUntil:
+    notVisible: Offline - using cached data
+    timeout: 60000
+
+# Create a run-owned product that can be selected as the main product's upsell.
 - tapOn:
     id: product-add-button
-- assertVisible:
-    id: product-creation-sheet
+- extendedWaitUntil:
+    visible: Create Product|Select a product type
+    timeout: 15000
+- runFlow:
+    when:
+      visible: Create Product
+    commands:
+      - tapOn: Add manually
 - tapOn: Physical product
-- assertVisible:
-    id: product-form
+- extendedWaitUntil:
+    visible:
+      id: product-form
+    timeout: 20000
+- runFlow:
+    when:
+      visible: Boost your sales with linked products
+    commands:
+      - tapOn: Close
+- runFlow:
+    when:
+      visible: Got it
+    commands:
+      - tapOn: Got it
 - tapOn:
     id: product-title
 - eraseText
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: Maestro ${SUITE_RUN_ID}
+      TEXT_TO_PASTE: Maestro Upsell ${SUITE_RUN_ID}
 - hideKeyboard
-- tapOn:
-    id: publish-product-button
+- scrollUntilVisible:
+    element: Close
+    direction: UP
+    timeout: 1000
+    optional: true
+- runFlow:
+    when:
+      visible: Close
+    commands:
+      - tapOn: Close
+- extendedWaitUntil:
+    visible: Publish
+    timeout: 30000
+- tapOn: Publish
 - extendedWaitUntil:
     visible:
-      id: save-product-button
+      id: edit-product-more-options-button
+    timeout: 60000
+- tapOn:
+    id: edit-product-more-options-button
+- extendedWaitUntil:
+    visible: View Product in Store
+    timeout: 60000
+- assertVisible: Trash product
+- tapOn:
+    point: "10%,15%"
+- assertVisible: Maestro Upsell ${SUITE_RUN_ID}
+- tapOn:
+    point: "10%,10%"
+- extendedWaitUntil:
+    visible:
+      id: products-table-view
     timeout: 30000
-- assertVisible: Maestro ${SUITE_RUN_ID}
+
+# Build the main product entirely inside this run.
+- tapOn:
+    id: product-add-button
+- extendedWaitUntil:
+    visible: Create Product|Select a product type
+    timeout: 15000
+- runFlow:
+    when:
+      visible: Create Product
+    commands:
+      - tapOn: Add manually
+- tapOn: Physical product
+- extendedWaitUntil:
+    visible:
+      id: product-form
+    timeout: 20000
+- runFlow:
+    when:
+      visible: Boost your sales with linked products
+    commands:
+      - tapOn: Close
+- runFlow:
+    when:
+      visible: Got it
+    commands:
+      - tapOn: Got it
+- tapOn:
+    id: product-title
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro Product ${SUITE_RUN_ID}
+- hideKeyboard
+
+# Main description.
+- tapOn:
+    id: product-description
+- extendedWaitUntil:
+    visible: Rich Content
+    timeout: 15000
+- tapOn: Rich Content
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro description ${SUITE_RUN_ID}
+- tapOn: Done
+- extendedWaitUntil:
+    visible:
+      id: product-form
+    timeout: 15000
+
+# Regular price.
+- scrollUntilVisible:
+    element: Add Price
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add Price
+- extendedWaitUntil:
+    visible: Price
+    timeout: 15000
+- tapOn:
+    text: Empty
+    index: 0
+- inputText: "19.99"
+- tapOn: Done
+- extendedWaitUntil:
+    visible:
+      text: "Regular price: .*19[.,]99.*"
+    timeout: 15000
+
+# The creation choice is persisted as a simple, non-virtual physical product.
+- scrollUntilVisible:
+    element: Physical
+    direction: DOWN
+    timeout: 15000
+- assertVisible: Physical
+- tapOn: Product type
+- extendedWaitUntil:
+    visible: Change product type
+    timeout: 15000
+- assertNotVisible: Physical product
+- assertVisible: Virtual product
+- assertVisible: Variable product
+- tapOn: Dismiss
+
+# Unique tag.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- extendedWaitUntil:
+    visible: Tags
+    timeout: 15000
+- tapOn: Tags
+- extendedWaitUntil:
+    visible:
+      id: add-tags
+    timeout: 15000
+- tapOn:
+    id: add-tags
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: maestro-${SUITE_RUN_ID}
+- tapOn: Save
+- extendedWaitUntil:
+    visible: maestro-${SUITE_RUN_ID}
+    timeout: 30000
+
+# Unique short description.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- tapOn: Short description
+- extendedWaitUntil:
+    visible: Rich Content
+    timeout: 15000
+- tapOn: Rich Content
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro short ${SUITE_RUN_ID}
+- tapOn: Done
+- extendedWaitUntil:
+    visible: Maestro short ${SUITE_RUN_ID}
+    timeout: 15000
+
+# Link the exact run-owned upsell product.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- tapOn: Linked products
+- extendedWaitUntil:
+    visible: Linked Products
+    timeout: 15000
+- tapOn:
+    text: Add Products
+    index: 0
+- extendedWaitUntil:
+    visible: Upsells
+    timeout: 15000
+- tapOn: Add Products
+- extendedWaitUntil:
+    visible: Add Products
+    timeout: 15000
+- tapOn: Search
+- extendedWaitUntil:
+    visible:
+      id: product-search-screen-search-field
+    timeout: 15000
+- tapOn:
+    id: product-search-screen-search-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro Upsell ${SUITE_RUN_ID}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: updated-search-results-table-view
+    timeout: 30000
+- assertVisible:
+    text: Maestro Upsell ${SUITE_RUN_ID}
+    childOf:
+      id: updated-search-results-table-view
+- tapOn:
+    text: Maestro Upsell ${SUITE_RUN_ID}
+    childOf:
+      id: updated-search-results-table-view
+    index: 0
+- tapOn: Done
+- extendedWaitUntil:
+    visible: 1 Product Selected
+    timeout: 15000
+- tapOn: Done
+- extendedWaitUntil:
+    visible: Maestro Upsell ${SUITE_RUN_ID}
+    timeout: 15000
+- tapOn: Done
+- extendedWaitUntil:
+    visible: Linked Products
+    timeout: 15000
+- assertVisible: 1 product
+- tapOn: Done
+- scrollUntilVisible:
+    element: 1 upsell product 0 cross-sell product
+    direction: DOWN
+    timeout: 15000
+- assertVisible: 1 upsell product 0 cross-sell product
+
+# Add a downloadable file by URL. Saving the child editor returns to the
+# downloadable-files list, where the exact run-owned name and URL are asserted.
+- scrollUntilVisible:
+    element: Add more details
+    direction: DOWN
+    timeout: 15000
+- tapOn: Add more details
+- tapOn: Downloadable files
+- extendedWaitUntil:
+    visible: Downloadable Files
+    timeout: 15000
+- tapOn: Add File
+- extendedWaitUntil:
+    visible: Select upload method
+    timeout: 15000
+- tapOn: Enter file URL
+- extendedWaitUntil:
+    visible: Add Downloadable File
+    timeout: 15000
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: https://example.com/download-${SUITE_RUN_ID}.txt
+- tapOn:
+    text: File Name
+    index: 1
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: download-${SUITE_RUN_ID}.txt
+- tapOn: Add products' downloadable files' info remotely
+- extendedWaitUntil:
+    visible: download-${SUITE_RUN_ID}.txt
+    timeout: 15000
+- assertVisible: https://example.com/download-${SUITE_RUN_ID}.txt
+- tapOn: Done
+- extendedWaitUntil:
+    visible: 1 file
+    timeout: 15000
+
+# Publish, leave the editor, search remotely, and reopen this exact product.
+- extendedWaitUntil:
+    notVisible: Offline - using cached data
+    timeout: 60000
+- extendedWaitUntil:
+    visible: Publish
+    timeout: 30000
+- tapOn: Publish
+- extendedWaitUntil:
+    visible:
+      id: edit-product-more-options-button
+    timeout: 60000
+- tapOn:
+    id: edit-product-more-options-button
+- extendedWaitUntil:
+    visible: View Product in Store
+    timeout: 60000
+- assertVisible: Trash product
+- tapOn:
+    point: "10%,15%"
+- assertVisible: Maestro Product ${SUITE_RUN_ID}
 - tapOn:
     text: Products
     index: 0
 - extendedWaitUntil:
     visible:
-      text: Maestro ${SUITE_RUN_ID}
+      id: products-table-view
     timeout: 30000
-- tapOn: Maestro ${SUITE_RUN_ID}
+- tapOn:
+    id: product-search-button
+- extendedWaitUntil:
+    visible:
+      id: product-search-screen-search-field
+    timeout: 15000
+- tapOn:
+    id: product-search-screen-search-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Maestro Product ${SUITE_RUN_ID}
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: updated-search-results-table-view
+    timeout: 30000
 - assertVisible:
-    id: save-product-button
-- assertVisible: Maestro ${SUITE_RUN_ID}
+    text: Maestro Product ${SUITE_RUN_ID}
+    childOf:
+      id: updated-search-results-table-view
+- tapOn:
+    text: Maestro Product ${SUITE_RUN_ID}
+    childOf:
+      id: updated-search-results-table-view
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: edit-product-more-options-button
+    timeout: 30000
+- assertVisible: Maestro Product ${SUITE_RUN_ID}
+
+# Persisted main description, asserted inside its editor.
+- tapOn: Description
+- extendedWaitUntil:
+    visible: Rich Content
+    timeout: 15000
+- assertVisible: Maestro description ${SUITE_RUN_ID}
+- tapOn: Done
+
+# Persisted price.
+- scrollUntilVisible:
+    element:
+      text: "Regular price: .*19[.,]99.*"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    text: "Regular price: .*19[.,]99.*"
+- extendedWaitUntil:
+    visible: Price
+    timeout: 15000
+- assertVisible:
+    text: "19[.,]99.*"
+- tapOn: Done
+
+# Adding a file preserves the underlying simple product and changes the iOS
+# editor's visible classification from Physical to Downloadable.
+- scrollUntilVisible:
+    element: Downloadable
+    direction: DOWN
+    timeout: 15000
+- assertVisible: Product type
+- assertVisible: Downloadable
+
+# Persisted unique tag.
+- scrollUntilVisible:
+    element: Tags
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn: Tags
+- extendedWaitUntil:
+    visible:
+      id: add-tags
+    timeout: 15000
+- assertVisible:
+    id: add-tags
+    text: ".*maestro-${SUITE_RUN_ID}.*"
+- tapOn:
+    point: "10%,10%"
+
+# Persisted unique short description.
+- scrollUntilVisible:
+    element: Short description
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn: Short description
+- extendedWaitUntil:
+    visible: Rich Content
+    timeout: 15000
+- assertVisible: Maestro short ${SUITE_RUN_ID}
+- tapOn: Done
+
+# Persisted exact linked upsell.
+- scrollUntilVisible:
+    element: Linked products
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn: Linked products
+- extendedWaitUntil:
+    visible: Linked Products
+    timeout: 15000
+- assertVisible: 1 product
+- tapOn:
+    text: Edit Products
+    index: 0
+- extendedWaitUntil:
+    visible: Upsells
+    timeout: 15000
+- assertVisible: Maestro Upsell ${SUITE_RUN_ID}
+- tapOn:
+    text: Linked Products
+    index: 0
+- tapOn: Done
+
+# Persisted exact downloadable file.
+- scrollUntilVisible:
+    element: Downloadable files
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn: Downloadable files
+- extendedWaitUntil:
+    visible: Downloadable Files
+    timeout: 15000
+- assertVisible: download-${SUITE_RUN_ID}.txt
+- assertVisible: https://example.com/download-${SUITE_RUN_ID}.txt
+- tapOn: Done
+- extendedWaitUntil:
+    visible:
+      id: edit-product-more-options-button
+    timeout: 15000
+- takeScreenshot: product_run_owned_persisted_lifecycle

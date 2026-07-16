@@ -18,7 +18,6 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let permissionChecker: CaptureDevicePermissionChecker
     private let posNotificationScheduler: POSNotificationScheduling
 
@@ -170,7 +169,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Whether manual order status editing is supported for the current site.
     ///
     var isOrderStatusEditingEnabled: Bool {
-        ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
+        true
     }
 
     /// Defines if the view should be disabled.
@@ -466,7 +465,6 @@ final class EditableOrderViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          posNotificationScheduler: POSNotificationScheduling = POSNotificationScheduler(),
@@ -481,7 +479,6 @@ final class EditableOrderViewModel: ObservableObject {
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.posNotificationScheduler = posNotificationScheduler
@@ -2099,8 +2096,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     func trackCollectPaymentTapped() {
@@ -2113,8 +2109,7 @@ private extension EditableOrderViewModel {
             hasCustomerDetails: hasCustomerDetails,
             hasFees: orderSynchronizer.order.fees.isNotEmpty,
             hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
-            products: Array(allProducts),
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

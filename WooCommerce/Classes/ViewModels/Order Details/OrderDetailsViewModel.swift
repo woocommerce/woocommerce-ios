@@ -18,7 +18,6 @@ final class OrderDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private(set) var order: Order
 
@@ -39,8 +38,7 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         pluginsService: PluginsServiceProtocol? = nil,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
+         pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -52,7 +50,6 @@ final class OrderDetailsViewModel {
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func update(order newOrder: Order) {
@@ -334,18 +331,6 @@ extension OrderDetailsViewModel {
             onReloadSections?()
         }
 
-        /// Temporary `ciabEligibilityChecker.isCurrentSiteCIAB`
-        // TODO: Rework CIAB gating in favour of new approach.
-        if ciabEligibilityChecker.isCurrentSiteCIAB {
-            group.enter()
-            Task { @MainActor in
-                defer {
-                    group.leave()
-                }
-                await syncOrderFulfillments()
-            }
-        }
-
         group.enter()
         syncSavedReceipts {_ in
             group.leave()
@@ -427,26 +412,6 @@ extension OrderDetailsViewModel {
 
                                                                    continuation.resume(returning: ())
                                                                }
-            )
-        }
-    }
-
-    /// Syncs order fulfillments from the fulfillments endpoint.
-    @MainActor
-    func syncOrderFulfillments() async {
-        let orderID = order.orderID
-        let siteID = order.siteID
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(
-                OrderFulfillmentAction.synchronizeOrderFulfillments(
-                    siteID: siteID,
-                    orderID: orderID
-                ) { error in
-                    if let error {
-                        DDLogError("⛔️ Error synchronizing order fulfillments: \(error.localizedDescription)")
-                    }
-                    continuation.resume(returning: ())
-                }
             )
         }
     }
@@ -742,6 +707,10 @@ extension OrderDetailsViewModel {
     }
 
     @MainActor func syncShippingLabelsOrShipments() async {
+        guard storeCountrySupportsShippingLabels else {
+            return
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             /// old logic for syncing labels
@@ -825,6 +794,10 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
+        guard storeCountrySupportsShippingLabels else {
+            return false
+        }
+
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             if await localRequirementsForShippingLabelsAreFulfilled() {
@@ -992,6 +965,28 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+    /// Fails open when the store country is unknown (not cached yet or unparseable) so a cache miss
+    /// can never hide the feature from an eligible store — the plugin eligibility check remains the
+    /// source of truth. Only a known-unsupported country skips the shipping label requests.
+    var storeCountrySupportsShippingLabels: Bool {
+        let countryCode = storeCountryCode
+        guard countryCode != .unknown else {
+            DDLogInfo("Store country unknown; deferring shipping label support to the plugin eligibility check.")
+            return true
+        }
+        guard USPSDomesticMailCountries.countryCodes.contains(countryCode) else {
+            DDLogInfo("Skipping shipping label requests: store country \(countryCode.rawValue) does not support shipping labels.")
+            return false
+        }
+        return true
+    }
+
+    var storeCountryCode: CountryCode {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        let resultsController = ResultsController<StorageSiteSetting>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        try? resultsController.performFetch()
+        return SiteAddress(siteSettings: resultsController.fetchedObjects).countryCode
+    }
 
     @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
         await withCheckedContinuation { continuation in

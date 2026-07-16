@@ -3497,9 +3497,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the error screen when the merchant's payment account is restricted because it's under reviw
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments is currently unavailable" = "オフラインでの支払いは現在利用できません";
 
@@ -5436,8 +5433,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Receipt from %1$@" = "%1$@からのレシート";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup
-   Button to refresh the state of the in-person payments setup. */
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "更新";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5603,9 +5599,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "パスワードをリセット";
-
-/* Button to open a web view and resolve pending plugin requirements before using it. */
-"Resolve Now" = "今すぐ解決";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "次のメールアドレスを持つ顧客に限定: %1$@";
@@ -7348,14 +7341,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "Tap to Pay on iPhone を試してみる";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "デビットカードまたはクレジットカードで %1$@の支払いを試します。 完了したら返金できます。";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "支払いを試す";
-
-/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
-"Try a payment using your own card (and refund it when you're done.)" = "ご自身のカードで支払いをお試しください (完了したら返金してください)。";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -8216,9 +8203,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "求人情報";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Would you like to try a payment" = "支払いを試してみますか";
-
 /* Title in the product description AI generator view. */
 "Write a description" = "説明を入力してください";
 
@@ -8300,11 +8284,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "新しい注文があります。🎉";
-
-/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
-"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "ご使用のアカウントに期限切れの要件があります。 オフラインでの支払いを再開するには、この要件を処理してください。";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "各商品について明確で具体的な説明を記載する必要があります。";
@@ -9935,9 +9914,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "支払い (%1$@) を受け取る";
-
-/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
-"ciabOrderStatusMapper.open" = "開く";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "お客様のアドレスを追加";
@@ -11739,15 +11715,6 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "配送";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
-"orderFulfillmentStatus.badge.fulfilled" = "処理済み";
-
-/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
-"orderFulfillmentStatus.badge.fulfilledWithDate" = "%1$@に処理済み";
-
-/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
-"orderFulfillmentStatus.badge.unfulfilled" = "未処理";
-
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "クーポン";
 
@@ -12288,9 +12255,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "支払いを処理しようとしたところ、エラーが発生しました。 もう一度お試しください。";
 
-/* A description within a full screen loading view for POS catalog. */
-"pointOfSale.catalogLoadingView.exitButton.description" = "同期はバックグラウンドで続行されます。";
-
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "POS を終了";
 
@@ -12413,18 +12377,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "1つ以上の商品";
-
-/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "支払いがすでに別の方法で完了されている場合に使用します。";
-
-/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "注文を支払い済みとしてマーク";
-
-/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "顧客がスマートフォンから支払う QR コードを表示します。";
-
-/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.title" = "スキャンして支払う";
 
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "注文を読み込み中";
@@ -13666,12 +13618,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "商品が表示されないのはなぜですか ?";
 
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ の在庫あり";
-
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "在庫なし";
-
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -13744,7 +13690,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when the POS order created by the server does not match the cart contents. */
 "pos.totalsView.orderMismatch.error.title" = "チェックアウトできませんでした";
 
-/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+/* Title for the Point of Sale checkout button that opens additional payment methods, such as Scan to Pay or Mark order as paid. */
 "pos.totalsView.otherPaymentMethods.button.title" = "他の支払い方法";
 
 /* Title for subtotal amount field */

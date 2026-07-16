@@ -43,18 +43,6 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// If no state is cached, determines state from lastSyncDate
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState
 
-    /// Checks if the last sync is older than the specified number of days
-    /// - Parameters:
-    ///   - siteID: The site ID to check
-    ///   - maxDays: Maximum number of days before a sync is considered stale
-    /// - Returns: True if the last sync is older than the specified days or if there has been no sync
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool
-
-    /// Returns the number of hours since the last catalog sync
-    /// - Parameter siteID: The site ID to check
-    /// - Returns: Hours since last sync, or nil if no sync date is available
-    func hoursSinceLastSync(for siteID: Int64) async -> Int?
-
     /// Stops all ongoing sync tasks for the specified site
     /// - Parameter siteID: The site ID to stop syncs for
     func stopOngoingSyncs(for siteID: Int64) async
@@ -224,7 +212,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         do {
             let syncedCatalog = try await syncTask.value
-            await emitSyncState(.syncCompleted(siteID: siteID))
+            await emitSyncState(.syncCompleted(siteID: siteID, syncDate: syncedCatalog.syncDate))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
@@ -314,7 +302,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let catalog = try await fullSyncService.startFullSync(for: siteID,
                                                                   regenerateCatalog: regenerateCatalog,
                                                                   allowCellular: allowCellular,
-                                                                  isBackgroundSync: isBackgroundSync)
+                                                                  isBackgroundSync: isBackgroundSync,
+                                                                  onProgress: { [weak self] progress in
+                await self?.emitFullSyncProgress(progress, for: siteID)
+            })
             // The file is accessible (again) — clear any blocked memory for the site.
             sitesWithBlockedCatalogFile.remove(siteID)
             if syncStrategy == .localCatalogFile {
@@ -438,7 +429,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
         switch await fullSyncStateModel.state[siteID] {
-        case .syncStarted, .initialSyncStarted:
+        case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress:
             return true
         default:
             return false
@@ -618,37 +609,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let state: POSCatalogSyncState
 
-        if await lastFullSyncDate(for: siteID) == nil {
-            state = .syncNeverDone(siteID: siteID)
+        if let lastFullSyncDate = await lastFullSyncDate(for: siteID) {
+            state = .syncCompleted(siteID: siteID, syncDate: lastFullSyncDate)
         } else {
-            state = .syncCompleted(siteID: siteID)
+            state = .syncNeverDone(siteID: siteID)
         }
 
         await fullSyncStateModel.updateState(state, for: siteID)
         return state
-    }
-
-    public func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        // Check only the last full sync date, incremental syncs don't refresh well enough to consider non-stale.
-        guard let lastFullSync = await lastFullSyncDate(for: siteID) else {
-            // If we've never done a full sync, we're stale.
-            return true
-        }
-
-        guard let thresholdDate = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) else {
-            // This shouldn't fail, and if it does, we can assume the catalog is fine
-            return false
-        }
-
-        return lastFullSync < thresholdDate
-    }
-
-    public func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
-            return nil
-        }
-        let timeInterval = Date().timeIntervalSince(lastSyncDate)
-        return Int(timeInterval / 3600) // Convert seconds to hours
     }
 
     public func stopOngoingSyncs(for siteID: Int64) async {
@@ -678,7 +646,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         // This will prevent new syncs from starting for this site
         if let currentState = await fullSyncStateModel.state[siteID] {
             switch currentState {
-            case .initialSyncStarted, .syncStarted:
+            case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress:
                 await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
                 DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
             default:
@@ -698,7 +666,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 
         // Update sync state to completed
-        await emitSyncState(.syncCompleted(siteID: siteID))
+        await emitSyncState(.syncCompleted(siteID: siteID, syncDate: catalog.syncDate))
 
         // Record first sync date if needed
         recordFirstSyncIfNeeded(for: siteID)
@@ -911,7 +879,9 @@ private extension POSCatalogSyncCoordinator {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
-                .syncCompleted(let id),
+                .initialSyncProgress(let id, _),
+                .syncProgress(let id, _),
+                .syncCompleted(let id, _),
                 .initialSyncFailed(let id, _),
                 .syncFailed(let id, _),
                 .syncNeverDone(let id):
@@ -919,6 +889,40 @@ private extension POSCatalogSyncCoordinator {
         }
 
         await fullSyncStateModel.updateState(state, for: siteID)
+    }
+
+    func emitFullSyncProgress(_ progress: POSCatalogSyncProgress, for siteID: Int64) async {
+        let currentState = await fullSyncStateModel.state[siteID]
+        let progress = currentState.progressByPreservingItemCount(whenReceiving: progress)
+        switch currentState {
+        case .initialSyncStarted, .initialSyncProgress, .syncNeverDone:
+            await emitSyncState(.initialSyncProgress(siteID: siteID, progress: progress))
+        case .syncStarted, .syncProgress:
+            await emitSyncState(.syncProgress(siteID: siteID, progress: progress))
+        default:
+            break
+        }
+    }
+}
+
+private extension Optional where Wrapped == POSCatalogSyncState {
+    func progressByPreservingItemCount(whenReceiving progress: POSCatalogSyncProgress) -> POSCatalogSyncProgress {
+        guard progress == .preparing else {
+            return progress
+        }
+
+        switch self {
+        case .some(.initialSyncProgress(_, let currentProgress)),
+                .some(.syncProgress(_, let currentProgress)):
+            switch currentProgress {
+            case .itemCount:
+                return currentProgress
+            case .preparing:
+                return progress
+            }
+        default:
+            return progress
+        }
     }
 }
 
@@ -938,7 +942,9 @@ public class POSCatalogSyncStateModel {
 public enum POSCatalogSyncState: Equatable {
     case initialSyncStarted(siteID: Int64)
     case syncStarted(siteID: Int64)
-    case syncCompleted(siteID: Int64)
+    case initialSyncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
+    case syncProgress(siteID: Int64, progress: POSCatalogSyncProgress)
+    case syncCompleted(siteID: Int64, syncDate: Date)
     case initialSyncFailed(siteID: Int64, error: Error)
     case syncFailed(siteID: Int64, error: Error)
     case syncNeverDone(siteID: Int64)
@@ -947,14 +953,51 @@ public enum POSCatalogSyncState: Equatable {
         switch (lhs, rhs) {
         case (.initialSyncStarted(let lhsSiteID), .initialSyncStarted(let rhsSiteID)),
             (.syncStarted(let lhsSiteID), .syncStarted(let rhsSiteID)),
-            (.syncCompleted(let lhsSiteID), .syncCompleted(let rhsSiteID)),
             (.syncNeverDone(let lhsSiteID), .syncNeverDone(let rhsSiteID)):
             return lhsSiteID == rhsSiteID
+        case (.syncCompleted(let lhsSiteID, let lhsSyncDate), .syncCompleted(let rhsSiteID, let rhsSyncDate)):
+            return lhsSiteID == rhsSiteID && lhsSyncDate == rhsSyncDate
+        case (.initialSyncProgress(let lhsSiteID, let lhsProgress), .initialSyncProgress(let rhsSiteID, let rhsProgress)),
+            (.syncProgress(let lhsSiteID, let lhsProgress), .syncProgress(let rhsSiteID, let rhsProgress)):
+            return lhsSiteID == rhsSiteID && lhsProgress == rhsProgress
         case (.initialSyncFailed(let lhsSiteID, let lhsError), .initialSyncFailed(let rhsSiteID, let rhsError)),
             (.syncFailed(let lhsSiteID, let lhsError), .syncFailed(let rhsSiteID, let rhsError)):
             return lhsSiteID == rhsSiteID && lhsError.localizedDescription == rhsError.localizedDescription
         default:
             return false
+        }
+    }
+}
+
+public extension POSCatalogSyncState {
+    var lastFullSyncDate: Date? {
+        switch self {
+        case .syncCompleted(_, let syncDate):
+            return syncDate
+        default:
+            return nil
+        }
+    }
+}
+
+public enum POSCatalogSyncProgress: Equatable, Sendable {
+    case preparing
+    case itemCount(processed: Int, total: Int)
+
+    init?(response: POSCatalogRequestResponse) {
+        switch response.status {
+        case .scheduled:
+            self = .preparing
+        case .inProgress:
+            guard let processed = response.processed,
+                  let total = response.total,
+                  total > 0 else {
+                self = .preparing
+                return
+            }
+            self = .itemCount(processed: processed, total: total)
+        case .completed, .failed:
+            return nil
         }
     }
 }

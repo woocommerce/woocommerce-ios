@@ -109,10 +109,6 @@ final class MainTabBarController: UITabBarController {
         .default
     }
 
-    /// Notifications badge
-    ///
-    private let notificationsBadge = NotificationsBadgeController()
-
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
@@ -431,16 +427,9 @@ final class MainTabBarController: UITabBarController {
             userInterfaceIdiom: isPad ? .pad : .phone,
             eligibilityService: posEligibilityService
         )
-        let isBookingsFeatureAvailable = BookingsTabEligibilityChecker.checkInitialVisibility(
-            for: siteID,
-            in: userDefaults
-        )
-
-        self.isBookingsFeatureAvailable = isBookingsFeatureAvailable
-
         let isBookingsTabVisible = shouldShowBookingsTab(
             isPOSTabVisible: isPOSTabVisible,
-            bookingsFeatureAvailable: isBookingsFeatureAvailable
+            bookingsFeatureAvailable: false
         )
 
         updateTabViewControllers(
@@ -498,11 +487,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersSelected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListSelected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
@@ -519,11 +506,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersReselected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListReselected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
@@ -1077,13 +1062,6 @@ private extension MainTabBarController {
         let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
         self.bookingsEligibilityChecker = bookingsEligibilityChecker
 
-        // Sets Bookings tab initial visibility based on cached value if available.
-        let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
-        isBookingsFeatureAvailable = initialVisibility
-        let initialBookingsTabVisibility = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
-                                                                 bookingsFeatureAvailable: initialVisibility)
-        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialBookingsTabVisibility)
-
         // Cancels any existing task.
         bookingsEligibilityCheckTask?.cancel()
 
@@ -1128,11 +1106,6 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        guard #available(iOS 26.0, *) else {
-            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
-            notificationsBadge.updateBadge(with: input)
-            return
-        }
 
         switch action {
         case .show:

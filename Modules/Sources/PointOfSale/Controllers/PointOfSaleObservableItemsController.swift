@@ -140,8 +140,8 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
 // MARK: - State Computation
 private extension PointOfSaleObservableItemsController {
     var containerState: ItemsContainerState {
-        if isInitialCatalogSync {
-            return .loading(isCatalogSyncing: true)
+        if let initialCatalogSyncState {
+            return .loading(catalogSyncState: initialCatalogSyncState)
         }
 
         if case .failure(let error) = initialSyncResult {
@@ -155,16 +155,18 @@ private extension PointOfSaleObservableItemsController {
         return .content
     }
 
-    var isInitialCatalogSync: Bool {
+    var initialCatalogSyncState: POSCatalogSyncViewState? {
         guard let syncState = catalogSyncCoordinator.fullSyncStateModel.state[siteID] else {
-            return false
+            return nil
         }
 
         switch syncState {
         case .initialSyncStarted, .syncNeverDone:
-            return true
+            return POSCatalogSyncViewState()
+        case .initialSyncProgress(_, let progress):
+            return POSCatalogSyncViewState(progress: progress)
         default:
-            return false
+            return nil
         }
     }
 

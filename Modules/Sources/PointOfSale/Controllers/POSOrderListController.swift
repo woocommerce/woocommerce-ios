@@ -9,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSRefundItem
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
@@ -23,6 +24,7 @@ protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     var isLoadingOrderRefunds: Bool { get }
+    var orderDetailsItemsState: POSOrderDetailsItemsState { get }
     var displayedLineItems: [POSOrderItem] { get }
     var displayedCustomAmounts: [POSOrderCustomAmount] { get }
     var refundActionAvailability: RefundActionAvailability { get }
@@ -54,6 +56,28 @@ enum POSOrderListSelectedOrderRefundsState {
     case loading
     case loaded(POSRefundPreparation)
     case failed(Error)
+}
+
+enum POSOrderDetailsItemsState: Equatable {
+    case loading(rowCount: Int)
+    case loaded(lineItems: [POSOrderItem], customAmounts: [POSOrderCustomAmount], refundedItems: [POSRefundItem])
+}
+
+private enum POSOrderRefundDetailsState {
+    case needsLoading
+    case loading
+    /// Detailed refunds (with items) for the order — fetched, or already present in the order payload.
+    case loaded([POSOrderRefund])
+    case failed
+
+    var isLoading: Bool {
+        switch self {
+        case .needsLoading, .loading:
+            return true
+        case .loaded, .failed:
+            return false
+        }
+    }
 }
 
 enum RefundActionAvailability {
@@ -98,7 +122,9 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
-    private(set) var isLoadingOrderRefunds = false
+    /// Refund details fetch state per order. `.loaded` caches the fetched refunds so list refreshes,
+    /// which rebuild orders from summary data, don't lose them or re-show the loading skeleton.
+    private var refundDetailsByOrderID: [Int64: POSOrderRefundDetailsState] = [:]
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedRefundSelection = false
@@ -124,6 +150,31 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
+    }
+
+    @MainActor
+    var isLoadingOrderRefunds: Bool {
+        guard let selectedOrder else {
+            return false
+        }
+        return refundDetailsState(for: selectedOrder).isLoading
+    }
+
+    @MainActor
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        guard let order = selectedOrder else {
+            return .loaded(lineItems: [], customAmounts: [], refundedItems: [])
+        }
+
+        if refundDetailsState(for: order).isLoading {
+            return .loading(rowCount: order.lineItems.count + order.customAmounts.count)
+        }
+
+        return .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: order.refunds.flatMap(\.items)
+        )
     }
 
     @MainActor
@@ -255,7 +306,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
             if let selectedOrderID = selectedOrder?.id,
                let updatedSelectedOrder = allOrders.first(where: { $0.id == selectedOrderID }) {
-                selectedOrder = updatedSelectedOrder
+                selectedOrder = orderApplyingCachedRefunds(updatedSelectedOrder)
             }
 
             if fetchStrategy.supportsCaching {
@@ -289,8 +340,16 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
     @MainActor
     func selectOrder(_ order: POSOrder?) {
-        selectedOrder = order
-        isLoadingOrderRefunds = false
+        selectedOrder = order.map(orderApplyingCachedRefunds)
+        if let order, case .failed? = refundDetailsByOrderID[order.id] {
+            // Allow the skeleton and a retry when returning to an order whose refund fetch failed.
+            refundDetailsByOrderID[order.id] = nil
+        }
+        if let order, refundDetailsByOrderID[order.id] == nil, order.refunds.contains(where: { $0.items.isNotEmpty }) {
+            // Persist refund details that arrived pre-loaded in the payload, so list refreshes,
+            // which rebuild orders from summary data, don't re-show the skeleton and re-fetch.
+            refundDetailsByOrderID[order.id] = .loaded(order.refunds)
+        }
         selectedOrderRefundsState = .idle
         refundSelectableItems = []
         hasModifiedRefundSelection = false
@@ -319,6 +378,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     @MainActor
     func updateOrder(orderID: Int64) async throws {
         let updatedOrder = try await fetchStrategy.loadOrder(orderID: orderID)
+        // Drop cached refund details — the refreshed order may have new refunds.
+        refundDetailsByOrderID[orderID] = nil
         let updatedOrders = ordersViewState.orders.map { order in
             order.id == orderID ? updatedOrder : order
         }
@@ -444,18 +505,56 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         await loadOrderRefunds()
     }
 
+    @MainActor
     func loadOrderRefunds() async {
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             return
         }
-        isLoadingOrderRefunds = true
+
+        switch refundDetailsState(for: order) {
+        case .loaded, .loading:
+            return
+        case .needsLoading, .failed:
+            break
+        }
+
+        let orderID = order.id
+        refundDetailsByOrderID[orderID] = .loading
         do {
             let refunds = try await refundsService.loadOrderRefunds(for: order)
-            guard selectedOrder?.id == order.id else { return }
-            selectedOrder = order.copy(refunds: .some(refunds))
+            refundDetailsByOrderID[orderID] = .loaded(refunds)
+            guard selectedOrder?.id == orderID else { return }
+            selectedOrder = selectedOrder?.copy(refunds: .some(refunds))
         } catch {
+            refundDetailsByOrderID[orderID] = .failed
             DDLogError("⛔️ Failed to load refund details: \(error)")
         }
-        isLoadingOrderRefunds = false
+    }
+
+    @MainActor
+    private func refundDetailsState(for order: POSOrder) -> POSOrderRefundDetailsState {
+        guard order.refunds.isNotEmpty else {
+            return .loaded([])
+        }
+
+        if let state = refundDetailsByOrderID[order.id] {
+            return state
+        }
+
+        // Refund items are fetched together for the whole order, so any refund carrying items
+        // means the details were already loaded (e.g. by another list entry for the same order).
+        if order.refunds.contains(where: { $0.items.isNotEmpty }) {
+            return .loaded(order.refunds)
+        }
+
+        return .needsLoading
+    }
+
+    @MainActor
+    private func orderApplyingCachedRefunds(_ order: POSOrder) -> POSOrder {
+        guard case .loaded(let refunds)? = refundDetailsByOrderID[order.id] else {
+            return order
+        }
+        return order.copy(refunds: .some(refunds))
     }
 }

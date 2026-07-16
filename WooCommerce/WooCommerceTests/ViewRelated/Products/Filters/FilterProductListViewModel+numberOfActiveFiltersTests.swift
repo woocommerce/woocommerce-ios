@@ -13,8 +13,7 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
         storageManager = MockStorageManager()
         storageManager.insertSampleSite(
             readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
+                siteID: sampleSiteID
             )
         )
     }

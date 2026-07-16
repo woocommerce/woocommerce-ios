@@ -33,6 +33,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     @IBOutlet weak var widthConstraint: NSLayoutConstraint!
 
     private var loadingView: UIView?
+    private var buttonMinimumHeightConstraints: [(button: UIButton, constraint: NSLayoutConstraint)] = []
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -75,10 +76,10 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
 
     private func resetHeightAndWidth() {
         if traitCollection.verticalSizeClass == .compact {
-            primaryActionButtonsStackView.axis = .horizontal
-            primaryActionButtonsStackView.distribution = .fillProportionally
+            primaryActionButtonsStackView.axis = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .vertical : .horizontal
+            primaryActionButtonsStackView.distribution = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .fill : .fillProportionally
 
-            mainStackView.distribution = .fillProportionally
+            mainStackView.distribution = shouldStackPrimaryActionButtonsVerticallyInCompactHeight ? .fill : .fillProportionally
             heightConstraint.constant = Constants.modalWidth
             widthConstraint.constant = Constants.modalHeight
         } else {
@@ -95,6 +96,10 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
         heightConstraint.priority = .required
         widthConstraint.priority = .required
         configureSpacer()
+    }
+
+    private var shouldStackPrimaryActionButtonsVerticallyInCompactHeight: Bool {
+        viewModel.actionsMode == .twoActionAndAuxiliary && viewModel.textMode == .noBottomInfo
     }
 
     private func updateImageAndLoadingVisibility() {
@@ -122,6 +127,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func createViews() {
         createLoadingIndicator()
+        configureButtonMinimumHeights()
     }
 
     func createLoadingIndicator() {
@@ -137,6 +143,26 @@ private extension CardPresentPaymentsModalViewController {
         }
         mainStackView.insertArrangedSubview(host.view, at: index)
         loadingView = host.view
+    }
+
+    func configureButtonMinimumHeights() {
+        buttonMinimumHeightConstraints = [primaryButton, secondaryButton, auxiliaryButton].compactMap { button in
+            guard let button else {
+                return nil
+            }
+
+            let minimumHeightConstraint = button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.minimumButtonHeight)
+            minimumHeightConstraint.priority = .required
+            button.setContentCompressionResistancePriority(.required, for: .vertical)
+
+            return (button, minimumHeightConstraint)
+        }
+    }
+
+    func updateButtonMinimumHeightConstraints() {
+        buttonMinimumHeightConstraints.forEach { button, constraint in
+            constraint.isActive = shouldShowActionButtons() && !button.isHidden
+        }
     }
 
     func styleContent() {
@@ -313,10 +339,12 @@ private extension CardPresentPaymentsModalViewController {
         configurePrimaryButton()
         configureSecondaryButton()
         configureAuxiliaryButton()
+        updateButtonMinimumHeightConstraints()
     }
 
     func hideActionButtonsView() {
         actionButtonsView.isHidden = true
+        updateButtonMinimumHeightConstraints()
         configureSpacer()
     }
 
@@ -452,6 +480,7 @@ private extension CardPresentPaymentsModalViewController {
     enum Constants {
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
+        static let minimumButtonHeight: CGFloat = 44
         static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
     }
 }

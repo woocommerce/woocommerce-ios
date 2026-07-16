@@ -6,14 +6,9 @@ struct SimpleProductCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(\.posFeatureFlags) private var featureFlags
 
     private var dimension: CGFloat {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
-    }
-
-    private var shouldShowProductLabels: Bool {
-        featureFlags.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
     }
 
     init(product: POSSimpleProduct) {
@@ -38,11 +33,6 @@ struct SimpleProductCardView: View {
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
-
-                Text(POSStockFormatter.stockStatusLabel(for: product))
-                    .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
-                    .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))

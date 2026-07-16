@@ -32,6 +32,7 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.lastIncrementalSyncDate.isEmpty)
         #expect(sut.isLoading == false)
         #expect(sut.isRefreshingCatalog == false)
+        #expect(sut.catalogRefreshProgress == nil)
         #expect(sut.catalogRefreshError == nil)
     }
 

@@ -35,6 +35,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
 
+    /// Observes invalid application password notification
+    ///
+    private var invalidApplicationPasswordNotificationObserver: NSObjectProtocol?
+
     /// Observes unknown blog notification
     ///
     private var unknownBlogNotificationObserver: NSObjectProtocol?
@@ -174,6 +178,8 @@ class DefaultStoresManager: StoresManager {
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
             startObservingNetworkNotifications()
+        } else if isLoggedIn {
+            listenToApplicationPasswordInvalidatedNotification()
         }
     }
 
@@ -210,11 +216,13 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {
+            stopObservingApplicationPasswordInvalidation()
             listenToWPCOMInvalidWPCOMTokenNotification()
             listenToUnknownBlogNotification()
             startObservingNetworkNotifications()
         } else {
             removeAuthenticationFailureObservers()
+            listenToApplicationPasswordInvalidatedNotification()
             stopObservingNetworkNotifications()
         }
 
@@ -234,6 +242,28 @@ class DefaultStoresManager: StoresManager {
                                                                                queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
+    }
+
+    /// De-authenticates upon receiving `ApplicationPasswordInvalidated` notification for non-WP.com sessions.
+    ///
+    func listenToApplicationPasswordInvalidatedNotification() {
+        stopObservingApplicationPasswordInvalidation()
+        invalidApplicationPasswordNotificationObserver = notificationCenter.addObserver(forName: .ApplicationPasswordInvalidated,
+                                                                                        object: nil,
+                                                                                        queue: .main) { [weak self] _ in
+            guard self?.isAuthenticatedWithoutWPCom == true else {
+                return
+            }
+            _ = self?.deauthenticate()
+        }
+    }
+
+    func stopObservingApplicationPasswordInvalidation() {
+        guard let invalidApplicationPasswordNotificationObserver else {
+            return
+        }
+        notificationCenter.removeObserver(invalidApplicationPasswordNotificationObserver)
+        self.invalidApplicationPasswordNotificationObserver = nil
     }
 
     /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification.
@@ -365,6 +395,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         removeAuthenticationFailureObservers()
+        stopObservingApplicationPasswordInvalidation()
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
 
@@ -551,6 +582,7 @@ private extension DefaultStoresManager {
                 if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+                    UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
                 }
                 onCompletion(.success(()))
             case .failure(let error):

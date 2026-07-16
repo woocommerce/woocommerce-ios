@@ -102,6 +102,7 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
+    @State private var couponOverrideHandler = POSManagerOverrideHandler()
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -161,6 +162,7 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .posManagerOverrideModal(handler: couponOverrideHandler)
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
@@ -434,7 +436,7 @@ private extension ItemListView {
                                     canCreateCoupon: isAddingCouponAllowed,
                                     onCreateCoupon: {
                                         analytics.track(.pointOfSaleCouponsCreateTapped)
-                                        showCouponCreationModal = true
+                                        requestCouponCreationPermission()
                                     }
                                 )
                             )
@@ -484,10 +486,19 @@ private extension ItemListView {
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
             analytics.track(.pointOfSaleCouponsCreateTapped)
-            showCouponCreationModal = true
+            requestCouponCreationPermission()
         }
         .renderedIf(isAddingCouponAllowed)
         .transition(.opacity.combined(with: .scale))
+    }
+
+    /// Gates coupon creation on `.createCoupons`. When the operator already holds it, the creation
+    /// sheet opens immediately; otherwise the manager-override modal is presented and it opens once an
+    /// authorized staff member approves.
+    private func requestCouponCreationPermission() {
+        couponOverrideHandler.gate(.createCoupons, reason: Localization.couponOverrideDescription) { _ in
+            showCouponCreationModal = true
+        }
     }
 
     @ViewBuilder
@@ -507,7 +518,7 @@ private extension ItemListView {
                 viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
-                showCouponCreationModal = true
+                requestCouponCreationPermission()
             }
         }
     }
@@ -593,6 +604,13 @@ private extension ItemListView {
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let couponOverrideDescription = NSLocalizedString(
+            "pos.itemlistview.couponOverrideReason",
+            value: "Creating coupons requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "create-coupons permission tries to create a coupon."
         )
 
         static let sunsetWarningTitle = NSLocalizedString(

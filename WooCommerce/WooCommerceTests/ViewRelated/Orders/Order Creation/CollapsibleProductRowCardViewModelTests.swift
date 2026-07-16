@@ -135,6 +135,23 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasDiscount)
     }
 
+    func test_discountLabel_when_discount_is_not_nil_then_returns_signed_currency_amount() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .QAR,
+                                                currencyPosition: .right,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let viewModel = createViewModel(discount: 0.50, currencyFormatter: currencyFormatter)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.discountLabel)
+    }
+
     // MARK: - `totalPriceAfterDiscountLabel`
 
     func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {

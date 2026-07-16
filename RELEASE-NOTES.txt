@@ -4,6 +4,7 @@
 25.3
 -----
 
+- [*] Fixed RTL currency values showing the currency symbol and minus sign in the wrong order. [https://github.com/woocommerce/woocommerce-ios/pull/17547]
 
 25.2
 -----

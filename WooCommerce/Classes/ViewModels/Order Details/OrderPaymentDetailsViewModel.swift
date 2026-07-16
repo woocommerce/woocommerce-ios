@@ -31,11 +31,11 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        guard let formattedDiscount = currencyFormatter.formatAmount(order.discountTotal, with: order.currency) else {
+        guard let formattedDiscount = currencyFormatter.formatAmount(order.discountTotal, with: order.currency, isNegative: true) else {
             return nil
         }
 
-        return "-" + formattedDiscount
+        return formattedDiscount
     }
 
     var shouldHideDiscount: Bool {

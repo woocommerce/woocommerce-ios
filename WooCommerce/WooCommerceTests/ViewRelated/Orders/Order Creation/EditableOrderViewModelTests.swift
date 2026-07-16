@@ -632,6 +632,46 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual(expectedDiscount, productRow?.productRow.discount)
     }
 
+    func test_createProductRowViewModel_does_not_set_product_discount_when_order_has_coupon() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 1, price: 10, subtotal: "10", total: "9")
+        let coupon = OrderCouponLine(couponID: 1, code: "coupon", discount: "1", discountTax: "0")
+        let order = Order.fake().copy(siteID: sampleSiteID, items: [orderItem], coupons: [coupon])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               storageManager: storageManager)
+
+        // When
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        XCTAssertNil(productRow?.productRow.discount)
+    }
+
+    func test_updating_product_quantity_does_not_preserve_coupon_discount_as_product_discount() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "10", purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let orderItem = OrderItem.fake().copy(itemID: 1, productID: product.productID, quantity: 1, price: 10, subtotal: "10", total: "9")
+        let coupon = OrderCouponLine(couponID: 1, code: "coupon", discount: "1", discountTax: "0")
+        let order = Order.fake().copy(siteID: sampleSiteID, items: [orderItem], coupons: [coupon])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               storageManager: storageManager,
+                                               quantityDebounceDuration: 0)
+
+        // When
+        viewModel.productRows[0].productRow.stepperViewModel.incrementQuantity()
+
+        // Then
+        waitUntil {
+            viewModel.productRows[0].productRow.stepperViewModel.quantity == 2
+        }
+        XCTAssertEqual(viewModel.productRows[0].productRow.discount, nil)
+    }
+
     func test_view_model_is_updated_when_custom_amount_is_added_to_order() {
         // Given
         let customAmountName = "Test"

@@ -679,7 +679,7 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        let itemDiscount = currentDiscount(on: item)
+        let itemDiscount = currentProductDiscount(on: item)
         let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
 
         if item.variationID != 0,
@@ -1292,7 +1292,7 @@ extension EditableOrderViewModel {
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
-            self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.discountTotal = currencyFormatter.formatAmount(discountTotal, isNegative: true) ?? "-0.00"
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
@@ -2177,7 +2177,7 @@ private extension EditableOrderViewModel {
                                                          bundleConfiguration: bundleConfiguration,
                                                          allProducts: Array(allProducts),
                                                          allProductVariations: allProductVariations,
-                                                         defaultDiscount: currentDiscount(on: item))
+                                                         defaultDiscount: currentProductDiscount(on: item))
     }
 
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
@@ -2190,7 +2190,7 @@ private extension EditableOrderViewModel {
         }
 
         return .init(
-            addedDiscount: currentDiscount(on: orderItem),
+            addedDiscount: currentProductDiscount(on: orderItem),
             baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
             onSave: { [weak self] discount in
                 guard let discount else {
@@ -2212,6 +2212,16 @@ private extension EditableOrderViewModel {
         }
 
         return subtotal.subtracting(total) as Decimal
+    }
+
+    /// Calculates the product discount on an order item, excluding coupon effects.
+    ///
+    func currentProductDiscount(on item: OrderItem) -> Decimal {
+        guard orderSynchronizer.order.coupons.isEmpty else {
+            return 0
+        }
+
+        return currentDiscount(on: item)
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
@@ -2328,7 +2338,7 @@ private extension EditableOrderViewModel {
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
             CouponLineViewModel(code: $0.code,
-                                discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
+                                discount: currencyFormatter.formatAmount($0.discount, isNegative: true) ?? "-0.00",
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))

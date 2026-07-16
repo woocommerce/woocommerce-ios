@@ -422,7 +422,7 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productSubscriptionDetails?.trialPeriod, fakeSubscription.trialPeriod)
     }
 
-    func test_productRow_variation_when_product_type_is_subscription_and_contains_subscription_metadata_then_productRow_variation_has_subscription_metadata() {
+    func test_productRow_variation_when_parent_is_subscription_and_has_metadata_then_has_subscription_details() {
         // Given
         let rowID = Int64(0)
         let fakeSubscription: ProductSubscription = createFakeSubscription()
@@ -432,13 +432,41 @@ final class ProductRowViewModelTests: XCTestCase {
                                                             subscription: fakeSubscription)
 
         // When
-        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, displayMode: .stock)
+        let viewModel = ProductRowViewModel(id: rowID,
+                                            productVariation: productVariation,
+                                            name: name,
+                                            isSubscriptionProduct: true,
+                                            displayMode: .stock)
 
         // Then
         XCTAssertEqual(viewModel.id, rowID)
         XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
         XCTAssertEqual(viewModel.name, name)
         XCTAssertNotNil(viewModel.productSubscriptionDetails)
+    }
+
+    func test_productRow_variation_when_parent_is_not_subscription_but_has_stale_metadata_then_has_no_details() {
+        // Given
+        let rowID = Int64(0)
+        let fakeSubscription: ProductSubscription = createFakeSubscription()
+        let name = "Blue - Any Size"
+        // A variation of a plain (non-subscription) variable product that still carries leftover `_subscription_*` meta data.
+        let productVariation = ProductVariation.fake().copy(productVariationID: 12,
+                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                            subscription: fakeSubscription)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID,
+                                            productVariation: productVariation,
+                                            name: name,
+                                            isSubscriptionProduct: false,
+                                            displayMode: .stock)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
+        XCTAssertEqual(viewModel.name, name)
+        XCTAssertNil(viewModel.productSubscriptionDetails)
     }
 
     func test_productRow_when_product_type_is_not_subscription_but_contains_subscription_metadata_then_productRow_has_no_subscription_metadata() {

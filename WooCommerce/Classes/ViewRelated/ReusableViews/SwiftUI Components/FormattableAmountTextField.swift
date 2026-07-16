@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// This numeric Text Field updates the user input to show the formatted amount
 ///
@@ -24,9 +25,11 @@ struct FormattableAmountTextField: View {
                 .focused()
                 .focused($focusAmountInput)
                 .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
+                .environment(\.layoutDirection, .leftToRight)
                 .opacity(0)
 
-            Text(viewModel.formattedAmount)
+            Text(BidirectionalText.isolateLeftToRightNumericRuns(in: viewModel.formattedAmount,
+                                                                 separators: viewModel.numericTextSeparators))
                 .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)

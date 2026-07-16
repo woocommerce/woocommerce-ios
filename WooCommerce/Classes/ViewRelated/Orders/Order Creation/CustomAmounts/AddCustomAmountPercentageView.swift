@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
@@ -71,9 +72,11 @@ private extension AddCustomAmountPercentageView {
                 .focused()
                 .focused($focusPercentageInput)
                 .keyboardType(.decimalPad)
+                .environment(\.layoutDirection, .leftToRight)
                 .opacity(0)
 
-                Text(text + "%")
+                Text(BidirectionalText.isolateLeftToRightNumericRuns(in: text + "%",
+                                                                     separators: numericTextSeparators))
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
@@ -87,6 +90,12 @@ private extension AddCustomAmountPercentageView {
                     }
             }
             .fixedSize(horizontal: false, vertical: true)
+        }
+
+        private var numericTextSeparators: Set<Character> {
+            BidirectionalText.numericSeparators(including: [
+                Locale.autoupdatingCurrent.decimalSeparator ?? ""
+            ])
         }
     }
 }

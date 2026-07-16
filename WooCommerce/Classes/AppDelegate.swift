@@ -347,6 +347,13 @@ extension AppDelegate {
         if ProcessConfiguration.shouldSimulatePushNotification {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
         }
+
+        #if DEBUG
+        if let credentials = ProcessConfiguration.debugAutoLoginCredentials {
+            ServiceLocator.stores.authenticate(credentials: credentials)
+            ServiceLocator.stores.updateDefaultStore(storeID: ProcessConfiguration.debugAutoLoginStoreID)
+        }
+        #endif
     }
 
     func disableAnimationsIfNeeded() {

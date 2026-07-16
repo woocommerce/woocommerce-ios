@@ -37,6 +37,7 @@ struct CheckboxComponentView: View {
                           isIndeterminate: isIndeterminate,
                           variant: tone.variant)
                 .disabled(!isEnabled)
+                .accessibilityLabel("Checkbox")
         }
     }
 }

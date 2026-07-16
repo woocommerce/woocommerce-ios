@@ -39,6 +39,7 @@ private struct StoreCheckboxStyleBody: View {
             glyph
         }
         .frame(width: Constants.side, height: Constants.side)
+        .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
         .contentShape(Rectangle())
         .opacity(isPressed ? Constants.pressedOpacity : 1)
         .animation(.easeOut(duration: Constants.pressAnimationDuration), value: isPressed)
@@ -48,10 +49,10 @@ private struct StoreCheckboxStyleBody: View {
         switch mark {
         case .checked:
             StoreIcon.Check.solid.image(size: .largeIncreased)
-                .foregroundStyle(Color.storeOnPrimary)
+                .foregroundStyle(variant.onColor)
         case .indeterminate:
             StoreIcon.Minus.solid.image(size: .largeIncreased)
-                .foregroundStyle(Color.storeOnPrimary)
+                .foregroundStyle(variant.onColor)
         case .unchecked:
             EmptyView()
         }

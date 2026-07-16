@@ -1445,6 +1445,7 @@ platform :ios do
     ios_generate_strings_file_from_code(
       paths: [
         'WooCommerce/',
+        'StoreDesignSystem/Sources/StoreDesignSystem/',
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',

@@ -30,20 +30,11 @@ final class POSV4RefundPreviewUseCase {
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem]) async -> Result {
-        guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4) else {
-            return .fallbackToLocal
-        }
-
         let cachedAvailability = availabilityCache.isV4Available(siteID: siteID)
-        if cachedAvailability == false {
-            return .fallbackToLocal
-        }
-
-        if cachedAvailability == nil, isWooVersionBelowV4Support() {
-            return .fallbackToLocal
-        }
-
-        guard lineItems.isNotEmpty else {
+        guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4),
+              lineItems.isNotEmpty,
+              cachedAvailability != false,
+              cachedAvailability == true || !isWooVersionBelowV4Support() else {
             return .fallbackToLocal
         }
 

@@ -7,12 +7,11 @@ import Storage
 //
 public class RefundStore: Store {
     private let remote: RefundsRemote
-    private var upserter: RefundsUpserter {
-        RefundsUpserter(storageManager: storageManager)
-    }
+    private let upserter: RefundsUpserter
 
     override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = RefundsRemote(network: network)
+        self.upserter = RefundsUpserter(storageManager: storageManager)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

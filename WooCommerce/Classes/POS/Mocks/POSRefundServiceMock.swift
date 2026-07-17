@@ -14,7 +14,13 @@ final class POSRefundServiceMock: RefundServiceProtocol {
     func previewRefund(siteID: Int64,
                        orderID: Int64,
                        lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
-        let order = try? await orderService.loadOrder(orderID: orderID)
+        let order: Order?
+        do {
+            order = try await orderService.loadOrder(orderID: orderID)
+        } catch {
+            DDLogError("⛔️ POSRefundServiceMock could not load order \(orderID) for the preview: \(error)")
+            order = nil
+        }
         let subtotal = lineItems.reduce(Decimal.zero) { runningTotal, lineItem in
             if let refundTotal = lineItem.refundTotal {
                 return runningTotal + refundTotal

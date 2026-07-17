@@ -419,7 +419,7 @@ private extension RefundSubmissionUseCase {
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let v4LineItems = details.v4LineItems, let refundService {
-            Task { @MainActor in
+            Task {
                 await submitRefundV4ToSite(refund: refund, lineItems: v4LineItems, refundService: refundService, onCompletion: onCompletion)
             }
             return

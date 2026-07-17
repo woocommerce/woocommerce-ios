@@ -40,14 +40,13 @@ struct RefundsUpserter {
     func upsertStoredRefunds(siteID: Int64,
                              orderID: Int64,
                              readOnlyRefunds: [Networking.Refund]) async {
-        await storageManager.performAndSaveAsync({ storage in
-            let storedRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
-            self.upsertStoredRefunds(siteID: siteID,
-                                     orderID: orderID,
-                                     storedRefunds: storedRefunds,
-                                     readOnlyRefunds: readOnlyRefunds,
-                                     in: storage)
-        }, on: .main)
+        await withCheckedContinuation { continuation in
+            upsertStoredRefundsInBackground(siteID: siteID,
+                                            orderID: orderID,
+                                            readOnlyRefunds: readOnlyRefunds) {
+                continuation.resume()
+            }
+        }
     }
 
     /// Updates (OR Inserts) the specified ReadOnly Refund Entities into the Storage Layer.

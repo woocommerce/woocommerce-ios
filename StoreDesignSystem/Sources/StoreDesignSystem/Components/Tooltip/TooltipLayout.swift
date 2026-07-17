@@ -13,8 +13,9 @@ struct TooltipLayout {
     enum Constants {
         /// Nominal bubble height used to decide whether a top/bottom placement has vertical room.
         static let estimatedHeight: CGFloat = 150
-        /// Bubble width bounds and the inset kept from the screen edges.
-        static let maxBubbleWidth: CGFloat = 300
+        /// Bubble width bounds and the inset kept from the screen edges. The maximum matches the
+        /// Figma reference tooltips, which are drawn 200pt wide.
+        static let maxBubbleWidth: CGFloat = 200
         static let minBubbleWidth: CGFloat = 80
         /// Kept small so a bubble anchored to a screen-edge element (e.g. a nav-bar button) can sit
         /// close enough to the edge for its arrow to reach the anchor.

@@ -82,7 +82,7 @@ import Testing
         // Given a below placement (the bubble slides along the edge, so the full width is usable)
         let sut = layout(anchor: CGRect(x: 20, y: 100, width: 20, height: 20))
         // When / Then the width is the screen minus margins, capped to the maximum
-        #expect(sut.availableBubbleWidth(for: .top) == 300)
+        #expect(sut.availableBubbleWidth(for: .top) == 200)
     }
 
     @Test func test_availableBubbleWidth_leading_arrow_uses_trailing_space() {

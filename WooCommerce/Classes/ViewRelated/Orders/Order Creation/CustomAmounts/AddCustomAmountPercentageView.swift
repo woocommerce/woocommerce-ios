@@ -64,59 +64,60 @@ private extension AddCustomAmountPercentageView {
 private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
-        @State private var focusRequestID = 0
+        @FocusState private var fieldIsFocused: Bool
         @Binding var text: String
         @Binding var isFocused: Bool
-        var onChangeText: (String) -> (Void)
+        var onChangeText: (String) -> Void
 
         var body: some View {
-            ZStack {
-                FocusableHiddenInputTextField(text: $text,
-                                              isFocused: $isFocused,
-                                              focusRequestID: focusRequestID,
-                                              keyboardType: .decimalPad)
-                    .onChange(of: text) {
-                        onChangeText(text)
+            TextField("", text: percentageText, prompt: Text("%"))
+                .keyboardType(.decimalPad)
+                .textFieldStyle(.plain)
+                .focused($fieldIsFocused)
+                .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
+                .minimumScaleFactor(0.1)
+                .lineLimit(1)
+                .if(isFocused, transform: { field in
+                    field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+                })
+                .fixedSize(horizontal: false, vertical: true)
+                .onAppear(perform: syncFocusFromBinding)
+                .onChange(of: fieldIsFocused) { _, fieldIsFocused in
+                    guard isFocused != fieldIsFocused else { return }
+                    isFocused = fieldIsFocused
+                }
+                .onChange(of: isFocused) { _, shouldFocus in
+                    guard fieldIsFocused != shouldFocus else { return }
+                    fieldIsFocused = shouldFocus
+                }
+        }
+
+        private var percentageText: Binding<String> {
+            Binding(
+                get: {
+                    text.isEmpty ? "" : text + "%"
+                },
+                set: { newValue in
+                    let previousText = text
+                    let previousFormattedText = previousText.isEmpty ? "" : previousText + "%"
+                    var updatedText = newValue.replacingOccurrences(of: "%", with: "")
+                    if newValue.count < previousFormattedText.count,
+                       updatedText == previousText,
+                       previousText.isNotEmpty,
+                       newValue != previousFormattedText {
+                        updatedText = String(previousText.dropLast())
                     }
-                    .frame(maxWidth: .infinity)
 
-                Text(BidirectionalText.isolateLeftToRightNumericRuns(in: text + "%",
-                                                                     separators: numericTextSeparators))
-                    .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
-                    .minimumScaleFactor(0.1)
-                    .lineLimit(1)
-                    .allowsHitTesting(false)
-                    .if(isFocused, transform: { field in
-                        field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
-                    })
-            }
-            .contentShape(Rectangle())
-            .onTapGesture(perform: requestFocus)
-            .fixedSize(horizontal: false, vertical: true)
-            .restoresInputFocus(when: isFocused, restoreFocus: restoreFocusIfNeeded)
+                    text = updatedText
+                    onChangeText(updatedText)
+                }
+            )
         }
 
-        private func requestFocus() {
-            isFocused = true
-            focusRequestID += 1
-        }
-
-        private func restoreFocusIfNeeded() {
-            guard isFocused else { return }
-
-            requestFocus()
-            DispatchQueue.main.async {
-                guard isFocused else { return }
-                focusRequestID += 1
-            }
-        }
-
-        private var numericTextSeparators: Set<Character> {
-            BidirectionalText.numericSeparators(including: [
-                Locale.autoupdatingCurrent.decimalSeparator ?? ""
-            ])
+        private func syncFocusFromBinding() {
+            fieldIsFocused = isFocused
         }
     }
 }

@@ -12,10 +12,6 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     @Published private(set) var amount: String = ""
 
-    /// Stores the value entered by the merchant and presented on the text field.
-    ///
-    @Published var textFieldAmountText: String = ""
-
     /// Whether the amount field should restore focus after the view is rebuilt.
     ///
     @Published var isFocused: Bool = true
@@ -30,6 +26,12 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     var formattedAmount: String {
         priceFieldFormatter.formattedAmount
+    }
+
+    /// Formatted amount used as editable text. Empty input is represented by a prompt instead of editable placeholder text.
+    ///
+    var editableFormattedAmount: String {
+        amount.isEmpty ? "" : formattedAmount
     }
 
     var numericTextSeparators: Set<Character> {
@@ -57,8 +59,6 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: allowNegativeNumber)
         amountTextSize = size
         self.allowNegativeNumber = allowNegativeNumber
-
-        $amount.assign(to: &$textFieldAmountText)
     }
 
     func reset() {
@@ -72,6 +72,14 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     }
 
     func updateAmount(_ newAmount: String) {
+        updateAmount(newAmount, previousEditableAmount: nil)
+    }
+
+    func updateEditableFormattedAmount(_ newAmount: String) {
+        updateAmount(newAmount, previousEditableAmount: editableFormattedAmount)
+    }
+
+    private func updateAmount(_ newAmount: String, previousEditableAmount: String?) {
         guard amount != newAmount else { return }
 
         if resetAmountWithNewValue,
@@ -81,7 +89,17 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
             return
         }
 
-        amount = priceFieldFormatter.formatUserInput(newAmount)
+        let previousAmount = amount
+        let updatedAmount = priceFieldFormatter.formatUserInput(newAmount)
+        if let previousEditableAmount,
+           newAmount.count < previousEditableAmount.count,
+           updatedAmount == previousAmount,
+           previousAmount.isNotEmpty,
+           newAmount != previousEditableAmount {
+            amount = priceFieldFormatter.formatUserInput(String(previousAmount.dropLast()))
+        } else {
+            amount = updatedAmount
+        }
     }
 }
 

@@ -6,7 +6,7 @@ import WooFoundation
 ///
 struct FormattableAmountTextField: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State private var focusRequestID = 0
+    @FocusState private var fieldIsFocused: Bool
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
     private let isFocused: Binding<Bool>
@@ -22,33 +22,30 @@ struct FormattableAmountTextField: View {
     }
 
     var body: some View {
-        ZStack(alignment: .center) {
-            FocusableHiddenInputTextField(text: $viewModel.textFieldAmountText,
-                                          isFocused: isFocused,
-                                          focusRequestID: focusRequestID,
-                                          keyboardType: viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
-                .onChange(of: viewModel.textFieldAmountText) { _, newValue in
-                    viewModel.updateAmount(newValue)
-                }
-                .frame(maxWidth: .infinity, minHeight: Layout.inputHeight(size: viewModel.amountTextSize.fontSize, scale: scale))
-
-            Text(BidirectionalText.isolateLeftToRightNumericRuns(in: viewModel.formattedAmount,
-                                                                 separators: viewModel.numericTextSeparators))
-                .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
-                .foregroundColor(Color(viewModel.amountTextColor))
-                .minimumScaleFactor(0.1)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: style.textAlignment)
-                .padding(5)
-                .allowsHitTesting(false)
-                .if(isFocused.wrappedValue && style.showsBorder, transform: { field in
-                    field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
-                })
-        }
-        .contentShape(Rectangle())
-        .onTapGesture(perform: requestFocus)
-        .fixedSize(horizontal: false, vertical: true)
-        .restoresInputFocus(when: isFocused.wrappedValue, restoreFocus: restoreFocusIfNeeded)
+        TextField("", text: amountText, prompt: amountPlaceholder)
+            .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
+            .textFieldStyle(.plain)
+            .focused($fieldIsFocused)
+            .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
+            .foregroundColor(Color(viewModel.amountTextColor))
+            .minimumScaleFactor(0.1)
+            .lineLimit(1)
+            .multilineTextAlignment(style.multilineTextAlignment)
+            .frame(maxWidth: .infinity, minHeight: Layout.inputHeight(size: viewModel.amountTextSize.fontSize, scale: scale), alignment: style.textAlignment)
+            .padding(5)
+            .if(isFocused.wrappedValue && style.showsBorder, transform: { field in
+                field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+            })
+            .fixedSize(horizontal: false, vertical: true)
+            .onAppear(perform: syncFocusFromBinding)
+            .onChange(of: fieldIsFocused) { _, fieldIsFocused in
+                guard isFocused.wrappedValue != fieldIsFocused else { return }
+                isFocused.wrappedValue = fieldIsFocused
+            }
+            .onChange(of: isFocused.wrappedValue) { _, shouldFocus in
+                guard fieldIsFocused != shouldFocus else { return }
+                fieldIsFocused = shouldFocus
+            }
     }
 }
 
@@ -68,197 +65,48 @@ extension FormattableAmountTextField {
 }
 
 private extension FormattableAmountTextField {
+    var amountText: Binding<String> {
+        Binding(
+            get: {
+                viewModel.editableFormattedAmount
+            },
+            set: { newValue in
+                viewModel.updateEditableFormattedAmount(newValue)
+            }
+        )
+    }
+
+    var amountPlaceholder: Text {
+        Text(BidirectionalText.isolateLeftToRightNumericRuns(in: viewModel.formattedAmount,
+                                                             separators: viewModel.numericTextSeparators))
+    }
+
     enum Layout {
         static func amountFontSize(size: CGFloat, scale: CGFloat) -> CGFloat {
             size * scale
         }
 
         static func inputHeight(size: CGFloat, scale: CGFloat) -> CGFloat {
-            // Match the hidden input's tappable height to the visible amount text's 5-point vertical padding.
+            // Match the field's tappable height to the visible amount text's 5-point vertical padding.
             amountFontSize(size: size, scale: scale) + 10
         }
     }
 
-    func requestFocus() {
-        isFocused.wrappedValue = true
-        focusRequestID += 1
-    }
-
-    func restoreFocusIfNeeded() {
-        guard isFocused.wrappedValue else { return }
-
-        requestFocus()
-        DispatchQueue.main.async {
-            guard isFocused.wrappedValue else { return }
-            focusRequestID += 1
-        }
+    func syncFocusFromBinding() {
+        fieldIsFocused = isFocused.wrappedValue
     }
 }
 
-extension View {
-    func restoresInputFocus(when isFocused: Bool, restoreFocus: @escaping () -> Void) -> some View {
-        modifier(InputFocusRestorationModifier(isFocused: isFocused, restoreFocus: restoreFocus))
-    }
-}
-
-private struct InputFocusRestorationModifier: ViewModifier {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-
-    let isFocused: Bool
-    let restoreFocus: () -> Void
-
-    func body(content: Content) -> some View {
-        content
-            .onAppear(perform: restoreFocusIfNeeded)
-            .onChange(of: isFocused) { _, shouldFocus in
-                guard shouldFocus else { return }
-                restoreFocus()
-            }
-            .onChange(of: horizontalSizeClass) { _, _ in
-                restoreFocusIfNeeded()
-            }
-            .onChange(of: verticalSizeClass) { _, _ in
-                restoreFocusIfNeeded()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                restoreFocusIfNeeded()
-            }
-    }
-
-    private func restoreFocusIfNeeded() {
-        guard isFocused else { return }
-        restoreFocus()
-    }
-}
-
-struct FocusableHiddenInputTextField: UIViewRepresentable {
-    @Binding var text: String
-    @Binding var isFocused: Bool
-    let focusRequestID: Int
-    let keyboardType: UIKeyboardType
-
-    func makeUIView(context: Context) -> FocusableInputTextField {
-        let textField = FocusableInputTextField()
-        textField.delegate = context.coordinator
-        textField.keyboardType = keyboardType
-        textField.textColor = .clear
-        textField.tintColor = .clear
-        textField.backgroundColor = .clear
-        textField.borderStyle = .none
-        textField.autocorrectionType = .no
-        textField.spellCheckingType = .no
-        textField.smartDashesType = .no
-        textField.smartQuotesType = .no
-        textField.addTarget(context.coordinator, action: #selector(Coordinator.textDidChange(_:)), for: .editingChanged)
-        textField.didMoveToWindowHandler = { [weak coordinator = context.coordinator] textField in
-            coordinator?.textFieldDidMoveToWindow(textField)
+private extension FormattableAmountTextField.Style {
+    var multilineTextAlignment: TextAlignment {
+        switch textAlignment {
+        case .center:
+            return .center
+        case .trailing:
+            return .trailing
+        default:
+            return .leading
         }
-        return textField
-    }
-
-    func updateUIView(_ textField: FocusableInputTextField, context: Context) {
-        context.coordinator.parent = self
-
-        if textField.text != text {
-            textField.text = text
-        }
-
-        if textField.keyboardType != keyboardType {
-            textField.keyboardType = keyboardType
-            textField.reloadInputViews()
-        }
-
-        if isFocused {
-            context.coordinator.focus(textField, requestID: focusRequestID)
-        } else {
-            context.coordinator.blur(textField)
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
-    }
-
-    final class Coordinator: NSObject, UITextFieldDelegate {
-        var parent: FocusableHiddenInputTextField
-        private var handledFocusRequestID: Int?
-        private var pendingFocusRequestID: Int?
-
-        init(parent: FocusableHiddenInputTextField) {
-            self.parent = parent
-        }
-
-        @objc func textDidChange(_ textField: UITextField) {
-            let updatedText = textField.text ?? ""
-            guard parent.text != updatedText else { return }
-            parent.text = updatedText
-        }
-
-        func textFieldDidBeginEditing(_ textField: UITextField) {
-            guard parent.isFocused == false else { return }
-            parent.isFocused = true
-        }
-
-        func textFieldDidEndEditing(_ textField: UITextField) {
-            handledFocusRequestID = nil
-            pendingFocusRequestID = nil
-
-            guard parent.isFocused,
-                  textField.window != nil else {
-                return
-            }
-
-            parent.isFocused = false
-        }
-
-        func textFieldDidMoveToWindow(_ textField: UITextField) {
-            guard textField.window != nil,
-                  parent.isFocused else {
-                return
-            }
-
-            focus(textField, requestID: pendingFocusRequestID ?? parent.focusRequestID)
-        }
-
-        func focus(_ textField: UITextField, requestID: Int) {
-            guard handledFocusRequestID != requestID || textField.isFirstResponder == false else { return }
-            guard textField.window != nil else {
-                pendingFocusRequestID = requestID
-                return
-            }
-
-            handledFocusRequestID = requestID
-            pendingFocusRequestID = nil
-            DispatchQueue.main.async { [weak self, weak textField] in
-                guard self?.parent.isFocused == true,
-                      self?.handledFocusRequestID == requestID else {
-                    return
-                }
-
-                textField?.becomeFirstResponder()
-            }
-        }
-
-        func blur(_ textField: UITextField) {
-            handledFocusRequestID = nil
-            pendingFocusRequestID = nil
-
-            guard textField.isFirstResponder else { return }
-
-            DispatchQueue.main.async { [weak textField] in
-                textField?.resignFirstResponder()
-            }
-        }
-    }
-}
-
-final class FocusableInputTextField: UITextField {
-    var didMoveToWindowHandler: ((FocusableInputTextField) -> Void)?
-
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        didMoveToWindowHandler?(self)
     }
 }
 

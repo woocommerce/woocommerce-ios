@@ -48,7 +48,6 @@ struct AddCustomAmountView: View {
                             guard focusedField == .name else { return }
                             viewModel.focusName()
                         }
-                        .restoresInputFocus(when: viewModel.focusedField == .name, restoreFocus: restoreNameFocus)
                 }
 
                 Button(Localization.deleteButtonTitle) {
@@ -86,6 +85,15 @@ struct AddCustomAmountView: View {
             }
         }
         .wooNavigationBarStyle()
+        .onAppear(perform: syncFocusFromViewModel)
+        .onChange(of: viewModel.focusedField) { _, focusedField in
+            guard focusedField == .name,
+                  self.focusedField != focusedField else {
+                return
+            }
+
+            self.focusedField = focusedField
+        }
     }
 }
 
@@ -106,14 +114,9 @@ private extension AddCustomAmountView {
         )
     }
 
-    func restoreNameFocus() {
+    func syncFocusFromViewModel() {
         guard viewModel.focusedField == .name else { return }
-
-        focusedField = .name
-        DispatchQueue.main.async {
-            guard viewModel.focusedField == .name else { return }
-            focusedField = .name
-        }
+        focusedField = viewModel.focusedField
     }
 }
 

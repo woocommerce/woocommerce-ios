@@ -60,9 +60,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     ///
     let price: String?
 
-    /// Product discount
-    ///
-    let discount: Decimal?
+    /// Discount attributed to this product line, derived as `OrderItem.subtotal − total`
+    /// and excluding any order-level coupon effect (see `EditableOrderViewModel.currentProductDiscount(on:)`).
+    /// The API has no per-item discount field — an absent discount is simply equal subtotal/total,
+    /// so `0` (not nil) is the natural "no discount" value.
+    let productDiscount: Decimal
 
     /// Label showing product details for an order item.
     /// Can include product type (if the row is configurable), variation attributes (if available), and stock status.
@@ -210,7 +212,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          sku: String?,
          price: String?,
          pricedIndividually: Bool = true,
-         discount: Decimal? = nil,
+         productDiscount: Decimal = .zero,
          productTypeDescription: String,
          attributes: [VariationAttributeViewModel],
          stockStatus: ProductStockStatus,
@@ -231,7 +233,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.imageURL = imageURL
         self.name = name
         self.price = price
-        self.discount = discount
+        self.productDiscount = productDiscount
         skuLabel = CollapsibleProductRowCardViewModel.createSKULabel(sku: sku)
         productDetailsLabel = CollapsibleProductRowCardViewModel.createProductDetailsLabel(isConfigurable: isConfigurable,
                                                                                            productTypeDescription: productTypeDescription,
@@ -276,28 +278,29 @@ extension CollapsibleProductRowCardViewModel {
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
-    var totalPriceAfterDiscountLabel: String? {
+    var totalPriceAfterProductDiscountLabel: String {
         guard let price,
               let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
+            return ""
         }
         let subtotalDecimal = priceDecimal.multiplying(by: stepperViewModel.quantity as NSDecimalNumber)
-        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting(productDiscount as NSDecimalNumber)
 
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount) ?? ""
     }
 
     /// Formatted discount label for an individual product
     ///
-    var discountLabel: String? {
-        guard let discount else {
-            return nil
+    var productDiscountLabel: String {
+        guard productDiscount > 0,
+              let formattedDiscount = currencyFormatter.formatAmount(productDiscount, isNegative: true) else {
+            return ""
         }
-        return currencyFormatter.formatAmount(discount, isNegative: true)
+        return formattedDiscount
     }
 
-    var hasDiscount: Bool {
-        discount != nil
+    var hasProductDiscount: Bool {
+        productDiscount > 0
     }
 }
 

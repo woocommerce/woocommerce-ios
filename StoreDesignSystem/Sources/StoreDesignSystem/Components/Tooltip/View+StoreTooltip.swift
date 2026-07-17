@@ -33,8 +33,12 @@ private struct StoreTooltipPresentationModifier: ViewModifier {
         content
             .onGeometryChange(for: CGRect.self, of: { $0.frame(in: .global) }) { frame in
                 anchorFrame = frame
+            }
+            // Keeps a presented tooltip in sync with everything it renders from — the anchor frame
+            // as it moves, and the title/message/placement inputs as they change.
+            .onChange(of: request) { _, request in
                 if isPresented {
-                    show()
+                    TooltipPresenter.shared.show(request, onDismiss: { isPresented = false })
                 }
             }
             .onChange(of: isPresented) { _, presented in
@@ -59,12 +63,15 @@ private struct StoreTooltipPresentationModifier: ViewModifier {
             }
     }
 
+    private var request: TooltipRequest {
+        TooltipRequest(id: id,
+                       title: title,
+                       message: message,
+                       preferredPlacement: preferredPlacement,
+                       anchorFrame: anchorFrame)
+    }
+
     private func show() {
-        TooltipPresenter.shared.show(TooltipRequest(id: id,
-                                                    title: title,
-                                                    message: message,
-                                                    preferredPlacement: preferredPlacement,
-                                                    anchorFrame: anchorFrame),
-                                     onDismiss: { isPresented = false })
+        TooltipPresenter.shared.show(request, onDismiss: { isPresented = false })
     }
 }

@@ -7,13 +7,17 @@ import SwiftUI
 struct StoreTooltip: View {
     let title: String
     let message: String?
-    /// The bubble edge the arrow sits on.
+    /// The bubble edge the arrow sits on, in absolute screen terms (leading = left).
     let arrowEdge: Edge
-    /// The arrow tip's offset along that edge, from the bubble's leading/top corner.
+    /// The arrow tip's offset along that edge, from the bubble's left/top corner.
     let arrowTip: CGFloat
+
+    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
         bubble
+            // The text keeps the user's layout direction…
+            .environment(\.layoutDirection, layoutDirection)
             .padding(Edge.Set(arrowEdge), TooltipArrowShape.depth)
             .overlay(alignment: arrowCorner) {
                 TooltipArrowShape(edge: arrowEdge)
@@ -21,6 +25,9 @@ struct StoreTooltip: View {
                     .frame(width: arrowWidth, height: arrowHeight)
                     .offset(arrowOffset)
             }
+            // …while the arrow strip and its corner pinning resolve left-to-right, because the
+            // presenter computes `arrowEdge` and `arrowTip` in absolute screen coordinates.
+            .environment(\.layoutDirection, .leftToRight)
     }
 
     private var bubble: some View {

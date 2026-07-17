@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 /// What a `storeTooltip` modifier asks the presenter to show.
-struct TooltipRequest {
+struct TooltipRequest: Equatable {
     let id: UUID
     let title: String
     let message: String?
@@ -113,6 +113,7 @@ private final class PassthroughWindow: UIWindow {
 private struct TooltipOverlayRootView: View {
     let model: TooltipOverlayModel
     @State private var bubbleSize: CGSize = .zero
+    @Environment(\.layoutDirection) private var layoutDirection
 
     var body: some View {
         if model.isPresented {
@@ -120,7 +121,7 @@ private struct TooltipOverlayRootView: View {
                 let bounds = proxy.frame(in: .global)
                 let anchorFrame = model.request.anchorFrame
                 let layout = TooltipLayout(anchorFrame: anchorFrame, bounds: bounds)
-                let arrowEdge = layout.resolvedArrowEdge(preferred: model.request.preferredPlacement?.arrowEdge,
+                let arrowEdge = layout.resolvedArrowEdge(preferred: model.request.preferredPlacement?.arrowEdge(in: layoutDirection),
                                                          bubbleSize: bubbleSize)
                 let offset = layout.bubbleOffset(for: arrowEdge, bubbleSize: bubbleSize)
                 StoreTooltip(title: model.request.title,
@@ -144,8 +145,12 @@ private struct TooltipOverlayRootView: View {
                     .frame(idealWidth: layout.availableBubbleWidth(for: arrowEdge))
                     .fixedSize()
                     // Centered on the anchor, then pushed fully onto the arrow's side (local space
-                    // matches global on this full-window reader, minus its origin).
-                    .position(x: anchorFrame.midX + offset.width - bounds.minX,
+                    // matches global on this full-window reader, minus its origin). `position`
+                    // interprets x in the layout direction while the geometry here is absolute, so
+                    // mirror it back in right-to-left layouts.
+                    .position(x: layoutDirection == .rightToLeft
+                                ? bounds.maxX - (anchorFrame.midX + offset.width)
+                                : anchorFrame.midX + offset.width - bounds.minX,
                               y: anchorFrame.midY + offset.height - bounds.minY)
                     // Hidden until measured (so it never flashes at the pre-measurement position)
                     // and while the anchor is scrolled off screen (so it never floats over

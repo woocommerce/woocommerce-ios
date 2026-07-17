@@ -11,14 +11,15 @@ public enum StoreTooltipPlacement: Sendable {
     case leading
     case trailing
 
-    /// The bubble edge the arrow renders on — the inverse side, since the arrow points back at
-    /// the anchor.
-    var arrowEdge: Edge {
+    /// The bubble edge the arrow renders on — the inverse side, since the arrow points back at the
+    /// anchor. Placement names follow the reading direction while the presenter's geometry is
+    /// absolute (leading = left), so the horizontal placements swap in right-to-left layouts.
+    func arrowEdge(in direction: LayoutDirection) -> Edge {
         switch self {
         case .above: .bottom
         case .below: .top
-        case .leading: .trailing
-        case .trailing: .leading
+        case .leading: direction == .rightToLeft ? .leading : .trailing
+        case .trailing: direction == .rightToLeft ? .trailing : .leading
         }
     }
 }

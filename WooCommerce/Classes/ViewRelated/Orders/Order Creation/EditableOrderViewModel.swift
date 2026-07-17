@@ -680,8 +680,7 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        let itemDiscount = currentProductDiscount(on: item)
-        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+        let passingDiscountValue = currentProductDiscount(on: item)
 
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -704,7 +703,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: variation.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
                                                                   attributes: attributes,
                                                                   stockStatus: variation.stockStatus,
@@ -747,7 +746,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: product.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
                                                                   attributes: [],
                                                                   stockStatus: product.productStockStatus,

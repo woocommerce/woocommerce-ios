@@ -293,7 +293,7 @@ extension CollapsibleProductRowCardViewModel {
         guard let discount else {
             return nil
         }
-        return currencyFormatter.formatAmount(discount)
+        return currencyFormatter.formatAmount(discount, isNegative: true)
     }
 
     var hasDiscount: Bool {

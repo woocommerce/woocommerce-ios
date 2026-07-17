@@ -149,7 +149,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let popDirectionalIsolate = "\u{2069}"
 
         // Then
-        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.discountLabel)
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.productDiscountLabel)
     }
 
     // MARK: - `totalPriceAfterProductDiscountLabel`

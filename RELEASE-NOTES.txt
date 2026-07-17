@@ -23,6 +23,10 @@
 - [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
 - [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
 
+25.1.1
+------
+- [*] Fixed Collect Payment from order creation closing without opening the payment method flow on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17557]
+
 25.1
 -----
 - [Internal] Track Woo push token deletion results (woo_push_token_delete_success/error). [https://github.com/woocommerce/woocommerce-ios/pull/17477]

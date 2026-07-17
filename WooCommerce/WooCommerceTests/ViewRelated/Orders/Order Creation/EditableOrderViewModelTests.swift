@@ -717,6 +717,22 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
     }
 
+    func test_addCustomAmountViewModel_when_custom_amount_flow_is_active_then_reuses_active_view_model() {
+        // Given
+        viewModel.beginAddCustomAmountFlow()
+        let firstViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        firstViewModel.name = "Rotation test"
+        firstViewModel.formattableAmountTextFieldViewModel?.updateAmount("12.34")
+
+        // When
+        let secondViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+
+        // Then
+        XCTAssertTrue(firstViewModel === secondViewModel)
+        XCTAssertEqual(secondViewModel.name, "Rotation test")
+        XCTAssertEqual(secondViewModel.formattableAmountTextFieldViewModel?.amount, "12.34")
+    }
+
     func test_onAddCustomAmountButtonTapped_then_it_tracks_event() {
         // Given
         let analytics = MockAnalyticsProvider()

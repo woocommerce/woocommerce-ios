@@ -125,8 +125,6 @@ extension WooAnalyticsEvent {
         case productsGeneral  = "products_general"
         /// Shown in beta feature banner for order add-ons.
         case addOnsI1 = "add-ons_i1"
-        /// Shown in orders banner for order creation release.
-        case orderCreation = "order_creation"
         /// Shown in the order form after adding a shipping line
         case orderFormShippingLines = "order_form_shipping_lines"
         /// Shown in the AI Assistant beta notice.

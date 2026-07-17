@@ -279,12 +279,6 @@ extension WooConstants {
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
 
-#if DEBUG
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
-#else
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
-#endif
-
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
         case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/in-person-payments-stripe/#collect-order-payment"

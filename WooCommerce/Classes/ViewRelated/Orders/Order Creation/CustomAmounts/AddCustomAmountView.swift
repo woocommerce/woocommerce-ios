@@ -7,9 +7,6 @@ struct AddCustomAmountView: View {
     @Environment(\.dismiss) var dismiss
     @FocusState private var focusedField: AddCustomAmountViewModel.FocusedField?
     @FocusState private var inputFieldIsFocused: Bool
-    @State private var layoutSize: CGSize = .zero
-    @State private var pendingFocusClearTask: Task<Void, Never>?
-    @State private var pendingFocusRestoreTask: Task<Void, Never>?
 
     init(viewModel: AddCustomAmountViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -52,16 +49,9 @@ struct AddCustomAmountView: View {
                             .foregroundColor(Color(.textSubtle))
                             .focused($focusedField, equals: .name)
                             .onChange(of: focusedField) { _, focusedField in
-                                switch focusedField {
-                                case .name:
-                                    cancelPendingFocusTasks()
-                                    inputFieldIsFocused = false
-                                    viewModel.focusName()
-                                case nil:
-                                    scheduleFocusClear(for: .name)
-                                case .input:
-                                    break
-                                }
+                                guard focusedField == .name else { return }
+                                inputFieldIsFocused = false
+                                viewModel.focusName()
                             }
                     }
 
@@ -101,13 +91,7 @@ struct AddCustomAmountView: View {
             }
         }
         .wooNavigationBarStyle()
-        .background {
-            GeometryReader { geometry in
-                Color.clear.preference(key: AddCustomAmountLayoutSizePreferenceKey.self, value: geometry.size)
-            }
-        }
         .onAppear(perform: syncFocusFromViewModel)
-        .onPreferenceChange(AddCustomAmountLayoutSizePreferenceKey.self, perform: handleLayoutSizeChange)
         .onChange(of: viewModel.focusedField) { _, focusedField in
             switch focusedField {
             case .input:
@@ -130,61 +114,19 @@ private extension AddCustomAmountView {
     var inputFocusBinding: Binding<Bool> {
         Binding(
             get: {
-                inputFieldIsFocused
+                viewModel.focusedField == .input
             },
             set: { isFocused in
                 if isFocused {
-                    cancelPendingFocusTasks()
                     focusedField = nil
                     inputFieldIsFocused = true
                     viewModel.focusInput()
                 } else {
                     inputFieldIsFocused = false
-                    scheduleFocusClear(for: .input)
+                    viewModel.clearInputFocus()
                 }
             }
         )
-    }
-
-    func handleLayoutSizeChange(_ newSize: CGSize) {
-        defer {
-            layoutSize = newSize
-        }
-
-        guard layoutSize != .zero, layoutSize != newSize else {
-            return
-        }
-
-        pendingFocusClearTask?.cancel()
-        pendingFocusRestoreTask?.cancel()
-        pendingFocusRestoreTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: Layout.focusRestoreDelay)
-            guard !Task.isCancelled else { return }
-            syncFocusFromViewModel()
-        }
-    }
-
-    func scheduleFocusClear(for field: AddCustomAmountViewModel.FocusedField) {
-        // Rotation briefly blurs SwiftUI fields; delay clearing requested focus so a layout change can restore it.
-        pendingFocusClearTask?.cancel()
-        pendingFocusClearTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: Layout.focusClearDelay)
-            guard !Task.isCancelled else { return }
-
-            switch field {
-            case .input where !inputFieldIsFocused && viewModel.focusedField == .input:
-                viewModel.clearInputFocus()
-            case .name where focusedField != .name && viewModel.focusedField == .name:
-                viewModel.clearFocus()
-            default:
-                break
-            }
-        }
-    }
-
-    func cancelPendingFocusTasks() {
-        pendingFocusClearTask?.cancel()
-        pendingFocusRestoreTask?.cancel()
     }
 
     func syncFocusFromViewModel() {
@@ -207,16 +149,6 @@ private extension AddCustomAmountView {
         static let horizontalPadding: CGFloat = 16
         static let rowSpacing: CGFloat = 24
         static let topPadding: CGFloat = 16
-        static let focusClearDelay: UInt64 = 800_000_000
-        static let focusRestoreDelay: UInt64 = 250_000_000
-    }
-}
-
-private struct AddCustomAmountLayoutSizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize = .zero
-
-    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-        value = nextValue()
     }
 }
 

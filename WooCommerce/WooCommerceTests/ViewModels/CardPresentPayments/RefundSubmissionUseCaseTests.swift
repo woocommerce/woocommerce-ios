@@ -20,6 +20,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     private var knownCardReaderProvider: MockKnownReaderProvider!
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var storageManager: MockStorageManager!
+    private var refundService: MockRefundService!
 
     override func setUp() {
         super.setUp()
@@ -32,9 +33,11 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         knownCardReaderProvider = MockKnownReaderProvider()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         storageManager = MockStorageManager()
+        refundService = MockRefundService()
     }
 
     override func tearDown() {
+        refundService = nil
         storageManager = nil
         onboardingPresenter = nil
         knownCardReaderProvider = nil
@@ -71,7 +74,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
-    func test_submitRefund_with_v4_line_items_dispatches_createRefundV4_with_restock_instead_of_v3_create() throws {
+    func test_submitRefund_with_v4_line_items_creates_v4_refund_with_restock_instead_of_v3_create() throws {
         // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
                                     charge: nil,
@@ -79,13 +82,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
-        var receivedRestockItems: Bool?
-        stores.whenReceivingAction(ofType: RefundAction.self) { action in
-            if case let .createRefundV4(_, _, _, _, restockItems, _, completion) = action {
-                receivedRestockItems = restockItems
-                completion(.success(.fake()))
-            }
-        }
+        refundService.createRefundResult = .success(.fake())
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -96,7 +93,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(receivedRestockItems, true)
+        XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
         let dispatchedV3Create = stores.receivedActions.contains(where: { action in
             guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
                 return false
@@ -114,11 +111,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
-        stores.whenReceivingAction(ofType: RefundAction.self) { action in
-            if case let .createRefundV4(_, _, _, _, _, _, completion) = action {
-                completion(.failure(NSError(domain: "test", code: 1)))
-            }
-        }
+        refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -604,7 +597,8 @@ private extension RefundSubmissionUseCaseTests {
                 onboardingPresenter,
             stores: stores,
             storageManager: storageManager,
-            analytics: analytics)
+            analytics: analytics,
+            refundService: refundService)
 
         return RefundSubmissionUseCase(
             details: details,

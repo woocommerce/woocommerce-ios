@@ -14,15 +14,18 @@ final class POSV4RefundPreviewUseCase {
         case error
     }
 
+    private let refundService: RefundServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let availabilityCache: V4RefundAvailabilityCache
     private let minimumWooVersion: String
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(refundService: RefundServiceProtocol,
+         stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          availabilityCache: V4RefundAvailabilityCache = .shared,
          minimumWooVersion: String = Constants.minimumWooVersion) {
+        self.refundService = refundService
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.availabilityCache = availabilityCache
@@ -38,11 +41,11 @@ final class POSV4RefundPreviewUseCase {
             return .fallbackToLocal
         }
 
-        switch await dispatchPreview(siteID: siteID, orderID: orderID, lineItems: lineItems) {
-        case .success(let preview):
+        do {
+            let preview = try await refundService.previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems)
             availabilityCache.markV4Available(siteID: siteID)
             return .serverCalculated(preview)
-        case .failure(let error):
+        } catch {
             if isRouteNotRegistered(error) {
                 availabilityCache.markV4Unavailable(siteID: siteID)
                 return .fallbackToLocal
@@ -68,17 +71,6 @@ final class POSV4RefundPreviewUseCase {
             return true
         }
         return false
-    }
-
-    private func dispatchPreview(siteID: Int64,
-                                 orderID: Int64,
-                                 lineItems: [RefundV4LineItem]) async -> Swift.Result<RefundPreview, Error> {
-        await withCheckedContinuation { continuation in
-            let action = RefundAction.previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems) { result in
-                continuation.resume(returning: result)
-            }
-            stores.dispatch(action)
-        }
     }
 
     private enum Constants {

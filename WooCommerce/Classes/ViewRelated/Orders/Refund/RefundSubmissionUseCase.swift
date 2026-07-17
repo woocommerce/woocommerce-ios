@@ -45,6 +45,9 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let storageManager: StorageManagerType
 
+    /// Async service for the v4 refund endpoints. Only required when `details.v4LineItems` is set.
+    private let refundService: RefundServiceProtocol?
+
     /// Analytics manager.
     private let analytics: Analytics
 
@@ -101,6 +104,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         let stores: StoresManager
         let storageManager: StorageManagerType
         let analytics: Analytics
+        let refundService: RefundServiceProtocol?
 
         init(currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
              currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -108,7 +112,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storageManager: StorageManagerType = ServiceLocator.storageManager,
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             refundService: RefundServiceProtocol? = nil) {
             self.currencyFormatter = currencyFormatter
             self.currencySettings = currencySettings
             self.knownReaderProvider = knownReaderProvider
@@ -116,6 +121,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
             self.stores = stores
             self.storageManager = storageManager
             self.analytics = analytics
+            self.refundService = refundService
         }
     }
 
@@ -143,6 +149,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         self.stores = dependencies.stores
         self.storageManager = dependencies.storageManager
         self.analytics = dependencies.analytics
+        self.refundService = dependencies.refundService
     }
 
     /// Starts the refund submission flow.
@@ -411,8 +418,14 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        if let v4LineItems = details.v4LineItems {
-            return submitRefundV4ToSite(refund: refund, lineItems: v4LineItems, onCompletion: onCompletion)
+        if let v4LineItems = details.v4LineItems, let refundService {
+            Task { @MainActor in
+                await submitRefundV4ToSite(refund: refund, lineItems: v4LineItems, refundService: refundService, onCompletion: onCompletion)
+            }
+            return
+        }
+        if details.v4LineItems != nil {
+            DDLogError("⛔️ v4 refund line items provided without a RefundService — falling back to the v3 submission path")
         }
 
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
@@ -441,30 +454,27 @@ private extension RefundSubmissionUseCase {
         trackCreateRefundRequest()
     }
 
+    @MainActor
     private func submitRefundV4ToSite(refund: Refund,
                                       lineItems: [RefundV4LineItem],
-                                      onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        let action = RefundAction.createRefundV4(siteID: details.order.siteID,
-                                                 orderID: details.order.orderID,
-                                                 reason: refund.reason,
-                                                 automaticRefund: refund.createAutomated ?? false,
-                                                 restockItems: true,
-                                                 lineItems: lineItems) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success(let createdRefund):
-                self.retrieveUpdatedRefundData(refund: createdRefund)
-                onCompletion(.success(()))
-                self.trackCreateRefundRequestSuccess()
-            case .failure(let error):
-                DDLogError("Error creating v4 refund: \(refund)\nWith Error: \(error)")
-                self.trackCreateRefundRequestFailed(error: error)
-                onCompletion(.failure(error))
-            }
-        }
-        stores.dispatch(action)
+                                      refundService: RefundServiceProtocol,
+                                      onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
+        do {
+            let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
+                                                                     orderID: details.order.orderID,
+                                                                     reason: refund.reason,
+                                                                     automaticRefund: refund.createAutomated ?? false,
+                                                                     restockItems: true,
+                                                                     lineItems: lineItems)
+            retrieveUpdatedRefundData(refund: createdRefund)
+            onCompletion(.success(()))
+            trackCreateRefundRequestSuccess()
+        } catch {
+            DDLogError("Error creating v4 refund: \(refund)\nWith Error: \(error)")
+            trackCreateRefundRequestFailed(error: error)
+            onCompletion(.failure(error))
+        }
     }
 
     /// Retrieves the up-to-date refund data

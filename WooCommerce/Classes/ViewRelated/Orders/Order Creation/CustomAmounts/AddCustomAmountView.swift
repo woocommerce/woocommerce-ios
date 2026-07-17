@@ -14,57 +14,59 @@ struct AddCustomAmountView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Layout.rowSpacing) {
+                    if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+                        VStack(alignment: .leading) {
+                            Text(Localization.amountTitle)
+                                .font(.title3)
+                                .foregroundColor(Color(.textSubtle))
+                            FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
+                                                       isFocused: inputFocusBinding,
+                                                       fieldFocus: $inputFieldIsFocused)
+                        }
+                    }
+
+                    if let percentageViewModel = viewModel.percentageViewModel {
+                        AddCustomAmountPercentageView(viewModel: percentageViewModel,
+                                                      isFocused: inputFocusBinding,
+                                                      fieldFocus: $inputFieldIsFocused)
+                    }
+
+                    Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
+                        .font(.title3)
+                        .onChange(of: viewModel.isTaxable) {
+                            focusedField = nil
+                            viewModel.clearFocus()
+                        }
+
                     VStack(alignment: .leading) {
-                        Text(Localization.amountTitle)
+                        Text(Localization.nameTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
-                        FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
-                                                   isFocused: inputFocusBinding,
-                                                   fieldFocus: $inputFieldIsFocused)
-                    }
-                }
-
-                if let percentageViewModel = viewModel.percentageViewModel {
-                    AddCustomAmountPercentageView(viewModel: percentageViewModel,
-                                                  isFocused: inputFocusBinding,
-                                                  fieldFocus: $inputFieldIsFocused)
-                }
-
-                Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
-                    .font(.title3)
-                    .onChange(of: viewModel.isTaxable) {
-                        focusedField = nil
-                        viewModel.clearFocus()
+                        TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
+                            .secondaryTitleStyle()
+                            .foregroundColor(Color(.textSubtle))
+                            .focused($focusedField, equals: .name)
+                            .onChange(of: focusedField) { _, focusedField in
+                                guard focusedField == .name else { return }
+                                inputFieldIsFocused = false
+                                viewModel.focusName()
+                            }
                     }
 
-                VStack(alignment: .leading) {
-                    Text(Localization.nameTitle)
-                        .font(.title3)
-                        .foregroundColor(Color(.textSubtle))
-                    TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
-                        .secondaryTitleStyle()
-                        .foregroundColor(Color(.textSubtle))
-                        .focused($focusedField, equals: .name)
-                        .onChange(of: focusedField) { _, focusedField in
-                            guard focusedField == .name else { return }
-                            inputFieldIsFocused = false
-                            viewModel.focusName()
-                        }
+                    Button(Localization.deleteButtonTitle) {
+                        viewModel.deleteButtonPressed()
+                        dismiss()
+                    }
+                    .foregroundColor(.init(uiColor: .error))
+                    .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                    .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
+                    .renderedIf(viewModel.shouldShowDeleteButton)
                 }
-
-                Button(Localization.deleteButtonTitle) {
-                    viewModel.deleteButtonPressed()
-                    dismiss()
-                }
-                .foregroundColor(.init(uiColor: .error))
-                .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
-                .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
-                .listRowSeparator(.hidden, edges: .bottom)
-                .renderedIf(viewModel.shouldShowDeleteButton)
+                .padding(.horizontal, Layout.horizontalPadding)
+                .padding(.top, Layout.topPadding)
             }
-            .listStyle(.plain)
             .safeAreaInset(edge: .bottom) {
                 Button(viewModel.doneButtonTitle) {
                     viewModel.doneButtonPressed()
@@ -144,7 +146,9 @@ private extension AddCustomAmountView {
 
 private extension AddCustomAmountView {
     enum Layout {
-        static let mainVerticalSpacing: CGFloat = 8
+        static let horizontalPadding: CGFloat = 16
+        static let rowSpacing: CGFloat = 24
+        static let topPadding: CGFloat = 16
     }
 }
 

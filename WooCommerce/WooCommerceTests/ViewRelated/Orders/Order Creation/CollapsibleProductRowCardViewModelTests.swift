@@ -143,7 +143,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 2)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let viewModel = createViewModel(discount: 0.50, currencyFormatter: currencyFormatter)
+        let viewModel = createViewModel(productDiscount: 0.50, currencyFormatter: currencyFormatter)
         let rightToLeftMark = "\u{200F}"
         let leftToRightIsolate = "\u{2066}"
         let popDirectionalIsolate = "\u{2069}"

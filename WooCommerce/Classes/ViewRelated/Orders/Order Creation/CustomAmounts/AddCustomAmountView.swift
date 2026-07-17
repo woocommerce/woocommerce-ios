@@ -82,9 +82,7 @@ struct AddCustomAmountView: View {
             }
         }
         .wooNavigationBarStyle()
-        .onAppear {
-            focusedField = .input
-        }
+        .defaultFocus($focusedField, .input)
     }
 }
 

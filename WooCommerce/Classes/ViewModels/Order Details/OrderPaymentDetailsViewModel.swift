@@ -90,7 +90,7 @@ final class OrderPaymentDetailsViewModel {
     ///
     /// It reads: `Awaiting payment via Credit Card (Stripe)`
     /// or: `Payment on Nov 19, 2019 via Credit Card (Stripe)`
-    /// or is left blank if is paid, but has no payment method title associated.
+    /// or, when paid without a payment method title: `Payment on Nov 19, 2019`
     ///
     var paymentSummary: String? {
 
@@ -98,11 +98,18 @@ final class OrderPaymentDetailsViewModel {
             return awaitingPaymentTitle
         }
 
+        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
+
         if order.paymentMethodTitle.isEmpty {
-            return nil
+            let template = NSLocalizedString(
+                "orderPaymentDetails.paymentSummary.dateOnly",
+                value: "Payment on %1$@",
+                comment: "Payment summary on the Order Details screen when the order is paid but has " +
+                "no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date.")
+
+            return String.localizedStringWithFormat(template, styleDate)
         }
 
-        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
         let template = NSLocalizedString(
             "%1$@ via %2$@",
             comment: "Payment on <date> received via (payment method title)")

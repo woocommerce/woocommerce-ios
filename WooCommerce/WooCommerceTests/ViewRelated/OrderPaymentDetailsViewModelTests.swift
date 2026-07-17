@@ -131,13 +131,20 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
-    /// Test the `paymentSummary` calculated property
-    /// returns nil if the order is paid but the payment method title is an empty string
+    /// Test that the `paymentSummary` calculated property returns a date-only summary
+    /// when the order is paid but the payment method title is an empty string.
     ///
-    func test_order_payment_method_title_returns_nil_when_order_paid_and_payment_method_title_is_blank() {
-        let expected = ""
-        XCTAssertEqual(orderPaidWithNoPaymentMethod.paymentMethodTitle, expected)
-        XCTAssertNil(orderPaidWithNoPaymentMethodViewModel.paymentSummary)
+    func test_paymentSummary_when_order_paid_and_payment_method_title_is_blank_then_returns_date_only_summary() throws {
+        // Given
+        let datePaid = try XCTUnwrap(orderPaidWithNoPaymentMethod.datePaid)
+        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
+        let expected = String.localizedStringWithFormat(
+            NSLocalizedString("orderPaymentDetails.paymentSummary.dateOnly", value: "Payment on %1$@", comment: ""),
+            styleDate)
+
+        // Then
+        XCTAssertEqual(orderPaidWithNoPaymentMethod.paymentMethodTitle, "")
+        XCTAssertEqual(orderPaidWithNoPaymentMethodViewModel.paymentSummary, expected)
     }
 
     /// The `paymentMethodTitle` is used in the `paymentSummary`.

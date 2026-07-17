@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 extension PaymentGateway {
-    /// Creates a PaymentGateway with default settings suitable for enabling Pay In Person on a store.
+    /// Creates a PaymentGateway with default settings suitable for enabling Pay in Person on a store.
     /// This provides customer-facing strings to update the store's gateway.
     /// The gateway is enabled.
     static func defaultPayInPersonGateway(siteID: Int64) -> PaymentGateway {
@@ -17,10 +17,9 @@ extension PaymentGateway {
 
     private enum Localization {
         static let cashOnDeliveryCheckoutTitle = NSLocalizedString(
-            "inPersonPayments.cashOnDelivery.gateway.checkout.title",
-            value: "Pay In Person",
+            "Pay in Person",
             comment: "Customer-facing title for the payment option added to the store checkout when the merchant enables " +
-            "Pay In Person")
+            "Pay in Person")
 
         static let cashOnDeliveryCheckoutDescription = NSLocalizedString(
             "Pay by card or another accepted payment method",

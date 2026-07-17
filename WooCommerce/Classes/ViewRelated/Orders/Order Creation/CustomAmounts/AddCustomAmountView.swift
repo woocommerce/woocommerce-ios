@@ -6,6 +6,7 @@ struct AddCustomAmountView: View {
 
     @Environment(\.dismiss) var dismiss
     @FocusState private var focusedField: AddCustomAmountViewModel.FocusedField?
+    @FocusState private var inputFieldIsFocused: Bool
 
     init(viewModel: AddCustomAmountViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -20,13 +21,15 @@ struct AddCustomAmountView: View {
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
                         FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
-                                                   isFocused: inputFocusBinding)
+                                                   isFocused: inputFocusBinding,
+                                                   fieldFocus: $inputFieldIsFocused)
                     }
                 }
 
                 if let percentageViewModel = viewModel.percentageViewModel {
                     AddCustomAmountPercentageView(viewModel: percentageViewModel,
-                                                  isFocused: inputFocusBinding)
+                                                  isFocused: inputFocusBinding,
+                                                  fieldFocus: $inputFieldIsFocused)
                 }
 
                 Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
@@ -46,6 +49,7 @@ struct AddCustomAmountView: View {
                         .focused($focusedField, equals: .name)
                         .onChange(of: focusedField) { _, focusedField in
                             guard focusedField == .name else { return }
+                            inputFieldIsFocused = false
                             viewModel.focusName()
                         }
                 }
@@ -87,12 +91,19 @@ struct AddCustomAmountView: View {
         .wooNavigationBarStyle()
         .onAppear(perform: syncFocusFromViewModel)
         .onChange(of: viewModel.focusedField) { _, focusedField in
-            guard focusedField == .name,
-                  self.focusedField != focusedField else {
-                return
+            switch focusedField {
+            case .input:
+                guard inputFieldIsFocused == false else { return }
+                inputFieldIsFocused = true
+                self.focusedField = nil
+            case .name:
+                guard self.focusedField != focusedField else { return }
+                inputFieldIsFocused = false
+                self.focusedField = focusedField
+            case nil:
+                inputFieldIsFocused = false
+                self.focusedField = nil
             }
-
-            self.focusedField = focusedField
         }
     }
 }
@@ -106,8 +117,10 @@ private extension AddCustomAmountView {
             set: { isFocused in
                 if isFocused {
                     focusedField = nil
+                    inputFieldIsFocused = true
                     viewModel.focusInput()
                 } else {
+                    inputFieldIsFocused = false
                     viewModel.clearInputFocus()
                 }
             }
@@ -115,8 +128,17 @@ private extension AddCustomAmountView {
     }
 
     func syncFocusFromViewModel() {
-        guard viewModel.focusedField == .name else { return }
-        focusedField = viewModel.focusedField
+        switch viewModel.focusedField {
+        case .input:
+            inputFieldIsFocused = true
+            focusedField = nil
+        case .name:
+            inputFieldIsFocused = false
+            focusedField = viewModel.focusedField
+        case nil:
+            inputFieldIsFocused = false
+            focusedField = nil
+        }
     }
 }
 

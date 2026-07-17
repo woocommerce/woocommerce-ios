@@ -6,26 +6,33 @@ import WooFoundation
 ///
 struct FormattableAmountTextField: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @FocusState private var fieldIsFocused: Bool
+    @FocusState private var defaultFieldIsFocused: Bool
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
     private let isFocused: Binding<Bool>
+    private let fieldFocus: FocusState<Bool>.Binding?
     private let style: Style
 
-    init(viewModel: FormattableAmountTextFieldViewModel, style: Style = .default, isFocused: Binding<Bool>? = nil) {
+    init(viewModel: FormattableAmountTextFieldViewModel,
+         style: Style = .default,
+         isFocused: Binding<Bool>? = nil,
+         fieldFocus: FocusState<Bool>.Binding? = nil) {
         self.viewModel = viewModel
         self.style = style
         self.isFocused = isFocused ?? Binding(
             get: { viewModel.isFocused },
             set: { viewModel.isFocused = $0 }
         )
+        self.fieldFocus = fieldFocus
     }
 
     var body: some View {
+        let fieldFocus = fieldFocus ?? $defaultFieldIsFocused
+
         TextField("", text: amountText, prompt: amountPlaceholder)
             .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
             .textFieldStyle(.plain)
-            .focused($fieldIsFocused)
+            .focused(fieldFocus)
             .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
             .foregroundColor(Color(viewModel.amountTextColor))
             .minimumScaleFactor(0.1)
@@ -37,14 +44,16 @@ struct FormattableAmountTextField: View {
                 field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
             })
             .fixedSize(horizontal: false, vertical: true)
-            .onAppear(perform: syncFocusFromBinding)
-            .onChange(of: fieldIsFocused) { _, fieldIsFocused in
+            .onAppear {
+                syncFocusFromBinding(fieldFocus)
+            }
+            .onChange(of: fieldFocus.wrappedValue) { _, fieldIsFocused in
                 guard isFocused.wrappedValue != fieldIsFocused else { return }
                 isFocused.wrappedValue = fieldIsFocused
             }
             .onChange(of: isFocused.wrappedValue) { _, shouldFocus in
-                guard fieldIsFocused != shouldFocus else { return }
-                fieldIsFocused = shouldFocus
+                guard fieldFocus.wrappedValue != shouldFocus else { return }
+                fieldFocus.wrappedValue = shouldFocus
             }
     }
 }
@@ -92,8 +101,8 @@ private extension FormattableAmountTextField {
         }
     }
 
-    func syncFocusFromBinding() {
-        fieldIsFocused = isFocused.wrappedValue
+    func syncFocusFromBinding(_ fieldFocus: FocusState<Bool>.Binding) {
+        fieldFocus.wrappedValue = isFocused.wrappedValue
     }
 }
 

@@ -2,10 +2,15 @@
 import protocol WooFoundation.Analytics
 import struct Yosemite.CardPresentPaymentsConfiguration
 import enum WooFoundation.CountryCode
+import Foundation
 import Testing
 
 struct POSCollectOrderPaymentAnalyticsTests {
     private let analytics: MockPOSAnalytics
+
+    private final class TestClock {
+        var now: TimeInterval = 0
+    }
 
     init() {
         analytics = MockPOSAnalytics()
@@ -37,5 +42,74 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(expectedProperties.allSatisfy { key in
             analytics.events.map(\.properties).contains(where: { $0.keys.contains(key) })
         })
+    }
+
+    @Test func analytics_when_successful_card_payment_then_reports_correct_elapsed_milliseconds() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
+
+        // When
+        clock.now = 1000 // customer interaction started
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001 // order synced
+        sut.trackOrderSyncSuccess()
+        clock.now = 1002 // reader ready
+        sut.trackCardReaderReady()
+        clock.now = 1003 // card tapped
+        sut.trackCardReaderTapped()
+        clock.now = 1005 // payment success
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
+
+        // Then
+        #expect(property("milliseconds_since_customer_interaction_started", in: "card_present_collect_payment_success") == "5000.0")
+        #expect(property("milliseconds_since_order_sync_success", in: "card_present_collect_payment_success") == "4000.0")
+        #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_success") == "3000.0")
+        #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "2000.0")
+    }
+
+    @Test func analytics_when_reader_becomes_ready_then_reports_elapsed_time_since_order_sync() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+
+        // When
+        clock.now = 500 // customer interaction started (resets counters)
+        sut.trackCustomerInteractionStarted()
+        clock.now = 510 // order synced
+        sut.trackOrderSyncSuccess()
+        clock.now = 513 // reader ready -> tracks waiting time (513 - 510)
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "3.0")
+    }
+
+    @Test func analytics_when_successful_cash_payment_then_reports_correct_elapsed_milliseconds() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+
+        // When
+        clock.now = 2000 // customer interaction started
+        sut.trackCustomerInteractionStarted()
+        clock.now = 2001 // cash payment success -> floor((2001 - 2000) * 1000) = 1000
+        sut.trackSuccessfulCashPayment()
+
+        // Then
+        #expect(property("milliseconds_since_customer_interaction_started", in: "cash_collect_payment_success") == "1000.0")
+    }
+}
+
+private extension POSCollectOrderPaymentAnalyticsTests {
+    func property(_ key: String, in eventName: String) -> String? {
+        analytics.events.first(where: { $0.eventName == eventName })?.properties[key] as? String
     }
 }

@@ -15,6 +15,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 
     private let analytics: POSAnalyticsProviding
 
+    private let currentTimestamp: () -> TimeInterval
+
     private var paymentGatewayAccount: PaymentGatewayAccount?
     private let configuration: CardPresentPaymentsConfiguration
     private var connectedReader: CardReader?
@@ -23,9 +25,11 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     init(analytics: POSAnalyticsProviding,
-         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         currentTimestamp: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         self.analytics = analytics
         self.configuration = configuration
+        self.currentTimestamp = currentTimestamp
     }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
@@ -111,7 +115,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         // Any action that is considered as user starting an iteraction resets any ongoing counter
         resetAllCountersOnInteractionStarted()
         analytics.track(.pointOfSaleInteractionWithCustomerStarted)
-        customerInteractionStarted = Date().timeIntervalSince1970
+        customerInteractionStarted = currentTimestamp()
     }
 
     func trackOrderSyncSuccess() {
@@ -151,11 +155,11 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 // Helpers
 private extension POSCollectOrderPaymentAnalyticsAdaptor {
     func trackCurrentTime() -> Double {
-        Date().timeIntervalSince1970
+        currentTimestamp()
     }
 
     func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
-        let end = Date().timeIntervalSince1970
+        let end = currentTimestamp()
         return floor((end - start) * 1000)
     }
 

@@ -101,6 +101,14 @@ final class OrderPaymentDetailsViewModel {
         let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
 
         if order.paymentMethodTitle.isEmpty {
+            // WooCommerce core keeps `date_paid` set even after an order is reverted to an unpaid
+            // status (e.g. Pending Payment). Without a payment method title to disambiguate, fall
+            // back to the awaiting-payment summary so a reverted order does not keep showing a paid
+            // date once it needs payment again.
+            guard !order.needsPayment else {
+                return awaitingPaymentTitle
+            }
+
             let template = NSLocalizedString(
                 "orderPaymentDetails.paymentSummary.dateOnly",
                 value: "Payment on %1$@",

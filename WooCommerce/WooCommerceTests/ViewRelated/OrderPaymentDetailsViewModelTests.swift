@@ -147,6 +147,18 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderPaidWithNoPaymentMethodViewModel.paymentSummary, expected)
     }
 
+    func test_paymentSummary_when_reverted_to_pending_and_payment_method_title_is_blank_then_returns_awaiting_payment() {
+        // Given
+        let order = MockOrders().orderRevertedToPendingWithNoPaymentMethod()
+        let viewModel = OrderPaymentDetailsViewModel(order: order)
+
+        // Then
+        XCTAssertTrue(order.needsPayment)
+        XCTAssertNotNil(order.datePaid)
+        XCTAssertEqual(order.paymentMethodTitle, "")
+        XCTAssertEqual(viewModel.paymentSummary, "Awaiting payment")
+    }
+
     /// The `paymentMethodTitle` is used in the `paymentSummary`.
     /// Test that the `paymentSummary` calculated property
     /// does not return nil as long as the `paymentMethodTitle` is present

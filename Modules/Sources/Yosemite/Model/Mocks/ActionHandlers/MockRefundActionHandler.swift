@@ -16,8 +16,13 @@ struct MockRefundActionHandler: MockActionHandler {
                 success(onCompletion)
             case .previewRefund(let siteID, let orderID, let lineItems, let onCompletion):
                 previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems, onCompletion: onCompletion)
-            case .createRefundV4(let siteID, let orderID, let reason, _, _, let lineItems, let onCompletion):
-                createRefundV4(siteID: siteID, orderID: orderID, reason: reason, lineItems: lineItems, onCompletion: onCompletion)
+            case .createRefundV4(let siteID, let orderID, let reason, let automaticRefund, _, let lineItems, let onCompletion):
+                createRefundV4(siteID: siteID,
+                               orderID: orderID,
+                               reason: reason,
+                               automaticRefund: automaticRefund,
+                               lineItems: lineItems,
+                               onCompletion: onCompletion)
 
             default: unimplementedAction(action: action)
         }
@@ -50,6 +55,7 @@ private extension MockRefundActionHandler {
     func createRefundV4(siteID: Int64,
                         orderID: Int64,
                         reason: String,
+                        automaticRefund: Bool,
                         lineItems: [RefundV4LineItem],
                         onCompletion: (Result<Refund, Error>) -> Void) {
         previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems) { previewResult in
@@ -67,8 +73,8 @@ private extension MockRefundActionHandler {
                                 amount: NSDecimalNumber(decimal: amount).stringValue,
                                 reason: reason,
                                 refundedByUserID: 0,
-                                isAutomated: false,
-                                createAutomated: false,
+                                isAutomated: automaticRefund,
+                                createAutomated: automaticRefund,
                                 items: [],
                                 shippingLines: [])
             onCompletion(.success(refund))

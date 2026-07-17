@@ -120,20 +120,8 @@ struct OrderFormPresentationWrapper: View {
     let dismissLabel: DismissLabel
 
     @ObservedObject var viewModel: EditableOrderViewModel
-    @ObservedObject private var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
-
-    init(dismissHandler: @escaping () -> Void = {},
-         flow: WooAnalyticsEvent.Orders.Flow,
-         dismissLabel: DismissLabel,
-         viewModel: EditableOrderViewModel) {
-        self.dismissHandler = dismissHandler
-        self.flow = flow
-        self.dismissLabel = dismissLabel
-        self.viewModel = viewModel
-        self._customAmountsSectionViewModel = ObservedObject(wrappedValue: viewModel.customAmountsSectionViewModel)
-    }
 
     var body: some View {
         AdaptiveModalContainer(
@@ -188,23 +176,6 @@ struct OrderFormPresentationWrapper: View {
                 .notice($viewModel.autodismissableNotice)
                 .notice($viewModel.fixedNotice, autoDismiss: false)
         })
-        .sheet(isPresented: customAmountSheetPresented, onDismiss: {
-            viewModel.onDismissAddCustomAmountView()
-            customAmountsSectionViewModel.addCustomAmountOption = nil
-        }, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: customAmountsSectionViewModel.addCustomAmountOption))
-        })
-    }
-
-    private var customAmountSheetPresented: Binding<Bool> {
-        Binding(
-            get: {
-                customAmountsSectionViewModel.showCustomAmountView
-            },
-            set: { isPresented in
-                customAmountsSectionViewModel.showCustomAmountView = isPresented
-            }
-        )
     }
 }
 
@@ -237,6 +208,7 @@ struct OrderForm: View {
     let flow: WooAnalyticsEvent.Orders.Flow
 
     @ObservedObject var viewModel: EditableOrderViewModel
+    @ObservedObject private var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     let presentProductSelector: (() -> Void)?
 
@@ -270,6 +242,7 @@ struct OrderForm: View {
         self.dismissHandler = dismissHandler
         self.flow = flow
         self.viewModel = viewModel
+        self._customAmountsSectionViewModel = ObservedObject(wrappedValue: viewModel.customAmountsSectionViewModel)
         self.presentProductSelector = presentProductSelector
     }
 
@@ -278,6 +251,12 @@ struct OrderForm: View {
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
             }
+            .sheet(isPresented: customAmountSheetPresented, onDismiss: {
+                viewModel.onDismissAddCustomAmountView()
+                customAmountsSectionViewModel.addCustomAmountOption = nil
+            }, content: {
+                AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: customAmountsSectionViewModel.addCustomAmountOption))
+            })
             .onChange(of: horizontalSizeClass) {
                 viewModel.saveInFlightOrderNotes()
                 viewModel.saveInflightCustomerDetails()
@@ -297,6 +276,17 @@ struct OrderForm: View {
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
         }
+    }
+
+    private var customAmountSheetPresented: Binding<Bool> {
+        Binding(
+            get: {
+                customAmountsSectionViewModel.showCustomAmountView
+            },
+            set: { isPresented in
+                customAmountsSectionViewModel.showCustomAmountView = isPresented
+            }
+        )
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {

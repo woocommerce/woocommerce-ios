@@ -74,6 +74,7 @@ private extension FormattableAmountTextField {
         }
 
         static func inputHeight(size: CGFloat, scale: CGFloat) -> CGFloat {
+            // Match the hidden input's tappable height to the visible amount text's 5-point vertical padding.
             amountFontSize(size: size, scale: scale) + 10
         }
     }
@@ -87,7 +88,7 @@ private extension FormattableAmountTextField {
         guard isFocused.wrappedValue else { return }
 
         requestFocus()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+        DispatchQueue.main.async {
             guard isFocused.wrappedValue else { return }
             focusRequestID += 1
         }
@@ -137,8 +138,8 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
     let focusRequestID: Int
     let keyboardType: UIKeyboardType
 
-    func makeUIView(context: Context) -> UITextField {
-        let textField = UITextField()
+    func makeUIView(context: Context) -> FocusableInputTextField {
+        let textField = FocusableInputTextField()
         textField.delegate = context.coordinator
         textField.keyboardType = keyboardType
         textField.textColor = .clear
@@ -150,10 +151,13 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
         textField.smartDashesType = .no
         textField.smartQuotesType = .no
         textField.addTarget(context.coordinator, action: #selector(Coordinator.textDidChange(_:)), for: .editingChanged)
+        textField.didMoveToWindowHandler = { [weak coordinator = context.coordinator] textField in
+            coordinator?.textFieldDidMoveToWindow(textField)
+        }
         return textField
     }
 
-    func updateUIView(_ textField: UITextField, context: Context) {
+    func updateUIView(_ textField: FocusableInputTextField, context: Context) {
         context.coordinator.parent = self
 
         if textField.text != text {
@@ -179,6 +183,7 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
     final class Coordinator: NSObject, UITextFieldDelegate {
         var parent: FocusableHiddenInputTextField
         private var handledFocusRequestID: Int?
+        private var pendingFocusRequestID: Int?
 
         init(parent: FocusableHiddenInputTextField) {
             self.parent = parent
@@ -195,10 +200,36 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
             parent.isFocused = true
         }
 
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            handledFocusRequestID = nil
+            pendingFocusRequestID = nil
+
+            guard parent.isFocused,
+                  textField.window != nil else {
+                return
+            }
+
+            parent.isFocused = false
+        }
+
+        func textFieldDidMoveToWindow(_ textField: UITextField) {
+            guard textField.window != nil,
+                  parent.isFocused else {
+                return
+            }
+
+            focus(textField, requestID: pendingFocusRequestID ?? parent.focusRequestID)
+        }
+
         func focus(_ textField: UITextField, requestID: Int) {
-            guard handledFocusRequestID != requestID else { return }
+            guard handledFocusRequestID != requestID || textField.isFirstResponder == false else { return }
+            guard textField.window != nil else {
+                pendingFocusRequestID = requestID
+                return
+            }
 
             handledFocusRequestID = requestID
+            pendingFocusRequestID = nil
             DispatchQueue.main.async { [weak self, weak textField] in
                 guard self?.parent.isFocused == true,
                       self?.handledFocusRequestID == requestID else {
@@ -211,6 +242,7 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
 
         func blur(_ textField: UITextField) {
             handledFocusRequestID = nil
+            pendingFocusRequestID = nil
 
             guard textField.isFirstResponder else { return }
 
@@ -218,6 +250,15 @@ struct FocusableHiddenInputTextField: UIViewRepresentable {
                 textField?.resignFirstResponder()
             }
         }
+    }
+}
+
+final class FocusableInputTextField: UITextField {
+    var didMoveToWindowHandler: ((FocusableInputTextField) -> Void)?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        didMoveToWindowHandler?(self)
     }
 }
 

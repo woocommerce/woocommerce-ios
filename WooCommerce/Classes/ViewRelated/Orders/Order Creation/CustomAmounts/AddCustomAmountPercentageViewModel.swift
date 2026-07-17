@@ -18,8 +18,6 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
 
     @Published var percentage = ""
 
-    @Published var isFocused: Bool = true
-
     init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
         self.baseAmountForPercentage = baseAmountForPercentage
         self.currencyFormatter = currencyFormatter

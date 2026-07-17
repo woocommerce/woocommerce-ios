@@ -685,9 +685,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
     }
 
-    func test_addCustomAmountViewModel_when_custom_amount_sheet_is_presented_then_reuses_active_view_model() {
+    func test_addCustomAmountViewModel_when_custom_amount_flow_is_active_then_reuses_active_view_model() {
         // Given
-        viewModel.customAmountsSectionViewModel.showCustomAmountView = true
+        viewModel.beginAddCustomAmountFlow()
         let firstViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
         firstViewModel.name = "Rotation test"
         firstViewModel.formattableAmountTextFieldViewModel?.updateAmount("12.34")

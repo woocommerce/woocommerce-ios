@@ -5,12 +5,9 @@ struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
     private let isFocused: Binding<Bool>
 
-    init(viewModel: AddCustomAmountPercentageViewModel, isFocused: Binding<Bool>? = nil) {
+    init(viewModel: AddCustomAmountPercentageViewModel, isFocused: Binding<Bool>) {
         self.viewModel = viewModel
-        self.isFocused = isFocused ?? Binding(
-            get: { viewModel.isFocused },
-            set: { viewModel.isFocused = $0 }
-        )
+        self.isFocused = isFocused
     }
 
     var body: some View {
@@ -110,7 +107,7 @@ private extension AddCustomAmountPercentageView {
             guard isFocused else { return }
 
             requestFocus()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            DispatchQueue.main.async {
                 guard isFocused else { return }
                 focusRequestID += 1
             }

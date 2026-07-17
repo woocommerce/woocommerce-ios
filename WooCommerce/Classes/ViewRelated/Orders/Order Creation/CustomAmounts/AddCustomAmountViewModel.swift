@@ -152,24 +152,20 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func focusInput() {
         focusedField = .input
-        updateInputFocus()
     }
 
     func focusName() {
         focusedField = .name
-        updateInputFocus()
     }
 
     func clearFocus() {
         focusedField = nil
-        updateInputFocus()
     }
 
     func clearInputFocus() {
         if focusedField == .input {
             focusedField = nil
         }
-        updateInputFocus()
     }
 }
 
@@ -195,12 +191,6 @@ private extension AddCustomAmountViewModel {
         guard let decimalAmount = currencyFormatter.convertToDecimal(amount) as? Decimal else { return false }
 
         return decimalAmount > .zero
-    }
-
-    func updateInputFocus() {
-        let isInputFocused = focusedField == .input
-        formattableAmountTextFieldViewModel?.isFocused = isInputFocused
-        percentageViewModel?.isFocused = isInputFocused
     }
 
     func trackEventsOnDoneButtonPressed() {

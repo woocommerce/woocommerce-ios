@@ -152,8 +152,11 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         // Given
         let focusState = FocusState()
         let textField = SpyTextField()
+        let window = UIWindow()
         let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
         let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+        window.addSubview(textField)
+        window.isHidden = false
 
         // When
         coordinator.focus(textField, requestID: 1)
@@ -161,6 +164,39 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(textField.didBecomeFirstResponder)
+        withExtendedLifetime(window) {}
+    }
+
+    func test_textFieldDidEndEditing_when_focus_is_set_then_clears_focus() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let window = UIWindow()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+        window.addSubview(textField)
+        window.isHidden = false
+
+        // When
+        coordinator.textFieldDidEndEditing(textField)
+
+        // Then
+        XCTAssertFalse(focusState.isFocused)
+        withExtendedLifetime(window) {}
+    }
+
+    func test_textFieldDidEndEditing_when_text_field_is_detached_then_keeps_focus_requested() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+
+        // When
+        coordinator.textFieldDidEndEditing(textField)
+
+        // Then
+        XCTAssertTrue(focusState.isFocused)
     }
 
     private func makeFocusableHiddenInputTextField(focusState: FocusState) -> FocusableHiddenInputTextField {

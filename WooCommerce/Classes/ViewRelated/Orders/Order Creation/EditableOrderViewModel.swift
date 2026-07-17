@@ -211,6 +211,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     var editingFee: OrderFeeLine? = nil
     private var activeAddCustomAmountViewModel: AddCustomAmountViewModel?
+    private var isCustomAmountFlowActive = false
 
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
@@ -1014,7 +1015,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onDismissAddCustomAmountView() {
         editingFee = nil
-        activeAddCustomAmountViewModel = nil
+        endAddCustomAmountFlow()
     }
 
     func onAddCustomAmountButtonTapped() {
@@ -1028,6 +1029,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
+            beginAddCustomAmountFlow()
             customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
@@ -1069,7 +1071,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
-        if customAmountsSectionViewModel.showCustomAmountView,
+        if isCustomAmountFlowActive,
            let activeAddCustomAmountViewModel {
             return activeAddCustomAmountViewModel
         }
@@ -1098,11 +1100,20 @@ final class EditableOrderViewModel: ObservableObject {
             self.editingFee = nil
         }
 
-        if customAmountsSectionViewModel.showCustomAmountView {
+        if isCustomAmountFlowActive {
             activeAddCustomAmountViewModel = viewModel
         }
 
         return viewModel
+    }
+
+    func beginAddCustomAmountFlow() {
+        isCustomAmountFlowActive = true
+    }
+
+    func endAddCustomAmountFlow() {
+        isCustomAmountFlowActive = false
+        activeAddCustomAmountViewModel = nil
     }
 }
 
@@ -1643,6 +1654,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
+                        self.beginAddCustomAmountFlow()
                         self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }

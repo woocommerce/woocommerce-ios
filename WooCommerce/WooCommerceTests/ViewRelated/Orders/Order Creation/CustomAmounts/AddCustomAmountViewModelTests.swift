@@ -160,7 +160,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))
     }
 
-    func test_clearInputFocus_when_fixed_amount_then_clears_amount_field_focus() {
+    func test_clearInputFocus_when_fixed_amount_then_clears_focused_field() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
@@ -169,10 +169,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.focusedField)
-        XCTAssertFalse(viewModel.formattableAmountTextFieldViewModel?.isFocused ?? true)
     }
 
-    func test_clearInputFocus_when_percentage_then_clears_percentage_field_focus() {
+    func test_clearInputFocus_when_percentage_then_clears_focused_field() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 200), onCustomAmountEntered: { _, _, _, _ in })
 
@@ -181,10 +180,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.focusedField)
-        XCTAssertFalse(viewModel.percentageViewModel?.isFocused ?? true)
     }
 
-    func test_focusName_when_fixed_amount_then_clears_amount_field_focus() {
+    func test_focusName_when_fixed_amount_then_sets_name_focus() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
@@ -193,10 +191,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.focusedField, .name)
-        XCTAssertFalse(viewModel.formattableAmountTextFieldViewModel?.isFocused ?? true)
     }
 
-    func test_focusInput_when_fixed_amount_then_restores_amount_field_focus() {
+    func test_focusInput_when_fixed_amount_then_sets_input_focus() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
         viewModel.focusName()
@@ -206,10 +203,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.focusedField, .input)
-        XCTAssertTrue(viewModel.formattableAmountTextFieldViewModel?.isFocused ?? false)
     }
 
-    func test_focusName_when_percentage_then_clears_percentage_field_focus() {
+    func test_focusName_when_percentage_then_sets_name_focus() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: 200), onCustomAmountEntered: { _, _, _, _ in })
 
@@ -218,6 +214,5 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.focusedField, .name)
-        XCTAssertFalse(viewModel.percentageViewModel?.isFocused ?? true)
     }
 }

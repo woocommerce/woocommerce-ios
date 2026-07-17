@@ -208,6 +208,7 @@ struct OrderForm: View {
     let flow: WooAnalyticsEvent.Orders.Flow
 
     @ObservedObject var viewModel: EditableOrderViewModel
+    @ObservedObject private var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel
 
     let presentProductSelector: (() -> Void)?
 
@@ -234,6 +235,17 @@ struct OrderForm: View {
         viewModel.paymentDataViewModel.isLoading
     }
 
+    init(dismissHandler: @escaping () -> Void = {},
+         flow: WooAnalyticsEvent.Orders.Flow,
+         viewModel: EditableOrderViewModel,
+         presentProductSelector: (() -> Void)?) {
+        self.dismissHandler = dismissHandler
+        self.flow = flow
+        self.viewModel = viewModel
+        self._customAmountsSectionViewModel = ObservedObject(wrappedValue: viewModel.customAmountsSectionViewModel)
+        self.presentProductSelector = presentProductSelector
+    }
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
@@ -241,9 +253,9 @@ struct OrderForm: View {
             }
             .sheet(isPresented: customAmountSheetPresented, onDismiss: {
                 viewModel.onDismissAddCustomAmountView()
-                viewModel.customAmountsSectionViewModel.addCustomAmountOption = nil
+                customAmountsSectionViewModel.addCustomAmountOption = nil
             }, content: {
-                AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: viewModel.customAmountsSectionViewModel.addCustomAmountOption))
+                AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: customAmountsSectionViewModel.addCustomAmountOption))
             })
             .onChange(of: horizontalSizeClass) {
                 viewModel.saveInFlightOrderNotes()
@@ -269,10 +281,10 @@ struct OrderForm: View {
     private var customAmountSheetPresented: Binding<Bool> {
         Binding(
             get: {
-                viewModel.customAmountsSectionViewModel.showCustomAmountView
+                customAmountsSectionViewModel.showCustomAmountView
             },
             set: { isPresented in
-                viewModel.customAmountsSectionViewModel.showCustomAmountView = isPresented
+                customAmountsSectionViewModel.showCustomAmountView = isPresented
             }
         )
     }

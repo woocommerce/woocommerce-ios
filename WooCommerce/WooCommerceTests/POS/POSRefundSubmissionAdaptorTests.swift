@@ -241,7 +241,8 @@ private extension POSRefundSubmissionAdaptorTests {
                                                        stores: stores,
                                                        featureFlagService: flags,
                                                        availabilityCache: V4RefundAvailabilityCache(),
-                                                       minimumWooVersion: "10.9.0")
+                                                       minimumWooVersion: "10.9.0",
+                                                       siteAPILoader: { _ in throw MockManualRefundService.MockError.notStubbed })
 
         let orderService = MockPOSOrderService()
         orderService.orderToReturn = order(quantity: orderQuantity)

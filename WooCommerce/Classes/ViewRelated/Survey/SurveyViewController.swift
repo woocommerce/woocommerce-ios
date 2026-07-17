@@ -63,7 +63,6 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsFeedback
         case addOnsI1
         case orderFormShippingLines
         case aiAssistantFeedback
@@ -73,9 +72,6 @@ extension SurveyViewController {
                 switch self {
                 case .inAppFeedback:
                     return WooConstants.URLs.inAppFeedback
-                        .asURL()
-                case .productsFeedback:
-                    return WooConstants.URLs.productsFeedback
                         .asURL()
                 case .addOnsI1:
                     return WooConstants.URLs.orderAddOnI1Feedback
@@ -102,8 +98,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsFeedback,
-                    .addOnsI1,
+            case .addOnsI1,
                     .orderFormShippingLines,
                     .aiAssistantFeedback:
                 return Localization.giveFeedback
@@ -115,8 +110,6 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsFeedback:
-                return .productsGeneral
             case .addOnsI1:
                 return .addOnsI1
             case .orderFormShippingLines:
@@ -218,6 +211,6 @@ private extension SurveyViewController {
     enum Localization {
         static let wait = NSLocalizedString("Please wait", comment: "Text on the loading view of the survey screen indicating the user to wait")
         static let title = NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
-        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
+        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title on the navigation bar for feedback surveys")
     }
 }

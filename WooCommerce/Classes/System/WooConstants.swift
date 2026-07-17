@@ -219,10 +219,6 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the products feedback survey
-        ///
-        case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
-
         /// URL for the AI Assistant beta feedback survey
         ///
         case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"

@@ -124,6 +124,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     }
 
     func refreshIfNecessary() {
+#if DEBUG
+        // WOOMOB-3455 debug repro (REMOVE before commit): reproduce the reporter's
+        // "return StripeAccountOverdueRequirements from the onboarding check".
+        // Forcing a non-`.completed` state here (a) makes readiness resolve to
+        // .onboardingRequired so the screen shows, and (b) bypasses the cached-
+        // `.completed` short-circuit below that would otherwise mask it. Because
+        // onboarding can never complete, the reader never persists, so the check
+        // recurs on every transaction — matching the report.
+        state = .stripeAccountOverdueRequirement(plugin: .wcPay)
+        return
+#endif
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
            cachedValue.isCompleted {
             if cachedValue != state {

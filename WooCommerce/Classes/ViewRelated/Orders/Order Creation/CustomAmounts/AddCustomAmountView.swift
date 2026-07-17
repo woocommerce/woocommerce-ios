@@ -2,11 +2,11 @@ import SwiftUI
 import WooFoundation
 
 struct AddCustomAmountView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
     @StateObject private var viewModel: AddCustomAmountViewModel
 
     @Environment(\.dismiss) var dismiss
-    @FocusState private var focusedField: AddCustomAmountViewModel.FocusedField?
-    @FocusState private var inputFieldIsFocused: Bool
+    @FocusState private var focusedField: FocusedField?
 
     init(viewModel: AddCustomAmountViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -21,23 +21,19 @@ struct AddCustomAmountView: View {
                             Text(Localization.amountTitle)
                                 .font(.title3)
                                 .foregroundColor(Color(.textSubtle))
-                            FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel,
-                                                       isFocused: inputFocusBinding,
-                                                       fieldFocus: $inputFieldIsFocused)
+                            fixedAmountField(viewModel: formattableAmountTextFieldViewModel)
                         }
                     }
 
                     if let percentageViewModel = viewModel.percentageViewModel {
                         AddCustomAmountPercentageView(viewModel: percentageViewModel,
-                                                      isFocused: inputFocusBinding,
-                                                      fieldFocus: $inputFieldIsFocused)
+                                                      focusedField: $focusedField)
                     }
 
                     Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
                         .font(.title3)
                         .onChange(of: viewModel.isTaxable) {
                             focusedField = nil
-                            viewModel.clearFocus()
                         }
 
                     VStack(alignment: .leading) {
@@ -48,11 +44,6 @@ struct AddCustomAmountView: View {
                             .secondaryTitleStyle()
                             .foregroundColor(Color(.textSubtle))
                             .focused($focusedField, equals: .name)
-                            .onChange(of: focusedField) { _, focusedField in
-                                guard focusedField == .name else { return }
-                                inputFieldIsFocused = false
-                                viewModel.focusName()
-                            }
                     }
 
                     Button(Localization.deleteButtonTitle) {
@@ -91,56 +82,53 @@ struct AddCustomAmountView: View {
             }
         }
         .wooNavigationBarStyle()
-        .onAppear(perform: syncFocusFromViewModel)
-        .onChange(of: viewModel.focusedField) { _, focusedField in
-            switch focusedField {
-            case .input:
-                guard inputFieldIsFocused == false else { return }
-                inputFieldIsFocused = true
-                self.focusedField = nil
-            case .name:
-                guard self.focusedField != focusedField else { return }
-                inputFieldIsFocused = false
-                self.focusedField = focusedField
-            case nil:
-                inputFieldIsFocused = false
-                self.focusedField = nil
-            }
+        .onAppear {
+            focusedField = .input
         }
     }
 }
 
+extension AddCustomAmountView {
+    enum FocusedField: Hashable {
+        case input
+        case name
+    }
+}
+
 private extension AddCustomAmountView {
-    var inputFocusBinding: Binding<Bool> {
+    func fixedAmountField(viewModel: FormattableAmountTextFieldViewModel) -> some View {
+        TextField("", text: fixedAmountText(viewModel), prompt: fixedAmountPlaceholder(viewModel))
+            .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
+            .textFieldStyle(.plain)
+            .focused($focusedField, equals: .input)
+            .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
+            .foregroundColor(Color(viewModel.amountTextColor))
+            .minimumScaleFactor(0.1)
+            .lineLimit(1)
+            .frame(maxWidth: .infinity,
+                   minHeight: Layout.amountInputHeight(size: viewModel.amountTextSize.fontSize, scale: scale),
+                   alignment: .leading)
+            .padding(5)
+            .if(focusedField == .input, transform: { field in
+                field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+            })
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    func fixedAmountText(_ viewModel: FormattableAmountTextFieldViewModel) -> Binding<String> {
         Binding(
             get: {
-                viewModel.focusedField == .input
+                viewModel.editableFormattedAmount
             },
-            set: { isFocused in
-                if isFocused {
-                    focusedField = nil
-                    inputFieldIsFocused = true
-                    viewModel.focusInput()
-                } else {
-                    inputFieldIsFocused = false
-                    viewModel.clearInputFocus()
-                }
+            set: { newValue in
+                viewModel.updateEditableFormattedAmount(newValue)
             }
         )
     }
 
-    func syncFocusFromViewModel() {
-        switch viewModel.focusedField {
-        case .input:
-            inputFieldIsFocused = true
-            focusedField = nil
-        case .name:
-            inputFieldIsFocused = false
-            focusedField = viewModel.focusedField
-        case nil:
-            inputFieldIsFocused = false
-            focusedField = nil
-        }
+    func fixedAmountPlaceholder(_ viewModel: FormattableAmountTextFieldViewModel) -> Text {
+        Text(BidirectionalText.isolateLeftToRightNumericRuns(in: viewModel.formattedAmount,
+                                                             separators: viewModel.numericTextSeparators))
     }
 }
 
@@ -149,6 +137,15 @@ private extension AddCustomAmountView {
         static let horizontalPadding: CGFloat = 16
         static let rowSpacing: CGFloat = 24
         static let topPadding: CGFloat = 16
+
+        static func amountFontSize(size: CGFloat, scale: CGFloat) -> CGFloat {
+            size * scale
+        }
+
+        static func amountInputHeight(size: CGFloat, scale: CGFloat) -> CGFloat {
+            // Matches the field's 5-point vertical padding.
+            amountFontSize(size: size, scale: scale) + 10
+        }
     }
 }
 

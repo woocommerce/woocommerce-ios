@@ -3,15 +3,12 @@ import WooFoundation
 
 struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
-    private let isFocused: Binding<Bool>
-    private let fieldFocus: FocusState<Bool>.Binding
+    private let focusedField: FocusState<AddCustomAmountView.FocusedField?>.Binding
 
     init(viewModel: AddCustomAmountPercentageViewModel,
-         isFocused: Binding<Bool>,
-         fieldFocus: FocusState<Bool>.Binding) {
+         focusedField: FocusState<AddCustomAmountView.FocusedField?>.Binding) {
         self.viewModel = viewModel
-        self.isFocused = isFocused
-        self.fieldFocus = fieldFocus
+        self.focusedField = focusedField
     }
 
     var body: some View {
@@ -28,8 +25,7 @@ struct AddCustomAmountPercentageView: View {
                 }
 
                 PercentageInputField(text: $viewModel.percentage,
-                                     isFocused: isFocused,
-                                     fieldFocus: fieldFocus,
+                                     focusedField: focusedField,
                                      onChangeText: viewModel.updatePercentageCalculatedAmount)
             }
 
@@ -70,33 +66,23 @@ private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
         @Binding var text: String
-        @Binding var isFocused: Bool
-        let fieldFocus: FocusState<Bool>.Binding
+        let focusedField: FocusState<AddCustomAmountView.FocusedField?>.Binding
         var onChangeText: (String) -> Void
 
         var body: some View {
             TextField("", text: percentageText, prompt: Text("%"))
                 .keyboardType(.decimalPad)
                 .textFieldStyle(.plain)
-                .focused(fieldFocus)
+                .focused(focusedField, equals: .input)
                 .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
-                .if(isFocused, transform: { field in
+                .if(focusedField.wrappedValue == .input, transform: { field in
                     field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
                 })
                 .fixedSize(horizontal: false, vertical: true)
-                .onAppear(perform: syncFocusFromBinding)
-                .onChange(of: fieldFocus.wrappedValue) { _, fieldIsFocused in
-                    guard isFocused != fieldIsFocused else { return }
-                    isFocused = fieldIsFocused
-                }
-                .onChange(of: isFocused) { _, shouldFocus in
-                    guard fieldFocus.wrappedValue != shouldFocus else { return }
-                    fieldFocus.wrappedValue = shouldFocus
-                }
         }
 
         private var percentageText: Binding<String> {
@@ -119,10 +105,6 @@ private extension AddCustomAmountPercentageView {
                     onChangeText(updatedText)
                 }
             )
-        }
-
-        private func syncFocusFromBinding() {
-            fieldFocus.wrappedValue = isFocused
         }
     }
 }

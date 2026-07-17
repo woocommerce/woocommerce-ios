@@ -1,38 +1,25 @@
 import SwiftUI
-import UIKit
 import WooFoundation
 
 /// This numeric Text Field updates the user input to show the formatted amount
 ///
 struct FormattableAmountTextField: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @FocusState private var defaultFieldIsFocused: Bool
+    @FocusState private var fieldIsFocused: Bool
 
     @ObservedObject private var viewModel: FormattableAmountTextFieldViewModel
-    private let isFocused: Binding<Bool>
-    private let fieldFocus: FocusState<Bool>.Binding?
     private let style: Style
 
-    init(viewModel: FormattableAmountTextFieldViewModel,
-         style: Style = .default,
-         isFocused: Binding<Bool>? = nil,
-         fieldFocus: FocusState<Bool>.Binding? = nil) {
+    init(viewModel: FormattableAmountTextFieldViewModel, style: Style = .default) {
         self.viewModel = viewModel
         self.style = style
-        self.isFocused = isFocused ?? Binding(
-            get: { viewModel.isFocused },
-            set: { viewModel.isFocused = $0 }
-        )
-        self.fieldFocus = fieldFocus
     }
 
     var body: some View {
-        let fieldFocus = fieldFocus ?? $defaultFieldIsFocused
-
         TextField("", text: amountText, prompt: amountPlaceholder)
             .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
             .textFieldStyle(.plain)
-            .focused(fieldFocus)
+            .focused($fieldIsFocused)
             .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
             .foregroundColor(Color(viewModel.amountTextColor))
             .minimumScaleFactor(0.1)
@@ -40,21 +27,10 @@ struct FormattableAmountTextField: View {
             .multilineTextAlignment(style.multilineTextAlignment)
             .frame(maxWidth: .infinity, minHeight: Layout.inputHeight(size: viewModel.amountTextSize.fontSize, scale: scale), alignment: style.textAlignment)
             .padding(5)
-            .if(isFocused.wrappedValue && style.showsBorder, transform: { field in
+            .if(fieldIsFocused && style.showsBorder, transform: { field in
                 field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
             })
             .fixedSize(horizontal: false, vertical: true)
-            .onAppear {
-                syncFocusFromBinding(fieldFocus)
-            }
-            .onChange(of: fieldFocus.wrappedValue) { _, fieldIsFocused in
-                guard isFocused.wrappedValue != fieldIsFocused else { return }
-                isFocused.wrappedValue = fieldIsFocused
-            }
-            .onChange(of: isFocused.wrappedValue) { _, shouldFocus in
-                guard fieldFocus.wrappedValue != shouldFocus else { return }
-                fieldFocus.wrappedValue = shouldFocus
-            }
     }
 }
 
@@ -99,10 +75,6 @@ private extension FormattableAmountTextField {
             // Match the field's tappable height to the visible amount text's 5-point vertical padding.
             amountFontSize(size: size, scale: scale) + 10
         }
-    }
-
-    func syncFocusFromBinding(_ fieldFocus: FocusState<Bool>.Binding) {
-        fieldFocus.wrappedValue = isFocused.wrappedValue
     }
 }
 

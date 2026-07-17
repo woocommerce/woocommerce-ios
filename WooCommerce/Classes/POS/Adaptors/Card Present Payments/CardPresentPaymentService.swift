@@ -11,6 +11,10 @@ import enum Yosemite.CardReaderReconnectionState
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
+    // WOOMOB-3455 debug repro (REMOVE before commit): counts preflight/onboarding
+    // check spin-ups across the app session; logged in createPreflightController().
+    private static var debugPreflightCount = 0
+
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
@@ -106,7 +110,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             guard let self else { return .canceled }
             defer { self.connectReaderTask = nil }
 
-            let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController())
+            let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController(debugSource: "connect"))
             do {
                 let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
                 switch preflightResult {
@@ -179,7 +183,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         // What happens if `start` gets called while there's a connection ongoing but not finished?
         // Ideally, we'd adopt the connection attempt.
         // Since we're reusing the connection controllers, that's a good start, but it needs proper testing.
-        let preflightController = createPreflightController()
+        let preflightController = createPreflightController(debugSource: "collect")
 
         // TODO: Update the connected reader subject when we get a connection here.
 
@@ -338,10 +342,18 @@ private extension CardPresentPaymentService {
         }
     }
 
-    func createPreflightController() -> CardPresentPaymentPreflightController<
+    func createPreflightController(debugSource: String = "unknown") -> CardPresentPaymentPreflightController<
         CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
         CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
         CardPresentPaymentsAlertPresenterAdaptor> {
+            // WOOMOB-3455 debug repro (REMOVE before commit): a fresh preflight
+            // controller is *built* here per connect/collect. NOTE this is not
+            // the same as the onboarding check actually running — the preflight
+            // skips onboarding when a matching reader is already connected. The
+            // real check is logged in CardPresentPaymentOnboardingAdaptor.
+            // `debugSource` distinguishes the connect-time vs collect-time call.
+            Self.debugPreflightCount += 1
+            DDLogWarn("🧪 [3455] preflight built #\(Self.debugPreflightCount) (source: \(debugSource))")
             let alertProvider = CardPresentPaymentTapToPayReaderConnectionAlertsProvider()
             return CardPresentPaymentPreflightController(
                 siteID: siteID,

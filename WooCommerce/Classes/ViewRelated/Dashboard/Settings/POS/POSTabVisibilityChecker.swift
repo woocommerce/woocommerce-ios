@@ -27,7 +27,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
     private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
 
-    private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
+    private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 0)
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -135,9 +135,9 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
-        guard userInterfaceIdiom != .phone || countryCode == .GB else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
-        }
+//        guard userInterfaceIdiom != .phone || countryCode == .GB else {
+//            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+//        }
 
         // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
         // validating, so the country/currency check reflects the latest remote feature

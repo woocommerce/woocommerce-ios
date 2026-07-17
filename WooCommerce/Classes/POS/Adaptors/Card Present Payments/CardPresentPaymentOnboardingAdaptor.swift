@@ -2,6 +2,7 @@ import Foundation
 import PointOfSale
 import Combine
 import protocol Yosemite.StoresManager
+import CocoaLumberjackSwift // WOOMOB-3455 debug repro (REMOVE before commit)
 
 /// This is really a re-implementation of the CardPresentPaymentsOnboardingPresenter, as it needs to take the calls to `showOnboardingIfRequired` and
 /// route the output to a SwiftUI view for display, rather than directly displaying on the viewController that's passed in.
@@ -33,16 +34,23 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
     ///   - completion: Callback when the onboarding is complete
     func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
+        // WOOMOB-3455 debug repro (REMOVE before commit): true entry point of the
+        // onboarding/readiness check. The branch reached tells us what actually
+        // happens per transaction: skipped (already in progress), ready (no screen,
+        // but still re-runs checkCardPaymentReadiness), or onboarding shown.
         guard readinessSubscription == nil else {
+            DDLogWarn("🧪 [3455] onboarding check SKIPPED — already in progress")
             return
         }
 
         readinessUseCase.checkCardPaymentReadiness()
 
         guard case .ready = readinessUseCase.readiness else {
+            DDLogWarn("🧪 [3455] onboarding check RAN → not ready, showing onboarding screen")
             return showOnboarding(readyToCollectPayment: completion)
         }
 
+        DDLogWarn("🧪 [3455] onboarding check RAN → ready, no screen (still re-dispatched readiness)")
         completion()
     }
 

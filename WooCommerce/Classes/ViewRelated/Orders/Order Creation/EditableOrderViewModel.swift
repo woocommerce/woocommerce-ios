@@ -737,7 +737,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
-                                                                  productSubscriptionDetails: product.subscription,
+                                                                  productSubscriptionDetails: product.productType.isSubscription ? product.subscription : nil,
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
@@ -1279,7 +1279,7 @@ extension EditableOrderViewModel {
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
-            self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.discountTotal = currencyFormatter.formatAmount(discountTotal, isNegative: true) ?? "-0.00"
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
@@ -2325,7 +2325,7 @@ private extension EditableOrderViewModel {
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
             CouponLineViewModel(code: $0.code,
-                                discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
+                                discount: currencyFormatter.formatAmount($0.discount, isNegative: true) ?? "-0.00",
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))

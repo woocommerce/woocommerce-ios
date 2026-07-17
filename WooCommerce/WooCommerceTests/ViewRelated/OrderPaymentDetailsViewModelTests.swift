@@ -81,7 +81,9 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func test_discount_value_matches_expectation() {
-        let expectedValue = "-" + CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.discountTotal, with: order.currency)!
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.discountTotal,
+                                                                                                  with: order.currency,
+                                                                                                  isNegative: true)!
         XCTAssertEqual(viewModel.discountValue, expectedValue)
     }
 

@@ -357,9 +357,11 @@ private extension CollapsibleProductRowCard {
                     })
                     .disabled(isLoading)
                     Spacer()
-                    Text(viewModel.productDiscountLabel)
-                        .foregroundColor(.green)
-                        .shimmering(active: isLoading)
+                    if let discountLabel = viewModel.productDiscountLabel {
+                        Text(discountLabel)
+                            .foregroundColor(.green)
+                            .shimmering(active: isLoading)
+                    }
                 }
                 // Redacts the discount editing row while product data is reloaded during remote sync.
                 // This avoids showing an out-of-date discount while hasn't synched

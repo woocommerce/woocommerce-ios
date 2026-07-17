@@ -420,12 +420,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
-        let productSubscriptionDetails: ProductSubscription?
-        if product.productType == .subscription || product.productType == .variableSubscription {
-            productSubscriptionDetails = product.subscription
-        } else {
-            productSubscriptionDetails = nil
-        }
+        let productSubscriptionDetails: ProductSubscription? = product.productType.isSubscription ? product.subscription : nil
 
         self.init(id: id,
                   productOrVariationID: product.productID,
@@ -456,7 +451,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      productDiscount: Decimal = .zero,
                      name: String,
                      quantity: Decimal = 1,
-                     productSubscriptionDetails: ProductSubscription? = nil,
+                     isSubscriptionProduct: Bool = false,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
@@ -469,13 +464,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             imageURL = nil
         }
 
-        // Checks if the product variation contains Subscription-type Product meta data
-        let productSubscriptionDetails: ProductSubscription?
-        if productVariation.subscription != nil {
-            productSubscriptionDetails = productVariation.subscription
-        } else {
-            productSubscriptionDetails = nil
-        }
+        // Only show Subscription-type details when the parent is a subscription product,
+        // not merely when the variation carries leftover `_subscription_*` meta data.
+        let productSubscriptionDetails: ProductSubscription? = isSubscriptionProduct ? productVariation.subscription : nil
 
         self.init(id: id,
                   productOrVariationID: productVariation.productVariationID,

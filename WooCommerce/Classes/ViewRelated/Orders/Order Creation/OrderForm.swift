@@ -239,6 +239,12 @@ struct OrderForm: View {
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
             }
+            .sheet(isPresented: customAmountSheetPresented, onDismiss: {
+                viewModel.onDismissAddCustomAmountView()
+                viewModel.customAmountsSectionViewModel.addCustomAmountOption = nil
+            }, content: {
+                AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: viewModel.customAmountsSectionViewModel.addCustomAmountOption))
+            })
             .onChange(of: horizontalSizeClass) {
                 viewModel.saveInFlightOrderNotes()
                 viewModel.saveInflightCustomerDetails()
@@ -258,6 +264,17 @@ struct OrderForm: View {
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
         }
+    }
+
+    private var customAmountSheetPresented: Binding<Bool> {
+        Binding(
+            get: {
+                viewModel.customAmountsSectionViewModel.showCustomAmountView
+            },
+            set: { isPresented in
+                viewModel.customAmountsSectionViewModel.showCustomAmountView = isPresented
+            }
+        )
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {

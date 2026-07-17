@@ -9,6 +9,9 @@ final class OrderCustomAmountsSectionViewModel: ObservableObject {
     /// Defines whether the custom amount options dialog is presented.
     @Published var showCustomAmountOptionsDialog: Bool = false
 
+    /// Option selected in the custom amount options dialog.
+    @Published var addCustomAmountOption: OrderCustomAmountConfirmationOption?
+
     let currencySettings: CurrencySettings
     init(currencySettings: CurrencySettings) {
         self.currencySettings = currencySettings
@@ -21,22 +24,16 @@ final class OrderCustomAmountsSectionViewModel: ObservableObject {
     }
 }
 
-struct OrderCustomAmountsSection: View {
-    enum ConfirmationOption {
-        case fixedAmount
-        case orderTotalPercentage
-    }
+enum OrderCustomAmountConfirmationOption {
+    case fixedAmount
+    case orderTotalPercentage
+}
 
+struct OrderCustomAmountsSection: View {
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
     @ObservedObject var sectionViewModel: OrderCustomAmountsSectionViewModel
-
-    /// Defines whether the new custom amount modal is presented after selecting an option from the dialog.
-    ///
-    @State private var showAddCustomAmountAfterOptionsDialog = false
-
-    @State private var addCustomAmountOption: ConfirmationOption?
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
@@ -93,13 +90,6 @@ struct OrderCustomAmountsSection: View {
         .sheet(isPresented: isCustomAmountOptionsSheetPresented) {
             optionsWithDetentsBottomSheetContent
         }
-        .sheet(isPresented: $sectionViewModel.showCustomAmountView,
-               onDismiss: {
-            viewModel.onDismissAddCustomAmountView()
-            addCustomAmountOption = nil
-        }, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
-        })
     }
 
     // Computed bindings based on horizontalSizeClass
@@ -184,7 +174,7 @@ struct OrderCustomAmountsSection: View {
 
             List {
                 Button {
-                    addCustomAmountOption = .fixedAmount
+                    sectionViewModel.addCustomAmountOption = .fixedAmount
                     showAddCustomAmountsAfterOptionsDialog()
                 } label: {
                     optionLabel(symbol: sectionViewModel.currencySymbol,
@@ -194,7 +184,7 @@ struct OrderCustomAmountsSection: View {
                 .accessibilityIdentifier(Accessibility.fixedAmountIdentifier)
 
                 Button {
-                    addCustomAmountOption = .orderTotalPercentage
+                    sectionViewModel.addCustomAmountOption = .orderTotalPercentage
                     showAddCustomAmountsAfterOptionsDialog()
                 } label: {
                     optionLabel(symbol: "%",

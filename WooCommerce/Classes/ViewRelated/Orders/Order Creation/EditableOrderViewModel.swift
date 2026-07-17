@@ -1070,7 +1070,7 @@ final class EditableOrderViewModel: ObservableObject {
         syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
     }
 
-    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+    func addCustomAmountViewModel(with option: OrderCustomAmountConfirmationOption?) -> AddCustomAmountViewModel {
         if isCustomAmountFlowActive,
            let activeAddCustomAmountViewModel {
             return activeAddCustomAmountViewModel
@@ -1334,7 +1334,7 @@ extension EditableOrderViewModel {
 private extension EditableOrderViewModel {
     /// Converts the add custom amount UI input type to view models
     ///
-    func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
+    func addCustomAmountInputType(from option: OrderCustomAmountConfirmationOption) -> AddCustomAmountViewModel.InputType {
         switch option {
         case .fixedAmount:
             return .fixedAmount

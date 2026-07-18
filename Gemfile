@@ -3,7 +3,9 @@
 source 'https://rubygems.org'
 
 group :screenshots, optional: true do
-  gem 'rmagick', '~> 4.1'
+  # rmagick 5+ is required on Ruby 3.4: 4.x fails to load because it uses `observer`,
+  # which Ruby 3.4 dropped from its default gems. Needed by `create_promo_screenshots`.
+  gem 'rmagick', '~> 6.0'
 end
 
 gem 'danger-dangermattic', '~> 1.4'

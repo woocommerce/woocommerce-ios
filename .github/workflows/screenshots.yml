@@ -19,8 +19,6 @@ jobs:
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
-        # TODO: Drop once #17484 bumps `.ruby-version` to 3.4.9 (setup-ruby then reads it by default).
-        ruby-version: 3.4.9
         bundler-cache: true
 
     - name: Install App Dependencies
@@ -57,8 +55,6 @@ jobs:
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
-        # TODO: Drop once #17484 bumps `.ruby-version` to 3.4.9 (setup-ruby then reads it by default).
-        ruby-version: 3.4.9
         bundler-cache: true
 
     - name: Download Build Products
@@ -141,9 +137,6 @@ jobs:
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1
         with:
-          # Unlike the build/capture jobs, stay on `.ruby-version` here: `create_promo_screenshots`
-          # needs rmagick 4.3.0, which does not load on Ruby 3.4 (it drops `observer` from the
-          # default gems). #17484 must bump rmagick when it moves the project to 3.4.9.
           bundler-cache: true
 
       - name: Download Generated Screenshots

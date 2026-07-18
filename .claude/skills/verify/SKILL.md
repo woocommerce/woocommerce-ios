@@ -50,7 +50,7 @@ Use the `/simulator` skill approach to discover a booted simulator UDID.
 
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination "platform=iOS Simulator,id=<UDID>" -sdk iphonesimulator \
+  -destination "platform=iOS Simulator,id=<UDID>" \
   build 2>&1 | tail -30
 ```
 

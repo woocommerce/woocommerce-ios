@@ -120,7 +120,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      refunds: orderRefunds,
                      fees: orderFeeLines,
                      taxes: orderTaxLines,
-                     customFields: orderCustomFields,
+                     customFields: orderCustomFields.sorted { $0.metadataID < $1.metadataID },
                      renewalSubscriptionID: renewalSubscriptionID,
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),

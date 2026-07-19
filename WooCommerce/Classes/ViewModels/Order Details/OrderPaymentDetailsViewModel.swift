@@ -112,25 +112,17 @@ final class OrderPaymentDetailsViewModel {
             return String.localizedStringWithFormat(Localization.dateOnlyPaymentSummary, styleDate)
         }
 
-        let template = NSLocalizedString(
-            "%1$@ via %2$@",
-            comment: "Payment on <date> received via (payment method title)")
-
-        return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
+        return String.localizedStringWithFormat(Localization.paymentSummaryWithPaymentMethod, styleDate, order.paymentMethodTitle)
     }
 
     /// Awaiting payment
     ///
     private var awaitingPaymentTitle: String? {
         if order.paymentMethodTitle.isEmpty {
-            return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment", comment: "The title on the payment row of the Order Details screen when the payment is still pending"))
+            return String.localizedStringWithFormat(Localization.awaitingPayment)
         }
         return String.localizedStringWithFormat(
-            NSLocalizedString("Awaiting payment via %@",
-                              comment: "The title on the payment row of the Order Details screen" +
-                              "when the payment for a specific payment method is still pending." +
-                              "Reads like: Awaiting payment via Stripe."),
+            Localization.awaitingPaymentViaPaymentMethod,
             order.paymentMethodTitle)
     }
 
@@ -150,18 +142,9 @@ final class OrderPaymentDetailsViewModel {
             return dateFormatter.string(from: refund.dateCreated)
         }()
 
-        let refundType = order.refundShowsPaymentMethod(refund) ? order.paymentMethodTitle : NSLocalizedString(
-            "manual refund",
-            comment: "A manual refund is one where the store owner has given the purchaser alternative funds" +
-                " (cash, check, ACH) instead of using the payment gateway to create a refund " +
-                "(credit card or debit card was refunded)"
-        )
+        let refundType = order.refundShowsPaymentMethod(refund) ? order.paymentMethodTitle : Localization.manualRefund
 
-        let template = NSLocalizedString("%@ via %@",
-                                         comment: "Label for a refund on an order, which reads \"<date> via <refund method type>\", " +
-                                         "e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". " +
-                                         "Shown in a cell with a title \"Refunded\" for context")
-        let refundText = String.localizedStringWithFormat(template, dateCreated, refundType)
+        let refundText = String.localizedStringWithFormat(Localization.refundSummaryWithRefundMethod, dateCreated, refundType)
 
         return refundText
     }
@@ -196,7 +179,7 @@ final class OrderPaymentDetailsViewModel {
 
         let codes = order.appliedGiftCards.map { $0.code }.joined(separator: ", ")
 
-        return NSLocalizedString("Gift Cards", comment: "Gift Cards label for payment view") + " (" + codes + ")"
+        return Localization.giftCards + " (" + codes + ")"
     }
 
     /// Gift cards total
@@ -232,7 +215,7 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
+        return Localization.discount + " (" + output + ")"
     }
 }
 
@@ -247,6 +230,41 @@ private extension OrderPaymentDetailsViewModel {
             value: "Payment on %1$@",
             comment: "Payment summary on the Order Details screen when the order is paid but has " +
             "no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date.")
+
+        static let paymentSummaryWithPaymentMethod = NSLocalizedString(
+            "%1$@ via %2$@",
+            comment: "Payment on <date> received via (payment method title)")
+
+        static let awaitingPayment = NSLocalizedString(
+            "Awaiting payment",
+            comment: "The title on the payment row of the Order Details screen when the payment is still pending")
+
+        static let awaitingPaymentViaPaymentMethod = NSLocalizedString(
+            "Awaiting payment via %@",
+            comment: "The title on the payment row of the Order Details screen" +
+            "when the payment for a specific payment method is still pending." +
+            "Reads like: Awaiting payment via Stripe.")
+
+        static let manualRefund = NSLocalizedString(
+            "manual refund",
+            comment: "A manual refund is one where the store owner has given the purchaser alternative funds" +
+                " (cash, check, ACH) instead of using the payment gateway to create a refund " +
+                "(credit card or debit card was refunded)"
+        )
+
+        static let refundSummaryWithRefundMethod = NSLocalizedString(
+            "%@ via %@",
+            comment: "Label for a refund on an order, which reads \"<date> via <refund method type>\", " +
+                "e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". " +
+                "Shown in a cell with a title \"Refunded\" for context")
+
+        static let giftCards = NSLocalizedString(
+            "Gift Cards",
+            comment: "Gift Cards label for payment view")
+
+        static let discount = NSLocalizedString(
+            "Discount",
+            comment: "Discount label for payment view")
     }
 }
 

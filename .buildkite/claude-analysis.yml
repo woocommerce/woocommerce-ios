@@ -18,8 +18,12 @@ steps:
       - "/tmp/buildkite_logs_${BUILDKITE_BUILD_ID}.txt"
     plugins:
       - $CLAUDE_PLUGIN:
-          api_key: "$ANTHROPIC_API_KEY"
-          buildkite_api_token: "$BUILDKITE_TOKEN_FOR_CLAUDE"
+          # Escape with `$$` so these secrets are interpolated when the analysis job runs, not
+          # when `upload-claude-analysis.sh` uploads this pipeline. Buildkite refuses to upload a
+          # pipeline that embeds values interpolated from secret env vars, which was failing the
+          # "Check for Build Failures" job on every build that had a real failure.
+          api_key: "$$ANTHROPIC_API_KEY"
+          buildkite_api_token: "$$BUILDKITE_TOKEN_FOR_CLAUDE"
           analysis_level: "build"
           build_log_mode: "failed"
           trigger: "on-failure"

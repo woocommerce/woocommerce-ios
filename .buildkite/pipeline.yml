@@ -9,6 +9,13 @@ env:
 
 # This is the default pipeline – it will build and test the app
 steps:
+  # TEMPORARY — do not merge. Forces a real (non-Danger, non-soft-fail) failure so
+  # `upload-claude-analysis.sh` reaches `buildkite-agent pipeline upload` and we can confirm the
+  # `$$` secret-interpolation fix uploads the claude-analysis pipeline cleanly.
+  - label: ":boom: TEMP: trigger claude-analysis (remove me)"
+    key: temp_verify_claude_analysis
+    command: "echo 'Intentional failure to exercise the claude-analysis upload path'; exit 1"
+
   #################
   # Build the app
   #################

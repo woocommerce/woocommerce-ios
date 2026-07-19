@@ -215,7 +215,10 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func test_giftCards_text_matches_expectation() {
-        let expectedText = NSLocalizedString("Gift Cards", comment: "Gift Cards label for payment view") + " (ABCD)"
+        let expectedText = NSLocalizedString(
+            "orderPaymentDetails.giftCards.title",
+            value: "Gift Cards",
+            comment: "Gift Cards label for payment view") + " (ABCD)"
         XCTAssertEqual(orderWithGiftCardsViewModel.giftCardsText, expectedText)
     }
 

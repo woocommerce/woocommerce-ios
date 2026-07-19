@@ -90,7 +90,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "2000.0")
     }
 
-    @Test func analytics_when_reader_becomes_ready_then_reports_elapsed_time_since_order_sync() {
+    @Test func test_track_card_reader_ready_when_order_sync_succeeded_then_tracks_waiting_time_in_seconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -102,7 +102,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         sut.trackCustomerInteractionStarted()
         clock.now = 510 // order synced
         sut.trackOrderSyncSuccess()
-        clock.now = 513 // reader ready -> tracks waiting time (513 - 510)
+        clock.now = 513 // reader ready -> waiting_time is tracked in seconds: 513 - 510
         sut.trackCardReaderReady()
 
         // Then

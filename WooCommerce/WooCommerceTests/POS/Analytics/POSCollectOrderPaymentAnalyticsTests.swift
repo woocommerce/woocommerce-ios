@@ -44,7 +44,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         })
     }
 
-    @Test func analytics_when_successful_card_payment_has_unset_timing_markers_then_reports_zero_elapsed_milliseconds() {
+    @Test func test_track_successful_card_payment_when_timing_markers_are_unset_then_reports_zero_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -63,7 +63,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "0.0")
     }
 
-    @Test func analytics_when_successful_card_payment_then_reports_correct_elapsed_milliseconds() {
+    @Test func test_track_successful_card_payment_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -208,7 +208,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "3.0")
     }
 
-    @Test func analytics_when_successful_cash_payment_then_reports_correct_elapsed_milliseconds() {
+    @Test func test_track_successful_cash_payment_when_customer_interaction_started_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,

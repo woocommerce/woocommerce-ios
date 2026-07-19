@@ -159,6 +159,10 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
     }
 
     func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
+        guard start > 0 else {
+            return 0
+        }
+
         let end = currentTimestamp()
         return floor((end - start) * 1000)
     }

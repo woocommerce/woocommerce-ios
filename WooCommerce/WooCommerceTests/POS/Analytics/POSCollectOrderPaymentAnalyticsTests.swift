@@ -44,6 +44,25 @@ struct POSCollectOrderPaymentAnalyticsTests {
         })
     }
 
+    @Test func analytics_when_successful_card_payment_has_unset_timing_markers_then_reports_zero_elapsed_milliseconds() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
+
+        // When
+        clock.now = 1000
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
+
+        // Then
+        #expect(property("milliseconds_since_customer_interaction_started", in: "card_present_collect_payment_success") == "0.0")
+        #expect(property("milliseconds_since_order_sync_success", in: "card_present_collect_payment_success") == "0.0")
+        #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_success") == "0.0")
+        #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "0.0")
+    }
+
     @Test func analytics_when_successful_card_payment_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()

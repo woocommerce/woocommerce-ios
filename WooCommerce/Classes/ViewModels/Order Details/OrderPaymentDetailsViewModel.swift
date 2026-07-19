@@ -109,13 +109,7 @@ final class OrderPaymentDetailsViewModel {
                 return awaitingPaymentTitle
             }
 
-            let template = NSLocalizedString(
-                "orderPaymentDetails.paymentSummary.dateOnly",
-                value: "Payment on %1$@",
-                comment: "Payment summary on the Order Details screen when the order is paid but has " +
-                "no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date.")
-
-            return String.localizedStringWithFormat(template, styleDate)
+            return String.localizedStringWithFormat(Localization.dateOnlyPaymentSummary, styleDate)
         }
 
         let template = NSLocalizedString(
@@ -245,6 +239,14 @@ final class OrderPaymentDetailsViewModel {
 private extension OrderPaymentDetailsViewModel {
     enum Constants {
         static let decimalZero = Decimal(0)
+    }
+
+    enum Localization {
+        static let dateOnlyPaymentSummary = NSLocalizedString(
+            "orderPaymentDetails.paymentSummary.dateOnly",
+            value: "Payment on %1$@",
+            comment: "Payment summary on the Order Details screen when the order is paid but has " +
+            "no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date.")
     }
 }
 

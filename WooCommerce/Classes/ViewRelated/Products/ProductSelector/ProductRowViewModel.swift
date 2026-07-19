@@ -209,15 +209,19 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal)
 
         guard let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal),
-              let discount,
-              let discountLabelComponent = currencyFormatter.formatAmount(discount) else {
+              productDiscount > 0,
+              let discountLabelComponent = currencyFormatter.formatAmount(productDiscount) else {
             return priceLabelComponent
         }
 
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    private(set) var discount: Decimal?
+    /// Discount attributed to this product line, derived as `OrderItem.subtotal − total`
+    /// and excluding any order-level coupon effect (see `EditableOrderViewModel.currentProductDiscount(on:)`).
+    /// The API has no per-item discount field — an absent discount is simply equal subtotal/total,
+    /// so `0` (not nil) is the natural "no discount" value.
+    private(set) var productDiscount: Decimal
 
     /// Whether product discounts are disallowed,
     /// defaults to `false`
@@ -318,7 +322,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          sku: String?,
          productTypeLabel: String? = nil,
          price: String?,
-         discount: Decimal? = nil,
+         productDiscount: Decimal = .zero,
          stockStatusKey: String,
          stockQuantity: Decimal?,
          manageStock: Bool,
@@ -340,7 +344,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.sku = sku
         self.productTypeLabel = productTypeLabel
         self.price = price
-        self.discount = discount
+        self.productDiscount = productDiscount
         self.stockStatus = .init(rawValue: stockStatusKey)
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
@@ -360,7 +364,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      product: Product,
-                     discount: Decimal? = nil,
+                     productDiscount: Decimal = .zero,
                      quantity: Decimal = 1,
                      productSubscriptionDetails: ProductSubscription? = nil,
                      selectedState: ProductRow.SelectedState = .notSelected,
@@ -424,7 +428,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   sku: product.sku,
                   productTypeLabel: productTypeLabel,
                   price: price,
-                  discount: discount,
+                  productDiscount: productDiscount,
                   stockStatusKey: stockStatusKey,
                   stockQuantity: stockQuantity,
                   manageStock: manageStock,
@@ -444,7 +448,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     convenience init(id: Int64? = nil,
                      productVariation: ProductVariation,
-                     discount: Decimal? = nil,
+                     productDiscount: Decimal = .zero,
                      name: String,
                      quantity: Decimal = 1,
                      isSubscriptionProduct: Bool = false,
@@ -469,7 +473,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   name: name,
                   sku: productVariation.sku,
                   price: pricedIndividually ? productVariation.price : "0",
-                  discount: discount,
+                  productDiscount: productDiscount,
                   stockStatusKey: productVariation.stockStatus.rawValue,
                   stockQuantity: productVariation.stockQuantity,
                   manageStock: productVariation.manageStock,

@@ -103,8 +103,13 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
-    func trackPaymentFailure(with error: any Error) { }
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
+    func trackPaymentFailure(with error: any Error) {
+        resetProcessingPaymentTracking()
+    }
+
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+        resetProcessingPaymentTracking()
+    }
     func trackEmailTapped() { }
     func trackReceiptPrintTapped() { }
     func trackReceiptPrintSuccess() { }

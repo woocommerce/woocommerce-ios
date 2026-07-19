@@ -139,6 +139,56 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(properties("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == ["1000.0", "3000.0"])
     }
 
+    @Test func test_track_payment_failure_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
+
+        // When
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackCardReaderTapped()
+        clock.now = 1002
+        sut.trackPaymentFailure(with: TestError())
+
+        clock.now = 1005
+        sut.trackCardReaderTapped()
+        clock.now = 1008
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
+
+        // Then
+        #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "3000.0")
+    }
+
+    @Test func test_track_payment_cancelation_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
+
+        // When
+        clock.now = 1000
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1001
+        sut.trackCardReaderTapped()
+        clock.now = 1002
+        sut.trackPaymentCancelation(cancelationSource: .other)
+
+        clock.now = 1005
+        sut.trackCardReaderTapped()
+        clock.now = 1008
+        sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
+
+        // Then
+        #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "3000.0")
+    }
+
     @Test func test_track_card_reader_ready_when_order_sync_succeeded_then_tracks_waiting_time_in_seconds() {
         // Given
         let clock = TestClock()
@@ -177,6 +227,8 @@ struct POSCollectOrderPaymentAnalyticsTests {
 }
 
 private extension POSCollectOrderPaymentAnalyticsTests {
+    struct TestError: Error { }
+
     func property(_ key: String, in eventName: String) -> String? {
         analytics.events.first(where: { $0.eventName == eventName })?.properties[key] as? String
     }

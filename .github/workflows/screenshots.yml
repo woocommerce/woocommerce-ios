@@ -77,23 +77,6 @@ jobs:
         name: "screenshot-log-${{ matrix.language }}-${{ matrix.mode }}"
         path: fastlane/logs
 
-    # TODO: Temporary — remove once the app crash during capture is diagnosed (AINFRA-2682).
-    - name: Collect Crash Reports
-      if: failure()
-      run: |
-        mkdir -p crash-reports
-        cp -R "$HOME/Library/Logs/DiagnosticReports/." crash-reports/ 2>/dev/null || true
-        find "$HOME/Library/Developer/CoreSimulator/Devices" -path '*/DiagnosticReports/*' \
-          \( -name '*.ips' -o -name '*.crash' \) -exec cp {} crash-reports/ \; 2>/dev/null || true
-        ls -la crash-reports || true
-    - name: Upload Crash Reports
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: "crash-reports-${{ matrix.language }}-${{ matrix.mode }}"
-        path: crash-reports/
-        if-no-files-found: ignore
-
     - name: Archive Generated Screenshots
       uses: actions/upload-artifact@v4
       with:

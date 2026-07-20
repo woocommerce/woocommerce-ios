@@ -123,10 +123,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case subscriptionsInOrderCreationUI
 
-    /// Enables a new customer creation flow in order creation for subscriptions support.
-    ///
-    case subscriptionsInOrderCreationCustomers
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale

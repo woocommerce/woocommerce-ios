@@ -21,10 +21,6 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rootView.onContactSupportTapped = { [weak self] in
-            self?.showContactSupportForm()
-        }
-
         rootView.onChatWithSupportTapped = { [weak self] in
             self?.showSupportChat()
         }
@@ -32,13 +28,6 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(
-            attachments: buildTroubleshootingAttachment()
-        ))
-        supportController.show(from: self)
     }
 
     private func showSupportChat() {
@@ -100,9 +89,6 @@ struct PreLoginConnectivityToolView: View {
 
     @ObservedObject var viewModel: PreLoginConnectivityToolViewModel
 
-    /// Closure invoked when the "Contact Support" button is tapped.
-    var onContactSupportTapped: (() -> Void)?
-
     /// Closure invoked when the AI-backed "Contact Support" button is tapped.
     var onChatWithSupportTapped: (() -> Void)?
 
@@ -127,12 +113,6 @@ struct PreLoginConnectivityToolView: View {
             if viewModel.showChatButton {
                 Button(Localization.contactSupport) {
                     onChatWithSupportTapped?()
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .padding()
-            } else if viewModel.showContactSupportButton {
-                Button(Localization.contactSupport) {
-                    onContactSupportTapped?()
                 }
                 .buttonStyle(SecondaryButtonStyle())
                 .padding()

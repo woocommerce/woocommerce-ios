@@ -62,7 +62,6 @@ final class AddProductCoordinator: Coordinator {
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
@@ -74,7 +73,6 @@ final class AddProductCoordinator: Coordinator {
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool,
@@ -98,7 +96,6 @@ final class AddProductCoordinator: Coordinator {
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
         self.navigateToProductForm = navigateToProductForm
@@ -108,7 +105,7 @@ final class AddProductCoordinator: Coordinator {
     func start() {
         switch source {
         case .productsTab:
-            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped())
         default:
             break
         }
@@ -167,7 +164,6 @@ private extension AddProductCoordinator {
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker,
             backgroundColor: .basicBackground
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }

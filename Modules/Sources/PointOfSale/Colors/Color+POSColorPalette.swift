@@ -53,6 +53,11 @@ extension Color {
     static var posDefault: Color { Color("posDefault", bundle: .module) }
     static var posOnDefault: Color { Color("posOnDefault", bundle: .module) }
 
+    // MARK: - Link Colors
+    /// Text link color: WooCommercePurple-40 in light mode and WooCommercePurple-30 in dark mode,
+    /// matching the app-wide `UIColor.textLink` semantic color.
+    static var posLink: Color { Color("posLink", bundle: .module) }
+
     // MARK: - Other
     static var posShadow: Color { Color("posShadow", bundle: .module) }
 }

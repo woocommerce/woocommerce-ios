@@ -150,9 +150,20 @@ private extension ReceiptTextRenderer {
         return lines
     }
 
-    /// Greedily word-wraps `text` into lines no wider than `lineWidth`, hard-splitting any single
-    /// word that is itself wider than `lineWidth`. Always returns at least one (possibly empty) line.
+    /// Word-wraps `text`, honoring any explicit line breaks first. Multi-line fields (e.g. a
+    /// two-line store address) are laid out one printed line at a time, so centering and alignment
+    /// are computed per line instead of across the embedded newline. Always returns at least one
+    /// (possibly empty) line.
     func wrap(_ text: String) -> [String] {
+        let wrapped = text
+            .split(separator: "\n", omittingEmptySubsequences: true)
+            .flatMap { wrapLine(String($0)) }
+        return wrapped.isEmpty ? [""] : wrapped
+    }
+
+    /// Greedily word-wraps a single line (assumed free of newlines) into lines no wider than
+    /// `lineWidth`, hard-splitting any single word that is itself wider than `lineWidth`.
+    private func wrapLine(_ text: String) -> [String] {
         var lines: [String] = []
         var current = ""
 

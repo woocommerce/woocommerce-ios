@@ -104,16 +104,11 @@ final class FilterOrderListViewModel: FilterListViewModel {
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        var allFilterViewModels = [orderStatusFilterViewModel,
-                                   dateRangeFilterViewModel,
-                                   customerFilterViewModel,
-                                   productFilterViewModel]
-
-        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
-            allFilterViewModels.append(salesChannelFilterViewModel)
-        }
-
-        filterTypeViewModels = allFilterViewModels
+        filterTypeViewModels = [orderStatusFilterViewModel,
+                                dateRangeFilterViewModel,
+                                customerFilterViewModel,
+                                productFilterViewModel,
+                                salesChannelFilterViewModel]
     }
 
     var criteria: Filters {

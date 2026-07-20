@@ -46,6 +46,19 @@ struct PointOfSalePaymentState: Equatable {
         }
     }
 
+    /// Locks reader connection controls only while the active card flow cannot safely be interrupted.
+    var disablesCardReaderConnectionControl: Bool {
+        card.disablesCardReaderConnectionControl
+    }
+
+    /// Lets reader changes recover card collection only when no alternate payment flow owns the screen.
+    var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
+        guard cash == .idle, scanToPay == .idle, markAsPaid == .idle else {
+            return false
+        }
+        return card.allowsAutomaticCardPaymentStartOnReaderChange
+    }
+
     var isSuccess: Bool {
         if case .cardPaymentSuccessful = card { return true }
         if cash == .paymentSuccess { return true }
@@ -216,6 +229,41 @@ extension PointOfSaleCardPaymentState {
                 .preparingReader,
                 .acceptingCard,
                 .cardInserted:
+            return false
+        }
+    }
+
+    var disablesCardReaderConnectionControl: Bool {
+        switch self {
+        case .processingPayment:
+            return true
+        case .idle,
+                .validatingOrder,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .preparingReader,
+                .acceptingCard,
+                .cardInserted,
+                .paymentError,
+                .cardPaymentSuccessful:
+            return false
+        }
+    }
+
+    /// Card states where a reader change can safely kick card collection back into motion.
+    var allowsAutomaticCardPaymentStartOnReaderChange: Bool {
+        switch self {
+        case .idle,
+                .validatingOrder,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .preparingReader,
+                .acceptingCard,
+                .cardInserted,
+                .paymentError:
+            return true
+        case .processingPayment,
+                .cardPaymentSuccessful:
             return false
         }
     }

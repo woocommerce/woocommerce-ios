@@ -1760,6 +1760,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         )
     }
 
+    func test_handleNotificationInTheForeground_when_note_id_is_NSNull_then_tracks_with_woo_driven_source() async throws {
+        // Given — the backend sends `note_id` as NSNull (not omitted) for Woo-driven notifications,
+        // which must still be classified as woo_driven rather than wpcom.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(nullNoteID: true, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
     func test_handleNotificationInTheForeground_when_notification_from_same_site_then_tracks_fromSelectedSite_true() async throws {
         // Given
         let siteID: Int64 = 134
@@ -2138,6 +2161,26 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(emittedBackgroundNotifications.count, 1)
         XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
     }
+
+    func test_handleRemoteNotificationInTheBackground_when_woo_driven_notification_without_note_id_then_emits_notification() async throws {
+        // Given — the background handler must classify a notification as remote from its `type` key,
+        // not the presence of `note_id`. A Woo-driven notification whose `note_id` is missing must
+        // still be processed, not dropped.
+        application.applicationState = .background
+        manager = makeManager()
+
+        var emittedBackgroundNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedBackgroundNotifications.append($0) }.store(in: &subscriptions)
+
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, title: Sample.defaultTitle)
+
+        // When
+        _ = await manager.handleRemoteNotificationInTheBackground(userInfo: payload)
+
+        // Then
+        XCTAssertEqual(emittedBackgroundNotifications.count, 1)
+        XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
+    }
 }
 
 
@@ -2327,8 +2370,12 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
+    /// - Parameter nullNoteID: When `true`, includes `note_id` as `NSNull` to mimic the Woo-driven
+    ///   payload shape sent by the backend (key present with a null value, not omitted).
+    ///
     func notificationPayload(badgeCount: Int = 0,
                              noteID: Int64? = 1234,
+                             nullNoteID: Bool = false,
                              type: Note.Kind = .comment,
                              siteID: Int64 = 134,
                              title: String = Sample.defaultTitle,
@@ -2346,7 +2393,9 @@ private extension PushNotificationsManagerTests {
             "type": type.rawValue,
             "blog": siteID
         ]
-        if let noteID {
+        if nullNoteID {
+            payload["note_id"] = NSNull()
+        } else if let noteID {
             payload["note_id"] = noteID
         }
         return payload
@@ -2413,6 +2462,8 @@ private extension PushNotificationsManagerTests {
         return [
             "blog": siteID,
             "note_full_data": base64Encoded,
+            // The backend sends `note_id` as null (not omitted) for Woo-driven notifications.
+            "note_id": NSNull(),
             "aps": [
                 "category": "store_order",
                 "badge": 1,

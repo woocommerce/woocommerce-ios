@@ -54,7 +54,7 @@ private extension POSRolesPersistenceTests {
         POSStaffMember(userID: 1,
                        displayName: "Staff",
                        preset: .cashier,
-                       capabilities: ["pos_process_sales": true],
+                       capabilities: ["woocommerce_pos_issue_refunds": true],
                        pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                   salt: "c2FsdA==", hash: "aGFzaA=="))
     }

@@ -2757,6 +2757,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedChat.value(forKey: "sessionID") as? String, "session-abc")
         XCTAssertEqual(migratedChat.value(forKey: "isResolved") as? Bool, true)
     }
+
+    func test_migrating_from_138_to_139_adds_crashReportingOptOut_attribute_to_AccountSettings() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 138")
+        let sourceContext = sourceContainer.viewContext
+
+        let accountSettings = NSEntityDescription.insertNewObject(forEntityName: "AccountSettings", into: sourceContext)
+        accountSettings.setValue(Int64(1234), forKey: "userID")
+        accountSettings.setValue(true, forKey: "tracksOptOut")
+        try sourceContext.save()
+
+        XCTAssertNil(accountSettings.entity.attributesByName["crashReportingOptOut"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 139")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSettings = try XCTUnwrap(targetContext.first(entityName: "AccountSettings"))
+
+        XCTAssertNotNil(migratedSettings.entity.attributesByName["crashReportingOptOut"])
+
+        // Default value: `nil`, meaning no choice has been recorded on the account yet.
+        XCTAssertNil(migratedSettings.value(forKey: "crashReportingOptOut"))
+
+        // Verify existing values survived the migration.
+        XCTAssertEqual(migratedSettings.value(forKey: "userID") as? Int64, 1234)
+        XCTAssertEqual(migratedSettings.value(forKey: "tracksOptOut") as? Bool, true)
+
+        // Verify the new value can be set and saved.
+        migratedSettings.setValue(true, forKey: "crashReportingOptOut")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedSettings.value(forKey: "crashReportingOptOut") as? Bool, true)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

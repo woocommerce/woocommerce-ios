@@ -148,7 +148,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     var countries: [Country] {
         switch addressType {
         case .origin:
-            resultsController.fetchedObjects.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+            resultsController.fetchedObjects.filter { USPSDomesticMailCountries.rawCountryCodes.contains($0.code) }
         case .destination:
             resultsController.fetchedObjects
         }
@@ -529,6 +529,13 @@ extension WooShippingEditAddressViewModel {
         allFields.forEach { $0.validateField() }
     }
 
+    /// Re-validates all fields immediately (bypassing the per-field debounce) and returns the status.
+    /// Used on the confirm tap so a fast tap can't skip local validation. See WOOMOB-3446.
+    func validatedStatus() -> WooShippingAddressStatus {
+        validateAddress()
+        return status
+    }
+
     /// Validate the address field with the given type.
     func validate(_ field: WooShippingAddressFieldType) {
         allFields.first { $0.type == field }?.validateField()
@@ -740,26 +747,6 @@ extension WooShippingEditAddressViewModel {
                 return Localization.DestinationAddressUpdateError.message
             }
         }
-    }
-}
-
-// MARK: Constants
-private extension WooShippingEditAddressViewModel {
-    enum Constants {
-        /// This is hardcoded for now based on: https://git.io/JBuja.
-        /// It would be great if this can be fetched remotely.
-        ///
-        static let acceptedUSPSCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP" // Northern Mariana Islands
-        ]
     }
 }
 

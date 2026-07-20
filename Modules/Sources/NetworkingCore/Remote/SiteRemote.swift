@@ -364,10 +364,7 @@ extension SiteRemote {
                 "capabilities",
                 "was_ecommerce_trial",
                 "plan",
-                "jetpack_modules",
-                "is_garden",
-                "garden_name",
-                "garden_partner"
+                "jetpack_modules"
             ].joined(separator: ",")
         }
         public enum Options {

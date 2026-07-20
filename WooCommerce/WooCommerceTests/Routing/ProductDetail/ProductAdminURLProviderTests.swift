@@ -9,7 +9,7 @@ final class ProductAdminURLProviderTests {
     private lazy var aSite = Site.fake().copy(url: storeURL)
 
     @Test
-    func test_editURL_for_booking_product_uses_next_admin_services_path() throws {
+    func test_editURL_for_booking_product_uses_wp_admin_post_path() throws {
         // Given
         let bookingProduct = Product.fake().copy(productID: productID, productTypeKey: "bookable-service")
 
@@ -18,7 +18,7 @@ final class ProductAdminURLProviderTests {
 
         // Then
         #expect(url.absoluteString ==
-                "\(storeURL)/wp-admin/admin.php?page=next-admin&p=/woocommerce/services/edit/\(productID)")
+                "\(storeURL)/wp-admin/post.php?post=\(productID)&action=edit")
     }
 
     @Test

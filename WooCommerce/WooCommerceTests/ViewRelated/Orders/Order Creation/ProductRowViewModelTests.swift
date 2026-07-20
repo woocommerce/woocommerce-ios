@@ -122,7 +122,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Defaults to US currency & format
 
         // When
-        let viewModel = ProductRowViewModel(product: product, discount: discount, currencyFormatter: currencyFormatter)
+        let viewModel = ProductRowViewModel(product: product, productDiscount: discount, currencyFormatter: currencyFormatter)
 
         // Then
         let expectedPriceLabel = "2.50" + " - " + (currencyFormatter.formatAmount(discount) ?? "")

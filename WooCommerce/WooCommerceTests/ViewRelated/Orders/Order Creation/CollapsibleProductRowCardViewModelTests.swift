@@ -117,39 +117,56 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
     }
 
-    // MARK: - `hasDiscount`
+    // MARK: - `hasProductDiscount`
 
-    func test_when_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+    func test_when_productDiscount_is_zero_then_viewModel_hasProductDiscount_is_false() {
         // Given
-        let viewModel = createViewModel(discount: nil)
+        let viewModel = createViewModel(productDiscount: 0)
 
         // Then
-        XCTAssertFalse(viewModel.hasDiscount)
+        XCTAssertFalse(viewModel.hasProductDiscount)
     }
 
-    func test_when_discount_is_not_nil_then_viewModel_hasDiscount() {
+    func test_when_productDiscount_is_greater_than_zero_then_viewModel_hasProductDiscount() {
         // Given
-        let viewModel = createViewModel(discount: 0.50)
+        let viewModel = createViewModel(productDiscount: 0.50)
 
         // Then
-        XCTAssertTrue(viewModel.hasDiscount)
+        XCTAssertTrue(viewModel.hasProductDiscount)
     }
 
-    // MARK: - `totalPriceAfterDiscountLabel`
+    func test_discountLabel_when_discount_is_not_nil_then_returns_signed_currency_amount() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .QAR,
+                                                currencyPosition: .right,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let viewModel = createViewModel(productDiscount: 0.50, currencyFormatter: currencyFormatter)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.productDiscountLabel)
+    }
+
+    // MARK: - `totalPriceAfterProductDiscountLabel`
+
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let discount: Decimal = 0.50
 
         // When
-        let viewModel = createViewModel(price: price, discount: discount)
+        let viewModel = createViewModel(price: price, productDiscount: discount)
 
         // Then
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$2.00", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let quantity: Decimal = 10
@@ -157,13 +174,13 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // When
         let viewModel = createViewModel(price: price,
-                                        discount: discount,
+                                        productDiscount: discount,
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
 
         // Then
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$24.50", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
     // MARK: - `isConfigurable`
@@ -663,7 +680,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
-                         discount: Decimal? = nil,
+                         productDiscount: Decimal = .zero,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -684,7 +701,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
-                                           discount: discount,
+                                           productDiscount: productDiscount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,

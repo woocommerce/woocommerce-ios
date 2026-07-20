@@ -517,6 +517,23 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(product.productID, sampleProductID)
     }
 
+    func test_loadSingleProduct_when_requesting_product_then_uses_edit_context() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
+
+        // When
+        waitForExpectation { expectation in
+            remote.loadProduct(for: sampleSiteID, productID: sampleProductID) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParameters["context"] as? String, "edit")
+    }
+
     /// Verifies that loadProduct properly parses the `product-external` sample response.
     ///
     func test_loadSingleExternalProduct_properly_returns_parsed_product() throws {
@@ -758,6 +775,28 @@ final class ProductsRemoteTests: XCTestCase {
                 expectation.fulfill()
             }
         }
+    }
+
+    func test_updateProduct_when_updating_unrelated_field_then_preserves_shortcode_short_description_in_request() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
+        let shortDescription = """
+        [icon name="shoe-prints" prefix="fas"] [display_attribute attribute="recommended-age"]
+        Kids&#8217; dance class
+        """
+        let product = sampleProduct().copy(shortDescription: shortDescription, stockQuantity: 2)
+
+        // When
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(request.parameters["short_description"] as? String, shortDescription)
     }
 
     /// Verifies that updateProduct properly relays Networking Layer errors.

@@ -210,6 +210,9 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var editingFee: OrderFeeLine? = nil
+    private var activeAddCustomAmountViewModel: AddCustomAmountViewModel?
+    private var isCustomAmountFlowActive = false
+
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -677,8 +680,7 @@ final class EditableOrderViewModel: ObservableObject {
             return nil
         }
 
-        let itemDiscount = currentDiscount(on: item)
-        let passingDiscountValue = itemDiscount > 0 ? itemDiscount : nil
+        let passingDiscountValue = currentProductDiscount(on: item)
 
         if item.variationID != 0,
             let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -701,7 +703,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: variation.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: ProductType.variable.description,
                                                                   attributes: attributes,
                                                                   stockStatus: variation.stockStatus,
@@ -744,7 +746,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   sku: product.sku,
                                                                   price: item.basePrice.stringValue,
                                                                   pricedIndividually: pricedIndividually,
-                                                                  discount: passingDiscountValue,
+                                                                  productDiscount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
                                                                   attributes: [],
                                                                   stockStatus: product.productStockStatus,
@@ -1012,6 +1014,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onDismissAddCustomAmountView() {
         editingFee = nil
+        endAddCustomAmountFlow()
     }
 
     func onAddCustomAmountButtonTapped() {
@@ -1025,6 +1028,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
+            beginAddCustomAmountFlow()
             customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
@@ -1066,6 +1070,11 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+        if isCustomAmountFlowActive,
+           let activeAddCustomAmountViewModel {
+            return activeAddCustomAmountViewModel
+        }
+
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
@@ -1090,7 +1099,20 @@ final class EditableOrderViewModel: ObservableObject {
             self.editingFee = nil
         }
 
+        if isCustomAmountFlowActive {
+            activeAddCustomAmountViewModel = viewModel
+        }
+
         return viewModel
+    }
+
+    func beginAddCustomAmountFlow() {
+        isCustomAmountFlowActive = true
+    }
+
+    func endAddCustomAmountFlow() {
+        isCustomAmountFlowActive = false
+        activeAddCustomAmountViewModel = nil
     }
 }
 
@@ -1280,7 +1302,7 @@ extension EditableOrderViewModel {
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
-            self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
+            self.discountTotal = currencyFormatter.formatAmount(discountTotal, isNegative: true) ?? "-0.00"
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
@@ -1631,6 +1653,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
+                        self.beginAddCustomAmountFlow()
                         self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }
@@ -2165,7 +2188,7 @@ private extension EditableOrderViewModel {
                                                          bundleConfiguration: bundleConfiguration,
                                                          allProducts: Array(allProducts),
                                                          allProductVariations: allProductVariations,
-                                                         defaultDiscount: currentDiscount(on: item))
+                                                         defaultDiscount: currentProductDiscount(on: item))
     }
 
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
@@ -2178,7 +2201,7 @@ private extension EditableOrderViewModel {
         }
 
         return .init(
-            addedDiscount: currentDiscount(on: orderItem),
+            addedDiscount: currentProductDiscount(on: orderItem),
             baseAmountForDiscountPercentage: subTotalDecimal as Decimal,
             onSave: { [weak self] discount in
                 guard let discount else {
@@ -2200,6 +2223,16 @@ private extension EditableOrderViewModel {
         }
 
         return subtotal.subtracting(total) as Decimal
+    }
+
+    /// Calculates the product discount on an order item, excluding coupon effects.
+    ///
+    func currentProductDiscount(on item: OrderItem) -> Decimal {
+        guard orderSynchronizer.order.coupons.isEmpty else {
+            return 0
+        }
+
+        return currentDiscount(on: item)
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.
@@ -2316,7 +2349,7 @@ private extension EditableOrderViewModel {
     func couponLineViewModels(from couponLines: [OrderCouponLine]) -> [CouponLineViewModel] {
         couponLines.map {
             CouponLineViewModel(code: $0.code,
-                                discount: "-" + (currencyFormatter.formatAmount($0.discount) ?? "0.00"),
+                                discount: currencyFormatter.formatAmount($0.discount, isNegative: true) ?? "-0.00",
                                 detailsViewModel: CouponLineDetailsViewModel(code: $0.code,
                                                                              siteID: siteID,
                                                                              didSelectSave: saveCouponLine))

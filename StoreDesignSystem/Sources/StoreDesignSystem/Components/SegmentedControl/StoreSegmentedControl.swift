@@ -3,9 +3,8 @@ import SwiftUI
 /// A horizontal control with mutually exclusive segments for switching between related views.
 ///
 /// - Note: A single appearance and size — the design defines no variants or sizes, so none are
-///   modelled. Each segment is its own button (the selected one carries `.isSelected`); the track
-///   height follows the segment's cap-height rather than a literal vertical padding, and the
-///   per-segment hit target is below the 44 pt minimum by design, as with other compact controls.
+///   modelled. The selected segment carries `.isSelected`. Each segment's tap target is a full
+///   ≥44 pt button, while the visible track keeps its compact design height, centered within it.
 public struct StoreSegmentedControl<Value: Hashable>: View {
     @Binding private var selection: Value
     private let options: [Value]
@@ -29,41 +28,62 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     }
 
     public var body: some View {
+        ZStack {
+            track
+            segments
+        }
+        .animation(reduceMotion ? nil : .easeOut(duration: StoreMotion.selectionDuration), value: selection)
+    }
+
+    /// The visible capsule and the selected pill, sized to the compact design height. Accessibility is
+    /// exposed by ``segments`` — this layer is decorative, so it's hidden from VoiceOver.
+    private var track: some View {
         HStack(spacing: StoreSpacing.s0) {
-            ForEach(Array(options.enumerated()), id: \.element) { index, option in
-                segment(for: option, at: index)
+            ForEach(Array(options.enumerated()), id: \.element) { _, option in
+                pill(for: option)
             }
         }
         .padding(StorePadding.p1)
         .background(Color.storeTintLayerPrimaryContainerOpacity16)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.full))
-        .animation(reduceMotion ? nil : .easeOut(duration: StoreMotion.selectionDuration), value: selection)
+        .accessibilityHidden(true)
     }
 
-    @ViewBuilder
-    private func segment(for option: Value, at index: Int) -> some View {
-        let isSelected = option == selection
-        Button {
-            selection = option
-        } label: {
-            Text(title(option))
-                .storeTextStyle(isSelected ? Constants.selectedTextStyle : Constants.unselectedTextStyle)
-                .foregroundStyle(isSelected ? Color.storeOnSurface : Color.storeOnPrimaryContainer)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity)
-                .frame(minHeight: StoreSize.segmentedControlHeight)
-                .background {
-                    if isSelected {
-                        RoundedRectangle(cornerRadius: StoreRadius.extraLarge)
-                            .fill(Color.storeSurface)
-                            .matchedGeometryEffect(id: Constants.selectionID, in: selectionNamespace)
-                    }
+    /// Full-height (≥44 pt) transparent buttons overlaid on each segment, so the tap target meets the
+    /// HIG minimum while the visible ``track`` keeps its compact design height.
+    private var segments: some View {
+        HStack(spacing: StoreSpacing.s0) {
+            ForEach(Array(options.enumerated()), id: \.element) { index, option in
+                Button {
+                    selection = option
+                } label: {
+                    Color.clear
                 }
+                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(Rectangle())
+                .accessibilityLabel(title(option))
+                .accessibilityAddTraits(option == selection ? .isSelected : [])
+                .accessibilityValue(Localization.positionValue(index: index + 1, count: options.count))
+            }
         }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .accessibilityValue(Localization.positionValue(index: index + 1, count: options.count))
+    }
+
+    private func pill(for option: Value) -> some View {
+        let isSelected = option == selection
+        return Text(title(option))
+            .storeTextStyle(isSelected ? Constants.selectedTextStyle : Constants.unselectedTextStyle)
+            .foregroundStyle(isSelected ? Color.storeOnSurface : Color.storeOnPrimaryContainer)
+            .lineLimit(1)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: StoreSize.segmentedControlHeight)
+            .background {
+                if isSelected {
+                    RoundedRectangle(cornerRadius: StoreRadius.extraLarge)
+                        .fill(Color.storeSurface)
+                        .matchedGeometryEffect(id: Constants.selectionID, in: selectionNamespace)
+                }
+            }
     }
 }
 

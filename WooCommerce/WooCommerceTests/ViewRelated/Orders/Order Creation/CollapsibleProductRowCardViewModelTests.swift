@@ -338,7 +338,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.productSubscriptionDetails?.price, subscriptionPrice)
     }
-
 }
 
 private extension CollapsibleProductRowCardViewModelTests {

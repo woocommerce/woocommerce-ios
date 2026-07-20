@@ -489,7 +489,6 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.name, product.name)
         XCTAssertNil(viewModel.productSubscriptionDetails)
     }
-
 }
 
 private extension ProductRowViewModelTests {

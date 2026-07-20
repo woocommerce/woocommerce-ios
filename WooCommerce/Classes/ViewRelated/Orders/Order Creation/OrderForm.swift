@@ -367,7 +367,7 @@ struct OrderForm: View {
 
                         Divider()
 
-                        LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
                         Group {
                             Divider()

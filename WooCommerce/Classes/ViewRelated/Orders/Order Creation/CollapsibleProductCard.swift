@@ -123,10 +123,6 @@ private struct CollapsibleProductRowCard: View {
         }
     }
 
-    private var shouldShowBadgeCounter: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
-    }
-
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          isLoading: Bool,
@@ -156,13 +152,6 @@ private struct CollapsibleProductRowCard: View {
                                           scale: scale,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
-                    .overlay(alignment: .topTrailing) {
-                        BadgeView(text: badgeQuantity,
-                                  customizations: .init(textColor: .white, backgroundColor: .black),
-                                  backgroundShape: badgeStyle)
-                        .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
-                        .renderedIf(shouldShowBadgeCounter)
-                    }
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
@@ -170,33 +159,13 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        if !viewModel.subscriptionConditionsDetailsLabel.isEmpty {
-                            Text(viewModel.subscriptionConditionsDetailsLabel)
-                                .subheadlineStyle()
-                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
-                        }
-                        HStack {
-                            if let billingInterval = viewModel.subscriptionBillingIntervalLabel {
-                                Text(billingInterval)
-                                    .font(.subheadline)
-                                    .foregroundColor(Color(.text))
-                                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
-                            }
-                            Spacer()
-                            if let subscriptionPrice = viewModel.subscriptionPrice {
-                                Text(subscriptionPrice)
-                                    .font(.subheadline)
-                                    .foregroundColor(Color(.text))
-                                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
-                            }
-                        }
                         Text(viewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel, isLoading: isLoading)
                             .font(.subheadline)
-                            .renderedIf(!viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                            .renderedIf(isCollapsed)
                     }
                 }
             }
@@ -222,9 +191,6 @@ private struct CollapsibleProductRowCard: View {
                     CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel, isLoading: isLoading)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
-
-                subscriptionDetailsSection
-                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails)
 
                 Divider()
 
@@ -291,48 +257,6 @@ private extension CollapsibleProductRowCard {
 }
 
 private extension CollapsibleProductRowCard {
-    // Subscription details section. Renders all elements for a Subscription-type product
-    @ViewBuilder var subscriptionDetailsSection: some View {
-        VStack(spacing: Layout.subscriptionDetailsPadding) {
-            HStack {
-                if let billingInterval = viewModel.subscriptionBillingIntervalLabel {
-                    Text(Localization.Subscription.intervalLabel)
-                        .subheadlineStyle()
-                    Spacer()
-                    Text(billingInterval)
-                        .font(.subheadline)
-                        .foregroundColor(Color(.text))
-                }
-            }
-
-            if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
-                HStack {
-                    Text(Localization.Subscription.freeTrialLabel)
-                        .subheadlineStyle()
-                    Spacer()
-                    Text(freeTrial)
-                        .font(.subheadline)
-                        .foregroundColor(Color(.text))
-                }
-            }
-
-            if let signupFee = viewModel.subscriptionConditionsSignupFee {
-                HStack {
-                    Text(Localization.Subscription.signUpFeeLabel)
-                        .subheadlineStyle()
-                    Spacer()
-                    if let signupFeeSummary = viewModel.signupFeeSummary {
-                        Text(signupFeeSummary)
-                            .foregroundColor(.secondary)
-                    }
-                    Text(signupFee)
-                        .font(.subheadline)
-                        .foregroundColor(Color(.text))
-                }
-            }
-        }
-    }
-
     @ViewBuilder var discountRow: some View {
         HStack {
             if !viewModel.hasProductDiscount || shouldDisallowDiscounts {
@@ -383,26 +307,6 @@ private extension CollapsibleProductRowCard {
 }
 
 private extension CollapsibleProductRowCard {
-    /// Displays the product quantity in the product card badge while is within 2 digits,
-    /// for higher quantities displays "99+"
-    var badgeQuantity: String {
-        if viewModel.stepperViewModel.quantity < 100 {
-           return "\(viewModel.stepperViewModel.quantity)"
-        } else {
-            return "99+"
-        }
-    }
-
-    /// Displays a different badge background shape based on the product quantity
-    /// Circular for 2-digit quantities, rounded for 3-digit quantities or more
-    var badgeStyle: BadgeView.BackgroundShape {
-        if viewModel.stepperViewModel.quantity < 100 {
-            return .circle
-        } else {
-            return .roundedRectangle(cornerRadius: Layout.badgeOffset)
-        }
-    }
-
     enum Layout {
         static let padding: CGFloat = 16
         static let childLeadingPadding: CGFloat = 16.0
@@ -413,8 +317,6 @@ private extension CollapsibleProductRowCard {
         static let iconSize: CGFloat = 16
         static let deleteIconSize: CGFloat = 24.0
         static let rowMinHeight: CGFloat = 40.0
-        static let badgeOffset: CGFloat = 8.0
-        static let subscriptionDetailsPadding: CGFloat = 4.0
         static let contentPadding: CGFloat = 16.0
     }
 
@@ -446,20 +348,6 @@ private extension CollapsibleProductRowCard {
         static let orderCountLabel = NSLocalizedString(
             "Order Count",
             comment: "Text in the product row card that indicates the product quantity in an order")
-        enum Subscription {
-            static let intervalLabel = NSLocalizedString(
-                "CollapsibleProductRowCard.text.interval",
-                value: "Interval",
-                comment: "The label points to the charge interval for product subscriptions")
-            static let freeTrialLabel = NSLocalizedString(
-                "CollapsibleProductRowCard.text.freetrial",
-                value: "Free trial",
-                comment: "The label points to the free trial conditions for product subscriptions")
-            static let signUpFeeLabel = NSLocalizedString(
-                "CollapsibleProductRowCard.text.signupfee",
-                value: "Signup fee",
-                comment: "The label points to the sign up fee conditions for product subscriptions")
-        }
     }
 }
 

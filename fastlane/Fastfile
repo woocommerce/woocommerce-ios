@@ -1129,10 +1129,11 @@ platform :ios do
       # "snapshot of accessibility hierarchy" on the iOS 26.x simulator, where WebKit and
       # WebCore both register `UIAccessibilityLoaderWebShared` — the duplicate class makes AX
       # queries intermittently time out. The app itself is fine; the retries usually absorb it,
-      # but a locale can still occasionally fail. Revisit once CI moves to a newer Xcode (#17484).
-      number_of_retries: 3,
+      # but a locale can still occasionally fail. Xcode 26.6 (#17484) did not fix it, so retry
+      # generously — a re-run is otherwise needed whenever a single locale trips the timeout.
+      number_of_retries: 6,
 
-      # But fail completely after those 3 retries
+      # But fail completely after those retries
       stop_after_first_error: true,
 
       # Allow the caller to invoke dark mode

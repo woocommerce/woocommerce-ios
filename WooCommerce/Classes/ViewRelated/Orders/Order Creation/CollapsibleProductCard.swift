@@ -117,8 +117,6 @@ private struct CollapsibleProductRowCard: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
-    private let minusSign: String = NumberFormatter().minusSign
-
     private func dismissTooltip() {
         if shouldShowInfoTooltip {
             shouldShowInfoTooltip = false
@@ -237,12 +235,12 @@ private struct CollapsibleProductRowCard: View {
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
-                    Text(viewModel.totalPriceAfterDiscountLabel ?? "")
+                    Text(viewModel.totalPriceAfterProductDiscountLabel)
                         .redacted(reason: isLoading ? .placeholder : [])
                         .shimmering(active: isLoading)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
-                .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
+                .renderedIf(viewModel.hasProductDiscount && !viewModel.isReadOnly)
 
                 Button(Localization.configureBundleProduct) {
                     viewModel.configure?()
@@ -337,7 +335,7 @@ private extension CollapsibleProductRowCard {
 
     @ViewBuilder var discountRow: some View {
         HStack {
-            if !viewModel.hasDiscount || shouldDisallowDiscounts {
+            if !viewModel.hasProductDiscount || shouldDisallowDiscounts {
                 Button(Localization.addDiscountLabel) {
                     trackAddDiscountTapped()
                     onAddDiscount(viewModel.id)
@@ -359,11 +357,9 @@ private extension CollapsibleProductRowCard {
                     })
                     .disabled(isLoading)
                     Spacer()
-                    if let discountLabel = viewModel.discountLabel {
-                        Text(minusSign + discountLabel)
-                            .foregroundColor(.green)
-                            .shimmering(active: isLoading)
-                    }
+                    Text(viewModel.productDiscountLabel)
+                        .foregroundColor(.green)
+                        .shimmering(active: isLoading)
                 }
                 // Redacts the discount editing row while product data is reloaded during remote sync.
                 // This avoids showing an out-of-date discount while hasn't synched

@@ -104,3 +104,49 @@ do {
 ```swift
 let fetchResults = try? resultsController.performFetch()
 ```
+
+### Reporting handled errors (crash logging)
+
+`DDLogError` writes to the CocoaLumberjack logs: the Xcode console and the rotating local log files surfaced in Settings → Help → Application Logs. Those files travel with support requests, and `WCEventLoggingDataSource` attaches the most recent one to crash reports, so the text is not lost — but `DDLogError` does **not** create a Sentry issue by itself, which means nothing is searchable, alertable, or countable in production. It only helps once you already know which install to look at.
+
+When an error matters in production (it signals a real problem rather than an expected/recoverable condition), also report it to the crash-logging system so it surfaces in Sentry as a handled, non-crash event while the app keeps running:
+
+```swift
+// An Error worth surfacing in production:
+ServiceLocator.crashLogging.logError(error, userInfo: ["context": "receipt upload"], level: .error)
+
+// A non-Error condition worth flagging:
+ServiceLocator.crashLogging.logMessage("Payment intent had no id", properties: nil, level: .warning)
+```
+
+`SeverityLevel` is `.fatal / .error / .warning / .info / .debug`. Never silently swallow an error: report a handled event for recoverable problems, and fail fast (crash) when the state is genuinely unrecoverable or corrupted — see below.
+
+| Goal | Use |
+|------|-----|
+| Console + local log file; no Sentry issue | `DDLogError` / `DDLogWarn` / … |
+| Report to Sentry, keep running | `crashLogging.logError(_:userInfo:level:)` / `logMessage(_:properties:level:)` |
+| Report to Sentry, then terminate | `crashLogging.logFatalErrorAndExit(_:userInfo:)` |
+
+### Crashing with `fatalError`
+
+From now on, every `fatalError` (and `preconditionFailure` / `assertionFailure`) **you add or modify** must be preceded by a comment justifying **why crashing is the correct response** and why the state is genuinely unrecoverable. If the app can keep running, report the error via `crashLogging.logError` / `logMessage` instead of crashing.
+
+```swift
+// fatalError: the app cannot function without a valid managed object model. This only
+// happens on a corrupt or incompatible install, which cannot be recovered at runtime.
+fatalError("Could not load the Core Data model")
+```
+
+A descriptive message does not satisfy this on its own. `fatalError("Could not load the Core Data model")` says *what* failed; the comment is where you argue that crashing beats recovering, which is the part a future reader cannot reconstruct from the code.
+
+This rule applies going forward, not retroactively. The codebase contains many crash sites that predate it, including bare `fatalError()` calls with no message at all — they are not the house style, and this is not a request to go comment them all. Fix them when you are already changing that code; otherwise leave them.
+
+The UIKit-mandated boilerplate is exempt, since it encodes no decision worth justifying:
+
+```swift
+required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+}
+```
+
+When you must both report *and* terminate on a truly unrecoverable state, prefer `crashLogging.logFatalErrorAndExit(_:userInfo:)` (today used only by `CoreDataManager` for launch-time Core Data failures) over a bare `fatalError`, so the incident reaches Sentry with its metadata before the process exits.

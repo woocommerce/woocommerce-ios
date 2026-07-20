@@ -6,7 +6,7 @@ extension ProductFormDataModel {
 
     /// Whether to treat this product as a subscription for display purposes.
     var isSubscriptionProduct: Bool {
-        productType == .subscription || productType == .variableSubscription
+        productType.isSubscription
     }
 
     /// Returns the formatted subscription period info in readable text.

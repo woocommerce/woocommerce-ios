@@ -425,7 +425,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
+        let parameters = [ParameterKey.contextKey: Default.context]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

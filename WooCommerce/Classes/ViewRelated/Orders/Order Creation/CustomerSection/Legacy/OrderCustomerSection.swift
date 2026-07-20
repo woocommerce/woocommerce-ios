@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Represents the Customer section
 ///
-struct LegacyOrderCustomerSection: View {
+struct OrderCustomerSection: View {
 
     /// Parent view model to access all data
     @ObservedObject var viewModel: EditableOrderViewModel
@@ -157,7 +157,7 @@ private extension OrderCustomerSectionContent {
     }
 }
 
-struct LegacyOrderCustomerSection_Previews: PreviewProvider {
+struct OrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = EditableOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",

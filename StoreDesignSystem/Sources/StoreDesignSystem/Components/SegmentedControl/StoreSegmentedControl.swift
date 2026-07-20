@@ -14,10 +14,10 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     @Namespace private var selectionNamespace
 
     /// - Parameters:
-    ///   - selection: The currently selected option.
-    ///   - options: The segments, in display order. Each `Value` is the segment's identity (like a
-    ///     `Picker` tag) and must be unique — but `title` may repeat, so two segments can show the
-    ///     same text as long as their underlying value differs.
+    ///   - selection: The selected option, expected to be one of `options`. If it isn't (e.g. `options`
+    ///     changed and dropped it), no segment is shown selected until one is tapped.
+    ///   - options: The segments, in display order. The design supports 2–5. Each `Value` is the
+    ///     segment's identity (like a `Picker` tag) and should be unique.
     ///   - title: The label shown for a given option.
     public init(selection: Binding<Value>,
                 options: [Value],
@@ -35,12 +35,19 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
         .animation(reduceMotion ? nil : .easeOut(duration: StoreMotion.selectionDuration), value: selection)
     }
 
+    /// The position of the segment matching `selection`, or `nil` when it isn't among `options`.
+    /// Resolving to a single index keeps duplicate values from selecting more than one segment (the
+    /// first match wins) and an absent selection from selecting any.
+    private var selectedIndex: Int? {
+        options.firstIndex(of: selection)
+    }
+
     /// The visible capsule and the selected pill, sized to the compact design height. Accessibility is
     /// exposed by ``segments`` — this layer is decorative, so it's hidden from VoiceOver.
     private var track: some View {
         HStack(spacing: StoreSpacing.s0) {
-            ForEach(Array(options.enumerated()), id: \.element) { _, option in
-                pill(for: option)
+            ForEach(Array(options.enumerated()), id: \.offset) { index, option in
+                pill(for: option, isSelected: index == selectedIndex)
             }
         }
         .padding(StorePadding.p1)
@@ -53,7 +60,7 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
     /// HIG minimum while the visible ``track`` keeps its compact design height.
     private var segments: some View {
         HStack(spacing: StoreSpacing.s0) {
-            ForEach(Array(options.enumerated()), id: \.element) { index, option in
+            ForEach(Array(options.enumerated()), id: \.offset) { index, option in
                 Button {
                     selection = option
                 } label: {
@@ -63,15 +70,14 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
                 .frame(maxWidth: .infinity, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(Rectangle())
                 .accessibilityLabel(title(option))
-                .accessibilityAddTraits(option == selection ? .isSelected : [])
+                .accessibilityAddTraits(index == selectedIndex ? .isSelected : [])
                 .accessibilityValue(Localization.positionValue(index: index + 1, count: options.count))
             }
         }
     }
 
-    private func pill(for option: Value) -> some View {
-        let isSelected = option == selection
-        return Text(title(option))
+    private func pill(for option: Value, isSelected: Bool) -> some View {
+        Text(title(option))
             .storeTextStyle(isSelected ? Constants.selectedTextStyle : Constants.unselectedTextStyle)
             .foregroundStyle(isSelected ? Color.storeOnSurface : Color.storeOnPrimaryContainer)
             .lineLimit(1)

@@ -130,7 +130,20 @@ final class ProductRowViewModelTests: XCTestCase {
                       "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
 
-    func test_view_model_creates_expected_label_for_product_with_no_price() {
+    func test_priceAndDiscountsLabel_when_price_is_non_numeric_then_returns_dash() {
+        // Given
+        let price = "not-a-number"
+        let product = Product.fake().copy(price: price)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, currencyFormatter: currencyFormatter)
+
+        // Then
+        assertEqual("-", viewModel.priceAndDiscountsLabel)
+    }
+
+    func test_view_model_creates_dash_label_for_product_with_no_price() {
         // Given
         let price = ""
         let product = Product.fake().copy(price: price)
@@ -140,9 +153,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, currencyFormatter: currencyFormatter)
 
         // Then
-        let expectedPriceLabel = "$0.00"
-        XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedPriceLabel),
-                      "Expected label to contain \"\(expectedPriceLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+        assertEqual("-", viewModel.priceAndDiscountsLabel)
     }
 
     func test_view_model_creates_expected_product_details_label_for_variable_product() {

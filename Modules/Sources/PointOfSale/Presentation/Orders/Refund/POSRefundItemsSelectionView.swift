@@ -47,7 +47,7 @@ struct POSRefundItemsSelectionView: View {
             .padding(.bottom, POSPadding.xLarge)
             .frame(maxHeight: .infinity)
 
-            continueButton
+            actionsFooter
                 .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
                                                  maxWidth: .infinity)
         }
@@ -117,21 +117,16 @@ private extension POSRefundItemsSelectionView {
         }
     }
 
-    var continueButton: some View {
+    var actionsFooter: some View {
         VStack(spacing: POSSpacing.small) {
             if reviewPreparationState == .previewError {
                 Text(Localization.previewError)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posError)
                     .multilineTextAlignment(.center)
-
-                Button(Localization.retryButton) {
-                    onContinue()
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
 
-            Button(Localization.continueButton) {
+            Button(reviewPreparationState == .previewError ? Localization.retryButton : Localization.continueButton) {
                 onContinue()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
@@ -144,9 +139,9 @@ private extension POSRefundItemsSelectionView {
             return true
         }
         switch reviewPreparationState {
-        case .loading, .previewError, .preparationError:
+        case .loading:
             return true
-        case .idle, .ready:
+        case .idle, .previewError:
             return false
         }
     }

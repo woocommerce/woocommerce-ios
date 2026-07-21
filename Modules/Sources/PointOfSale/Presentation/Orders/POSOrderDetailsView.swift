@@ -145,9 +145,6 @@ struct POSOrderDetailsView: View {
                 }
             }
         }
-        .onChange(of: orderListModel.ordersController.refundReviewPreparationState) { _, newState in
-            handleRefundReviewPreparationChange(newState)
-        }
         .posFullScreenCover(isPresented: isRefundModalPresented) {
             if let state = refundModalState {
                 POSRefundModalContentView(
@@ -627,20 +624,16 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        orderListModel.ordersController.prepareRefundReview()
-    }
-
-    func handleRefundReviewPreparationChange(_ state: POSRefundReviewPreparationState) {
-        switch state {
-        case .ready(var reviewData):
-            reviewData.refundReason = currentRefundReason
-            refundModalState = .review(reviewData)
-            orderListModel.ordersController.resetRefundReviewPreparation()
-        case .preparationError:
-            refundSelectionState = .preparationError
-            orderListModel.ordersController.resetRefundReviewPreparation()
-        case .idle, .loading, .previewError:
-            break
+        Task { @MainActor in
+            switch await orderListModel.ordersController.prepareRefundReview() {
+            case .ready(var reviewData):
+                reviewData.refundReason = currentRefundReason
+                refundModalState = .review(reviewData)
+            case .preparationError:
+                refundSelectionState = .preparationError
+            case .previewError, .superseded:
+                break
+            }
         }
     }
 

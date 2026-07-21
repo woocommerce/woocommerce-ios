@@ -1125,20 +1125,22 @@ final class POSOrderListControllerTests {
         refundSubmissionProcessor.prepareReviewDataErrorToThrow = POSRefundSubmissionError.refundPreviewFailed
 
         // When
-        let failedState = await awaitReviewPreparation(sut)
+        let failedResult = await awaitReviewPreparation(sut)
 
-        // Then
-        #expect(failedState == .previewError)
+        // Then the failure is returned and the inline-error state is published for the sheet
+        #expect(failedResult == .previewError)
+        #expect(sut.refundReviewPreparationState == .previewError)
 
         // When the failure is resolved and the user retries
         refundSubmissionProcessor.prepareReviewDataErrorToThrow = nil
-        let recoveredState = await awaitReviewPreparation(sut)
+        let recoveredResult = await awaitReviewPreparation(sut)
 
         // Then
-        guard case .ready = recoveredState else {
-            Issue.record("Expected .ready after retry, got \(recoveredState)")
+        guard case .ready = recoveredResult else {
+            Issue.record("Expected .ready after retry, got \(recoveredResult)")
             return
         }
+        #expect(sut.refundReviewPreparationState == .idle)
     }
 
     @MainActor
@@ -1152,10 +1154,10 @@ final class POSOrderListControllerTests {
         }
 
         // When
-        let state = await awaitReviewPreparation(sut)
+        let result = await awaitReviewPreparation(sut)
 
-        // Then the toggle reset the preparation, and the stale result never advanced the state
-        #expect(state == .idle)
+        // Then the toggle superseded the preparation, and the stale result never advanced the state
+        #expect(result == .superseded)
         await Task.yield()
         await Task.yield()
         #expect(sut.refundReviewPreparationState == .idle)
@@ -1172,21 +1174,23 @@ final class POSOrderListControllerTests {
         }
 
         // When
-        let state = await awaitReviewPreparation(sut)
+        let result = await awaitReviewPreparation(sut)
 
         // Then the order switch cancelled the in-flight preparation and reset the state
-        #expect(state == .idle)
+        #expect(result == .superseded)
+        #expect(sut.refundReviewPreparationState == .idle)
     }
 
     @MainActor
-    @Test func prepareRefundReview_when_no_preparation_loaded_then_state_is_preparationError() async throws {
+    @Test func prepareRefundReview_when_no_preparation_loaded_then_returns_preparationError() async throws {
         // Given no selected order / no started refund flow
 
         // When
-        sut.prepareRefundReview()
+        let result = await sut.prepareRefundReview()
 
         // Then
-        #expect(sut.refundReviewPreparationState == .preparationError)
+        #expect(result == .preparationError)
+        #expect(sut.refundReviewPreparationState == .idle)
     }
 
     @MainActor
@@ -2023,14 +2027,10 @@ final class POSOrderListControllerTests {
 }
 
 private extension POSOrderListControllerTests {
-    /// Kicks off review preparation and waits until it leaves `.loading`.
+    /// Runs review preparation and returns its outcome.
     @MainActor
-    func awaitReviewPreparation(_ controller: POSOrderListController) async -> POSRefundReviewPreparationState {
-        controller.prepareRefundReview()
-        while controller.refundReviewPreparationState == .loading {
-            await Task.yield()
-        }
-        return controller.refundReviewPreparationState
+    func awaitReviewPreparation(_ controller: POSOrderListController) async -> POSRefundReviewPreparationResult {
+        await controller.prepareRefundReview()
     }
 
     /// Runs async review preparation and returns the review data, or `nil` when preparation failed.
@@ -2189,24 +2189,18 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     func prepareReviewData(for order: POSOrder,
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
-                           reason: String?) async throws -> POSRefundReviewData? {
+                           reason: String?) async throws -> POSRefundReviewData {
         await onPrepareReviewDataCalled?()
         if let error = prepareReviewDataErrorToThrow {
             throw error
         }
 
         let amounts = reviewAmounts(for: selectedItems)
-        guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
-              let formattedTax = currencyFormatter.formatAmount(amounts.tax),
-              let formattedTotal = currencyFormatter.formatAmount(amounts.subtotal + amounts.tax) else {
-            return nil
-        }
-
         return POSRefundReviewData(
             itemsCount: selectedItems.count,
-            formattedItemsSubtotal: formattedSubtotal,
-            formattedTax: formattedTax,
-            formattedRefundTotal: formattedTotal,
+            formattedItemsSubtotal: currencyFormatter.formatAmount(amounts.subtotal) ?? "",
+            formattedTax: currencyFormatter.formatAmount(amounts.tax) ?? "",
+            formattedRefundTotal: currencyFormatter.formatAmount(amounts.subtotal + amounts.tax) ?? "",
             paymentMethodDescription: preparation.paymentMethodDescription,
             customerEmail: preparation.customerEmail,
             refundReason: reason,

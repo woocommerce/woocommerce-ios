@@ -42,8 +42,7 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     var refundReviewPreparationState: POSRefundReviewPreparationState { get }
-    func prepareRefundReview()
-    func resetRefundReviewPreparation()
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult
     func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
 }
@@ -60,12 +59,22 @@ enum POSOrderListSelectedOrderRefundsState {
     case failed(Error)
 }
 
+/// Observable UI state for the selection sheet while review preparation runs (button spinner and
+/// inline preview error). The preparation's outcome is returned by `prepareRefundReview()` as a
+/// `POSRefundReviewPreparationResult` instead of being published here.
 enum POSRefundReviewPreparationState: Equatable {
     case idle
     case loading
+    case previewError
+}
+
+/// Outcome of `prepareRefundReview()`, returned directly to the caller.
+enum POSRefundReviewPreparationResult: Equatable {
     case ready(POSRefundReviewData)
     case previewError
     case preparationError
+    /// A newer preparation or a selection change invalidated this one; callers ignore it.
+    case superseded
 }
 
 enum POSOrderDetailsItemsState: Equatable {
@@ -139,7 +148,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedRefundSelection = false
     private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
-    private var refundReviewPreparationTask: Task<Void, Never>?
+    private var refundReviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
@@ -469,25 +478,25 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     // MARK: - Refund Review Data Preparation
 
     @MainActor
-    func prepareRefundReview() {
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult {
         refundReviewPreparationTask?.cancel()
 
         guard let order = selectedOrder,
               case .loaded(let preparation) = selectedOrderRefundsState else {
-            refundReviewPreparationState = .preparationError
-            return
+            refundReviewPreparationState = .idle
+            return .preparationError
         }
 
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else {
-            refundReviewPreparationState = .preparationError
-            return
+            refundReviewPreparationState = .idle
+            return .preparationError
         }
 
         let selectionSnapshot = refundSelectableItems
         refundReviewPreparationState = .loading
-        refundReviewPreparationTask = Task { @MainActor [weak self] in
-            guard let self else { return }
+        let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
+            guard let self else { return .superseded }
             do {
                 let reviewData = try await refundSubmissionProcessor.prepareReviewData(
                     for: order,
@@ -495,13 +504,23 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
                     selectedItems: selectedItems,
                     reason: nil
                 )
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return }
-                refundReviewPreparationState = reviewData.map { .ready($0) } ?? .preparationError
-            } catch {
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return }
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+                refundReviewPreparationState = .idle
+                return .ready(reviewData)
+            } catch is CancellationError {
+                return .superseded
+            } catch POSRefundSubmissionError.refundPreviewFailed {
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
                 refundReviewPreparationState = .previewError
+                return .previewError
+            } catch {
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+                refundReviewPreparationState = .idle
+                return .preparationError
             }
         }
+        refundReviewPreparationTask = preparationTask
+        return await preparationTask.value
     }
 
     @MainActor

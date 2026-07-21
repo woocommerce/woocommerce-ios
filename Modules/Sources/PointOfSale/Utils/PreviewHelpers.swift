@@ -553,8 +553,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     var refundReviewPreparationState: POSRefundReviewPreparationState { .idle }
-    func prepareRefundReview() {}
-    func resetRefundReviewPreparation() {}
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult { .preparationError }
     func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }

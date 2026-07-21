@@ -30,9 +30,9 @@ struct POSRefundSubmissionAdaptorTests {
                                                                      reason: nil)
 
         // Then the review shows the server-calculated totals, not the local math
-        #expect(reviewData?.formattedItemsSubtotal == "$27.00")
-        #expect(reviewData?.formattedTax == "$2.43")
-        #expect(reviewData?.formattedRefundTotal == "$29.43")
+        #expect(reviewData.formattedItemsSubtotal == "$27.00")
+        #expect(reviewData.formattedTax == "$2.43")
+        #expect(reviewData.formattedRefundTotal == "$29.43")
 
         // When submitting
         try await harness.adaptor.submitRefund(for: posOrder(),
@@ -58,9 +58,9 @@ struct POSRefundSubmissionAdaptorTests {
                                                                      reason: nil)
 
         // Then the review shows the locally calculated totals (unchanged v3 behaviour)
-        #expect(reviewData?.formattedItemsSubtotal == "$10.00")
-        #expect(reviewData?.formattedTax == "$1.00")
-        #expect(reviewData?.formattedRefundTotal == "$11.00")
+        #expect(reviewData.formattedItemsSubtotal == "$10.00")
+        #expect(reviewData.formattedTax == "$1.00")
+        #expect(reviewData.formattedRefundTotal == "$11.00")
 
         // When submitting
         try await harness.adaptor.submitRefund(for: posOrder(),

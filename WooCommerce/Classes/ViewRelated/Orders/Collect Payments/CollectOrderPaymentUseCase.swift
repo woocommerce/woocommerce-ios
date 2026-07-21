@@ -164,22 +164,10 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                     case .failure(let error):
                         CardPresentPaymentOnboardingStateCache.shared.invalidate()
                         return onFailure(error)
-                    case .success(let paymentData):
-                        // Handle payment receipt
+                    case .success:
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-
-                        self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
-                            guard let self else { return }
-                            switch isEligible {
-                            case true:
-                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
-                            case false:
-                                self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                              alertProvider: paymentAlertProvider,
-                                                              onCompleted: onCompleted)
-                            }
-                            onPaymentCompletion()
-                        }
+                        self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
+                        onPaymentCompletion()
                     }
                 })
             case .canceled(let cancellationSource, _):
@@ -720,7 +708,6 @@ private extension CollectOrderPaymentUseCase {
     }
 
     /// Allow merchants to print or email backend-generated receipts.
-    /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
     func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                     onCompleted: @escaping () -> ()) {
@@ -748,56 +735,6 @@ private extension CollectOrderPaymentUseCase {
 
             alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: receiptState))
         })
-    }
-
-
-    /// Allow merchants to print or email locally-generated receipts.
-    ///
-    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters?,
-                             alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
-                             onCompleted: @escaping () -> ()) {
-        // Present receipt alert
-        alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
-            guard let self else { return }
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Delegate print action
-            Task { @MainActor in
-                await ReceiptActionCoordinator.printReceipt(for: order,
-                                                            params: receiptParameters,
-                                                            countryCode: configuration.countryCode,
-                                                            cardReaderModel: self.analyticsTracker.connectedReaderModel,
-                                                            stores: self.stores)
-
-                // Inform about flow completion.
-                onCompleted()
-            }
-        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
-            guard let self else { return }
-
-            alertsPresenter.dismiss()
-
-            analyticsTracker.trackEmailTapped()
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Request & present email
-            paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
-                self?.presentEmailForm(content: emailContent, onCompleted: onCompleted)
-            }
-        }, noReceiptAction: {
-            // Inform about flow completion.
-            onCompleted()
-        })))
     }
 
     /// Presents the native email client with the provided content.
@@ -1121,8 +1058,4 @@ extension ServerSidePaymentCaptureError: CardPaymentErrorProtocol {
     var requiresFallbackPaymentMethod: Bool {
         false
     }
-}
-
-enum CollectOrderPaymentReceiptError: Error {
-    case noReceiptDataBecauseSuccessInferred
 }

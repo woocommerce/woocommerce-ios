@@ -70,10 +70,6 @@ final class OrderDetailsDataSource: NSObject {
         !isEligibleForWooShipping
     }
 
-    /// Whether the order has a locally-generated receipt associated.
-    ///
-    var orderHasLocalReceipt: Bool = false
-
     /// Whether the order is eligible for backend receipt generation.
     /// This is calculated during sync to avoid async calls during section building.
     ///
@@ -427,8 +423,6 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeReceipt:
             configureSeeReceipt(cell: cell)
-        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .seeLegacyReceipt:
-            configureSeeLegacyReceipt(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
@@ -607,14 +601,6 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
         cell.hideFootnote()
-    }
-
-    private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        cell.setLeftTitleToLinkStyle(true)
-        cell.leftText = Titles.seeLegacyReceipt
-        cell.rightText = nil
-        cell.hideFootnote()
-        cell.hideSeparator()
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
@@ -1522,9 +1508,7 @@ extension OrderDetailsDataSource {
         if isEligibleForPayment {
             rows.append(.collectCardPaymentButton)
         }
-        if orderHasLocalReceipt {
-            rows.append(.seeLegacyReceipt)
-        } else if isEligibleForBackendReceipt {
+        if isEligibleForBackendReceipt {
             rows.append(.seeReceipt)
         }
         if isEligibleForRefund {
@@ -1741,7 +1725,6 @@ extension OrderDetailsDataSource {
             "OrderDetailsDataSource.configureSeeReceipt.button.title",
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
-        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
         static let trashOrder = NSLocalizedString(
                      "orderDetailsDataSource.trashOrder.button.title",
                      value: "Move to trash",
@@ -1922,7 +1905,6 @@ extension OrderDetailsDataSource {
         case payment
         case customerPaid
         case seeReceipt
-        case seeLegacyReceipt
         case refund
         case netAmount
         case subscriptions
@@ -1976,8 +1958,6 @@ extension OrderDetailsDataSource {
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .seeReceipt:
-                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
-            case .seeLegacyReceipt:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier

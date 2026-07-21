@@ -95,9 +95,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     func prepareReviewData(for order: POSOrder,
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
-                           reason: String?) async throws -> POSRefundReviewData? {
+                           reason: String?) async throws -> POSRefundReviewData {
         guard let context = preparedContexts[preparation.orderID] else {
-            return nil
+            throw POSRefundSubmissionAdaptorError.missingPreparedRefund
         }
 
         serverPreviewTotals[preparation.orderID] = nil

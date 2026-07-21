@@ -21,6 +21,7 @@ final class SupportEscalationCoordinator {
 
     private weak var navigationController: UINavigationController?
     private let additionalAttachmentsProvider: () -> [ZendeskAttachment]
+    private let attachmentProvider: SupportRequestAttachmentProviding
     private let zendeskProvider: ZendeskManagerProtocol
     private let analytics: Analytics
     private let stores: StoresManager
@@ -37,6 +38,7 @@ final class SupportEscalationCoordinator {
     /// - Parameters:
     ///   - navigationController: The navigation controller to present from.
     ///   - additionalAttachmentsProvider: Closure that returns extra attachments (e.g., troubleshooting logs).
+    ///   - attachmentProvider: Composes diagnostics with the application log for each request.
     ///   - zendeskProvider: Zendesk service provider.
     ///   - analytics: Analytics tracker.
     ///   - stores: Stores manager for site info.
@@ -45,6 +47,7 @@ final class SupportEscalationCoordinator {
     ///     update its in-session state.
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
+         attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
@@ -52,6 +55,7 @@ final class SupportEscalationCoordinator {
          transcriptConsentPresenter: TranscriptConsentPresenter? = nil) {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
+        self.attachmentProvider = attachmentProvider
         self.zendeskProvider = zendeskProvider
         self.analytics = analytics
         self.stores = stores
@@ -80,16 +84,17 @@ final class SupportEscalationCoordinator {
         self.chatID = chatID
         self.escalationSiteAddress = siteAddress
         self.hasReceivedBotResponse = hasReceivedBotResponse
+        let transcript = formattedTranscript(transcript)
 
         guard let supportAreaInfo else {
             showSupportForm(transcript: transcript, supportAreaInfo: nil, entryPoint: entryPoint)
             return
         }
 
-        // Only offer direct ticket creation if high confidence, user identity exists, and
-        // a site URL is available. Otherwise the form lets users provide missing details.
-        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity && hasSiteAddress {
-            confirmTranscriptConsent(for: supportAreaInfo, entryPoint: entryPoint)
+        // Only offer direct ticket creation if high confidence, a nonempty transcript and user identity exist,
+        // and a site URL is available. Otherwise the form lets users provide missing details.
+        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity && hasSiteAddress && transcript != nil {
+            confirmTranscriptConsent(for: supportAreaInfo, transcript: transcript, entryPoint: entryPoint)
         } else {
             showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
         }
@@ -97,7 +102,7 @@ final class SupportEscalationCoordinator {
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func showSupportForm(transcript: String?, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         let attachments = additionalAttachmentsProvider()
 
         let prefilledSubject: String?
@@ -115,7 +120,9 @@ final class SupportEscalationCoordinator {
             sourceTag: Tags.sourceTag,
             additionalTags: additionalTags(for: supportAreaInfo),
             zendeskProvider: zendeskProvider,
+            attachmentProvider: attachmentProvider,
             attachments: attachments,
+            transcript: transcript,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledSiteAddress: siteAddress,
@@ -146,21 +153,25 @@ final class SupportEscalationCoordinator {
         }
     }
 
-    private func confirmTranscriptConsent(for areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func confirmTranscriptConsent(for areaInfo: SupportAreaInfo,
+                                          transcript: String?,
+                                          entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         transcriptConsentPresenter(
             presentingVC,
             { [weak self] in
-                self?.createTicketDirectly(with: areaInfo, entryPoint: entryPoint)
+                self?.createTicketDirectly(with: areaInfo, transcript: transcript, entryPoint: entryPoint)
             },
             { [weak self] in
-                self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+                self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
             }
         )
     }
 
-    private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func createTicketDirectly(with areaInfo: SupportAreaInfo,
+                                      transcript: String?,
+                                      entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         let loadingViewController = InProgressViewController(
@@ -168,8 +179,7 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
-        let attachments = additionalAttachmentsProvider()
+        let attachments = attachmentProvider.attachments(including: additionalAttachmentsProvider())
 
         let siteAddress = siteAddress ?? ""
         let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
@@ -178,7 +188,7 @@ final class SupportEscalationCoordinator {
             customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
             tags: tags,
             subject: SupportFormViewModel.subject(for: areaInfo.areaType),
-            description: description,
+            description: transcript ?? "",
             attachments: attachments
         )
 
@@ -202,7 +212,7 @@ final class SupportEscalationCoordinator {
                         entryPoint: entryPoint,
                         errorType: Self.errorType(for: error)
                     ))
-                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+                    self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
                 }
             }
         }
@@ -251,6 +261,14 @@ final class SupportEscalationCoordinator {
             return siteAddress
         }
         return nil
+    }
+
+    private func formattedTranscript(_ transcript: String?) -> String? {
+        guard let transcript,
+              transcript.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty else {
+            return nil
+        }
+        return [Localization.transcriptHeader, transcript].joined(separator: "\n\n")
     }
 
     private static func errorType(for error: Error) -> String {
@@ -311,8 +329,8 @@ private extension SupportEscalationCoordinator {
             comment: "Title for the alert asking consent to send an AI chat transcript to support"
         )
         static let transcriptConsentMessage = NSLocalizedString(
-            "supportEscalationCoordinator.transcriptConsentMessage",
-            value: "We can create a support request using this chat transcript, or you can open the contact form and enter the details yourself.",
+            "supportEscalationCoordinator.transcriptConsentMessageV2",
+            value: "Both options include this chat transcript. Send the request now, or open the contact form to add more details first.",
             comment: "Message for the alert asking consent to send an AI chat transcript to support"
         )
         static let contactForm = NSLocalizedString(

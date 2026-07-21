@@ -6,7 +6,7 @@ protocol SupportRequestAttachmentProviding {
 }
 
 /// Appends the full application log to support-request attachments when available.
-final class DefaultSupportRequestAttachmentProvider: SupportRequestAttachmentProviding {
+struct DefaultSupportRequestAttachmentProvider: SupportRequestAttachmentProviding {
     private enum Constants {
         static let applicationLogFilename = "application_log.txt"
         static let plainTextContentType = "text/plain"

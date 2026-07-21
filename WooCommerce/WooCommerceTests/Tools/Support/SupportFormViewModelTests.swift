@@ -253,7 +253,7 @@ final class SupportFormViewModelTests: XCTestCase {
                                            filename: "connectivitytest_log.txt",
                                            contentType: "text/plain")
         let attachmentProvider = DefaultSupportRequestAttachmentProvider(
-            applicationLogProvider: StubApplicationLogProvider(logs: "Application log")
+            applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
         )
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
                                              zendeskProvider: zendesk,
@@ -282,13 +282,5 @@ private extension SupportFormViewModelTests {
             .init(title: "Area 1", datasource: MockDataSource()),
             .init(title: "Area 2", datasource: MockDataSource())
         ]
-    }
-
-    private struct StubApplicationLogProvider: ApplicationLogProvider {
-        let logs: String?
-
-        func applicationLogs(cappedTo: Int?) -> String? {
-            logs
-        }
     }
 }

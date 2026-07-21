@@ -87,11 +87,3 @@ struct SupportRequestAttachmentProviderTests {
         #expect(attachments.map(\.filename) == ["connectivitytest_log.txt"])
     }
 }
-
-private struct MockApplicationLogProvider: ApplicationLogProvider {
-    let logs: String?
-
-    func applicationLogs(cappedTo: Int?) -> String? {
-        logs
-    }
-}

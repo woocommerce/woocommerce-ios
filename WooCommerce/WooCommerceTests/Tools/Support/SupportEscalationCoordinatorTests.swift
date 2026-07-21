@@ -345,7 +345,7 @@ struct SupportEscalationCoordinatorTests {
                                            filename: "connectivitytest_log.txt",
                                            contentType: "text/plain")
         let attachmentProvider = DefaultSupportRequestAttachmentProvider(
-            applicationLogProvider: StubApplicationLogProvider(logs: "Application log")
+            applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
         )
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = makeCoordinator(
@@ -726,13 +726,5 @@ private extension SupportEscalationCoordinatorTests {
             area: SupportFormViewModel.area(for: .mobileApp),
             confidence: .low
         )
-    }
-
-    private struct StubApplicationLogProvider: ApplicationLogProvider {
-        let logs: String?
-
-        func applicationLogs(cappedTo: Int?) -> String? {
-            logs
-        }
     }
 }

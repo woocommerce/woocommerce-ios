@@ -682,12 +682,7 @@ private extension SupportEscalationCoordinatorTests {
     }
 
     var expectedFormattedTranscript: String {
-        let header = NSLocalizedString(
-            "supportEscalationCoordinator.transcriptHeader",
-            value: "Following is the transcript of an in-app AI support chat session:",
-            comment: "Header text before the chat transcript in support ticket description"
-        )
-        return [header, "Test transcript"].joined(separator: "\n\n")
+        [SupportEscalationCoordinator.Localization.transcriptHeader, "Test transcript"].joined(separator: "\n\n")
     }
 
     func assertLastProperties(_ analyticsProvider: MockAnalyticsProvider,

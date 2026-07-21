@@ -301,7 +301,7 @@ final class SupportEscalationCoordinator {
 
 // MARK: - Localization
 
-private extension SupportEscalationCoordinator {
+extension SupportEscalationCoordinator {
     enum Localization {
         static let creatingTicket = NSLocalizedString(
             "supportEscalationCoordinator.creatingTicket",

@@ -60,4 +60,9 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Fresh eligibility state with reason if ineligible
     @discardableResult func refreshEligibilityState(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
+
+    /// Whether the local catalog feature is enabled from locally available signals only
+    /// (local and cached remote feature flags plus the beta toggle), without any network checks.
+    /// Used to gate POS entry from cached state when remote eligibility cannot be checked.
+    func isLocalCatalogFeatureEnabled() async -> Bool
 }

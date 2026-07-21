@@ -9,6 +9,13 @@ public protocol POSSystemStatusServiceProtocol {
     /// - Returns: POSPluginAndFeatureInfo containing plugin and feature data.
     /// - Throws: Network or parsing errors.
     func loadWooCommercePluginAndPOSFeatureSwitch(siteID: Int64) async throws -> POSPluginAndFeatureInfo
+
+    /// Loads the WooCommerce plugin from local storage, previously synced by system status checks
+    /// anywhere in the app, without hitting the network.
+    /// - Parameter siteID: The site ID to load the plugin for.
+    /// - Returns: The locally synced plugin in any active state, or nil when none has been synced.
+    @MainActor
+    func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin?
 }
 
 /// Contains WooCommerce plugin information and POS feature switch value.
@@ -70,6 +77,11 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         // Extracts POS feature value from settings response.
         let featureValue = systemStatus.settings.enabledFeatures?.contains(SiteSettingsFeature.pointOfSale.rawValue) == true ? true : nil
         return POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureValue)
+    }
+
+    @MainActor
+    public func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
+        pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: nil)
     }
 }
 

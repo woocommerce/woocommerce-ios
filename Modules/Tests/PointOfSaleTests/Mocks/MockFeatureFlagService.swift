@@ -10,7 +10,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
-    var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isSubscriptionsInOrderCreationUIEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
@@ -30,7 +29,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isSubscriptionsInOrderCreationUIEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
@@ -48,7 +46,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isSubscriptionsInOrderCreationUIEnabled = isSubscriptionsInOrderCreationUIEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
@@ -84,8 +81,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .subscriptionsInOrderCreationCustomers:
-            return isSubscriptionsInOrderCreationCustomersEnabled
         case .subscriptionsInOrderCreationUI:
             return isSubscriptionsInOrderCreationUIEnabled
         case .pointOfSale:

@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 import Fakes
 import Networking
 @testable import Yosemite
@@ -7,9 +8,6 @@ import Networking
 /// Unit tests for `ReceiptContentAssembler`, the pure builder that turns an `Order` +
 /// `CardPresentReceiptParameters` into `ReceiptContent` (line items, cart totals, order note).
 ///
-/// This coverage previously lived in `ReceiptStoreTests` (exercised through the now-removed
-/// `ReceiptAction.print` / `.generateContent` path). It is migrated here to test the live
-/// assembler directly, which is the type the POS thermal-printing path relies on.
 struct ReceiptContentAssemblerTests {
 
     // MARK: - Cart totals: taxes
@@ -231,7 +229,7 @@ struct ReceiptContentAssemblerTests {
 private extension ReceiptContentAssemblerTests {
     static let cardPresentCharge = Charge.fake().copy(paymentMethod: .cardPresent(details: .fake()))
 
-    func makeReceiptParameters(amount: Int = 100) throws -> CardPresentReceiptParameters {
+    func makeReceiptParameters(amount: UInt = 100) throws -> CardPresentReceiptParameters {
         let intent = PaymentIntent.fake().copy(amount: amount, charges: [Self.cardPresentCharge])
         return try #require(intent.receiptParameters())
     }

@@ -47,12 +47,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .subscriptionsInOrderCreationUI:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
-        case .subscriptionsInOrderCreationCustomers:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:

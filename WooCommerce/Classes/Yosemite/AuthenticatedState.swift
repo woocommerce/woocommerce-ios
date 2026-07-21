@@ -203,7 +203,8 @@ class AuthenticatedState: StoresManagerState {
                     await MainActor.run {
                         ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
                     }
-                }
+                },
+                syncStatusChecker: POSCatalogSyncStatusChecker(grdbManager: ServiceLocator.grdbManager)
             )
             posCatalogEligibilityChecker = eligibilityService
 

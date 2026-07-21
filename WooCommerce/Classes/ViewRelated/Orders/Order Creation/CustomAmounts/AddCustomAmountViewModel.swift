@@ -73,6 +73,11 @@ final class AddCustomAmountViewModel: ObservableObject {
         case orderTotalPercentage(baseAmount: Decimal)
     }
 
+    enum FocusedField: Hashable {
+        case input
+        case name
+    }
+
     private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
     private let onCustomAmountDeleted: ((_ fee: Int64) -> Void)?
@@ -85,6 +90,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     ///
     @Published var name = ""
     @Published private(set) var shouldEnableDoneButton: Bool = false
+    @Published private(set) var focusedField: FocusedField? = .input
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
@@ -142,6 +148,24 @@ final class AddCustomAmountViewModel: ObservableObject {
         name = fee.name ?? Localization.customAmountPlaceholder
         inputTypeViewModelAdapter.preset(with: fee)
         feeID = fee.feeID
+    }
+
+    func focusInput() {
+        focusedField = .input
+    }
+
+    func focusName() {
+        focusedField = .name
+    }
+
+    func clearFocus() {
+        focusedField = nil
+    }
+
+    func clearInputFocus() {
+        if focusedField == .input {
+            focusedField = nil
+        }
     }
 }
 

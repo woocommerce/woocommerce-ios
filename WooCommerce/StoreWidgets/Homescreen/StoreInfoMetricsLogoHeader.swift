@@ -7,13 +7,16 @@ struct StoreInfoMetricsLogoHeader: View {
     let data: StoreInfoData
     private let showsRange: Bool
     private let showsUpdatePrefix: Bool
+    private let showsUpdatedTime: Bool
 
     init(data: StoreInfoData,
          showsRange: Bool = true,
-         showsUpdatePrefix: Bool = true) {
+         showsUpdatePrefix: Bool = true,
+         showsUpdatedTime: Bool = true) {
         self.data = data
         self.showsRange = showsRange
         self.showsUpdatePrefix = showsUpdatePrefix
+        self.showsUpdatedTime = showsUpdatedTime
     }
 
     var body: some View {
@@ -44,10 +47,12 @@ struct StoreInfoMetricsLogoHeader: View {
                     }
                 }
 
-                updatedTimeText
-                    .statRangeStyle()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                if showsUpdatedTime {
+                    updatedTimeText
+                        .statRangeStyle()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

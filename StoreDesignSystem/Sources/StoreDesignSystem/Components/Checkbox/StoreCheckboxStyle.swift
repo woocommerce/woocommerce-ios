@@ -42,7 +42,7 @@ private struct StoreCheckboxStyleBody: View {
         .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
         .contentShape(Rectangle())
         .opacity(isPressed ? Constants.pressedOpacity : 1)
-        .animation(.easeOut(duration: Constants.pressAnimationDuration), value: isPressed)
+        .animation(.easeOut(duration: StoreMotion.pressDuration), value: isPressed)
     }
 
     @ViewBuilder private var glyph: some View {
@@ -84,6 +84,5 @@ private extension StoreCheckboxStyleBody {
         /// The box side, from the Figma "Size/Large Increased" token (24 pt).
         static let side = StoreIconSize.largeIncreased.value
         static let pressedOpacity: Double = 0.7
-        static let pressAnimationDuration: TimeInterval = 0.15
     }
 }

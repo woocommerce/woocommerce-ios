@@ -21,7 +21,7 @@ public struct StoreBadge: View {
         }
         .foregroundStyle(tone.appearance.foreground)
         .padding(.horizontal, StorePadding.p3)
-        .frame(minHeight: Constants.minHeight)
+        .frame(minHeight: StoreSize.badgeHeight)
         .background(tone.appearance.background ?? .clear)
         .clipShape(RoundedRectangle(cornerRadius: StoreRadius.medium))
         .overlay {
@@ -35,10 +35,6 @@ public struct StoreBadge: View {
 
 private extension StoreBadge {
     enum Constants {
-        // Figma's 8pt top/bottom padding sits around cap-height-trimmed text (8+8+8 = 24).
-        // SwiftUI's Text isn't cap-trimmed, so we hit that 24pt height via minHeight rather
-        // than literal vertical padding (which would overshoot). Matches Android's heightIn(min: 24).
-        static let minHeight: CGFloat = 24
         static let iconSize: StoreIconSize = .extraSmall
     }
 }

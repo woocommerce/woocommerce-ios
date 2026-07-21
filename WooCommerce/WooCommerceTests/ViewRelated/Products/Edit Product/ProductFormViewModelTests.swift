@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 
 @testable import WooCommerce
@@ -836,11 +837,19 @@ final class ProductFormViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 22, name: "Old name", ratingCount: 0)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
-        var retrieveInvoked = false
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let .retrieveProduct(_, _, onCompletion) = action {
-                retrieveInvoked = true
                 onCompletion(.success(product.copy(name: "Remote name", ratingCount: 1)))
+            }
+        }
+
+        // The refreshed product is applied a few async hops after the retrieval completes, so observe the
+        // product and fail if the remote product is ever applied over the local edits.
+        let remoteProductApplied = expectation(description: "Remote product must not override unsaved local edits")
+        remoteProductApplied.isInverted = true
+        let subscription = viewModel.observableProduct.sink { product in
+            if product.product.ratingCount == 1 {
+                remoteProductApplied.fulfill()
             }
         }
 
@@ -849,11 +858,11 @@ final class ProductFormViewModelTests: XCTestCase {
         viewModel.refreshProduct()
 
         // Then
-        waitUntil {
-            retrieveInvoked
-        }
+        wait(for: [remoteProductApplied], timeout: 1)
+        subscription.cancel()
         XCTAssertEqual(viewModel.productModel.name, "Locally edited name")
         XCTAssertEqual(viewModel.productModel.product.ratingCount, 0)
+        XCTAssertEqual(viewModel.originalProductModel.product.name, "Old name")
     }
 
     func test_refreshProduct_does_not_fetch_for_product_that_does_not_exist_remotely() {
@@ -861,10 +870,14 @@ final class ProductFormViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 0)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .add, stores: stores)
-        var retrieveInvoked = false
+
+        // The retrieval action is dispatched a few async hops after `refreshProduct` returns, so fail
+        // if it is ever received instead of asserting synchronously.
+        let retrieveDispatched = expectation(description: "Retrieval must not be dispatched for a product that does not exist remotely")
+        retrieveDispatched.isInverted = true
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case .retrieveProduct = action {
-                retrieveInvoked = true
+                retrieveDispatched.fulfill()
             }
         }
 
@@ -872,7 +885,7 @@ final class ProductFormViewModelTests: XCTestCase {
         viewModel.refreshProduct()
 
         // Then
-        XCTAssertFalse(retrieveInvoked)
+        wait(for: [retrieveDispatched], timeout: 1)
     }
 
     // MARK: Subscription Free trial

@@ -50,7 +50,7 @@ public struct StoreRadioGroup<Value: Hashable, Content: View>: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(StoreRadioRowStyle())
-        .accessibilityValue(StoreRadioRowAccessibility.value(isSelected: selection == option))
+        .accessibilityAddTraits(selection == option ? .isSelected : [])
     }
 }
 
@@ -71,23 +71,4 @@ private struct StoreRadioRowStyle: ButtonStyle {
         static let pressedOpacity: Double = 0.7
         static let animationDuration: TimeInterval = 0.15
     }
-}
-
-/// The VoiceOver value announced for a row's selection state, so it reads in every case (not just
-/// when selected).
-private enum StoreRadioRowAccessibility {
-    static func value(isSelected: Bool) -> String {
-        isSelected ? selected : unselected
-    }
-
-    private static let selected = NSLocalizedString(
-        "storeRadioButton.accessibilityValue.selected",
-        value: "Selected",
-        comment: "VoiceOver value announced for a selected radio button."
-    )
-    private static let unselected = NSLocalizedString(
-        "storeRadioButton.accessibilityValue.unselected",
-        value: "Unselected",
-        comment: "VoiceOver value announced for an unselected radio button."
-    )
 }

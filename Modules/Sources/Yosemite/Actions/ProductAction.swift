@@ -95,6 +95,10 @@ public enum ProductAction: Action {
     ///
     case addProduct(product: Product, onCompletion: (Result<Product, ProductUpdateError>) -> Void)
 
+    /// Duplicates a Product using the WooCommerce core endpoint and returns the new product ID.
+    ///
+    case duplicateProduct(siteID: Int64, productID: Int64, onCompletion: (Result<Int64, ProductDuplicateError>) -> Void)
+
     /// Delete an existing Product.
     ///
     case deleteProduct(siteID: Int64, productID: Int64, onCompletion: (Result<Product, ProductUpdateError>) -> Void)

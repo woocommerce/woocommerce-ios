@@ -1,0 +1,1 @@
+Ahora, la configuración de privacidad para reportar fallos te sigue en todos los dispositivos y se reinstala. Ahora, las etiquetas de envío requieren un número de teléfono válido antes de confirmar. Ahora es más fácil conectar el lector de tarjetas en posición horizontal, y los detalles del reembolso en el punto de venta aparecen claramente en modo oscuro mientras se carga.

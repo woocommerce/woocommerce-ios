@@ -35,6 +35,7 @@ private struct ComponentsView: View {
             NavigationLink("Checkbox") { CheckboxComponentView() }
             NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
             NavigationLink("RadioButton") { RadioButtonComponentView() }
+            NavigationLink("Segmented Control") { SegmentedControlComponentView() }
             NavigationLink("Tooltip") { TooltipComponentView() }
         }
         .navigationTitle("Components")

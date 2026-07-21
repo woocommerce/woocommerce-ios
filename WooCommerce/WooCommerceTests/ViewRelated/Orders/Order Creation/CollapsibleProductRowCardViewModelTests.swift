@@ -117,22 +117,22 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
     }
 
-    // MARK: - `hasDiscount`
+    // MARK: - `hasProductDiscount`
 
-    func test_when_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+    func test_when_productDiscount_is_zero_then_viewModel_hasProductDiscount_is_false() {
         // Given
-        let viewModel = createViewModel(discount: nil)
+        let viewModel = createViewModel(productDiscount: 0)
 
         // Then
-        XCTAssertFalse(viewModel.hasDiscount)
+        XCTAssertFalse(viewModel.hasProductDiscount)
     }
 
-    func test_when_discount_is_not_nil_then_viewModel_hasDiscount() {
+    func test_when_productDiscount_is_greater_than_zero_then_viewModel_hasProductDiscount() {
         // Given
-        let viewModel = createViewModel(discount: 0.50)
+        let viewModel = createViewModel(productDiscount: 0.50)
 
         // Then
-        XCTAssertTrue(viewModel.hasDiscount)
+        XCTAssertTrue(viewModel.hasProductDiscount)
     }
 
     func test_discountLabel_when_discount_is_not_nil_then_returns_signed_currency_amount() {
@@ -143,30 +143,30 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                                 decimalSeparator: ".",
                                                 numberOfDecimals: 2)
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let viewModel = createViewModel(discount: 0.50, currencyFormatter: currencyFormatter)
+        let viewModel = createViewModel(productDiscount: 0.50, currencyFormatter: currencyFormatter)
         let rightToLeftMark = "\u{200F}"
         let leftToRightIsolate = "\u{2066}"
         let popDirectionalIsolate = "\u{2069}"
 
         // Then
-        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.discountLabel)
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-0.50\(popDirectionalIsolate)\(currencySettings.currencySymbol)", viewModel.productDiscountLabel)
     }
 
-    // MARK: - `totalPriceAfterDiscountLabel`
+    // MARK: - `totalPriceAfterProductDiscountLabel`
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let discount: Decimal = 0.50
 
         // When
-        let viewModel = createViewModel(price: price, discount: discount)
+        let viewModel = createViewModel(price: price, productDiscount: discount)
 
         // Then
-        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$2.00", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
-    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+    func test_totalPriceAfterProductDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
         // Given
         let price = "2.50"
         let quantity: Decimal = 10
@@ -174,13 +174,13 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // When
         let viewModel = createViewModel(price: price,
-                                        discount: discount,
+                                        productDiscount: discount,
                                         stepperViewModel: .init(quantity: quantity,
                                                                 name: "",
                                                                 quantityUpdatedCallback: { _ in }))
 
         // Then
-        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
+        assertEqual("$24.50", viewModel.totalPriceAfterProductDiscountLabel)
     }
 
     // MARK: - `isConfigurable`
@@ -318,207 +318,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productSubscriptionDetails?.trialPeriod, productSubscription.trialPeriod)
     }
 
-    func test_productRow_when_has_product_subscription_then_shouldShowProductSubscriptionsDetails() {
-        // Given
-        let isSubscriptionsInOrderCreationUIEnabled = MockFeatureFlagService(isSubscriptionsInOrderCreationUIEnabled: true)
-        let productSubscription: ProductSubscription = createFakeSubscription()
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          subscription: productSubscription)
-
-        // When
-        let defaultViewModel = createViewModel(featureFlagService: isSubscriptionsInOrderCreationUIEnabled)
-        let viewModelWithSubscriptionProduct = createViewModel(id: product.productID,
-                                                               productSubscriptionDetails: product.subscription,
-                                                               name: product.name,
-                                                               featureFlagService: isSubscriptionsInOrderCreationUIEnabled)
-
-        // Then
-        XCTAssertFalse(defaultViewModel.shouldShowProductSubscriptionsDetails)
-        XCTAssertTrue(viewModelWithSubscriptionProduct.shouldShowProductSubscriptionsDetails)
-    }
-
-    func test_productRow_when_has_no_product_subscription_then_subscriptionBillingDetailsLabel_is_nil() {
-        // Given, When
-        let viewModel = createViewModel()
-
-        // Then
-        XCTAssertNil(viewModel.subscriptionBillingIntervalLabel)
-    }
-
-    func test_productRow_when_expectedPeriodInterval_is_zero_then_subscriptionBillingDetailsLabel_is_nil() {
-        // Handles the edge case of the Subscriptions API allowing a zero-period value billing interval
-        // to be passed to the subscription details. In this case, we won't render Subscription details.
-
-        // Given
-        let expectedPeriodInterval = "0"
-        let expectedPeriod = SubscriptionPeriod.month
-        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
-                                                                              period: expectedPeriod)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          subscription: productSubscription)
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name)
-        // Then
-        XCTAssertNil(viewModel.subscriptionBillingIntervalLabel)
-    }
-
-    func test_productRow_when_expectedPeriodInterval_is_one_then_subscriptionBillingDetailsLabel_is_singular() {
-        // Given
-        let expectedPeriodInterval = "1"
-        let expectedPeriod = SubscriptionPeriod.month
-        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
-                                                                              period: expectedPeriod)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          subscription: productSubscription)
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name)
-        // Then
-        XCTAssertEqual(viewModel.subscriptionBillingIntervalLabel, "Every 1 month")
-    }
-
-    func test_productRow_when_expectedPeriodInterval_is_more_than_one_then_subscriptionBillingDetailsLabel_is_plural() {
-        // Given
-        let expectedPeriodInterval = "2"
-        let expectedPeriod = SubscriptionPeriod.month
-        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
-                                                                              period: expectedPeriod)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          subscription: productSubscription)
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name)
-        // Then
-        XCTAssertEqual(viewModel.subscriptionBillingIntervalLabel, "Every 2 months")
-    }
-
-    func test_productRow_when_subscriptionPrice_is_nil_then_productSubscriptionDetails_is_nil() {
-        // Given
-        let productPrice = "10"
-        let nilProductSubscription: ProductSubscription? = nil
-        let product = Product.fake().copy(productID: 12,
-                                          name: "Not a subscription product",
-                                          price: productPrice,
-                                          subscription: nilProductSubscription)
-
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name,
-                                        price: productPrice)
-
-        // Then
-        XCTAssertEqual(viewModel.price, productPrice)
-        XCTAssertEqual(viewModel.subscriptionPrice, nil)
-        XCTAssertEqual(viewModel.productSubscriptionDetails, nil)
-    }
-
-    func test_productRow_when_subscriptionPrice_is_zero_then_productSubscriptionDetails_is_nil() {
-        // Given
-        let productPrice = "10"
-        let zeroPriceProductSubscription: ProductSubscription? = createFakeSubscription(price: "0")
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A zero-priced subscription product",
-                                          price: productPrice,
-                                          subscription: zeroPriceProductSubscription)
-
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name,
-                                        price: productPrice)
-
-        // Then
-        XCTAssertEqual(viewModel.price, productPrice)
-        XCTAssertEqual(viewModel.subscriptionPrice, nil)
-        XCTAssertEqual(viewModel.productSubscriptionDetails, zeroPriceProductSubscription)
-    }
-
-    func test_productRow_when_subscriptionPrice_is_not_zero_then_productSubscriptionDetails_is_formatted_price() {
-        // Given
-        let productPrice = "17"
-        let expectedFormattedPrice = "$17.00"
-        let productSubscription: ProductSubscription? = createFakeSubscription(price: productPrice)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          price: productPrice,
-                                          subscription: productSubscription)
-
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name,
-                                        price: productPrice)
-
-        // Then
-        XCTAssertEqual(viewModel.price, productPrice)
-        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
-        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
-    }
-
-    func test_productRow_when_item_has_product_price_different_than_subscription_price_then_product_price_is_used() {
-        // Given
-        let productPrice = "5"
-        let subscriptionPrice = "10"
-        let productQuantity = Decimal(10)
-        let expectedFormattedPrice = "$50.00"
-
-        let productSubscription: ProductSubscription? = createFakeSubscription(price: subscriptionPrice)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          price: productPrice,
-                                          subscription: productSubscription)
-
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name,
-                                        price: productPrice,
-                                        stepperViewModel: .init(quantity: productQuantity,
-                                                                name: "",
-                                                                quantityUpdatedCallback: { _ in }))
-
-        // Then
-        XCTAssertEqual(viewModel.price, productPrice)
-        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
-        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
-    }
-
-    func test_productRow_when_item_has_more_than_one_quantity_then_subscriptionPrice_is_formatted_properly() {
-        // Given
-        let productPrice = "10"
-        let productQuantity = Decimal(10)
-        let expectedFormattedPrice = "$100.00"
-
-        let productSubscription = createFakeSubscription(price: productPrice)
-        let product = Product.fake().copy(productID: 12,
-                                          name: "A subscription product",
-                                          price: productPrice,
-                                          subscription: productSubscription)
-
-        // When
-        let viewModel = createViewModel(id: product.productID,
-                                        productSubscriptionDetails: product.subscription,
-                                        name: product.name,
-                                        price: productPrice,
-                                        stepperViewModel: .init(quantity: productQuantity,
-                                                                name: "",
-                                                                quantityUpdatedCallback: { _ in }))
-
-        // Then
-        XCTAssertEqual(viewModel.price, productPrice)
-        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
-        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
-    }
-
     func test_productRow_when_price_and_subscriptionPrice_are_different_then_are_assigned_correctly() {
         // Given
         let productPrice = "17"
@@ -539,134 +338,6 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.productSubscriptionDetails?.price, subscriptionPrice)
     }
-
-    func test_productRow_when_subscription_signupFee_is_nil_or_zero_then_subscriptionConditionsSignupLabel_is_nil() {
-        // Given
-        let subscriptions = [
-            createFakeSubscription(signUpFee: nil),
-            createFakeSubscription(signUpFee: ""),
-            createFakeSubscription(signUpFee: "0"),
-        ]
-
-        for productSubscription in subscriptions.makeIterator() {
-            // When
-            let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-            // Then
-            XCTAssertNil(viewModel.subscriptionConditionsSignupLabel)
-        }
-    }
-
-    func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_is_formatted() {
-        // Given
-        let signUpFee = "0.60"
-        let expectedSignUpFee = "$0.60"
-        let expectedSignUpFeeSummary: String? = nil
-        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFee)
-        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
-    }
-
-    func test_productRow_when_subscription_has_signupFee_and_order_has_single_item_then_expectedSignUpFeeSummary_is_nil() {
-        // Given
-        let signUpFee = "0.60"
-        let quantity = 1
-        let expectedSignUpFees = "$0.60"
-        let expectedSignUpFeeSummary: String? = nil
-        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription,
-                                        stepperViewModel: .init(quantity: Decimal(quantity),
-                                                                name: "",
-                                                                quantityUpdatedCallback: { _ in }))
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFees)
-        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
-    }
-
-    func test_productRow_when_subscription_has_signupFee_and_order_has_multiple_items_then_signupFees_are_multiplied_and_formatted() {
-        // Given
-        let signUpFee = "0.60"
-        let quantity = 10
-        let expectedSignUpFees = "$6.00"
-        let expectedSignUpFeeSummary = "10 × $6.00"
-        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription,
-                                        stepperViewModel: .init(quantity: Decimal(quantity),
-                                                                name: "",
-                                                                quantityUpdatedCallback: { _ in }))
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFees)
-        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
-    }
-
-    func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_label_is_formatted() {
-        // Given
-        let signUpFee = "0.60"
-        let expectedSignUpFeeLabel = "$0.60 signup"
-        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsSignupLabel, expectedSignUpFeeLabel)
-    }
-
-    func test_productRow_when_subscription_free_trial_is_nil_or_zero_then_subscriptionConditionsFreeTrialLabel_is_nil() {
-        // Given
-        let subscriptions = [
-            createFakeSubscription(trialLength: nil),
-            createFakeSubscription(trialLength: "0"),
-            createFakeSubscription(trialLength: ""),
-        ]
-
-        for productSubscription in subscriptions.makeIterator() {
-            // When
-            let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-            // Then
-            XCTAssertNil(viewModel.subscriptionConditionsFreeTrialLabel)
-        }
-    }
-
-    func test_productRow_when_subscription_free_trialLength_is_one_then_subscriptionConditionsFreeTrialLabel_is_singular() {
-        // Given
-        let trialLength = "1"
-        let trialPeriod = SubscriptionPeriod.week
-        let expectedFreeTrialLabel = "1 week free"
-        let productSubscription = createFakeSubscription(trialLength: trialLength, trialPeriod: trialPeriod)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
-    }
-
-    func test_productRow_when_subscription_free_trialLength_is_more_than_one_then_subscriptionConditionsFreeTrialLabel_is_plural() {
-        // Given
-        let trialLength = "5"
-        let trialPeriod = SubscriptionPeriod.day
-        let expectedFreeTrialLabel = "5 days free"
-        let productSubscription = createFakeSubscription(trialLength: trialLength, trialPeriod: trialPeriod)
-
-        // When
-        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
-
-        // Then
-        XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
-    }
 }
 
 private extension CollapsibleProductRowCardViewModelTests {
@@ -680,7 +351,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          name: String = "",
                          sku: String? = nil,
                          price: String? = nil,
-                         discount: Decimal? = nil,
+                         productDiscount: Decimal = .zero,
                          productTypeDescription: String = "",
                          attributes: [VariationAttributeViewModel] = [],
                          stockStatus: ProductStockStatus = .inStock,
@@ -689,7 +360,6 @@ private extension CollapsibleProductRowCardViewModelTests {
                          stepperViewModel: ProductStepperViewModel = .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
                          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()),
                          analytics: Analytics = ServiceLocator.analytics,
-                         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
                          configure: (() -> Void)? = nil) -> CollapsibleProductRowCardViewModel {
         CollapsibleProductRowCardViewModel(id: id,
                                            productOrVariationID: productOrVariationID,
@@ -701,7 +371,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            name: name,
                                            sku: sku,
                                            price: price,
-                                           discount: discount,
+                                           productDiscount: productDiscount,
                                            productTypeDescription: productTypeDescription,
                                            attributes: attributes,
                                            stockStatus: stockStatus,
@@ -710,7 +380,6 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            stepperViewModel: stepperViewModel,
                                            currencyFormatter: currencyFormatter,
                                            analytics: analytics,
-                                           featureFlagService: featureFlagService,
                                            configure: configure)
     }
 

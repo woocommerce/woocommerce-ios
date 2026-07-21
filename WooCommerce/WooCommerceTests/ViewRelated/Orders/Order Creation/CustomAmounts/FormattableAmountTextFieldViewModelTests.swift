@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 import Combine
+import SwiftUI
+import UIKit
 import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
@@ -127,5 +129,94 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         viewModel.updateAmount(oldAmount + newInput)
 
         XCTAssertEqual(viewModel.formattedAmount, "€\(newInput)")
+    }
+
+    func test_focus_when_focus_is_cleared_before_async_request_runs_then_does_not_refocus_text_field() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+
+        // When
+        coordinator.focus(textField, requestID: 1)
+        focusState.isFocused = false
+        coordinator.parent = makeFocusableHiddenInputTextField(focusState: focusState)
+        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+
+        // Then
+        XCTAssertFalse(textField.didBecomeFirstResponder)
+    }
+
+    func test_focus_when_focus_is_still_requested_then_refocuses_text_field() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let window = UIWindow()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+        window.addSubview(textField)
+        window.isHidden = false
+
+        // When
+        coordinator.focus(textField, requestID: 1)
+        RunLoop.main.run(until: Date().addingTimeInterval(0.01))
+
+        // Then
+        XCTAssertTrue(textField.didBecomeFirstResponder)
+        withExtendedLifetime(window) {}
+    }
+
+    func test_textFieldDidEndEditing_when_focus_is_set_then_clears_focus() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let window = UIWindow()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+        window.addSubview(textField)
+        window.isHidden = false
+
+        // When
+        coordinator.textFieldDidEndEditing(textField)
+
+        // Then
+        XCTAssertFalse(focusState.isFocused)
+        withExtendedLifetime(window) {}
+    }
+
+    func test_textFieldDidEndEditing_when_text_field_is_detached_then_keeps_focus_requested() {
+        // Given
+        let focusState = FocusState()
+        let textField = SpyTextField()
+        let focusableField = makeFocusableHiddenInputTextField(focusState: focusState)
+        let coordinator = FocusableHiddenInputTextField.Coordinator(parent: focusableField)
+
+        // When
+        coordinator.textFieldDidEndEditing(textField)
+
+        // Then
+        XCTAssertTrue(focusState.isFocused)
+    }
+
+    private func makeFocusableHiddenInputTextField(focusState: FocusState) -> FocusableHiddenInputTextField {
+        FocusableHiddenInputTextField(text: Binding(get: { focusState.text }, set: { focusState.text = $0 }),
+                                      isFocused: Binding(get: { focusState.isFocused }, set: { focusState.isFocused = $0 }),
+                                      focusRequestID: 1,
+                                      keyboardType: .decimalPad)
+    }
+}
+
+private final class FocusState {
+    var text = ""
+    var isFocused = true
+}
+
+private final class SpyTextField: UITextField {
+    var didBecomeFirstResponder = false
+
+    override func becomeFirstResponder() -> Bool {
+        didBecomeFirstResponder = true
+        return true
     }
 }

@@ -142,6 +142,10 @@ final class MainTabBarController: UITabBarController {
 
     private var cancellableSiteID: AnyCancellable?
     private var cancellableSite: AnyCancellable?
+    private var cancellableForeground: AnyCancellable?
+
+    /// The site currently driving the conditional tabs, re-checked when the app enters the foreground.
+    private var conditionalTabsSite: Site?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
@@ -933,9 +937,22 @@ private extension MainTabBarController {
                     return
                 }
 
+                conditionalTabsSite = site
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
                 refreshCardPresentExpansionEligibilityIfNeeded(for: site)
+            }
+
+        // Re-validates POS visibility and eligibility whenever the app returns to the foreground,
+        // like Android's onResume re-check. POS entry relies on locally recorded eligibility, so
+        // this checkpoint is what detects a store that became ineligible while the app was inactive.
+        cancellableForeground = NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                guard let self, let site = conditionalTabsSite else {
+                    return
+                }
+                observePOSEligibilityForPOSTabVisibility(site: site)
             }
     }
 

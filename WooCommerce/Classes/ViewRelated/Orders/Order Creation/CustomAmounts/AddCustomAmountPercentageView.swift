@@ -3,6 +3,12 @@ import WooFoundation
 
 struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
+    private let isFocused: Binding<Bool>
+
+    init(viewModel: AddCustomAmountPercentageViewModel, isFocused: Binding<Bool>) {
+        self.viewModel = viewModel
+        self.isFocused = isFocused
+    }
 
     var body: some View {
         Group {
@@ -17,7 +23,9 @@ struct AddCustomAmountPercentageView: View {
                         .foregroundColor(Color(.textSubtle))
                 }
 
-                PercentageInputField(text: $viewModel.percentage, onChangeText: viewModel.updatePercentageCalculatedAmount)
+                PercentageInputField(text: $viewModel.percentage,
+                                     isFocused: isFocused,
+                                     onChangeText: viewModel.updatePercentageCalculatedAmount)
             }
 
             LabeledContent {
@@ -56,24 +64,21 @@ private extension AddCustomAmountPercentageView {
 private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
-        @FocusState private var focusPercentageInput: Bool
+        @State private var focusRequestID = 0
         @Binding var text: String
+        @Binding var isFocused: Bool
         var onChangeText: (String) -> (Void)
 
         var body: some View {
             ZStack {
-                TextField("",
-                          text: $text,
-                          prompt: Text("0").foregroundColor(Color(.textSubtle))
-                )
-                .onChange(of: text) {
-                    onChangeText(text)
-                }
-                .focused()
-                .focused($focusPercentageInput)
-                .keyboardType(.decimalPad)
-                .environment(\.layoutDirection, .leftToRight)
-                .opacity(0)
+                FocusableHiddenInputTextField(text: $text,
+                                              isFocused: $isFocused,
+                                              focusRequestID: focusRequestID,
+                                              keyboardType: .decimalPad)
+                    .onChange(of: text) {
+                        onChangeText(text)
+                    }
+                    .frame(maxWidth: .infinity)
 
                 Text(BidirectionalText.isolateLeftToRightNumericRuns(in: text + "%",
                                                                      separators: numericTextSeparators))
@@ -82,14 +87,30 @@ private extension AddCustomAmountPercentageView {
                     .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
                     .minimumScaleFactor(0.1)
                     .lineLimit(1)
-                    .if(focusPercentageInput, transform: { field in
+                    .allowsHitTesting(false)
+                    .if(isFocused, transform: { field in
                         field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
                     })
-                    .onTapGesture {
-                        focusPercentageInput = true
-                    }
             }
+            .contentShape(Rectangle())
+            .onTapGesture(perform: requestFocus)
             .fixedSize(horizontal: false, vertical: true)
+            .restoresInputFocus(when: isFocused, restoreFocus: restoreFocusIfNeeded)
+        }
+
+        private func requestFocus() {
+            isFocused = true
+            focusRequestID += 1
+        }
+
+        private func restoreFocusIfNeeded() {
+            guard isFocused else { return }
+
+            requestFocus()
+            DispatchQueue.main.async {
+                guard isFocused else { return }
+                focusRequestID += 1
+            }
         }
 
         private var numericTextSeparators: Set<Character> {

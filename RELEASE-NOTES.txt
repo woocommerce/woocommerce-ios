@@ -3,11 +3,14 @@
 
 25.3
 -----
+- [*] Point of Sale: once the local catalog has fully synced, POS opens instantly without waiting on network checks and also works offline. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
+- [*] Order Creation: fixed custom amount fields losing entered values and keyboard focus after rotating an iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17550]
 - [Internal] Reduce app binary size by converting the Tap to Pay education artwork to PNGs (~45 MB smaller compiled asset catalog). [https://github.com/woocommerce/woocommerce-ios/pull/17560]
 - [*] Fixed product saves replacing shortcode-based short descriptions with their rendered output. [https://github.com/woocommerce/woocommerce-ios/pull/17543]
 - [*] Order Creation: Fixed Collect Payment not opening payment methods after creating an order on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17552]
 - [*] Fixed RTL currency values showing the currency symbol and minus sign in the wrong order. [https://github.com/woocommerce/woocommerce-ios/pull/17547]
 - [*] Improved widget display at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/17559]
+- [*] Product duplication now uses WooCommerce's built-in copy flow when available, with compatibility support for older stores. [https://github.com/woocommerce/woocommerce-ios/pull/17553]
 
 25.2
 -----
@@ -22,6 +25,10 @@
 - [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
 - [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
 - [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
+
+25.1.1
+------
+- [*] Fixed Collect Payment from order creation closing without opening the payment method flow on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17557]
 
 25.1
 -----

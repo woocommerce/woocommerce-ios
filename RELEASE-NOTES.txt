@@ -26,6 +26,10 @@
 - [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
 - [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
 
+25.1.2
+------
+- [*] Fixed a crash that could occur when showing the notification badge on the Menu tab on iOS versions below 26. [https://github.com/woocommerce/woocommerce-ios/pull/17583]
+
 25.1.1
 ------
 - [*] Fixed Collect Payment from order creation closing without opening the payment method flow on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17557]

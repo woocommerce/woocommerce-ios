@@ -138,6 +138,13 @@
         "identifier" : "ParcelFittingCheckTests",
         "name" : "ParcelFittingCheckTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "StoreDesignSystemTests",
+        "name" : "StoreDesignSystemTests"
+      }
     }
   ],
   "version" : 1

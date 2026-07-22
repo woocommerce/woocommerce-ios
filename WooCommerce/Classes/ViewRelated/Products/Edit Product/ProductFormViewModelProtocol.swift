@@ -161,6 +161,10 @@ protocol ProductFormViewModelProtocol {
 
     // Remote action
 
+    /// Refreshes the product from the server so the detail screen reflects remote changes (e.g. new reviews)
+    /// made since the product was cached. Any unsaved local edits are preserved.
+    func refreshProduct()
+
     /// Creates/updates a product remotely given an optional product status to override.
     /// - Parameters:
     ///   - status: If non-nil, the given status overrides the latest product's status to be saved remotely.
@@ -194,6 +198,9 @@ protocol ProductFormViewModelProtocol {
 }
 
 extension ProductFormViewModelProtocol {
+    /// No-op by default. Conformers backed by a remotely-editable product override this to re-fetch.
+    func refreshProduct() {}
+
     func shouldShowMoreOptionsMenu() -> Bool {
         canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct() || canFavoriteProduct()
     }

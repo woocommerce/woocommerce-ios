@@ -189,6 +189,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                            isLocalID: !viewModel.productModel.existsRemotely))
 
         viewModel.trackProductFormLoaded()
+        viewModel.refreshProduct()
     }
 
     override func viewWillDisappear(_ animated: Bool) {

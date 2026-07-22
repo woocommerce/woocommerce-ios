@@ -2,7 +2,7 @@ import Testing
 import Yosemite
 @testable import WooCommerce
 
-struct CardReaderConnectionAnalyticsTrackerTests {
+@MainActor struct CardReaderConnectionAnalyticsTrackerTests {
 
     @Test func cardReaderLocationMissingTapped_tracks_card_reader_location_missing_tapped_event() throws {
         // Given

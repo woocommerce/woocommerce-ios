@@ -16,6 +16,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     }
 
     private let orderService: POSOrderServiceProtocol
+    private let refundService: RefundServiceProtocol
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
@@ -33,6 +34,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private var onboardingSubscription: AnyCancellable?
 
     init(orderService: POSOrderServiceProtocol,
+         refundService: RefundServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -40,6 +42,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
          refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
          v4RefundPreviewUseCase: POSV4RefundPreviewUseCase? = nil) {
         self.orderService = orderService
+        self.refundService = refundService
         self.stores = stores
         self.storageManager = storageManager
         self.currencySettings = currencySettings
@@ -48,7 +51,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         self.refundMapping = POSRefundSubmissionMapping(currencyFormatter: currencyFormatter)
         self.analytics = analytics
         self.refundOptionsDeterminer = refundOptionsDeterminer
-        self.v4RefundPreviewUseCase = v4RefundPreviewUseCase ?? POSV4RefundPreviewUseCase(stores: stores)
+        self.v4RefundPreviewUseCase = v4RefundPreviewUseCase ?? POSV4RefundPreviewUseCase(refundService: refundService, stores: stores)
     }
 
     func preloadRefund(for order: POSOrder) async {
@@ -212,7 +215,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                                 cardPresentPaymentsOnboardingPresenter: onboardingPresenter,
                                 stores: stores,
                                 storageManager: storageManager,
-                                analytics: analytics))
+                                analytics: analytics,
+                                refundService: refundService))
 
         self.submissionUseCase = submissionUseCase
         defer {

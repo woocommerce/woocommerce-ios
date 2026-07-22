@@ -3,6 +3,7 @@
 
 25.4
 -----
+- [*] Order statuses now display in the store's language across the order list, search, filters, and the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17595]
 
 
 25.3

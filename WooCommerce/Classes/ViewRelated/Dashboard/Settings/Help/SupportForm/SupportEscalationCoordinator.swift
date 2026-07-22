@@ -265,7 +265,7 @@ final class SupportEscalationCoordinator {
 
     private func formattedTranscript(_ transcript: String?) -> String? {
         guard let transcript,
-              transcript.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty else {
+              transcript.isNonBlank else {
             return nil
         }
         return [Localization.transcriptHeader, transcript].joined(separator: "\n\n")

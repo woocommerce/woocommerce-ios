@@ -77,7 +77,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Whether the form should disclose that an AI chat transcript will be included.
     var shouldShowTranscriptDisclosure: Bool {
-        transcript?.trimmingCharacters(in: .whitespacesAndNewlines).isNotEmpty == true
+        transcript?.isNonBlank == true
     }
 
     /// Called when a ticket is successfully created.

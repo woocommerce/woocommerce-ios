@@ -298,7 +298,8 @@ extension OrderListViewModel {
         }
 
         return OrderListCellViewModel(order: order,
-                                      currencySettings: ServiceLocator.currencySettings)
+                                      currencySettings: ServiceLocator.currencySettings,
+                                      siteStatuses: currentSiteStatuses)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

@@ -30,6 +30,20 @@ final class OrderSearchUICommand: SearchUICommand {
 
     private let onSelectSearchResult: ((Order, UIViewController) -> Void)
 
+    /// Used for looking up the `OrderStatus` to show in the search result cells.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let resultsController = ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ OrderSearchUICommand: Unable to fetch Order Statuses: \(error)")
+        }
+        return resultsController
+    }()
+
     init(siteID: Int64,
          onSelectSearchResult: @escaping ((Order, UIViewController) -> Void),
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -67,7 +81,8 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         return OrderListCellViewModel(order: model,
-                                      currencySettings: ServiceLocator.currencySettings)
+                                      currencySettings: ServiceLocator.currencySettings,
+                                      siteStatuses: statusResultsController.fetchedObjects)
     }
 
     /// Synchronizes the Orders matching a given Keyword

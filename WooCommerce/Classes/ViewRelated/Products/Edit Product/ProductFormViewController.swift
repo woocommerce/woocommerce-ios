@@ -7,6 +7,8 @@ import Yosemite
 import SwiftUI
 import protocol Storage.StorageManagerType
 
+typealias ProductDuplicateNavigationHandler = (_ sourceViewController: UIViewController, _ duplicatedProduct: Product) -> Void
+
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
     typealias ProductModel = ViewModel.ProductModel
@@ -94,9 +96,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let onDeleteCompletion: () -> Void
 
-    /// Called with the newly created duplicate after a successful product duplication, letting the presenter decide
-    /// how to open it. When `nil`, the form falls back to confirming the copy in place (the legacy behavior).
-    private let onDuplicateCompletion: ((Product) -> Void)?
+    /// Opens the newly created duplicate after successful product duplication, replacing this source editor.
+    private let onDuplicateCompletion: ProductDuplicateNavigationHandler
 
     private let userDefaults: UserDefaults
 
@@ -110,7 +111,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          userDefaults: UserDefaults = .standard,
          onDeleteCompletion: @escaping () -> Void = {},
-         onDuplicateCompletion: ((Product) -> Void)? = nil) {
+         onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -1179,8 +1180,7 @@ private extension ProductFormViewController {
         self.shareProductCoordinator = shareProductCoordinator
     }
 
-    private func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
-                                  discardingChangesOnSuccess: Bool) {
+    private func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>) {
         showSavingProgress(.duplicate)
         viewModel.duplicateProduct(from: snapshot, onCompletion: { [weak self] result in
             switch result {
@@ -1192,25 +1192,18 @@ private extension ProductFormViewController {
                     self?.displayError(error: error, title: Localization.duplicateProductError)
                 }
             case .success(let duplicatedProduct):
-                if discardingChangesOnSuccess {
-                    self?.viewModel.discardChanges(afterSuccessfulDuplicationFrom: snapshot)
-                }
-
-                // Dismisses the in-progress UI, then either hands the duplicate to the presenter to open (matching
-                // Android) or, when no handler is provided, confirms the copy in place (the legacy behavior).
+                // Dismisses the in-progress UI, then hands the duplicate to the navigation owner to replace this editor.
                 self?.navigationController?.dismiss(animated: true) {
                     guard let self else {
                         return
                     }
-                    if let onDuplicateCompletion = self.onDuplicateCompletion,
-                       let product = (duplicatedProduct as? EditableProductModel)?.product {
-                        onDuplicateCompletion(product)
-                        ServiceLocator.noticePresenter.enqueue(
-                            notice: .init(title: ProductSavedAlertType.copied.alertTitle)
-                        )
-                    } else {
-                        self.presentProductConfirmationSaveAlert(type: .copied)
+                    guard let product = (duplicatedProduct as? EditableProductModel)?.product else {
+                        return
                     }
+                    self.onDuplicateCompletion(self, product)
+                    ServiceLocator.noticePresenter.enqueue(
+                        notice: .init(title: ProductSavedAlertType.copied.alertTitle)
+                    )
                 }
             }
         })
@@ -2219,7 +2212,7 @@ extension ProductFormViewController {
         }
 
         guard viewModel.hasUnsavedChanges() else {
-            duplicateProduct(from: snapshot, discardingChangesOnSuccess: false)
+            duplicateProduct(from: snapshot)
             return
         }
 
@@ -2227,7 +2220,7 @@ extension ProductFormViewController {
             guard isConfirmed else {
                 return
             }
-            self?.duplicateProduct(from: snapshot, discardingChangesOnSuccess: true)
+            self?.duplicateProduct(from: snapshot)
         }
     }
 }

@@ -435,10 +435,6 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 
-    func discardChanges(afterSuccessfulDuplicationFrom snapshot: ProductDuplicationSnapshot<EditableProductVariationModel>) {
-        // no-op
-    }
-
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {

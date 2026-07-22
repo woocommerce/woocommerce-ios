@@ -675,17 +675,6 @@ extension ProductFormViewModel {
         }
     }
 
-    func discardChanges(afterSuccessfulDuplicationFrom snapshot: ProductDuplicationSnapshot<ProductModel>) {
-        guard formType == .edit, snapshot.product.product.existsRemotely else {
-            return
-        }
-
-        originalProduct = snapshot.product
-        originalPassword = snapshot.password
-        productImageActionHandler.resetProductImages(to: snapshot.product)
-        isUpdateEnabledSubject.send(hasUnsavedChanges())
-    }
-
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
 
         remoteActionUseCase.deleteProduct(product: product) { result in

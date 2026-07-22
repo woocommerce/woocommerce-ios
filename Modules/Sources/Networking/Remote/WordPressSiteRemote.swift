@@ -12,7 +12,7 @@ public final class WordPressSiteRemote: Remote {
         self.apiRootCache = WordPressRESTAPIRootCache.shared
         let discovery = WordPressAPIDiscovery()
         self.discoverRESTAPIRoot = { siteURL in
-            await discovery.discoverRESTAPIRootURL(for: siteURL)
+            await discovery.resolveRESTAPIRootURL(for: siteURL)
         }
         super.init(network: network)
     }

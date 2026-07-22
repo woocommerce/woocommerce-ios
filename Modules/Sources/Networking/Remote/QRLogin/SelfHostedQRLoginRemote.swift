@@ -42,7 +42,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         } else {
             let discovery = WordPressAPIDiscovery(session: session)
             self.discoverRESTAPIRoot = {
-                await discovery.discoverRESTAPIRootURL(for: $0)
+                await discovery.resolveRESTAPIRootURL(for: $0)
             }
         }
     }

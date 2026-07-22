@@ -1,7 +1,7 @@
 import Foundation
 import KeychainAccess
 
-public protocol URLSessionProtocol {
+public protocol URLSessionProtocol: AnyObject {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
@@ -42,7 +42,7 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             self.discovery = discovery
         } else {
             let wordpressDiscovery = WordPressAPIDiscovery()
-            self.discovery = { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) }
+            self.discovery = { siteURL in await wordpressDiscovery.resolveRESTAPIRootURL(for: siteURL) }
         }
     }
 

@@ -269,6 +269,9 @@ private extension TracksProvider {
             WooAnalyticsStat.cardReaderDisconnectTapped,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
+            WooAnalyticsStat.cardReaderLocationSuccess,
+            WooAnalyticsStat.cardReaderLocationFailure,
+            WooAnalyticsStat.cardReaderLocationMissingTapped,
 
             // Card Reader Software Update
             WooAnalyticsStat.cardReaderSoftwareUpdateTapped,

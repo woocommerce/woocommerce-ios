@@ -2424,6 +2424,15 @@ extension WooAnalyticsEvent {
                                 Keys.gatewayID: safeGatewayID(for: gatewayID)
                               ])
         }
+
+        static func cardReaderLocationMissingTapped(gatewayID: String?,
+                                                    countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationMissingTapped,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
     }
 }
 

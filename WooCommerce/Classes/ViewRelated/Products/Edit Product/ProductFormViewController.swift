@@ -409,7 +409,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.canDuplicateProduct() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
-                self?.duplicateProduct()
+                self?.handleProductDuplication()
             }
         }
 
@@ -1179,9 +1179,10 @@ private extension ProductFormViewController {
         self.shareProductCoordinator = shareProductCoordinator
     }
 
-    func duplicateProduct() {
+    private func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                                  discardingChangesOnSuccess: Bool) {
         showSavingProgress(.duplicate)
-        viewModel.duplicateProduct(onCompletion: { [weak self] result in
+        viewModel.duplicateProduct(from: snapshot, onCompletion: { [weak self] result in
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error duplicating Product: \(error)")
@@ -1191,6 +1192,10 @@ private extension ProductFormViewController {
                     self?.displayError(error: error, title: Localization.duplicateProductError)
                 }
             case .success(let duplicatedProduct):
+                if discardingChangesOnSuccess {
+                    self?.viewModel.discardChanges(afterSuccessfulDuplicationFrom: snapshot)
+                }
+
                 // Dismisses the in-progress UI, then either hands the duplicate to the presenter to open (matching
                 // Android) or, when no handler is provided, confirms the copy in place (the legacy behavior).
                 self?.navigationController?.dismiss(animated: true) {
@@ -2201,6 +2206,29 @@ private extension ProductFormViewController {
         }
         let viewController = QuantityRulesViewController(viewModel: quantityRulesViewModel)
         show(viewController, sender: self)
+    }
+}
+
+// MARK: Product duplication
+
+extension ProductFormViewController {
+    /// Handles the initial duplication intent and captures the persisted source before presenting confirmation UI.
+    func handleProductDuplication() {
+        guard let snapshot = viewModel.productDuplicationSnapshot() else {
+            return
+        }
+
+        guard viewModel.hasUnsavedChanges() else {
+            duplicateProduct(from: snapshot, discardingChangesOnSuccess: false)
+            return
+        }
+
+        presentProductDuplicationConfirmationAlert { [weak self] isConfirmed in
+            guard isConfirmed else {
+                return
+            }
+            self?.duplicateProduct(from: snapshot, discardingChangesOnSuccess: true)
+        }
     }
 }
 

@@ -348,7 +348,7 @@ extension ProductFormViewModel {
     }
 
     func canDuplicateProduct() -> Bool {
-        formType == .edit
+        formType == .edit && originalProduct.product.existsRemotely
     }
 }
 
@@ -647,10 +647,21 @@ extension ProductFormViewModel {
         }
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>? {
+        guard canDuplicateProduct() else {
+            return nil
+        }
+        return ProductDuplicationSnapshot(product: originalProduct, password: originalPassword)
+    }
 
-        remoteActionUseCase.duplicateProduct(originalProduct: product,
-                                             password: password) { [weak self] result in
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        guard formType == .edit, snapshot.product.product.existsRemotely else {
+            return
+        }
+
+        remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
+                                             password: snapshot.password) { [weak self] result in
             guard let self else { return }
             switch result {
             case .failure(let error):
@@ -662,6 +673,17 @@ extension ProductFormViewModel {
                 onCompletion(.success(data.product))
             }
         }
+    }
+
+    func discardChanges(afterSuccessfulDuplicationFrom snapshot: ProductDuplicationSnapshot<ProductModel>) {
+        guard formType == .edit, snapshot.product.product.existsRemotely else {
+            return
+        }
+
+        originalProduct = snapshot.product
+        originalPassword = snapshot.password
+        productImageActionHandler.resetProductImages(to: snapshot.product)
+        isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {

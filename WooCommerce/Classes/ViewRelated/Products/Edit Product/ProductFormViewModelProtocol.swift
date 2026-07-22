@@ -26,6 +26,12 @@ enum SaveMessageType {
     case duplicate
 }
 
+/// An immutable persisted source captured for a product duplication attempt.
+struct ProductDuplicationSnapshot<ProductModel> {
+    let product: ProductModel
+    let password: String?
+}
+
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
@@ -173,7 +179,15 @@ protocol ProductFormViewModelProtocol {
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+    /// Captures the persisted source for a duplication attempt, or returns `nil` when duplication is unavailable.
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>?
+
+    /// Duplicates the exact persisted source captured when the merchant initiated duplication.
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+
+    /// Discards the live form state after a confirmed duplication has completed successfully.
+    func discardChanges(afterSuccessfulDuplicationFrom snapshot: ProductDuplicationSnapshot<ProductModel>)
 
     // Reset action
 
@@ -200,6 +214,14 @@ protocol ProductFormViewModelProtocol {
 extension ProductFormViewModelProtocol {
     /// No-op by default. Conformers backed by a remotely-editable product override this to re-fetch.
     func refreshProduct() {}
+
+    /// Convenience for non-UI callers that do not need to retain a snapshot across confirmation UI.
+    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        guard let snapshot = productDuplicationSnapshot() else {
+            return
+        }
+        duplicateProduct(from: snapshot, onCompletion: onCompletion)
+    }
 
     func shouldShowMoreOptionsMenu() -> Bool {
         canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct() || canFavoriteProduct()

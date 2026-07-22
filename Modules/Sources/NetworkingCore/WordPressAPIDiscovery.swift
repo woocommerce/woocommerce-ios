@@ -86,19 +86,9 @@ private actor DiscoveryCoordinator {
         }
 
         let task = Task<String?, Never> {
-            guard let url = URL(string: siteURL) else { return nil }
-            var request = URLRequest(url: url)
-            request.httpMethod = "HEAD"
-            do {
-                let (_, response) = try await session.data(for: request)
-                guard let httpResponse = response as? HTTPURLResponse else { return nil }
-                guard let root = DiscoveryCoordinator.parseRESTAPIRootURL(from: httpResponse) else { return nil }
-                cache.setRoot(root, for: siteURL)
-                return root
-            } catch {
-                DDLogDebug("⚠️ REST API discovery failed for \(siteURL): \(error)")
-                return nil
-            }
+            guard let root = await Self.discoveredRESTAPIRootURL(siteURL: siteURL, session: session) else { return nil }
+            cache.setRoot(root, for: siteURL)
+            return root
         }
 
         inFlightDiscoveries[key] = task
@@ -114,14 +104,18 @@ private actor DiscoveryCoordinator {
         }
 
         let task = Task<String?, Never> {
-            if let discoveredRoot = await self.discover(siteURL: siteURL, session: session, cache: cache) {
-                return discoveredRoot
-            }
-
-            let candidates = [
+            let discoveredRoot = await Self.discoveredRESTAPIRootURL(siteURL: siteURL, session: session)
+            var candidates = [
+                discoveredRoot,
                 WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteURL),
                 WordPressAPIDiscovery.queryRESTAPIRootURL(for: siteURL)
-            ]
+            ].compactMap { $0 }
+
+            // WordPress commonly advertises `/wp-json/`, so avoid probing it twice when it is
+            // also the conventional candidate.
+            var seenCandidates = Set<String>()
+            candidates = candidates.filter { seenCandidates.insert($0).inserted }
+
             for candidate in candidates where await Self.isRESTAPIIndex(root: candidate, session: session) {
                 cache.setRoot(candidate, for: siteURL)
                 return candidate
@@ -133,6 +127,20 @@ private actor DiscoveryCoordinator {
         let result = await task.value
         inFlightResolutions[key] = nil
         return result
+    }
+
+    private static func discoveredRESTAPIRootURL(siteURL: String, session: URLSessionProtocol) async -> String? {
+        guard let url = URL(string: siteURL) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        do {
+            let (_, response) = try await session.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else { return nil }
+            return parseRESTAPIRootURL(from: httpResponse)
+        } catch {
+            DDLogDebug("⚠️ REST API discovery failed for \(siteURL): \(error)")
+            return nil
+        }
     }
 
     private static func isRESTAPIIndex(root: String, session: URLSessionProtocol) async -> Bool {

@@ -124,11 +124,15 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
         XCTAssertEqual(session.requestCount, 0)
     }
 
-    func test_resolveRESTAPIRootURL_when_head_discovery_succeeds_then_does_not_probe_fallbacks() async {
+    func test_resolveRESTAPIRootURL_when_head_discovery_succeeds_then_validates_and_caches_discovered_root() async {
         // Given
         session.simulateResponse(
             for: sampleSiteURL,
             headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+        session.simulateResponse(
+            for: "https://example.com/wp-json/?_fields=namespaces",
+            data: restAPIIndexData()
         )
 
         // When
@@ -136,7 +140,29 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
 
         // Then
         XCTAssertEqual(result, "https://example.com/wp-json/")
-        XCTAssertEqual(session.requestCount, 1)
+        XCTAssertEqual(cache.root(for: sampleSiteURL), "https://example.com/wp-json/")
+        XCTAssertEqual(session.requestCount, 2)
+    }
+
+    func test_resolveRESTAPIRootURL_when_discovered_wp_json_is_unavailable_then_uses_valid_query_route() async {
+        // Given
+        session.simulateResponse(
+            for: sampleSiteURL,
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+        session.simulateResponse(for: "https://example.com/wp-json/?_fields=namespaces", statusCode: 404)
+        session.simulateResponse(
+            for: "https://example.com/?rest_route=/&_fields=namespaces",
+            data: restAPIIndexData()
+        )
+
+        // When
+        let result = await sut.resolveRESTAPIRootURL(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(result, "https://example.com/?rest_route=/")
+        XCTAssertEqual(cache.root(for: sampleSiteURL), "https://example.com/?rest_route=/")
+        XCTAssertEqual(session.requestCount, 3)
     }
 
     func test_resolveRESTAPIRootURL_when_head_discovery_fails_and_wp_json_is_valid_then_caches_wp_json() async {

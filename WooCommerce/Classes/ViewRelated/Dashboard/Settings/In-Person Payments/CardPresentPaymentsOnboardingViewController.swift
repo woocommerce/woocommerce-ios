@@ -42,7 +42,6 @@ struct CardPresentPaymentsOnboardingView: View {
                 // Preselect WCPay only if there was no selection done before
                 InPersonPaymentsSelectPluginView(selectedPlugin: pluginSelectionWasCleared == true ? nil : .wcPay) { plugin in
                     viewModel.selectPlugin(plugin)
-                    ServiceLocator.analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
                 }
             case .countryNotSupported(let countryCode):
                 InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)

@@ -10,6 +10,7 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     var learnMoreURL: URL? = nil
     private let useCase: CardPresentPaymentsOnboardingUseCaseProtocol
     let stores: StoresManager
+    private let analytics: Analytics
 
     var showSupport: (() -> Void)? = nil
     var showURL: ((URL) -> Void)? = nil
@@ -18,9 +19,11 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     ///
     init(stores: StoresManager = ServiceLocator.stores,
          useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         analytics: Analytics = ServiceLocator.analytics,
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
         self.stores = stores
         self.useCase = useCase
+        self.analytics = analytics
         self.didChangeShouldShow = didChangeShouldShow
         state = useCase.state
         userIsAdministrator = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)
@@ -47,8 +50,10 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
         useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
-        stores: StoresManager = ServiceLocator.stores) {
+        stores: StoresManager = ServiceLocator.stores,
+        analytics: Analytics = ServiceLocator.analytics) {
             self.stores = stores
+            self.analytics = analytics
             state = fixedState
             self.useCase = useCase
             userIsAdministrator = fixedUserIsAdministrator
@@ -91,6 +96,7 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     ///
     func selectPlugin(_ plugin: CardPresentPaymentsPlugin) {
         useCase.selectPlugin(plugin)
+        analytics.track(.cardPresentPaymentGatewaySelected, withProperties: ["payment_gateway": plugin.pluginName])
     }
 
     func clearPluginSelection() {
@@ -177,10 +183,10 @@ private extension CardPresentPaymentsOnboardingViewModel {
         }
         switch state {
         case .completed:
-            ServiceLocator.analytics
+            analytics
                 .track(event: .InPersonPayments.cardPresentOnboardingCompleted(gatewayID: state.gatewayID))
         default:
-            ServiceLocator.analytics
+            analytics
                 .track(event: .InPersonPayments
                     .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
                                                        countryCode: countryCode,
@@ -193,7 +199,7 @@ private extension CardPresentPaymentsOnboardingViewModel {
             return
         }
 
-        ServiceLocator.analytics.track(
+        analytics.track(
             event: .InPersonPayments.cardPresentOnboardingStepSkipped(
                 reason: state.reasonForAnalytics,
                 remindLater: remindLater,

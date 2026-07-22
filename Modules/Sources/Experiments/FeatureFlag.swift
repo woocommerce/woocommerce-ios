@@ -119,14 +119,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case splitViewInProductsTab
 
-    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
-    ///
-    case subscriptionsInOrderCreationUI
-
-    /// Enables a new customer creation flow in order creation for subscriptions support.
-    ///
-    case subscriptionsInOrderCreationCustomers
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale

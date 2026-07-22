@@ -28,7 +28,7 @@ namespace :dependencies do
 
   namespace :bundle do
     task :check do
-      sh 'bundle check --path=${BUNDLE_PATH:-vendor/bundle} > /dev/null', verbose: false do |ok, _res|
+      sh 'BUNDLE_PATH=${BUNDLE_PATH:-vendor/bundle} bundle check > /dev/null', verbose: false do |ok, _res|
         next if ok
 
         # bundle check exits with a non zero code if install is needed
@@ -38,7 +38,7 @@ namespace :dependencies do
     end
 
     task :install do
-      sh 'bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}'
+      sh 'BUNDLE_PATH=${BUNDLE_PATH:-vendor/bundle} bundle install --jobs=3 --retry=3'
     end
     CLOBBER << 'vendor/bundle'
     CLOBBER << '.bundle'

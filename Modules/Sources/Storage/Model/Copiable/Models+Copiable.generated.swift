@@ -130,6 +130,7 @@ extension Storage.GeneralStoreSettings {
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
         isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        lastKnownPOSEligibility: NullableCopiableProp<Bool> = .copy,
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
@@ -158,6 +159,7 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let lastKnownPOSEligibility = lastKnownPOSEligibility ?? self.lastKnownPOSEligibility
         let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
@@ -187,6 +189,7 @@ extension Storage.GeneralStoreSettings {
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
             isPOSTabVisible: isPOSTabVisible,
+            lastKnownPOSEligibility: lastKnownPOSEligibility,
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,

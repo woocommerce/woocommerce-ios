@@ -30,8 +30,13 @@ private struct TokenCategoriesView: View {
 private struct ComponentsView: View {
     var body: some View {
         List {
-            Text("Coming soon")
-                .foregroundStyle(.secondary)
+            NavigationLink("Badge") { BadgeComponentView() }
+            NavigationLink("Button") { ButtonComponentView() }
+            NavigationLink("Checkbox") { CheckboxComponentView() }
+            NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
+            NavigationLink("RadioButton") { RadioButtonComponentView() }
+            NavigationLink("Segmented Control") { SegmentedControlComponentView() }
+            NavigationLink("Tooltip") { TooltipComponentView() }
         }
         .navigationTitle("Components")
     }

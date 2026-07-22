@@ -3,22 +3,18 @@ import Yosemite
 import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsPluginNotSetup: View {
-    let plugin: CardPresentPaymentsPlugin
-    let analyticReason: String
-    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
-    let onRefresh: () -> Void
-    @State private var presentedSetupURL: URL? = nil
+    @ObservedObject var viewModel: InPersonPaymentsPluginNotSetupViewModel
 
     var body: some View {
         ScrollableVStack {
             Spacer()
 
             InPersonPaymentsOnboardingErrorMainContentView(
-                title: String(format: Localization.title, plugin.pluginName),
-                message: String(format: Localization.message, plugin.pluginName),
+                title: String(format: Localization.title, viewModel.plugin.pluginName),
+                message: String(format: Localization.message, viewModel.plugin.pluginName),
                 secondaryMessage: nil,
                 image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                    image: plugin.image,
+                    image: viewModel.plugin.image,
                     height: 108.0
                 ),
                 supportLink: false
@@ -27,14 +23,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             Spacer()
 
             Button {
-                presentedSetupURL = setupURL
-                ServiceLocator.analytics.track(
-                    event: .InPersonPayments.cardPresentOnboardingCtaTapped(
-                        reason: analyticReason,
-                        countryCode: cardPresentConfiguration.countryCode,
-                        gatewayID: plugin.gatewayID
-                    ))
-                trackPluginSetupTappedEvent()
+                viewModel.setupButtonTapped()
             } label: {
                 HStack {
                     Text(Localization.primaryButton)
@@ -43,27 +32,19 @@ struct InPersonPaymentsPluginNotSetup: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             Button(Localization.refreshButton) {
-                onRefresh()
+                viewModel.onRefresh()
             }
             .buttonStyle(SecondaryButtonStyle())
             .padding(.bottom, 24.0)
 
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
-                paymentGateway: plugin,
-                tappedAnalyticEvent: learnMoreAnalyticEvent))
+                paymentGateway: viewModel.plugin,
+                tappedAnalyticEvent: viewModel.learnMoreAnalyticEvent))
             .padding(.vertical, 8)
         }
-        .sheet(item: $presentedSetupURL, onDismiss: onRefresh) { url in
+        .sheet(item: $viewModel.presentedSetupURL, onDismiss: viewModel.onRefresh) { url in
             AuthenticatableWebView(url: url, title: Localization.primaryButton)
         }
-    }
-
-    private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL(plugin: plugin) else {
-            return nil
-        }
-
-        return URL(string: pluginSectionURL)
     }
 }
 
@@ -94,22 +75,6 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotSetup(plugin: .wcPay, analyticReason: "", onRefresh: {})
-    }
-}
-
-private extension InPersonPaymentsPluginNotSetup {
-    var learnMoreAnalyticEvent: WooAnalyticsEvent? {
-        .InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
-                                                                                countryCode: cardPresentConfiguration.countryCode,
-                                                                                gatewayID: plugin.gatewayID)
-    }
-
-    private func trackPluginSetupTappedEvent() {
-        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(
-            reason: "plugin_setup_tapped",
-            countryCode: cardPresentConfiguration.countryCode,
-            gatewayID: plugin.gatewayID
-        ))
+        InPersonPaymentsPluginNotSetup(viewModel: InPersonPaymentsPluginNotSetupViewModel(plugin: .wcPay, analyticReason: "", onRefresh: {}))
     }
 }

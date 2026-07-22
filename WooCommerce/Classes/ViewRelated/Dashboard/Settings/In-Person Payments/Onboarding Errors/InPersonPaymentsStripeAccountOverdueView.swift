@@ -2,12 +2,7 @@ import SwiftUI
 import enum Yosemite.CardPresentPaymentsPlugin
 
 struct InPersonPaymentsStripeAccountOverdue: View {
-    let analyticReason: String
-    let onRefresh: () -> Void
-    let onSkip: () -> Void
-    let plugin: CardPresentPaymentsPlugin
-    @State private var presentedSetupURL: URL? = nil
-
+    @ObservedObject var viewModel: InPersonPaymentsStripeAccountOverdueViewModel
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -19,40 +14,19 @@ struct InPersonPaymentsStripeAccountOverdue: View {
             ),
             supportLink: true,
             learnMore: true,
-            analyticReason: analyticReason,
-            plugin: plugin,
+            analyticReason: viewModel.analyticReason,
+            plugin: viewModel.plugin,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.primaryButtonTitle,
-                                                                            analyticReason: analyticReason,
-                                                                            plugin: plugin,
-                                                                            action: {
-                                                                                presentedSetupURL = setupURL
-                                                                                trackPluginSetupTappedEvent()
-                                                                            }),
+                                                                            analyticReason: viewModel.analyticReason,
+                                                                            plugin: viewModel.plugin,
+                                                                            action: viewModel.resolveNowTapped),
             secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.skipButtonTitle,
-                                                                                     analyticReason: analyticReason,
-                                                                                     plugin: plugin,
-                                                                                     action: onSkip)
+                                                                                     analyticReason: viewModel.analyticReason,
+                                                                                     plugin: viewModel.plugin,
+                                                                                     action: viewModel.onSkip)
         )
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .safariSheet(url: $viewModel.presentedSetupURL, onDismiss: viewModel.onRefresh)
      }
-
-    private var setupURL: URL? {
-        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL(plugin: plugin) else {
-            return nil
-        }
-
-        return URL(string: pluginSectionURL)
-    }
-}
-
-private extension InPersonPaymentsStripeAccountOverdue {
-    func trackPluginSetupTappedEvent() {
-        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(
-            reason: "stripe_account_setup_tapped",
-            countryCode: CardPresentConfigurationLoader().configuration.countryCode,
-            gatewayID: plugin.gatewayID
-        ))
-    }
 }
 
 private enum Localization {
@@ -87,6 +61,7 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { }, onSkip: { }, plugin: .stripe)
+        InPersonPaymentsStripeAccountOverdue(
+            viewModel: InPersonPaymentsStripeAccountOverdueViewModel(plugin: .stripe, analyticReason: "", onRefresh: { }, onSkip: { }))
     }
 }

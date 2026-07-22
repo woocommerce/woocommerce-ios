@@ -12,6 +12,7 @@
 - [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/17548]
 - [*] Fixed products failing to load when a plugin returns null for a product's categories, tags, images, or other list fields. [https://github.com/woocommerce/woocommerce-ios/pull/17545]
 - [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17599]
+- [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]
 - [*] Fixed a crash when undoing pasted product tags containing tabs or extra whitespace. [https://github.com/woocommerce/woocommerce-ios/pull/17592]
 - [*] Point of Sale: once the local catalog has fully synced, POS opens instantly without waiting on network checks and also works offline. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
 - [*] Order Creation: fixed custom amount fields losing entered values and keyboard focus after rotating an iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17550]

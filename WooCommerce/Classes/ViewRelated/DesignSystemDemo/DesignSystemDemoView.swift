@@ -33,6 +33,7 @@ private struct ComponentsView: View {
             NavigationLink("Badge") { BadgeComponentView() }
             NavigationLink("Button") { ButtonComponentView() }
             NavigationLink("Checkbox") { CheckboxComponentView() }
+            NavigationLink("Icon Container") { IconContainerComponentView() }
             NavigationLink("NoticeBanner") { NoticeBannerComponentView() }
             NavigationLink("RadioButton") { RadioButtonComponentView() }
             NavigationLink("Segmented Control") { SegmentedControlComponentView() }

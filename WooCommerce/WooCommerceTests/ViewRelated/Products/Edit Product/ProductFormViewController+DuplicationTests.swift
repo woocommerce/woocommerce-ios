@@ -73,7 +73,7 @@ struct ProductFormViewController_DuplicationTests {
         #expect(context.duplicateResultAnalyticsEvents.isEmpty)
     }
 
-    @Test func test_duplicate_when_confirmed_and_successful_then_uses_intent_snapshot_and_discards_draft() async throws {
+    @Test func test_duplicate_when_confirmed_and_successful_then_navigates_once_without_resetting_source_draft() async throws {
         // Given
         let context = TestContext()
         defer { context.cleanUp() }
@@ -81,9 +81,18 @@ struct ProductFormViewController_DuplicationTests {
         let draftImage = ProductImage.fake().copy(imageID: 2)
         let product = Product.fake().copy(productID: 123, name: "Saved product", images: [savedImage], variations: [11])
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        var navigationCount = 0
+        var navigatedSource: UIViewController?
+        var navigatedProduct: Product?
+        let navigateToDuplicate: ProductDuplicateNavigationHandler = { source, duplicate in
+            navigationCount += 1
+            navigatedSource = source
+            navigatedProduct = duplicate
+        }
         let (productForm, viewModel, imageActionHandler) = createProductForm(product: product,
                                                                             stores: stores,
-                                                                            password: "saved-password")
+                                                                            password: "saved-password",
+                                                                            onDuplicateCompletion: navigateToDuplicate)
         viewModel.updateName("Unsaved product")
         viewModel.updateImages([draftImage])
         viewModel.updateProductSettings(ProductSettings(from: viewModel.productModel.product, password: "unsaved-password"))
@@ -111,17 +120,23 @@ struct ProductFormViewController_DuplicationTests {
         viewModel.updateProductVariations(from: product.copy(productID: 999, variations: [99]))
         #expect(viewModel.productModel.name == "Unsaved product")
         #expect(viewModel.productModel.productID == 999)
+        let expectedDraft = viewModel.productModel
+        let expectedBaseline = viewModel.originalProductModel
 
         // And duplication is confirmed
         alert.tapButton(atIndex: 1)
+        try await waitUntil { navigationCount == 1 }
 
-        // Then the captured source is duplicated and the live draft is discarded only after success.
+        // Then the captured source is duplicated and navigation owns leaving the unmodified source draft.
         #expect(duplicatedSourceID == 123)
-        #expect(viewModel.productModel == EditableProductModel(product: product))
-        #expect(viewModel.originalProductModel == EditableProductModel(product: product))
-        #expect(viewModel.password == "saved-password")
-        try await waitUntil { imageActionHandler.productImageStatuses.images == [savedImage] }
-        #expect(viewModel.hasUnsavedChanges() == false)
+        #expect(navigationCount == 1)
+        #expect(navigatedSource === productForm)
+        #expect(navigatedProduct == product.copy(productID: 456, name: "Saved product Copy"))
+        #expect(viewModel.productModel == expectedDraft)
+        #expect(viewModel.originalProductModel == expectedBaseline)
+        #expect(viewModel.password == "unsaved-password")
+        #expect(imageActionHandler.productImageStatuses.images == [draftImage])
+        #expect(viewModel.hasUnsavedChanges())
         #expect(context.duplicateResultAnalyticsEvents == [WooAnalyticsStat.duplicateProductSuccess.rawValue])
     }
 
@@ -185,9 +200,9 @@ struct ProductFormViewController_DuplicationTests {
 private extension ProductFormViewController_DuplicationTests {
     func createProductForm(product: Product,
                            stores: StoresManager,
-                           password: String? = nil) -> (ProductFormViewController<ProductFormViewModel>,
-                                                         ProductFormViewModel,
-                                                         ProductImageActionHandler) {
+                           password: String? = nil,
+                           onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler = { _, _ in })
+    -> (ProductFormViewController<ProductFormViewModel>, ProductFormViewModel, ProductImageActionHandler) {
         let model = EditableProductModel(product: product)
         let imageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                            productID: .product(id: product.productID),
@@ -201,7 +216,8 @@ private extension ProductFormViewController_DuplicationTests {
         let productForm = ProductFormViewController(viewModel: viewModel,
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: imageActionHandler,
-                                                    presentationStyle: .navigationStack)
+                                                    presentationStyle: .navigationStack,
+                                                    onDuplicateCompletion: onDuplicateCompletion)
         return (productForm, viewModel, imageActionHandler)
     }
 
@@ -236,7 +252,7 @@ private final class TestContext {
     }
 
     func present(_ viewController: UIViewController) {
-        window.rootViewController = viewController
+        window.rootViewController = UINavigationController(rootViewController: viewController)
         viewController.loadViewIfNeeded()
     }
 

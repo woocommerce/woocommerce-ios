@@ -301,6 +301,106 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(viewModel.originalProductModel, EditableProductModel(product: originalProduct))
         XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
+
+    func test_duplicateProduct_uses_captured_saved_aggregate_and_password_in_compatibility_fallback() throws {
+        // Given
+        let savedPassword = "saved-password"
+        let savedProduct = Product.fake().copy(productID: 123,
+                                               name: "Saved product",
+                                               slug: "saved-product",
+                                               permalink: "https://example.com/saved-product",
+                                               statusKey: ProductStatus.published.rawValue,
+                                               sku: "saved-sku",
+                                               variations: [11, 12],
+                                               password: savedPassword)
+        let viewModel = createViewModel(product: savedProduct, formType: .edit)
+        viewModel.resetPassword(savedPassword)
+        viewModel.updateName("Unsaved product")
+        viewModel.updateProductSettings(ProductSettings(from: viewModel.productModel.product, password: "unsaved-password"))
+        let snapshot = try XCTUnwrap(viewModel.productDuplicationSnapshot())
+
+        // Change the persisted baseline after the initial intent. The captured source must remain unchanged.
+        viewModel.updateProductVariations(from: savedProduct.copy(variations: [99]))
+        viewModel.resetPassword("later-password")
+
+        var productSentToFallback: Product?
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .duplicateProduct(siteID, productID, onCompletion):
+                XCTAssertEqual(siteID, savedProduct.siteID)
+                XCTAssertEqual(productID, savedProduct.productID)
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(product, _):
+                productSentToFallback = product
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.duplicateProduct(from: snapshot) { _ in
+            XCTFail("The fallback request is intentionally left pending")
+        }
+
+        // Then
+        let expectedFallbackProduct = savedProduct.copy(productID: 0,
+                                                        name: "Saved product Copy",
+                                                        slug: "",
+                                                        permalink: "",
+                                                        statusKey: ProductStatus.draft.rawValue,
+                                                        sku: .some(nil),
+                                                        password: savedPassword)
+        XCTAssertEqual(productSentToFallback, expectedFallbackProduct)
+        XCTAssertEqual(viewModel.productModel.name, "Unsaved product")
+    }
+
+    func test_duplicateProduct_failure_retains_live_product_and_password_draft() {
+        // Given
+        let savedProduct = Product.fake().copy(productID: 123, name: "Saved product")
+        let viewModel = createViewModel(product: savedProduct, formType: .edit)
+        viewModel.resetPassword("saved-password")
+        viewModel.updateName("Unsaved product")
+        viewModel.updateProductSettings(ProductSettings(from: viewModel.productModel.product, password: "unsaved-password"))
+        let expectedDraft = viewModel.productModel
+        let error = NSError(domain: "ProductDuplicate", code: 500)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .duplicateProduct(_, _, onCompletion) = action {
+                onCompletion(.failure(.unknown(error: AnyError(error))))
+            }
+        }
+
+        // When
+        var result: Result<EditableProductModel, ProductUpdateError>?
+        viewModel.duplicateProduct { result = $0 }
+
+        // Then
+        XCTAssertEqual(result, .failure(.unknown(error: AnyError(error))))
+        XCTAssertEqual(viewModel.productModel, expectedDraft)
+        XCTAssertEqual(viewModel.password, "unsaved-password")
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_duplicateProduct_for_edit_form_product_with_productID_zero_no_ops() {
+        // Given
+        let product = Product.fake().copy(productID: 0)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        var completionCalled = false
+
+        // When
+        viewModel.duplicateProduct { _ in completionCalled = true }
+
+        // Then
+        XCTAssertFalse(completionCalled)
+        XCTAssertFalse(storesManager.receivedActions.contains { action in
+            guard let productAction = action as? ProductAction else {
+                return false
+            }
+            if case .duplicateProduct = productAction {
+                return true
+            }
+            return false
+        })
+    }
 }
 
 private extension ProductFormViewModel_SaveTests {

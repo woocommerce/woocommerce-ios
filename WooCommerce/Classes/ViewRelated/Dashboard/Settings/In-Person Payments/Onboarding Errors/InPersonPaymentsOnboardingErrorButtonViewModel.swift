@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 struct InPersonPaymentsOnboardingErrorButtonViewModel {
     let text: String
@@ -14,12 +15,13 @@ struct InPersonPaymentsOnboardingErrorButtonViewModel {
          analyticReason: String,
          cardPresentConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          plugin: CardPresentPaymentsPlugin?,
+         analytics: Analytics = ServiceLocator.analytics,
          action: @escaping () -> Void) {
         self.text = text
         self.analyticReason = analyticReason
         self.cardPresentConfiguration = cardPresentConfiguration
         self.action = {
-            ServiceLocator.analytics.track(
+            analytics.track(
                 event: .InPersonPayments.cardPresentOnboardingCtaTapped(
                     reason: analyticReason,
                     countryCode: cardPresentConfiguration.countryCode,

@@ -221,6 +221,20 @@ extension RefundSubmissionUseCase {
 
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
+
+        let v4LineItems: [RefundV4LineItem]?
+
+        init(order: Order,
+             charge: WCPayCharge?,
+             amount: String,
+             paymentGatewayAccount: PaymentGatewayAccount?,
+             v4LineItems: [RefundV4LineItem]? = nil) {
+            self.order = order
+            self.charge = charge
+            self.amount = amount
+            self.paymentGatewayAccount = paymentGatewayAccount
+            self.v4LineItems = v4LineItems
+        }
     }
 }
 
@@ -397,6 +411,9 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        if let v4LineItems = details.v4LineItems {
+            return submitRefundV4ToSite(refund: refund, lineItems: v4LineItems, onCompletion: onCompletion)
+        }
 
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
             refundData, error  in
@@ -419,6 +436,32 @@ private extension RefundSubmissionUseCase {
             self.retrieveUpdatedRefundData(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
+        }
+        stores.dispatch(action)
+        trackCreateRefundRequest()
+    }
+
+    private func submitRefundV4ToSite(refund: Refund,
+                                      lineItems: [RefundV4LineItem],
+                                      onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = RefundAction.createRefundV4(siteID: details.order.siteID,
+                                                 orderID: details.order.orderID,
+                                                 reason: refund.reason,
+                                                 automaticRefund: refund.createAutomated ?? false,
+                                                 restockItems: true,
+                                                 lineItems: lineItems) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let createdRefund):
+                self.retrieveUpdatedRefundData(refund: createdRefund)
+                onCompletion(.success(()))
+                self.trackCreateRefundRequestSuccess()
+            case .failure(let error):
+                DDLogError("Error creating v4 refund: \(refund)\nWith Error: \(error)")
+                self.trackCreateRefundRequestFailed(error: error)
+                onCompletion(.failure(error))
+            }
         }
         stores.dispatch(action)
         trackCreateRefundRequest()

@@ -71,6 +71,66 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
+    func test_submitRefund_with_v4_line_items_dispatches_createRefundV4_with_restock_instead_of_v3_create() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        var receivedRestockItems: Bool?
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .createRefundV4(_, _, _, _, restockItems, _, completion) = action {
+                receivedRestockItems = restockItems
+                completion(.success(.fake()))
+            }
+        }
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(receivedRestockItems, true)
+        let dispatchedV3Create = stores.receivedActions.contains(where: { action in
+            guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
+                return false
+            }
+            return true
+        })
+        XCTAssertFalse(dispatchedV3Create)
+    }
+
+    func test_submitRefund_with_v4_line_items_relays_create_failure() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        stores.whenReceivingAction(ofType: RefundAction.self) { action in
+            if case let .createRefundV4(_, _, _, _, _, _, completion) = action {
+                completion(.failure(NSError(domain: "test", code: 1)))
+            }
+        }
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),

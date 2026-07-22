@@ -41,6 +41,7 @@ public enum POSRefundSubmissionState {
 
 public enum POSRefundSubmissionError: Error, Equatable {
     case canceledByUser
+    case refundPreviewFailed
 }
 
 @Observable public final class POSRefundSubmissionModel {
@@ -64,7 +65,7 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
     func prepareReviewData(for order: POSOrder,
                            preparation: POSRefundPreparation,
                            selectedItems: [POSRefundSelectableItem],
-                           reason: String?) -> POSRefundReviewData?
+                           reason: String?) async throws -> POSRefundReviewData
 
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
@@ -90,8 +91,15 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
     public func prepareReviewData(for order: POSOrder,
                                   preparation: POSRefundPreparation,
                                   selectedItems: [POSRefundSelectableItem],
-                                  reason: String?) -> POSRefundReviewData? {
-        nil
+                                  reason: String?) async throws -> POSRefundReviewData {
+        POSRefundReviewData(itemsCount: selectedItems.count,
+                            formattedItemsSubtotal: "",
+                            formattedTax: "",
+                            formattedRefundTotal: "",
+                            paymentMethodDescription: preparation.paymentMethodDescription,
+                            customerEmail: preparation.customerEmail,
+                            refundReason: reason,
+                            isFullRefund: false)
     }
 
     public func submitRefund(for order: POSOrder,

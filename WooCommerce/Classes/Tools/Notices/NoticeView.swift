@@ -122,7 +122,13 @@ private extension NoticeView {
 
         contentStackView.addArrangedSubview(labelStackView)
 
+        // Let the label block fill the width and the button keep its intrinsic size. On the iOS 26 SDK the .fill
+        // stack otherwise splits them ~50/50 and truncates the title; content-hugging doesn't fix a nested stack.
+        let labelStackFillWidth = labelStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: UIView.layoutFittingExpandedSize.width)
+        labelStackFillWidth.priority = .required - 1
+
         NSLayoutConstraint.activate([
+            labelStackFillWidth,
             labelStackView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
             labelStackView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor)
         ])
@@ -229,7 +235,7 @@ private extension NoticeView {
 
     enum Appearance {
         static let actionBackgroundColor = UIColor.systemColor(.secondarySystemGroupedBackground)
-        static let actionColor: UIColor = .primaryButtonBackground
+        static let actionColor: UIColor = .accent
         static let shadowColor: UIColor = .black
         static let shadowOpacity: Float = 0.2
         static let shadowRadius: CGFloat = 8.0

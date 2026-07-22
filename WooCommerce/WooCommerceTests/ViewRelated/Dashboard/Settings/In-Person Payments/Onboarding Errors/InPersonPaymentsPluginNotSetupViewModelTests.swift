@@ -4,15 +4,18 @@ import Testing
 import Yosemite
 import protocol WooFoundation.Analytics
 
+@MainActor
 struct InPersonPaymentsPluginNotSetupViewModelTests {
+    private let sessionManager: SessionManager
     private let stores: MockStoresManager
     private let analyticsProvider: MockAnalyticsProvider
     private let analytics: Analytics
     private let sut: InPersonPaymentsPluginNotSetupViewModel
 
     init() {
-        stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.sessionManager.defaultSite = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
+        sessionManager = .makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
+        stores = MockStoresManager(sessionManager: sessionManager)
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         sut = InPersonPaymentsPluginNotSetupViewModel(plugin: .wcPay,
@@ -33,7 +36,7 @@ struct InPersonPaymentsPluginNotSetupViewModelTests {
 
     @Test func setupButtonTapped_when_there_is_no_default_site_then_presents_no_URL() async throws {
         // Given
-        stores.sessionManager.defaultSite = nil
+        sessionManager.defaultSite = nil
 
         // When
         sut.setupButtonTapped()

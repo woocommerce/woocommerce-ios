@@ -4,15 +4,18 @@ import Testing
 import Yosemite
 import protocol WooFoundation.Analytics
 
+@MainActor
 struct InPersonPaymentsStripeAccountOverdueViewModelTests {
+    private let sessionManager: SessionManager
     private let stores: MockStoresManager
     private let analyticsProvider: MockAnalyticsProvider
     private let analytics: Analytics
     private let sut: InPersonPaymentsStripeAccountOverdueViewModel
 
     init() {
-        stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.sessionManager.defaultSite = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
+        sessionManager = .makeForTesting()
+        sessionManager.defaultSite = Site.fake().copy(adminURL: "https://example.com/wp-admin/")
+        stores = MockStoresManager(sessionManager: sessionManager)
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         sut = InPersonPaymentsStripeAccountOverdueViewModel(plugin: .wcPay,
@@ -34,7 +37,7 @@ struct InPersonPaymentsStripeAccountOverdueViewModelTests {
 
     @Test func resolveNowTapped_when_there_is_no_default_site_then_presents_no_URL() async throws {
         // Given
-        stores.sessionManager.defaultSite = nil
+        sessionManager.defaultSite = nil
 
         // When
         sut.resolveNowTapped()

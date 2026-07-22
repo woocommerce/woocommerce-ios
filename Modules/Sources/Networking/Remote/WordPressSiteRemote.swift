@@ -28,10 +28,22 @@ public final class WordPressSiteRemote: Remote {
     /// Fetches info for a WordPress site given its URL.
     ///
     public func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite {
-        let url = try await resolvedSiteInfoURL(for: siteURL)
-        let request = try URLRequest(url: url, method: .get)
-        let mapper = WordPressSiteMapper()
-        return try await enqueue(request, mapper: mapper)
+        let cachedRoot = apiRootCache.root(for: siteURL)
+        let root = await resolvedRESTAPIRoot(for: siteURL)
+        do {
+            return try await fetchSiteInfo(at: root)
+        } catch {
+            guard cachedRoot == root else {
+                throw error
+            }
+
+            apiRootCache.removeRoot(root, for: siteURL)
+            guard let replacementRoot = await discoverRESTAPIRoot(siteURL),
+                  replacementRoot != root else {
+                throw error
+            }
+            return try await fetchSiteInfo(at: replacementRoot)
+        }
     }
 
     /// Fetches the page list for a WordPress site given its URL.
@@ -45,17 +57,16 @@ public final class WordPressSiteRemote: Remote {
 }
 
 private extension WordPressSiteRemote {
-    /// Returns the URL for the site info endpoint, using the discovered REST API root when available.
-    ///
-    func resolvedSiteInfoURL(for siteURL: String) async throws -> URL {
-        let root = await resolvedRESTAPIRoot(for: siteURL)
+    func fetchSiteInfo(at root: String) async throws -> WordPressSite {
         guard let url = URL(string: root) else {
             throw NetworkError.invalidURL
         }
-        return url
+        let request = try URLRequest(url: url, method: .get)
+        let mapper = WordPressSiteMapper()
+        return try await enqueue(request, mapper: mapper)
     }
 
-    /// Returns the URL for the pages list endpoint, using the discovered REST API root when available.
+    /// Returns the URL for the pages endpoint, using the discovered REST API root when available.
     ///
     func resolvedSitePagesURL(for siteURL: String) async throws -> URL {
         let root = await resolvedRESTAPIRoot(for: siteURL)

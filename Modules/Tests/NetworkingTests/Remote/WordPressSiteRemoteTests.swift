@@ -60,6 +60,29 @@ final class WordPressSiteRemoteTests: XCTestCase {
         XCTAssertEqual(site.name, "My WordPress Site")
     }
 
+    func test_fetchSiteInfo_when_cached_root_fails_then_retries_with_newly_discovered_root() async throws {
+        // Given
+        let cache = MockRESTAPIRootCache(stubbedRoot: "https://test.com/?rest_route=/")
+        let replacementRoot = "https://test.com/wp-json/"
+        let remote = makeRemote(cache: cache) { _ in
+            cache.stubbedRoot = replacementRoot
+            return replacementRoot
+        }
+        network.simulateError(
+            requestUrlSuffix: "?rest_route=/",
+            error: NetworkError.unacceptableStatusCode(statusCode: 403)
+        )
+        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
+
+        // When
+        let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(site.name, "My WordPress Site")
+        XCTAssertEqual(cache.root(for: sampleSiteURL), replacementRoot)
+        XCTAssertEqual(network.requestsForResponseData.count, 2)
+    }
+
     /// Verifies that fetchSiteInfo properly parses the sample response (default behavior).
     ///
     func test_fetchSiteInfo_properly_returns_site() async throws {
@@ -188,9 +211,14 @@ final class WordPressSiteRemoteTests: XCTestCase {
 private extension WordPressSiteRemoteTests {
     func makeRemote(cachedRoot: String?,
                     discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
+        makeRemote(cache: MockRESTAPIRootCache(stubbedRoot: cachedRoot), discovery: discovery)
+    }
+
+    func makeRemote(cache: RESTAPIRootCaching,
+                    discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
         WordPressSiteRemote(
             network: network,
-            apiRootCache: MockRESTAPIRootCache(stubbedRoot: cachedRoot),
+            apiRootCache: cache,
             discoverRESTAPIRoot: discovery
         )
     }

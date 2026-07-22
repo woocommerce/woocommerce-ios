@@ -329,6 +329,12 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.relatedIDs.isEmpty)
         XCTAssertTrue(product.upsellIDs.isEmpty)
         XCTAssertTrue(product.crossSellIDs.isEmpty)
+
+        // Nested entities decoded from the same response default to empty too.
+        let bundledItem = try XCTUnwrap(product.bundledItems.first)
+        XCTAssertTrue(bundledItem.allowedVariations.isEmpty)
+        XCTAssertTrue(bundledItem.defaultVariationAttributes.isEmpty)
+        XCTAssertTrue(try XCTUnwrap(product.compositeComponents.first).optionIDs.isEmpty)
     }
 
     /// Test that products with the `bundle` product type are properly parsed.

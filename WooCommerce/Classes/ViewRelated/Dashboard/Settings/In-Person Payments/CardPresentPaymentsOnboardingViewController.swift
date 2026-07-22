@@ -44,9 +44,13 @@ struct CardPresentPaymentsOnboardingView: View {
                     viewModel.selectPlugin(plugin)
                 }
             case .countryNotSupported(let countryCode):
-                InPersonPaymentsCountryNotSupported(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsCountryNotSupported(
+                    viewModel: InPersonPaymentsCountryNotSupportedViewModel(countryCode: countryCode,
+                                                                            analyticReason: viewModel.state.reasonForAnalytics))
             case .countryNotSupportedStripe(_, let countryCode):
-                InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsCountryNotSupportedStripe(
+                    viewModel: InPersonPaymentsCountryNotSupportedStripeViewModel(countryCode: countryCode,
+                                                                                  analyticReason: viewModel.state.reasonForAnalytics))
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(
                     viewModel: InPersonPaymentsPluginNotInstalledViewModel(analyticReason: viewModel.state.reasonForAnalytics,
@@ -92,9 +96,11 @@ struct CardPresentPaymentsOnboardingView: View {
                                                                              analyticReason: viewModel.state.reasonForAnalytics,
                                                                              onSkip: viewModel.skipPendingRequirements))
             case .stripeAccountUnderReview:
-                InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsStripeAccountReview(
+                    viewModel: InPersonPaymentsStripeAccountReviewViewModel(analyticReason: viewModel.state.reasonForAnalytics))
             case .stripeAccountRejected:
-                InPersonPaymentsStripeRejected(analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsStripeRejected(
+                    viewModel: InPersonPaymentsStripeRejectedViewModel(analyticReason: viewModel.state.reasonForAnalytics))
             case .codPaymentGatewayNotSetUp(let plugin):
                 InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView(
                     viewModel: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
@@ -104,9 +110,12 @@ struct CardPresentPaymentsOnboardingView: View {
             case .completed:
                 InPersonPaymentsCompleted()
             case .noConnectionError:
-                InPersonPaymentsNoConnection(analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                InPersonPaymentsNoConnection(
+                    viewModel: InPersonPaymentsNoConnectionViewModel(analyticReason: viewModel.state.reasonForAnalytics,
+                                                                     onRefresh: viewModel.refresh))
             default:
-                InPersonPaymentsUnavailable(analyticReason: viewModel.state.reasonForAnalytics)
+                InPersonPaymentsUnavailable(
+                    viewModel: InPersonPaymentsUnavailableViewModel(analyticReason: viewModel.state.reasonForAnalytics))
             }
         }
         .customOpenURL(action: { url in

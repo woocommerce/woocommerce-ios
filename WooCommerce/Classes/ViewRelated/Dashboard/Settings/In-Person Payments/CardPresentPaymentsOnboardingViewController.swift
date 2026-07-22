@@ -48,21 +48,32 @@ struct CardPresentPaymentsOnboardingView: View {
             case .countryNotSupportedStripe(_, let countryCode):
                 InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
             case .pluginNotInstalled:
-                InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
-                                                   onInstall: viewModel.installPlugin)
+                InPersonPaymentsPluginNotInstalled(
+                    viewModel: InPersonPaymentsPluginNotInstalledViewModel(analyticReason: viewModel.state.reasonForAnalytics,
+                                                                           onInstall: viewModel.installPlugin))
             case .pluginUnsupportedVersion(let plugin):
-                InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotSupportedVersion(
+                    viewModel: InPersonPaymentsPluginNotSupportedVersionViewModel(plugin: plugin,
+                                                                                  analyticReason: viewModel.state.reasonForAnalytics,
+                                                                                  onRefresh: viewModel.refresh))
             case .pluginNotActivated(let plugin):
                 switch plugin {
                 case .wcPay:
-                    InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onActivate: viewModel.activatePlugin)
+                    InPersonPaymentsPluginNotActivated(
+                        viewModel: InPersonPaymentsPluginNotActivatedViewModel(plugin: plugin,
+                                                                               analyticReason: viewModel.state.reasonForAnalytics,
+                                                                               onActivate: viewModel.activatePlugin))
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
-                    InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onInstall: viewModel.installPlugin)
+                    InPersonPaymentsPluginNotInstalled(
+                        viewModel: InPersonPaymentsPluginNotInstalledViewModel(analyticReason: viewModel.state.reasonForAnalytics,
+                                                                               onInstall: viewModel.installPlugin))
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
-                InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
-                    viewModel.refresh)
+                InPersonPaymentsLiveSiteInTestMode(
+                    viewModel: InPersonPaymentsLiveSiteInTestModeViewModel(plugin: plugin,
+                                                                           analyticReason: viewModel.state.reasonForAnalytics,
+                                                                           onRefresh: viewModel.refresh))
             case .pluginSetupNotCompleted(let plugin):
                 InPersonPaymentsPluginNotSetup(
                     viewModel: InPersonPaymentsPluginNotSetupViewModel(plugin: plugin,
@@ -76,10 +87,10 @@ struct CardPresentPaymentsOnboardingView: View {
                                                                              onSkip: viewModel.skipOverdueRequirements))
             case .stripeAccountPendingRequirement(let plugin, let deadline):
                 InPersonPaymentsStripeAccountPending(
-                    deadline: deadline,
-                    analyticReason: viewModel.state.reasonForAnalytics,
-                    plugin: plugin,
-                    onSkip: viewModel.skipPendingRequirements)
+                    viewModel: InPersonPaymentsStripeAccountPendingViewModel(deadline: deadline,
+                                                                             plugin: plugin,
+                                                                             analyticReason: viewModel.state.reasonForAnalytics,
+                                                                             onSkip: viewModel.skipPendingRequirements))
             case .stripeAccountUnderReview:
                 InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)
             case .stripeAccountRejected:

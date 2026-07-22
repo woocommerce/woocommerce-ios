@@ -1,57 +1,32 @@
 import SwiftUI
-import Yosemite
 
 struct InPersonPaymentsLiveSiteInTestMode: View {
-    let plugin: CardPresentPaymentsPlugin
-    let analyticReason: String
-    let onRefresh: () -> Void
+    let viewModel: InPersonPaymentsLiveSiteInTestModeViewModel
 
     var body: some View {
         InPersonPaymentsOnboardingError(
-            title: String(format: Localization.title, plugin.pluginName),
-            message: String(format: Localization.message, plugin.pluginName),
+            title: viewModel.title,
+            message: viewModel.message,
             image: InPersonPaymentsOnboardingErrorMainContentView.ImageInfo(
-                image: plugin.image,
+                image: viewModel.plugin.image,
                 height: 108.0
             ),
             supportLink: false,
             learnMore: true,
-            analyticReason: analyticReason,
-            plugin: plugin,
+            analyticReason: viewModel.analyticReason,
+            plugin: viewModel.plugin,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
-                text: Localization.primaryButton,
-                analyticReason: analyticReason,
-                plugin: plugin,
-                action: onRefresh
+                text: viewModel.refreshButtonTitle,
+                analyticReason: viewModel.analyticReason,
+                plugin: viewModel.plugin,
+                action: viewModel.onRefresh
             )
         )
     }
 }
 
-private enum Localization {
-    static let title = NSLocalizedString(
-        "%1$@ is in Test Mode",
-        comment: "Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name."
-    )
-
-    static let message = NSLocalizedString(
-        "The %1$@ extension cannot be in test mode for In‑Person Payments. "
-            + "Please disable test mode.",
-        comment: """
-                 Error message when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name.
-                 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-                 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-                 """
-    )
-
-    static let primaryButton = NSLocalizedString(
-        "Refresh After Updating",
-        comment: "Button to reload plugin data after updating a card present payments plugin settings"
-    )
-}
-
 struct InPersonPaymentsLiveSiteInTestMode_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsLiveSiteInTestMode(plugin: .wcPay, analyticReason: "", onRefresh: {})
+        InPersonPaymentsLiveSiteInTestMode(viewModel: InPersonPaymentsLiveSiteInTestModeViewModel(plugin: .wcPay, analyticReason: "", onRefresh: {}))
     }
 }

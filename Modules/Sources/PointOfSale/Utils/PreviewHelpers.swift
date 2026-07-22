@@ -552,7 +552,8 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
-    func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    var refundReviewPreparationState: POSRefundReviewPreparationState { .idle }
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult { .preparationError }
     func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
@@ -565,7 +566,7 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 

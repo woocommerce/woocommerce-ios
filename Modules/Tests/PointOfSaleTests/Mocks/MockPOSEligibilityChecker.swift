@@ -16,7 +16,7 @@ final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     }
 
     @MainActor
-    func checkEligibility() async -> POSEligibilityState {
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
         eligibility
     }
 

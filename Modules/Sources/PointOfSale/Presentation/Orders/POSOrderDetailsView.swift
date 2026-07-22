@@ -624,12 +624,17 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundSelectionState = .preparationError
-            return
+        Task { @MainActor in
+            switch await orderListModel.ordersController.prepareRefundReview() {
+            case .ready(var reviewData):
+                reviewData.refundReason = currentRefundReason
+                refundModalState = .review(reviewData)
+            case .preparationError:
+                refundSelectionState = .preparationError
+            case .previewError, .superseded:
+                break
+            }
         }
-        reviewData.refundReason = currentRefundReason
-        refundModalState = .review(reviewData)
     }
 
     func returnToRefundSelection() {

@@ -91,6 +91,10 @@ let package = Package(
             name: "ParcelFittingCheck",
             targets: ["ParcelFittingCheck"]
         ),
+        .library(
+            name: "StoreDesignSystem",
+            targets: ["StoreDesignSystem"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -291,6 +295,9 @@ let package = Package(
             ]
         ),
         .target(
+            name: "StoreDesignSystem"
+        ),
+        .target(
             name: "NetworkingTestsResponsesFixtures",
             path: "Tests/NetworkingTestsResponsesFixtures",
             resources: [.process("Responses")]
@@ -384,6 +391,10 @@ let package = Package(
                 .target(name: "ParcelFittingCheck"),
                 "EventHorizonSDK",
             ]
+        ),
+        .testTarget(
+            name: "StoreDesignSystemTests",
+            dependencies: ["StoreDesignSystem"]
         ),
         .binaryTarget(
             name: "EventHorizonSDK",

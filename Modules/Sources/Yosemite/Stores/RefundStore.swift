@@ -30,6 +30,16 @@ public class RefundStore: Store {
         switch action {
         case .createRefund(let siteID, let orderID, let refund, let onCompletion):
             createRefund(siteID: siteID, orderID: orderID, refund: refund, onCompletion: onCompletion)
+        case .previewRefund(let siteID, let orderID, let lineItems, let onCompletion):
+            previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems, onCompletion: onCompletion)
+        case .createRefundV4(let siteID, let orderID, let reason, let automaticRefund, let restockItems, let lineItems, let onCompletion):
+            createRefundV4(siteID: siteID,
+                           orderID: orderID,
+                           reason: reason,
+                           automaticRefund: automaticRefund,
+                           restockItems: restockItems,
+                           lineItems: lineItems,
+                           onCompletion: onCompletion)
         case .retrieveRefund(let siteID, let orderID, let refundID, let onCompletion):
             retrieveRefund(siteID: siteID, orderID: orderID, refundID: refundID, onCompletion: onCompletion)
         case .retrieveRefunds(let siteID, let orderID, let refundIDs, let deleteStaleRefunds, let onCompletion):
@@ -58,6 +68,41 @@ private extension RefundStore {
 
             self?.upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
                 onCompletion(refund, nil)
+            }
+        }
+    }
+
+    func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem], onCompletion: @escaping (Result<RefundPreview, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let preview = try await remote.previewRefund(for: siteID, orderID: orderID, lineItems: lineItems)
+                onCompletion(.success(preview))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func createRefundV4(siteID: Int64,
+                        orderID: Int64,
+                        reason: String,
+                        automaticRefund: Bool,
+                        restockItems: Bool,
+                        lineItems: [RefundV4LineItem],
+                        onCompletion: @escaping (Result<Refund, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let refund = try await remote.createRefundV4(for: siteID,
+                                                             orderID: orderID,
+                                                             reason: reason,
+                                                             automaticRefund: automaticRefund,
+                                                             restockItems: restockItems,
+                                                             lineItems: lineItems)
+                upsertStoredRefundsInBackground(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund]) {
+                    onCompletion(.success(refund))
+                }
+            } catch {
+                onCompletion(.failure(error))
             }
         }
     }

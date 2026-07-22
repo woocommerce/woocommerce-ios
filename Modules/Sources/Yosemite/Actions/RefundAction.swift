@@ -6,6 +6,15 @@ import Networking
 ///
 public enum RefundAction: Action {
     case createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: (Refund?, Error?) -> Void)
+    case previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem], onCompletion: (Result<RefundPreview, Error>) -> Void)
+
+    case createRefundV4(siteID: Int64,
+                        orderID: Int64,
+                        reason: String,
+                        automaticRefund: Bool,
+                        restockItems: Bool,
+                        lineItems: [RefundV4LineItem],
+                        onCompletion: (Result<Refund, Error>) -> Void)
     case retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: (Refund?, Error?) -> Void)
     case retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], deleteStaleRefunds: Bool, onCompletion: (Error?) -> Void)
     case synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)

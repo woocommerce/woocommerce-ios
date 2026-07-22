@@ -1,139 +1,177 @@
 import SwiftUI
 
+/// Represents the Customer section
+///
 struct OrderCustomerSection: View {
-    @ObservedObject var viewModel: OrderCustomerSectionViewModel
+
+    /// Parent view model to access all data
+    @ObservedObject var viewModel: EditableOrderViewModel
+
+    /// View model for the address form.
+    ///
+    let addressFormViewModel: CreateOrderAddressFormViewModel
+
+    @State private var showAddressForm: Bool = false
 
     var body: some View {
-        Group {
-            if let cardViewModel = viewModel.cardViewModel {
-                VStack(alignment: .leading, spacing: Layout.spacingBetweenHeaderAndCard) {
-                    HStack {
-                        Text(Localization.customerHeader)
-                            .headlineStyle()
-                        Spacer()
-                        searchCustomerView
+        OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
+            .sheet(isPresented: $showAddressForm) {
+                NavigationStack {
+                    switch viewModel.customerNavigationScreen {
+                    case .form:
+                        EditOrderAddressForm(dismiss: { _ in
+                                                showAddressForm.toggle()
+                                             },
+                                             viewModel: addressFormViewModel)
+                    case .selector:
+                        CustomerSelectorView(
+                            siteID: viewModel.siteID,
+                            configuration: .configurationForOrderCustomerSection,
+                            addressFormViewModel: addressFormViewModel) { customer in
+                            viewModel.addCustomerAddressToOrder(customer: customer)
+                        }
                     }
-
-                    CollapsibleCustomerCard(viewModel: cardViewModel)
                 }
-                .padding()
-            } else {
+                .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,
+                                      didDismiss: addressFormViewModel.userDidCancelFlow)
+                .onDisappear {
+                    viewModel.resetAddressForm()
+                }
+            }
+    }
+}
+
+private extension CustomerSelectorViewController.Configuration {
+    static let configurationForOrderCustomerSection = CustomerSelectorViewController.Configuration(
+        title: OrderCustomerLocalization.customerSelectorTitle,
+        disallowSelectingGuest: false,
+        disallowCreatingCustomer: false,
+        showGuestLabel: false,
+        shouldTrackCustomerAdded: true,
+        isModal: true
+    )
+
+    enum OrderCustomerLocalization {
+        static let customerSelectorTitle = NSLocalizedString(
+            "configurationForOrderCustomerSection.customerSelectorTitle",
+            value: "Add customer details",
+            comment: "Title of the order customer selection screen.")
+    }
+}
+
+
+private struct OrderCustomerSectionContent: View {
+
+    /// View model to drive the view content
+    var viewModel: EditableOrderViewModel.CustomerDataViewModel
+
+    @Binding var showAddressForm: Bool
+
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            HStack(alignment: .top) {
+                if viewModel.isDataAvailable {
+                    Text(Localization.customer)
+                        .accessibilityAddTraits(.isHeader)
+                        .headlineStyle()
+                    Spacer()
+
+                    PencilEditButton() {
+                        showAddressForm.toggle()
+                    }
+                    .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
+                }
+            }
+            .padding([.leading, .top, .trailing])
+            .renderedIf(viewModel.isDataAvailable)
+
+            if !viewModel.isDataAvailable {
                 createCustomerView
                     .frame(minHeight: Layout.buttonHeight)
+            } else {
+                customerDataView
             }
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $viewModel.showsCustomerSearch) {
-            NavigationView {
-                CustomerSelectorView(
-                    siteID: viewModel.siteID,
-                    configuration: CustomerSelectorViewController.Configuration(
-                        title: Localization.customerSelectorTitle,
-                        disallowSelectingGuest: viewModel.isCustomerAccountRequired,
-                        disallowCreatingCustomer: true,
-                        showGuestLabel: false,
-                        shouldTrackCustomerAdded: true,
-                        isModal: true
-                    ),
-                    addressFormViewModel: viewModel.addressFormViewModel) { customer in
-                        viewModel.addCustomerFromSearch(customer)
-                    }
-            }
-        }
-        .fullScreenCover(isPresented: $viewModel.showsAddressForm) {
-            NavigationStack {
-                EditOrderAddressForm(dismiss: { _ in
-                    viewModel.showsAddressForm.toggle()
-                },
-                                     viewModel: viewModel.addressFormViewModel)
-            }
-            .discardChangesPrompt(canDismiss: !viewModel.addressFormViewModel.hasPendingChanges,
-                                  didDismiss: viewModel.addressFormViewModel.userDidCancelFlow)
-            .onDisappear {
-                viewModel.resetAddressForm()
-            }
-        }
     }
 
     private var createCustomerView: some View {
         Button(Localization.addCustomerDetails) {
-            viewModel.addCustomerDetails()
+            showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
         .padding([.leading, .trailing])
     }
 
-    private var searchCustomerView: some View {
-        Button(action: {
-            viewModel.searchCustomer()
-        }, label: {
-            Image(systemName: "magnifyingglass")
-        })
-        .buttonStyle(TextButtonStyle())
-        .accessibilityLabel(Localization.searchCustomerAccessibilityLabel)
+    private var customerDataView: some View {
+        Group {
+            addressDetails(title: Localization.billingTitle, formattedAddress: viewModel.billingAddressFormatted)
+            Divider()
+                .padding(.leading)
+            addressDetails(title: Localization.shippingTitle, formattedAddress: viewModel.shippingAddressFormatted)
+        }
+    }
+
+    @ViewBuilder private func addressDetails(title: String, formattedAddress: String?) -> some View {
+        VStack(alignment: .leading, spacing: Layout.verticalAddressSpacing) {
+            Text(title)
+                .headlineStyle()
+            if let formattedAddress, formattedAddress.isNotEmpty {
+                Text(formattedAddress)
+                    .bodyStyle()
+            } else {
+                Text(Localization.noAddress)
+                    .bodyStyle()
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .padding()
     }
 }
 
 // MARK: Constants
-private extension OrderCustomerSection {
+private extension OrderCustomerSectionContent {
     enum Layout {
+        static let verticalHeadlineSpacing: CGFloat = 22.0
+        static let verticalEmailSpacing: CGFloat = 4.0
+        static let verticalAddressSpacing: CGFloat = 6.0
         static let buttonHeight: CGFloat = 56.0
-        static let spacingBetweenHeaderAndCard: CGFloat = 16
     }
 
     enum Localization {
-        static let addCustomerDetails = NSLocalizedString("orderForm.customerSection.addCustomer",
-                                                          value: "Add Customer",
-                                                          comment: "Title text of the button that adds customer data in the order form.")
-        static let customerHeader = NSLocalizedString("orderForm.customerSection.customerHeader",
-                                                      value: "Customer",
-                                                      comment: "Header text of the customer card in the order form.")
-        static let customerSelectorTitle = NSLocalizedString(
-            "orderForm.customerSection.customerSelectorTitle",
-            value: "Add customer details",
-            comment: "Title of the order customer selection screen in the order form.."
+        static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
+        static let addCustomerDetails = NSLocalizedString("Add Customer Details",
+                                                          comment: "Title text of the button that adds customer data when creating a new order")
+        static let editButtonAccessibilityLabel = NSLocalizedString(
+            "Edit Customer Details",
+            comment: "Accessibility label for the button to edit customer details on the New Order screen"
         )
-        static let searchCustomerAccessibilityLabel = NSLocalizedString(
-            "customer.search.button.accessibilityLabel",
-            value: "Search customer",
-            comment: "Accessibility title for the search button on the customer section.")
+
+        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Billing Address section in order customer data")
+        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address section in order customer data")
+
+        static let noAddress = NSLocalizedString("No address specified.", comment: "Placeholder for empty address in order customer data")
     }
 }
 
 struct OrderCustomerSection_Previews: PreviewProvider {
-    static let customer: CollapsibleCustomerCardViewModel.CustomerData = .init(
-        customerID: 0,
-        email: "customer@woo.com",
-        fullName: "T Woo",
-        billingAddressFormatted: "123 60th St\nUSA",
-        shippingAddressFormatted: nil
-    )
     static var previews: some View {
-        Group {
-            OrderCustomerSection(viewModel: .init(siteID: 1,
-                                                  addressFormViewModel: .init(
-                                                    siteID: 1,
-                                                    addressData: .init(billingAddress: nil,
-                                                                       shippingAddress: nil),
-                                                    onAddressUpdate: nil
-                                                  ),
-                                                  customerData: customer,
-                                                  isCustomerAccountRequired: true,
-                                                  isEditable: true,
-                                                  updateCustomer: { _ in },
-                                                  resetAddressForm: {}))
-            OrderCustomerSection(viewModel: .init(siteID: 1,
-                                                  addressFormViewModel: .init(
-                                                    siteID: 1,
-                                                    addressData: .init(billingAddress: nil,
-                                                                       shippingAddress: nil),
-                                                    onAddressUpdate: nil
-                                                  ),
-                                                  customerData: customer,
-                                                  isCustomerAccountRequired: false,
-                                                  isEditable: true,
-                                                  updateCustomer: { _ in },
-                                                  resetAddressForm: {}))
+        let emptyViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
+        let addressViewModel = EditableOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",
+                                                                       billingAddressFormatted: nil,
+                                                                       shippingAddressFormatted: """
+                                                                            Johnny Appleseed
+                                                                            234 70th Street
+                                                                            Niagara Falls NY 14304
+                                                                            US
+                                                                            """)
+
+        ScrollView {
+            OrderCustomerSectionContent(viewModel: emptyViewModel, showAddressForm: .constant(false))
+            OrderCustomerSectionContent(viewModel: addressViewModel, showAddressForm: .constant(false))
         }
     }
 }

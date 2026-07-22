@@ -6,8 +6,6 @@ struct ProductDiscountView: View {
     private let viewModel: ProductDiscountViewModel
     @ObservedObject private var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel
 
-    private let minusSign: String = NumberFormatter().minusSign
-
     @Environment(\.presentationMode) var presentation
 
     init(viewModel: ProductDiscountViewModel) {
@@ -49,8 +47,8 @@ struct ProductDiscountView: View {
                         Text(Localization.discountLabel)
                             .foregroundColor(.secondary)
                         Spacer()
-                        if let discountAmount = discountDetailsViewModel.finalAmountString {
-                            Text(minusSign + discountAmount)
+                        if let discountAmount = discountDetailsViewModel.signedFinalAmountString {
+                            Text(discountAmount)
                                 .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }

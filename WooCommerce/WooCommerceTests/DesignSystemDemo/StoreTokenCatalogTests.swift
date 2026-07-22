@@ -40,7 +40,7 @@ struct StoreTokenCatalogTests {
             .deletingLastPathComponent() // repo root
         let source = try String(
             contentsOf: repoRoot
-                .appendingPathComponent("StoreDesignSystem/Sources/StoreDesignSystem")
+                .appendingPathComponent("Modules/Sources/StoreDesignSystem")
                 .appendingPathComponent(relativePath),
             encoding: .utf8
         )

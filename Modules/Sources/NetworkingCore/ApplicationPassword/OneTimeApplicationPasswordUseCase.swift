@@ -123,12 +123,11 @@ private extension OneTimeApplicationPasswordUseCase {
     }
 
     func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
-        let root = discoveredRoot ?? (siteAddress + Path.root)
+        let root = discoveredRoot ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteAddress)
         return URL(string: root + path)
     }
 
     enum Path {
-        static let root = "/?rest_route=/"
         static let introspect = "wp/v2/users/me/application-passwords/introspect"
         static let applicationPasswords = "wp/v2/users/me/application-passwords/"
     }

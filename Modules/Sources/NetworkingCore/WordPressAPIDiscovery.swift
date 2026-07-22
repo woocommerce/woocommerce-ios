@@ -21,6 +21,12 @@ public struct WordPressAPIDiscovery {
         self.cache = cache
     }
 
+    /// Returns the conventional WordPress REST API root used when discovery is unavailable.
+    ///
+    public static func defaultRESTAPIRootURL(for siteURL: String) -> String {
+        siteURL.trimSlashes() + "/wp-json/"
+    }
+
     /// Discovers the REST API root URL by sending a HEAD request to the given site URL.
     ///
     /// - Parameter siteURL: The site URL to discover the REST API root for.

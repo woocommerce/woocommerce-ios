@@ -166,8 +166,15 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         return onFailure(error)
                     case .success:
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
-                        onPaymentCompletion()
+                        self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
+                            guard let self else { return }
+                            if isEligible {
+                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
+                            } else {
+                                onCompleted()
+                            }
+                            onPaymentCompletion()
+                        }
                     }
                 })
             case .canceled(let cancellationSource, _):

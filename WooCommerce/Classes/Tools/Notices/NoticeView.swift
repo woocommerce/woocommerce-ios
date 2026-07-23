@@ -156,6 +156,10 @@ private extension NoticeView {
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = Metrics.actionButtonContentInsets
+        // On the iOS 26 SDK a configured button draws its own inset, rounded background, which turns the
+        // action area into a floating pill. Clear it so the flush view backgroundColor fills the full frame,
+        // keeping the original two-tone split (only the notice's outer corners are rounded by its container mask).
+        configuration.background = .clear()
         actionButton.configuration = configuration
         actionButton.backgroundColor = Appearance.actionBackgroundColor
     }

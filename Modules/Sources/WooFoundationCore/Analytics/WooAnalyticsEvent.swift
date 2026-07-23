@@ -206,3 +206,41 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - In-Person Payments Card Reader Location Events
+extension WooAnalyticsEvent {
+    /// Analytics events for the outcome of card reader location fetching.
+    ///
+    /// Tracked from the data layer (`CommonReaderConfigProvider`), where the location fetch
+    /// resolves and the failure reason is determined. Defined here (rather than in the app target's
+    /// `InPersonPayments` group) so that Yosemite can reach them.
+    public enum InPersonPaymentsLocation {
+        /// Event property keys.
+        private enum Key {
+            static let siteID = "site_id"
+            static let reason = "reason"
+        }
+
+        /// Reason the location fetch failed. Raw values are sent as the `reason` property.
+        public enum FailureReason: String {
+            case incompleteStoreAddress = "incomplete_store_address"
+            case invalidPostalCode = "invalid_postal_code"
+            case other
+        }
+
+        /// Tracked when the default reader location is fetched successfully.
+        public static func cardReaderLocationSuccess(siteID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationSuccess,
+                              properties: [Key.siteID: "\(siteID)"])
+        }
+
+        /// Tracked when the default reader location fetch fails.
+        public static func cardReaderLocationFailure(siteID: Int64, reason: FailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationFailure,
+                              properties: [
+                                Key.siteID: "\(siteID)",
+                                Key.reason: reason.rawValue
+                              ])
+        }
+    }
+}

@@ -1,26 +1,14 @@
 import Foundation
 import Storage
 import Networking
-import Hardware
-import WooFoundation
 
 
 // MARK: - ReceiptStore
 //
 public class ReceiptStore: Store {
-    private let receiptPrinterService: PrinterService
-    private let fileStorage: FileStorage
     private let remote: ReceiptRemote
 
-    private lazy var currencyFormatter: CurrencyFormatter = {
-        CurrencyFormatter(currencySettings: CurrencySettings())
-    }()
-
-    private lazy var contentAssembler = ReceiptContentAssembler(currencyFormatter: currencyFormatter)
-
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService, fileStorage: FileStorage) {
-        self.receiptPrinterService = receiptPrinterService
-        self.fileStorage = fileStorage
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ReceiptRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -40,14 +28,6 @@ public class ReceiptStore: Store {
         }
 
         switch action {
-        case .print(let order, let info, let completion):
-            print(order: order, parameters: info, completion: completion)
-        case .generateContent(let order, let info, let onContent):
-            generateContent(order: order, parameters: info, onContent: onContent)
-        case .loadReceipt(let order, let onCompletion):
-            loadReceipt(order: order, onCompletion: onCompletion)
-        case .saveReceipt(let order, let info):
-            saveReceipt(order: order, parameters: info)
         case .retrieveReceipt(order: let order, onCompletion: let onCompletion):
             retrieveReceipt(order: order, onCompletion: onCompletion)
         case let .sendReceipt(order, email, onCompletion):
@@ -67,58 +47,6 @@ private extension ReceiptStore {
             case let .failure(error):
                 onCompletion(.failure(error))
             }
-        }
-    }
-
-    func print(order: Order, parameters: CardPresentReceiptParameters, completion: @escaping (PrintingResult) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters, removingHtml: true)
-        receiptPrinterService.printReceipt(content: content, completion: completion)
-    }
-
-    func generateContent(order: Order, parameters: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
-        let renderer = ReceiptRenderer(content: content)
-        onContent(renderer.htmlContent())
-    }
-
-    func generateReceiptContent(order: Order, parameters: CardPresentReceiptParameters, removingHtml: Bool = false) -> ReceiptContent {
-        contentAssembler.makeContent(order: order, parameters: parameters, removingHtml: removingHtml)
-    }
-
-    func loadReceipt(order: Order, onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-
-        guard let outputURL = try? fileURL(order: order),
-              FileManager.default.fileExists(atPath: outputURL.path) else {
-            let error = ReceiptStoreError.fileNotFound
-            onCompletion(.failure(error))
-            return
-        }
-
-        guard let receiptContent: ReceiptContent = try? fileStorage.data(for: outputURL) else {
-            DDLogWarn("⛔️ Unable to load receipt metadata for order: \(order.orderID)")
-            let error = ReceiptStoreError.fileError
-            onCompletion(.failure(error))
-
-            return
-        }
-
-        onCompletion(.success(receiptContent.parameters))
-    }
-
-    func saveReceipt(order: Order, parameters: CardPresentReceiptParameters) {
-        let content = generateReceiptContent(order: order, parameters: parameters)
-
-        guard let outputURL = try? fileURL(order: order) else {
-            DDLogError("⛔️ Unable to create file for receipt for order id: \(order.orderID)")
-
-            return
-        }
-
-
-        do {
-            try fileStorage.write(content, to: outputURL)
-        } catch {
-            DDLogError("⛔️ Unable to save receipt for order id: \(order.orderID)")
         }
     }
 
@@ -173,28 +101,7 @@ private extension ReceiptStore {
     }
 }
 
-private extension ReceiptStore {
-    func fileURL(order: Order) throws -> URL {
-        try FileManager.default.url(for: .documentDirectory,
-                in: .userDomainMask,
-                appropriateFor: nil,
-                create: false)
-            .appendingPathComponent(fileName(order: order))
-            .appendingPathExtension("plist")
-    }
-
-    func fileName(order: Order) -> String {
-        "site-\(order.siteID)-order-id-\(order.orderID)-receipt"
-    }
-}
-
 public enum ReceiptStoreError: Error {
-    /// Signals that the file containing the receipt metadata does not exist
-    case fileNotFound
-    /// There was an error reading the content of the file containing the
-    /// receipt metadata
-    case fileError
-
     /// Store has been unexpectedly deallocated
     case storeDeallocated
 

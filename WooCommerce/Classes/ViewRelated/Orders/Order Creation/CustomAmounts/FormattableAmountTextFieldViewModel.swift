@@ -16,6 +16,10 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     ///
     @Published var textFieldAmountText: String = ""
 
+    /// Whether the amount field should restore focus after the view is rebuilt.
+    ///
+    @Published var isFocused: Bool = true
+
     /// When true, the amount will be reset with the new input instead of appending.
     /// This is useful when we want to edit the amount with a new one from a source different than the view,
     /// otherwise we would be appending non visible decimals on the next time we edit it.

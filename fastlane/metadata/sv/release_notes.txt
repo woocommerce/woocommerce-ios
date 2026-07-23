@@ -1,0 +1,1 @@
+Din integritetsinställning för ”Rapportera krascher” följer dig nu över alla enheter och ominstallationer. Fraktetiketter kräver nu ett giltigt telefonnummer innan de bekräftas. Det är nu enklare att ansluta din kortläsare i liggande läge, och återbetalningsinformation i POS visas tydligt vid laddning och i mörkt läge.

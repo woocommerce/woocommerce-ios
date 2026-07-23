@@ -130,9 +130,7 @@ class AuthenticatedState: StoresManagerState {
                                     cardReaderConfigProvider: ServiceLocator.cardReaderConfigProvider),
             ReceiptStore(dispatcher: dispatcher,
                          storageManager: storageManager,
-                         network: network,
-                         receiptPrinterService: ServiceLocator.receiptPrinterService,
-                         fileStorage: PListFileStorage()),
+                         network: network),
             AnnouncementsStore(dispatcher: dispatcher,
                                storageManager: storageManager,
                                network: network,
@@ -203,7 +201,8 @@ class AuthenticatedState: StoresManagerState {
                     await MainActor.run {
                         ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
                     }
-                }
+                },
+                syncStatusChecker: POSCatalogSyncStatusChecker(grdbManager: ServiceLocator.grdbManager)
             )
             posCatalogEligibilityChecker = eligibilityService
 

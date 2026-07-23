@@ -513,10 +513,23 @@ private extension CollectOrderPaymentUseCase {
         // failed order refresh cannot hide a payment that was definitely taken.
         let retrieveIntentAction = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret) { [weak self] result in
             guard let self else { return }
-            guard let refreshedIntent = try? result.get(),
-                  refreshedIntent.id == paymentIntentForServerCapture.id,
-                  refreshedIntent.metadata?[PaymentIntent.MetadataKeys.orderID] == String(order.orderID),
-                  refreshedIntent.status == .succeeded else {
+
+            let refreshedIntent: PaymentIntent
+            switch result {
+            case .failure(let retrieveError):
+                DDLogInfo("💳 Unable to verify terminal PaymentIntent after payment failure: \(retrieveError)")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            case .success(let intent):
+                refreshedIntent = intent
+            }
+
+            guard refreshedIntent.id == paymentIntentForServerCapture.id else {
+                DDLogInfo("💳 Unable to verify terminal payment: retrieved PaymentIntent does not match the captured intent")
                 return handlePaymentFailureAndRetryPayment(error,
                                                            alertProvider: paymentAlerts,
                                                            paymentGatewayAccount: paymentGatewayAccount,
@@ -525,8 +538,32 @@ private extension CollectOrderPaymentUseCase {
                                                            onCompletion: onCompletion)
             }
 
-            onCompletion(.success(.init(paymentMethod: refreshedIntent.paymentMethod() ?? .unknown,
-                                        receiptParameters: refreshedIntent.receiptParameters())))
+            guard refreshedIntent.metadata?[PaymentIntent.MetadataKeys.orderID] == String(order.orderID) else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent order metadata does not match the order")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            guard refreshedIntent.status == .succeeded else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent status is \(refreshedIntent.status)")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            let capturedPaymentData = CardPresentCapturedPaymentData(
+                paymentMethod: refreshedIntent.paymentMethod() ?? .unknown,
+                receiptParameters: refreshedIntent.receiptParameters()
+            )
+            handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+            onCompletion(.success(capturedPaymentData))
         }
         stores.dispatch(retrieveIntentAction)
     }

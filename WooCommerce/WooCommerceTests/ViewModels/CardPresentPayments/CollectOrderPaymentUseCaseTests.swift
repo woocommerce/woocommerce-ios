@@ -243,6 +243,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(retrievedClientSecret, clientSecret)
+        XCTAssertTrue(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
     }
 
     func test_ambiguous_server_capture_error_does_not_return_success_when_refreshed_intent_requires_capture() throws {
@@ -311,7 +312,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         let refreshedIntent = intent.copy(status: .succeeded)
         let error = CardReaderServiceError.paymentCapture()
         mockFailedCardPresentPaymentActions(intent: intent, error: error)
-        receiptEligibilityUseCase.isEligibleForBackendReceipts = false
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         var didRetrieveIntent = false
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             guard case let .retrievePaymentIntent(_, completion) = action else { return }

@@ -62,6 +62,29 @@ public struct WordPressAPIDiscovery {
 /// only one set of requests is performed and all callers receive the same result.
 ///
 private actor DiscoveryCoordinator {
+    private enum RESTAPIRootCandidate {
+        case discovered
+        case conventional
+        case query
+
+        static let probeOrder: [Self] = [
+            .discovered,
+            .conventional,
+            .query
+        ]
+
+        func url(for siteURL: String, discoveredRoot: String?) -> String? {
+            switch self {
+            case .discovered:
+                return discoveredRoot
+            case .conventional:
+                return WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteURL)
+            case .query:
+                return WordPressAPIDiscovery.queryRESTAPIRootURL(for: siteURL)
+            }
+        }
+    }
+
     private struct RequestKey: Hashable {
         let siteURL: String
         let sessionID: ObjectIdentifier
@@ -105,11 +128,9 @@ private actor DiscoveryCoordinator {
 
         let task = Task<String?, Never> {
             let discoveredRoot = await Self.discoveredRESTAPIRootURL(siteURL: siteURL, session: session)
-            var candidates = [
-                discoveredRoot,
-                WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteURL),
-                WordPressAPIDiscovery.queryRESTAPIRootURL(for: siteURL)
-            ].compactMap { $0 }
+            var candidates = RESTAPIRootCandidate.probeOrder.compactMap {
+                $0.url(for: siteURL, discoveredRoot: discoveredRoot)
+            }
 
             // WordPress commonly advertises `/wp-json/`, so avoid probing it twice when it is
             // also the conventional candidate.

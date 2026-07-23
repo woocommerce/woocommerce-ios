@@ -11,14 +11,14 @@ struct WooAnalyticsEvent_ReceiptTests {
 
     // MARK: - payment_method_type
 
-    @Test func test_receiptPrintTapped_when_cardPresent_paymentMethod_then_payment_method_type_is_card() {
+    @Test func test_receiptPrintTapped_when_backend_cardPresent_paymentMethod_then_payment_method_type_is_card() {
         // Given
         let paymentMethod = PaymentMethod.cardPresent(details: .fake())
 
         // When
         let event = WooAnalyticsEvent.InPersonPayments.receiptPrintTapped(countryCode: .US,
                                                                           cardReaderModel: "WISEPAD_3",
-                                                                          source: .local,
+                                                                          source: .backend,
                                                                           currency: "USD",
                                                                           paymentMethod: paymentMethod)
 
@@ -28,14 +28,14 @@ struct WooAnalyticsEvent_ReceiptTests {
         #expect(event.properties["currency"] as? String == "USD")
     }
 
-    @Test func test_receiptPrintTapped_when_interacPresent_paymentMethod_then_payment_method_type_is_card_interac() {
+    @Test func test_receiptPrintTapped_when_backend_interacPresent_paymentMethod_then_payment_method_type_is_card_interac() {
         // Given
         let paymentMethod = PaymentMethod.interacPresent(details: .fake())
 
         // When
         let event = WooAnalyticsEvent.InPersonPayments.receiptPrintTapped(countryCode: .CA,
                                                                           cardReaderModel: "WISEPAD_3",
-                                                                          source: .local,
+                                                                          source: .backend,
                                                                           currency: "CAD",
                                                                           paymentMethod: paymentMethod)
 
@@ -75,11 +75,11 @@ struct WooAnalyticsEvent_ReceiptTests {
         #expect(event.properties["payment_method_type"] == nil)
     }
 
-    @Test func test_receiptEmailTapped_when_currency_and_paymentMethod_then_includes_both() {
+    @Test func test_receiptEmailTapped_when_api_currency_and_paymentMethod_then_includes_both() {
         // Given, When
         let event = WooAnalyticsEvent.InPersonPayments.receiptEmailTapped(countryCode: .US,
                                                                          cardReaderModel: "WISEPAD_3",
-                                                                         source: .local,
+                                                                         source: .api,
                                                                          currency: "USD",
                                                                          paymentMethod: .card)
 

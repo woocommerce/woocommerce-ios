@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-06-29 16:56:47+0000 */
+/* Translation-Revision-Date: 2026-07-17 11:47:41+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9834,6 +9834,18 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "إعدادات WooCommerce";
 
+/* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.message" = "لديك متطلب متأخر واحد على الأقل. يمكنك تخطي هذه الخطوة ومواصلة قبول المدفوعات، ولكن إذا كان هذا المتطلب يحظر حسابك، فقد يتم رفض بعض المعاملات إلى أن تُعالج المشكلة.";
+
+/* Button to open a web view and resolve overdue requirements before continuing with In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton" = "الحل الآن";
+
+/* Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.skipButton" = "تخطي";
+
+/* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.title" = "متطلبات متأخرة على حسابك";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "الرجوع إلى الطلب";
 
@@ -11324,6 +11336,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver label for the 2-5 star buttons in the maximum-rating picker. %1$@ is the formatted star count. */
 "newReviewNotificationPreferencesDetailView.star.accessibilityFormat.plural" = "%1$@ نجوم";
 
+/* VoiceOver label for the 1-star button in the maximum-rating picker. %1$@ is the formatted star count. */
+"newReviewNotificationPreferencesDetailView.star.accessibilityFormat.singular" = "%1$@  نجمة";
+
 /* Title of the new-review push notification preferences detail screen. */
 "newReviewNotificationPreferencesDetailView.title" = "مراجعات جديدة";
 
@@ -12252,8 +12267,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "خطأ في أثناء محاولة معالجة المدفوعات. حاول مرة أخرى.";
 
+/* A description shown below the Exit POS button while the POS catalog is syncing. */
+"pointOfSale.catalogLoadingView.backgroundSyncSubtitle" = "يمكنك المغادرة وستستمر عملية المزامنة في الخلفية.";
+
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "إنهاء POS";
+
+/* A hint within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.hint" = "قد تستغرق مزامنة الكتالوج بضع دقائق.";
+
+/* Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat" = "%1$ld من أصل ⁦%2$ld⁩ عناصر";
+
+/* Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat.singular" = "%1$ld من أصل ⁦%2$ld⁩ عنصر";
+
+/* Progress text shown while the POS catalog is being prepared before item counts are available. */
+"pointOfSale.catalogLoadingView.preparing" = "جارٍ إعداد الكتالوج...";
 
 /* A title of a full screen view that is displayed while the POS catalog is being synced. */
 "pointOfSale.catalogLoadingView.title" = "مزامنة الكتالوج";
@@ -12276,6 +12306,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "إنهاء POS";
 
+/* The title of the menu button to lock Point of Sale, requiring PIN entry to continue. */
+"pointOfSale.floatingButtons.lock.button.title" = "قفل نقطة البيع";
+
 /* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.orders.button.title" = "الطلبات";
 
@@ -12293,6 +12326,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "الإعدادات";
+
+/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
+"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
 
 /* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.edit.button.accessibilityLabel" = "تحرير";
@@ -12420,6 +12456,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "نجح الدفع";
 
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pointOfSale.refunds.paymentMethodDescription.viaPaymentMethod" = "عبر %1$@";
+
 /* Error message shown when confirming a scan-to-pay payment fails in Point of Sale. */
 "pointOfSale.scanToPay.failedToConfirmPayment.errorMessage" = "حدث خطأ في أثناء تأكيد الدفع. حاول مرة أخرى.";
 
@@ -12468,6 +12507,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the view where an email address should be entered when sending receipts */
 "pointOfSale.sendreceipt.textfield.placeholder" = "كتابة رسالة عبر البريد الإلكتروني";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the exit permission tries to leave Point of Sale. */
+"pointOfSaleDashboard.exit.overrideReason" = "مطلوب الحصول على الموافقة للخروج من نظام نقاط البيع";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "إلغاء";
 
@@ -12491,6 +12533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "الإعدادات";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
+"pointOfSaleDashboard.settings.overrideReason" = "مطلوب الحصول على الموافقة لفتح الإعدادات";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "إلغاء";
@@ -12552,11 +12597,35 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "قارئات البطاقات";
 
+/* Description of Receipt printer settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle" = "إدارة إتصالات طابعة الإيصالات";
+
+/* Navigation title of Receipt printer settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle" = "طابعات الإيصالات";
+
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "الأجهزة";
 
 /* Button to dismiss the support form from POS settings. */
 "pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "إلغاء";
+
+/* Subtitle for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle" = "قم بتوصيل طابعة الإيصالات الخاصة بك وابدأ في طباعة الإيصالات";
+
+/* Title for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectTitle" = "توصيل الطابعة";
+
+/* Label for the connected receipt printer's name in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle" = "اسم الجهاز";
+
+/* Title for the receipt printer disconnect button when a printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle" = "قطع الاتصال عن الطابعة";
+
+/* Text shown when no receipt printer is connected in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerNotConnected" = "الطابعة غير متصلة";
+
+/* Navigation title for receipt printers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.printersTitle" = "طابعات الإيصالات";
 
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "البطارية";
@@ -12629,6 +12698,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "المتجر";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
+"pointOfSaleSettingsView.editOverrideReason" = "مطلوب الحصول على الموافقة لتغيير الإعدادات";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
+"pointOfSaleSettingsView.manageStaffOverrideReason" = "مطلوب الحصول على الموافقة لإدارة فريق العمل";
 
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "الإعدادات";
@@ -13017,6 +13092,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback label/placeholder text for the search field in Point of Sale. */
 "pos.itemListView.searchField.label" = "البحث";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the create-coupons permission tries to create a coupon. */
+"pos.itemlistview.couponOverrideReason" = "مطلوب الحصول على الموافقة لإنشاء القسائم";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "القسائم";
 
@@ -13113,6 +13191,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.title" = "يتعذر تحميل تفاصيل الاسترداد";
 
+/* Accessibility label for the order items section while refund details are loading. */
+"pos.orderDetailsView.loadingItems.accessibilityLabel" = "جارٍ تحميل العناصر";
+
+/* Accessibility label for the refunded items section while refund details are loading. */
+"pos.orderDetailsView.loadingRefundedItems.accessibilityLabel" = "جارٍ تحميل العناصر المستردة";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "المزيد من الإجراءات";
 
@@ -13127,6 +13211,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the issue-refunds permission tries to start a refund. %1$@ is the order number. */
+"pos.orderDetailsView.refundOverride.description" = "مطلوب الحصول على الموافقة على أمر الاسترداد رقم #%1$@";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "عملية استرداد الأموال رقم ⁦%1$d⁩";
@@ -13236,6 +13323,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
 
+/* Button title on the Point of Sale payment success screen for printing a receipt for the completed order. */
+"pos.paymentSuccess.button.printReceipt" = "طباعة الإيصال";
+
 /* Accessibility label for the delete key on the POS PIN numpad */
 "pos.pinEntry.delete.accessibilityLabel" = "حذف";
 
@@ -13298,6 +13388,69 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "موافق";
+
+/* Button to start printer discovery after pairing in POS settings. */
+"pos.printerSetup.connectButton" = "توصيل الطابعة";
+
+/* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
+"pos.printerSetup.connecting.format" = "جارٍ الاتصال بـ %1$@…";
+
+/* Message shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.message" = "تعذر علينا الاتصال بطابعتك. يُرجى المحاولة مرة أخرى.";
+
+/* Title shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.title" = "حدث خطأ ما";
+
+/* Button to close the receipt printer setup without connecting in POS settings. */
+"pos.printerSetup.foundMultiple.cancelButton" = "إلغاء";
+
+/* Button in a printer row to connect to that receipt printer in POS settings. */
+"pos.printerSetup.foundMultiple.connectButton" = "اتصال";
+
+/* Accessibility label for the connect button in a printer row in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundMultiple.connectButton.accessibilityLabel" = "الاتصال ب %1$@";
+
+/* Label shown next to a spinner while receipt printer scanning continues in POS settings. */
+"pos.printerSetup.foundMultiple.scanningLabel" = "الفحص بحثًا عن الطابعات";
+
+/* Title shown above the list of discovered receipt printers in POS settings. */
+"pos.printerSetup.foundMultiple.title" = "تم العثور على العديد من الطابعات";
+
+/* Button to connect to the single discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.connectButton" = "الاتصال بالطابعة";
+
+/* Button to skip the discovered receipt printer and keep searching in POS settings. */
+"pos.printerSetup.foundOne.keepSearchingButton" = "الاستمرار في البحث";
+
+/* Message asking the merchant to confirm connecting to the discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.message" = "هل تريد الاتصال بهذه الطابعة؟";
+
+/* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundOne.titleFormat" = "تم العثور على %1$@";
+
+/* Message shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.pairInSettingsMessage" = "تأكد من تشغيل طابعتك وإقرانها في تطبيق الإعدادات ضمن خيار البلوتوث، ثم ابحث مرة أخرى.";
+
+/* Title shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.title" = "لم يتم العثور على طابعات";
+
+/* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
+"pos.printerSetup.pair.enableBluetoothInstruction" = "تم إيقاف تشغيل الوصول عبر البلوتوث. اضغط على \"فتح الإعدادات\" لتشغيله، ثم قم بإقران طابعتك ضمن خيار البلوتوث.";
+
+/* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
+"pos.printerSetup.pair.pairInSettingsInstruction" = "قم بتشغيل طابعة الإيصالات من Star Micronics، ثم قم بإقرانها في تطبيق \"الإعدادات\" ضمن خيار \"البلوتوث\". بعد إقرانها، انقر على \"توصيل الطابعة\" للعثور عليها.";
+
+/* Title for the printer pairing step in POS settings. */
+"pos.printerSetup.pair.title" = "إقران طابعتك";
+
+/* Button to retry receipt printer discovery in POS settings. */
+"pos.printerSetup.searchAgainButton" = "البحث مجددًا";
+
+/* Message shown while discovering receipt printers in POS settings. */
+"pos.printerSetup.searching" = "جارٍ البحث عن طابعات...";
+
+/* Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS. */
+"pos.printerSetup.settingsButton" = "فتح الإعدادات";
 
 /* Error shown when POS tries to process a second refund while another refund is in progress. */
 "pos.refund.processing.error.alreadyInProgress" = "تجري الآن عملية استرداد أحد المبالغ. يُرجى الانتظار حتى اكتمالها.";
@@ -13567,6 +13720,9 @@ which should be translated separately and considered part of this sentence. */
 /* Payment method description for POS refunds. %1$@ is the payment method title, %2$@ is card details. */
 "pos.refundSubmissionAdaptor.paymentMethodDescription.viaCardPaymentMethod" = "عبر %1$@ بواسطة %2$@";
 
+/* Payment method description for POS refunds. %1$@ is the payment method title. */
+"pos.refundSubmissionAdaptor.paymentMethodDescription.viaPaymentMethod" = "عبر %1$@";
+
 /* Button to dismiss the refund success screen */
 "pos.refundSuccessView.doneButton" = "تم";
 
@@ -13608,6 +13764,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "لماذا يتعذر علي رؤية منتجاتي؟";
+
+/* Display name for the admin POS staff role. */
+"pos.staffPreset.admin" = "مشرف";
+
+/* Display name for the cashier POS staff role. */
+"pos.staffPreset.cashier" = "أمين الصندوق";
+
+/* Display name for the manager POS staff role. */
+"pos.staffPreset.manager" = "مدير";
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
@@ -13665,6 +13830,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "المدفوعات النقدية";
+
+/* Title for the primary Point of Sale checkout button that starts the card reader connection flow. */
+"pos.totalsView.connectCardReader.button.title.1" = "توصيل قارئ البطاقة";
 
 /* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
 "pos.totalsView.customAmountsTotal" = "مبالغ مخصصة";
@@ -13758,6 +13926,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for updating the catalog manually. */
 "posSettingsLocalCatalogDetailView.updateCatalog" = "تحديث الكتالوج";
+
+/* Button text shown while a manual POS catalog update is preparing before item counts are available. */
+"posSettingsLocalCatalogDetailView.updateCatalogPreparing" = "جارٍ الإعداد...";
+
+/* Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat" = "%1$ld من أصل ⁦%2$ld⁩ عناصر";
+
+/* Button text shown during a manual POS catalog update when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular" = "%1$ld من أصل ⁦%2$ld⁩ عنصر";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
 "posSettingsLocalCatalogViewModel.catalogSizeFormat" = "أنواع⁦%1$d⁩ المنتجات ⁦%2$ld⁩";
@@ -14683,6 +14860,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.title" = "يتعذر تحديد صورة";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card, which creates a live transaction and incurs processing fees */
+"setUpTapToPayInformation.tryPayment.hint" = "جرّب إجراء دفعة فعلية باستخدام بطاقتك الخاصة (ثم استرد المبلغ بعد الانتهاء؛ مع تطبيق رسوم المعالجة).";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees. */
+"setUpTapToPayPaymentPrompt.description" = "جرّب إجراء دفعة فعلية بقيمة %1$@ باستخدام بطاقة الخصم أو الائتمان الخاصة بك. يمكنك استرداد المبلغ المدفوع بعد الانتهاء، مع تطبيق رسوم المعالجة.";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"setUpTapToPayPaymentPrompt.title" = "هل ترغب في تجربة الدفع؟";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Payment Complete";
 
@@ -15221,6 +15407,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when there is a timeout error */
 "supportDiagnosticsService.error.timeout" = "يستغرق موقعك وقتًا طويلاً للغاية للاستجابة.\n\nيُرجى الاتصال بمزود الخدمة الخاص بك للحصول على مزيد من المساعدة.";
+
+/* Message when WooCommerce plugin must be updated for push notifications. %1$@ is the required WooCommerce plugin version. */
+"supportDiagnosticsService.error.wooCommercePluginUpdateRequired" = "يتعين تحديث إضافة WooCommerce لتمكين تنبيهات الدفع.\n\nحدّث WooCommerce إلى الإصدار %1$@ أو أحدث، ثم أعد محاولة التسجيل.";
 
 /* Message when we can't reach WPCom */
 "supportDiagnosticsService.error.wpcomConnection" = "يتعذر علينا الاتصال بـ WordPress.com الآن.\n\nيُرجى المحاولة مرة أخرى بعد بضع دقائق.";

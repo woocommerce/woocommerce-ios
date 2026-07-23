@@ -232,15 +232,11 @@ final class OrdersRootViewController: UIViewController {
         }
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            self?.dismiss(animated: true) {
+            guard let self else { return }
+
+            self.dismiss(animated: true) { [weak self] in
                 self?.navigateToOrderDetail(order) { [weak self] _ in
-                    guard let self,
-                          let orderDetailsViewController = self.orderDetailsViewController else {
-                        return
-                    }
-                    let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-                    paymentMethodsViewController.parentController = orderDetailsViewController
-                    orderDetailsViewController.present(paymentMethodsViewController, animated: true)
+                    self?.presentPaymentMethods(viewModel: paymentMethodsViewModel)
                 }
             }
         }
@@ -643,6 +639,26 @@ private extension OrdersRootViewController {
         ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
             onCompletion?(true)
         }
+    }
+
+    func presentPaymentMethods(viewModel: PaymentMethodsViewModel) {
+        guard let presenter = paymentMethodsPresenter else {
+            DDLogError("⛔️ Unable to present payment methods after creating order.")
+            return
+        }
+
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel)
+        paymentMethodsViewController.parentController = presenter
+        presenter.present(paymentMethodsViewController, animated: true)
+    }
+
+    var paymentMethodsPresenter: UIViewController? {
+        if let orderDetailsViewController,
+           orderDetailsViewController.viewIfLoaded?.window != nil {
+            return orderDetailsViewController
+        }
+
+        return navigationController?.visibleViewController ?? navigationController ?? self
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

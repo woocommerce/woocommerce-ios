@@ -276,6 +276,24 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
+    func test_it_sorts_order_custom_fields_by_metadata_id_when_converting_from_storage() throws {
+        // Given
+        let customFields = [
+            MetaData(metadataID: 3, key: "Third", value: "Value 3"),
+            MetaData(metadataID: 1, key: "First", value: "Value 1"),
+            MetaData(metadataID: 2, key: "Second", value: "Value 2")
+        ]
+        let order = makeOrder().copy(siteID: 3, orderID: 98, customFields: customFields)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 98))
+        XCTAssertEqual(storageOrder.toReadOnly().customFields.map { $0.metadataID }, [1, 2, 3])
+    }
+
     func test_it_replaces_existing_order_custom_field_in_storage() throws {
         // Given
         let originalCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")

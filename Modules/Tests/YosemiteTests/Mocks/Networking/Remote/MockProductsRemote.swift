@@ -36,6 +36,9 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `addProduct`
     private var addProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
+    /// The results to return based on the given site and product IDs in `duplicateProduct`
+    private var duplicateProductResultsByKey = [ResultKey: Result<Int64, Error>]()
+
     /// The results to return based on the given site ID in `deleteProduct`
     private var deleteProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
@@ -64,6 +67,9 @@ final class MockProductsRemote {
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
+    /// The number of times that `duplicateProduct()` was invoked.
+    private(set) var invocationCountOfDuplicateProduct: Int = 0
+
     /// The last requested page size for popular products
     private(set) var lastRequestedPageSize: Int?
 
@@ -88,6 +94,13 @@ final class MockProductsRemote {
     ///
     func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
         addProductResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `duplicateProduct()` is called.
+    ///
+    func whenDuplicatingProduct(siteID: Int64, productID: Int64, thenReturn result: Result<Int64, Error>) {
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        duplicateProductResultsByKey[key] = result
     }
 
     /// Set the value passed to the `completion` block if `deleteProduct()` is called.
@@ -196,6 +209,22 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for site ID \(product.siteID)")
+            }
+        }
+    }
+
+    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
+
+            self.invocationCountOfDuplicateProduct += 1
+            let key = ResultKey(siteID: siteID, productIDs: [productID])
+            if let result = self.duplicateProductResultsByKey[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
             }
         }
     }

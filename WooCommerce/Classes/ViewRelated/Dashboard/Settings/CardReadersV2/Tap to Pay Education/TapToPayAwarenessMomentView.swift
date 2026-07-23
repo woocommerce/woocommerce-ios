@@ -30,12 +30,15 @@ struct TapToPayAwarenessMomentView: View {
                 Text(Localization.title)
                     .font(.title.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal)
                 Text(Localization.subtitle)
                     .font(.title3)
                     .multilineTextAlignment(.center)
+                    .padding(.horizontal)
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: Constants.maxImageHeight)
 
                 Spacer()
 
@@ -45,6 +48,7 @@ struct TapToPayAwarenessMomentView: View {
                     dismiss()
                 })
                 .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal)
 
                 Button(Localization.learnMore, action: {
                     analytics.track(.aboutTapToPayOnIPhoneTapped)
@@ -52,9 +56,9 @@ struct TapToPayAwarenessMomentView: View {
                     dismiss()
                 })
                 .buttonStyle(TextButtonStyle())
+                .padding(.horizontal)
                 .padding(.bottom)
             }
-            .padding([.horizontal])
             .wooNavigationBarStyle()
             .toolbarBackground(.hidden, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
@@ -75,6 +79,10 @@ struct TapToPayAwarenessMomentView: View {
             }
         }
     }
+}
+
+private enum Constants {
+    static let maxImageHeight: CGFloat = 350
 }
 
 private enum Localization {

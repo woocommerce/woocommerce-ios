@@ -165,21 +165,15 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         CardPresentPaymentOnboardingStateCache.shared.invalidate()
                         return onFailure(error)
                     case .success(let paymentData):
-                        // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-
                         self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
                             guard let self else { return }
-                            switch isEligible {
-                            case true:
+                            if isEligible {
                                 self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider,
                                                                 paymentMethod: paymentData.paymentMethod,
                                                                 onCompleted: onCompleted)
-                            case false:
-                                self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                              paymentMethod: paymentData.paymentMethod,
-                                                              alertProvider: paymentAlertProvider,
-                                                              onCompleted: onCompleted)
+                            } else {
+                                onCompleted()
                             }
                             onPaymentCompletion()
                         }
@@ -723,7 +717,6 @@ private extension CollectOrderPaymentUseCase {
     }
 
     /// Allow merchants to print or email backend-generated receipts.
-    /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
     func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                     paymentMethod: PaymentMethod?,
@@ -753,73 +746,6 @@ private extension CollectOrderPaymentUseCase {
 
             alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: receiptState))
         })
-    }
-
-
-    /// Allow merchants to print or email locally-generated receipts.
-    ///
-    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters?,
-                             paymentMethod: PaymentMethod?,
-                             alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
-                             onCompleted: @escaping () -> ()) {
-        // Present receipt alert
-        alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
-            guard let self else { return }
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Delegate print action
-            Task { @MainActor in
-                await ReceiptActionCoordinator.printReceipt(for: order,
-                                                            params: receiptParameters,
-                                                            countryCode: configuration.countryCode,
-                                                            cardReaderModel: self.analyticsTracker.connectedReaderModel,
-                                                            paymentMethod: paymentMethod,
-                                                            stores: self.stores)
-
-                // Inform about flow completion.
-                onCompleted()
-            }
-        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
-            guard let self else { return }
-
-            alertsPresenter.dismiss()
-
-            analyticsTracker.trackEmailTapped(currency: order.currency, paymentMethod: paymentMethod)
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Request & present email
-            paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
-                self?.presentEmailForm(content: emailContent, paymentMethod: paymentMethod, onCompleted: onCompleted)
-            }
-        }, noReceiptAction: {
-            // Inform about flow completion.
-            onCompleted()
-        })))
-    }
-
-    /// Presents the native email client with the provided content.
-    ///
-    func presentEmailForm(content: String, paymentMethod: PaymentMethod?, onCompleted: @escaping () -> ()) {
-        let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: analyticsTracker.connectedReaderModel,
-                                                                    currency: order.currency,
-                                                                    paymentMethod: paymentMethod)
-        receiptEmailCoordinator = coordinator
-        coordinator.presentEmailForm(data: .init(content: content,
-                                                 order: order,
-                                                 storeName: stores.sessionManager.defaultSite?.name),
-                                     from: rootViewController,
-                                     completion: onCompleted)
     }
 
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
@@ -1135,8 +1061,4 @@ extension ServerSidePaymentCaptureError: CardPaymentErrorProtocol {
     var requiresFallbackPaymentMethod: Bool {
         false
     }
-}
-
-enum CollectOrderPaymentReceiptError: Error {
-    case noReceiptDataBecauseSuccessInferred
 }

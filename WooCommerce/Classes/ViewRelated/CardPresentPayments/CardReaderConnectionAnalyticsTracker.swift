@@ -168,6 +168,14 @@ final class CardReaderConnectionAnalyticsTracker {
         )
     }
 
+    /// Called when the user taps to fix a missing/incomplete store address from the connection error alert.
+    func cardReaderLocationMissingTapped() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardReaderLocationMissingTapped(
+            gatewayID: gatewayID,
+            countryCode: configuration.countryCode)
+        )
+    }
+
     enum ConnectionType: String {
         case automaticReconnection = "automatic_reconnection"
         case userInitiated = "user_initiated"

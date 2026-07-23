@@ -2219,7 +2219,7 @@ extension WooAnalyticsEvent {
         /// Tracked when the user taps on the "See Receipt" button to view a receipt.
         /// - Parameters:
         ///   - countryCode: the country code of the store.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptViewTapped(countryCode: CountryCode, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptViewTapped,
@@ -2231,7 +2231,7 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptEmailTapped(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailTapped,
@@ -2247,7 +2247,7 @@ extension WooAnalyticsEvent {
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptEmailFailed(error: Error, countryCode: CountryCode? = nil, cardReaderModel: String? = nil, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailFailed,
@@ -2277,7 +2277,7 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptEmailSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .receiptEmailSuccess,
@@ -2292,7 +2292,7 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the model type of the card reader.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptPrintTapped(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2309,7 +2309,7 @@ extension WooAnalyticsEvent {
         ///   - error: the error to be included in the event properties.
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptPrintFailed(error: Error, countryCode: CountryCode? = nil, cardReaderModel: String? = nil, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2326,7 +2326,7 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptPrintCanceled(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2342,7 +2342,7 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - countryCode: the country code of the store.
         ///   - cardReaderModel: the country code of the store.
-        ///   - source: whether is a local-generated, or backend-generated receipt.
+        ///   - source: source of the receipt flow.
         ///
         static func receiptPrintSuccess(countryCode: CountryCode?, cardReaderModel: String?, source: ReceiptSource) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [
@@ -2366,7 +2366,6 @@ extension WooAnalyticsEvent {
         }
 
         enum ReceiptSource: String {
-            case local
             case backend
             case api
         }
@@ -2419,6 +2418,15 @@ extension WooAnalyticsEvent {
         static func cardReaderLocationPermissionRequiredShown(gatewayID: String?,
                                                               countryCode: CountryCode) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderLocationPermissionRequiredShown,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: gatewayID)
+                              ])
+        }
+
+        static func cardReaderLocationMissingTapped(gatewayID: String?,
+                                                    countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationMissingTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: safeGatewayID(for: gatewayID)

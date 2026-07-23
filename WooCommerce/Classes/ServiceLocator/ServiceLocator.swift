@@ -26,8 +26,6 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
-    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
-
     private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
 
     private static var _remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? = {
@@ -115,11 +113,15 @@ final class ServiceLocator {
     private static var _cardReader: CardReaderService = NoOpCardReaderService()
     #endif
 
-    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider()
+    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider(analytics: analytics)
 
     /// Support for printing receipts
     ///
     private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
+
+    /// Support for discovering and connecting to external receipt printers
+    ///
+    private static var _printerDiscovery: PrinterDiscoveryService = StarPrinterService()
 
     /// Observer for network connectivity
     ///
@@ -215,10 +217,6 @@ final class ServiceLocator {
     /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
     static var authenticationManager: Authentication {
         return _authenticationManager
-    }
-
-    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
-        return _ciabEligibilityChecker
     }
 
     /// Shipping Settings
@@ -349,6 +347,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ReceiptPrinterService protocol.
     static var receiptPrinterService: PrinterService {
         _receiptPrinter
+    }
+
+    /// Provides the access point to the receipt printer device service used to discover and connect to physical printers.
+    /// - Returns: An implementation of the ReceiptPrinterServiceProtocol protocol.
+    static var posReceiptPrinterService: ReceiptPrinterServiceProtocol {
+        ReceiptPrinterService(printerDiscoveryService: _printerDiscovery)
     }
 
     /// Provides access point to the ConnectivityObserver.

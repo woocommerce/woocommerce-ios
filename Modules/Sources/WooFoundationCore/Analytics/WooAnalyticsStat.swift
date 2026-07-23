@@ -246,6 +246,9 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
+    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
+    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+
     // MARK: Site creation
     //
     case siteCreated = "login_woocommerce_site_created"
@@ -344,6 +347,9 @@ public enum WooAnalyticsStat: String {
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
+    case cardReaderLocationSuccess = "card_reader_location_success"
+    case cardReaderLocationFailure = "card_reader_location_failure"
+    case cardReaderLocationMissingTapped = "card_reader_location_missing_tapped"
 
     // MARK: Card Reader Software Update Events
     //
@@ -435,12 +441,6 @@ public enum WooAnalyticsStat: String {
     case orderDetailTrashButtonTapped = "order_detail_trash_tapped"
     case orderDetailEditAddressMapPickerTapped = "order_detail_edit_address_map_picker_tapped"
     case orderDetailEditAddressMapPickerUseAddressTapped = "order_detail_edit_address_map_picker_use_address_tapped"
-
-    // MARK: Test order
-    //
-    case orderListTestOrderDisplayed = "order_list_test_order_displayed"
-    case orderListTryTestOrderTapped = "order_list_try_test_order_tapped"
-    case testOrderStartTapped = "test_order_start_tapped"
 
     // MARK: Order Data/Action Events
     //
@@ -636,8 +636,12 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wooPushTokenDeleteSuccess = "woo_push_token_delete_success"
+    case wooPushTokenDeleteError = "woo_push_token_delete_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+    case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
+    case wpcomDeviceEnablePushNotificationsError = "wpcom_device_enable_push_notifications_error"
 
     case pushNotificationsCardView = "push_notifications_card_view"
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
@@ -1253,7 +1257,6 @@ public enum WooAnalyticsStat: String {
     // MARK: Connectivity Tool
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
-    case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
     case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App
@@ -1458,10 +1461,11 @@ extension WooAnalyticsStat {
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
             return false
-        // Per-site push token registration events attribute properties to the target site via a factory,
-        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
+        // Per-site push token registration/deletion events attribute properties to the target site via a
+        // factory, so opt out of the default-site enrichment that would otherwise overwrite `blog_id` /
+        // `site_url` with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
+             .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
             return false
         default:
             return true

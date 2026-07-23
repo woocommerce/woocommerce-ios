@@ -119,14 +119,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case splitViewInProductsTab
 
-    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
-    ///
-    case subscriptionsInOrderCreationUI
-
-    /// Enables a new customer creation flow in order creation for subscriptions support.
-    ///
-    case subscriptionsInOrderCreationCustomers
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
@@ -163,31 +155,15 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case productImageOptimizedHandling
 
-    /// Shows inventory levels and inventory status in POS item cards
-    ///
-    case inventoryProductLabelsInPOS
-
-    /// Enables displaying Point Of Sale details in order list and order details
-    ///
-    case pointOfSaleOrdersi1
-
-    /// Enables displaying Point Of Sale as a filter in order list
-    ///
-    case pointOfSaleOrdersi2
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
-
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
 
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
     ///
     case pointOfSaleFTSSearch
 
-    /// Enables a new Bookings tab for CIAB sites
+    /// Legacy Bookings tab flag.
     ///
     case ciabBookings
 
@@ -240,17 +216,13 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables the reschedule booking entry point in booking details
+    /// Legacy booking reschedule entry point flag.
     ///
     case ciabBookingReschedule
 
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel
-
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
 
     /// Enables the WooAI Assistant.
     ///
@@ -271,4 +243,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
+
+    case posRefundsV4
 }

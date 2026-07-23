@@ -201,6 +201,11 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
             throw error
         }
     }
+
+    @MainActor
+    func loadCachedWooCommercePlugin(siteID: Int64) -> Yosemite.SystemPlugin? {
+        nil
+    }
 }
 
 private final class MockSunsetSiteSettings: SiteSpecificAppSettingsStoreMethodsProtocol {
@@ -233,6 +238,9 @@ private final class MockSunsetSiteSettings: SiteSpecificAppSettingsStoreMethodsP
     func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date) {}
     func setPOSLocalCatalogCellularDataAllowed(siteID: Int64, allowed: Bool) {}
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool { false }
+    func setPOSCatalogFileBlockedByHostAt(siteID: Int64, date: Date?) {}
+    func getPOSCatalogFileBlockedByHostAt(siteID: Int64) -> Date? { nil }
+    func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool { false }
     func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool? { nil }
     func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool) {}
 }

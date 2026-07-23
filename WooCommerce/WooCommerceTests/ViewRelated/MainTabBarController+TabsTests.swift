@@ -366,6 +366,45 @@ final class MainTabBarController_TabsTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewControllersBeforeSiteChange, viewControllersAfterSiteChange)
     }
+
+    func test_pos_visibility_and_eligibility_are_rechecked_when_app_enters_foreground() throws {
+        // Given
+        let mockPOSVisibilityChecker = MockPOSTabVisibilityChecker()
+        mockPOSVisibilityChecker.visibility = true
+        var visibilityCheckerFactoryCallCount = 0
+
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: MockFeatureFlagService(),
+                                        stores: storesManager,
+                                        posTabVisibilityCheckerFactory: { _ in
+                                            visibilityCheckerFactoryCallCount += 1
+                                            return mockPOSVisibilityChecker
+                                        })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        let siteID: Int64 = 528
+        storesManager.updateDefaultStore(storeID: siteID)
+        storesManager.updateDefaultStore(.fake().copy(siteID: siteID))
+        waitUntil {
+            visibilityCheckerFactoryCallCount == 1
+        }
+
+        // When
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then: the POS visibility and eligibility check pipeline runs again
+        waitUntil {
+            visibilityCheckerFactoryCallCount == 2
+        }
+        withExtendedLifetime(tabBarController) {}
+    }
 }
 
 private final class MockBookingsEligibilityChecker {
@@ -373,10 +412,6 @@ private final class MockBookingsEligibilityChecker {
 }
 
 extension MockBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
-    func checkInitialVisibility() -> Bool {
-        visibility
-    }
-
     func checkVisibility() async -> Bool {
         visibility
     }

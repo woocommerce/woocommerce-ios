@@ -182,6 +182,25 @@ struct POSTabVisibilityCheckerTests {
         #expect(expansionEligibilityService.isEligible(siteID: siteID) == true)
     }
 
+    @Test func is_visible_on_iPad_when_operating_system_is_below_iOS_26_and_all_conditions_satisfied() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        setupCountry(country: .gb, currency: .GBP)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
     @Test func is_invisible_for_australia_when_au_feature_flag_disabled_even_if_expansion_flags_are_enabled() async throws {
         // Given - AU must be controlled by its own remote feature flag, not the broader expansion flags.
         let featureFlagService = MockFeatureFlagService()
@@ -300,13 +319,35 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
 
         // Then
         #expect(result == true)
+    }
+
+    @Test(arguments: phoneSupportedCountries)
+    func is_invisible_when_device_is_phone_and_operating_system_is_below_iOS_26_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
     }
 
     @Test(arguments: [
@@ -324,7 +365,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -343,7 +385,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -362,7 +405,8 @@ struct POSTabVisibilityCheckerTests {
                                               userInterfaceIdiom: .phone,
                                               siteSettings: siteSettings,
                                               stores: stores,
-                                              featureFlagService: featureFlagService)
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
 
         // When
         let result = await checker.checkVisibility()
@@ -401,6 +445,68 @@ struct POSTabVisibilityCheckerTests {
 
         // Then - both methods should wait for site settings and return expected results.
         #expect(visibilityResult == true)
+    }
+
+    // MARK: - Offline `checkVisibility` Tests
+
+    @Test func checkVisibility_returns_cached_visibility_when_offline_and_cached_visible() async throws {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then: the cached value is returned without dispatching remote feature flag checks
+        #expect(result == true)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction } == false)
+    }
+
+    @Test func checkVisibility_returns_cached_visibility_when_offline_and_cached_hidden() async throws {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.notReachable)
+        setupPOSTabVisibility(siteID: siteID, isVisible: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkVisibility_performs_full_check_when_connectivity_is_unknown() async throws {
+        // Given: connectivity is unknown (e.g. before the first path update at cold start),
+        // remote checks pass while the cached visibility is hidden
+        let connectivityObserver = MockConnectivityObserver()
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupPOSTabVisibility(siteID: siteID, isVisible: false)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
+                                              siteSettings: siteSettings,
+                                              eligibilityService: eligibilityService,
+                                              stores: stores,
+                                              connectivityObserver: connectivityObserver,
+                                              expansionEligibilityService: MockCardPresentPaymentsCountryExpansionEligibilityService())
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then: the full check ran instead of falling back to the cached value
+        #expect(result == true)
+        #expect(stores.receivedActions.contains { $0 is FeatureFlagAction })
     }
 
     // MARK: - `checkInitialVisibility Tests

@@ -32,6 +32,14 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     ///
     case jetpackNotConnected(data: [String: AnyDecodable]? = nil)
 
+    /// WordPress.com no longer recognises the site ID sent by the app.
+    ///
+    /// Caused by stale selected-site state, a Jetpack disconnect, or site deletion.
+    /// Every subsequent request for the same site fails the same way until the
+    /// selected site is reset.
+    ///
+    case unknownBlog(data: [String: AnyDecodable]? = nil)
+
     /// Unknown: Represents an unmapped remote error. Capisce?
     ///
     case unknown(code: String, message: String?, data: [String: AnyDecodable]?)
@@ -75,6 +83,8 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         case Constants.unknownToken,
             Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
             self = .jetpackNotConnected(data: data)
+        case Constants.unknownBlog:
+            self = .unknownBlog(data: data)
         default:
             self = .unknown(code: error, message: message, data: data)
         }
@@ -90,6 +100,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         static let noRestRoute      = "rest_no_route"
         static let restTermInvalid  = "woocommerce_rest_term_invalid"
         static let unknownToken     = "unknown_token"
+        static let unknownBlog      = "unknown_blog"
     }
 
     /// Coding Keys
@@ -135,6 +146,8 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .jetpackNotConnected:
             return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
+        case .unknownBlog:
+            return NSLocalizedString("Dotcom Unknown Blog", comment: "WordPress.com error thrown when the site ID is no longer recognized.")
         case .unknown(let code, let message, _):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(
@@ -157,6 +170,7 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
         (.requestFailed, .requestFailed),
         (.noRestRoute, .noRestRoute),
         (.jetpackNotConnected, .jetpackNotConnected),
+        (.unknownBlog, .unknownBlog),
         (.noStatsPermission, .noStatsPermission),
         (.statsModuleDisabled, .statsModuleDisabled),
         (.resourceDoesNotExist, .resourceDoesNotExist):

@@ -10,6 +10,9 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
     /// The status of the Payment Intent
     public let status: PaymentIntentStatus
 
+    /// The client secret used to retrieve the latest state of the PaymentIntent from Stripe.
+    public let clientSecret: String?
+
     /// When the PaymentIntent was created
     public let created: Date
 
@@ -32,6 +35,7 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
 
     public init(id: String,
                 status: PaymentIntentStatus,
+                clientSecret: String? = nil,
                 created: Date,
                 amount: UInt,
                 currency: String,
@@ -40,6 +44,7 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
                 collectedPaymentMethod: PaymentMethod? = nil) {
         self.id = id
         self.status = status
+        self.clientSecret = clientSecret
         self.created = created
         self.amount = amount
         self.currency = currency

@@ -32,6 +32,7 @@ struct POSOrderDetailsView: View {
     @State private var refundFlowPreparationID: UUID?
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
+    @State private var refundOverrideHandler = POSManagerOverrideHandler()
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -81,19 +82,15 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
-                    if isLoadingOrderRefunds {
-                        // Render skeletons for both sections while refund details load so
-                        // the items don't get rearranged when filtering kicks in.
-                        ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
+                    switch orderListModel.ordersController.orderDetailsItemsState {
+                    case .loading(let rowCount):
+                        ghostItemsSection(rowCount: rowCount)
                         ghostRefundedProductsSection
-                    } else {
-                        let displayedLineItems = orderListModel.ordersController.displayedLineItems
-                        let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
-                        if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
-                            itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
+
+                    case .loaded(let lineItems, let customAmounts, let refundedItems):
+                        if !lineItems.isEmpty || !customAmounts.isEmpty {
+                            itemsSection(products: lineItems, customAmounts: customAmounts)
                         }
-                        let refundedItems = order.refunds.flatMap { $0.items }
                         if !refundedItems.isEmpty {
                             refundedProductsSection(refundedItems)
                         }
@@ -170,6 +167,7 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
+        .posManagerOverrideModal(handler: refundOverrideHandler)
         .task {
             await orderListModel.ordersController.loadOrderRefunds()
         }
@@ -279,7 +277,8 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingItemsAccessibilityLabel)
     }
 
     @ViewBuilder
@@ -295,7 +294,8 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingRefundedItemsAccessibilityLabel)
     }
 
     @ViewBuilder
@@ -502,7 +502,16 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { initiateRefundFlow() }
+            return { requestRefundPermission() }
+        }
+    }
+
+    /// Gates the refund flow on `.issueRefunds`. When the operator already holds it the flow starts
+    /// immediately; otherwise the manager-override modal is presented and the flow starts once an
+    /// authorized staff member approves.
+    func requestRefundPermission() {
+        refundOverrideHandler.gate(.issueRefunds, reason: Localization.refundOverrideDescription(order.number)) { _ in
+            initiateRefundFlow()
         }
     }
 
@@ -615,12 +624,17 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundSelectionState = .preparationError
-            return
+        Task { @MainActor in
+            switch await orderListModel.ordersController.prepareRefundReview() {
+            case .ready(var reviewData):
+                reviewData.refundReason = currentRefundReason
+                refundModalState = .review(reviewData)
+            case .preparationError:
+                refundSelectionState = .preparationError
+            case .previewError, .superseded:
+                break
+            }
         }
-        reviewData.refundReason = currentRefundReason
-        refundModalState = .review(reviewData)
     }
 
     func returnToRefundSelection() {
@@ -703,6 +717,18 @@ private enum Localization {
         comment: "Section title for the refunded items list (products and custom amounts) in order details"
     )
 
+    static let loadingItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingItems.accessibilityLabel",
+        value: "Loading items",
+        comment: "Accessibility label for the order items section while refund details are loading."
+    )
+
+    static let loadingRefundedItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingRefundedItems.accessibilityLabel",
+        value: "Loading refunded items",
+        comment: "Accessibility label for the refunded items section while refund details are loading."
+    )
+
     static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {
         let format = NSLocalizedString(
             "pos.orderDetailsView.customAmountRow.accessibilityLabel",
@@ -768,6 +794,16 @@ private enum Localization {
             value: "Issue refund",
             comment: "Primary action button to start issuing a refund on the order details view"
         )
+
+    static func refundOverrideDescription(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundOverride.description",
+            value: "Refunding Order #%1$@ requires approval",
+            comment: "Message shown in the manager-override PIN prompt when a staff member without the "
+                + "issue-refunds permission tries to start a refund. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
 
     static let issueRefundAccessibilityHint = NSLocalizedString(
         "pos.orderDetailsView.issueRefundAction.accessibilityHint",

@@ -43,9 +43,9 @@ struct POSStaffRemoteTests {
         let manager = try #require(staff.first)
         #expect(manager.userID == 12)
         #expect(manager.displayName == "Morgan Manager")
-        #expect(manager.preset == "pos_manager")
-        #expect(manager.capabilities["pos_issue_refunds"] == true)
-        #expect(manager.capabilities["pos_manage_staff"] == true)
+        #expect(manager.preset == .manager)
+        #expect(manager.capabilities["woocommerce_pos_issue_refunds"] == true)
+        #expect(manager.capabilities["woocommerce_pos_manage_staff"] == true)
 
         let pin = try #require(manager.pin)
         #expect(pin.algorithm == "pbkdf2-sha256")
@@ -67,8 +67,8 @@ struct POSStaffRemoteTests {
         #expect(staff.map { $0.userID } == [12, 34])
 
         let cashier = try #require(staff.last)
-        #expect(cashier.preset == "pos_cashier")
-        #expect(cashier.capabilities == ["pos_process_sales": true])
+        #expect(cashier.preset == .cashier)
+        #expect(cashier.capabilities == ["woocommerce_pos_process_sales": true])
     }
 
     @Test func fetchStaff_decodes_a_nil_pin_for_a_member_without_a_pin() async throws {
@@ -82,7 +82,7 @@ struct POSStaffRemoteTests {
         // Then
         let admin = try #require(staff.last)
         #expect(admin.userID == 1)
-        #expect(admin.preset == "administrator")
+        #expect(admin.preset == .admin)
         #expect(admin.pin == nil)
     }
 

@@ -90,6 +90,12 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isPOSTabVisible: Bool?
 
+    /// The last definite POS entry eligibility result from an online check.
+    /// `nil` when no definite result has been recorded. Indeterminate results
+    /// (e.g. offline) leave this value untouched.
+    ///
+    public var lastKnownPOSEligibility: Bool?
+
     /// The last time POS was opened for this store.
     ///
     public var lastPOSOpenedDate: Date?
@@ -101,6 +107,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// Whether we should sync catalog data over cellular connections for this store
     ///
     public var syncPOSCatalogOverCellular: Bool
+
+    /// The last time the POS catalog file was blocked by the host during a sync attempt.
+    ///
+    public var posCatalogFileBlockedByHostAt: Date?
 
     /// The last time the sunset warning banner was dismissed for this store.
     /// Used to throttle the banner to once every 14 days.
@@ -134,9 +144,11 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 favoriteProductIDs: [Int64] = [],
                 searchTermsByKey: [String: [String]] = [:],
                 isPOSTabVisible: Bool? = nil,
+                lastKnownPOSEligibility: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
+                posCatalogFileBlockedByHostAt: Date? = nil,
                 lastSunsetWarningDismissedDate: Date? = nil,
                 isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
         self.storeID = storeID
@@ -160,9 +172,11 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
         self.isPOSTabVisible = isPOSTabVisible
+        self.lastKnownPOSEligibility = lastKnownPOSEligibility
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt
         self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
         self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
     }
@@ -188,8 +202,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              favoriteProductIDs: favoriteProductIDs,
                              searchTermsByKey: searchTermsByKey,
                              isPOSTabVisible: isPOSTabVisible,
+                             lastKnownPOSEligibility: lastKnownPOSEligibility,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+                             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
                              lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
                              isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
     }
@@ -227,9 +243,11 @@ extension GeneralStoreSettings {
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
 
         self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
+        self.lastKnownPOSEligibility = try container.decodeIfPresent(Bool.self, forKey: .lastKnownPOSEligibility)
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.posCatalogFileBlockedByHostAt = try container.decodeIfPresent(Date.self, forKey: .posCatalogFileBlockedByHostAt)
         self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
         self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
             Bool.self,

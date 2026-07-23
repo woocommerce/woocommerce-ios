@@ -103,6 +103,23 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
+    func refundV4LineItems(from selectedItems: [POSRefundSelectableItem],
+                           context: PreparedRefundContext) -> [RefundV4LineItem] {
+        let components = refundComponents(from: selectedItems, context: context)
+
+        let productLines = components.items.map {
+            RefundV4LineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
+        }
+
+        let feeLines = components.fees.map { fee -> RefundV4LineItem in
+            let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+            let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+            return RefundV4LineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
+        }
+
+        return productLines + feeLines
+    }
+
     func refundValues(items: [RefundableOrderItem], fees: [OrderFeeLine]) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
         let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()

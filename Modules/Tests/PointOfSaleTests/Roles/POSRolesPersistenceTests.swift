@@ -53,8 +53,8 @@ private extension POSRolesPersistenceTests {
     func makeStaffMemberWithPIN() -> POSStaffMember {
         POSStaffMember(userID: 1,
                        displayName: "Staff",
-                       preset: "pos_cashier",
-                       capabilities: ["pos_process_sales": true],
+                       preset: .cashier,
+                       capabilities: ["woocommerce_pos_issue_refunds": true],
                        pin: .init(algorithm: "pbkdf2-sha256", iterations: 1,
                                   salt: "c2FsdA==", hash: "aGFzaA=="))
     }

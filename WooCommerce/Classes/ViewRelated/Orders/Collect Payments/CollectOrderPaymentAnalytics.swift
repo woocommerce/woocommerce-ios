@@ -14,16 +14,6 @@ protocol CollectOrderPaymentAnalyticsTracking {
     func trackPaymentFailure(with error: Error)
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource)
-
-    func trackEmailTapped()
-
-    func trackReceiptPrintTapped()
-
-    func trackReceiptPrintSuccess()
-
-    func trackReceiptPrintCanceled()
-
-    func trackReceiptPrintFailed(error: Error)
 }
 
 final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
@@ -108,37 +98,5 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
                                                                                          cardReaderModel: connectedReaderModel,
                                                                                          cancellationSource: cancelationSource,
                                                                                          siteID: siteID))
-    }
-
-    func trackEmailTapped() {
-        analytics.track(event: .InPersonPayments
-            .receiptEmailTapped(countryCode: configuration.countryCode,
-                                cardReaderModel: connectedReader?.readerType.model ?? "",
-                                source: .local))
-    }
-
-    func trackReceiptPrintTapped() {
-        analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReaderModel,
-                                                                    source: .local))
-    }
-
-    func trackReceiptPrintSuccess() {
-        analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: configuration.countryCode,
-                                                                     cardReaderModel: connectedReaderModel,
-                                                                     source: .local))
-    }
-
-    func trackReceiptPrintCanceled() {
-        analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: configuration.countryCode,
-                                                                      cardReaderModel: connectedReaderModel,
-                                                                      source: .local))
-    }
-
-    func trackReceiptPrintFailed(error: Error) {
-        analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
-                                                                    countryCode: configuration.countryCode,
-                                                                    cardReaderModel: connectedReaderModel,
-                                                                    source: .local))
     }
 }

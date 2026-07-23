@@ -43,6 +43,8 @@ public class ProductStore: Store {
         switch action {
         case .addProduct(let product, let onCompletion):
             addProduct(product: product, onCompletion: onCompletion)
+        case .duplicateProduct(let siteID, let productID, let onCompletion):
+            duplicateProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .deleteProduct(let siteID, let productID, let onCompletion):
             deleteProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
@@ -469,6 +471,13 @@ private extension ProductStore {
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
+        }
+    }
+
+    /// Duplicates a product using the WooCommerce core endpoint.
+    func duplicateProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Int64, ProductDuplicateError>) -> Void) {
+        remote.duplicateProduct(siteID: siteID, productID: productID) { result in
+            onCompletion(result.mapError(ProductDuplicateError.init))
         }
     }
 
@@ -1358,6 +1367,44 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+/// An error that occurs while duplicating a Product with the WooCommerce core endpoint.
+///
+public enum ProductDuplicateError: Error, Equatable {
+    /// The core duplication endpoint is conclusively unavailable on this store.
+    case endpointUnavailable
+
+    /// Any other failure. The underlying error is retained because duplication is non-idempotent and must not be retried with the legacy flow.
+    case unknown(error: AnyError)
+
+    init(error: Error) {
+        if let dotcomError = error as? DotcomError,
+           case .noRestRoute = dotcomError {
+            self = .endpointUnavailable
+            return
+        }
+
+        if let networkError = error as? NetworkError,
+           case .notFound = networkError,
+           networkError.errorCode == "rest_no_route" {
+            self = .endpointUnavailable
+            return
+        }
+
+        self = .unknown(error: error.toAnyError)
+    }
+}
+
+extension ProductDuplicateError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .endpointUnavailable:
+            return nil
+        case .unknown(let error):
+            return error.localizedDescription
+        }
     }
 }
 

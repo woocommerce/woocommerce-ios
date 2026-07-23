@@ -47,12 +47,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .subscriptionsInOrderCreationUI:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
-        case .subscriptionsInOrderCreationCustomers:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
@@ -69,22 +63,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inventoryProductLabelsInPOS:
-            return false
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleOrdersi1:
-            return true
-        case .pointOfSaleOrdersi2:
-            return true
         case .orderAddressMapSearch:
-            return true
-        case .pointOfSaleHistoricalOrdersi1:
             return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return !buildConfig.isProduction
+            return false
         case .pointOfSaleCatalogAPI:
             return true
         case .pointOfSaleRoles:
@@ -108,11 +94,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return true
         case .ciabBookingReschedule:
-            return !buildConfig.isProduction
+            return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:
@@ -120,7 +104,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .smarterNotifications:
             return true
         case .starReceiptPrinterSupport:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .posRefundsV4:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

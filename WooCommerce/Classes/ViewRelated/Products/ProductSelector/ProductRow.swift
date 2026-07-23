@@ -50,7 +50,6 @@ struct ProductRow: View {
             ProductImageThumbnail(productImageURL: viewModel.imageURL,
                                   productImageSize: Layout.productImageSize,
                                   scale: scale,
-                                  productImageCornerRadius: Layout.cornerRadius,
                                   foregroundColor: Color(UIColor.listSmallIcon))
 
             // Product details
@@ -60,15 +59,6 @@ struct ProductRow: View {
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                    VStack(alignment: .leading) {
-                        Text(viewModel.subscriptionConditionsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.subscriptionConditionsLabel.isNotEmpty)
-                        Text(viewModel.subscriptionBillingDetailsLabel)
-                            .font(.subheadline)
-                            .foregroundColor(Color(.text))
-                    }
-                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails)
                 Text(viewModel.secondaryProductDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
@@ -117,7 +107,6 @@ extension ProductRow {
 private extension ProductRow {
     enum Layout {
         static let productImageSize: CGFloat = 48.0
-        static let cornerRadius: CGFloat = 4.0
         static let checkImageSize: CGFloat = 24.0
     }
 }

@@ -70,6 +70,7 @@ extension Hardware.PaymentIntent {
     public func copy(
         id: CopiableProp<String> = .copy,
         status: CopiableProp<PaymentIntentStatus> = .copy,
+        clientSecret: NullableCopiableProp<String> = .copy,
         created: CopiableProp<Date> = .copy,
         amount: CopiableProp<UInt> = .copy,
         currency: CopiableProp<String> = .copy,
@@ -79,6 +80,7 @@ extension Hardware.PaymentIntent {
     ) -> Hardware.PaymentIntent {
         let id = id ?? self.id
         let status = status ?? self.status
+        let clientSecret = clientSecret ?? self.clientSecret
         let created = created ?? self.created
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
@@ -89,6 +91,7 @@ extension Hardware.PaymentIntent {
         return Hardware.PaymentIntent(
             id: id,
             status: status,
+            clientSecret: clientSecret,
             created: created,
             amount: amount,
             currency: currency,

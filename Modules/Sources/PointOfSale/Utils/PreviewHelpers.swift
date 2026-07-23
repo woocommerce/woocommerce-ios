@@ -53,6 +53,12 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
+import enum Yosemite.PrinterConnectionStatus
+import struct Yosemite.PrinterDevice
+import struct Yosemite.ReceiptContent
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 
 // MARK: - PreviewProvider helpers
 //
@@ -233,7 +239,7 @@ struct POSPreviewHelpers {
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
-        receiptPrinter: POSReceiptPrinterProviding? = nil
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -521,6 +527,13 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
@@ -539,7 +552,8 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
-    func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    var refundReviewPreparationState: POSRefundReviewPreparationState { .idle }
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult { .preparationError }
     func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
 }
@@ -552,7 +566,7 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 
@@ -730,16 +744,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
-    }
-
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        return false
-    }
-
-    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        // Preview implementation - return 48 hours for testing stale warning
-        return 48
+        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID, syncDate: Date())
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {
@@ -757,6 +762,48 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
+}
+
+final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
+    private let devices: [PrinterDevice]
+    private let keepDiscovering: Bool
+
+    /// - Parameters:
+    ///   - devices: printers the discovery stream yields, so previews can land on the found states.
+    ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
+    ///     scanning indicator visible instead of ending the scan.
+    init(devices: [PrinterDevice] = [], keepDiscovering: Bool = false) {
+        self.devices = devices
+        self.keepDiscovering = keepDiscovering
+    }
+
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { $0.yield(.idle) }
+    }
+
+    func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
+        AsyncThrowingStream { continuation in
+            for device in devices {
+                continuation.yield(device)
+            }
+            if !keepDiscovering {
+                continuation.finish()
+            }
+        }
+    }
+
+    func stopDiscovery() async {}
+
+    func connect(to printer: PrinterDevice) async throws {}
+
+    func disconnect() async {}
+
+    func printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {}
 }
 
 #endif

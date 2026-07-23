@@ -35,6 +35,14 @@ class DefaultStoresManager: StoresManager {
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
 
+    /// Observes invalid application password notification
+    ///
+    private var invalidApplicationPasswordNotificationObserver: NSObjectProtocol?
+
+    /// Observes unknown blog notification
+    ///
+    private var unknownBlogNotificationObserver: NSObjectProtocol?
+
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
@@ -170,6 +178,8 @@ class DefaultStoresManager: StoresManager {
         isLoggedIn = isAuthenticated
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
             startObservingNetworkNotifications()
+        } else if isLoggedIn {
+            listenToApplicationPasswordInvalidatedNotification()
         }
     }
 
@@ -206,10 +216,13 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {
+            stopObservingApplicationPasswordInvalidation()
             listenToWPCOMInvalidWPCOMTokenNotification()
+            listenToUnknownBlogNotification()
             startObservingNetworkNotifications()
         } else {
-            invalidWPCOMTokenNotificationObserver = nil
+            removeAuthenticationFailureObservers()
+            listenToApplicationPasswordInvalidatedNotification()
             stopObservingNetworkNotifications()
         }
 
@@ -219,11 +232,73 @@ class DefaultStoresManager: StoresManager {
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
             _ = self?.deauthenticate()
         }
+    }
+
+    /// De-authenticates upon receiving `ApplicationPasswordInvalidated` notification for non-WP.com sessions.
+    ///
+    func listenToApplicationPasswordInvalidatedNotification() {
+        stopObservingApplicationPasswordInvalidation()
+        invalidApplicationPasswordNotificationObserver = notificationCenter.addObserver(forName: .ApplicationPasswordInvalidated,
+                                                                                        object: nil,
+                                                                                        queue: .main) { [weak self] _ in
+            guard self?.isAuthenticatedWithoutWPCom == true else {
+                return
+            }
+            _ = self?.deauthenticate()
+        }
+    }
+
+    func stopObservingApplicationPasswordInvalidation() {
+        guard let invalidApplicationPasswordNotificationObserver else {
+            return
+        }
+        notificationCenter.removeObserver(invalidApplicationPasswordNotificationObserver)
+        self.invalidApplicationPasswordNotificationObserver = nil
+    }
+
+    /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification.
+    ///
+    /// WPCom no longer recognizes the selected site ID, so we clear it and route the user
+    /// to the store picker while keeping them authenticated.
+    ///
+    func listenToUnknownBlogNotification() {
+        // Block-based observers are only unregistered via `removeObserver`; reassigning the token
+        // would otherwise leave the previous registration live (this method can be called more than once).
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveUnknownBlogError,
+                                                                         object: nil,
+                                                                         queue: .main) { [weak self] _ in
+            self?.resetSelectedStore()
+        }
+    }
+
+    /// Unregisters the WPCOM authentication-failure observers (invalid token and unknown blog).
+    ///
+    /// Block-based observers must be removed via `removeObserver`; setting the token to `nil` alone
+    /// leaves the registration live and firing.
+    ///
+    private func removeAuthenticationFailureObservers() {
+        if let invalidWPCOMTokenNotificationObserver {
+            notificationCenter.removeObserver(invalidWPCOMTokenNotificationObserver)
+        }
+        invalidWPCOMTokenNotificationObserver = nil
+
+        if let unknownBlogNotificationObserver {
+            notificationCenter.removeObserver(unknownBlogNotificationObserver)
+        }
+        unknownBlogNotificationObserver = nil
     }
 
     /// Synchronizes all of the Session's Entities.
@@ -261,6 +336,33 @@ class DefaultStoresManager: StoresManager {
         ZendeskProvider.shared.reset()
     }
 
+    /// Resets the selected store while remaining authenticated, routing the user to the store picker.
+    ///
+    /// Triggered when WPCom returns an `unknown_blog` error, meaning the persisted site ID is no
+    /// longer recognized (stale state, Jetpack disconnect, or site deletion). Clearing
+    /// `defaultStoreID` makes `needsDefaultStore` emit `true`, which the `AppCoordinator` observes
+    /// to present the store picker.
+    ///
+    func resetSelectedStore() {
+        // Guard against repeated resets: many in-flight requests can fail with `unknown_blog`
+        // simultaneously, each posting a notification. Once the store is cleared, ignore the rest.
+        guard let siteID = sessionManager.defaultStoreID else {
+            return
+        }
+
+        ServiceLocator.analytics.track(event: .selectedSiteResetDueToUnknownBlog())
+
+        // Stop any ongoing catalog sync tasks for the site before clearing it.
+        Task {
+            await posCatalogSyncCoordinator?.stopOngoingSyncs(for: siteID)
+        }
+
+        removeDefaultStore()
+
+        sessionManager.defaultStoreID = nil
+        sessionManager.defaultSite = nil
+    }
+
     /// Fully deauthenticates the user, if needed.
     ///
     /// This handles the scenario where `DefaultStoresManager` can't be initialized
@@ -292,7 +394,8 @@ class DefaultStoresManager: StoresManager {
             _ = currentState
         }
 
-        invalidWPCOMTokenNotificationObserver = nil
+        removeAuthenticationFailureObservers()
+        stopObservingApplicationPasswordInvalidation()
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()
 
@@ -479,6 +582,7 @@ private extension DefaultStoresManager {
                 if let self, self.isAuthenticated {
                     // Save the user's preference
                     ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
+                    UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
                 }
                 onCompletion(.success(()))
             case .failure(let error):

@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Order
+import struct Yosemite.ReceiptStoreInformation
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
 import struct Yosemite.POSCustomAmount
@@ -19,9 +20,11 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCartProductObserving
 import class Yosemite.POSCatalogSyncCoordinator
+import enum Yosemite.POSCatalogSyncState
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -51,6 +54,12 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 
     @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
+
+    /// Whether a receipt printer is currently connected. `false` when the printer feature is off
+    /// (no connection controller) or no printer is paired.
+    @MainActor var isReceiptPrinterConnected: Bool {
+        settingsController.printerConnectionController?.isConnected ?? false
+    }
 
     private(set) var cart: Cart = .init() {
         didSet { rebuildCartProductObservation() }
@@ -97,10 +106,9 @@ protocol PointOfSaleAggregateModelProtocol {
 
     /// Receipt-printer backend for POS. Optional so existing callers (previews, tests)
     /// keep working — when nil POS behaves as if receipt printing is not available.
-    private(set) var receiptPrinter: POSReceiptPrinterProviding?
+    private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
     private var cancellables: Set<AnyCancellable> = []
-
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
 
@@ -115,15 +123,23 @@ protocol PointOfSaleAggregateModelProtocol {
     }
 
     // Track stale sync warning (only relevant when using local catalog)
-    var isSyncStale: Bool = false
     var isStaleSyncWarningDismissed: Bool = false
+    private var hasTrackedStaleSyncWarningShown = false
+    private var lastKnownFullSyncDate: Date?
 
+    @MainActor
     var showStaleSyncWarning: Bool {
         // Only show warning if using local catalog
         guard isLocalCatalogEligible else {
             return false
         }
-        return isSyncStale && !isStaleSyncWarningDismissed
+
+        guard let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate,
+              let thresholdDate = Calendar.current.date(byAdding: .day, value: -Constants.staleSyncThresholdDays, to: Date()) else {
+            return false
+        }
+
+        return syncDate < thresholdDate && !isStaleSyncWarningDismissed
     }
 
     var showSunsetWarning: Bool = false
@@ -151,7 +167,7 @@ protocol PointOfSaleAggregateModelProtocol {
          isLocalCatalogEligible: Bool = false,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
-         receiptPrinter: POSReceiptPrinterProviding? = nil,
+         receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
@@ -187,6 +203,7 @@ protocol PointOfSaleAggregateModelProtocol {
             scanToPayVerifier: POSCartScanToPayVerifier(orderController: orderController),
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
+            receiptPrinter: receiptPrinter,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
@@ -504,6 +521,39 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func printReceipt() async throws {
+        // Refresh the store's receipt settings so the printout reflects any changes made this
+        // session. On failure the previously loaded values are kept, so printing still proceeds
+        // with the best available information.
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+        try await paymentModel.printReceipt(storeInformation: receiptStoreInformation())
+    }
+
+    /// Warms the store's receipt settings (phone/email/returns policy) at POS start so the first
+    /// print has values ready without waiting on a fetch. The print flow refreshes these before
+    /// printing; this preload keeps a populated fallback for when that refresh fails. No-op when
+    /// receipt printing is unavailable; fails gracefully otherwise.
+    @MainActor
+    func preloadReceiptStoreInformation() async {
+        guard receiptPrinter != nil else { return }
+        await settingsController.storeViewModel.retrievePOSReceiptSettings()
+    }
+
+    /// Best-effort store details for the printed receipt header, drawn from the POS settings store
+    /// view model. Falls back to the store name / address it exposes when receipt-specific settings
+    /// aren't populated.
+    @MainActor
+    private func receiptStoreInformation() -> ReceiptStoreInformation {
+        let storeViewModel = settingsController.storeViewModel
+        let receiptInformation = storeViewModel.receiptInformation
+        return ReceiptStoreInformation(storeName: receiptInformation.storeName ?? storeViewModel.receiptStoreName,
+                                       storeAddress: receiptInformation.storeAddress ?? storeViewModel.storeAddress,
+                                       phone: receiptInformation.phone,
+                                       email: receiptInformation.email,
+                                       refundReturnsPolicy: receiptInformation.refundReturnsPolicy)
+    }
+
+    @MainActor
     func cancelThenCollectPayment() {
         paymentModel.cancelThenCollectPayment()
     }
@@ -733,29 +783,29 @@ extension PointOfSaleAggregateModel {
     @MainActor
     func checkStaleSyncStatus() async {
         guard let catalogSyncCoordinator else { return }
-        let isSyncStale = await catalogSyncCoordinator.isSyncStale(for: siteID, maxDays: Constants.staleSyncThresholdDays)
-        let wasShowingStaleSyncWarning = showStaleSyncWarning
 
-        self.isSyncStale = isSyncStale
+        let syncState = await catalogSyncCoordinator.loadLastFullSyncState(for: siteID)
+        lastKnownFullSyncDate = syncState.lastFullSyncDate
 
-        await trackStaleSyncWarningShownIfNeeded(wasShowing: wasShowingStaleSyncWarning)
+        trackStaleSyncWarningShownIfNeeded()
     }
 
-    /// Calculates the number of hours since the last catalog sync
-    /// - Returns: Hours since last sync, or nil if no sync date is available
-    func hoursSinceLastSync() async -> Int? {
-        guard let catalogSyncCoordinator else { return nil }
-        return await catalogSyncCoordinator.hoursSinceLastSync(for: siteID)
-    }
-
-    private func trackStaleSyncWarningShownIfNeeded(wasShowing: Bool) async {
-        guard !wasShowing,
+    @MainActor
+    private func trackStaleSyncWarningShownIfNeeded() {
+        guard !hasTrackedStaleSyncWarningShown,
               showStaleSyncWarning,
-              let hours = await hoursSinceLastSync() else {
+              let syncDate = currentFullSyncState?.lastFullSyncDate ?? lastKnownFullSyncDate else {
             return
         }
 
+        hasTrackedStaleSyncWarningShown = true
+        let hours = Int(Date().timeIntervalSince(syncDate) / 3600)
         analytics.track(event: WooAnalyticsEvent.LocalCatalog.staleWarningShown(hoursSinceLastSync: hours))
+    }
+
+    @MainActor
+    private var currentFullSyncState: POSCatalogSyncState? {
+        catalogSyncCoordinator?.fullSyncStateModel.state[siteID]
     }
 }
 

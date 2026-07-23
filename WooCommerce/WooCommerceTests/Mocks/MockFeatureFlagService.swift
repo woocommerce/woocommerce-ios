@@ -11,8 +11,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
-    var isSubscriptionsInOrderCreationCustomersEnabled: Bool
-    var isSubscriptionsInOrderCreationUIEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
     var blazeEvergreenCampaigns: Bool
@@ -22,8 +20,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
-    var isCIABBookingsEnabled: Bool
-    var isCIABBookingRescheduleEnabled: Bool
     var selfDrivenPushToken: Bool
     var smarterNotifications: Bool
 
@@ -35,8 +31,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
-         isSubscriptionsInOrderCreationUIEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
@@ -45,8 +39,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
-         isCIABBookingsEnabled: Bool = false,
-         isCIABBookingRescheduleEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -57,8 +49,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
-        self.isSubscriptionsInOrderCreationUIEnabled = isSubscriptionsInOrderCreationUIEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
@@ -67,8 +57,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
-        self.isCIABBookingsEnabled = isCIABBookingsEnabled
-        self.isCIABBookingRescheduleEnabled = isCIABBookingRescheduleEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
         self.smarterNotifications = smarterNotifications
     }
@@ -97,10 +85,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .subscriptionsInOrderCreationCustomers:
-            return isSubscriptionsInOrderCreationCustomersEnabled
-        case .subscriptionsInOrderCreationUI:
-            return isSubscriptionsInOrderCreationUIEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .googleAdsCampaignCreationOnWebView:
@@ -118,9 +102,9 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
-            return isCIABBookingsEnabled
+            return false
         case .ciabBookingReschedule:
-            return isCIABBookingRescheduleEnabled
+            return false
         case .selfDrivenPushToken:
             return selfDrivenPushToken
         case .smarterNotifications:

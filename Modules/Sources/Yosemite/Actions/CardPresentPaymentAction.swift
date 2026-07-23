@@ -78,6 +78,9 @@ public enum CardPresentPaymentAction: Action {
                       onProcessingCompletion: (PaymentIntent) -> Void,
                       onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
+    /// Retrieves the latest state of a PaymentIntent from Stripe using its client secret.
+    case retrievePaymentIntent(clientSecret: String, onCompletion: (Result<PaymentIntent, Error>) -> Void)
+
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///
     case refundPayment(parameters: RefundParameters, onCardReaderMessage: (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?)

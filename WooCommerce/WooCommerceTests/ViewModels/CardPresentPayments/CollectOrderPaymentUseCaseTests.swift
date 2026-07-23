@@ -210,6 +210,137 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     // MARK: - Failure cases
+    func test_ambiguous_server_capture_error_returns_success_when_refreshed_intent_confirms_capture() throws {
+        // Given
+        let clientSecret = "pi_client_secret"
+        let intentID = "pi_123"
+        let intent = PaymentIntent.fake().copy(id: intentID,
+                                               status: .requiresCapture,
+                                               clientSecret: clientSecret,
+                                               metadata: [PaymentIntent.MetadataKeys.orderID: String(defaultOrderID)])
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+
+        var retrievedClientSecret: String?
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(clientSecret, completion) = action else { return }
+            retrievedClientSecret = clientSecret
+            completion(.success(intent.copy(status: .succeeded)))
+        }
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { promise(()) },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertEqual(retrievedClientSecret, clientSecret)
+        XCTAssertTrue(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
+    }
+
+    func test_ambiguous_server_capture_error_does_not_return_success_when_refreshed_intent_requires_capture() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent()
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            completion(.success(intent.copy(status: .requiresCapture)))
+        }
+
+        // When
+        let _: CardPresentModalNonRetryableErrorWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let errorAlert = viewModel as? CardPresentModalNonRetryableErrorWithoutEmail else { return }
+                promise(errorAlert)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { XCTFail("Payment should not complete") },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+    }
+
+    func test_ambiguous_server_capture_error_does_not_return_success_for_a_different_payment_intent() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent()
+        let error = ServerSidePaymentCaptureError.paymentGateway(
+            error: .orderPaymentCaptureError(message: "Server-side capture failed")
+        )
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            completion(.success(intent.copy(id: "pi_different", status: .succeeded)))
+        }
+
+        // When
+        let _: CardPresentModalNonRetryableErrorWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let errorAlert = viewModel as? CardPresentModalNonRetryableErrorWithoutEmail else { return }
+                promise(errorAlert)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: { XCTFail("Payment should not complete") },
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+    }
+
+    func test_post_confirmation_error_returns_receipt_capable_success_from_refreshed_intent() throws {
+        // Given
+        let intent = ambiguousCapturePaymentIntent().copy(
+            amount: 150,
+            currency: "usd",
+            collectedPaymentMethod: .cardPresent(details: .fake())
+        )
+        let refreshedIntent = intent.copy(status: .succeeded)
+        let error = CardReaderServiceError.paymentCapture()
+        mockFailedCardPresentPaymentActions(intent: intent, error: error)
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
+        var didRetrieveIntent = false
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .retrievePaymentIntent(_, completion) = action else { return }
+            didRetrieveIntent = true
+            completion(.success(refreshedIntent))
+        }
+
+        // When
+        let success: CardPresentModalSuccessWithoutEmail = waitFor { promise in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                guard let success = viewModel as? CardPresentModalSuccessWithoutEmail else { return }
+                promise(success)
+            }
+            self.useCase.collectPayment(using: .bluetoothScan,
+                                        channel: .storeManagement,
+                                        onFailure: { _ in },
+                                        onCancel: {},
+                                        onPaymentCompletion: {},
+                                        onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertTrue(didRetrieveIntent)
+        XCTAssertNotNil(success.primaryButtonTitle)
+        XCTAssertNotNil(refreshedIntent.receiptParameters())
+    }
+
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
@@ -555,25 +686,15 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     func test_completion_called_after_alert_presentation() throws {
-        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
         let paymentMethod = PaymentMethod.cardPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
         mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
         enum Event {
-            case receiptEligibilityCheck
             case alertPresented
             case paymentCompletion
         }
         var eventOrder: [Event] = []
-
-        receiptEligibilityUseCase.mockIsEligibleForBackendReceiptsHandler = { completion in
-            // Force receiptEligibilityCheck completion delay
-            DispatchQueue.main.async {
-                eventOrder.append(.receiptEligibilityCheck)
-                completion(true)
-            }
-        }
 
         // Track when receipt alert is presented
         alertsPresenter.onPresentCalled = { viewModel in
@@ -600,7 +721,44 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // Then ensure payment completion happens after alert presentation to avoid CollectOrderPaymentUseCase deinit before alert presentation
-        XCTAssertEqual(eventOrder, [.receiptEligibilityCheck, .alertPresented, .paymentCompletion])
+        XCTAssertEqual(eventOrder, [.alertPresented, .paymentCompletion])
+    }
+
+    func test_collectPayment_when_backend_receipt_is_not_eligible_then_completes_without_receipt_alert() throws {
+        // Given
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = false
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+
+        var didCompletePayment = false
+        var didCompleteFlow = false
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { _ in },
+                onCancel: {},
+                onPaymentCompletion: {
+                    didCompletePayment = true
+                    promise(())
+                },
+                onCompleted: {
+                    didCompleteFlow = true
+                }
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertTrue(didCompletePayment)
+        XCTAssertTrue(didCompleteFlow)
+        XCTAssertFalse(alertsPresenter.spyPresentedAlertViewModels.contains { viewModel in
+            viewModel is CardPresentModalSuccessWithoutEmail || viewModel is CardPresentModalSuccessEmailSent
+        })
     }
 
     func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
@@ -661,6 +819,13 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 }
 
 private extension CollectOrderPaymentUseCaseTests {
+    func ambiguousCapturePaymentIntent() -> PaymentIntent {
+        PaymentIntent.fake().copy(id: "pi_123",
+                                  status: .requiresCapture,
+                                  clientSecret: "pi_client_secret",
+                                  metadata: [PaymentIntent.MetadataKeys.orderID: String(defaultOrderID)])
+    }
+
     func presentErrorAlert<Alert: CardPresentPaymentsModalViewModel>(for error: Error,
                                                                      as alertType: Alert.Type,
                                                                      onFailure: @escaping (Error) -> Void) -> Alert {

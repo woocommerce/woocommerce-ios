@@ -84,7 +84,6 @@ final class ProductSelectorViewModel: ObservableObject {
         FilterProductListViewModel(
             filters: filtersSubject.value,
             siteID: siteID,
-            site: stores.sessionManager.defaultSite,
             stores: stores,
             storageManager: storageManager
         )
@@ -804,6 +803,11 @@ private extension ProductSelectorViewModel {
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
 
         Publishers.CombineLatest3(searchTermPublisher, filtersPublisher, searchFilterPublisher)
+            // Skips leading emissions with the default search term and filters. Otherwise, the initial emission
+            // resyncs the first page, duplicating the sync triggered by `onLoadTrigger` on first load.
+            .drop(while: { searchTerm, filters, productSearchFilter in
+                searchTerm.isEmpty && filters == FilterProductListViewModel.Filters() && productSearchFilter == .all
+            })
             .sink { [weak self] searchTerm, filtersSubject, productSearchFilter in
                 guard let self else { return }
                 Task { @MainActor in

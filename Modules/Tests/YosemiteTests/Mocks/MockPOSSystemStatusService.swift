@@ -37,4 +37,11 @@ final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
             throw error
         }
     }
+
+    var cachedPluginToReturn: SystemPlugin?
+
+    @MainActor
+    func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
+        cachedPluginToReturn
+    }
 }

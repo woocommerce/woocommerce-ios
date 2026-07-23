@@ -75,7 +75,6 @@ final class OrdersRootViewController: UIViewController {
     }()
 
     private let featureFlagService: FeatureFlagService
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -90,12 +89,10 @@ final class OrdersRootViewController: UIViewController {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          switchDetailsHandler: @escaping OrderListViewController.SelectOrderDetails) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
@@ -175,9 +172,7 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        analytics.track(event: .Orders.orderOpen(order: order))
     }
 
     /// Selects the order given the ID from the order list view if the order exists locally.
@@ -237,15 +232,11 @@ final class OrdersRootViewController: UIViewController {
         }
 
         viewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            self?.dismiss(animated: true) {
+            guard let self else { return }
+
+            self.dismiss(animated: true) { [weak self] in
                 self?.navigateToOrderDetail(order) { [weak self] _ in
-                    guard let self,
-                          let orderDetailsViewController = self.orderDetailsViewController else {
-                        return
-                    }
-                    let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: paymentMethodsViewModel)
-                    paymentMethodsViewController.parentController = orderDetailsViewController
-                    orderDetailsViewController.present(paymentMethodsViewController, animated: true)
+                    self?.presentPaymentMethods(viewModel: paymentMethodsViewModel)
                 }
             }
         }
@@ -331,9 +322,7 @@ final class OrdersRootViewController: UIViewController {
         }
 
         let fetchedStatuses = statusResultsController.fetchedObjects
-        let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
-            : fetchedStatuses
+        let allowedStatuses = fetchedStatuses
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
@@ -500,12 +489,7 @@ private extension OrdersRootViewController {
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
         guard let storedOrderFilters = filters.orderStatus else { return }
         let availableStatuses = Set(orderStatuses.map { $0.status })
-        // On CIAB sites, resolve synthetic statuses (e.g. "open") to their underlying core statuses
-        // before checking validity, since the API only returns core statuses.
-        let resolvedFilters = ciabEligibilityChecker.isCurrentSiteCIAB
-            ? CIABOrderStatusMapper.resolveFilterStatuses(storedOrderFilters)
-            : storedOrderFilters
-        for resolvedFilter in resolvedFilters {
+        for resolvedFilter in storedOrderFilters {
             if !availableStatuses.contains(resolvedFilter) {
                 clearFilters()
                 break
@@ -650,14 +634,31 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: .Orders.orderOpen(
-            order: order,
-            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
-        ))
+        analytics.track(event: .Orders.orderOpen(order: order))
 
         ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
             onCompletion?(true)
         }
+    }
+
+    func presentPaymentMethods(viewModel: PaymentMethodsViewModel) {
+        guard let presenter = paymentMethodsPresenter else {
+            DDLogError("⛔️ Unable to present payment methods after creating order.")
+            return
+        }
+
+        let paymentMethodsViewController = PaymentMethodsHostingController(viewModel: viewModel)
+        paymentMethodsViewController.parentController = presenter
+        presenter.present(paymentMethodsViewController, animated: true)
+    }
+
+    var paymentMethodsPresenter: UIViewController? {
+        if let orderDetailsViewController,
+           orderDetailsViewController.viewIfLoaded?.window != nil {
+            return orderDetailsViewController
+        }
+
+        return navigationController?.visibleViewController ?? navigationController ?? self
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

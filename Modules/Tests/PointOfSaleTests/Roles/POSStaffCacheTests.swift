@@ -155,7 +155,7 @@ private extension POSStaffCacheTests {
                     pin: POSStaffMember.PINDetails? = nil) -> POSStaffMember {
         POSStaffMember(userID: userID,
                        displayName: displayName ?? "User \(userID)",
-                       preset: "pos_cashier",
+                       preset: .cashier,
                        capabilities: ["pos_process_payments": true],
                        pin: pin)
     }

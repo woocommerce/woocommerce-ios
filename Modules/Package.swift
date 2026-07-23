@@ -6,7 +6,7 @@ let package = Package(
     name: "Modules",
     platforms: [
         // Keep in sync with Common.xcconfig
-        .iOS(.v17),
+        .iOS("18.0"),
         .macOS(.v10_14),
         .watchOS(.v9),
     ],
@@ -91,6 +91,10 @@ let package = Package(
             name: "ParcelFittingCheck",
             targets: ["ParcelFittingCheck"]
         ),
+        .library(
+            name: "StoreDesignSystem",
+            targets: ["StoreDesignSystem"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -98,7 +102,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.0.4"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
-        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "4.2.0"),
+        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "4.3.1"),
         .package(url: "https://github.com/Automattic/Gridicons-iOS", revision: "c904cb73e26e86463a78e1335c6f4fd54a9e9223"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
@@ -291,6 +295,9 @@ let package = Package(
             ]
         ),
         .target(
+            name: "StoreDesignSystem"
+        ),
+        .target(
             name: "NetworkingTestsResponsesFixtures",
             path: "Tests/NetworkingTestsResponsesFixtures",
             resources: [.process("Responses")]
@@ -384,6 +391,10 @@ let package = Package(
                 .target(name: "ParcelFittingCheck"),
                 "EventHorizonSDK",
             ]
+        ),
+        .testTarget(
+            name: "StoreDesignSystemTests",
+            dependencies: ["StoreDesignSystem"]
         ),
         .binaryTarget(
             name: "EventHorizonSDK",

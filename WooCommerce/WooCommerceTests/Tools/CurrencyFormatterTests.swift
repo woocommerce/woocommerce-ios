@@ -343,6 +343,69 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
+    func test_formatCurrency_when_locale_is_ltr_and_currency_symbol_is_rtl_then_keeps_negative_amount_ltr() {
+        // Given
+        let currencyPosition = CurrencySettings.CurrencyPosition.right
+        let currencyCode = CurrencyCode.QAR
+        let amount = "1,234.56"
+        let symbol = sampleCurrencySettings.symbol(from: currencyCode)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // When
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatCurrency(using: amount,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
+                            isNegative: true,
+                            locale: Locale(identifier: "en_GB"))
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-1,234.56\(popDirectionalIsolate)\(symbol)", actualResult)
+    }
+
+    func test_formatCurrency_when_locale_is_rtl_and_currency_symbol_is_ltr_then_keeps_negative_amount_ltr() {
+        // Given
+        let currencyPosition = CurrencySettings.CurrencyPosition.right
+        let currencyCode = CurrencyCode.USD
+        let amount = "1,234.56"
+        let symbol = sampleCurrencySettings.symbol(from: currencyCode)
+        let leftToRightMark = "\u{200E}"
+
+        // When
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatCurrency(using: amount,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
+                            isNegative: true,
+                            locale: Locale(identifier: "ar"))
+
+        // Then
+        XCTAssertEqual("\(leftToRightMark)-1,234.56\(symbol)", actualResult)
+    }
+
+    func test_formatAmount_when_locale_is_arabic_then_keeps_store_currency_position() {
+        // Given
+        let settings = CurrencySettings(currencyCode: .QAR,
+                                        currencyPosition: .rightSpace,
+                                        thousandSeparator: ",",
+                                        decimalSeparator: ".",
+                                        numberOfDecimals: 2)
+        let formatter = CurrencyFormatter(currencySettings: settings)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // When
+        let actualResult = formatter.formatAmount(NSDecimalNumber(string: "1234.56"),
+                                                  locale: Locale(identifier: "ar"),
+                                                  isNegative: true)
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-1,234.56\(popDirectionalIsolate) \(settings.currencySymbol)", actualResult)
+    }
+
     // MARK: - Human readable formatter tests
 
 

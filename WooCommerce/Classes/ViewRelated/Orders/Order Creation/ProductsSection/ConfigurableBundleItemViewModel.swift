@@ -154,6 +154,10 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .variation))
         })
     }
+
+    func clearVariationSelectorViewModel() {
+        variationSelectorViewModel = nil
+    }
 }
 
 private extension ConfigurableBundleItemViewModel {

@@ -10,6 +10,10 @@ open class Remote: NSObject {
     ///
     let network: Network
 
+    /// Jetpack Tunnel raw-body diagnostics logger.
+    ///
+    var jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging = JetpackTunnelRawBodyErrorLogger()
+
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -25,24 +29,19 @@ open class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     ///
     public func enqueue(_ request: Request) async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { [weak self] result in
-                guard let self else { return }
+        let data: Data
+        do {
+            data = try await network.responseData(for: request)
+        } catch {
+            throw mapNetworkError(error: error, for: request)
+        }
 
-                switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        continuation.resume()
-                    } catch {
-                        self.handleResponseError(error: error, for: request)
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
-                }
-            }
+        do {
+            try request.responseDataValidator().validate(data: data)
+        } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
+            handleResponseError(error: error, for: request)
+            throw error
         }
     }
 
@@ -51,26 +50,21 @@ open class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
     public func enqueue<T: Decodable>(_ request: Request) async throws -> T {
-        try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { [weak self] result in
-                guard let self else { return }
+        let data: Data
+        do {
+            data = try await network.responseData(for: request)
+        } catch {
+            throw mapNetworkError(error: error, for: request)
+        }
 
-                switch result {
-                case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let document = try JSONDecoder().decode(T.self, from: data)
-                        continuation.resume(returning: document)
-                    } catch {
-                        self.handleResponseError(error: error, for: request)
-                        self.handleDecodingError(error: error, for: request, entityName: "\(T.self)")
-                        continuation.resume(throwing: error)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
-                }
-            }
+        do {
+            try request.responseDataValidator().validate(data: data)
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
+            handleResponseError(error: error, for: request)
+            handleDecodingError(error: error, for: request, entityName: "\(T.self)")
+            throw error
         }
     }
 
@@ -97,16 +91,13 @@ open class Remote: NSObject {
                 return
             }
 
-            do {
-                let validator = request.responseDataValidator()
-                try validator.validate(data: data)
-                let parsed = try mapper.map(response: data)
-                completion(parsed, nil)
-            } catch {
-                self.handleResponseError(error: error, for: request)
-                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                DDLogError("<> Mapping Error: \(error)")
-                completion(nil, error)
+            self.parseResponse(data, request: request, mapper: mapper) { result in
+                switch result {
+                case .success(let parsed):
+                    completion(parsed, nil)
+                case .failure(let error):
+                    completion(nil, error)
+                }
             }
         }
     }
@@ -120,7 +111,6 @@ open class Remote: NSObject {
     ///     - request: Request that should be performed.
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
-    ///
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.responseData(for: request) { [weak self] result in
@@ -130,17 +120,7 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                do {
-                    let validator = request.responseDataValidator()
-                    try validator.validate(data: data)
-                    let parsed = try mapper.map(response: data)
-                    completion(.success(parsed))
-                } catch {
-                    self.handleResponseError(error: error, for: request)
-                    self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                    DDLogError("<> Mapping Error: \(error)")
-                    completion(.failure(error))
-                }
+                self.parseResponse(data, request: request, mapper: mapper, completion: completion)
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))
             }
@@ -158,32 +138,30 @@ open class Remote: NSObject {
     ///
     /// - Returns: A publisher that emits result upon completion.
     public func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
-        network.responseDataPublisher(for: request)
-            .map { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
+        Future { [weak self] promise in
+            guard let self else {
+                return
+            }
+            self.network.responseData(for: request) { [weak self] (result: Swift.Result<Data, Error>) in
+                guard let self else {
+                    return
+                }
+
                 switch result {
                 case .success(let data):
-                    do {
-                        let validator = request.responseDataValidator()
-                        try validator.validate(data: data)
-                        let parsed = try mapper.map(response: data)
-                        return .success(parsed)
-                    } catch {
-                        DDLogError("<> Mapping Error: \(error)")
-                        return .failure(error)
+                    self.parseResponse(data, request: request, mapper: mapper) { parsed in
+                        promise(.success(parsed))
                     }
                 case .failure(let error):
-                    return .failure(self?.mapNetworkError(error: error, for: request) ?? error)
+                    let mappedError = self.mapNetworkError(error: error, for: request)
+                    if let dotcomError = mappedError as? DotcomError {
+                        self.handleResponseError(error: dotcomError, for: request)
+                    }
+                    promise(.success(.failure(mappedError)))
                 }
             }
-            .handleEvents(receiveOutput: { [weak self] result in
-                if let dotcomError = result.failure as? DotcomError {
-                    self?.handleResponseError(error: dotcomError, for: request)
-                }
-                if let decodingError = result.failure as? DecodingError {
-                    self?.handleDecodingError(error: decodingError, for: request, entityName: "\(M.Output.self)")
-                }
-            })
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
     /// Enqueues the specified Network Request for upload with multipart form data encoding.
@@ -212,17 +190,7 @@ open class Remote: NSObject {
                                                 return
                                             }
 
-                                            do {
-                                                let validator = request.responseDataValidator()
-                                                try validator.validate(data: data)
-                                                let parsed = try mapper.map(response: data)
-                                                completion(.success(parsed))
-                                            } catch {
-                                                self.handleResponseError(error: error, for: request)
-                                                self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
-                                                DDLogError("<> Mapping Error: \(error)")
-                                                completion(.failure(error))
-                                            }
+                                            self.parseResponse(data, request: request, mapper: mapper, completion: completion)
         }
     }
 
@@ -240,8 +208,7 @@ open class Remote: NSObject {
     public func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]?) {
         do {
             let (data, headers) = try await network.responseDataAndHeaders(for: request)
-            let validator = request.responseDataValidator()
-            let parsedData = try validateAndParseData(data, request: request, validator: validator, mapper: mapper)
+            let parsedData = try validateAndParseData(data, request: request, mapper: mapper)
             return (data: parsedData, headers: headers)
         } catch {
             handleResponseError(error: error, for: request)
@@ -268,12 +235,44 @@ open class Remote: NSObject {
 }
 
 private extension Remote {
+    /// Validates the response and maps it via the mapper.
+    static func validateAndMap<M: Mapper>(_ data: Data, request: Request, mapper: M) throws -> M.Output {
+        try request.responseDataValidator().validate(data: data)
+        return try mapper.map(response: data)
+    }
+
+    /// Validates and maps `data` on a background queue, then delivers the result — and any error
+    /// handling/notifications — back on the main queue.
+    func parseResponse<M: Mapper>(_ data: Data,
+                                              request: Request,
+                                              mapper: M,
+                                              completion: @escaping (Result<M.Output, Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let result: Result<M.Output, Error>
+            do {
+                result = .success(try Self.validateAndMap(data, request: request, mapper: mapper))
+            } catch {
+                result = .failure(error)
+            }
+
+            DispatchQueue.main.async {
+                if case let .failure(error) = result {
+                    self?.logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
+                    self?.handleResponseError(error: error, for: request)
+                    self?.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
+                    DDLogError("<> Mapping Error: \(error)")
+                }
+                completion(result)
+            }
+        }
+    }
+
     // Validation and parsing of the response data is separated so that the decoding error can be handled separately from network error.
-    func validateAndParseData<M: Mapper>(_ data: Data, request: Request, validator: ResponseDataValidator, mapper: M) throws -> M.Output {
+    func validateAndParseData<M: Mapper>(_ data: Data, request: Request, mapper: M) throws -> M.Output {
         do {
-            try validator.validate(data: data)
-            return try mapper.map(response: data)
+            return try Self.validateAndMap(data, request: request, mapper: mapper)
         } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             DDLogError("<> Mapping Error: \(error)")
             handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
             throw error
@@ -284,6 +283,18 @@ private extension Remote {
 // MARK: - Private Methods
 //
 private extension Remote {
+
+    func logJetpackTunnelRawBodyErrorIfPresent(responseData: Data?, request: Request, transportStatus: Int?) {
+        guard request is JetpackRequest else {
+            return
+        }
+
+        jetpackTunnelRawBodyErrorLogger.logIfNeeded(
+            responseData: responseData,
+            request: request,
+            transportStatus: transportStatus
+        )
+    }
 
     /// Handles *all* of the DotcomError(s) that are successfully parsed.
     ///
@@ -297,6 +308,8 @@ private extension Remote {
             publishJetpackTimeoutNotification(error: dotcomError)
         case .invalidToken:
             publishInvalidTokenNotification(error: dotcomError)
+        case .unknownBlog:
+            publishUnknownBlogNotification(error: dotcomError)
         default:
             break
         }
@@ -325,6 +338,12 @@ private extension Remote {
             return networkError
         }
 
+        logJetpackTunnelRawBodyErrorIfPresent(
+            responseData: response,
+            request: request,
+            transportStatus: networkError.responseCode
+        )
+
         /// Pass the response to request's validator
         /// which will attempt to parse the response into corresponding error.
         ///
@@ -349,6 +368,12 @@ private extension Remote {
     ///
     private func publishInvalidTokenNotification(error: DotcomError) {
         NotificationCenter.default.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+    }
+
+    /// Publishes an `Unknown Blog` Notification.
+    ///
+    private func publishUnknownBlogNotification(error: DotcomError) {
+        NotificationCenter.default.post(name: .RemoteDidReceiveUnknownBlogError, object: error, userInfo: nil)
     }
 
     /// Publishes a `JSON Parsing Error` Notification.
@@ -471,6 +496,10 @@ public extension NSNotification.Name {
     /// Posted whenever an Invalid Token Error is received.
     ///
     static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+
+    /// Posted whenever an Unknown Blog Error is received, indicating the selected site ID is no longer recognized.
+    ///
+    static let RemoteDidReceiveUnknownBlogError = NSNotification.Name(rawValue: "RemoteDidReceiveUnknownBlogError")
 
     /// Posted whenever a Jetpack Timeout is received.
     ///

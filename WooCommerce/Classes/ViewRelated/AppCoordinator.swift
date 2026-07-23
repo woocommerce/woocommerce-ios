@@ -316,11 +316,18 @@ private extension AppCoordinator {
     /// check for errors and display store picker if none exists.
     ///
     func displayLoggedInStateWithoutDefaultStore() {
-        // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
-        // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
-        guard window.rootViewController == nil else {
+        // The store picker is displayed by `AppCoordinator` on launch (window root uninitialized) and when an
+        // in-session store reset occurs (window root is the logged-in tab UI, e.g. after an `unknown_blog`
+        // response clears the selected site). In other cases when the app is authenticated but there is no
+        // default store ID — such as mid-login — the store picker is shown by the authentication UI instead.
+        guard window.rootViewController == nil || window.rootViewController === tabBarController else {
             return
         }
+
+        // Dismiss anything presented on the current root before re-rooting. `tabBarController` is retained
+        // for the app's lifetime, so a modal left presented on it during an in-session reset would otherwise
+        // reappear when the user returns to it after re-selecting a store.
+        window.rootViewController?.dismiss(animated: false)
 
         /// If authenticating with site credentials only is incomplete,
         /// show the prologue screen to force the user to log in again.

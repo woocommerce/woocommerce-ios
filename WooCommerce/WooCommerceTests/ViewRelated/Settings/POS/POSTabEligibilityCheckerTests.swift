@@ -15,6 +15,7 @@ struct POSTabEligibilityCheckerTests {
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private var mockSiteSettingService: MockPOSSiteSettingService!
+    private var connectivityObserver: MockConnectivityObserver!
     private let site = Site.fake().copy(siteID: 2)
     private var siteID: Int64 { site.siteID }
     private let ineligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: false)
@@ -28,6 +29,8 @@ struct POSTabEligibilityCheckerTests {
         siteSettings = MockSelectedSiteSettings()
         mockSystemStatusService = MockPOSSystemStatusService()
         mockSiteSettingService = MockPOSSiteSettingService()
+        connectivityObserver = MockConnectivityObserver()
+        connectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
         setupWooCommerceVersion()
     }
 
@@ -57,13 +60,10 @@ struct POSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -72,25 +72,27 @@ struct POSTabEligibilityCheckerTests {
     @Test func checkEligibility_returns_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
 
-        // Creates a publisher that will emit values after a delay to simulate site settings loading
+        // Creates a publisher that will emit values after a delay to simulate site settings loading.
+        // A CurrentValueSubject replays the latest value, so the test stays deterministic no matter
+        // whether the eligibility check subscribes before or after the settings are sent.
         let countrySetting = mockCountrySetting(country: .us)
         let currencySetting = mockCurrencySetting(currency: .USD)
-        let settingsSubject = PassthroughSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>()
+        let settingsSubject = CurrentValueSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>(
+            (siteID: siteID, settings: [], source: .storageChange)
+        )
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When - Call checkEligibility before site settings are available
-        async let eligibilityTask = checker.checkEligibility()
+        async let eligibilityTask = checker.checkEligibility(forceRemoteCheck: false)
 
-        // Simulate site settings becoming available after methods are called
+        // Simulate site settings becoming available after methods are called. The stream is left
+        // open so a late subscriber still receives the replayed value; the eligibility check
+        // returns on the first matching value.
         Task {
             settingsSubject.send((siteID: siteID, settings: [countrySetting, currencySetting], source: .refresh))
-            settingsSubject.send(completion: .finished)
         }
 
         let eligibilityResult = await eligibilityTask
@@ -108,13 +110,10 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_eligible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -126,14 +125,10 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: ineligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -151,12 +146,10 @@ struct POSTabEligibilityCheckerTests {
                                                                   expectedSupportedCurrencies: [CurrencyCode]) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: country.countryCode, supportedCurrencies: expectedSupportedCurrencies)))
@@ -166,13 +159,10 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("9.5.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
@@ -182,13 +172,10 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -198,13 +185,10 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
@@ -214,16 +198,233 @@ struct POSTabEligibilityCheckerTests {
         // Given
         setupCountry(country: .us)
         setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_connectivity_is_not_reachable() async throws {
+        // Given
+        let offlineConnectivityObserver = MockConnectivityObserver()
+        offlineConnectivityObserver.setStatus(.notReachable)
+        let checker = makeEligibilityChecker(connectivityObserver: offlineConnectivityObserver)
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    // MARK: - Offline Eligibility From Local State
+
+    @Test func checkEligibility_returns_eligible_when_offline_with_synced_local_catalog() async throws {
+        // Given
+        let checker = makeOfflineCheckerWithSyncedCatalog()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_offline_and_catalog_never_synced() async throws {
+        // Given
+        let checker = makeOfflineCheckerWithSyncedCatalog(hasCompletedFullSync: false)
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_offline_and_local_catalog_feature_disabled() async throws {
+        // Given
+        let checker = makeOfflineCheckerWithSyncedCatalog(isLocalCatalogFeatureEnabled: false)
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_offline_and_last_known_eligibility_is_false() async throws {
+        // Given
+        eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: false)
+        let checker = makeOfflineCheckerWithSyncedCatalog()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_eligible_when_offline_and_cached_plugin_supports_POS() async throws {
+        // Given: plugin data synced into local storage supports POS
+        mockSystemStatusService.cachedPluginToReturn = createWooCommercePlugin(version: "9.6.0")
+        let checker = makeOfflineCheckerWithSyncedCatalog()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_offline_and_cached_plugin_is_inactive() async throws {
+        // Given: plugin data synced into local storage shows WooCommerce was deactivated
+        mockSystemStatusService.cachedPluginToReturn = createWooCommercePlugin(version: "9.6.0").copy(active: false)
+        let checker = makeOfflineCheckerWithSyncedCatalog()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then: the locally known ineligibility blocks entry from local state
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_offline_and_cached_plugin_version_is_unsupported() async throws {
+        // Given: plugin data synced into local storage shows an unsupported WooCommerce version
+        mockSystemStatusService.cachedPluginToReturn = createWooCommercePlugin(version: "9.5.0")
+        let checker = makeOfflineCheckerWithSyncedCatalog()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_falls_back_to_remote_check_when_online_and_cached_plugin_is_unsupported() async throws {
+        // Given: local storage still holds an unsupported plugin, while the remote check finds
+        // an updated, supported store
+        mockSystemStatusService.cachedPluginToReturn = createWooCommercePlugin(version: "9.5.0")
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0")
+        let checker = makeEligibilityChecker(
+            localCatalogEligibilityService: MockLocalCatalogEligibilityService(isLocalCatalogFeatureEnabled: true),
+            syncStatusChecker: MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: true)
+        )
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then: the remote check ran instead of entering from local state
+        #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_returns_eligible_from_local_state_when_online_with_synced_catalog() async throws {
+        // Given: online, with a synced local catalog and no recorded ineligibility,
+        // while the remote check would report a definite negative
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.5.0")
+        let checker = makeEligibilityChecker(
+            localCatalogEligibilityService: MockLocalCatalogEligibilityService(isLocalCatalogFeatureEnabled: true),
+            syncStatusChecker: MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: true)
+        )
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then: entry comes from local state without waiting on the remote checks
+        #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_revalidates_remotely_when_forceRemoteCheck_is_true() async throws {
+        // Given: the same local state that allows entry, while the store became ineligible remotely
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.5.0")
+        let checker = makeEligibilityChecker(
+            localCatalogEligibilityService: MockLocalCatalogEligibilityService(isLocalCatalogFeatureEnabled: true),
+            syncStatusChecker: MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: true)
+        )
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: true)
+
+        // Then: the remote result wins and the definite negative is persisted
+        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
+        #expect(eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) == false)
+    }
+
+    // MARK: - Last Known POS Eligibility Persistence
+
+    @Test func checkEligibility_persists_positive_eligibility_from_online_check() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0")
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .eligible)
+        #expect(eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) == true)
+    }
+
+    @Test func checkEligibility_persists_definite_ineligibility_from_online_check() async throws {
+        // Given
+        eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: true)
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.5.0")
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
+        #expect(eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) == false)
+    }
+
+    @Test func checkEligibility_keeps_last_known_eligibility_on_indeterminate_result() async throws {
+        // Given
+        eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: true)
+        setupCountry(country: .us, currency: .USD)
+        mockSystemStatusService.resultToReturn = .failure(URLError(.notConnectedToInternet))
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then: a check that could not determine eligibility does not downgrade the last known value
+        #expect(result == .ineligible(reason: .noInternetConnection))
+        #expect(eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) == true)
+    }
+
+    @Test func checkEligibility_returns_noInternetConnection_when_system_status_request_fails_with_connectivity_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(URLError(.notConnectedToInternet))
+        setupCountry(country: .us, currency: .USD)
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
+    @Test func checkEligibility_returns_wooCommercePluginNotFound_when_system_status_request_fails_with_generic_error() async throws {
+        // Given
+        mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
+        setupCountry(country: .us, currency: .USD)
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
 
     // MARK: - `refreshEligibility` Tests
@@ -250,10 +451,7 @@ struct POSTabEligibilityCheckerTests {
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -277,17 +475,15 @@ struct POSTabEligibilityCheckerTests {
             switch action {
             case .synchronizeGeneralSiteSettings(_, let completion):
                 syncCalled = true
-                completion(NSError(domain: "test", code: 500)) // Network error
+                completion(NSError(domain: "test", code: 500)) // Generic error
             default:
                 break
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
+        let checker = makeEligibilityChecker()
 
-        // When & Then - Should throw the network error
+        // When & Then - Should throw the generic error
         #expect(syncCalled == false) // Not called yet
         await #expect(throws: NSError.self) {
             try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -295,16 +491,38 @@ struct POSTabEligibilityCheckerTests {
         #expect(syncCalled == true) // Called during the attempt
     }
 
+    @Test func refreshEligibility_returns_noInternetConnection_when_site_settings_sync_fails_with_connectivity_error() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0")
+
+        var syncCalled = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .synchronizeGeneralSiteSettings(_, let completion):
+                syncCalled = true
+                completion(URLError(.notConnectedToInternet))
+            default:
+                break
+            }
+        }
+
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .siteSettingsNotAvailable)
+
+        // Then
+        #expect(syncCalled == true)
+        #expect(result == .ineligible(reason: .noInternetConnection))
+    }
+
     @Test func refreshEligibility_checks_eligibility_for_featureSwitchDisabled() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               siteSettingService: mockSiteSettingService)
+        let checker = makeEligibilityChecker(siteSettingService: mockSiteSettingService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .featureSwitchDisabled)
@@ -318,13 +536,24 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
+
+        // Then - Should check eligibility again (now eligible)
+        #expect(result == .eligible)
+    }
+
+    @Test func refreshEligibility_rechecks_eligibility_for_noInternetConnection() async throws {
+        // Given
+        setupCountry(country: .us, currency: .USD)
+        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
+
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: .noInternetConnection)
 
         // Then - Should check eligibility again (now eligible)
         #expect(result == .eligible)
@@ -342,10 +571,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -364,10 +590,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -385,10 +608,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -407,10 +627,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -429,10 +646,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -450,10 +664,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -473,14 +684,10 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_eligible_when_expansion_eligibility_is_enabled(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .eligible)
@@ -496,14 +703,10 @@ struct POSTabEligibilityCheckerTests {
         // Given - currencies that would be valid if eligibility were enabled
         let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : (country == .au ? .AUD : .EUR))
         setupCountry(country: country, currency: currency)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: ineligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -521,14 +724,10 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func fiscalization_country_is_ineligible_when_expansion_eligibility_is_enabled(country: Country) async throws {
         // Given
         setupCountry(country: country, currency: .EUR)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
@@ -537,14 +736,10 @@ struct POSTabEligibilityCheckerTests {
     @Test func expansion_country_with_mismatched_currency_is_ineligible_when_expansion_eligibility_is_enabled() async throws {
         // Given - NL store with USD currency (mismatch)
         setupCountry(country: .nl, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               systemStatusService: mockSystemStatusService,
-                                               expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
 
         // When
-        let result = await checker.checkEligibility()
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: .NL, supportedCurrencies: [.EUR])))
@@ -570,6 +765,40 @@ private final class StubCardPresentExpansionEligibilityService: CardPresentPayme
 }
 
 private extension POSTabEligibilityCheckerTests {
+    func makeEligibilityChecker(
+        siteSettingService: POSSiteSettingServiceProtocol? = nil,
+        connectivityObserver: ConnectivityObserver? = nil,
+        expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol =
+            CardPresentPaymentsCountryExpansionEligibilityService(),
+        localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? = nil,
+        syncStatusChecker: POSCatalogSyncStatusCheckerProtocol = MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: false)
+    ) -> POSTabEligibilityChecker {
+        POSTabEligibilityChecker(siteID: siteID,
+                                 siteSettings: siteSettings,
+                                 stores: stores,
+                                 systemStatusService: mockSystemStatusService,
+                                 siteSettingService: siteSettingService,
+                                 connectivityObserver: connectivityObserver ?? self.connectivityObserver,
+                                 expansionEligibilityService: expansionEligibilityService,
+                                 eligibilityService: eligibilityService,
+                                 localCatalogEligibilityService: localCatalogEligibilityService,
+                                 syncStatusChecker: syncStatusChecker)
+    }
+
+    /// Sets up an offline environment where the local catalog completed a full sync.
+    func makeOfflineCheckerWithSyncedCatalog(
+        isLocalCatalogFeatureEnabled: Bool = true,
+        hasCompletedFullSync: Bool = true
+    ) -> POSTabEligibilityChecker {
+        let offlineConnectivityObserver = MockConnectivityObserver()
+        offlineConnectivityObserver.setStatus(.notReachable)
+        return makeEligibilityChecker(
+            connectivityObserver: offlineConnectivityObserver,
+            localCatalogEligibilityService: MockLocalCatalogEligibilityService(isLocalCatalogFeatureEnabled: isLocalCatalogFeatureEnabled),
+            syncStatusChecker: MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: hasCompletedFullSync)
+        )
+    }
+
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
         let countrySetting = mockCountrySetting(country: country)
         let currencySetting = mockCurrencySetting(currency: currency)
@@ -671,6 +900,7 @@ private extension POSTabEligibilityCheckerTests {
 
 private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
     var resultToReturn: Result<POSPluginAndFeatureInfo, Error> = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
+    var cachedPluginToReturn: SystemPlugin?
 
     func loadWooCommercePluginAndPOSFeatureSwitch(siteID: Int64) async throws -> POSPluginAndFeatureInfo {
         switch resultToReturn {
@@ -679,5 +909,43 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
         case .failure(let error):
             throw error
         }
+    }
+
+    @MainActor
+    func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
+        cachedPluginToReturn
+    }
+}
+
+/// Mock local catalog eligibility service for the offline eligibility gate,
+/// which only consults `isLocalCatalogFeatureEnabled`.
+private actor MockLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
+    private let isLocalCatalogFeatureEnabledResult: Bool
+
+    init(isLocalCatalogFeatureEnabled: Bool) {
+        self.isLocalCatalogFeatureEnabledResult = isLocalCatalogFeatureEnabled
+    }
+
+    func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        .eligible
+    }
+
+    func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {}
+
+    func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
+        .eligible
+    }
+
+    func isLocalCatalogFeatureEnabled() async -> Bool {
+        isLocalCatalogFeatureEnabledResult
+    }
+}
+
+/// Mock sync status checker for the offline eligibility gate.
+private struct MockPOSCatalogSyncStatusChecker: POSCatalogSyncStatusCheckerProtocol {
+    let hasCompletedFullSync: Bool
+
+    func hasCompletedFullSync(for siteID: Int64) async -> Bool {
+        hasCompletedFullSync
     }
 }

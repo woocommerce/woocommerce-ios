@@ -7,15 +7,15 @@ struct PointOfSaleDashboardViewHelper {
     ) -> PointOfSaleDashboardView.ViewState {
 
         guard let eligibilityState else {
-            return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
+            return .loading(catalogSyncState: itemsContainerState.catalogSyncState)
         }
 
         switch eligibilityState {
         case .eligible:
             // Check items container state
             switch itemsContainerState {
-            case let .loading(isCatalogSyncing):
-                return .loading(isCatalogSyncing: isCatalogSyncing)
+            case let .loading(catalogSyncState):
+                return .loading(catalogSyncState: catalogSyncState)
             case .error(let error):
                 return .error(error)
             case .content:

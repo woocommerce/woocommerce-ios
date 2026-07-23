@@ -16,6 +16,7 @@
 - [*] Improved widget display at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/17559]
 - [*] Product duplication now uses WooCommerce's built-in copy flow when available, with compatibility support for older stores. [https://github.com/woocommerce/woocommerce-ios/pull/17553]
 - [*] Product details now refresh when you reopen a product, so review counts, price, and other fields stay up to date without restarting the app. [https://github.com/woocommerce/woocommerce-ios/pull/17546]
+- [*] Fixed the tax information "Learn more" link being cramped and poorly wrapped in the order form at larger Dynamic Type sizes. [https://github.com/woocommerce/woocommerce-ios/pull/17604]
 
 25.2
 -----

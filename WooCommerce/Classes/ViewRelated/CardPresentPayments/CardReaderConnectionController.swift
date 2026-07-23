@@ -739,10 +739,12 @@ private extension CardReaderConnectionController {
         if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in
+                    self?.analyticsTracker.cardReaderLocationMissingTapped()
                     self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)
                 }
             } else {
                 return { [weak self] in
+                    self?.analyticsTracker.cardReaderLocationMissingTapped()
                     UIApplication.shared.open(adminUrl)
                     self?.showIncompleteAddressErrorWithRefreshButton()
                 }

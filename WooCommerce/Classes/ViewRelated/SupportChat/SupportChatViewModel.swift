@@ -751,7 +751,6 @@ final class SupportChatViewModel {
                 area: mappedArea,
                 confidence: supportArea.confidence,
                 topic: supportArea.topic,
-                transcript: transcript,
                 systemStatusReport: systemStatusReport
             )
         } else {

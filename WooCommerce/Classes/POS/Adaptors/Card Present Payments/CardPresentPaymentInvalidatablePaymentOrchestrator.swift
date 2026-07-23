@@ -58,17 +58,6 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
         paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
     }
 
-    func emailReceipt(for order: Order,
-                      params: CardPresentReceiptParameters,
-                      onContent: @escaping (String) -> Void) {
-        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
-    }
-
-    func saveReceipt(for order: Order,
-                     params: CardPresentReceiptParameters) {
-        paymentOrchestrator.saveReceipt(for: order, params: params)
-    }
-
     func presentBackendReceipt(for order: Order,
                                onCompletion: @escaping (Result<Receipt, any Error>) -> Void) {
         paymentOrchestrator.presentBackendReceipt(for: order, onCompletion: onCompletion)

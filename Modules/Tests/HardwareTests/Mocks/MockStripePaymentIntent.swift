@@ -5,6 +5,7 @@ import StripeTerminal
 // are annotated as NS_UNAVAILABLE
 struct MockStripePaymentIntent {
     let stripeId: String?
+    let clientSecret: String?
     let created: Date
     let status: StripeTerminal.PaymentIntentStatus
     let amount: UInt
@@ -25,6 +26,7 @@ extension MockStripePaymentIntent: StripePaymentIntent {
 extension MockStripePaymentIntent {
     static func mock() -> Self {
         MockStripePaymentIntent(stripeId: "id",
+                                clientSecret: "pi_secret",
                                 created: Date(),
                                 status: .succeeded,
                                 amount: 100,

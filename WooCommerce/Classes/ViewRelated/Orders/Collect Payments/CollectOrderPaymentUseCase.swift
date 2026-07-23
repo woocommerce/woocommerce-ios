@@ -338,6 +338,11 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
+        // Keep recovery state scoped to this payment attempt. POS may start another flow while
+        // callbacks from an earlier flow are still unwinding.
+        var paymentIntentForRecovery: PaymentIntent?
+        let retrievePaymentIntentForRecovery = { paymentIntentForRecovery }
+
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
@@ -393,6 +398,7 @@ private extension CollectOrderPaymentUseCase {
                 // Reader messages. EG: Remove Card
                 self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
+                paymentIntentForRecovery = intent
                 self?.analyticsTracker.trackProcessingCompletion(intent: intent)
                 self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
@@ -412,6 +418,7 @@ private extension CollectOrderPaymentUseCase {
                                                                        alertProvider: paymentAlerts,
                                                                        paymentGatewayAccount: paymentGatewayAccount,
                                                                        channel: channel,
+                                                                       paymentIntentForRecovery: retrievePaymentIntentForRecovery,
                                                                        onCompletion: onCompletion)
                 }
             })
@@ -490,34 +497,75 @@ private extension CollectOrderPaymentUseCase {
                                                       alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                       paymentGatewayAccount: PaymentGatewayAccount,
                                                       channel: PaymentChannel,
+                                                      paymentIntentForRecovery: @escaping () -> PaymentIntent? = { nil },
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard case ServerSidePaymentCaptureError.paymentGateway = error else {
+        guard let paymentIntentForServerCapture = paymentIntentForRecovery(),
+              let clientSecret = paymentIntentForServerCapture.clientSecret else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,
                                                        channel: channel,
+                                                       paymentIntentForRecovery: paymentIntentForRecovery,
                                                        onCompletion: onCompletion)
         }
 
-        // This is an unknown error during payment capture.
-        // The first time this happens, we check if the order's actually paid, and return success if it is.
-        let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: order.orderID) { [weak self] result in
+        // Once confirmation has completed, any later error may be ambiguous. Ask Stripe first so a
+        // failed order refresh cannot hide a payment that was definitely taken.
+        let retrieveIntentAction = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret) { [weak self] result in
             guard let self else { return }
-            guard let refreshedOrder = try? result.get(),
-                  refreshedOrder.datePaid != nil else {
+
+            let refreshedIntent: PaymentIntent
+            switch result {
+            case .failure(let retrieveError):
+                DDLogInfo("💳 Unable to verify terminal PaymentIntent after payment failure: \(retrieveError)")
                 return handlePaymentFailureAndRetryPayment(error,
                                                            alertProvider: paymentAlerts,
                                                            paymentGatewayAccount: paymentGatewayAccount,
                                                            channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            case .success(let intent):
+                refreshedIntent = intent
+            }
+
+            guard refreshedIntent.id == paymentIntentForServerCapture.id else {
+                DDLogInfo("💳 Unable to verify terminal payment: retrieved PaymentIntent does not match the captured intent")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
                                                            onCompletion: onCompletion)
             }
 
-            // Since the order's paid, we can return success
-            onCompletion(.success(CardPresentCapturedPaymentData(
-                paymentMethod: .unknown,
-                receiptParameters: nil)))
+            guard refreshedIntent.metadata?[PaymentIntent.MetadataKeys.orderID] == String(order.orderID) else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent order metadata does not match the order")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            guard refreshedIntent.status == .succeeded else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent status is \(refreshedIntent.status)")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            let capturedPaymentData = CardPresentCapturedPaymentData(
+                paymentMethod: refreshedIntent.paymentMethod() ?? .unknown,
+                receiptParameters: refreshedIntent.receiptParameters()
+            )
+            handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+            onCompletion(.success(capturedPaymentData))
         }
-        stores.dispatch(action)
+        stores.dispatch(retrieveIntentAction)
     }
 
     /// Log the failure reason, inform the user, and offer them the chance to retry it if possible.
@@ -526,6 +574,7 @@ private extension CollectOrderPaymentUseCase {
                                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                              paymentGatewayAccount: PaymentGatewayAccount,
                                              channel: PaymentChannel,
+                                             paymentIntentForRecovery: @escaping () -> PaymentIntent? = { nil },
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
@@ -554,6 +603,7 @@ private extension CollectOrderPaymentUseCase {
                                                    paymentGatewayAccount: paymentGatewayAccount,
                                                    receiptState: receiptState,
                                                    channel: channel,
+                                                   paymentIntentForRecovery: paymentIntentForRecovery,
                                                    onCompletion: onCompletion)
             case .dontRetry:
                 presentNonRetryableError(error: error,
@@ -612,6 +662,7 @@ private extension CollectOrderPaymentUseCase {
                                                     paymentGatewayAccount: PaymentGatewayAccount,
                                                     receiptState: CardReaderTransactionFailureAlertReceiptState,
                                                     channel: PaymentChannel,
+                                                    paymentIntentForRecovery: @escaping () -> PaymentIntent?,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(
@@ -626,6 +677,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                      alertProvider: paymentAlerts,
                                                                                      paymentGatewayAccount: paymentGatewayAccount,
                                                                                      channel: channel,
+                                                                                     paymentIntentForRecovery: paymentIntentForRecovery,
                                                                                      onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
@@ -646,6 +698,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                       alertProvider: paymentAlerts,
                                                                                       paymentGatewayAccount: paymentGatewayAccount,
                                                                                       channel: channel,
+                                                                                      paymentIntentForRecovery: paymentIntentForRecovery,
                                                                                       onCompletion: onCompletion)
                                 }
                             }

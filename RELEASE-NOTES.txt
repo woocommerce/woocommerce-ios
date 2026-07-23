@@ -3,6 +3,7 @@
 
 25.3
 -----
+- [*] Payments: fixed successful in-person payments appearing to fail when the capture response is interrupted. [https://github.com/woocommerce/woocommerce-ios/pull/17593]
 - [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/17548]
 - [*] Fixed products failing to load when a plugin returns null for a product's categories, tags, images, or other list fields. [https://github.com/woocommerce/woocommerce-ios/pull/17545]
 - [*] Fixed a crash when undoing pasted product tags containing tabs or extra whitespace. [https://github.com/woocommerce/woocommerce-ios/pull/17592]

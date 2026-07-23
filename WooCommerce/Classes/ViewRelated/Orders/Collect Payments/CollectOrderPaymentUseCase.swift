@@ -166,8 +166,15 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         return onFailure(error)
                     case .success:
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
-                        onPaymentCompletion()
+                        self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
+                            guard let self else { return }
+                            if isEligible {
+                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
+                            } else {
+                                onCompleted()
+                            }
+                            onPaymentCompletion()
+                        }
                     }
                 })
             case .canceled(let cancellationSource, _):
@@ -735,19 +742,6 @@ private extension CollectOrderPaymentUseCase {
 
             alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: receiptState))
         })
-    }
-
-    /// Presents the native email client with the provided content.
-    ///
-    func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
-        let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: analyticsTracker.connectedReaderModel)
-        receiptEmailCoordinator = coordinator
-        coordinator.presentEmailForm(data: .init(content: content,
-                                                 order: order,
-                                                 storeName: stores.sessionManager.defaultSite?.name),
-                                     from: rootViewController,
-                                     completion: onCompleted)
     }
 
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {

@@ -593,6 +593,43 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(eventOrder, [.alertPresented, .paymentCompletion])
     }
 
+    func test_collectPayment_when_backend_receipt_is_not_eligible_then_completes_without_receipt_alert() throws {
+        // Given
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = false
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+
+        var didCompletePayment = false
+        var didCompleteFlow = false
+
+        // When
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { _ in },
+                onCancel: {},
+                onPaymentCompletion: {
+                    didCompletePayment = true
+                    promise(())
+                },
+                onCompleted: {
+                    didCompleteFlow = true
+                }
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then
+        XCTAssertTrue(didCompletePayment)
+        XCTAssertTrue(didCompleteFlow)
+        XCTAssertFalse(alertsPresenter.spyPresentedAlertViewModels.contains { viewModel in
+            viewModel is CardPresentModalSuccessWithoutEmail || viewModel is CardPresentModalSuccessEmailSent
+        })
+    }
+
     func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
         // Given an order with 2 decimal place precision
         let initialOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56")

@@ -939,7 +939,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
          XCTAssertNotNil(seeReceiptRow)
      }
 
-    func test_payment_section_when_not_eligible_for_receipts_then_does_not_render_see_receipt_row() throws {
+    func test_payment_section_when_backend_receipt_is_not_eligible_then_does_not_render_see_receipt_row() throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order,

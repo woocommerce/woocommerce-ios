@@ -110,11 +110,6 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
         resetProcessingPaymentTracking()
     }
-    func trackEmailTapped() { }
-    func trackReceiptPrintTapped() { }
-    func trackReceiptPrintSuccess() { }
-    func trackReceiptPrintCanceled() { }
-    func trackReceiptPrintFailed(error: any Error) { }
 
     func trackCustomerInteractionStarted() {
         // Any action that is considered as user starting an iteraction resets any ongoing counter

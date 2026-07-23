@@ -310,6 +310,33 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertTrue(product.variations.isEmpty)
     }
 
+    /// Ensures a product still decodes when a plugin nullifies its array fields in the REST response.
+    /// Regression test for the crash where a `null` array (e.g. `categories`) failed the whole product sync.
+    /// See WOOMOB-3315.
+    ///
+    func test_product_array_fields_default_to_empty_when_null() throws {
+        // Given
+        let product = try XCTUnwrap(mapLoadProductWithNullArrayFieldsResponse())
+
+        // Then
+        XCTAssertTrue(product.categories.isEmpty)
+        XCTAssertTrue(product.tags.isEmpty)
+        XCTAssertTrue(product.images.isEmpty)
+        XCTAssertTrue(product.downloads.isEmpty)
+        XCTAssertTrue(product.attributes.isEmpty)
+        XCTAssertTrue(product.defaultAttributes.isEmpty)
+        XCTAssertTrue(product.groupedProducts.isEmpty)
+        XCTAssertTrue(product.relatedIDs.isEmpty)
+        XCTAssertTrue(product.upsellIDs.isEmpty)
+        XCTAssertTrue(product.crossSellIDs.isEmpty)
+
+        // Nested entities decoded from the same response default to empty too.
+        let bundledItem = try XCTUnwrap(product.bundledItems.first)
+        XCTAssertTrue(bundledItem.allowedVariations.isEmpty)
+        XCTAssertTrue(bundledItem.defaultVariationAttributes.isEmpty)
+        XCTAssertTrue(try XCTUnwrap(product.compositeComponents.first).optionIDs.isEmpty)
+    }
+
     /// Test that products with the `bundle` product type are properly parsed.
     ///
     func test_product_bundles_are_properly_parsed() throws {
@@ -714,6 +741,12 @@ private extension ProductMapperTests {
     ///
     func mapLoadProductWithMalformedImageAltAndVariations() -> Product? {
         return mapProduct(from: "product-malformed-variations-and-image-alt")
+    }
+
+    /// Returns the ProductMapper output upon receiving `product-null-array-fields`, where every array field is `null`
+    ///
+    func mapLoadProductWithNullArrayFieldsResponse() -> Product? {
+        return mapProduct(from: "product-null-array-fields")
     }
 
     /// Returns the ProductMapper output upon receiving `product-bundle`

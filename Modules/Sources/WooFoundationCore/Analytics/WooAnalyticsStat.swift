@@ -347,6 +347,9 @@ public enum WooAnalyticsStat: String {
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
+    case cardReaderLocationSuccess = "card_reader_location_success"
+    case cardReaderLocationFailure = "card_reader_location_failure"
+    case cardReaderLocationMissingTapped = "card_reader_location_missing_tapped"
 
     // MARK: Card Reader Software Update Events
     //

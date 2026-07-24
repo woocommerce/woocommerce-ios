@@ -2,6 +2,33 @@
 
 github.dismiss_out_of_range_messages
 
+unless respond_to?(:translation_context_checker)
+  require 'bundler'
+  require 'tmpdir'
+
+  gem_dir = Dir.mktmpdir('i18n-context-generator-gems')
+  installed = Bundler.with_unbundled_env do
+    system(
+      'gem', 'install', 'i18n-context-generator', '--version', '0.5.0',
+      '--no-document', '--install-dir', gem_dir
+    )
+  end
+  raise 'Could not install i18n-context-generator 0.5.0' unless installed
+
+  Dir.glob(File.join(gem_dir, 'gems', '*', 'lib')).each { |path| $LOAD_PATH.unshift(path) }
+  require 'i18n_context_generator'
+
+  Dir.mktmpdir('dangermattic-translation-context') do |plugin_dir|
+    cloned = system(
+      'git', 'clone', '--quiet', '--depth', '1', '--branch', 'iangmaia/add-translation-context-plugin',
+      'https://github.com/Automattic/dangermattic.git', plugin_dir
+    )
+    raise 'Could not load Dangermattic translation context plugin' unless cloned
+
+    danger.import_plugin(File.join(plugin_dir, 'lib/dangermattic/plugins/translation_context_checker.rb'))
+  end
+end
+
 translation_context_checker.check_context_suggestions(
   discovery_mode: :translations,
   source_paths: ['WooCommerce/Classes/'],

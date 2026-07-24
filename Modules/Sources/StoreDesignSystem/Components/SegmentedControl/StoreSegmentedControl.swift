@@ -65,10 +65,10 @@ public struct StoreSegmentedControl<Value: Hashable>: View {
                     selection = option
                 } label: {
                     Color.clear
+                        .frame(maxWidth: .infinity, minHeight: StoreSize.minimumTapTarget)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .frame(maxWidth: .infinity, minHeight: StoreSize.minimumTapTarget)
-                .contentShape(Rectangle())
                 .accessibilityLabel(title(option))
                 .accessibilityAddTraits(index == selectedIndex ? .isSelected : [])
                 .accessibilityValue(Localization.positionValue(index: index + 1, count: options.count))

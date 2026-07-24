@@ -47,7 +47,7 @@ struct PaymentsToggleRow: View {
 struct PaymentsToggleRow_Previews: PreviewProvider {
     static var previews: some View {
         PaymentsToggleRow(image: Image(uiImage: .creditCardIcon),
-                          title: "Pay in Person",
+                          title: "Pay In Person",
                           toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel())
         .previewLayout(.sizeThatFits)
     }

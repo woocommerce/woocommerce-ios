@@ -94,16 +94,19 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     // MARK: - Refund Review Data
 
     var stubPOSRefundReviewData: POSRefundReviewData?
+    private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
 
-    func preparePOSRefundReviewData() -> POSRefundReviewData? {
+    func prepareRefundReview() async -> POSRefundReviewPreparationResult {
         if let stubData = stubPOSRefundReviewData {
-            return stubData
+            return .ready(stubData)
         }
 
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else { return nil }
+        guard !selectedItems.isEmpty else {
+            return .preparationError
+        }
 
-        return POSRefundReviewData(
+        return .ready(POSRefundReviewData(
             itemsCount: selectedItems.count,
             formattedItemsSubtotal: "$0.00",
             formattedTax: "$0.00",
@@ -112,7 +115,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             customerEmail: nil,
             refundReason: nil,
             isFullRefund: selectedItems.count == refundSelectableItems.count
-        )
+        ))
     }
 
     func loadOrderRefunds() async {}

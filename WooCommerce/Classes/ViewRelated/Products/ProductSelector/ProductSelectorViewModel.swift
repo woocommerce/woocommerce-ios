@@ -51,6 +51,9 @@ enum ProductSelectorSource {
 ///
 final class ProductSelectorViewModel: ObservableObject {
     private let siteID: Int64
+    private let currency: String?
+    private let pageFirstIndex: Int
+    private var transientProducts: [Product] = []
 
     /// Storage to fetch product list
     ///
@@ -242,6 +245,7 @@ final class ProductSelectorViewModel: ObservableObject {
 
     init(siteID: Int64,
          source: ProductSelectorSource,
+         currency: String? = nil,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
@@ -267,6 +271,8 @@ final class ProductSelectorViewModel: ObservableObject {
          onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
         self.siteID = siteID
         self.source = source
+        self.currency = currency
+        self.pageFirstIndex = pageFirstIndex
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
@@ -413,8 +419,11 @@ final class ProductSelectorViewModel: ObservableObject {
         let selectedItems = selectedItemsIDs.filter { variableProduct.variations.contains($0) }
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
+                                                 currency: currency,
                                                  selectedProductVariationIDs: selectedItems,
                                                  orderSyncState: orderSyncState,
+                                                 storageManager: storageManager,
+                                                 stores: stores,
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product, selected in
             guard let self else { return }
             onVariationSelectionStateChanged?(productVariation, product, selected)
@@ -525,6 +534,11 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
     /// Sync all products from remote.
     ///
     private func syncProducts(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
+        if let currency {
+            syncProductsTransiently(currency: currency, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            return
+        }
+
         let action = ProductAction.synchronizeProducts(siteID: siteID,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
@@ -556,6 +570,15 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
     /// Sync products matching a given keyword.
     ///
     private func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
+        if let currency {
+            searchProductsTransiently(currency: currency,
+                                      keyword: keyword,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      onCompletion: onCompletion)
+            return
+        }
+
         searchProductsInCacheIfPossible(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
 
         let action = ProductAction.searchProducts(siteID: siteID,
@@ -590,6 +613,73 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
 
         stores.dispatch(action)
         tracker.trackSearchTriggered()
+    }
+
+    private func syncProductsTransiently(currency: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
+        let productIDs = filtersSubject.value.favoriteProduct != nil ? favoriteProductIDs : []
+        let action = ProductAction.retrieveProductsTransiently(siteID: siteID,
+                                                               currency: currency,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: filtersSubject.value.stockStatus,
+                                                               productStatus: filtersSubject.value.productStatus,
+                                                               productType: filtersSubject.value.promotableProductType?.productType,
+                                                               productCategory: filtersSubject.value.productCategory,
+                                                               sortOrder: .nameAscending,
+                                                               productIDs: productIDs) { [weak self] result in
+            guard let self else { return }
+            self.handleTransientResult(result, pageNumber: pageNumber, onCompletion: onCompletion)
+        }
+        stores.dispatch(action)
+    }
+
+    private func searchProductsTransiently(currency: String,
+                                           keyword: String,
+                                           pageNumber: Int,
+                                           pageSize: Int,
+                                           onCompletion: SyncCompletion?) {
+        let action = ProductAction.searchProductsTransiently(siteID: siteID,
+                                                             currency: currency,
+                                                             keyword: keyword,
+                                                             filter: productSearchFilter,
+                                                             pageNumber: pageNumber,
+                                                             pageSize: pageSize,
+                                                             stockStatus: filtersSubject.value.stockStatus,
+                                                             productStatus: filtersSubject.value.productStatus,
+                                                             productType: filtersSubject.value.promotableProductType?.productType,
+                                                             productCategory: filtersSubject.value.productCategory) { [weak self] result in
+            guard let self, keyword == self.searchTerm else { return }
+            switch result {
+            case .success:
+                self.tracker.trackSearchSuccessIfNecessary()
+            case .failure(let error):
+                self.tracker.trackSearchFailureIfNecessary(with: error)
+            }
+            self.handleTransientResult(result, pageNumber: pageNumber, onCompletion: onCompletion)
+        }
+        stores.dispatch(action)
+        tracker.trackSearchTriggered()
+    }
+
+    private func handleTransientResult(_ result: Result<(products: [Product], hasNextPage: Bool), Error>,
+                                       pageNumber: Int,
+                                       onCompletion: SyncCompletion?) {
+        switch result {
+        case let .success((products, hasNextPage)):
+            let products = purchasableItemsOnly ? products.filter(\.purchasable) : products
+            if pageNumber == pageFirstIndex {
+                transientProducts = products
+            } else {
+                let existingIDs = Set(transientProducts.map(\.productID))
+                transientProducts += products.filter { !existingIDs.contains($0.productID) }
+            }
+            reloadData()
+            transitionToResultsUpdatedState()
+            onCompletion?(.success(hasNextPage))
+        case let .failure(error):
+            transitionToResultsUpdatedState()
+            onCompletion?(.failure(error))
+        }
     }
 
     private func searchProductsInCacheIfPossible(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int) {
@@ -680,6 +770,12 @@ private extension ProductSelectorViewModel {
     /// Reloads the data from the storage and composes sections and selections.
     ///
     func reloadData() {
+        if currency != nil {
+            createSectionsAddingTopProductsIfRequired(from: transientProducts)
+            observeSelections()
+            return
+        }
+
             do {
                 try productsResultsController.performFetch()
                 var loadedProducts: [Product] = []
@@ -745,6 +841,12 @@ private extension ProductSelectorViewModel {
     }
 
     func updatePredicate(searchTerm: String, filters: FilterProductListViewModel.Filters, productSearchFilter: ProductSearchFilter) async {
+        guard currency == nil else {
+            transientProducts = []
+            reloadData()
+            return
+        }
+
         let productIDs: [Int64]? = await {
             guard filters.favoriteProduct != nil else {
                 return nil
@@ -881,9 +983,23 @@ private extension ProductSelectorViewModel {
 
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
+                                       currencyFormatter: currencyFormatter,
                                        featureFlagService: featureFlagService,
                                        configure: configure)
         }
+    }
+
+    var currencyFormatter: CurrencyFormatter {
+        let siteSettings = ServiceLocator.currencySettings
+        guard let currency, let currencyCode = CurrencyCode(rawValue: currency) else {
+            return CurrencyFormatter(currencySettings: siteSettings)
+        }
+        let settings = CurrencySettings(currencyCode: currencyCode,
+                                        currencyPosition: siteSettings.currencyPosition,
+                                        thousandSeparator: siteSettings.groupingSeparator,
+                                        decimalSeparator: siteSettings.decimalSeparator,
+                                        numberOfDecimals: siteSettings.fractionDigits)
+        return CurrencyFormatter(currencySettings: settings)
     }
 }
 

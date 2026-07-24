@@ -9,11 +9,11 @@ unless respond_to?(:translation_context_checker)
   gem_dir = Dir.mktmpdir('i18n-context-generator-gems')
   installed = Bundler.with_unbundled_env do
     system(
-      'gem', 'install', 'i18n-context-generator', '--version', '0.5.0',
+      'gem', 'install', 'i18n-context-generator', '--version', '0.5.1',
       '--no-document', '--install-dir', gem_dir
     )
   end
-  raise 'Could not install i18n-context-generator 0.5.0' unless installed
+  raise 'Could not install i18n-context-generator 0.5.1' unless installed
 
   Dir.glob(File.join(gem_dir, 'gems', '*', 'lib')).each { |path| $LOAD_PATH.unshift(path) }
   require 'i18n_context_generator'

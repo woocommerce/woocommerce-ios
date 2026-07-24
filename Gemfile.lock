@@ -258,7 +258,7 @@ GEM
       domain_name (~> 0.5)
     httpclient (2.9.0)
       mutex_m
-    i18n-context-generator (0.5.0)
+    i18n-context-generator (0.5.1)
       concurrent-ruby (~> 1.2)
       csv (~> 3.3)
       dotstrings (~> 0.6)

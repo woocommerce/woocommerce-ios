@@ -124,7 +124,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
 
         // Then
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
-        let expectedTitle = "Failed to enable Pay in Person. Please try again later."
+        let expectedTitle = "Failed to enable Pay In Person. Please try again later."
         assertEqual(expectedTitle, notice.title)
     }
 

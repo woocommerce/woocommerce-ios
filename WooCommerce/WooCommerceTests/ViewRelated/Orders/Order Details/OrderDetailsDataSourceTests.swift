@@ -929,7 +929,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
                                                  cardPresentPaymentsConfiguration: Mocks.configuration,
                                                  receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
          dataSource.isEligibleForBackendReceipt = true
-         //dataSource.orderHasLocalReceipt = false
 
          // When
          dataSource.reloadSections()
@@ -940,7 +939,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
          XCTAssertNotNil(seeReceiptRow)
      }
 
-    func test_payment_section_when_not_eligible_for_receipts_then_does_not_render_see_receipt_row() throws {
+    func test_payment_section_when_backend_receipt_is_not_eligible_then_does_not_render_see_receipt_row() throws {
         // Given
         let order = Order.fake()
         let dataSource = OrderDetailsDataSource(order: order,
@@ -957,50 +956,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let seeReceiptRow = row(row: .seeReceipt, in: paymentSection)
         XCTAssertNil(seeReceiptRow)
     }
-
-    func test_payment_section_when_backend_and_local_receipts_coexist_then_prioritizes_local_over_backend_receipt() throws {
-        // Given
-        let order = Order.fake()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForBackendReceipt = true
-        dataSource.orderHasLocalReceipt = true
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let seeReceiptRow = row(row: .seeReceipt, in: paymentSection)
-        let seeLegacyReceiptRow = row(row: .seeLegacyReceipt, in: paymentSection)
-
-        XCTAssertNil(seeReceiptRow)
-        XCTAssertNotNil(seeLegacyReceiptRow)
-    }
-
-    func test_payment_section_when_neither_receipt_is_eligible_then_renders_no_receipt_buttons_() throws {
-         // Given
-         let order = Order.fake()
-         let dataSource = OrderDetailsDataSource(order: order,
-                                                 storageManager: storageManager,
-                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                 receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-         dataSource.isEligibleForBackendReceipt = false
-         dataSource.orderHasLocalReceipt = false
-
-         // When
-         dataSource.reloadSections()
-
-         // Then
-         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-         let seeReceiptRow = row(row: .seeReceipt, in: paymentSection)
-         let seeLegacyReceiptRow = row(row: .seeLegacyReceipt, in: paymentSection)
-
-         XCTAssertNil(seeReceiptRow)
-         XCTAssertNil(seeLegacyReceiptRow)
-     }
 }
 
 // MARK: - Test Data

@@ -71,6 +71,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         onInputChange = viewModel.onInputChange
 
         configureStyle(viewModel.style)
+        configureInputTextDirection(inputFormatter: viewModel.inputFormatter)
         configureInputTextFieldState(enabled: viewModel.isInputEnabled)
 
         rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
@@ -168,6 +169,10 @@ private extension UnitInputTableViewCell {
             inputTextField.textAlignment = style == .primary ? .right : .left
             // swiftlint:enable:next inverse_text_alignment
         }
+    }
+
+    func configureInputTextDirection(inputFormatter: UnitInputFormatter) {
+        inputTextField.semanticContentAttribute = inputFormatter is PriceInputFormatter ? .forceLeftToRight : .unspecified
     }
 
     func configureUnitLabel() {

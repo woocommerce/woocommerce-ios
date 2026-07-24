@@ -1,0 +1,30 @@
+{
+    "data": {
+        "id": 3266,
+        "date_created": "2026-06-26T08:20:53",
+        "amount": "96.00",
+        "reason": "V4 refund",
+        "refunded_payment": true,
+        "line_items": [
+            {
+                "id": 90,
+                "line_item_id": 50,
+                "quantity": 2,
+                "refund_total": "20.00",
+                "refund_tax": [
+                    {
+                        "id": 7,
+                        "refund_total": "2.00"
+                    }
+                ]
+            },
+            {
+                "id": 91,
+                "line_item_id": 51,
+                "quantity": 0,
+                "refund_total": "74.00",
+                "refund_tax": []
+            }
+        ]
+    }
+}

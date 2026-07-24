@@ -42,6 +42,11 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let productAttributes: [ProductAttribute]
 
+    /// Whether the parent product is a subscription product. Used to decide if variation rows
+    /// should surface subscription details, rather than relying on leftover `_subscription_*` meta data.
+    ///
+    private let isSubscriptionProduct: Bool
+
     /// All purchasable product variations for the product.
     ///
     @Published private var productVariations: [ProductVariation] = []
@@ -122,6 +127,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
+         isSubscriptionProduct: Bool = false,
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
@@ -133,6 +139,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
+        self.isSubscriptionProduct = isSubscriptionProduct
         self.orderSyncState = orderSyncState
         self.storageManager = storageManager
         self.stores = stores
@@ -160,6 +167,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productID: product.productID,
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
+                  isSubscriptionProduct: product.productType.isSubscription,
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   orderSyncState: orderSyncState,
@@ -334,6 +342,7 @@ private extension ProductVariationSelectorViewModel {
                 let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
+                                           isSubscriptionProduct: self.isSubscriptionProduct,
                                            displayMode: .stock,
                                            selectedState: selectedState)
             }

@@ -32,7 +32,7 @@ bundle exec fastlane build_for_testing 2>&1 \
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator test \
+  test \
   -only-testing:"<target>/<class>/<method>" 2>&1 | tail -50
 ```
 

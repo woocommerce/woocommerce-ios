@@ -33,24 +33,4 @@ final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalytic
         didCallTrackPaymentCancelation = true
         spyPaymentCancelationSource = cancelationSource
     }
-
-    func trackEmailTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintSuccess() {
-        // no-op
-    }
-
-    func trackReceiptPrintCanceled() {
-        // no-op
-    }
-
-    func trackReceiptPrintFailed(error: Error) {
-        // no-op
-    }
 }

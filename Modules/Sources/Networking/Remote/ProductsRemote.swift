@@ -6,6 +6,7 @@ import Foundation
 ///
 public protocol ProductsRemoteProtocol {
     func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
+    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void)
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product]
@@ -132,6 +133,23 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /// Duplicates a product using the WooCommerce core endpoint.
+    ///
+    /// The response is intentionally mapped only to the duplicated product ID because the endpoint returns
+    /// a raw core product representation rather than the canonical REST API product representation.
+    public func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+        let path = "\(Path.products)/\(productID)/duplicate"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductDuplicateMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Deletes a specific `Product`.
@@ -425,7 +443,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///
     public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
+        let parameters = [ParameterKey.contextKey: Default.context]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

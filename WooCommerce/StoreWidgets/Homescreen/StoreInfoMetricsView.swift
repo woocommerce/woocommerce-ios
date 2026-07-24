@@ -3,7 +3,12 @@ import WidgetKit
 
 enum StoreInfoDynamicType {
     static let maximumSize: DynamicTypeSize = .accessibility2
+    static let condensedLayoutThreshold: DynamicTypeSize = .xLarge
     static let accessibilityLayoutThreshold: DynamicTypeSize = .accessibility1
+
+    static func usesCondensedLayout(_ dynamicTypeSize: DynamicTypeSize) -> Bool {
+        dynamicTypeSize >= condensedLayoutThreshold
+    }
 
     static func usesAccessibilityLayout(_ dynamicTypeSize: DynamicTypeSize) -> Bool {
         dynamicTypeSize >= accessibilityLayoutThreshold

@@ -83,7 +83,9 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     @objc private func printReceipt() {
         ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
                                                                                    cardReaderModel: nil,
-                                                                                   source: .backend))
+                                                                                   source: .backend,
+                                                                                   currency: viewModel.currency,
+                                                                                   paymentMethod: viewModel.paymentMethod))
         guard let _ = URL(string: viewModel.receiptURLString) else {
             return
         }
@@ -95,14 +97,25 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error {
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
+                                                                                            source: .backend,
+                                                                                            currency: self?.viewModel.currency,
+                                                                                            paymentMethod: self?.viewModel.paymentMethod))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             }
             switch isCompleted {
             case true:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil,
+                                                                                            cardReaderModel: nil,
+                                                                                            source: .backend,
+                                                                                            currency: self?.viewModel.currency,
+                                                                                            paymentMethod: self?.viewModel.paymentMethod))
             case false:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil,
+                                                                                             cardReaderModel: nil,
+                                                                                             source: .backend,
+                                                                                             currency: self?.viewModel.currency,
+                                                                                             paymentMethod: self?.viewModel.paymentMethod))
             }
             self?.dismiss(animated: true)
         })

@@ -22,6 +22,8 @@ public struct RESTRequest: Request {
 
     let requestParameters: RequestParameters
 
+    let queryParameters: RequestParameters
+
     /// Whether this request should allow cellular access.
     ///
     let allowsCellularAccess: Bool
@@ -30,13 +32,15 @@ public struct RESTRequest: Request {
                  apiVersionPath: String?,
                  method: HTTPMethod,
                  path: String,
-                 requestParameters: RequestParameterDictionary? = nil,
+                 requestParameters: RequestParameters,
+                 queryParameters: RequestParameters,
                  allowsCellularAccess: Bool = true) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
         self.method = method
         self.path = path
-        self.requestParameters = RequestParameters(requestParameters)
+        self.requestParameters = requestParameters
+        self.queryParameters = queryParameters
         self.allowsCellularAccess = allowsCellularAccess
     }
 
@@ -45,26 +49,36 @@ public struct RESTRequest: Request {
     ///     - method: HTTP Method we should use.
     ///     - path: path to the target endpoint.
     ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - queryParameters: Collection of parameters to encode in the endpoint URL.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
     public init(siteURL: String,
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
-        self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, requestParameters: parameters, allowsCellularAccess: allowsCellularAccess)
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  method: method,
+                  path: path,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
+                  allowsCellularAccess: allowsCellularAccess)
     }
 
     public init<Value: RequestParameterValueConvertible>(siteURL: String,
          method: HTTPMethod,
          path: String,
          parameters: [String: Value],
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: nil,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -72,12 +86,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterConvertibleDictionary,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: nil,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -94,12 +110,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -108,12 +126,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: [String: Value],
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -122,12 +142,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterConvertibleDictionary,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wooApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -145,12 +167,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wordpressApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -159,12 +183,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: [String: Value],
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wordpressApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -173,12 +199,14 @@ public struct RESTRequest: Request {
          method: HTTPMethod,
          path: String,
          parameters: RequestParameterConvertibleDictionary,
+         queryParameters: RequestParameterDictionary? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL,
                   apiVersionPath: wordpressApiVersion.path,
                   method: method,
                   path: path,
-                  requestParameters: parameters.requestParameterDictionary,
+                  requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   allowsCellularAccess: allowsCellularAccess)
     }
 
@@ -197,6 +225,7 @@ public struct RESTRequest: Request {
         let url = try components.joined(separator: "/").asURL()
         var request = try URLRequest(url: url, method: method)
         request.allowsCellularAccess = allowsCellularAccess
+        request = try URLEncoding.queryString.encode(request, with: queryParameters.validatedAlamofireParameters())
         let parameters = try requestParameters.validatedAlamofireParameters()
         switch method {
         case .post, .put, .patch:

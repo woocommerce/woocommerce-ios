@@ -111,6 +111,26 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 
+    func test_post_and_put_encode_query_parameters_in_URL_and_parameters_in_JSON_body() throws {
+        for method: HTTPMethod in [.post, .put] {
+            // Given
+            let request = RESTRequest(siteURL: sampleSiteAddress,
+                                      wooApiVersion: sampleWooApiVersion,
+                                      method: method,
+                                      path: sampleRPC,
+                                      parameters: ["status": "completed"],
+                                      queryParameters: ["currency": "EUR & GBP"])
+
+            // When
+            let urlRequest = try request.asURLRequest()
+            let components = try XCTUnwrap(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false))
+
+            // Then
+            XCTAssertEqual(components.queryItems?.first { $0.name == "currency" }?.value, "EUR & GBP")
+            XCTAssertEqual(request.jsonBodyParameters as? [String: String], ["status": "completed"])
+        }
+    }
+
     func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_put_and_patch() throws {
         // Given
         let methods: [HTTPMethod] = [.options, .get, .head, .delete, .trace, .connect]

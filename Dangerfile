@@ -34,7 +34,6 @@ translation_context_checker.check_context_suggestions(
   source_paths: ['WooCommerce/Classes/'],
   translation_paths: 'WooCommerce/Resources/en.lproj/Localizable.strings',
   inline_mode: :translation_suggestion,
-  summary: true,
   report_type: :warning
 )
 

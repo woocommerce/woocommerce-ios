@@ -3,6 +3,7 @@
 
 25.4
 -----
+- [*] Products: Fixed bulk Regular Price update failing for variable products whose variations share a duplicate SKU or GTIN. [https://github.com/woocommerce/woocommerce-ios/pull/17556]
 
 
 25.3

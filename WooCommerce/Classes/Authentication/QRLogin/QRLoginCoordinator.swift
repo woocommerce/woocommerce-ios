@@ -100,6 +100,13 @@ final class QRLoginCoordinator {
     func presentDeepLink(payload: QRLoginPayload) {
         handleScanned(payload: payload)
     }
+
+    /// Whether any of this flow's own screens are still on the navigation stack.
+    var isNavigationStackShowingQRFlow: Bool {
+        [prologueViewController, scannerViewController]
+            .compactMap { $0 }
+            .contains { navigationController.viewControllers.contains($0) }
+    }
 }
 
 // MARK: - Prologue + scanner

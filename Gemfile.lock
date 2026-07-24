@@ -1,3 +1,15 @@
+GIT
+  remote: https://github.com/Automattic/dangermattic.git
+  revision: 21a63ef9531f011aff31a07c46128eff4b080570
+  branch: iangmaia/add-translation-context-plugin
+  specs:
+    danger-dangermattic (1.4.0)
+      danger (~> 9.6)
+      danger-plugin-api (~> 1.0)
+      danger-rubocop (~> 0.13)
+      i18n-context-generator (~> 0.5)
+      rubocop (~> 1.63)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -43,6 +55,7 @@ GEM
     colored2 (3.1.2)
     commander (4.6.0)
       highline (~> 2.0.0)
+    concurrent-ruby (1.3.8)
     cork (0.3.0)
       colored2 (~> 3.1)
     csv (3.3.5)
@@ -60,11 +73,6 @@ GEM
       octokit (>= 4.0)
       pstore (~> 0.1)
       terminal-table (>= 1, < 5)
-    danger-dangermattic (1.4.0)
-      danger (~> 9.5, >= 9.5.3)
-      danger-plugin-api (~> 1.0)
-      danger-rubocop (~> 0.13)
-      rubocop (~> 1.63)
     danger-plugin-api (1.0.0)
       danger (> 2.0)
     danger-rubocop (0.13.0)
@@ -76,6 +84,7 @@ GEM
       rake (>= 12.0.0, < 14.0.0)
     domain_name (0.6.20240107)
     dotenv (2.8.1)
+    dotstrings (0.6.0)
     emoji_regex (3.2.3)
     erubi (1.13.1)
     excon (1.5.0)
@@ -249,6 +258,14 @@ GEM
       domain_name (~> 0.5)
     httpclient (2.9.0)
       mutex_m
+    i18n-context-generator (0.5.0)
+      concurrent-ruby (~> 1.2)
+      csv (~> 3.3)
+      dotstrings (~> 0.6)
+      oj (~> 3.16)
+      rexml (~> 3.2)
+      thor (~> 1.5)
+      tty-progressbar (~> 0.18)
     java-properties (0.3.0)
     jmespath (1.6.2)
     json (2.20.0)
@@ -279,6 +296,9 @@ GEM
     octokit (6.1.1)
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
+    oj (3.17.4)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     open4 (1.3.4)
     openssl (4.0.2)
     options (2.3.2)
@@ -346,12 +366,19 @@ GEM
       CFPropertyList
       naturally
     singleton (0.3.0)
+    strings-ansi (0.2.0)
     terminal-notifier (2.0.0)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
     text (1.3.1)
+    thor (1.5.0)
     trailblazer-option (0.1.2)
     tty-cursor (0.7.1)
+    tty-progressbar (0.18.3)
+      strings-ansi (~> 0.2)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      unicode-display_width (>= 1.6, < 3.0)
     tty-screen (0.8.2)
     tty-spinner (0.9.3)
       tty-cursor (~> 0.7)
@@ -379,7 +406,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  danger-dangermattic (~> 1.4)
+  danger-dangermattic!
   dotenv
   fastlane (~> 2.237)
   fastlane-plugin-firebase_app_distribution (~> 1.0)

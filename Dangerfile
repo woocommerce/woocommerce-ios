@@ -2,6 +2,15 @@
 
 github.dismiss_out_of_range_messages
 
+translation_context_checker.check_context_suggestions(
+  discovery_mode: :translations,
+  source_paths: ['WooCommerce/Classes/'],
+  translation_paths: 'WooCommerce/Resources/en.lproj/Localizable.strings',
+  inline_mode: :translation_suggestion,
+  summary: true,
+  report_type: :warning
+)
+
 # `files: []` forces rubocop to scan all files, not just the ones modified in the PR
 rubocop.lint(files: [], force_exclusion: true, inline_comment: true, fail_on_inline_comment: true, include_cop_names: true)
 

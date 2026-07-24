@@ -566,7 +566,8 @@ private extension ProductVariationsViewController {
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack)
+                                                       presentationStyle: .navigationStack,
+                                                       onDuplicateCompletion: { _, _ in })
         navigationController?.pushViewController(viewController, animated: true)
     }
 }

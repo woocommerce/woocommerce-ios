@@ -54,14 +54,34 @@ final class ProductDetailNavigator {
             }
         } else {
             let coordinator = coordinatorFactory.nativeCoordinator()
+            let duplicateNavigation: ProductDuplicateNavigationHandler = { [self] sourceViewController, duplicatedProduct in
+                if let onDuplicate {
+                    onDuplicate(duplicatedProduct)
+                } else {
+                    replaceDestination(sourceViewController: sourceViewController, with: duplicatedProduct)
+                }
+            }
             viewController = coordinator.viewController(product: product,
                                                         presentationStyle: presentationStyle,
                                                         isReadOnly: isReadOnly,
                                                         onDelete: onDelete,
-                                                        onDuplicate: onDuplicate)
+                                                        onDuplicate: duplicateNavigation)
         }
 
         return viewController
+    }
+
+    /// Replaces a native product editor with another product detail so Back cannot reveal the source editor's draft.
+    func replaceDestination(sourceViewController: UIViewController, with duplicatedProduct: Product) {
+        guard let navigationController = sourceViewController.navigationController,
+              let sourceIndex = navigationController.viewControllers.firstIndex(where: { $0 === sourceViewController }) else {
+            return
+        }
+
+        let destination = makeDestination(product: duplicatedProduct, isReadOnly: false)
+        var viewControllers = navigationController.viewControllers
+        viewControllers[sourceIndex] = destination
+        navigationController.setViewControllers(viewControllers, animated: true)
     }
 
     private func shouldOpenInWeb(product: Product) -> Bool {

@@ -31,7 +31,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         productForm.viewDidLoad()
 
         // Then
@@ -50,7 +51,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         let rootViewController = UIViewController()
         window.rootViewController = rootViewController
 
@@ -78,7 +80,8 @@ final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
                                                     eventLogger: ProductFormEventLogger(),
                                                     productImageActionHandler: actionHandler,
                                                     presentationStyle: .navigationStack,
-                                                    productImageUploader: productImageUploader)
+                                                    productImageUploader: productImageUploader,
+                                                    onDuplicateCompletion: { _, _ in })
         let rootNavigationController = MockNavigationController(rootViewController: .init())
         window.rootViewController = rootNavigationController
 

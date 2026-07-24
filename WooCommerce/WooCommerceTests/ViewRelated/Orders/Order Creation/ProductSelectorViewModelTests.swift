@@ -35,6 +35,69 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_sync_when_currency_is_configured_then_retrieves_and_paginates_products_in_memory_with_order_currency() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 99, name: "Cached USD product", purchasable: true))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        let firstPage = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "First", price: "10", purchasable: true)
+        let secondPage = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "Second", price: "20", purchasable: true)
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProductsTransiently(_, currency, pageNumber, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(currency, "GBP")
+                onCompletion(.success((pageNumber == 1 ? [firstPage] : [secondPage], pageNumber == 1)))
+            default:
+                XCTFail("Currency mode dispatched a persistent product action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 1, onCompletion: nil)
+        viewModel.sync(pageNumber: 2, pageSize: 1, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
+        XCTAssertEqual(viewModel.productRows.first?.priceLabel, "£10.00")
+        XCTAssertFalse(viewModel.productRows.contains { $0.productOrVariationID == 99 })
+    }
+
+    func test_sync_when_currency_and_search_term_are_configured_then_searches_and_paginates_in_memory_without_cached_search() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "EUR",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        viewModel.searchTerm = "shirt"
+        var searchedPages: [Int] = []
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, currency, keyword, _, pageNumber, _, _, _, _, _, _, onCompletion):
+                searchedPages.append(pageNumber)
+                XCTAssertEqual(currency, "EUR")
+                XCTAssertEqual(keyword, "shirt")
+                let product = Product.fake().copy(siteID: self.sampleSiteID, productID: Int64(pageNumber), purchasable: true)
+                onCompletion(.success(([product], pageNumber == 1)))
+            default:
+                XCTFail("Currency search dispatched a cached or persistent product action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 1, onCompletion: nil)
+        viewModel.sync(pageNumber: 2, pageSize: 1, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(searchedPages, [1, 2])
+        XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
+    }
+
     func test_view_model_is_initialized_with_default_values() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, source: .orderForm(flow: .creation))

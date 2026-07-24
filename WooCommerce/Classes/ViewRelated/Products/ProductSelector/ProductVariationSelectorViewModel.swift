@@ -8,6 +8,8 @@ import WooFoundation
 ///
 final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
+    private let currency: String?
+    private let parentProduct: Product?
 
     /// Storage to fetch product variation list
     ///
@@ -128,6 +130,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productName: String,
          productAttributes: [ProductAttribute],
          isSubscriptionProduct: Bool = false,
+         currency: String? = nil,
+         parentProduct: Product? = nil,
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
@@ -136,6 +140,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
+        self.currency = currency
+        self.parentProduct = parentProduct
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
@@ -156,6 +162,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     convenience init(siteID: Int64,
                      product: Product,
+                     currency: String? = nil,
                      allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
                      orderSyncState: Published<OrderSyncState>.Publisher? = nil,
@@ -168,6 +175,8 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
                   isSubscriptionProduct: product.productType.isSubscription,
+                  currency: currency,
+                  parentProduct: product,
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   orderSyncState: orderSyncState,
@@ -196,9 +205,15 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     func changeSelectionStateForVariation(with variationID: Int64, selected: Bool) {
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
-        try? productResultsController.performFetch()
+        let parentProduct: Product?
+        if currency != nil {
+            parentProduct = self.parentProduct
+        } else {
+            try? productResultsController.performFetch()
+            parentProduct = productResultsController.fetchedObjects.first
+        }
 
-        guard let parentProduct = productResultsController.fetchedObjects.first,
+        guard let parentProduct,
               let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
@@ -231,6 +246,38 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
+        if let currency {
+            let action = ProductVariationAction.retrieveProductVariationsTransiently(siteID: siteID,
+                                                                                    productID: productID,
+                                                                                    currency: currency,
+                                                                                    variationIDs: allowedProductVariationIDs,
+                                                                                    pageNumber: pageNumber,
+                                                                                    pageSize: pageSize) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success((variations, hasNextPage)):
+                    let variations = variations.filter(\.purchasable)
+                    if pageNumber == 1 {
+                        productVariations = variations
+                    } else {
+                        let existingIDs = Set(productVariations.map(\.productVariationID))
+                        productVariations += variations.filter { !existingIDs.contains($0.productVariationID) }
+                    }
+                    transitionToResultsUpdatedState()
+                    onCompletion?(hasNextPage)
+                case let .failure(error):
+                    notice = NoticeFactory.productVariationSyncNotice { [weak self] in
+                        self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                    }
+                    transitionToResultsUpdatedState()
+                    DDLogError("⛔️ Error retrieving transient product variations: \(error)")
+                    onCompletion?(false)
+                }
+            }
+            stores.dispatch(action)
+            return
+        }
+
         let action = ProductVariationAction.synchronizeProductVariationsSubset(siteID: siteID,
                                                                                productID: productID,
                                                                                variationIDs: allowedProductVariationIDs,
@@ -263,7 +310,7 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync next page of product variations from remote.
     ///
     func syncNextPage() {
-        let lastIndex = productVariationsResultsController.numberOfObjects - 1
+        let lastIndex = currency == nil ? productVariationsResultsController.numberOfObjects - 1 : productVariations.count - 1
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
     }
 }
@@ -292,6 +339,12 @@ private extension ProductVariationSelectorViewModel {
     /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductVariationsResultsController() {
+        guard currency == nil else {
+            observeSelections()
+            transitionToResultsUpdatedState()
+            return
+        }
+
         updateProductVariationsResultsController()
         transitionToResultsUpdatedState()
     }
@@ -344,9 +397,23 @@ private extension ProductVariationSelectorViewModel {
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
                                            isSubscriptionProduct: self.isSubscriptionProduct,
                                            displayMode: .stock,
-                                           selectedState: selectedState)
+                                           selectedState: selectedState,
+                                           currencyFormatter: self.currencyFormatter)
             }
         }.assign(to: &$productVariationRows)
+    }
+
+    var currencyFormatter: CurrencyFormatter {
+        let siteSettings = ServiceLocator.currencySettings
+        guard let currency, let currencyCode = CurrencyCode(rawValue: currency) else {
+            return CurrencyFormatter(currencySettings: siteSettings)
+        }
+        let settings = CurrencySettings(currencyCode: currencyCode,
+                                        currencyPosition: siteSettings.currencyPosition,
+                                        thousandSeparator: siteSettings.groupingSeparator,
+                                        decimalSeparator: siteSettings.decimalSeparator,
+                                        numberOfDecimals: siteSettings.fractionDigits)
+        return CurrencyFormatter(currencySettings: settings)
     }
 }
 

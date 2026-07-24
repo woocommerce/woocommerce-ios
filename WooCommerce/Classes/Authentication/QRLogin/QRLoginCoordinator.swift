@@ -59,6 +59,8 @@ final class QRLoginCoordinator {
     /// stack once it has delivered a payload. (WOOMOB-3136)
     private weak var scannerViewController: UIViewController?
 
+    private weak var rootViewController: UIViewController?
+
     init(mode: Mode = .camera,
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
@@ -101,11 +103,12 @@ final class QRLoginCoordinator {
         handleScanned(payload: payload)
     }
 
-    /// Whether any of this flow's own screens are still on the navigation stack.
+    /// Whether this flow's own screens are still on the navigation stack.
     var isNavigationStackShowingQRFlow: Bool {
-        [prologueViewController, scannerViewController]
-            .compactMap { $0 }
-            .contains { navigationController.viewControllers.contains($0) }
+        guard let rootViewController else {
+            return false
+        }
+        return navigationController.viewControllers.contains(rootViewController)
     }
 }
 
@@ -468,6 +471,9 @@ private extension QRLoginCoordinator {
                 title: Localization.help,
                 primaryAction: UIAction { [weak self] _ in self?.showHelp() }
             )
+        }
+        if rootViewController == nil {
+            rootViewController = hosting
         }
         navigationController.pushViewController(hosting, animated: true)
         return hosting

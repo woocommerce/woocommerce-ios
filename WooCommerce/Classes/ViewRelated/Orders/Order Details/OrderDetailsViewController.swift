@@ -365,7 +365,9 @@ private extension OrderDetailsViewController {
     /// Presents the order edit form
     ///
     private func editOrder() {
-        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
+        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID,
+                                               flow: .editing(initialOrder: viewModel.order),
+                                               requestCurrency: viewModel.editOrderRequestCurrency)
         let viewController = OrderFormHostingController(viewModel: viewModel)
         viewController.modalPresentationStyle = .fullScreen
         present(viewController, animated: true)

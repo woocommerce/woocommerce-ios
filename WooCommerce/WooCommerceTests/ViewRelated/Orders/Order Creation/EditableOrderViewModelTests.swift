@@ -62,6 +62,96 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.flow, .editing(initialOrder: order))
     }
 
+    func test_editing_with_request_currency_uses_transient_currency_products_in_selector() throws {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, currency: "EUR")
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               requestCurrency: "EUR")
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          price: "12",
+                                          purchasable: true)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsTransiently(_, currency, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Expected transient product retrieval")
+            }
+            XCTAssertEqual(currency, "EUR")
+            onCompletion(.success(([product], false)))
+        }
+
+        // When
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
+        productSelector.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(productSelector.productsSectionViewModels.flatMap(\.productRows).first?.priceLabel, "€12.00")
+    }
+
+    func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_product_row_with_request_currency() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 8)
+
+        // When
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        XCTAssertEqual(productRow?.productRow.totalPriceAfterProductDiscountLabel, "€16.00")
+    }
+
+    func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_variation_row_with_request_currency() {
+        // Given
+        let variationID: Int64 = 33
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.variable.rawValue,
+                                          variations: [variationID])
+        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                      productID: sampleProductID,
+                                                      productVariationID: variationID)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation, on: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+        let orderItem = OrderItem.fake().copy(productID: product.productID,
+                                              variationID: variation.productVariationID,
+                                              quantity: 2,
+                                              price: 8)
+
+        // When
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        XCTAssertEqual(productRow?.productRow.totalPriceAfterProductDiscountLabel, "€16.00")
+    }
+
     // MARK: - Navigation
 
     func test_edition_view_model_has_no_navigation_done_button() {

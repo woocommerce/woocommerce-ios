@@ -560,54 +560,125 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
-        let order = Order.fake().copy(total: "10.0")
+        let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.1.0")
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
 
         // When
-        let viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              siteCurrencyProvider: { _ in .GBP })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.disabledForSyncing)
     }
 
-    // Context: https://github.com/woocommerce/woocommerce-ios/issues/14304
-    func test_there_should_not_be_an_edit_order_action_if_order_currency_doesnt_match_site_currency() {
+    func test_edit_order_action_is_blocked_for_currency_mismatch_when_woocommerce_version_is_unknown() {
         // Given
-        let gbp = CurrencySettings(currencyCode: .GBP,
-                                   currencyPosition: .left,
-                                   thousandSeparator: "",
-                                   decimalSeparator: ".",
-                                   numberOfDecimals: 2)
-        ServiceLocator.setCurrencySettings(gbp)
-
         let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
-
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
 
         // When
-        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in .GBP })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
-    func test_the_edit_order_action_should_be_enabled_when_the_order_is_synced_and_matches_site_currency() {
+    func test_edit_order_action_is_blocked_for_currency_mismatch_when_woocommerce_version_is_older_than_11_1() {
         // Given
-        let usd = CurrencySettings(currencyCode: .USD,
-                                   currencyPosition: .left,
-                                   thousandSeparator: "",
-                                   decimalSeparator: ".",
-                                   numberOfDecimals: 2)
-        ServiceLocator.setCurrencySettings(usd)
-
         let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.0.9")
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+        let currencySetting = SiteSetting.fake().copy(siteID: usdOrder.siteID,
+                                                      settingID: CurrencySettings.Constants.currencyCodeKey,
+                                                      value: CurrencyCode.GBP.rawValue,
+                                                      settingGroupKey: SiteSettingGroup.general.rawValue)
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: currencySetting)
 
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_for_currency_mismatch_when_woocommerce_version_is_at_least_11_1() {
+        for version in ["11.1.0", "11.1.0-dev", "11.1.1", "12.0.0"] {
+            // Given
+            let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: version)
+            let storesManager = MockStoresManager(sessionManager: sessionManager)
+            let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+            let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+            // When
+            let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                                  stores: storesManager,
+                                                  syncStateController: syncStateController,
+                                                  siteCurrencyProvider: { _ in .GBP })
+
+            // Then
+            XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled,
+                           "Expected WooCommerce \(version) to support editing an order in another currency")
+            XCTAssertEqual(viewModel.editOrderRequestCurrency, CurrencyCode.USD.rawValue)
+        }
+    }
+
+    func test_edit_order_action_is_enabled_when_site_currency_is_unknown() {
+        // Given
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
 
         // When
-        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController)
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_order_currency_is_unknown() {
+        // Given
+        let order = Order.fake().copy(currency: "", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in .GBP })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_order_is_synced_and_matches_site_currency() {
+        // Given
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in .USD })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
     func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {

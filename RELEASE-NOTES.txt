@@ -3,6 +3,7 @@
 25.4
 -----
 - [*] Login: Fixed stores failing to load when hosting blocks one of the WordPress REST API URL formats. [https://github.com/woocommerce/woocommerce-ios/pull/17602]
+- [*] Orders: Fixed a crash when rotating order details on large iPhones running iOS 27. [https://github.com/woocommerce/woocommerce-ios/pull/17620]
 
 25.4
 -----

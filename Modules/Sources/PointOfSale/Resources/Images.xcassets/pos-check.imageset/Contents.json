@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "pos-reader-disconnected-light.pdf",
+      "filename" : "pos-check-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "pos-reader-disconnected-dark.pdf",
+      "filename" : "pos-check-dark.pdf",
       "idiom" : "universal"
     }
   ],

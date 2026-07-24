@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pos_ready_for_payment.pdf",
+      "filename" : "pos-ready-for-payment-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-ready-for-payment-dark.pdf",
       "idiom" : "universal"
     }
   ],

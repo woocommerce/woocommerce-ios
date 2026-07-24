@@ -2211,7 +2211,7 @@ extension ProductFormViewController {
             return
         }
 
-        guard viewModel.hasUnsavedChanges() else {
+        if !viewModel.hasUnsavedChanges() {
             duplicateProduct(from: snapshot)
             return
         }

@@ -98,11 +98,11 @@ final class BulkUpdatePriceSettingsViewModel {
 
         saveButtonState = .loading
 
-        let productVariations: [UpdateProductVariation]
+        let productVariations: [PartialProductVariationUpdate]
         switch editingPriceType {
         case .regular:
             productVariations = bulkUpdateOptionsModel.productVariations.map {
-                UpdateProductVariation(productVariationID: $0.productVariationID, regularPrice: currentPrice)
+                PartialProductVariationUpdate(productVariationID: $0.productVariationID, regularPrice: currentPrice)
             }
         }
         let action = ProductVariationAction.updateProductVariations(siteID: siteID,

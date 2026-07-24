@@ -59,7 +59,7 @@ public enum ProductVariationAction: Action {
     ///
     case updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [UpdateProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  onCompletion: (Result<[ProductVariation], ProductUpdateError>) -> Void)
 
     /// Requests the variations in a specified Order that have not been fetched.

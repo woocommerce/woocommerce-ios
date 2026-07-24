@@ -243,7 +243,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         let dateOnSaleStart = Date()
         let dateOnSaleEnd = dateOnSaleStart
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, salePrice: "9")]
-        var updatedVariations: [UpdateProductVariation] = []
+        var updatedVariations: [PartialProductVariationUpdate] = []
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
             case let .updateProductVariations(_, _, productVariations, onCompletion):
@@ -269,7 +269,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         waitUntil {
             updatedVariations.isNotEmpty
         }
-        let expectedVariations = variations.map { UpdateProductVariation(productVariationID: $0.productVariationID, regularPrice: "42") }
+        let expectedVariations = variations.map { PartialProductVariationUpdate(productVariationID: $0.productVariationID, regularPrice: "42") }
         assertEqual(updatedVariations, expectedVariations)
     }
 }

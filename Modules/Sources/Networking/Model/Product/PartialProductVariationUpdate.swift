@@ -4,7 +4,7 @@ import Foundation
 /// Encodes only the fields that are set, so untouched fields (like `sku` / `global_unique_id`) are
 /// never re-sent — avoiding server-side re-validation of fields the user did not change.
 ///
-public struct UpdateProductVariation: Encodable, Equatable {
+public struct PartialProductVariationUpdate: Encodable, Equatable {
     public let productVariationID: Int64
     public let regularPrice: String?
 
@@ -20,7 +20,7 @@ public struct UpdateProductVariation: Encodable, Equatable {
     }
 }
 
-private extension UpdateProductVariation {
+private extension PartialProductVariationUpdate {
     enum CodingKeys: String, CodingKey {
         case id
         case regularPrice = "regular_price"

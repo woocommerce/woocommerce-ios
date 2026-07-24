@@ -417,7 +417,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.
     ///
-    func testUpdateProductVariationProperlyReturnsParsedProduct() {
+    func testPartialProductVariationUpdateProperlyReturnsParsedProduct() {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 2783
@@ -446,7 +446,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
         let productVariations = [sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)]
-        let updateVariations = productVariations.map { UpdateProductVariation(productVariationID: $0.productVariationID, regularPrice: "1") }
+        let updateVariations = productVariations.map { PartialProductVariationUpdate(productVariationID: $0.productVariationID, regularPrice: "1") }
 
         // When
         var updatedProductVariation: [ProductVariation]?
@@ -472,7 +472,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let remote = ProductVariationsRemote(network: network)
         let variationIDs: [Int64] = [17, 42]
         let regularPrice = "109"
-        let updateVariations = variationIDs.map { UpdateProductVariation(productVariationID: $0, regularPrice: regularPrice) }
+        let updateVariations = variationIDs.map { PartialProductVariationUpdate(productVariationID: $0, regularPrice: regularPrice) }
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
 
         // When
@@ -502,7 +502,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that updateProductVariation properly relays Networking Layer errors.
     ///
-    func testUpdateProductVariationProperlyRelaysNetwokingErrors() {
+    func testPartialProductVariationUpdateProperlyRelaysNetwokingErrors() {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 2783

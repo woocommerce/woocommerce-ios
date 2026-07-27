@@ -292,7 +292,7 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func simulateDeleteResponse(for uuid: String) {
-        let deleteURL = "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/\(uuid)"
+        let deleteURL = "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/\(uuid)"
         let deleteResponse = """
         {
             "data": {
@@ -304,7 +304,7 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func simulateIntrospectResponse(uuid: String, name: String = "test-password") {
-        let introspectURL = "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/introspect"
+        let introspectURL = "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/introspect"
         let introspectResponse = """
         {
             "uuid": "\(uuid)",
@@ -319,10 +319,10 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func deleteURL(for uuid: String) -> String {
-        return "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/\(uuid)"
+        return "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/\(uuid)"
     }
 
     func introspectURL() -> String {
-        return "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/introspect"
+        return "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/introspect"
     }
 }

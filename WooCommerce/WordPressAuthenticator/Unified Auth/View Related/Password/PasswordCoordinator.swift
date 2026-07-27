@@ -42,7 +42,9 @@ private extension PasswordCoordinator {
     /// Makes the call to request a magic authentication link be emailed to the user.
     func requestMagicLink() async -> Result<Void, Error> {
         loginFields.meta.emailMagicLinkSource = .login
-        return await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
+        return await MagicLinkRequester().requestMagicLink(email: loginFields.username,
+                                                           jetpackLogin: loginFields.meta.jetpackLogin,
+                                                           siteAddress: loginFields.siteAddress)
     }
 
     /// After a magic link is successfully sent, navigates the user to the requested screen.

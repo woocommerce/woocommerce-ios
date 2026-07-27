@@ -679,6 +679,7 @@ private extension GetStartedViewController {
         service.requestAuthenticationLink(for: email,
                                           jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
+                                            MagicLinkSiteAddressStorage.shared.save(self?.loginFields.siteAddress)
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)
             }, failure: { [weak self] (error: Error) in

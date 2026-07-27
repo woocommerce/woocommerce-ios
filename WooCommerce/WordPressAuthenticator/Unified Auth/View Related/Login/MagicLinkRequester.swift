@@ -3,7 +3,7 @@ import Foundation
 /// Encapsulates the async request for a magic link and email validation for use cases that send a magic link.
 struct MagicLinkRequester {
     /// Makes the call to request a magic authentication link be emailed to the user if possible.
-    func requestMagicLink(email: String, jetpackLogin: Bool) async -> Result<Void, Error> {
+    func requestMagicLink(email: String, jetpackLogin: Bool, siteAddress: String? = nil) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
             guard email.isValidEmail() else {
                 return continuation.resume(returning: .failure(MagicLinkRequestError.invalidEmail))
@@ -13,6 +13,7 @@ struct MagicLinkRequester {
             service.requestAuthenticationLink(for: email,
                                               jetpackLogin: jetpackLogin,
                                               success: {
+                MagicLinkSiteAddressStorage.shared.save(siteAddress)
                 continuation.resume(returning: .success(()))
             }, failure: { error in
                 continuation.resume(returning: .failure(error))

@@ -398,6 +398,10 @@ import WordPressUI
         case .login:
             flow = .login
             loginFields.meta.emailMagicLinkSource = .login
+            // Restore the entered store address so the epilogue navigates to that store.
+            if let siteAddress = MagicLinkSiteAddressStorage.shared.consume() {
+                loginFields.siteAddress = siteAddress
+            }
             Self.track(.loginMagicLinkOpened)
         default:
             WPAuthenticatorLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")

@@ -30,7 +30,7 @@ public struct POSCoupon: Equatable, Hashable {
     }
 }
 
-extension Coupon {
+public extension Coupon {
     /// Whether the coupon discounts the whole cart: a percent or fixed-cart discount
     /// with no product or category restrictions.
     var appliesToWholeCart: Bool {

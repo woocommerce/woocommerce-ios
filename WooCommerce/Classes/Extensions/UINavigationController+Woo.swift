@@ -22,6 +22,10 @@ extension UINavigationController {
     /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
     func popToRootOrScrollToTop(animated: Bool) {
         if viewControllers.count > 1 {
+            // Respect the unsaved-changes guard, like the Back button, so a programmatic pop can't silently discard edits.
+            guard topViewController?.shouldPopOnBackButton() ?? true else {
+                return
+            }
             popToRootViewController(animated: animated)
         } else {
             scrollContentToTop(animated: animated)

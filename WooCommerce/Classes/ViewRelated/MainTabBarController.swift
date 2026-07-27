@@ -470,9 +470,9 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 }
 
 
-// MARK: - Static navigation helpers
+// MARK: - Tab re-selection
 //
-private extension MainTabBarController {
+extension MainTabBarController {
 
     /// Returns the re-selected tab's content to its root, via a `TabReselectionHandling` wrapper or a nav-controller pop.
     func handleTabReselection() {
@@ -489,6 +489,11 @@ private extension MainTabBarController {
         }
         // else (e.g. Bookings SwiftUI root): intentionally no-op.
     }
+}
+
+// MARK: - Static navigation helpers
+//
+private extension MainTabBarController {
 
     /// Tracks "Tab Selected" Events.
     ///

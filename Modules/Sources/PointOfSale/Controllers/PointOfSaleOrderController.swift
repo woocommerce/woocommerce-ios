@@ -262,9 +262,11 @@ private extension PointOfSaleOrderController {
 
     func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
         return order.coupons.compactMap { coupon in
-            PointOfSaleCouponTotal(
+            let discount = currencyFormatter.convertToDecimal(coupon.discount) ?? .zero
+            return PointOfSaleCouponTotal(
                 code: coupon.code,
-                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? ""
+                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? "",
+                hasDiscount: discount.compare(NSDecimalNumber.zero) == .orderedDescending
             )
         }
     }

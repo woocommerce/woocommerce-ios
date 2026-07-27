@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 25.4
 -----
+- [*] POS: custom amounts in the cart now show a "Discount not applied" note at checkout when a coupon is applied, since coupons don't discount custom amounts [https://github.com/woocommerce/woocommerce-ios/pull/17623]
 - [*] Login: Fixed stores failing to load when hosting blocks one of the WordPress REST API URL formats. [https://github.com/woocommerce/woocommerce-ios/pull/17602]
 - [*] Orders: Fixed a crash when rotating order details on large iPhones running iOS 27. [https://github.com/woocommerce/woocommerce-ios/pull/17620]
 - [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]

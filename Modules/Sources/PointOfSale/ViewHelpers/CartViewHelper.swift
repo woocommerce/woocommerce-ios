@@ -79,6 +79,32 @@ enum CouponRowState: Equatable {
 }
 
 extension CartViewHelper {
+    /// Coupons never discount custom amounts (order fees), so the custom amount rows warn
+    /// about it at checkout — but only for whole-cart coupons ("x% off" / "$x off cart"),
+    /// where a merchant could expect the custom amount to be included, and only once the
+    /// order response shows the coupon actually produced a discount.
+    func shouldShowCustomAmountDiscountNotAppliedNote(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        cart: Cart
+    ) -> Bool {
+        guard orderStage == .finalizing,
+              case .loaded(let totals) = orderState else {
+            return false
+        }
+
+        let discountingCouponCodes = totals.couponsTotals
+            .filter(\.hasDiscount)
+            .map { $0.code.lowercased() }
+        guard discountingCouponCodes.isNotEmpty else {
+            return false
+        }
+
+        return cart.coupons.contains { coupon in
+            coupon.appliesToWholeCart && discountingCouponCodes.contains(coupon.code.lowercased())
+        }
+    }
+
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,

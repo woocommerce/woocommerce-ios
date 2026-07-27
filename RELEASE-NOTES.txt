@@ -3,6 +3,7 @@
 
 25.4
 -----
+- [*] Fixed magic link login not navigating to the store dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17622]
 
 
 25.3

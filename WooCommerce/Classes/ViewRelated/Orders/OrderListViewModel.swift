@@ -24,6 +24,16 @@ final class OrderListViewModel {
     ///
     private var foregroundNotificationsSubscription: AnyCancellable?
 
+    /// Emits when the stored order statuses change, so visible cells can be refreshed.
+    ///
+    private let statusesDidChangeSubject = PassthroughSubject<Void, Never>()
+
+    /// Publisher that fires when the stored order statuses change.
+    ///
+    var statusesDidChange: AnyPublisher<Void, Never> {
+        statusesDidChangeSubject.eraseToAnyPublisher()
+    }
+
     /// The block called if self requests a resynchronization of the first page. The
     /// resynchronization should only be done if the view is visible.
     ///
@@ -261,6 +271,13 @@ private extension OrderListViewModel {
     /// Setup: Status Results Controller
     ///
     func setupStatusResultsController() {
+        statusResultsController.onDidChangeContent = { [weak self] in
+            self?.statusesDidChangeSubject.send()
+        }
+        statusResultsController.onDidResetContent = { [weak self] in
+            self?.statusesDidChangeSubject.send()
+        }
+
         do {
             try statusResultsController.performFetch()
         } catch {

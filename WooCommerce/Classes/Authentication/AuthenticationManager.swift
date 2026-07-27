@@ -752,12 +752,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
         DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
 
-        let discovery = WordPressAPIDiscovery()
+        let resolver = WordPressAPIDiscovery()
         Task { @MainActor in
-            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
-            let hasRESTAPI = discoveredRoot != nil
+            let resolvedRoot = await resolver.resolveRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = resolvedRoot != nil
 
-            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            DDLogInfo("🔍 API root resolution for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
             completion(hasRESTAPI)
         }
     }

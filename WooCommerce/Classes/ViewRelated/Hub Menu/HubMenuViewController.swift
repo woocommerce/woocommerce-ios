@@ -145,6 +145,13 @@ extension HubMenuViewController: DeepLinkNavigator {
     }
 }
 
+extension HubMenuViewController: TabReselectionHandling {
+    /// The menu uses a SwiftUI `NavigationStack` the UIKit nav controller can't pop, so reset it here.
+    func handleTabReselection() {
+        viewModel.popToRoot()
+    }
+}
+
 private extension HubMenuViewController {
     func configureTabBarItem() {
         tabBarItem.title = Localization.tabTitle

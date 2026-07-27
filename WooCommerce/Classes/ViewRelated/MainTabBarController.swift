@@ -313,7 +313,7 @@ final class MainTabBarController: UITabBarController {
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
             trackTabReselected(tab: userSelectedTab)
-            scrollContentToTop()
+            handleTabReselection()
         } else {
             trackTabSelected(newTab: userSelectedTab)
         }
@@ -474,14 +474,20 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 //
 private extension MainTabBarController {
 
-    /// *When applicable* this method will scroll the visible content to top.
-    ///
-    func scrollContentToTop() {
-        guard let navController = selectedViewController as? UINavigationController else {
+    /// Returns the re-selected tab's content to its root, via a `TabReselectionHandling` wrapper or a nav-controller pop.
+    func handleTabReselection() {
+        guard let selectedViewController else {
             return
         }
-
-        navController.scrollContentToTop(animated: true)
+        let content = (selectedViewController as? TabContainerController)?.wrappedController ?? selectedViewController
+        if let handler = content as? TabReselectionHandling {
+            handler.handleTabReselection()
+        } else if let navController = content as? UINavigationController {
+            navController.popToRootOrScrollToTop(animated: true)
+            // Hub Menu's root owns a SwiftUI stack the UIKit pop can't reach, so let it reset itself too.
+            (navController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
+        }
+        // else (e.g. Bookings SwiftUI root): intentionally no-op.
     }
 
     /// Tracks "Tab Selected" Events.

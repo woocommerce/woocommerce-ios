@@ -19,6 +19,15 @@ extension UINavigationController {
         scrollView.setContentOffset(.zero, animated: animated)
     }
 
+    /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
+    func popToRootOrScrollToTop(animated: Bool) {
+        if viewControllers.count > 1 {
+            popToRootViewController(animated: animated)
+        } else {
+            scrollContentToTop(animated: animated)
+        }
+    }
+
     /// Completion block for popToRootViewController
     /// UINavigationController API doesn't offer any options for this.
     /// However by using the CoreAnimation framework it's possible to add a completion block to the underlying animation

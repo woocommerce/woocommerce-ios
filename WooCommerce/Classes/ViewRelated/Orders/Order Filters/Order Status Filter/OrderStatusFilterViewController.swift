@@ -185,15 +185,6 @@ private extension OrderStatusFilterViewController {
             }
         }
 
-        var description: String? {
-            switch self {
-            case .custom(let status):
-                return status.name ?? status.slug
-            default:
-                return status?.description
-            }
-        }
-
         var type: UITableViewCell.Type {
             BasicTableViewCell.self
         }
@@ -220,7 +211,7 @@ private extension OrderStatusFilterViewController {
             cell.textLabel?.text = Localization.anyStatusCase
             cell.accessoryType = selected.isEmpty ? .checkmark : .none
         default:
-            cell.textLabel?.text = row.description
+            cell.textLabel?.text = row.status.map { allowedStatuses.displayName(for: $0) }
             if selected.contains(where: { $0 == row.status }) {
                 cell.accessoryType = .checkmark
             }

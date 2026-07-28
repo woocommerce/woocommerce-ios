@@ -303,9 +303,9 @@ struct SelfHostedQRLoginRemoteTests {
         #expect(session.lastRequest?.url?.absoluteString == url.absoluteString)
     }
 
-    @Test func pollSessionStatus_when_api_root_missing_then_uses_rest_route_fallback() async throws {
+    @Test func pollSessionStatus_when_api_root_missing_then_uses_wp_json_fallback() async throws {
         // Given
-        let url = URL(string: "https://shop.example/?rest_route=/wc-admin/mobile-app/qr-login-session-status&session_id=session-1&token_hash=hash-1")!
+        let url = URL(string: "https://shop.example/wp-json/wc-admin/mobile-app/qr-login-session-status?session_id=session-1&token_hash=hash-1")!
         let session = MockURLSession()
         session.simulateResponse(for: url.absoluteString, data: json(["state": "scanned"]), statusCode: 200)
         let remote = makeRemote(session: session, cachedRoot: nil) { _ in nil }

@@ -426,7 +426,12 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<EditableProductVariationModel>? {
+        nil
+    }
+
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<EditableProductVariationModel>,
+                          onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
         // no-op
     }
 

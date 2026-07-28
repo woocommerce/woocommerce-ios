@@ -13,7 +13,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: false)
+                                                                  forceReadOnly: false,
+                                                                  onDuplicateCompletion: { _, _ in })
 
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
@@ -28,7 +29,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: false)
+                                                                  forceReadOnly: false,
+                                                                  onDuplicateCompletion: { _, _ in })
 
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
@@ -43,7 +45,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: false)
+                                                                  forceReadOnly: false,
+                                                                  onDuplicateCompletion: { _, _ in })
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
     }
@@ -57,7 +60,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: false)
+                                                                  forceReadOnly: false,
+                                                                  onDuplicateCompletion: { _, _ in })
 
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
@@ -72,7 +76,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: false)
+                                                                  forceReadOnly: false,
+                                                                  onDuplicateCompletion: { _, _ in })
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
     }
@@ -84,7 +89,8 @@ final class ProductDetailsFactoryTests: XCTestCase {
         // Action
         let viewController = ProductDetailsFactory.productDetails(product: product,
                                                                   presentationStyle: .navigationStack,
-                                                                  forceReadOnly: true)
+                                                                  forceReadOnly: true,
+                                                                  onDuplicateCompletion: { _, _ in })
         // Assert
         XCTAssertTrue(viewController is ProductFormViewController<ProductFormViewModel>)
     }

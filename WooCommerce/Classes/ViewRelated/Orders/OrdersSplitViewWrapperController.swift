@@ -218,7 +218,7 @@ extension OrdersSplitViewWrapperController: TabReselectionHandling {
         guard let primaryNavigationController = ordersSplitViewController.viewController(for: .primary) as? UINavigationController else {
             return
         }
-        primaryNavigationController.popToRootRespectingUnsavedChanges(animated: true)
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

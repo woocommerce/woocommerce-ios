@@ -483,7 +483,7 @@ extension MainTabBarController {
         if let handler = content as? TabReselectionHandling {
             handler.handleTabReselection()
         } else if let navController = content as? UINavigationController {
-            navController.popToRootRespectingUnsavedChanges(animated: true)
+            navController.popToRootOrScrollToTop(animated: true)
             // Hub Menu's root owns a SwiftUI stack the UIKit pop can't reach, so let it reset itself too.
             (navController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
         }

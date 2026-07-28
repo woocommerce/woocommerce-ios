@@ -83,7 +83,7 @@ extension ProductsSplitViewWrapperController: TabReselectionHandling {
         guard let primaryNavigationController = productsSplitViewController.viewController(for: .primary) as? UINavigationController else {
             return
         }
-        primaryNavigationController.popToRootRespectingUnsavedChanges(animated: true)
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

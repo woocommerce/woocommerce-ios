@@ -6,32 +6,14 @@ import UIKit
 //
 extension UINavigationController {
 
-    /// Whenever there's a single viewController onscreen, this method will set the "Top" UIScrollView's
-    /// Content Offset to zero.
-    ///
-    func scrollContentToTop(animated: Bool) {
-        guard viewControllers.count == 1,
-            let scrollView = visibleViewController?.view?.subviews.first as? UIScrollView
-            else {
+    /// Pops to root, respecting the unsaved-changes guard on every screen being popped (like tapping Back through them).
+    func popToRootRespectingUnsavedChanges(animated: Bool) {
+        for viewController in viewControllers.dropFirst().reversed() {
+            guard viewController.shouldPopOnBackButton() else {
                 return
-        }
-
-        scrollView.setContentOffset(.zero, animated: animated)
-    }
-
-    /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
-    func popToRootOrScrollToTop(animated: Bool) {
-        if viewControllers.count > 1 {
-            // Every screen being popped must permit it (unsaved-changes guard), like tapping Back through them.
-            for viewController in viewControllers.dropFirst().reversed() {
-                guard viewController.shouldPopOnBackButton() else {
-                    return
-                }
             }
-            popToRootViewController(animated: animated)
-        } else {
-            scrollContentToTop(animated: animated)
         }
+        popToRootViewController(animated: animated)
     }
 
     /// Completion block for popToRootViewController

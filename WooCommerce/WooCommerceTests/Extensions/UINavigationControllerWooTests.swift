@@ -6,7 +6,7 @@ import UIKit
 struct UINavigationControllerWooTests {
 
     @Test
-    func popToRootOrScrollToTop_when_stack_has_multiple_view_controllers_then_pops_to_root() {
+    func popToRootRespectingUnsavedChanges_when_stack_has_multiple_view_controllers_then_pops_to_root() {
         // Given a navigation stack that has been pushed beyond its root (e.g. after tapping into a detail).
         let root = UIViewController()
         let navigationController = UINavigationController(rootViewController: root)
@@ -15,7 +15,7 @@ struct UINavigationControllerWooTests {
         #expect(navigationController.viewControllers.count == 3)
 
         // When re-selecting the tab asks the stack to pop to root.
-        navigationController.popToRootOrScrollToTop(animated: false)
+        navigationController.popToRootRespectingUnsavedChanges(animated: false)
 
         // Then only the root remains, so re-selecting the tab returns it to its root screen.
         #expect(navigationController.viewControllers.count == 1)
@@ -23,22 +23,22 @@ struct UINavigationControllerWooTests {
     }
 
     @Test
-    func popToRootOrScrollToTop_when_stack_is_already_at_root_then_stays_at_root() {
+    func popToRootRespectingUnsavedChanges_when_stack_is_already_at_root_then_stays_at_root() {
         // Given a navigation stack that is already showing its root screen.
         let root = UIViewController()
         let navigationController = UINavigationController(rootViewController: root)
         #expect(navigationController.viewControllers.count == 1)
 
-        // When re-selecting the tab asks the stack to pop to root (scroll-to-top branch).
-        navigationController.popToRootOrScrollToTop(animated: false)
+        // When re-selecting the tab asks the already-at-root stack to pop.
+        navigationController.popToRootRespectingUnsavedChanges(animated: false)
 
-        // Then the root is preserved and never popped below a single view controller.
+        // Then it is a harmless no-op: the root is preserved and never popped below a single view controller.
         #expect(navigationController.viewControllers.count == 1)
         #expect(navigationController.viewControllers.first === root)
     }
 
     @Test
-    func popToRootOrScrollToTop_when_a_screen_refuses_to_pop_then_does_not_pop() {
+    func popToRootRespectingUnsavedChanges_when_a_screen_refuses_to_pop_then_does_not_pop() {
         // Given a stack whose top screen has unsaved changes and refuses to pop.
         let root = UIViewController()
         let navigationController = UINavigationController(rootViewController: root)
@@ -46,14 +46,14 @@ struct UINavigationControllerWooTests {
         #expect(navigationController.viewControllers.count == 2)
 
         // When re-selecting the tab asks the stack to pop to root.
-        navigationController.popToRootOrScrollToTop(animated: false)
+        navigationController.popToRootRespectingUnsavedChanges(animated: false)
 
         // Then the stack is unchanged, so the unsaved edits are not discarded.
         #expect(navigationController.viewControllers.count == 2)
     }
 
     @Test
-    func popToRootOrScrollToTop_when_an_intermediate_screen_refuses_to_pop_then_does_not_pop() {
+    func popToRootRespectingUnsavedChanges_when_an_intermediate_screen_refuses_to_pop_then_does_not_pop() {
         // Given a dirty intermediate screen sitting below a clean top screen that would pop.
         let root = UIViewController()
         let navigationController = UINavigationController(rootViewController: root)
@@ -62,7 +62,7 @@ struct UINavigationControllerWooTests {
         #expect(navigationController.viewControllers.count == 3)
 
         // When re-selecting the tab asks the stack to pop to root.
-        navigationController.popToRootOrScrollToTop(animated: false)
+        navigationController.popToRootRespectingUnsavedChanges(animated: false)
 
         // Then the stack is unchanged, so the clean top can't let the dirty screen below be discarded.
         #expect(navigationController.viewControllers.count == 3)

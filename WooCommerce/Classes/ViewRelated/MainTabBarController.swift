@@ -474,20 +474,20 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 //
 extension MainTabBarController {
 
-    /// Returns the re-selected tab's content to its root, via a `TabReselectionHandling` wrapper or a nav-controller pop.
+    /// Returns the re-selected tab to its root: pops the UIKit navigation stack and lets the root content reset its own navigation.
     func handleTabReselection() {
         guard let selectedViewController else {
             return
         }
         let content = (selectedViewController as? TabContainerController)?.wrappedController ?? selectedViewController
-        if let handler = content as? TabReselectionHandling {
-            handler.handleTabReselection()
-        } else if let navController = content as? UINavigationController {
-            navController.popToRootOrScrollToTop(animated: true)
-            // Hub Menu's root owns a SwiftUI stack the UIKit pop can't reach, so let it reset itself too.
-            (navController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
-        }
-        // else (e.g. Bookings SwiftUI root): intentionally no-op.
+        let navigationController = content as? UINavigationController
+
+        // Pop the UIKit navigation stack to root (My Store, Hub Menu); a no-op for non-navigation roots.
+        navigationController?.popToRootOrScrollToTop(animated: true)
+
+        // Let the root content reset navigation the UIKit pop can't reach — a split-view wrapper's column or a SwiftUI stack.
+        let rootContent = navigationController?.viewControllers.first ?? content
+        (rootContent as? TabReselectionHandling)?.handleTabReselection()
     }
 }
 

@@ -171,7 +171,8 @@ class AuthenticationManager: Authentication {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
-                                                                        rootViewController: rootViewController)
+                                                                        rootViewController: rootViewController,
+                                                                        restoresSiteAddress: true)
         }
 
         if isQRLoginUrl(url),

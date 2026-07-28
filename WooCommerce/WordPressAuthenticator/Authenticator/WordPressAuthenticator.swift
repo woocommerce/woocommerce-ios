@@ -108,8 +108,8 @@ import WordPressUI
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
-    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {
-        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, automatedTesting: automatedTesting)
+    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, restoresSiteAddress: Bool, automatedTesting: Bool = false) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, restoresSiteAddress: restoresSiteAddress, automatedTesting: automatedTesting)
     }
 
     // MARK: - Helpers for presenting the login flow
@@ -360,6 +360,7 @@ import WordPressUI
     @objc public class func openAuthenticationURL(
         _ url: URL,
         fromRootViewController rootViewController: UIViewController,
+        restoresSiteAddress: Bool,
         automatedTesting: Bool = false) -> Bool {
 
         guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
@@ -398,8 +399,10 @@ import WordPressUI
         case .login:
             flow = .login
             loginFields.meta.emailMagicLinkSource = .login
-            // Restore the entered store address so the epilogue navigates to that store.
-            if let siteAddress = MagicLinkSiteAddressStorage.shared.consume() {
+            // Restore the entered store address only for the email magic-link flow. QR login shares
+            // this case (its callback carries no `flow`) but never saved an address, so it must not
+            // consume a stale one — hence the explicit opt-in rather than always consuming here.
+            if restoresSiteAddress, let siteAddress = MagicLinkSiteAddressStorage.shared.consume() {
                 loginFields.siteAddress = siteAddress
             }
             Self.track(.loginMagicLinkOpened)

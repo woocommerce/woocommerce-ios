@@ -36,4 +36,42 @@ struct UINavigationControllerWooTests {
         #expect(navigationController.viewControllers.count == 1)
         #expect(navigationController.viewControllers.first === root)
     }
+
+    @Test
+    func popToRootOrScrollToTop_when_a_screen_refuses_to_pop_then_does_not_pop() {
+        // Given a stack whose top screen has unsaved changes and refuses to pop.
+        let root = UIViewController()
+        let navigationController = UINavigationController(rootViewController: root)
+        navigationController.pushViewController(NonPoppableViewController(), animated: false)
+        #expect(navigationController.viewControllers.count == 2)
+
+        // When re-selecting the tab asks the stack to pop to root.
+        navigationController.popToRootOrScrollToTop(animated: false)
+
+        // Then the stack is unchanged, so the unsaved edits are not discarded.
+        #expect(navigationController.viewControllers.count == 2)
+    }
+
+    @Test
+    func popToRootOrScrollToTop_when_an_intermediate_screen_refuses_to_pop_then_does_not_pop() {
+        // Given a dirty intermediate screen sitting below a clean top screen that would pop.
+        let root = UIViewController()
+        let navigationController = UINavigationController(rootViewController: root)
+        navigationController.pushViewController(NonPoppableViewController(), animated: false)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        #expect(navigationController.viewControllers.count == 3)
+
+        // When re-selecting the tab asks the stack to pop to root.
+        navigationController.popToRootOrScrollToTop(animated: false)
+
+        // Then the stack is unchanged, so the clean top can't let the dirty screen below be discarded.
+        #expect(navigationController.viewControllers.count == 3)
+    }
+}
+
+/// Refuses to pop, mimicking a screen with unsaved changes.
+private final class NonPoppableViewController: UIViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        false
+    }
 }

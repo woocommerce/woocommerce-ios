@@ -71,11 +71,7 @@ private extension HubMenu {
 
     var list: some View {
         List {
-            // Anchor for scroll-to-top on tab re-selection.
-            EmptyView()
-                .id(Constants.topAnchorID)
-
-            // Store Section
+            // Store Section — also the anchor for scroll-to-top on tab re-selection.
             Section {
                 Button {
                     ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
@@ -94,6 +90,7 @@ private extension HubMenu {
                 }
                 .disabled(!viewModel.switchStoreEnabled)
             }
+            .id(Constants.topAnchorID)
 
             // Settings Section
             Section(Localization.settings) {

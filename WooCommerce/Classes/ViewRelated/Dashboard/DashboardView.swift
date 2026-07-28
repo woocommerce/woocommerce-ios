@@ -22,6 +22,7 @@ struct DashboardView: View {
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
+    @State private var scrollPosition = ScrollPosition()
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -92,32 +93,26 @@ struct DashboardView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            ScrollViewReader { scrollProxy in
-                ScrollView {
-                    VStack(spacing: Layout.padding) {
-                        // Anchor for scroll-to-top on tab re-selection.
-                        Color.clear
-                            .frame(height: 0)
-                            .id(Layout.topAnchorID)
+            ScrollView {
+                VStack(spacing: Layout.padding) {
+                    // Store title
+                    Text(currentSite?.name ?? Localization.title)
+                        .subheadlineStyle()
+                        .padding(Layout.sectionHeadingPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .renderedIf(verticalSizeClass == .regular)
 
-                        // Store title
-                        Text(currentSite?.name ?? Localization.title)
-                            .subheadlineStyle()
-                            .padding(Layout.sectionHeadingPadding)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .renderedIf(verticalSizeClass == .regular)
+                    // Feature announcement if any.
+                    featureAnnouncementCard
 
-                        // Feature announcement if any.
-                        featureAnnouncementCard
-
-                        dashboardCards(availableWidth: proxy.size.width)
-                    }
-                    .padding(.bottom, Layout.padding)
+                    dashboardCards(availableWidth: proxy.size.width)
                 }
-                .onChange(of: viewModel.scrollToTopTrigger) { _, _ in
-                    withAnimation {
-                        scrollProxy.scrollTo(Layout.topAnchorID, anchor: .top)
-                    }
+                .padding(.bottom, Layout.padding)
+            }
+            .scrollPosition($scrollPosition)
+            .onChange(of: viewModel.scrollToTopTrigger) { _, _ in
+                withAnimation {
+                    scrollPosition.scrollTo(edge: .top)
                 }
             }
         }
@@ -478,7 +473,6 @@ private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let elementPadding: CGFloat = 24
-        static let topAnchorID = "dashboard.topAnchor"
         static let sectionHeadingPadding = EdgeInsets(top: 0, leading: 20, bottom: 8, trailing: 24)
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8

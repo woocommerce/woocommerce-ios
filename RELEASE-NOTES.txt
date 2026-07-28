@@ -4,6 +4,7 @@
 25.4
 -----
 - [*] Tapping an already-selected tab now returns it to its root screen. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
+- [*] Tapping an already-selected tab a second time now scrolls its content back to the top. [https://github.com/woocommerce/woocommerce-ios/pull/17627]
 
 
 25.3

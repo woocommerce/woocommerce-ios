@@ -4,8 +4,15 @@ import UIKit
 
 /// Tests that magic-link consumption restores the saved site address only when the caller opts in
 /// (email magic link), not for QR login which shares the same `.login` code path.
+///
+/// `openAuthenticationURL` reads the process-wide `MagicLinkSiteAddressStorage.shared`, so these can't
+/// use an ephemeral store. Serialize and clear around each test so state can't race or leak to disk.
 @MainActor
-struct MagicLinkSiteAddressRestoreTests {
+@Suite(.serialized)
+final class MagicLinkSiteAddressRestoreTests {
+
+    init() { _ = MagicLinkSiteAddressStorage.shared.consume() }
+    deinit { _ = MagicLinkSiteAddressStorage.shared.consume() }
 
     @Test func test_openAuthenticationURL_when_restoresSiteAddress_is_false_then_saved_address_is_not_consumed() {
         // Given a saved store address and a QR-login-style callback (no `flow`)

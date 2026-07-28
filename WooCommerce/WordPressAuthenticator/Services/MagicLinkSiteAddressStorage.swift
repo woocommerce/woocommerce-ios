@@ -7,9 +7,14 @@ final class MagicLinkSiteAddressStorage {
 
     private let userDefaults: UserDefaults
     private let storageKey = "com.wordpress.authenticator.magicLinkSiteAddress"
+    private let now: () -> Date
 
-    init(userDefaults: UserDefaults = .standard) {
+    /// Magic links typically expire in ~10-15 minutes.
+    private let expirationInterval: TimeInterval = 15 * 60
+
+    init(userDefaults: UserDefaults = .standard, now: @escaping () -> Date = { Date() }) {
         self.userDefaults = userDefaults
+        self.now = now
     }
 
     /// nil/empty clears the previous value (latest request wins).
@@ -18,16 +23,29 @@ final class MagicLinkSiteAddressStorage {
             clear()
             return
         }
-        userDefaults.set(siteAddress, forKey: storageKey)
+        let entry = StoredSiteAddress(siteAddress: siteAddress, timestamp: now())
+        userDefaults.set(try? JSONEncoder().encode(entry), forKey: storageKey)
     }
 
-    /// Returns the stored address and clears it; nil if none.
+    /// Returns the stored address and clears it; nil if none or expired.
     func consume() -> String? {
         defer { clear() }
-        return userDefaults.string(forKey: storageKey)
+        guard let data = userDefaults.data(forKey: storageKey),
+              let stored = try? JSONDecoder().decode(StoredSiteAddress.self, from: data),
+              now().timeIntervalSince(stored.timestamp) < expirationInterval else {
+            return nil
+        }
+        return stored.siteAddress
     }
 
     private func clear() {
         userDefaults.removeObject(forKey: storageKey)
+    }
+}
+
+private extension MagicLinkSiteAddressStorage {
+    struct StoredSiteAddress: Codable {
+        let siteAddress: String
+        let timestamp: Date
     }
 }

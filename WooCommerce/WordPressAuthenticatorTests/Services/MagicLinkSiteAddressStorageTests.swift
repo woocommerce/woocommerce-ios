@@ -50,6 +50,20 @@ struct MagicLinkSiteAddressStorageTests {
         #expect(storage.consume() == nil)
     }
 
+    @Test func test_consume_when_entry_older_than_ttl_then_returns_nil() {
+        // Given an address saved 16 minutes ago (TTL is 15)
+        let defaults = makeEphemeralDefaults()
+        let savedAt = Date()
+        MagicLinkSiteAddressStorage(userDefaults: defaults, now: { savedAt }).save("https://yourwoosite.com")
+
+        // When consuming after the magic link would have expired
+        let consumer = MagicLinkSiteAddressStorage(userDefaults: defaults, now: { savedAt.addingTimeInterval(16 * 60) })
+        let consumed = consumer.consume()
+
+        // Then the stale address is not restored into an unrelated later login
+        #expect(consumed == nil)
+    }
+
     @Test func test_save_when_value_is_empty_then_clears_previous_value() {
         // Given a persisted store address
         let storage = MagicLinkSiteAddressStorage(userDefaults: makeEphemeralDefaults())

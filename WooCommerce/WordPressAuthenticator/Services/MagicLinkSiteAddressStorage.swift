@@ -9,8 +9,8 @@ final class MagicLinkSiteAddressStorage {
     private let storageKey = "com.wordpress.authenticator.magicLinkSiteAddress"
     private let now: () -> Date
 
-    /// Magic links typically expire in ~10-15 minutes.
-    private let expirationInterval: TimeInterval = 15 * 60
+    /// Magic links expire in 60 minutes.
+    private let expirationInterval: TimeInterval = 60 * 60
 
     init(userDefaults: UserDefaults = .standard, now: @escaping () -> Date = { Date() }) {
         self.userDefaults = userDefaults

@@ -78,6 +78,24 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     }
 }
 
+extension DashboardViewHostingController: TabReselectionHandling {
+    /// Pops the dashboard nav stack to root, or scrolls the SwiftUI dashboard to the top when already at root.
+    func handleTabReselection() {
+        guard let navigationController else {
+            return
+        }
+        if navigationController.viewControllers.count > 1 {
+            // Respect the unsaved-changes guard, like the Back button, so a programmatic pop can't silently discard edits.
+            guard navigationController.topViewController?.shouldPopOnBackButton() ?? true else {
+                return
+            }
+            navigationController.popToRootViewController(animated: true)
+        } else {
+            viewModel.scrollToTop()
+        }
+    }
+}
+
 // MARK: Private helpers
 private extension DashboardViewHostingController {
     func configureTabBarItem() {

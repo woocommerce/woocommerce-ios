@@ -1811,6 +1811,14 @@ private extension ProductsViewController {
     }
 }
 
+// MARK: - ReselectionScrollable
+extension ProductsViewController: ReselectionScrollable {
+    /// Scrolls the product list to the top when the tab is re-selected while already at root.
+    func scrollToTopOnReselection(animated: Bool) {
+        tableView.setContentOffset(CGPoint(x: 0, y: -tableView.adjustedContentInset.top), animated: animated)
+    }
+}
+
 // MARK: - Nested Types
 //
 private extension ProductsViewController {

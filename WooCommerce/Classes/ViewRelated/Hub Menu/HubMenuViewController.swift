@@ -146,9 +146,13 @@ extension HubMenuViewController: DeepLinkNavigator {
 }
 
 extension HubMenuViewController: TabReselectionHandling {
-    /// The menu uses a SwiftUI `NavigationStack` the UIKit nav controller can't pop, so reset it here.
+    /// The menu owns a SwiftUI `NavigationStack` and `List` the UIKit nav controller can't reach: pop, else scroll to top.
     func handleTabReselection() {
-        viewModel.popToRoot()
+        if !viewModel.navigationPath.isEmpty {
+            viewModel.popToRoot()
+        } else {
+            viewModel.scrollToTop()
+        }
     }
 }
 

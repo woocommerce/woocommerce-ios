@@ -11,6 +11,11 @@ protocol TabReselectionHandling {
     func handleTabReselection()
 }
 
+/// Adopted by list roots that can scroll their content to the top on the second tab re-selection.
+protocol ReselectionScrollable {
+    func scrollToTopOnReselection(animated: Bool)
+}
+
 /// Container for a Woo tab, shown as the root view controller of one of the tabs.
 /// Provided as an alternative to `WooTabNavigationController`, for root controllers which should not be in a nav view
 /// For example, a Split View, which will not work correctly on iPhone when wrapped in a navigation view.

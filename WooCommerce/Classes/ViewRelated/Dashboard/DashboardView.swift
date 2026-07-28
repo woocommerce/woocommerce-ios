@@ -92,21 +92,33 @@ struct DashboardView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            ScrollView {
-                VStack(spacing: Layout.padding) {
-                    // Store title
-                    Text(currentSite?.name ?? Localization.title)
-                        .subheadlineStyle()
-                        .padding(Layout.sectionHeadingPadding)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .renderedIf(verticalSizeClass == .regular)
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    VStack(spacing: Layout.padding) {
+                        // Anchor for scroll-to-top on tab re-selection.
+                        Color.clear
+                            .frame(height: 0)
+                            .id(Layout.topAnchorID)
 
-                    // Feature announcement if any.
-                    featureAnnouncementCard
+                        // Store title
+                        Text(currentSite?.name ?? Localization.title)
+                            .subheadlineStyle()
+                            .padding(Layout.sectionHeadingPadding)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .renderedIf(verticalSizeClass == .regular)
 
-                    dashboardCards(availableWidth: proxy.size.width)
+                        // Feature announcement if any.
+                        featureAnnouncementCard
+
+                        dashboardCards(availableWidth: proxy.size.width)
+                    }
+                    .padding(.bottom, Layout.padding)
                 }
-                .padding(.bottom, Layout.padding)
+                .onChange(of: viewModel.scrollToTopTrigger) { _, _ in
+                    withAnimation {
+                        scrollProxy.scrollTo(Layout.topAnchorID, anchor: .top)
+                    }
+                }
             }
         }
         .background(Color(.listBackground))
@@ -466,6 +478,7 @@ private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let elementPadding: CGFloat = 24
+        static let topAnchorID = "dashboard.topAnchor"
         static let sectionHeadingPadding = EdgeInsets(top: 0, leading: 20, bottom: 8, trailing: 24)
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8

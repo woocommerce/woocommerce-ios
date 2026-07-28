@@ -59,7 +59,22 @@ struct HubMenu: View {
 private extension HubMenu {
 
     var menuList: some View {
+        ScrollViewReader { proxy in
+            list
+                .onChange(of: viewModel.scrollToTopTrigger) { _, _ in
+                    withAnimation {
+                        proxy.scrollTo(Constants.topAnchorID, anchor: .top)
+                    }
+                }
+        }
+    }
+
+    var list: some View {
         List {
+            // Anchor for scroll-to-top on tab re-selection.
+            EmptyView()
+                .id(Constants.topAnchorID)
+
             // Store Section
             Section {
                 Button {
@@ -352,6 +367,7 @@ private extension HubMenu {
         static let iconSize: CGFloat = 20
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
+        static let topAnchorID = "hubMenu.topAnchor"
 
         /// Spacing for the badge view in the avatar row.
         ///

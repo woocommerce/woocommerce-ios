@@ -732,6 +732,26 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(reselectionHandler.handledCount, 1)
     }
 
+    func test_handleTabReselection_when_navigation_root_is_reselection_handler_then_forwards_and_does_not_also_pop() throws {
+        // Given
+        // A conformer owns its full pop-or-scroll behaviour, so the tab bar must not double-dispatch by also popping the stack.
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let navigationController = UINavigationController(rootViewController: reselectionHandler)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        XCTAssertEqual(reselectionHandler.handledCount, 1)
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+    }
+
     func test_handleTabReselection_when_tab_is_navigation_controller_then_pops_to_root() throws {
         // Given
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)

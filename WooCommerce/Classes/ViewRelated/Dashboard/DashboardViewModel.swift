@@ -99,6 +99,13 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isReloadingAllData = false
 
+    /// Toggled to signal the dashboard scroll view should scroll to the top on tab re-selection.
+    @Published var scrollToTopTrigger = false
+
+    func scrollToTop() {
+        scrollToTopTrigger.toggle()
+    }
+
     let siteID: Int64
     let stores: StoresManager
     private let featureFlagService: FeatureFlagService

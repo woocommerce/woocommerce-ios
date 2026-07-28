@@ -9,6 +9,20 @@ final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
 
     @MainActor
+    func test_scrollToTop_flips_scrollToTopTrigger() {
+        // Given
+        // The trigger is a signal for the SwiftUI list to scroll to top on tab re-selection, so a change must be observable.
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        let before = viewModel.scrollToTopTrigger
+
+        // When
+        viewModel.scrollToTop()
+
+        // Then
+        XCTAssertNotEqual(viewModel.scrollToTopTrigger, before)
+    }
+
+    @MainActor
     func test_viewDidAppear_then_posts_notification() {
         // Given
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())

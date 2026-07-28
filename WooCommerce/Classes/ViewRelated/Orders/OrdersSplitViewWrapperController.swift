@@ -213,12 +213,20 @@ private extension OrdersSplitViewWrapperController {
 }
 
 extension OrdersSplitViewWrapperController: TabReselectionHandling {
-    /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
+    /// Pops the orders list (primary column) to its root, or scrolls it to the top when already at root.
     func handleTabReselection() {
         guard let primaryNavigationController = ordersSplitViewController.viewController(for: .primary) as? UINavigationController else {
             return
         }
-        primaryNavigationController.popToRootOrScrollToTop(animated: true)
+        if primaryNavigationController.viewControllers.count > 1 {
+            // Respect the unsaved-changes guard, like the Back button, so a programmatic pop can't silently discard edits.
+            guard primaryNavigationController.topViewController?.shouldPopOnBackButton() ?? true else {
+                return
+            }
+            primaryNavigationController.popToRootViewController(animated: true)
+        } else {
+            (primaryNavigationController.topViewController as? ReselectionScrollable)?.scrollToTopOnReselection(animated: true)
+        }
     }
 }
 

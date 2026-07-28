@@ -669,6 +669,17 @@ private extension OrdersRootViewController {
     }
 }
 
+// MARK: - ReselectionScrollable
+extension OrdersRootViewController: ReselectionScrollable {
+    /// Scrolls the order list to the top, honouring the content inset applied by the Liquid Glass header overlay.
+    func scrollToTopOnReselection(animated: Bool) {
+        guard let tableView = ordersViewController.tableView else {
+            return
+        }
+        tableView.setContentOffset(CGPoint(x: 0, y: -tableView.adjustedContentInset.top), animated: animated)
+    }
+}
+
 // MARK: - Constants
 private extension OrdersRootViewController {
     enum Localization {

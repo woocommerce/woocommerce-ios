@@ -142,6 +142,22 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_scrollToTop_flips_scrollToTopTrigger() {
+        // Given
+        // The trigger is a signal for the SwiftUI scroll view to scroll to top on tab re-selection, so a change must be observable.
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+        let before = viewModel.scrollToTopTrigger
+
+        // When
+        viewModel.scrollToTop()
+
+        // Then
+        XCTAssertNotEqual(viewModel.scrollToTopTrigger, before)
+    }
+
+    @MainActor
     func test_view_model_syncs_just_in_time_messages() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")

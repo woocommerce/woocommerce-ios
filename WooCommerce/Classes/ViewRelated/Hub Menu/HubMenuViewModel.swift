@@ -207,6 +207,13 @@ final class HubMenuViewModel: ObservableObject {
         navigationPath = .init()
     }
 
+    /// Toggled to signal the menu list should scroll to the top on tab re-selection.
+    @Published var scrollToTopTrigger = false
+
+    func scrollToTop() {
+        scrollToTopTrigger.toggle()
+    }
+
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }

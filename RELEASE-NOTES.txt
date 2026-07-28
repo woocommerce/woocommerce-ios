@@ -3,7 +3,7 @@
 
 25.4
 -----
-- [*] Tapping an already-selected tab now returns it to the top of that tab. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
+- [*] Tapping an already-selected tab now returns it to its root screen. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
 
 
 25.3

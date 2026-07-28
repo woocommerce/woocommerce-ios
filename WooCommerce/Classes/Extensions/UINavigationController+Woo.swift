@@ -19,16 +19,20 @@ extension UINavigationController {
         scrollView.setContentOffset(.zero, animated: animated)
     }
 
+    /// Pops to root only if every screen being popped permits it (unsaved-changes guard), like tapping Back through them.
+    func popToRootRespectingUnsavedChanges(animated: Bool) {
+        for viewController in viewControllers.dropFirst().reversed() {
+            guard viewController.shouldPopOnBackButton() else {
+                return
+            }
+        }
+        popToRootViewController(animated: animated)
+    }
+
     /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
     func popToRootOrScrollToTop(animated: Bool) {
         if viewControllers.count > 1 {
-            // Every screen being popped must permit it (unsaved-changes guard), like tapping Back through them.
-            for viewController in viewControllers.dropFirst().reversed() {
-                guard viewController.shouldPopOnBackButton() else {
-                    return
-                }
-            }
-            popToRootViewController(animated: animated)
+            popToRootRespectingUnsavedChanges(animated: animated)
         } else {
             scrollContentToTop(animated: animated)
         }

@@ -84,11 +84,7 @@ extension ProductsSplitViewWrapperController: TabReselectionHandling {
             return
         }
         if primaryNavigationController.viewControllers.count > 1 {
-            // Respect the unsaved-changes guard, like the Back button, so a programmatic pop can't silently discard edits.
-            guard primaryNavigationController.topViewController?.shouldPopOnBackButton() ?? true else {
-                return
-            }
-            primaryNavigationController.popToRootViewController(animated: true)
+            primaryNavigationController.popToRootRespectingUnsavedChanges(animated: true)
         } else {
             (primaryNavigationController.topViewController as? ReselectionScrollable)?.scrollToTopOnReselection(animated: true)
         }

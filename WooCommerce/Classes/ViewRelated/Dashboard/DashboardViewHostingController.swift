@@ -85,11 +85,7 @@ extension DashboardViewHostingController: TabReselectionHandling {
             return
         }
         if navigationController.viewControllers.count > 1 {
-            // Respect the unsaved-changes guard, like the Back button, so a programmatic pop can't silently discard edits.
-            guard navigationController.topViewController?.shouldPopOnBackButton() ?? true else {
-                return
-            }
-            navigationController.popToRootViewController(animated: true)
+            navigationController.popToRootRespectingUnsavedChanges(animated: true)
         } else {
             viewModel.scrollToTop()
         }

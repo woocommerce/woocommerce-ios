@@ -49,7 +49,9 @@ private extension MagicLinkRequestViewController {
             tracker.track(click: .requestMagicLink)
             configureSubmitButton(animating: true)
 
-            let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
+            let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username,
+                                                                     jetpackLogin: loginFields.meta.jetpackLogin,
+                                                                     siteAddress: loginFields.siteAddress)
 
             configureSubmitButton(animating: false)
 

@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 group :screenshots, optional: true do
-  gem 'rmagick', '~> 4.1'
+  gem 'rmagick', '~> 7.1'
 end
 
 gem 'danger-dangermattic', '~> 1.4'

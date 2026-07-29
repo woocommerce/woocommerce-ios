@@ -141,7 +141,12 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController else {
-            fatalError("No navigation controller found to show login epilogue")
+            // A dropped magic-link presentation can orphan this view controller, so a nil nav here
+            // is a recoverable UIKit race, not programmer error. Skip the epilogue instead of
+            // crashing — the account is authenticated and the store picker shows on relaunch.
+            WPAuthenticatorLogError("No navigation controller found to show login epilogue")
+            WordPressAuthenticator.track(.loginMagicLinkFailed)
+            return
         }
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController,

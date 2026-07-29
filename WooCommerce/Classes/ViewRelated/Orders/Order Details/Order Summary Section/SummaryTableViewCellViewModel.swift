@@ -28,7 +28,7 @@ struct SummaryTableViewCellViewModel {
         salesChannel = order.salesChannel?.description
 
         let orderStatus = status?.status ?? order.status
-        let statusTitle = status?.name ?? order.status.rawValue
+        let statusTitle = status?.name ?? order.status.localizedName
         presentation = OrderStatusPresentation(
             style: orderStatus,
             title: statusTitle

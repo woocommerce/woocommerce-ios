@@ -176,7 +176,7 @@ private extension DefaultRequestAuthenticator {
 
         // Use cached REST API root if available, otherwise fall back to default
         let restRoot = WordPressRESTAPIRootCache.shared.root(for: siteAddress)
-            ?? (siteBase + "/" + RESTRequest.Settings.basePath)
+            ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteBase)
         return absoluteString.hasPrefix(restRoot.trimSlashes())
     }
 

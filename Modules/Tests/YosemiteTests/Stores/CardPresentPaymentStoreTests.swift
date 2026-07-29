@@ -91,6 +91,25 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
+    func test_retrievePaymentIntent_action_returns_refreshed_intent_from_service() throws {
+        // Given
+        let clientSecret = "pi_client_secret"
+        let intent = PaymentIntent.fake().copy(status: .succeeded)
+        mockCardReaderService.whenRetrievingPaymentIntent(
+            thenReturn: Just(intent).setFailureType(to: Error.self).eraseToAnyPublisher()
+        )
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { promise in
+            let action = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret, onCompletion: promise)
+            self.cardPresentStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result.get().id, intent.id)
+        XCTAssertEqual(mockCardReaderService.retrievedPaymentIntentClientSecret, clientSecret)
+    }
+
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
     ///
     func test_start_discovery_action_hits_start_in_service() {

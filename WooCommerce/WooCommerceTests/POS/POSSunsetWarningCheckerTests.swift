@@ -201,6 +201,11 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
             throw error
         }
     }
+
+    @MainActor
+    func loadCachedWooCommercePlugin(siteID: Int64) -> Yosemite.SystemPlugin? {
+        nil
+    }
 }
 
 private final class MockSunsetSiteSettings: SiteSpecificAppSettingsStoreMethodsProtocol {

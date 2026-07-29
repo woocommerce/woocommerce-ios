@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-07-11 18:27:18+0000 */
+/* Translation-Revision-Date: 2026-07-13 14:55:28+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -9834,11 +9834,17 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce-inställningar";
 
+/* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.message" = "Du har minst ett försenat krav. Du kan hoppa över och fortsätta ta emot betalningar, men om kravet blockerar ditt konto kan vissa transaktioner nekas tills du löser det.";
+
 /* Button to open a web view and resolve overdue requirements before continuing with In-Person Payments. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton" = "Lös nu";
 
 /* Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.skipButton" = "Hoppa över";
+
+/* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.title" = "Förfallna krav på ditt konto";
 
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Tillbaka till order";
@@ -12261,8 +12267,20 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "Det gick inte att behandla betalningen. Försök igen.";
 
+/* A description shown below the Exit POS button while the POS catalog is syncing. */
+"pointOfSale.catalogLoadingView.backgroundSyncSubtitle" = "Du kan lämna sidan – synkroniseringen kommer att fortsätta i bakgrunden.";
+
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "Avsluta POS";
+
+/* A hint within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.hint" = "Katalogsynkroniseringen kan ta några minuter.";
+
+/* Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat" = "%1$ld av %2$ld artiklar";
+
+/* Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat.singular" = "%1$ld av %2$ld artikel";
 
 /* Progress text shown while the POS catalog is being prepared before item counts are available. */
 "pointOfSale.catalogLoadingView.preparing" = "Förbereder katalog …";
@@ -12489,6 +12507,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the view where an email address should be entered when sending receipts */
 "pointOfSale.sendreceipt.textfield.placeholder" = "Skriv e-post";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the exit permission tries to leave Point of Sale. */
+"pointOfSaleDashboard.exit.overrideReason" = "Godkännande krävs för att avsluta Försäljningsplats";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Avbryt";
 
@@ -12512,6 +12533,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "Inställningar";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
+"pointOfSaleDashboard.settings.overrideReason" = "Öppningsinställningar kräver godkännande";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Avbryt";
@@ -12572,6 +12596,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Kortläsare";
+
+/* Description of Receipt printer settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle" = "Hantera kvittoskrivaranslutningar";
 
 /* Navigation title of Receipt printer settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle" = "Kvittoskrivare";
@@ -12671,6 +12698,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "Butik";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
+"pointOfSaleSettingsView.editOverrideReason" = "Ändring av inställningar kräver godkännande";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
+"pointOfSaleSettingsView.manageStaffOverrideReason" = "Hantering av personal kräver godkännande";
 
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "Inställningar";
@@ -13059,6 +13092,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback label/placeholder text for the search field in Point of Sale. */
 "pos.itemListView.searchField.label" = "Sök";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the create-coupons permission tries to create a coupon. */
+"pos.itemlistview.couponOverrideReason" = "Att skapa rabattkoder kräver godkännande";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "Rabattkoder";
 
@@ -13155,6 +13191,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.title" = "Kunde inte ladda in återbetalningsdetaljer";
 
+/* Accessibility label for the order items section while refund details are loading. */
+"pos.orderDetailsView.loadingItems.accessibilityLabel" = "Laddar in artiklar";
+
+/* Accessibility label for the refunded items section while refund details are loading. */
+"pos.orderDetailsView.loadingRefundedItems.accessibilityLabel" = "Laddar in återbetalade artiklar";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Fler åtgärder";
 
@@ -13169,6 +13211,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the issue-refunds permission tries to start a refund. %1$@ is the order number. */
+"pos.orderDetailsView.refundOverride.description" = "Återbetalning av beställning #%1$@ kräver godkännande";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "Återbetalning av #%1$d";
@@ -13383,8 +13428,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
 "pos.printerSetup.foundOne.titleFormat" = "Hittade %1$@";
 
+/* Message shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.pairInSettingsMessage" = "Se till att din skrivare är på och parkopplad i appen Inställningar under Bluetooth och sök sedan igen.";
+
 /* Title shown when no receipt printers are discovered in POS settings. */
 "pos.printerSetup.noPrinters.title" = "Inga skrivare hittades";
+
+/* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
+"pos.printerSetup.pair.enableBluetoothInstruction" = "Bluetooth-åtkomst är avstängd. Tryck på Öppna inställningar för att slå på den och koppla sedan ihop din skrivare under Bluetooth.";
+
+/* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
+"pos.printerSetup.pair.pairInSettingsInstruction" = "Sätt på din Star Micronics-kvittoskrivare och koppla den sedan i appen Inställningar under Bluetooth. När den är parkopplad trycker du på Anslut skrivare för att hitta den.";
+
+/* Title for the printer pairing step in POS settings. */
+"pos.printerSetup.pair.title" = "Parkoppla din skrivare";
 
 /* Button to retry receipt printer discovery in POS settings. */
 "pos.printerSetup.searchAgainButton" = "Sök igen";
@@ -13711,6 +13768,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display name for the admin POS staff role. */
 "pos.staffPreset.admin" = "Admin";
 
+/* Display name for the cashier POS staff role. */
+"pos.staffPreset.cashier" = "Kassör";
+
+/* Display name for the manager POS staff role. */
+"pos.staffPreset.manager" = "Manager";
+
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
@@ -13866,6 +13929,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text shown while a manual POS catalog update is preparing before item counts are available. */
 "posSettingsLocalCatalogDetailView.updateCatalogPreparing" = "Förbereder …";
+
+/* Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat" = "%1$ld av %2$ld artiklar";
+
+/* Button text shown during a manual POS catalog update when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular" = "%1$ld av %2$ld artikel";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
 "posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d produkter och %2$ld varianter";
@@ -14790,6 +14859,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.title" = "Kan inte välja bild";
+
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card, which creates a live transaction and incurs processing fees */
+"setUpTapToPayInformation.tryPayment.hint" = "Prova att genomföra en live-betalning med ditt eget kort (och återbetala den när du är klar, avgifter för behandling tillkommer).";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees. */
+"setUpTapToPayPaymentPrompt.description" = "Prova att göra en live-betalning på %1$@ med ditt betal- eller kreditkort. Du kan återbetala beloppet när du är klar. Avgifter för behandling tillkommer.";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "setUpTapToPayPaymentPrompt.title" = "Vill du prova en betalning?";

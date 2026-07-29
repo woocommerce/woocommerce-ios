@@ -165,18 +165,15 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         CardPresentPaymentOnboardingStateCache.shared.invalidate()
                         return onFailure(error)
                     case .success(let paymentData):
-                        // Handle payment receipt
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-
                         self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
                             guard let self else { return }
-                            switch isEligible {
-                            case true:
-                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
-                            case false:
-                                self.presentLocalReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                              alertProvider: paymentAlertProvider,
-                                                              onCompleted: onCompleted)
+                            if isEligible {
+                                self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider,
+                                                                paymentMethod: paymentData.paymentMethod,
+                                                                onCompleted: onCompleted)
+                            } else {
+                                onCompleted()
                             }
                             onPaymentCompletion()
                         }
@@ -341,6 +338,11 @@ private extension CollectOrderPaymentUseCase {
             return
         }
 
+        // Keep recovery state scoped to this payment attempt. POS may start another flow while
+        // callbacks from an earlier flow are still unwinding.
+        var paymentIntentForRecovery: PaymentIntent?
+        let retrievePaymentIntentForRecovery = { paymentIntentForRecovery }
+
         // Start collect payment process
         paymentOrchestrator.collectPayment(
             for: order,
@@ -396,6 +398,7 @@ private extension CollectOrderPaymentUseCase {
                 // Reader messages. EG: Remove Card
                 self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
             }, onProcessingCompletion: { [weak self] intent in
+                paymentIntentForRecovery = intent
                 self?.analyticsTracker.trackProcessingCompletion(intent: intent)
                 self?.markOrderAsPaidIfNeeded(intent: intent)
             }, onCompletion: { [weak self] result in
@@ -415,6 +418,7 @@ private extension CollectOrderPaymentUseCase {
                                                                        alertProvider: paymentAlerts,
                                                                        paymentGatewayAccount: paymentGatewayAccount,
                                                                        channel: channel,
+                                                                       paymentIntentForRecovery: retrievePaymentIntentForRecovery,
                                                                        onCompletion: onCompletion)
                 }
             })
@@ -493,34 +497,75 @@ private extension CollectOrderPaymentUseCase {
                                                       alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                       paymentGatewayAccount: PaymentGatewayAccount,
                                                       channel: PaymentChannel,
+                                                      paymentIntentForRecovery: @escaping () -> PaymentIntent? = { nil },
                                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard case ServerSidePaymentCaptureError.paymentGateway = error else {
+        guard let paymentIntentForServerCapture = paymentIntentForRecovery(),
+              let clientSecret = paymentIntentForServerCapture.clientSecret else {
             return handlePaymentFailureAndRetryPayment(error,
                                                        alertProvider: paymentAlerts,
                                                        paymentGatewayAccount: paymentGatewayAccount,
                                                        channel: channel,
+                                                       paymentIntentForRecovery: paymentIntentForRecovery,
                                                        onCompletion: onCompletion)
         }
 
-        // This is an unknown error during payment capture.
-        // The first time this happens, we check if the order's actually paid, and return success if it is.
-        let action = OrderAction.retrieveOrderRemotely(siteID: siteID, orderID: order.orderID) { [weak self] result in
+        // Once confirmation has completed, any later error may be ambiguous. Ask Stripe first so a
+        // failed order refresh cannot hide a payment that was definitely taken.
+        let retrieveIntentAction = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret) { [weak self] result in
             guard let self else { return }
-            guard let refreshedOrder = try? result.get(),
-                  refreshedOrder.datePaid != nil else {
+
+            let refreshedIntent: PaymentIntent
+            switch result {
+            case .failure(let retrieveError):
+                DDLogInfo("💳 Unable to verify terminal PaymentIntent after payment failure: \(retrieveError)")
                 return handlePaymentFailureAndRetryPayment(error,
                                                            alertProvider: paymentAlerts,
                                                            paymentGatewayAccount: paymentGatewayAccount,
                                                            channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            case .success(let intent):
+                refreshedIntent = intent
+            }
+
+            guard refreshedIntent.id == paymentIntentForServerCapture.id else {
+                DDLogInfo("💳 Unable to verify terminal payment: retrieved PaymentIntent does not match the captured intent")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
                                                            onCompletion: onCompletion)
             }
 
-            // Since the order's paid, we can return success
-            onCompletion(.success(CardPresentCapturedPaymentData(
-                paymentMethod: .unknown,
-                receiptParameters: nil)))
+            guard refreshedIntent.metadata?[PaymentIntent.MetadataKeys.orderID] == String(order.orderID) else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent order metadata does not match the order")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            guard refreshedIntent.status == .succeeded else {
+                DDLogInfo("💳 Unable to verify terminal payment: PaymentIntent status is \(refreshedIntent.status)")
+                return handlePaymentFailureAndRetryPayment(error,
+                                                           alertProvider: paymentAlerts,
+                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                           channel: channel,
+                                                           paymentIntentForRecovery: paymentIntentForRecovery,
+                                                           onCompletion: onCompletion)
+            }
+
+            let capturedPaymentData = CardPresentCapturedPaymentData(
+                paymentMethod: refreshedIntent.paymentMethod() ?? .unknown,
+                receiptParameters: refreshedIntent.receiptParameters()
+            )
+            handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+            onCompletion(.success(capturedPaymentData))
         }
-        stores.dispatch(action)
+        stores.dispatch(retrieveIntentAction)
     }
 
     /// Log the failure reason, inform the user, and offer them the chance to retry it if possible.
@@ -529,6 +574,7 @@ private extension CollectOrderPaymentUseCase {
                                              alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                              paymentGatewayAccount: PaymentGatewayAccount,
                                              channel: PaymentChannel,
+                                             paymentIntentForRecovery: @escaping () -> PaymentIntent? = { nil },
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
@@ -557,6 +603,7 @@ private extension CollectOrderPaymentUseCase {
                                                    paymentGatewayAccount: paymentGatewayAccount,
                                                    receiptState: receiptState,
                                                    channel: channel,
+                                                   paymentIntentForRecovery: paymentIntentForRecovery,
                                                    onCompletion: onCompletion)
             case .dontRetry:
                 presentNonRetryableError(error: error,
@@ -615,6 +662,7 @@ private extension CollectOrderPaymentUseCase {
                                                     paymentGatewayAccount: PaymentGatewayAccount,
                                                     receiptState: CardReaderTransactionFailureAlertReceiptState,
                                                     channel: PaymentChannel,
+                                                    paymentIntentForRecovery: @escaping () -> PaymentIntent?,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(
@@ -629,6 +677,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                      alertProvider: paymentAlerts,
                                                                                      paymentGatewayAccount: paymentGatewayAccount,
                                                                                      channel: channel,
+                                                                                     paymentIntentForRecovery: paymentIntentForRecovery,
                                                                                      onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
@@ -649,6 +698,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                       alertProvider: paymentAlerts,
                                                                                       paymentGatewayAccount: paymentGatewayAccount,
                                                                                       channel: channel,
+                                                                                      paymentIntentForRecovery: paymentIntentForRecovery,
                                                                                       onCompletion: onCompletion)
                                 }
                             }
@@ -720,9 +770,9 @@ private extension CollectOrderPaymentUseCase {
     }
 
     /// Allow merchants to print or email backend-generated receipts.
-    /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
     func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+                                    paymentMethod: PaymentMethod?,
                                     onCompleted: @escaping () -> ()) {
         // Handles receipt presentation for both print and native iOS client email actions
         let presentBackendReceiptAction: () -> Void = { [weak self] in
@@ -734,7 +784,7 @@ private extension CollectOrderPaymentUseCase {
 
                 switch result {
                 case let .success(receipt):
-                    presentBackendReceiptModally(receipt: receipt, onCompleted: onCompleted)
+                    presentBackendReceiptModally(receipt: receipt, paymentMethod: paymentMethod, onCompleted: onCompleted)
                 case let .failure(error):
                     presentReceiptFailedNotice(with: error, onCompleted: onCompleted)
                 }
@@ -743,74 +793,12 @@ private extension CollectOrderPaymentUseCase {
 
         getReceiptStateForSuccessPayment(presentBackendReceiptAction: presentBackendReceiptAction,
                                          noReceiptAction: onCompleted,
+                                         paymentMethod: paymentMethod,
                                          completion: { [weak self] receiptState in
             guard let self else { return }
 
             alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: receiptState))
         })
-    }
-
-
-    /// Allow merchants to print or email locally-generated receipts.
-    ///
-    func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters?,
-                             alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
-                             onCompleted: @escaping () -> ()) {
-        // Present receipt alert
-        alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
-            guard let self else { return }
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Delegate print action
-            Task { @MainActor in
-                await ReceiptActionCoordinator.printReceipt(for: order,
-                                                            params: receiptParameters,
-                                                            countryCode: configuration.countryCode,
-                                                            cardReaderModel: self.analyticsTracker.connectedReaderModel,
-                                                            stores: self.stores)
-
-                // Inform about flow completion.
-                onCompleted()
-            }
-        }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
-            guard let self else { return }
-
-            alertsPresenter.dismiss()
-
-            analyticsTracker.trackEmailTapped()
-
-            guard let receiptParameters else {
-                return self.presentReceiptFailedNotice(
-                    with: CollectOrderPaymentReceiptError.noReceiptDataBecauseSuccessInferred,
-                    onCompleted: onCompleted)
-            }
-
-            // Request & present email
-            paymentOrchestrator.emailReceipt(for: order, params: receiptParameters) { [weak self] emailContent in
-                self?.presentEmailForm(content: emailContent, onCompleted: onCompleted)
-            }
-        }, noReceiptAction: {
-            // Inform about flow completion.
-            onCompleted()
-        })))
-    }
-
-    /// Presents the native email client with the provided content.
-    ///
-    func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
-        let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: analyticsTracker.connectedReaderModel)
-        receiptEmailCoordinator = coordinator
-        coordinator.presentEmailForm(data: .init(content: content,
-                                                 order: order,
-                                                 storeName: stores.sessionManager.defaultSite?.name),
-                                     from: rootViewController,
-                                     completion: onCompleted)
     }
 
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
@@ -823,10 +811,12 @@ private extension CollectOrderPaymentUseCase {
 private extension CollectOrderPaymentUseCase {
     /// Prepares and presents the backend receipt modally
     ///
-    func presentBackendReceiptModally(receipt: Receipt, onCompleted: @escaping (() -> Void)) {
+    func presentBackendReceiptModally(receipt: Receipt, paymentMethod: PaymentMethod?, onCompleted: @escaping (() -> Void)) {
         let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                 orderID: order.orderID,
-                                                siteName: stores.sessionManager.defaultSite?.name)
+                                                siteName: stores.sessionManager.defaultSite?.name,
+                                                currency: order.currency,
+                                                paymentMethod: paymentMethod)
         let receiptViewController = ReceiptViewController(viewModel: receiptViewModel, onDisappear: {
             onCompleted()
         })
@@ -854,9 +844,11 @@ private extension CollectOrderPaymentUseCase {
 
 // MARK: - Collect customer email and send receipt after payment presentation
 private extension CollectOrderPaymentUseCase {
-    func presentSendReceiptAfterPayment(onCompleted: @escaping ((Order?) -> Void)) {
+    func presentSendReceiptAfterPayment(paymentMethod: PaymentMethod?, onCompleted: @escaping ((Order?) -> Void)) {
         let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
-                                                                    cardReaderModel: analyticsTracker.connectedReaderModel)
+                                                                    cardReaderModel: analyticsTracker.connectedReaderModel,
+                                                                    currency: order.currency,
+                                                                    paymentMethod: paymentMethod)
         receiptEmailCoordinator = coordinator
 
         let viewController = rootViewController.presentedViewController ?? rootViewController
@@ -869,6 +861,7 @@ private extension CollectOrderPaymentUseCase {
     private func getReceiptStateForSuccessPayment(
         presentBackendReceiptAction: @escaping () -> Void,
         noReceiptAction: @escaping () -> Void,
+        paymentMethod: PaymentMethod?,
         completion: @escaping (CardReaderTransactionAlertReceiptState) -> Void) {
         receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { isEligibleSendingReceiptAfterPayment in
             let receiptState: CardReaderTransactionAlertReceiptState
@@ -881,7 +874,7 @@ private extension CollectOrderPaymentUseCase {
                 receiptState = .promptToSendEmailReceipt(printReceiptAction: presentBackendReceiptAction,
                                                          emailReceiptAction: { [weak self] in
                     guard let self else { return }
-                    self.presentSendReceiptAfterPayment { order in
+                    self.presentSendReceiptAfterPayment(paymentMethod: paymentMethod) { order in
                         if let order, let email = order.billingAddress?.email, email.isNotEmpty {
                             self.order = order
                             completion(.paymentSuccessEmailSent(email: email,
@@ -928,7 +921,7 @@ private extension CollectOrderPaymentUseCase {
                 } else {
                     receiptState = .promptToSendEmailReceipt(emailReceiptAction: { [weak self] in
                         guard let self else { return }
-                        presentSendReceiptAfterPayment { [weak self] order in
+                        presentSendReceiptAfterPayment(paymentMethod: nil) { [weak self] order in
                             guard let self else { return }
                             if let order, let email = order.billingAddress?.email, email.isNotEmpty {
                                 self.order = order
@@ -1121,8 +1114,4 @@ extension ServerSidePaymentCaptureError: CardPaymentErrorProtocol {
     var requiresFallbackPaymentMethod: Bool {
         false
     }
-}
-
-enum CollectOrderPaymentReceiptError: Error {
-    case noReceiptDataBecauseSuccessInferred
 }

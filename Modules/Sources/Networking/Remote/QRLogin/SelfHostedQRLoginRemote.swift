@@ -42,7 +42,7 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         } else {
             let discovery = WordPressAPIDiscovery(session: session)
             self.discoverRESTAPIRoot = {
-                await discovery.discoverRESTAPIRootURL(for: $0)
+                await discovery.resolveRESTAPIRootURL(for: $0)
             }
         }
     }
@@ -120,7 +120,7 @@ private extension SelfHostedQRLoginRemote {
             } else if let discoveredRoot = await discoverRESTAPIRoot(site) {
                 return discoveredRoot
             } else {
-                return site + Paths.restRouteRoot
+                return WordPressAPIDiscovery.defaultRESTAPIRootURL(for: site)
             }
         }()
 
@@ -182,7 +182,6 @@ private extension SelfHostedQRLoginRemote {
     }
 
     enum Paths {
-        static let restRouteRoot = "/?rest_route=/"
         static let namespace = "wc-admin/mobile-app"
         static let scan = "qr-login-scan"
         static let sessionStatus = "qr-login-session-status"

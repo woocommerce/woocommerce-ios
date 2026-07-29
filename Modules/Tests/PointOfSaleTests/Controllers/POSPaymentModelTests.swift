@@ -2435,7 +2435,11 @@ struct POSPaymentModelTests {
 
         // When
         await fireOnce { fire in
-            service.onDisconnectReaderCalled = { fire() }
+            withObservationTracking {
+                _ = sut.selectedCardPaymentRail
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
             sut.disconnectCardReader()
         }
 

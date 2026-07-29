@@ -427,6 +427,24 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
+    public func retrievePaymentIntent(clientSecret: String) -> AnyPublisher<PaymentIntent, Error> {
+        Future { promise in
+            Terminal.shared.retrievePaymentIntent(clientSecret: clientSecret) { intent, error in
+                if let error {
+                    let underlyingError = Self.logAndDecodeError(error)
+                    return promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+                }
+
+                guard let intent else {
+                    return promise(.failure(CardReaderServiceError.intentCreation()))
+                }
+
+                promise(.success(PaymentIntent(intent: intent)))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             guard let self,

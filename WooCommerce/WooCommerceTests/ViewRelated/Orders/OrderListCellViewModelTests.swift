@@ -34,16 +34,30 @@ final class OrderListCellViewModelTests: XCTestCase {
         XCTAssertTrue(formatted.contains(expectedYearString))
     }
 
-    func test_status_from_order_is_used() {
+    func test_statusString_when_no_matching_site_status_then_falls_back_to_localizedName() {
         // Given
         let order = MockOrders().sampleOrder()
 
-        // When
+        // When — no site statuses provided, so nothing matches the order's status
         let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.status, order.status)
         XCTAssertEqual(viewModel.statusString, order.status.localizedName)
+    }
+
+    func test_statusString_when_matching_site_status_exists_then_uses_server_name() {
+        // Given
+        let order = MockOrders().sampleOrder()
+        let siteStatuses = [OrderStatus(name: "Server Name", siteID: order.siteID, slug: order.status.rawValue, total: 0)]
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order,
+                                               currencySettings: ServiceLocator.currencySettings,
+                                               siteStatuses: siteStatuses)
+
+        // Then — the server-provided name is preferred over the app-localized name
+        XCTAssertEqual(viewModel.statusString, "Server Name")
     }
 
     func test_OrderListCell_accessoryView_uses_chevron_with_tertiaryLabel_tint_as_disclosure_indicator() {

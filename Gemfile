@@ -3,7 +3,9 @@
 source 'https://rubygems.org'
 
 group :screenshots, optional: true do
-  gem 'rmagick', '~> 4.1'
+  # Capped below 7: the wpmreleasetoolkit PromoScreenshots helper still targets
+  # rmagick 5.x and breaks on 7. See AINFRA-2482.
+  gem 'rmagick', '>= 4.1', '< 7'
 end
 
 gem 'danger-dangermattic', '~> 1.4'

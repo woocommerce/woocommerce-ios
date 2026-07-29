@@ -28,10 +28,20 @@ struct RefundItemsValuesCalculationUseCase {
                 return (refundItemTotal as Decimal) / refundItem.item.quantity
             }()
 
-            // Figure out `itemTax` by dividing `totalTax` by the purchased `quantity`.
+            // Figure out `itemTax` by dividing the sum of the item's tax lines by the purchased `quantity`.
+            // `item.totalTax` cannot be summed with `item.total`: when the store rounds tax per line
+            // (the WooCommerce default), `totalTax` is rounded to currency decimals while `total` and
+            // `taxes[].total` keep the API's full precision, so mixing them can push the refund amount
+            // above the order total and the API rejects the refund with "Invalid refund amount".
             let itemTax: Decimal = {
-                let totalTax = currencyFormatter.convertToDecimal(refundItem.item.totalTax) ?? 0
-                return (totalTax as Decimal) / refundItem.item.quantity
+                guard refundItem.item.taxes.isNotEmpty else {
+                    let totalTax = currencyFormatter.convertToDecimal(refundItem.item.totalTax) ?? 0
+                    return (totalTax as Decimal) / refundItem.item.quantity
+                }
+                let taxLinesTotal = refundItem.item.taxes.reduce(Decimal.zero) { total, taxLine in
+                    total + ((currencyFormatter.convertToDecimal(taxLine.total) ?? 0) as Decimal)
+                }
+                return taxLinesTotal / refundItem.item.quantity
             }()
 
             let quantityToRefund = Decimal(refundItem.quantity)

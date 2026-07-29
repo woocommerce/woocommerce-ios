@@ -295,7 +295,7 @@ final class IssueRefundViewModelTests: XCTestCase {
             MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item2Quantity, price: item2Price),
             MockOrderItem.sampleItemWithCalculatedTotal(itemID: 2, quantity: item3Quantity, price: item3Price),
         ]
-        let order = MockOrders().makeOrder(items: items)
+        let order = MockOrders().makeOrder(items: items).copy(total: "100.00")
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // When
@@ -352,7 +352,7 @@ final class IssueRefundViewModelTests: XCTestCase {
             ShippingLine(shippingID: 1, methodTitle: "Standard", methodID: "standard", total: "7.00", totalTax: "0.62", taxes: []),
             ShippingLine(shippingID: 2, methodTitle: "Local delivery", methodID: "local_delivery", total: "3.00", totalTax: "0.30", taxes: [])
         ]
-        let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines)
+        let order = MockOrders().makeOrder(items: items, shippingLines: shippingLines).copy(total: "100.00")
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // 11.50 (item 1) x 2 (quantity) = 23.0
@@ -814,6 +814,25 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonAnimating)
+    }
+
+    func test_viewModel_title_when_selection_exceeds_remaining_refundable_amount_then_total_is_clamped() {
+        // Given
+        // An order with 1.00 remaining refundable (2.00 total, 1.00 already refunded) and items
+        // whose locally summed refund value (1.50) exceeds it.
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItemWithCalculatedTotal(itemID: 1, quantity: 1, price: 1.50)
+        ]
+        let previousRefund = OrderRefundCondensed(refundID: 1, reason: nil, total: "-1.00")
+        let order = MockOrders().makeOrder(items: items, refunds: [previousRefund]).copy(total: "2.00")
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // When
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertEqual(viewModel.title, "$1.00")
     }
 }
 

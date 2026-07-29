@@ -7,6 +7,7 @@
 
 25.3
 -----
+- [*] Dashboard: Fixed a crash on the store performance card when a store returns stats with an invalid date. [https://github.com/woocommerce/woocommerce-ios/pull/17628]
 - [Internal] Send a persistent device id in remote feature flag requests so logins without a WordPress.com account are included in progressive rollouts. [https://github.com/woocommerce/woocommerce-ios/pull/17605]
 - [*] Payments: fixed successful in-person payments appearing to fail when the capture response is interrupted. [https://github.com/woocommerce/woocommerce-ios/pull/17593]
 - [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/17548]

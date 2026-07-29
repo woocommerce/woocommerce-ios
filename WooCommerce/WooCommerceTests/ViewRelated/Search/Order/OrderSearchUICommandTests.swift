@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import Yosemite
 import YosemiteTestHelpers
@@ -11,6 +12,7 @@ final class OrderSearchUICommandTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var systemUnderTest: OrderSearchUICommand!
+    private var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
@@ -21,6 +23,7 @@ final class OrderSearchUICommandTests: XCTestCase {
     }
 
     override func tearDown() {
+        cancellables.removeAll()
         storageManager = nil
         analyticsProvider = nil
         analytics = nil
@@ -60,6 +63,40 @@ final class OrderSearchUICommandTests: XCTestCase {
         // Then
         XCTAssertNotNil(cellViewModel, "Expected createCellViewModel to return an OrderListCellViewModel instance")
         XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
+    }
+
+    func test_createCellViewModel_when_site_status_stored_then_statusString_uses_server_name() {
+        // Given
+        let mockOrder = MockOrders().makeOrder(status: .onHold)
+        // Server name differs from the slug, so we can tell them apart.
+        storageManager.insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
+        storageManager.viewStorage.saveIfNeeded()
+
+        // When
+        let cellViewModel = systemUnderTest.createCellViewModel(model: mockOrder)
+
+        // Then — the stored server name is preferred over the app-localized name
+        XCTAssertEqual(cellViewModel.statusString, "Server On Hold")
+    }
+
+    func test_reloadUIRequests_emits_when_stored_order_statuses_change() {
+        // Given
+        // Access the results controller (via a cell view model) so its change observation is wired up.
+        _ = systemUnderTest.createCellViewModel(model: MockOrders().makeOrder(status: .onHold))
+
+        let expectation = expectation(description: "reloadUIRequests emits when the stored order statuses change")
+        systemUnderTest.reloadUIRequests
+            .sink {
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+
+        // When
+        storageManager.insertOrderStatus(name: "Server On Hold", slug: OrderStatusEnum.onHold.rawValue)
+        storageManager.viewStorage.saveIfNeeded()
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_SanitizeKeyword_removing_leading_pound_symbol() {
@@ -139,13 +176,20 @@ final class OrderSearchUICommandTests: XCTestCase {
 private final class MockOrderStatusesStoresManager: MockStorageManager {
     fileprivate static let siteID: Int64 = 12345
 
-    /// Inserts an order status
+    /// Inserts an order status whose name and slug are identical.
     ///
     @discardableResult
     func insertOrderStatus(name: String) -> StorageOrderStatus {
+        insertOrderStatus(name: name, slug: name)
+    }
+
+    /// Inserts an order status with independent name and slug so the two can be exercised separately.
+    ///
+    @discardableResult
+    func insertOrderStatus(name: String, slug: String) -> StorageOrderStatus {
         let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
         orderStatus.name = name
-        orderStatus.slug = name
+        orderStatus.slug = slug
         orderStatus.siteID = MockOrderStatusesStoresManager.siteID
         viewStorage.saveIfNeeded()
         return orderStatus

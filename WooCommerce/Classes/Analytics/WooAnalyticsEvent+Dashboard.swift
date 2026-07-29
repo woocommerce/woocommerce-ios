@@ -14,6 +14,7 @@ extension WooAnalyticsEvent {
             static let siteConnectionType = "site_connection_type"
             static let type = "type"
             static let option = "option"
+            static let date = "date"
         }
 
         /// Shared `type` value for all stats card events. Mirrors the Android
@@ -33,6 +34,14 @@ extension WooAnalyticsEvent {
         /// - Parameter timeRange: the range of store stats (e.g. Today, This Week, This Month, This Year).
         static func dashboardMainStatsLoaded(timeRange: StatsTimeRangeV4) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardMainStatsLoaded, properties: [Keys.range: timeRange.analyticsValue])
+        }
+
+        /// Tracked when a store returns a stats interval whose date can't be parsed, so it is dropped from
+        /// the Store Performance chart. Mirrors Android's `stats_unexpected_format`.
+        static func statsUnexpectedDateFormat(timeRange: StatsTimeRangeV4, dateStrings: [String]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardStatsUnexpectedDateFormat,
+                              properties: [Keys.range: timeRange.analyticsValue,
+                                           Keys.date: dateStrings.joined(separator: ", ")])
         }
 
         /// Tracked when the date range on the store stats view changes.

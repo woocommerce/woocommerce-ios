@@ -143,6 +143,8 @@ final class StoreStatsPeriodViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
+    private let crashLogging: CrashLogger
+    private let analytics: Analytics
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -152,7 +154,9 @@ final class StoreStatsPeriodViewModel {
          currentDate: Date,
          currencyFormatter: CurrencyFormatter,
          currencySettings: CurrencySettings,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         crashLogging: CrashLogger = ServiceLocator.crashLogging,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.siteTimezone = siteTimezone
@@ -160,6 +164,8 @@ final class StoreStatsPeriodViewModel {
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
         self.storageManager = storageManager
+        self.crashLogging = crashLogging
+        self.analytics = analytics
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
         configureResultsControllers()
@@ -267,14 +273,15 @@ private extension StoreStatsPeriodViewModel {
         /// Attempting to get only the last x items from site visit stats,
         /// with x being the number of intervals available from order stats.
         ///
-        if let orderStats = orderStatsResultsController.fetchedObjects.first,
-           !orderStats.intervals.isEmpty,
+        /// Use the parsed intervals (bad dates dropped) so the visit-stats index stays aligned with the chart.
+        let orderIntervalCount = orderStatsData.intervals.count
+        if orderIntervalCount > 0,
            let items = siteStats?.items,
-           items.count > orderStats.intervals.count {
+           items.count > orderIntervalCount {
             let sortedItems = items.sorted(by: { lhs, rhs -> Bool in
                 return lhs.period < rhs.period
             })
-            let matchingItems = Array(sortedItems.suffix(orderStats.intervals.count))
+            let matchingItems = Array(sortedItems.suffix(orderIntervalCount))
             self.siteStats = siteStats?.copy(items: matchingItems)
         } else {
             self.siteStats = siteStats
@@ -288,7 +295,27 @@ private extension StoreStatsPeriodViewModel {
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
         let intervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
+        reportUnparseableIntervalsIfNeeded(in: orderStats, keptCount: intervals.count)
         orderStatsData = (stats: orderStats, intervals: intervals)
+    }
+
+    /// Reports the intervals dropped for an unparseable date, with the offending strings, once per
+    /// sync — not in `sortStatsIntervals`, which runs many times per render.
+    func reportUnparseableIntervalsIfNeeded(in orderStats: OrderStatsV4?, keptCount: Int) {
+        guard let orderStats, orderStats.intervals.count > keptCount else {
+            return
+        }
+        // Match the timezone the parser dropped with, so the reported strings line up.
+        let unparseableDateStarts = orderStats.intervals
+            .filter { $0.dateStart(timeZone: .siteTimezone) == nil }
+            .map(\.dateStart)
+        crashLogging.logMessage(
+            "Dropped stats interval(s) with an unparseable date during dashboard sync",
+            properties: ["dropped_interval_count": orderStats.intervals.count - keptCount,
+                         "unparseable_date_starts": unparseableDateStarts],
+            level: .error
+        )
+        analytics.track(event: .Dashboard.statsUnexpectedDateFormat(timeRange: timeRange, dateStrings: unparseableDateStarts))
     }
 }
 

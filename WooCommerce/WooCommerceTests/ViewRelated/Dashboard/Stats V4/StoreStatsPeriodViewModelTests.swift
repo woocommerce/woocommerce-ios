@@ -181,7 +181,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
                                       totals: .fake(),
-                                      intervals: [ .fake().copy(subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
+                                      intervals: [ .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                                 subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
         insertOrderStats(orderStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
@@ -207,7 +208,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
                                       totals: .fake(),
-                                      intervals: [ .fake().copy(subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
+                                      intervals: [ .fake().copy(dateStart: "2022-01-03 00:00:00",
+                                                                 subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
         insertOrderStats(orderStats, timeRange: timeRange)
 
         XCTAssertEqual(conversionStatsTextValues, ["-"])
@@ -402,17 +404,125 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // Then — each switch produces a fresh emission with the corresponding amount.
         XCTAssertEqual(revenueStatsTextValues, ["-", "$100.50", "$80.25", "$60.10"])
     }
+
+    // MARK: - Unparseable interval dates: reporting and alignment
+
+    func test_updateOrderData_when_an_interval_has_unparseable_date_then_reports_non_fatal_once_with_bad_date() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
+        let crashLogger = MockCrashLogger()
+        let viewModel = createViewModel(timeRange: timeRange, crashLogging: crashLogger)
+        observeStatsEmittedValues(viewModel: viewModel)
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [
+                                        .fake().copy(dateStart: "", subtotals: .fake()),
+                                        .fake().copy(dateStart: "2022-01-03 00:00:00", subtotals: .fake())
+                                      ])
+
+        // When
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertEqual(crashLogger.loggedMessages.count, 1)
+        let logged = crashLogger.loggedMessages.first
+        XCTAssertEqual(logged?.properties?["dropped_interval_count"] as? Int, 1)
+        XCTAssertEqual(logged?.properties?["unparseable_date_starts"] as? [String], [""])
+        XCTAssertEqual(logged?.level, .error)
+    }
+
+    func test_updateOrderData_when_all_interval_dates_parse_then_does_not_report() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
+        let crashLogger = MockCrashLogger()
+        let viewModel = createViewModel(timeRange: timeRange, crashLogging: crashLogger)
+        observeStatsEmittedValues(viewModel: viewModel)
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [ .fake().copy(dateStart: "2022-01-03 00:00:00", subtotals: .fake()) ])
+
+        // When
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        XCTAssertTrue(crashLogger.loggedMessages.isEmpty)
+    }
+
+    func test_updateOrderData_when_an_interval_has_unparseable_date_then_tracks_unexpected_format_event() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
+        let analyticsProvider = MockAnalyticsProvider()
+        let viewModel = createViewModel(timeRange: timeRange,
+                                        analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+        observeStatsEmittedValues(viewModel: viewModel)
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [
+                                        .fake().copy(dateStart: "", subtotals: .fake()),
+                                        .fake().copy(dateStart: "2022-01-03 00:00:00", subtotals: .fake())
+                                      ])
+
+        // When
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // Then
+        let eventIndices = analyticsProvider.receivedEvents.enumerated()
+            .filter { $0.element == "stats_unexpected_format" }
+            .map(\.offset)
+        XCTAssertEqual(eventIndices.count, 1)
+        let properties = eventIndices.first.map { analyticsProvider.receivedProperties[$0] }
+        XCTAssertEqual(properties?["date"] as? String, "")
+    }
+
+    func test_visitorStatsText_when_an_interval_has_unparseable_date_then_selected_visitor_count_stays_aligned() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // Three visit-stat items, ascending by period.
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [
+            .fake().copy(period: "2022-01-01", visitors: 10),
+            .fake().copy(period: "2022-01-02", visitors: 20),
+            .fake().copy(period: "2022-01-03", visitors: 30)
+        ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        // Three order intervals; the earliest has an unparseable (empty) date and is dropped, leaving two.
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [
+                                        .fake().copy(dateStart: "", subtotals: .fake()),
+                                        .fake().copy(dateStart: "2022-01-02 00:00:00", subtotals: .fake()),
+                                        .fake().copy(dateStart: "2022-01-03 00:00:00", subtotals: .fake())
+                                      ])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        // When — select the last of the two surviving chart bars.
+        viewModel.selectedIntervalIndex = 1
+
+        // Then — visitor count is the last item (30), aligned to the filtered intervals (not the raw-count 20).
+        XCTAssertEqual(visitorStatsTextValues.last, "30")
+    }
 }
 
 private extension StoreStatsPeriodViewModelTests {
-    func createViewModel(timeRange: StatsTimeRangeV4) -> StoreStatsPeriodViewModel {
+    func createViewModel(timeRange: StatsTimeRangeV4,
+                         crashLogging: CrashLogger = MockCrashLogger(),
+                         analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())) -> StoreStatsPeriodViewModel {
         StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
                                   currentDate: defaultDate,
                                   currencyFormatter: currencyFormatter,
                                   currencySettings: currencySettings,
-                                  storageManager: storageManager)
+                                  storageManager: storageManager,
+                                  crashLogging: crashLogging,
+                                  analytics: analytics)
     }
 
     func observeStatsEmittedValues(viewModel: StoreStatsPeriodViewModel) {
@@ -471,5 +581,24 @@ private extension StoreStatsPeriodViewModelTests {
         storageSiteSummaryStats.period = timeRange.summaryStatsGranularity.rawValue
         storageSiteSummaryStats.update(with: readOnlySiteSummaryStats)
         storage.saveIfNeeded()
+    }
+}
+
+/// Records `logMessage` calls so tests can assert what was reported.
+private final class MockCrashLogger: CrashLogger {
+    private(set) var loggedMessages: [(message: String, properties: [String: Any]?, level: SeverityLevel)] = []
+
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {}
+
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
+        loggedMessages.append((message, properties, level))
+    }
+
+    func logMessageAndWait(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
+        loggedMessages.append((message, properties, level))
+    }
+
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
+        fatalError(error.localizedDescription)
     }
 }

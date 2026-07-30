@@ -24,7 +24,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     private let refundMapping: POSRefundSubmissionMapping
     private let analytics: Analytics
     private let refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
-    private let v4RefundPreviewUseCase: POSV4RefundPreviewUseCase
+    private let serverRefundPreviewUseCase: POSServerRefundPreviewUseCase
 
     private var preloadedRefundSnapshots: [Int64: PreparedRefundSnapshot] = [:]
     private var preloadTasks: [Int64: (id: UUID, task: Task<PreparedRefundSnapshot, Error>)] = [:]
@@ -40,7 +40,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          refundOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         v4RefundPreviewUseCase: POSV4RefundPreviewUseCase? = nil) {
+         serverRefundPreviewUseCase: POSServerRefundPreviewUseCase? = nil) {
         self.orderService = orderService
         self.refundService = refundService
         self.stores = stores
@@ -51,7 +51,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         self.refundMapping = POSRefundSubmissionMapping(currencyFormatter: currencyFormatter)
         self.analytics = analytics
         self.refundOptionsDeterminer = refundOptionsDeterminer
-        self.v4RefundPreviewUseCase = v4RefundPreviewUseCase ?? POSV4RefundPreviewUseCase(refundService: refundService, stores: stores)
+        self.serverRefundPreviewUseCase = serverRefundPreviewUseCase ?? POSServerRefundPreviewUseCase(refundService: refundService, stores: stores)
     }
 
     func preloadRefund(for order: POSOrder) async {
@@ -106,9 +106,9 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         serverPreviewTotals[preparation.orderID] = nil
 
         let lineItems = refundMapping.refundPreviewLineItems(from: selectedItems, context: context)
-        let previewResult = await v4RefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
-                                                                       orderID: context.order.orderID,
-                                                                       lineItems: lineItems)
+        let previewResult = await serverRefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
+                                                                           orderID: context.order.orderID,
+                                                                           lineItems: lineItems)
         try Task.checkCancellation()
 
         switch previewResult {

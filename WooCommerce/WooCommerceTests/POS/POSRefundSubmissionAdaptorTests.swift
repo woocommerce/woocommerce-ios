@@ -207,7 +207,7 @@ private extension POSRefundSubmissionAdaptorTests {
                      manualPreviewResolution: Bool = false,
                      orderQuantity: Decimal = 1) -> Harness {
         let session = SessionManager.testingInstance
-        session.cachedWooCommerceVersion = "10.9.0"
+        session.cachedWooCommerceVersion = "11.1.0"
         let stores = MockStoresManager(sessionManager: session)
         let spy = RefundActionSpy()
         let service = MockManualRefundService()
@@ -238,11 +238,11 @@ private extension POSRefundSubmissionAdaptorTests {
 
         let flags = MockFeatureFlagService()
         flags.isFeatureFlagEnabledReturnValue = [.posRefundsV4: flagEnabled]
-        let previewUseCase = POSV4RefundPreviewUseCase(refundService: service,
-                                                       stores: stores,
-                                                       featureFlagService: flags,
-                                                       availabilityCache: V4RefundAvailabilityCache(),
-                                                       minimumWooVersion: "10.9.0")
+        let previewUseCase = POSServerRefundPreviewUseCase(refundService: service,
+                                                           stores: stores,
+                                                           featureFlagService: flags,
+                                                           availabilityCache: ServerRefundAvailabilityCache(),
+                                                           minimumWooVersion: "11.1.0")
 
         let orderService = MockPOSOrderService()
         orderService.orderToReturn = order(quantity: orderQuantity)
@@ -254,7 +254,7 @@ private extension POSRefundSubmissionAdaptorTests {
                                                  storageManager: MockStorageManager(),
                                                  currencySettings: usdCurrencySettings(),
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-                                                 v4RefundPreviewUseCase: previewUseCase)
+                                                 serverRefundPreviewUseCase: previewUseCase)
         return Harness(adaptor: adaptor, service: service, spy: spy, analyticsProvider: analyticsProvider)
     }
 

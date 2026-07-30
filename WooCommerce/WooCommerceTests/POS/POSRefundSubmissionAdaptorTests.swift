@@ -160,12 +160,12 @@ private extension POSRefundSubmissionAdaptorTests {
         var manualPreviewResolution = false
         /// Captured `previewRefund` continuations when the harness uses manual resolution.
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
-        private(set) var createRefundLineItems: [RefundV4LineItem]?
+        private(set) var createRefundLineItems: [RefundPreviewLineItem]?
         private(set) var createRefundReason: String?
 
         func previewRefund(siteID: Int64,
                            orderID: Int64,
-                           lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                           lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
             if manualPreviewResolution {
                 return try await withCheckedThrowingContinuation { continuation in
                     pendingPreviewCompletions.append { result in
@@ -184,7 +184,7 @@ private extension POSRefundSubmissionAdaptorTests {
                           reason: String,
                           automaticRefund: Bool,
                           restockItems: Bool,
-                          lineItems: [RefundV4LineItem]) async throws -> Refund {
+                          lineItems: [RefundPreviewLineItem]) async throws -> Refund {
             createRefundLineItems = lineItems
             createRefundReason = reason
             return .fake()

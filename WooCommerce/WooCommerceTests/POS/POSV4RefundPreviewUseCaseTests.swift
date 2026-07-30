@@ -210,7 +210,7 @@ private extension POSV4RefundPreviewUseCaseTests {
         return (sut, service, stores)
     }
 
-    func lineItem() -> RefundV4LineItem {
+    func lineItem() -> RefundPreviewLineItem {
         .quantityBased(lineItemID: 10, quantity: 1)
     }
 

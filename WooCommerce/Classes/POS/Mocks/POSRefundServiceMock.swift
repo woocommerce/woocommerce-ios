@@ -13,7 +13,7 @@ final class POSRefundServiceMock: RefundServiceProtocol {
 
     func previewRefund(siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         let order: Order?
         do {
             order = try await orderService.loadOrder(orderID: orderID)
@@ -41,7 +41,7 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund {
+                      lineItems: [RefundPreviewLineItem]) async throws -> Refund {
         let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems)
         return Refund(refundID: 1,
                       orderID: orderID,

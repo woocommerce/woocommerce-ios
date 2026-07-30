@@ -229,13 +229,13 @@ extension RefundSubmissionUseCase {
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
 
-        let v4LineItems: [RefundV4LineItem]?
+        let v4LineItems: [RefundPreviewLineItem]?
 
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             v4LineItems: [RefundV4LineItem]? = nil) {
+             v4LineItems: [RefundPreviewLineItem]? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
@@ -456,7 +456,7 @@ private extension RefundSubmissionUseCase {
 
     @MainActor
     private func submitRefundV4ToSite(refund: Refund,
-                                      lineItems: [RefundV4LineItem],
+                                      lineItems: [RefundPreviewLineItem],
                                       refundService: RefundServiceProtocol,
                                       onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()

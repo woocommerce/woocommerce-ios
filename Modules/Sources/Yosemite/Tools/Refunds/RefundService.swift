@@ -15,7 +15,7 @@ public protocol RefundServiceProtocol {
     /// `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back to v3.
     func previewRefund(siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview
 
     /// Creates a refund via the simplified v4 request (line items only, no client-calculated
     /// `amount`; the server owns the math). On success the returned refund is upserted to
@@ -25,7 +25,7 @@ public protocol RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund
+                      lineItems: [RefundPreviewLineItem]) async throws -> Refund
 }
 
 public final class RefundService: RefundServiceProtocol {
@@ -53,7 +53,7 @@ public final class RefundService: RefundServiceProtocol {
 
     public func previewRefund(siteID: Int64,
                               orderID: Int64,
-                              lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                              lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         try await remote.previewRefund(for: siteID, orderID: orderID, lineItems: lineItems)
     }
 
@@ -62,7 +62,7 @@ public final class RefundService: RefundServiceProtocol {
                              reason: String,
                              automaticRefund: Bool,
                              restockItems: Bool,
-                             lineItems: [RefundV4LineItem]) async throws -> Refund {
+                             lineItems: [RefundPreviewLineItem]) async throws -> Refund {
         let refund = try await remote.createRefundV4(for: siteID,
                                                      orderID: orderID,
                                                      reason: reason,

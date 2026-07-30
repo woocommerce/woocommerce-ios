@@ -18,7 +18,7 @@ final class MockRefundService: RefundServiceProtocol {
 
     func previewRefund(siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         previewRefundCallCount += 1
         switch previewRefundResult {
         case .success(let preview):
@@ -35,7 +35,7 @@ final class MockRefundService: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund {
+                      lineItems: [RefundPreviewLineItem]) async throws -> Refund {
         spyCreateRefundRestockItems = restockItems
         switch createRefundResult {
         case .success(let refund):

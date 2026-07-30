@@ -8,14 +8,14 @@ import Foundation
 public protocol RefundsRemoteProtocol {
     func previewRefund(for siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview
 
     func createRefundV4(for siteID: Int64,
                         orderID: Int64,
                         reason: String,
                         automaticRefund: Bool,
                         restockItems: Bool,
-                        lineItems: [RefundV4LineItem]) async throws -> Refund
+                        lineItems: [RefundPreviewLineItem]) async throws -> Refund
 }
 
 /// Refunds: Remote Endpoints
@@ -157,7 +157,7 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     ///
     public func previewRefund(for siteID: Int64,
                               orderID: Int64,
-                              lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                              lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         let body = PreviewRefundBody(orderID: orderID, lineItems: lineItems)
         let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
@@ -186,7 +186,7 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
                                reason: String,
                                automaticRefund: Bool,
                                restockItems: Bool,
-                               lineItems: [RefundV4LineItem]) async throws -> Refund {
+                               lineItems: [RefundPreviewLineItem]) async throws -> Refund {
         let body = RefundV4Body(orderID: orderID,
                                 reason: reason,
                                 apiRefund: String(automaticRefund),
@@ -213,7 +213,7 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
 //
 private struct PreviewRefundBody: Encodable {
     let orderID: Int64
-    let lineItems: [RefundV4LineItem]
+    let lineItems: [RefundPreviewLineItem]
 
     enum CodingKeys: String, CodingKey {
         case orderID = "order_id"
@@ -226,7 +226,7 @@ private struct RefundV4Body: Encodable {
     let reason: String
     let apiRefund: String
     let apiRestock: String
-    let lineItems: [RefundV4LineItem]
+    let lineItems: [RefundPreviewLineItem]
 
     enum CodingKeys: String, CodingKey {
         case orderID = "order_id"

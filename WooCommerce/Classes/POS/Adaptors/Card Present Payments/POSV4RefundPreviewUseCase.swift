@@ -32,7 +32,7 @@ final class POSV4RefundPreviewUseCase {
         self.minimumWooVersion = minimumWooVersion
     }
 
-    func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundV4LineItem]) async -> Result {
+    func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
         let cachedAvailability = availabilityCache.isV4Available(siteID: siteID)
         guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4),
               lineItems.isNotEmpty,

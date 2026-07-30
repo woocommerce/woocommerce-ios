@@ -18,6 +18,15 @@ struct POSRefundItemsSelectionView: View {
         orderListModel.ordersController.refundReviewPreparationState
     }
 
+    /// The inline error shown above the continue button: the server's rejection copy when the
+    /// preview failed with an actionable code, or the generic copy for other preview failures.
+    private var previewErrorMessage: String? {
+        guard case .previewError(let message) = reviewPreparationState else {
+            return nil
+        }
+        return message ?? Localization.previewError
+    }
+
     private var selectedItems: [POSRefundSelectableItem] {
         refundSelectableItems.filter { $0.isSelected }
     }
@@ -119,14 +128,14 @@ private extension POSRefundItemsSelectionView {
 
     var actionsFooter: some View {
         VStack(spacing: POSSpacing.small) {
-            if reviewPreparationState == .previewError {
-                Text(Localization.previewError)
+            if let previewErrorMessage {
+                Text(previewErrorMessage)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posError)
                     .multilineTextAlignment(.center)
             }
 
-            Button(reviewPreparationState == .previewError ? Localization.retryButton : Localization.continueButton) {
+            Button(previewErrorMessage != nil ? Localization.retryButton : Localization.continueButton) {
                 onContinue()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))

@@ -183,6 +183,34 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(result == .error)
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
+
+    @Test func previewRefund_when_rejected_with_mapped_code_then_returns_typed_rejection_without_marking_unavailable() async {
+        // Given a rejection the cashier can act on (e.g. another register already refunded the line)
+        let cache = ServerRefundAvailabilityCache()
+        let error = DotcomError.unknown(code: "quantity_exceeds_refundable", message: nil, data: nil)
+        let (sut, _, _) = makeSUT(cache: cache, previewResult: .failure(error))
+
+        // When
+        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the rejection is distinguishable and the server flow stays enabled for the site
+        #expect(result == .rejected(.quantityExceedsRefundable))
+        #expect(cache.isAvailable(siteID: siteID) == nil)
+    }
+
+    @Test func previewRefund_when_rejected_with_unmapped_code_then_returns_generic_error() async {
+        // Given a programming-error code that must keep the generic path
+        let cache = ServerRefundAvailabilityCache()
+        let error = DotcomError.unknown(code: "invalid_line_item", message: nil, data: nil)
+        let (sut, _, _) = makeSUT(cache: cache, previewResult: .failure(error))
+
+        // When
+        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(result == .error)
+        #expect(cache.isAvailable(siteID: siteID) == nil)
+    }
 }
 
 private extension POSServerRefundPreviewUseCaseTests {

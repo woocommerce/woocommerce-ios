@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSOrderListServiceError
+import enum Yosemite.RefundAPIError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
@@ -65,7 +66,10 @@ enum POSOrderListSelectedOrderRefundsState {
 enum POSRefundReviewPreparationState: Equatable {
     case idle
     case loading
-    case previewError
+    /// `message` carries the server's rejection copy when the preview failed with an actionable
+    /// code (for example the order changed since the screen was loaded); `nil` shows the generic
+    /// preview error copy.
+    case previewError(message: String? = nil)
 }
 
 /// Outcome of `prepareRefundReview()`, returned directly to the caller.
@@ -511,7 +515,11 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
                 return .superseded
             } catch POSRefundSubmissionError.refundPreviewFailed {
                 guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .previewError
+                refundReviewPreparationState = .previewError()
+                return .previewError
+            } catch let rejection as RefundAPIError {
+                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+                refundReviewPreparationState = .previewError(message: rejection.localizedDescription)
                 return .previewError
             } catch {
                 guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }

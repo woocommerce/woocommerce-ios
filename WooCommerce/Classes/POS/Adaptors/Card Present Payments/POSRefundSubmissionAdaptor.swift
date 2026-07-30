@@ -132,6 +132,10 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                               preparation: preparation,
                               selectedItems: selectedItems,
                               reason: reason)
+        case .rejected(let rejection):
+            // The server rejected this selection with an actionable code; the typed rejection
+            // carries the cashier-facing copy shown inline on the selection step.
+            throw rejection
         case .error:
             throw POSRefundSubmissionError.refundPreviewFailed
         }

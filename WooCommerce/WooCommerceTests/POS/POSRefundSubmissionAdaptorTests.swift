@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import YosemiteTestHelpers
 import Experiments
+import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 import WooFoundation
 @testable import PointOfSale
@@ -140,6 +141,41 @@ struct POSRefundSubmissionAdaptorTests {
                                                             reason: nil)
         }
     }
+
+    @Test func prepareReviewData_when_preview_rejected_with_mapped_code_then_throws_typed_rejection() async throws {
+        // Given the server rejects the selection with an actionable code
+        let error = DotcomError.unknown(code: "line_item_already_refunded", message: nil, data: nil)
+        let harness = makeHarness(previewResult: .failure(error))
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+
+        // When / Then the typed rejection (with its cashier-facing copy) surfaces instead of the blanket failure
+        await #expect(throws: RefundAPIError.lineItemAlreadyRefunded) {
+            _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                            preparation: preparation,
+                                                            selectedItems: preparation.selectableItems,
+                                                            reason: nil)
+        }
+    }
+
+    @Test func submitRefund_when_computed_create_rejected_with_mapped_code_then_throws_typed_rejection() async throws {
+        // Given a successful preview (so the server-computed create path is used) and a create
+        // that the server rejects because the order changed in the meantime
+        let harness = makeHarness(previewResult: .success(preview()))
+        harness.service.createRefundError = DotcomError.unknown(code: "refund_exceeds_remaining", message: nil, data: nil)
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+        _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: preparation.selectableItems,
+                                                        reason: nil)
+
+        // When / Then
+        await #expect(throws: RefundAPIError.refundExceedsRemaining) {
+            try await harness.adaptor.submitRefund(for: posOrder(),
+                                                   preparation: preparation,
+                                                   selectedItems: preparation.selectableItems,
+                                                   reason: nil)
+        }
+    }
 }
 
 private extension POSRefundSubmissionAdaptorTests {
@@ -158,6 +194,7 @@ private extension POSRefundSubmissionAdaptorTests {
 
         var previewResult: Result<RefundPreview, Error>?
         var manualPreviewResolution = false
+        var createRefundError: Error?
         /// Captured `previewRefund` continuations when the harness uses manual resolution.
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
         private(set) var createRefundLineItems: [ComputedRefundLineItem]?
@@ -188,6 +225,9 @@ private extension POSRefundSubmissionAdaptorTests {
                           lineItems: [ComputedRefundLineItem]) async throws -> Refund {
             createRefundLineItems = lineItems
             createRefundReason = reason
+            if let createRefundError {
+                throw createRefundError
+            }
             return .fake()
         }
     }

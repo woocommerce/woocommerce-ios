@@ -18,6 +18,9 @@ final class POSServerRefundPreviewUseCase {
     enum Result: Equatable {
         case serverCalculated(RefundPreview)
         case fallbackToLocal
+        /// The server rejected the requested refund with an actionable code (for example the
+        /// order changed since the screen was loaded); the rejection carries cashier-facing copy.
+        case rejected(RefundAPIError)
         case error
     }
 
@@ -60,6 +63,9 @@ final class POSServerRefundPreviewUseCase {
             if isRouteNotRegistered(error) {
                 availabilityCache.markUnavailable(siteID: siteID)
                 return .fallbackToLocal
+            }
+            if let rejection = RefundAPIError(error) {
+                return .rejected(rejection)
             }
             return .error
         }

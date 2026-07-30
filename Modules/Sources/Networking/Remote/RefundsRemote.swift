@@ -144,11 +144,12 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
             DDLogError("Unable to serialize data for refunds: \(error)")
         }
     }
-    // MARK: v4 endpoints
+    // MARK: Server-calculated refund endpoints
 
-    /// Previews a refund via `POST /wc/v4/refunds/preview` (WC 10.9.0+ behind the server `rest-api-v4` flag),
+    /// Previews a refund via `POST /wc/v3/orders/{orderID}/refunds/preview` (WC 11.1.0+),
     /// returning the server-calculated breakdown. On stores where the route is not registered the request
-    /// fails with `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back to v3.
+    /// fails with `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back
+    /// to locally calculated refunds.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll preview a refund.
@@ -158,11 +159,12 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     public func previewRefund(for siteID: Int64,
                               orderID: Int64,
                               lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
-        let body = PreviewRefundBody(orderID: orderID, lineItems: lineItems)
-        let request = JetpackRequest(wooApiVersion: .mark4,
+        let body = PreviewRefundBody(lineItems: lineItems)
+        let path = "\(Path.orders)/\(orderID)/\(Path.refunds)/preview"
+        let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .post,
                                      siteID: siteID,
-                                     path: Path.refundsPreview,
+                                     path: path,
                                      parameters: try parameters(from: body),
                                      availableAsRESTRequest: true)
         return try await enqueue(request, mapper: SingleItemMapper<RefundPreview>(siteID: siteID))
@@ -209,14 +211,12 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     }
 }
 
-// MARK: - v4 request bodies
+// MARK: - Server-calculated refund request bodies
 //
 private struct PreviewRefundBody: Encodable {
-    let orderID: Int64
     let lineItems: [RefundPreviewLineItem]
 
     enum CodingKeys: String, CodingKey {
-        case orderID = "order_id"
         case lineItems = "line_items"
     }
 }

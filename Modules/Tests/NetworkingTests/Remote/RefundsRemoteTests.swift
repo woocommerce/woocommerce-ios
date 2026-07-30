@@ -14,7 +14,7 @@ struct RefundsRemoteTests {
 
     // MARK: - previewRefund
 
-    @Test func previewRefund_issues_a_post_to_the_v4_preview_endpoint() async throws {
+    @Test func previewRefund_issues_a_post_to_the_nested_v3_preview_endpoint() async throws {
         // Given
         let remote = RefundsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "refunds/preview", filename: "refund-preview")
@@ -26,13 +26,13 @@ struct RefundsRemoteTests {
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
-        #expect(request.wooApiVersion == .mark4)
+        #expect(request.wooApiVersion == .mark3)
         #expect(request.method == .post)
         #expect(request.siteID == sampleSiteID)
-        #expect(request.path == "refunds/preview")
+        #expect(request.path == "orders/\(sampleOrderID)/refunds/preview")
     }
 
-    @Test func previewRefund_sends_order_id_and_line_items_in_the_body() async throws {
+    @Test func previewRefund_sends_only_line_items_in_the_body() async throws {
         // Given
         let remote = RefundsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "refunds/preview", filename: "refund-preview")
@@ -43,9 +43,9 @@ struct RefundsRemoteTests {
                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2),
                                                        .amountBased(lineItemID: 51, refundTotal: 5.50)])
 
-        // Then
+        // Then the order is addressed via the path, not the body
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
-        #expect(request.parameters["order_id"] as? NSNumber == NSNumber(value: sampleOrderID))
+        #expect(request.parameters["order_id"] == nil)
 
         let lineItems = try #require(request.parameters["line_items"] as? [[String: Any]])
         #expect(lineItems.count == 2)
@@ -80,7 +80,7 @@ struct RefundsRemoteTests {
     }
 
     @Test func previewRefund_when_the_route_is_not_registered_then_throws_noRestRoute() async throws {
-        // Given a store without the v4 API (older WC or `rest-api-v4` flag off)
+        // Given a store without the preview route (WC older than 11.1.0)
         let remote = RefundsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "refunds/preview", filename: "restnoroute_error")
 

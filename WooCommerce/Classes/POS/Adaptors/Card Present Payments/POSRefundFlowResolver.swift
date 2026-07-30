@@ -18,9 +18,16 @@ enum POSRefundFlow: Equatable {
 /// `serverComputed` requires all of:
 /// - the `posRefundsV4` feature flag (the name predates the port of the endpoints to `/wc/v3`),
 /// - the site not being cached as unavailable (a preview already returned `rest_no_route`),
-/// - a successful preview having confirmed availability, or the cached WooCommerce version not
-///   ruling the endpoints out (below ``Constants/minimumWooVersionForServerRefunds``); an unknown
-///   version is not conclusive, so the preview probe decides.
+/// - a cached WooCommerce version that is known and at least
+///   ``Constants/minimumWooVersionForServerRefunds``; an unknown version fails closed to
+///   `localComputed`.
+///
+/// The version requirement is authoritative for the create capability and cannot be bypassed by a
+/// successful preview: the preview route and the `compute_totals` create support ship in separate
+/// WooCommerce core changes, so a preview succeeding only proves the preview route exists. A store
+/// with the preview but without `compute_totals` (partial backport, or the changes splitting
+/// across releases) would silently drop the parameter and create a zero-amount refund while
+/// restocking items. Only a version known to contain both changes unlocks the server flow.
 ///
 /// Eligibility here only allows the *preview* probe. A computed create additionally requires that
 /// probe to succeed first — see `ServerRefundAvailabilityCache`.
@@ -46,26 +53,31 @@ struct POSRefundFlowResolver {
         guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4) else {
             return .localComputed
         }
-        let cachedAvailability = availabilityCache.isAvailable(siteID: siteID)
-        guard cachedAvailability != false,
-              cachedAvailability == true || !isWooVersionBelowMinimum() else {
+        guard availabilityCache.isAvailable(siteID: siteID) != false else {
+            return .localComputed
+        }
+        guard isWooVersionAtLeastMinimum() else {
             return .localComputed
         }
         return .serverComputed
     }
 
-    private func isWooVersionBelowMinimum() -> Bool {
+    private func isWooVersionAtLeastMinimum() -> Bool {
+        // Unknown version fails closed: eligibility must never rest on the preview probe alone,
+        // because the preview route does not prove `compute_totals` create support.
         guard let version = stores.sessionManager.cachedWooCommerceVersion else {
             return false
         }
-        return !VersionHelpers.isVersionSupported(version: version,
-                                                  minimumRequired: minimumWooVersion,
-                                                  includesDevAndBetaVersions: true)
+        return VersionHelpers.isVersionSupported(version: version,
+                                                 minimumRequired: minimumWooVersion,
+                                                 includesDevAndBetaVersions: true)
     }
 
     enum Constants {
-        /// The WooCommerce release that ships the `/wc/v3` refund preview and `compute_totals`
-        /// create endpoints.
+        /// The earliest WooCommerce core release guaranteed to contain BOTH the `/wc/v3` refund
+        /// preview route (woocommerce/woocommerce#67042) and the `compute_totals` create support
+        /// (woocommerce/woocommerce#67043). If the two land in different releases, this constant
+        /// must point at the release containing the latter.
         static let minimumWooVersionForServerRefunds = "11.1.0"
     }
 }

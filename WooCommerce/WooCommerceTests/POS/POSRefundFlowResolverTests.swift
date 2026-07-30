@@ -62,22 +62,34 @@ struct POSRefundFlowResolverTests {
         #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
     }
 
-    @Test func resolveFlow_when_wc_version_unknown_then_server_so_the_probe_decides() {
-        // Given a missing cached version isn't conclusive
+    @Test func resolveFlow_when_wc_version_unknown_then_local_because_preview_alone_must_not_unlock_the_create() {
+        // Given a missing cached version, which fails closed (the preview route does not
+        // prove `compute_totals` create support)
         let sut = makeSUT(cachedWooVersion: nil)
 
         // Then
-        #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
+        #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
     }
 
-    @Test func resolveFlow_when_site_cached_available_then_server_despite_a_stale_version_hint() {
-        // Given a server-confirmed site and a (stale) below-minimum version string
+    @Test func resolveFlow_when_wc_version_unknown_and_site_cached_available_then_still_local() {
+        // Given a successful preview cached for the site but no known version
+        let cache = ServerRefundAvailabilityCache()
+        cache.markAvailable(siteID: siteID)
+        let sut = makeSUT(cachedWooVersion: nil, cache: cache)
+
+        // Then
+        #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
+    }
+
+    @Test func resolveFlow_when_site_cached_available_but_version_below_minimum_then_local() {
+        // Given a cached preview success but a below-minimum version: the version gate is
+        // authoritative for the create capability and is not bypassed by the cache
         let cache = ServerRefundAvailabilityCache()
         cache.markAvailable(siteID: siteID)
         let sut = makeSUT(cachedWooVersion: "11.0.9", cache: cache)
 
         // Then
-        #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
+        #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
     }
 }
 

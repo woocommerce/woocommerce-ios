@@ -63,17 +63,19 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(cache.isAvailable(siteID: siteID) == true)
     }
 
-    @Test func previewRefund_when_site_cached_available_then_stale_version_hint_is_ignored() async {
-        // Given a server-confirmed site and a (stale) below-minimum version string
+    @Test func previewRefund_when_site_cached_available_but_version_below_minimum_then_falls_back() async {
+        // Given a cached preview success but a below-minimum version: the version gate is
+        // authoritative for the create capability and is not bypassed by the cache
         let cache = ServerRefundAvailabilityCache()
         cache.markAvailable(siteID: siteID)
-        let (sut, _, _) = makeSUT(cachedWooVersion: "11.0.9", cache: cache, previewResult: .success(preview()))
+        let (sut, service, _) = makeSUT(cachedWooVersion: "11.0.9", cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
-        // Then the probe runs and the confirmed availability is not downgraded.
-        #expect(result == .serverCalculated(preview()))
+        // Then it falls back without probing, and the cached verdict is left untouched.
+        #expect(result == .fallbackToLocal)
+        #expect(service.previewRefundCallCount == 0)
         #expect(cache.isAvailable(siteID: siteID) == true)
     }
 
@@ -90,17 +92,19 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(cache.isAvailable(siteID: siteID) == true)
     }
 
-    @Test func previewRefund_when_wc_version_unknown_then_probes_instead_of_falling_back() async {
-        // Given a missing cached version isn't conclusive, so the probe decides.
+    @Test func previewRefund_when_wc_version_unknown_then_falls_back_without_probing() async {
+        // Given a missing cached version, which fails closed (the preview route does not
+        // prove `compute_totals` create support, so preview alone must not unlock the create).
         let cache = ServerRefundAvailabilityCache()
-        let (sut, _, _) = makeSUT(cachedWooVersion: nil, cache: cache, previewResult: .success(preview()))
+        let (sut, service, _) = makeSUT(cachedWooVersion: nil, cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
-        #expect(result == .serverCalculated(preview()))
-        #expect(cache.isAvailable(siteID: siteID) == true)
+        #expect(result == .fallbackToLocal)
+        #expect(service.previewRefundCallCount == 0)
+        #expect(cache.isAvailable(siteID: siteID) == nil)
     }
 
     @Test func previewRefund_when_no_line_items_then_falls_back_without_dispatch() async {

@@ -82,7 +82,7 @@ extension WordPressAuthenticator {
                                                 prologueTertiaryButtonStyle: prologueSiteCreationGuideButtonStyle,
                                                 prologueTopContainerChildViewController:
                                                     LoginPrologueViewController(),
-                                                statusBarStyle: .default)
+                                                statusBarStyle: .lightContent)
 
         let getStartedInstructions = AuthenticationConstants.getStartedInstructions
 

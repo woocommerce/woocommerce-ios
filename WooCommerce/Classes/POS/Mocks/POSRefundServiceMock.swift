@@ -41,8 +41,15 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundPreviewLineItem]) async throws -> Refund {
-        let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems)
+                      amount: String?,
+                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+        let previewLineItems = lineItems.map { lineItem -> RefundPreviewLineItem in
+            if let refundTotal = lineItem.refundTotal {
+                return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: refundTotal)
+            }
+            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: lineItem.quantity ?? .zero)
+        }
+        let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: previewLineItems)
         return Refund(refundID: 1,
                       orderID: orderID,
                       siteID: siteID,

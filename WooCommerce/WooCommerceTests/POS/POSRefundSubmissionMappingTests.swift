@@ -151,7 +151,7 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertEqual(selectableItems[2].totalTax, NSDecimalNumber(string: "0.35").decimalValue)
     }
 
-    func test_refundV4LineItems_maps_products_to_quantities_and_fees_to_tax_inclusive_totals() {
+    func test_refundPreviewLineItems_maps_products_to_quantities_and_fees_to_tax_inclusive_totals() {
         // Given
         let item1 = orderItem(itemID: 10, quantity: 3)
         let item2 = orderItem(itemID: 20, quantity: 1)
@@ -168,9 +168,37 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         ]
 
         // When
-        let lineItems = sut.refundV4LineItems(from: selectedItems, context: context)
+        let lineItems = sut.refundPreviewLineItems(from: selectedItems, context: context)
 
         // Then
+        XCTAssertEqual(lineItems.count, 2)
+        let product = lineItems.first { $0.lineItemID == item1.itemID }
+        XCTAssertEqual(product?.quantity, 2)
+        XCTAssertNil(product?.refundTotal)
+        let feeLine = lineItems.first { $0.lineItemID == fee.feeID }
+        XCTAssertNil(feeLine?.quantity)
+        XCTAssertEqual(feeLine?.refundTotal, NSDecimalNumber(string: "3.85").decimalValue) // 3.50 + 0.35
+    }
+
+    func test_computedRefundLineItems_matches_the_preview_line_construction() {
+        // Given the same selection as the preview builder test
+        let item1 = orderItem(itemID: 10, quantity: 3)
+        let item2 = orderItem(itemID: 20, quantity: 1)
+        let fee = orderFee(feeID: 200, total: "3.50", totalTax: "0.35")
+        let context = makeContext(refundableItems: [
+            RefundableOrderItem(item: item1, quantity: 3),
+            RefundableOrderItem(item: item2, quantity: 1)
+        ], refundableFees: [fee])
+        let selectedItems = [
+            selectableItem(itemID: item1.itemID, index: 0),
+            selectableItem(itemID: item1.itemID, index: 1),
+            selectableItem(itemID: fee.feeID, isLumpSum: true, index: 2)
+        ]
+
+        // When
+        let lineItems = sut.computedRefundLineItems(from: selectedItems, context: context)
+
+        // Then the creation lines carry the same quantities and totals as the preview lines
         XCTAssertEqual(lineItems.count, 2)
         let product = lineItems.first { $0.lineItemID == item1.itemID }
         XCTAssertEqual(product?.quantity, 2)

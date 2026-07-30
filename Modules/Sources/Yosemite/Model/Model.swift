@@ -38,6 +38,7 @@ public typealias CreateBlazeCampaign = Networking.CreateBlazeCampaign
 public typealias FallibleCancelable = Hardware.FallibleCancelable
 public typealias CommentStatus = Networking.CommentStatus
 public typealias CompositeComponentOptionType = Networking.CompositeComponentOptionType
+public typealias ComputedRefundLineItem = Networking.ComputedRefundLineItem
 public typealias Coupon = Networking.Coupon
 public typealias CouponDiscountType = Networking.Coupon.DiscountType
 public typealias CouponReport = Networking.CouponReport

@@ -103,8 +103,9 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
-    func refundV4LineItems(from selectedItems: [POSRefundSelectableItem],
-                           context: PreparedRefundContext) -> [RefundPreviewLineItem] {
+    /// Builds the preview request lines: products refunded by quantity, fees by tax-inclusive amount.
+    func refundPreviewLineItems(from selectedItems: [POSRefundSelectableItem],
+                                context: PreparedRefundContext) -> [RefundPreviewLineItem] {
         let components = refundComponents(from: selectedItems, context: context)
 
         let productLines = components.items.map {
@@ -115,6 +116,25 @@ struct POSRefundSubmissionMapping {
             let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
             let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
             return RefundPreviewLineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
+        }
+
+        return productLines + feeLines
+    }
+
+    /// Builds the `compute_totals` creation request lines. Same construction as
+    /// `refundPreviewLineItems(from:context:)`, but the creation endpoint keys lines by `id`.
+    func computedRefundLineItems(from selectedItems: [POSRefundSelectableItem],
+                                 context: PreparedRefundContext) -> [ComputedRefundLineItem] {
+        let components = refundComponents(from: selectedItems, context: context)
+
+        let productLines = components.items.map {
+            ComputedRefundLineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
+        }
+
+        let feeLines = components.fees.map { fee -> ComputedRefundLineItem in
+            let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+            let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+            return ComputedRefundLineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
         }
 
         return productLines + feeLines

@@ -105,7 +105,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
 
         serverPreviewTotals[preparation.orderID] = nil
 
-        let lineItems = refundMapping.refundV4LineItems(from: selectedItems, context: context)
+        let lineItems = refundMapping.refundPreviewLineItems(from: selectedItems, context: context)
         let previewResult = await v4RefundPreviewUseCase.previewRefund(siteID: context.order.siteID,
                                                                        orderID: context.order.orderID,
                                                                        lineItems: lineItems)
@@ -168,8 +168,10 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
 
         let components = refundMapping.refundComponents(from: selectedItems, context: context)
         let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+        // A server-computed create is only allowed when this exact selection was previewed
+        // successfully; otherwise the classic v3 create path is used.
         let serverPreviewTotal = serverPreviewTotals[preparation.orderID]
-        let v4LineItems = serverPreviewTotal != nil ? refundMapping.refundV4LineItems(from: selectedItems, context: context) : nil
+        let serverLineItems = serverPreviewTotal != nil ? refundMapping.computedRefundLineItems(from: selectedItems, context: context) : nil
         let amount = refundMapping.apiAmountString(for: serverPreviewTotal ?? values.total)
         let refund = RefundCreationUseCase(amount: amount,
                                            reason: reason,
@@ -200,7 +202,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                            charge: context.charge,
                            amount: amount,
                            paymentGatewayAccount: context.paymentGatewayAccount,
-                           v4LineItems: v4LineItems),
+                           serverLineItems: serverLineItems),
             rootViewController: NullViewControllerPresenting(),
             alerts: POSRefundOrderDetailsPaymentAlerts(
                 stateModel: stateModel,

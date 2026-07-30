@@ -5,27 +5,33 @@ import CocoaLumberjackSwift
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
-/// Async interface to the v4 refund endpoints (WC 10.9.0+ behind the server `rest-api-v4` flag).
-/// The v3 refund flows remain action-based via `RefundStore`; both paths can migrate here
-/// together once v3 is retired.
+/// Async interface to the server-calculated refund endpoints (`/wc/v3` preview and
+/// `compute_totals` create, WC 11.1.0+). The classic v3 refund flows remain action-based via
+/// `RefundStore`; both paths can migrate here together once the classic path is retired.
 ///
 public protocol RefundServiceProtocol {
     /// Requests a server-calculated refund preview. Read-only: nothing is persisted.
     /// On stores where the route is not registered the request fails with
-    /// `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back to v3.
+    /// `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back
+    /// to locally calculated refunds.
     func previewRefund(siteID: Int64,
                        orderID: Int64,
                        lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview
 
-    /// Creates a refund via the simplified v4 request (line items only, no client-calculated
-    /// `amount`; the server owns the math). On success the returned refund is upserted to
-    /// storage exactly like the v3 `RefundAction.createRefund` path.
+    /// Creates a refund via the `compute_totals` request (line items only; the server owns the
+    /// math unless an explicit `amount` override is supplied). On success the returned refund is
+    /// upserted to storage exactly like the classic `RefundAction.createRefund` path.
+    ///
+    /// SAFETY: must only be called after a successful `previewRefund` confirmed server-calculated
+    /// refund support for the site — older stores silently drop `compute_totals` and would create
+    /// a ghost zero-amount refund with restock from a quantity-only body.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundPreviewLineItem]) async throws -> Refund
+                      amount: String?,
+                      lineItems: [ComputedRefundLineItem]) async throws -> Refund
 }
 
 public final class RefundService: RefundServiceProtocol {
@@ -62,13 +68,15 @@ public final class RefundService: RefundServiceProtocol {
                              reason: String,
                              automaticRefund: Bool,
                              restockItems: Bool,
-                             lineItems: [RefundPreviewLineItem]) async throws -> Refund {
-        let refund = try await remote.createRefundV4(for: siteID,
-                                                     orderID: orderID,
-                                                     reason: reason,
-                                                     automaticRefund: automaticRefund,
-                                                     restockItems: restockItems,
-                                                     lineItems: lineItems)
+                             amount: String?,
+                             lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+        let refund = try await remote.createComputedRefund(for: siteID,
+                                                           orderID: orderID,
+                                                           reason: reason,
+                                                           apiRefund: automaticRefund,
+                                                           apiRestock: restockItems,
+                                                           amount: amount,
+                                                           lineItems: lineItems)
         await upserter.upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund])
         return refund
     }

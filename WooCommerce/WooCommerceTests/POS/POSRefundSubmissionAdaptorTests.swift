@@ -8,9 +8,9 @@ import WooFoundation
 @testable import PointOfSale
 @testable import WooCommerce
 
-/// Covers the v4 wire-in seams of `POSRefundSubmissionAdaptor`: review data built from the
-/// server-calculated preview vs the local fallback, the preview-failure error, and routing the
-/// submission through the simplified v4 create only when a preview was obtained.
+/// Covers the server-calculated wire-in seams of `POSRefundSubmissionAdaptor`: review data built
+/// from the server-calculated preview vs the local fallback, the preview-failure error, and routing
+/// the submission through the server-computed create only when a preview was obtained.
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSRefundSubmissionAdaptorTests {
@@ -18,7 +18,7 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
-    @Test func prepareReviewData_when_preview_is_server_calculated_then_shows_server_totals_and_submits_via_v4() async throws {
+    @Test func prepareReviewData_when_preview_is_server_calculated_then_shows_server_totals_and_submits_via_computed_create() async throws {
         // Given
         let harness = makeHarness(previewResult: .success(preview()))
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
@@ -40,13 +40,13 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: preparation.selectableItems,
                                                reason: "Damaged item")
 
-        // Then the simplified v4 create was dispatched instead of the v3 create
+        // Then the server-computed create was dispatched instead of the classic v3 create
         #expect(harness.service.createRefundLineItems?.isEmpty == false)
         #expect(harness.service.createRefundReason == "Damaged item")
-        #expect(harness.spy.dispatchedV3Create == false)
+        #expect(harness.spy.dispatchedClassicCreate == false)
     }
 
-    @Test func prepareReviewData_when_preview_falls_back_then_shows_local_totals_and_submits_via_v3() async throws {
+    @Test func prepareReviewData_when_preview_falls_back_then_shows_local_totals_and_submits_via_classic_create() async throws {
         // Given the flag is off, so the preview use case falls back without probing
         let harness = makeHarness(previewResult: nil, flagEnabled: false)
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
@@ -57,7 +57,7 @@ struct POSRefundSubmissionAdaptorTests {
                                                                      selectedItems: preparation.selectableItems,
                                                                      reason: nil)
 
-        // Then the review shows the locally calculated totals (unchanged v3 behaviour)
+        // Then the review shows the locally calculated totals (unchanged classic behaviour)
         #expect(reviewData.formattedItemsSubtotal == "$10.00")
         #expect(reviewData.formattedTax == "$1.00")
         #expect(reviewData.formattedRefundTotal == "$11.00")
@@ -68,8 +68,8 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: preparation.selectableItems,
                                                reason: nil)
 
-        // Then the v3 create was dispatched and the v4 create was not
-        #expect(harness.spy.dispatchedV3Create == true)
+        // Then the classic v3 create was dispatched and the computed create was not
+        #expect(harness.spy.dispatchedClassicCreate == true)
         #expect(harness.service.createRefundLineItems == nil)
     }
 
@@ -119,7 +119,7 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: selectionB,
                                                reason: nil)
 
-        // Then the v4 create carries selection B and the charged amount is the latest server total
+        // Then the computed create carries selection B and the charged amount is the latest server total
         #expect(harness.service.createRefundLineItems?.count == 1)
         #expect(harness.service.createRefundLineItems?.first?.quantity == 2)
         let createEventIndex = try #require(harness.analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.refundCreate.rawValue))
@@ -145,7 +145,7 @@ struct POSRefundSubmissionAdaptorTests {
 private extension POSRefundSubmissionAdaptorTests {
 
     final class RefundActionSpy {
-        var dispatchedV3Create = false
+        var dispatchedClassicCreate = false
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -160,7 +160,7 @@ private extension POSRefundSubmissionAdaptorTests {
         var manualPreviewResolution = false
         /// Captured `previewRefund` continuations when the harness uses manual resolution.
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
-        private(set) var createRefundLineItems: [RefundPreviewLineItem]?
+        private(set) var createRefundLineItems: [ComputedRefundLineItem]?
         private(set) var createRefundReason: String?
 
         func previewRefund(siteID: Int64,
@@ -184,7 +184,8 @@ private extension POSRefundSubmissionAdaptorTests {
                           reason: String,
                           automaticRefund: Bool,
                           restockItems: Bool,
-                          lineItems: [RefundPreviewLineItem]) async throws -> Refund {
+                          amount: String?,
+                          lineItems: [ComputedRefundLineItem]) async throws -> Refund {
             createRefundLineItems = lineItems
             createRefundReason = reason
             return .fake()
@@ -216,7 +217,7 @@ private extension POSRefundSubmissionAdaptorTests {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
             case .createRefund(_, _, let refund, let onCompletion):
-                spy.dispatchedV3Create = true
+                spy.dispatchedClassicCreate = true
                 onCompletion(refund, nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)

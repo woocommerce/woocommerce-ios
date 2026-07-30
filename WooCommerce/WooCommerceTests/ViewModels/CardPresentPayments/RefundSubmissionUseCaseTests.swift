@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import YosemiteTestHelpers
+import enum NetworkingCore.DotcomError
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -124,6 +125,69 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
+    }
+
+    func test_submitRefund_with_server_line_items_maps_rejection_code_to_RefundAPIError() throws {
+        // Given a computed create the server rejects because the order changed in the meantime
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(DotcomError.unknown(code: "refund_exceeds_remaining", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the typed rejection (with its user-facing copy) is relayed
+        XCTAssertEqual(result.failure as? RefundAPIError, .refundExceedsRemaining)
+    }
+
+    func test_submitRefund_with_server_line_items_keeps_unmapped_error_code_unchanged() throws {
+        // Given a rejection code that indicates a client bug rather than an actionable state change
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        let error = DotcomError.unknown(code: "invalid_line_item", message: nil, data: nil)
+        refundService.createRefundResult = .failure(error)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the original error keeps the generic path
+        XCTAssertNil(result.failure as? RefundAPIError)
+        XCTAssertEqual(result.failure as? DotcomError, error)
+    }
+
+    func test_submitRefund_with_classic_create_maps_rejection_code_to_RefundAPIError() throws {
+        // Given the classic v3 create fails with an actionable rejection code
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "order_not_refundable", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundAPIError, .orderNotRefundable)
     }
 
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {

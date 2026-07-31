@@ -9,7 +9,7 @@ struct SupportEscalationCoordinatorTests {
 
     // MARK: - Routing Tests
 
-    @Test func handleEscalation_when_supportAreaInfo_is_nil_then_shows_support_form() throws {
+    @Test func handleEscalation_when_supportAreaInfo_is_nil_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -23,10 +23,10 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func supportForm_when_no_bot_response_then_excludes_aiSkip_tag() {
+    @Test func supportForm_when_no_bot_response_then_excludes_aiSkip_tag() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -43,7 +43,7 @@ struct SupportEscalationCoordinatorTests {
         // When
         let viewModel = supportFormViewModel(from: navigationController)
         viewModel?.siteAddress = "https://example.com"
-        viewModel?.submitSupportRequest()
+        await viewModel?.submitSupportRequest()
 
         // Then
         #expect(zendesk.latestInvokedTags.contains("ai_skip") == false)
@@ -118,7 +118,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.isEmpty)
     }
 
-    @Test func handleEscalation_when_transcript_consent_contact_form_selected_then_shows_form_without_prefilled_transcript() throws {
+    @Test func handleEscalation_when_transcript_consent_contact_form_selected_then_shows_form_without_prefilled_transcript() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -148,7 +148,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(viewModel.subject == SupportFormViewModel.subject(for: .mobileApp))
 
         viewModel.description = "Additional details"
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
         #expect(zendesk.latestSupportRequest?.description == "Additional details\n\n\(expectedFormattedTranscript)")
     }
 
@@ -178,7 +178,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController } == false)
     }
 
-    @Test func handleEscalation_when_high_confidence_but_no_identity_then_shows_support_form() throws {
+    @Test func handleEscalation_when_high_confidence_but_no_identity_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: nil, email: nil, haveUserIdentity: false)
@@ -193,10 +193,10 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func handleEscalation_when_logged_out_then_support_form_retains_transcript() throws {
+    @Test func handleEscalation_when_logged_out_then_support_form_retains_transcript() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: nil, email: nil, haveUserIdentity: false)
@@ -217,10 +217,10 @@ struct SupportEscalationCoordinatorTests {
                                      siteAddress: "https://prelogin.example.com")
 
         // Then
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func handleEscalation_when_high_confidence_but_no_site_address_then_shows_support_form() throws {
+    @Test func handleEscalation_when_high_confidence_but_no_site_address_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -246,7 +246,7 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
     @Test func handleEscalation_when_preLogin_has_site_address_then_can_create_ticket_directly_after_transcript_consent() {
@@ -275,7 +275,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedCustomFields.values.contains("https://prelogin.example.com"))
     }
 
-    @Test func handleEscalation_when_medium_confidence_then_shows_support_form() throws {
+    @Test func handleEscalation_when_medium_confidence_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -290,10 +290,10 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func handleEscalation_when_low_confidence_then_shows_support_form() throws {
+    @Test func handleEscalation_when_low_confidence_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -308,10 +308,10 @@ struct SupportEscalationCoordinatorTests {
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
         #expect(navigationController.viewControllers.contains { $0 is SupportFormHostingController })
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func handleEscalation_when_transcript_is_whitespace_then_form_has_no_disclosure_or_empty_header() throws {
+    @Test func handleEscalation_when_transcript_is_whitespace_then_form_has_no_disclosure_or_empty_header() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.whenCreateSupportRequest(thenReturn: .success(()))
@@ -332,7 +332,7 @@ struct SupportEscalationCoordinatorTests {
         viewModel.subject = "Subject"
         viewModel.siteAddress = "https://example.com"
         viewModel.description = "Additional details"
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
         #expect(zendesk.latestSupportRequest?.description == "Additional details")
     }
 
@@ -459,7 +459,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(markTicketCreatedCalled == false)
     }
 
-    @Test func createTicketDirectly_when_request_fails_then_fallback_form_retains_same_transcript() throws {
+    @Test func createTicketDirectly_when_request_fails_then_fallback_form_retains_same_transcript() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -474,7 +474,7 @@ struct SupportEscalationCoordinatorTests {
                                      entryPoint: .helpAndSupport)
 
         // Then
-        try assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
     // MARK: - Analytics Tests
@@ -508,7 +508,7 @@ struct SupportEscalationCoordinatorTests {
         )
     }
 
-    @Test func supportFormCallback_when_succeeds_then_tracks_ticketCreated_with_supportForm_route() {
+    @Test func supportFormCallback_when_succeeds_then_tracks_ticketCreated_with_supportForm_route() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let zendesk = MockZendeskManager()
@@ -525,7 +525,7 @@ struct SupportEscalationCoordinatorTests {
         // When
         let viewModel = supportFormViewModel(from: navigationController)
         viewModel?.siteAddress = "https://example.com"
-        viewModel?.submitSupportRequest()
+        await viewModel?.submitSupportRequest()
 
         // Then
         assertLastProperties(
@@ -594,7 +594,7 @@ struct SupportEscalationCoordinatorTests {
         )
     }
 
-    @Test func supportFormCallback_when_fails_then_tracks_ticketCreationFailed_with_supportForm_route() {
+    @Test func supportFormCallback_when_fails_then_tracks_ticketCreationFailed_with_supportForm_route() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let zendesk = MockZendeskManager()
@@ -611,7 +611,7 @@ struct SupportEscalationCoordinatorTests {
         // When
         let viewModel = supportFormViewModel(from: navigationController)
         viewModel?.siteAddress = "https://example.com"
-        viewModel?.submitSupportRequest()
+        await viewModel?.submitSupportRequest()
 
         // Then
         assertLastProperties(
@@ -669,7 +669,7 @@ private extension SupportEscalationCoordinatorTests {
     }
 
     func assertSupportFormRetainsTranscript(_ navigationController: UINavigationController,
-                                            zendesk: MockZendeskManager) throws {
+                                            zendesk: MockZendeskManager) async throws {
         let viewModel = try #require(supportFormViewModel(from: navigationController))
         #expect(viewModel.shouldShowTranscriptDisclosure)
         #expect(viewModel.description.isEmpty)
@@ -677,7 +677,7 @@ private extension SupportEscalationCoordinatorTests {
         viewModel.subject = viewModel.subject.isEmpty ? "Subject" : viewModel.subject
         viewModel.siteAddress = viewModel.siteAddress.isEmpty ? "https://example.com" : viewModel.siteAddress
         viewModel.description = "Additional details"
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
         #expect(zendesk.latestSupportRequest?.description == "Additional details\n\n\(expectedFormattedTranscript)")
     }
 

@@ -1,12 +1,30 @@
 import Testing
 import Foundation
+import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// The report is a text artifact, so it is pinned by comparing the whole thing: that catches an omitted field, a
 /// lost section and a broken scope in one assertion, which per-field tests do not.
 ///
+/// Serialized because `SessionManager.testingInstance` is backed by a shared `UserDefaults` suite: tests here set
+/// a selected store, and in parallel they overwrite each other's.
 @MainActor
+@Suite(.serialized)
 struct MobileStatusReportProviderTests {
+
+    private let sessionManager: SessionManager
+    private let stores: MockStoresManager
+    private let storageManager: MockStorageManager
+
+    init() {
+        sessionManager = SessionManager.testingInstance
+        stores = MockStoresManager(sessionManager: sessionManager)
+        storageManager = MockStorageManager()
+        sessionManager.defaultSite = nil
+        sessionManager.defaultAccount = nil
+        sessionManager.defaultCredentials = nil
+    }
 
     @Test func report_contents() async {
         // Given, When
@@ -47,6 +65,10 @@ struct MobileStatusReportProviderTests {
         Woo push token ID: missing
         Background refresh: available
         Low Power Mode: false
+
+        ## Account & Stores (app-wide)
+        WPCom user ID: not logged in
+        Connected stores: 0
         """)
     }
 
@@ -72,7 +94,10 @@ private extension MobileStatusReportProviderTests {
 
     func makeProvider(pushNotesManager: PushNotesManager = MockPushNotificationsManager())
     -> MobileStatusReportProvider {
-        MobileStatusReportProvider(systemSnapshot: { .fixture() }, pushNotesManager: pushNotesManager)
+        MobileStatusReportProvider(systemSnapshot: { .fixture() },
+                                   pushNotesManager: pushNotesManager,
+                                   stores: stores,
+                                   storageManager: storageManager)
     }
 }
 

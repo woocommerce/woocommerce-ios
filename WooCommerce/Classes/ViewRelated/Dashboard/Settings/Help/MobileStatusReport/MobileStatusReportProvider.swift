@@ -1,4 +1,6 @@
 import Foundation
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report attached to support tickets and shown to merchants in Help & Support — the
 /// app-level counterpart to the server-side System Status Report, which carries no device or app information and
@@ -16,14 +18,22 @@ final class MobileStatusReportProvider {
 
     private let systemSnapshot: () async -> MobileStatusReportSystemSnapshot
     private let pushNotesManager: PushNotesManager
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
-                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
+        self.stores = stores
+        self.storageManager = storageManager
     }
 
-    func generateReport() async -> String {
+    /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
+    /// selected store when they are contacting us precisely because the app picked up the wrong one.
+    func generateReport(siteAddress: String? = nil) async -> String {
         let system = await systemSnapshot()
 
         var report = [Constants.heading, Constants.scopeLegend, Constants.fieldReference]
@@ -32,6 +42,7 @@ final class MobileStatusReportProvider {
         report += await section("## Device", scope: Constants.appWide) { self.deviceSection(system) }
         report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
         report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
+        report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
 
         return report.joined(separator: "\n")
     }
@@ -80,11 +91,42 @@ private extension MobileStatusReportProvider {
          entry("Background refresh", system.backgroundRefresh),
          entry("Low Power Mode", system.lowPowerMode)]
     }
+
+    func accountSection(_ siteAddress: String?) -> [String] {
+        let sites = allSites()
+        return [entry("WPCom user ID", stores.sessionManager.defaultAccount.map { String($0.userID) } ?? "not logged in"),
+                siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
+                entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    func allSites() -> [Site] {
+        fetched(ResultsController<StorageSite>(storageManager: storageManager,
+                                               sortedBy: [NSSortDescriptor(key: "name", ascending: true)]))
+    }
+
+    func fetched<T>(_ controller: ResultsController<T>) -> [T.ReadOnlyType] {
+        try? controller.performFetch()
+        return controller.fetchedObjects
+    }
+
+    /// Merchants often report a problem on a store other than the selected one. Only the selected store's plugins
+    /// have usually been fetched, so these lines carry no plugin versions.
+    func siteList(_ sites: [Site]) -> [String] {
+        guard sites.isNotEmpty else {
+            return []
+        }
+
+        return ["", "All connected sites:"] + sites.map { site in
+            entry(site.url.nilIfEmpty ?? Constants.unknown,
+                  "Plan: \(site.plan.nilIfEmpty ?? Constants.unknown) " +
+                  "Jetpack: installed=\(site.isJetpackThePluginInstalled) connected=\(site.isJetpackConnected)")
+        }
+    }
 
     /// Enough to compare against server logs, not enough to address the device.
     func redactedToken(_ token: String?) -> String {
@@ -128,6 +170,7 @@ extension MobileStatusReportProvider {
 
         static let appWide = "(app-wide)"
         static let sectionUnavailable = "Info not found"
+        static let unknown = "unknown"
     }
 }
 

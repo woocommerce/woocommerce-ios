@@ -98,3 +98,19 @@ notifications" with `provisional` here is usually receiving them and not seeing 
 
 Push registration is **not** in this section — it is keyed on a single store, so it is reported under Store
 Notifications along with the store it belongs to.
+
+## Account & Stores `(app-wide)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `WPCom user ID` | The logged-in WordPress.com account. | Numeric ID; `not logged in` — expected for application-password logins, which have no WPCom account |
+| `Address given in the form` | The store address the merchant typed into the support form. Present only when they typed one. | A URL |
+| `Connected stores` | How many stores the app knows about. | Integer |
+| `All connected sites:` | One line per store: `<url>: Plan: ... Jetpack: installed=... connected=...`. | — |
+
+`Address given in the form` is worth comparing against the selected store: when they differ, the merchant may be
+contacting us precisely because the app picked up the wrong store.
+
+The full store list is included because merchants often report a problem on a store other than the selected one.
+Only the selected store's plugin data has usually been fetched, so the per-site lines carry plan and Jetpack state
+but no plugin versions.

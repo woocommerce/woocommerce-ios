@@ -246,11 +246,15 @@ about something other than payments.
 | --- | --- | --- |
 | `POS tab visible` | Whether the POS tab is shown for this store. | `true`, `false`, `not evaluated` |
 | `POS launchable` | The last definite POS eligibility result from an online check. Indeterminate results, such as being offline, leave the previous value untouched. | `true`, `false`, `not evaluated` |
+| `Catalog strategy` | Whether POS decided to run on the local catalog or page products from the remote API. The decision cached the last time POS evaluated it — the live check refreshes on a cache miss, which can fetch, so the report does not run it. | `local catalog`, `remote API`, `not evaluated` |
+| `POS last opened` | When the merchant last opened POS for this store on this device. | ISO-8601 UTC instant; `never` |
 | `Local catalog products` | Products currently in the local catalog. | Integer |
 | `Local catalog variations` | Variations currently in the local catalog. | Integer |
 | `Local catalog full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never` |
 | `Local catalog incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never` |
 | `Local catalog` | Replaces the four catalog rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
+| `Catalog file blocked` | The store's host blocked the catalog file download. Recorded when a file sync fails with a blocked error, cleared when the file syncs successfully again. While `true`, syncs fall back to the slower paginated path — the merchant's fix is with their host. | `true`, `false` |
+| `Full sync on cellular allowed` | The merchant's per-store setting allowing catalog downloads over cellular data. `false` explains a catalog that only refreshes on WiFi. | `true`, `false` |
 
 The timestamps and counts cover the POS local catalog only — not general order or product sync. A catalog that has
 synced but holds zero products is a different problem from one that has never synced.

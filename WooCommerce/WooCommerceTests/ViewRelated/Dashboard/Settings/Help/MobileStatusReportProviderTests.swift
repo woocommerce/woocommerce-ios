@@ -45,6 +45,12 @@ struct MobileStatusReportProviderTests {
                 onCompletion(nil)
             case let .getPreferredInPersonPaymentGateway(_, onCompletion):
                 onCompletion(nil)
+            case let .getPOSLastOpenedDate(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSLocalCatalogCellularDataAllowed(_, onCompletion):
+                onCompletion(false)
+            case let .getPOSCatalogFileBlockedByHost(_, onCompletion):
+                onCompletion(false)
             default:
                 break
             }
@@ -160,10 +166,14 @@ struct MobileStatusReportProviderTests {
         ## Point of Sale (selected store: https://example.com)
         POS tab visible: true
         POS launchable: true
+        Catalog strategy: local catalog
+        POS last opened: 2023-11-13T22:13:20Z
         Local catalog products: 42
         Local catalog variations: 7
         Local catalog full sync: 2023-11-14T22:13:20Z
         Local catalog incremental sync: never
+        Catalog file blocked: false
+        Full sync on cellular allowed: true
         """))
     }
 
@@ -359,6 +369,12 @@ private extension MobileStatusReportProviderTests {
                 onCompletion("store-abc")
             case let .getPreferredInPersonPaymentGateway(_, onCompletion):
                 onCompletion(CardPresentPaymentsPlugin.wcPay.gatewayID)
+            case let .getPOSLastOpenedDate(_, onCompletion):
+                onCompletion(Date(timeIntervalSince1970: 1_699_913_600))
+            case let .getPOSLocalCatalogCellularDataAllowed(_, onCompletion):
+                onCompletion(true)
+            case let .getPOSCatalogFileBlockedByHost(_, onCompletion):
+                onCompletion(false)
             default:
                 break
             }
@@ -366,6 +382,7 @@ private extension MobileStatusReportProviderTests {
 
         posEligibilityService.cachedTabVisibility[1] = true
         posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        stores.testPOSCatalogEligibilityChecker = MockPOSLocalCatalogEligibilityService(cachedStates: [1: .eligible])
         posCatalogSettingsService.catalogInfoResult = .success(
             .init(productCount: 42,
                   variationCount: 7,

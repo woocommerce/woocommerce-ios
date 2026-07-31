@@ -204,9 +204,13 @@ private extension MobileStatusReportProvider {
 
         let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
         let launchable = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
-        let entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
-                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated)]
-            + (try await localCatalog(siteID: site.siteID))
+        var entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
+                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated),
+                       entry("Catalog strategy", await catalogStrategy(siteID: site.siteID)),
+                       entry("POS last opened", await posLastOpened(siteID: site.siteID))]
+        entries += try await localCatalog(siteID: site.siteID)
+        entries += [entry("Catalog file blocked", await catalogFileBlocked(siteID: site.siteID)),
+                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID))]
 
         guard tabVisible == false || launchable == false else {
             return entries
@@ -262,6 +266,45 @@ private extension MobileStatusReportProvider {
                 entry("Local catalog variations", String(info.variationCount)),
                 entry("Local catalog full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
                 entry("Local catalog incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never")]
+    }
+
+    /// The strategy as POS last decided it — the live check refreshes on a cache miss, which can fetch, so only
+    /// the cached decision is read. `not evaluated` means POS has not made the decision since launch.
+    func catalogStrategy(siteID: Int64) async -> String {
+        guard let checker = stores.posCatalogEligibilityChecker else {
+            return Constants.notEvaluated
+        }
+        switch await checker.cachedCatalogEligibility(for: siteID) {
+        case .eligible:
+            return "local catalog"
+        case .ineligible:
+            return "remote API"
+        case nil:
+            return Constants.notEvaluated
+        }
+    }
+
+    func posLastOpened(siteID: Int64) async -> String {
+        let date = await awaitedDispatch(fallback: Date?.none) { completion in
+            AppSettingsAction.getPOSLastOpenedDate(siteID: siteID, onCompletion: completion)
+        }
+        return date?.iso8601String ?? "never"
+    }
+
+    /// Recorded when a catalog file sync fails because the host blocked the file, cleared when it succeeds
+    /// again. `true` explains a store that keeps falling back to the slower paginated sync.
+    func catalogFileBlocked(siteID: Int64) async -> String {
+        let blocked = await awaitedDispatch(fallback: false) { completion in
+            AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: siteID, onCompletion: completion)
+        }
+        return String(blocked)
+    }
+
+    func fullSyncOnCellularAllowed(siteID: Int64) async -> String {
+        let allowed = await awaitedDispatch(fallback: false) { completion in
+            AppSettingsAction.getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: completion)
+        }
+        return String(allowed)
     }
 
     /// The names the Android report uses for the same plugins, so a Happiness Engineer can grep tickets from

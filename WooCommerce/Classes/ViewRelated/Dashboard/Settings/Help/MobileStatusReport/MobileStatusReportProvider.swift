@@ -76,26 +76,34 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     func generateReport(siteAddress: String?) async -> String {
         let system = await systemSnapshot()
 
+        var report = [Constants.heading, Constants.fieldReference]
+
+        report += await section("## App") { self.appSection(system) }
+        report += await section("## Device") { self.deviceSection(system) }
+        report += await section("## Connectivity") { self.connectivitySection(system) }
+        report += await section("## Notifications") { self.notificationsSection(system) }
+        report += await section("## Account & Stores") { self.accountSection(siteAddress) }
+        report += await section("## Feature Flags") { await self.featureFlagsSection() }
+        report += await section("## Experimental Features") { self.experimentalFeaturesSection() }
+
+        // Everything above describes the whole app on this device, everything below only the named store. The
+        // band says so once — the same format and position the Android report uses, so a ticket from either
+        // platform reads the same way, and a report with no store ends here as Android's does.
         let site = stores.sessionManager.defaultSite
-        let storeScope = site?.url.nilIfEmpty.map { "(selected store: \($0))" } ?? "(no store selected)"
+        report += ["", site.map { "# Selected store: \(storeLabel($0))" } ?? Constants.noStoreHeading]
 
-        var report = [Constants.heading, Constants.scopeLegend, Constants.fieldReference]
-
-        report += await section("## App", scope: Constants.appWide) { self.appSection(system) }
-        report += await section("## Device", scope: Constants.appWide) { self.deviceSection(system) }
-        report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
-        report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
-        report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
-        // App-wide sections first and the store-scoped block last, matching the Android report so a ticket
-        // from either platform reads in the same order.
-        report += await section("## Feature Flags", scope: Constants.appWide) { await self.featureFlagsSection() }
-        report += await section("## Experimental Features", scope: Constants.appWide) { self.experimentalFeaturesSection() }
-        report += await section("## Store Details", scope: storeScope) { await self.storeDetailsSection(site) }
-        report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
-        report += await section("## Payments", scope: storeScope) { await self.paymentsSection(site) }
-        report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
+        if let site {
+            report += await section("## Store Details") { await self.storeDetailsSection(site) }
+            report += await section("## Store Notifications") { self.storeNotificationsSection(site) }
+            report += await section("## Payments") { await self.paymentsSection(site) }
+            report += await section("## Point of Sale") { await self.pointOfSaleSection(site) }
+        }
 
         return report.joined(separator: "\n")
+    }
+
+    private func storeLabel(_ site: Site) -> String {
+        site.url.nilIfEmpty ?? site.name.nilIfEmpty ?? "site ID \(site.siteID)"
     }
 }
 
@@ -150,12 +158,8 @@ private extension MobileStatusReportProvider {
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
-    func storeDetailsSection(_ site: Site?) async -> [String] {
-        guard let site else {
-            return [Constants.noStore]
-        }
-
-        return [
+    func storeDetailsSection(_ site: Site) async -> [String] {
+        [
             // Blog ID is absent for every application-password store — exactly the population that files login
             // tickets — while Store ID is absent until the first successful system status fetch. One being unset
             // is normal; both being unset points at a store the app has never talked to successfully.
@@ -172,18 +176,11 @@ private extension MobileStatusReportProvider {
     /// The bare status. Why it is what it is depends on the token, the permission, a remote flag and the Woo
     /// version, all of which the report already carries — deriving a cause would be a second copy of the
     /// registration rules that starts stating confident nonsense as soon as the two drift.
-    func storeNotificationsSection(_ site: Site?) -> [String] {
-        guard let site else {
-            return [Constants.noStore]
-        }
-        return [entry("Push registration", pushRegistration(siteID: site.siteID))]
+    func storeNotificationsSection(_ site: Site) -> [String] {
+        [entry("Push registration", pushRegistration(siteID: site.siteID))]
     }
 
-    func paymentsSection(_ site: Site?) async -> [String] {
-        guard let site else {
-            return [Constants.noStore]
-        }
-
+    func paymentsSection(_ site: Site) async -> [String] {
         let plugins = sitePlugins(siteID: site.siteID)
         // An empty cache means nothing has fetched this store's plugin list yet, which would send triage the
         // opposite way from "not installed".
@@ -197,25 +194,21 @@ private extension MobileStatusReportProvider {
     /// Why POS is hidden or unlaunchable is deliberately not computed: the checks that decide it write these
     /// values as a side effect of evaluating, and a status report must not change what it reports. They log the
     /// reason, and that log is on the same ticket.
-    func pointOfSaleSection(_ site: Site?) async throws -> [String] {
-        guard let site else {
-            return [Constants.noStore]
-        }
-
+    func pointOfSaleSection(_ site: Site) async -> [String] {
         let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
         let launchable = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
         var entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
                        entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated),
                        entry("Catalog strategy", await catalogStrategy(siteID: site.siteID)),
                        entry("POS last opened", await posLastOpened(siteID: site.siteID))]
-        entries += try await localCatalog(siteID: site.siteID)
+        entries += await localCatalog(siteID: site.siteID)
         entries += [entry("Catalog file blocked", await catalogFileBlocked(siteID: site.siteID)),
                     entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID))]
 
         guard tabVisible == false || launchable == false else {
             return entries
         }
-        return entries + ["Reason is logged - search application_log.txt for the POS eligibility entries"]
+        return entries + [Constants.posReasonHint]
     }
 
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
@@ -224,9 +217,10 @@ private extension MobileStatusReportProvider {
         ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + (await remoteFeatureFlags())
     }
 
-    /// `BetaFeature` is the same list the settings screen renders, so a toggle added there appears here.
+    /// `BetaFeature` is the same list the settings screen renders, so a toggle added there appears here — and
+    /// the exhaustive switch in `reportName(of:)` then forces it to be given a report label.
     func experimentalFeaturesSection() -> [String] {
-        BetaFeature.allCases.map { entry($0.title, String(generalAppSettings.betaFeatureEnabled($0))) }
+        BetaFeature.allCases.map { entry(reportName(of: $0), String(generalAppSettings.betaFeatureEnabled($0))) }
     }
 }
 
@@ -256,16 +250,26 @@ private extension MobileStatusReportProvider {
 
     /// Counts sit alongside the timestamps because a catalog that has synced but holds no products is a different
     /// problem from one that has never synced.
-    func localCatalog(siteID: Int64) async throws -> [String] {
+    func localCatalog(siteID: Int64) async -> [String] {
         guard let posCatalogSettingsService else {
             return [entry("Local catalog", "\(Constants.notEvaluated) (the POS catalog database has not been opened since launch)")]
         }
 
-        let info = try await posCatalogSettingsService.loadCatalogInfo(for: siteID)
-        return [entry("Local catalog products", String(info.productCount)),
-                entry("Local catalog variations", String(info.variationCount)),
-                entry("Local catalog full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
-                entry("Local catalog incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never")]
+        do {
+            let info = try await posCatalogSettingsService.loadCatalogInfo(for: siteID)
+            return [entry("Local catalog products", String(info.productCount)),
+                    entry("Local catalog variations", String(info.variationCount)),
+                    entry("Local catalog full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
+                    entry("Local catalog incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never")]
+        } catch {
+            // Confined to these rows, matching the Android report's per-field degradation: the database read is
+            // the section's most failure-prone lookup, and the eligibility rows around it are still worth having.
+            DDLogError("⛔️ MobileStatusReportProvider: reading the POS catalog failed: \(error)")
+            return [entry("Local catalog products", Constants.unknown),
+                    entry("Local catalog variations", Constants.unknown),
+                    entry("Local catalog full sync", Constants.unknown),
+                    entry("Local catalog incremental sync", Constants.unknown)]
+        }
     }
 
     /// The strategy as POS last decided it — the live check refreshes on a cache miss, which can fetch, so only
@@ -278,7 +282,9 @@ private extension MobileStatusReportProvider {
         case .eligible:
             return "local catalog"
         case .ineligible:
-            return "remote API"
+            // `remote` and not `remote API`: the Android report calls the same strategy `remote`, and the value
+            // should grep the same across both platforms' tickets.
+            return "remote"
         case nil:
             return Constants.notEvaluated
         }
@@ -305,6 +311,20 @@ private extension MobileStatusReportProvider {
             AppSettingsAction.getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: completion)
         }
         return String(allowed)
+    }
+
+    /// Stable English labels, not `title`: that is localized UI copy, which would put translated keys in a
+    /// report Happiness Engineers grep in English. `Product add-ons` and `POS local catalog` are the labels the
+    /// Android report uses for its equivalent toggles.
+    func reportName(of feature: BetaFeature) -> String {
+        switch feature {
+        case .viewAddOns:
+            return "Product add-ons"
+        case .applicationPasswords:
+            return "Application passwords"
+        case .posLocalCatalog:
+            return "POS local catalog"
+        }
     }
 
     /// The names the Android report uses for the same plugins, so a Happiness Engineer can grep tickets from
@@ -402,8 +422,12 @@ private extension MobileStatusReportProvider {
                                                      sortedBy: []))
     }
 
+    /// Only stores running WooCommerce: the storage holds every site on the WPCom account, and the Android
+    /// report counts Woo stores, so the same merchant must not get two different counts on a cross-platform
+    /// ticket.
     func allSites() -> [Site] {
         fetched(ResultsController<StorageSite>(storageManager: storageManager,
+                                               matching: NSPredicate(format: "isWooCommerceActive == YES"),
                                                sortedBy: [NSSortDescriptor(key: "name", ascending: true)]))
     }
 
@@ -436,7 +460,7 @@ private extension MobileStatusReportProvider {
 
 private extension MobileStatusReportProvider {
 
-    func section(_ heading: String, scope: String, content: () async throws -> [String]) async -> [String] {
+    func section(_ heading: String, content: () async throws -> [String]) async -> [String] {
         let lines: [String]
         do {
             lines = try await content()
@@ -444,7 +468,7 @@ private extension MobileStatusReportProvider {
             DDLogError("⛔️ MobileStatusReportProvider: \(heading) unavailable: \(error)")
             lines = [Constants.sectionUnavailable]
         }
-        return ["", "\(heading) \(scope)"] + lines
+        return ["", heading] + lines
     }
 
     func entry(_ key: String, _ value: String) -> String {
@@ -480,22 +504,21 @@ extension MobileStatusReportProvider {
     enum Constants {
         static let heading = "### Mobile Status Report generated via the WooCommerce iOS app ###"
 
-        /// Spelled out in the report rather than left to be inferred: this is read by Happiness Engineers and by
-        /// merchants in Help & Support alike.
-        static let scopeLegend = "Scopes: \(appWide) values cover the whole app on this device. " +
-            "(selected store: ...) values cover only the named store."
-
         /// Field meanings live in the repository. Inline they would double the length of something attached to
         /// every ticket, for readers who already know the fields.
         static let fieldReference = "Field reference: " +
             "https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md"
 
-        static let appWide = "(app-wide)"
+        static let noStoreHeading = "# No store selected"
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
         static let notSet = "not set"
-        static let noStore = "Not applicable while no store is selected"
         static let notEvaluated = "not evaluated"
+
+        /// The quoted strings are the literal prefixes `POSTabVisibilityChecker` and `POSTabEligibilityChecker`
+        /// log with — keep the three in step.
+        static let posReasonHint = "Reason is logged - search application_log.txt for " +
+            "\"POS tab not visible\" or \"POS cannot be launched\""
 
         /// How long `awaitedDispatch` waits before degrading to its fallback.
         static let dispatchTimeout: TimeInterval = 1

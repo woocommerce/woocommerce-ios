@@ -8,7 +8,7 @@ import struct Storage.GeneralAppSettingsStorage
 @testable import WooCommerce
 
 /// The report is a text artifact, so most of it is pinned by comparing the whole thing: that catches an omitted
-/// field, a lost section and a broken scope in one assertion, which per-field tests do not.
+/// field, a lost section and a misplaced store band in one assertion, which per-field tests do not.
 ///
 /// The Feature Flags and Experimental Features bodies are redacted from those comparisons — they enumerate
 /// `FeatureFlag.allCases` and `BetaFeature.allCases`, so an inline expectation would fail on every unrelated PR
@@ -64,14 +64,13 @@ struct MobileStatusReportProviderTests {
         // Then
         #expect(redactingEnumeratedSections(report) == """
         ### Mobile Status Report generated via the WooCommerce iOS app ###
-        Scopes: (app-wide) values cover the whole app on this device. (selected store: ...) values cover only the named store.
         Field reference: https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md
 
-        ## App (app-wide)
+        ## App
         Version: 21.3 (2103003)
         Build: appStore
 
-        ## Device (app-wide)
+        ## Device
         Model: iPhone17,1
         OS: iOS 18.4
         Free space: 12.40 GB
@@ -79,12 +78,12 @@ struct MobileStatusReportProviderTests {
         Device locale: en-US
         App language: en-GB
 
-        ## Connectivity (app-wide)
+        ## Connectivity
         Network type: WiFi or Ethernet
         Expensive connection: false
         Low Data Mode: false
 
-        ## Notifications (app-wide)
+        ## Notifications
         APNs environment: production
         Authorization status: authorized
         Alerts: enabled
@@ -97,27 +96,17 @@ struct MobileStatusReportProviderTests {
         Background refresh: available
         Low Power Mode: false
 
-        ## Account & Stores (app-wide)
+        ## Account & Stores
         WPCom user ID: not logged in
         Connected stores: 0
 
-        ## Feature Flags (app-wide)
+        ## Feature Flags
         <redacted>
 
-        ## Experimental Features (app-wide)
+        ## Experimental Features
         <redacted>
 
-        ## Store Details (no store selected)
-        Not applicable while no store is selected
-
-        ## Store Notifications (no store selected)
-        Not applicable while no store is selected
-
-        ## Payments (no store selected)
-        Not applicable while no store is selected
-
-        ## Point of Sale (no store selected)
-        Not applicable while no store is selected
+        # No store selected
         """)
     }
 
@@ -131,7 +120,7 @@ struct MobileStatusReportProviderTests {
 
         // Then
         #expect(redactingEnumeratedSections(report).contains("""
-        ## Account & Stores (app-wide)
+        ## Account & Stores
         WPCom user ID: 12345
         Address given in the form: https://typed.example.com
         Connected stores: 2
@@ -140,13 +129,15 @@ struct MobileStatusReportProviderTests {
         https://example.com: Plan: business-bundle Jetpack: installed=true connected=true
         https://other.example.com: Plan: unknown Jetpack: installed=false connected=false
 
-        ## Feature Flags (app-wide)
+        ## Feature Flags
         <redacted>
 
-        ## Experimental Features (app-wide)
+        ## Experimental Features
         <redacted>
 
-        ## Store Details (selected store: https://example.com)
+        # Selected store: https://example.com
+
+        ## Store Details
         Blog ID: 1
         Store ID: store-abc
         Auth method: WPCom
@@ -154,16 +145,16 @@ struct MobileStatusReportProviderTests {
         Plan: business-bundle
         Woo core version: 9.4.2
 
-        ## Store Notifications (selected store: https://example.com)
+        ## Store Notifications
         Push registration: REGISTERED_BOTH
 
-        ## Payments (selected store: https://example.com)
+        ## Payments
         WooPayments: active 8.1.0
         Stripe extension: installed, not active 7.0.0
         In-person payments plugin: WooPayments 8.1.0
         In-person payments onboarding: not evaluated (the merchant has not opened a payments screen since launch)
 
-        ## Point of Sale (selected store: https://example.com)
+        ## Point of Sale
         POS tab visible: true
         POS launchable: true
         Catalog strategy: local catalog
@@ -236,13 +227,16 @@ struct MobileStatusReportProviderTests {
         let available = await makeProvider().generateReport()
 
         // Then
-        #expect(hidden.contains("Reason is logged - search application_log.txt for the POS eligibility entries"))
+        #expect(hidden.contains("Reason is logged - search application_log.txt for \"POS tab not visible\" or \"POS cannot be launched\""))
         #expect(!available.contains("Reason is logged"))
     }
 
-    @Test func a_failing_section_degrades_without_taking_the_report_with_it() async {
+    /// Matching the Android report's per-field degradation: the eligibility rows around the catalog read
+    /// survive it failing, and `unknown` keeps an unreadable catalog distinct from an empty or unsynced one.
+    @Test func a_failing_catalog_read_degrades_its_own_rows_without_taking_the_section_with_it() async {
         // Given
         sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posEligibilityService.cachedTabVisibility[1] = true
         posCatalogSettingsService.catalogInfoResult = .failure(MockError.anyError)
 
         // When
@@ -250,10 +244,16 @@ struct MobileStatusReportProviderTests {
 
         // Then
         #expect(report.contains("""
-        ## Point of Sale (selected store: https://example.com)
-        Info not found
+        POS tab visible: true
+        POS launchable: not evaluated
         """))
-        #expect(report.contains("## Experimental Features"))
+        #expect(report.contains("""
+        Local catalog products: unknown
+        Local catalog variations: unknown
+        Local catalog full sync: unknown
+        Local catalog incremental sync: unknown
+        Catalog file blocked: false
+        """))
     }
 
     // MARK: - Feature flags
@@ -316,7 +316,9 @@ struct MobileStatusReportProviderTests {
         // Then
         let lines = section("## Experimental Features", in: report)
         #expect(lines.count == BetaFeature.allCases.count)
-        #expect(lines.contains("\(BetaFeature.viewAddOns.title): true"))
+        // The stable English report label, not `BetaFeature.title`: that is localized UI copy, and a report
+        // generated on a non-English device must still carry greppable English keys.
+        #expect(lines.contains("Product add-ons: true"))
     }
 }
 
@@ -352,10 +354,12 @@ private extension MobileStatusReportProviderTests {
 
         try await insert(sites: [Yosemite.Site.fake().copy(siteID: 1, name: "A", url: "https://example.com",
                                                            plan: "business-bundle",
-                                                           isJetpackThePluginInstalled: true, isJetpackConnected: true),
+                                                           isJetpackThePluginInstalled: true, isJetpackConnected: true,
+                                                           isWooCommerceActive: true),
                                  Yosemite.Site.fake().copy(siteID: 2, name: "B", url: "https://other.example.com",
                                                            plan: "",
-                                                           isJetpackThePluginInstalled: false, isJetpackConnected: false)],
+                                                           isJetpackThePluginInstalled: false, isJetpackConnected: false,
+                                                           isWooCommerceActive: true)],
                          plugins: [SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce/woocommerce", version: "9.4.2"),
                                    SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce-payments/woocommerce-payments",
                                                           status: .active, version: "8.1.0"),
@@ -409,10 +413,12 @@ private extension MobileStatusReportProviderTests {
     func redactingEnumeratedSections(_ report: String) -> String {
         ["## Feature Flags", "## Experimental Features"].reduce(report) { report, heading in
             let lines = report.components(separatedBy: "\n")
-            guard let start = lines.firstIndex(where: { $0.hasPrefix(heading + " ") }) else {
+            guard let start = lines.firstIndex(of: heading) else {
                 return report
             }
-            let body = Array(lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") })
+            // Sections end at the next `## ` section heading or the `# ` selected-store band — but not at the
+            // `### ` subsection headings inside the Feature Flags body.
+            let body = Array(lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") && !$0.hasPrefix("# ") })
             // The blank line before the next heading belongs to the layout, not the section, so it survives.
             let separators = Array(repeating: "", count: body.reversed().prefix { $0.isEmpty }.count)
             return (lines[...start] + ["<redacted>"] + separators + lines[(start + 1 + body.count)...])
@@ -422,10 +428,10 @@ private extension MobileStatusReportProviderTests {
 
     func section(_ heading: String, in report: String) -> [String] {
         let lines = report.components(separatedBy: "\n")
-        guard let start = lines.firstIndex(where: { $0.hasPrefix(heading + " ") }) else {
+        guard let start = lines.firstIndex(of: heading) else {
             return []
         }
-        return lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") }.filter { !$0.isEmpty }
+        return lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") && !$0.hasPrefix("# ") }.filter { !$0.isEmpty }
     }
 }
 

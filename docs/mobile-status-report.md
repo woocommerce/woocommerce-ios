@@ -11,22 +11,19 @@ network, and on the login screen it is the only device information a ticket woul
 
 ## Reading the report
 
-Every section heading states whose values it describes:
+The report is split in two by a single band line. Everything **above** `# Selected store: <url>` covers the whole
+app on this device, whichever store is selected; everything **below** it covers only the named store — the one the
+app had selected when the ticket was filed. When the app had no store selected the band reads `# No store
+selected` and the report ends there: the store sections have nothing to describe.
 
-| Scope | Meaning |
-| --- | --- |
-| `(app-wide)` | Covers the whole app on this device, whichever store is selected. |
-| `(selected store: <url>)` | Covers only the named store — the one the app had selected when the ticket was filed. |
-| `(no store selected)` | The app had no store selected, so the section has nothing to report. |
-
-The distinction matters for merchants with more than one store: an `(app-wide)` value cannot explain a problem
+The distinction matters for merchants with more than one store: an app-wide value cannot explain a problem
 that happens on one store and not another, and a store-scoped value says nothing about the merchant's other
 stores.
 
-Section order and field names match the Android app's Mobile Status Report wherever the concept exists on both
-platforms — app-wide sections first, the store-scoped block last — so tickets from either platform read the same
-way and can be searched with the same terms. Fields that only one platform has are a deliberate difference, not
-drift.
+Structure, section order and field names match the Android app's Mobile Status Report wherever the concept exists
+on both platforms — the same band line splits its report in the same place — so tickets from either platform read
+the same way and can be searched with the same terms. Fields that only one platform has are a deliberate
+difference, not drift.
 
 Three conventions apply throughout:
 
@@ -44,7 +41,7 @@ Several values are snapshots of an in-memory cache rather than persisted state, 
 session` when the app has not yet had cause to compute them. That is a meaningful answer in itself — it says the
 merchant has not visited the relevant screen since launching the app — and it is called out per field below.
 
-## App `(app-wide)`
+## App
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -53,7 +50,7 @@ merchant has not visited the relevant screen since launching the app — and it 
 
 `alpha` is worth noticing on its own: internal builds can carry changes that are not in the released app.
 
-## Device `(app-wide)`
+## Device
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -64,7 +61,7 @@ merchant has not visited the relevant screen since launching the app — and it 
 | `Device locale` | The device's locale. | BCP-47 tag, e.g. `en-US`; `unknown` |
 | `App language` | The in-app language, which can differ from the device locale because iOS allows a per-app language override. | BCP-47 tag, e.g. `en-GB`; `unknown` |
 
-## Connectivity `(app-wide)`
+## Connectivity
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -78,7 +75,7 @@ was filed — not necessarily the moment the reported problem happened.
 Carrier and network country are not reported. `CTCarrier` was deprecated in iOS 16 and returns a placeholder, and
 there is no replacement API.
 
-## Notifications `(app-wide)`
+## Notifications
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -104,13 +101,13 @@ notifications" with `provisional` here is usually receiving them and not seeing 
 Push registration is **not** in this section — it is keyed on a single store, so it is reported under Store
 Notifications along with the store it belongs to.
 
-## Account & Stores `(app-wide)`
+## Account & Stores
 
 | Field | Meaning | Values |
 | --- | --- | --- |
 | `WPCom user ID` | The logged-in WordPress.com account. | Numeric ID; `not logged in` — expected for application-password logins, which have no WPCom account |
 | `Address given in the form` | The store address the merchant typed into the support form. Present only when they typed one. | A URL |
-| `Connected stores` | How many stores the app knows about. | Integer |
+| `Connected stores` | How many Woo stores the app knows about. Sites on the WPCom account that do not run WooCommerce are excluded from the count and the list, matching what the Android report counts. | Integer |
 | `All connected stores:` | One line per store: `<url>: Plan: ... Jetpack: installed=... connected=...`. | — |
 
 `Address given in the form` is worth comparing against the selected store: when they differ, the merchant may be
@@ -120,7 +117,7 @@ The full store list is included because merchants often report a problem on a st
 Only the selected store's plugin data has usually been fetched, so the per-site lines carry plan and Jetpack state
 but no plugin versions.
 
-## Feature Flags `(app-wide)`
+## Feature Flags
 
 The app has two independent flag systems and the report covers both, in separate subsections. They hold different
 flags: most flags live in exactly one of the two.
@@ -156,9 +153,12 @@ local flag, where one exists with the same name.
 `not returned by server` means the fetch succeeded but this key was absent from the response — usually a flag that
 has been retired on the backend but not yet removed from the app.
 
-## Experimental Features `(app-wide)`
+## Experimental Features
 
 The beta toggles from **Settings → Experimental Features**, listed automatically from the app's own list of them.
+The keys are fixed English report labels, not the localized titles the settings screen shows, so they read and
+grep the same whatever language the merchant's device is in. `Product add-ons` and `POS local catalog` are the
+labels the Android report uses for its equivalent toggles.
 
 | Field | Values |
 | --- | --- |
@@ -169,7 +169,7 @@ The beta toggles from **Settings → Experimental Features**, listed automatical
 A toggle the merchant has never seen reports its default. Some toggles are only shown for eligible stores, so a
 `false` here does not always mean the merchant chose `false`.
 
-## Store Details `(selected store: <url>)`
+## Store Details
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -188,7 +188,7 @@ has never talked to successfully.
 `CP=true` means a Jetpack Connection Package site: connected to WordPress.com without the full Jetpack plugin
 installed. Some features that assume a full Jetpack install are unavailable on these stores.
 
-## Store Notifications `(selected store: <url>)`
+## Store Notifications
 
 | Field | Meaning | Values |
 | --- | --- | --- |
@@ -222,7 +222,7 @@ report. The app does not persist them; they are read from the store on demand, a
 network call on the ticket creation path. Ask the merchant to open **Settings → Notifications**, or read the
 settings server-side.
 
-## Payments `(selected store: <url>)`
+## Payments
 
 Read from the plugin cache and app settings, never fetched, so that ticket creation stays off the network.
 
@@ -240,18 +240,18 @@ store's plugin list yet.
 `not evaluated in this session` is likewise not a fault. It is the expected value for a merchant whose ticket is
 about something other than payments.
 
-## Point of Sale `(selected store: <url>)`
+## Point of Sale
 
 | Field | Meaning | Values |
 | --- | --- | --- |
 | `POS tab visible` | Whether the POS tab is shown for this store. | `true`, `false`, `not evaluated` |
 | `POS launchable` | The last definite POS eligibility result from an online check. Indeterminate results, such as being offline, leave the previous value untouched. | `true`, `false`, `not evaluated` |
-| `Catalog strategy` | Whether POS decided to run on the local catalog or page products from the remote API. The decision cached the last time POS evaluated it — the live check refreshes on a cache miss, which can fetch, so the report does not run it. | `local catalog`, `remote API`, `not evaluated` |
+| `Catalog strategy` | Whether POS decided to run on the local catalog or page products from the remote API. The decision cached the last time POS evaluated it — the live check refreshes on a cache miss, which can fetch, so the report does not run it. | `local catalog`, `remote`, `not evaluated` |
 | `POS last opened` | When the merchant last opened POS for this store on this device. | ISO-8601 UTC instant; `never` |
-| `Local catalog products` | Products currently in the local catalog. | Integer |
-| `Local catalog variations` | Variations currently in the local catalog. | Integer |
-| `Local catalog full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never` |
-| `Local catalog incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never` |
+| `Local catalog products` | Products currently in the local catalog. | Integer; `unknown` when the catalog database could not be read — a different finding from `0`, which is a readable but empty catalog |
+| `Local catalog variations` | Variations currently in the local catalog. | Integer; `unknown` as above |
+| `Local catalog full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never`; `unknown` as above |
+| `Local catalog incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never`; `unknown` as above |
 | `Local catalog` | Replaces the four catalog rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
 | `Catalog file blocked` | The store's host blocked the catalog file download. Recorded when a file sync fails with a blocked error, cleared when the file syncs successfully again. While `true`, syncs fall back to the slower paginated path — the merchant's fix is with their host. | `true`, `false` |
 | `Full sync on cellular allowed` | The merchant's per-store setting allowing catalog downloads over cellular data. `false` explains a catalog that only refreshes on WiFi. | `true`, `false` |
@@ -261,5 +261,5 @@ synced but holds zero products is a different problem from one that has never sy
 
 When `POS tab visible` or `POS launchable` is `false` the section points at `application_log.txt` instead of
 giving a reason. That is deliberate: the checks that decide visibility and launchability write these values as a
-side effect of evaluating, and a status report must not change what it reports. Search the attached log for the
-POS eligibility entries.
+side effect of evaluating, and a status report must not change what it reports. The checks log why as they
+decide — search the attached log for `POS tab not visible` or `POS cannot be launched`.

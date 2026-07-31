@@ -204,3 +204,17 @@ synced but holds zero products is a different problem from one that has never sy
 When either value is `false` the section points at `application_log.txt` instead of giving a reason. That is
 deliberate: the checks that decide visibility and eligibility write these values as a side effect of evaluating,
 and a status report must not change what it reports. Search the attached log for the POS eligibility entries.
+
+## Feature Flags `(app-wide)`
+
+The app has two independent flag systems and the report covers both, in separate subsections. They hold different
+flags: most flags live in exactly one of the two.
+
+### Local flags
+
+Compiled into the build and resolved from the build configuration. Every flag is listed, not only the enabled
+ones: an absent key would be ambiguous between disabled, renamed and deleted.
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `<flag name>` | Effective value. | `true`, `false` |

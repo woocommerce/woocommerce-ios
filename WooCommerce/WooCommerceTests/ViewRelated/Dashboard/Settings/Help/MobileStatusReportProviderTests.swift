@@ -1,4 +1,5 @@
 import Testing
+import Experiments
 import Foundation
 import Yosemite
 import YosemiteTestHelpers
@@ -28,12 +29,14 @@ struct MobileStatusReportProviderTests {
         sessionManager.defaultCredentials = nil
     }
 
+    /// The Feature Flags body is redacted from the comparison: it enumerates `FeatureFlag.allCases`, so an inline
+    /// expectation would fail on every unrelated PR that adds a flag.
     @Test func report_contents() async {
         // Given, When
         let report = await makeProvider().generateReport()
 
         // Then
-        #expect(report == """
+        #expect(redactingEnumeratedSections(report) == """
         ### Mobile Status Report generated via the WooCommerce iOS app ###
         Scopes: (app-wide) values cover the whole app on this device. (selected store: ...) values cover only the named store.
         Field reference: https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md
@@ -83,6 +86,9 @@ struct MobileStatusReportProviderTests {
 
         ## Point of Sale (no store selected)
         Not applicable while no store is selected
+
+        ## Feature Flags (app-wide)
+        <redacted>
         """)
     }
 
@@ -168,6 +174,22 @@ struct MobileStatusReportProviderTests {
 
 private extension MobileStatusReportProviderTests {
 
+    /// Replaces the body of the section that enumerates every known flag, so an unrelated addition to that list
+    /// does not fail a whole-report comparison.
+    func redactingEnumeratedSections(_ report: String) -> String {
+        ["## Feature Flags"].reduce(report) { report, heading in
+            let lines = report.components(separatedBy: "\n")
+            guard let start = lines.firstIndex(where: { $0.hasPrefix(heading + " ") }) else {
+                return report
+            }
+            let body = Array(lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") })
+            // The blank line before the next heading belongs to the layout, not the section, so it survives.
+            let separators = Array(repeating: "", count: body.reversed().prefix { $0.isEmpty }.count)
+            return (lines[...start] + ["<redacted>"] + separators + lines[(start + 1 + body.count)...])
+                .joined(separator: "\n")
+        }
+    }
+
     func makeProvider(pushNotesManager: PushNotesManager = MockPushNotificationsManager())
     -> MobileStatusReportProvider {
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
@@ -176,7 +198,8 @@ private extension MobileStatusReportProviderTests {
                                    storageManager: storageManager,
                                    onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
                                    posEligibilityService: posEligibilityService,
-                                   posCatalogSettingsService: posCatalogSettingsService)
+                                   posCatalogSettingsService: posCatalogSettingsService,
+                                   featureFlagService: MockFeatureFlagService())
     }
 }
 

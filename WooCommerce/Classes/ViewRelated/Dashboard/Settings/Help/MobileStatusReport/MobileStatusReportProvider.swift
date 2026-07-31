@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import enum Networking.WooConstants
@@ -27,6 +28,7 @@ final class MobileStatusReportProvider {
     /// `nil` when the POS database has not been opened this session. The report does not open it: spinning up a
     /// database to describe it would change what is being described.
     private let posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
+    private let featureFlagService: FeatureFlagService
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
@@ -35,7 +37,8 @@ final class MobileStatusReportProvider {
                      onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
                      posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
                      posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
-                        = MobileStatusReportProvider.makeCatalogSettingsService()) {
+                        = MobileStatusReportProvider.makeCatalogSettingsService(),
+                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
@@ -43,6 +46,7 @@ final class MobileStatusReportProvider {
         self.onboardingStateCache = onboardingStateCache
         self.posEligibilityService = posEligibilityService
         self.posCatalogSettingsService = posCatalogSettingsService
+        self.featureFlagService = featureFlagService
     }
 
     nonisolated private static func makeCatalogSettingsService() -> POSCatalogSettingsServiceProtocol? {
@@ -69,6 +73,7 @@ final class MobileStatusReportProvider {
         report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
         report += await section("## Payments", scope: storeScope) { self.paymentsSection(site) }
         report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
+        report += await section("## Feature Flags", scope: Constants.appWide) { self.featureFlagsSection() }
 
         return report.joined(separator: "\n")
     }
@@ -188,11 +193,21 @@ private extension MobileStatusReportProvider {
         }
         return entries + ["Reason is logged - search application_log.txt for the POS eligibility entries"]
     }
+
+    /// Every flag is listed, not only the enabled ones: an absent key would be ambiguous between disabled,
+    /// renamed and deleted.
+    func featureFlagsSection() -> [String] {
+        ["", "### Local flags"] + localFeatureFlags()
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    func localFeatureFlags() -> [String] {
+        FeatureFlag.allCases.map { entry(String(describing: $0), String(featureFlagService.isFeatureFlagEnabled($0))) }
+    }
 
     /// Counts sit alongside the timestamps because a catalog that has synced but holds no products is a different
     /// problem from one that has never synced.

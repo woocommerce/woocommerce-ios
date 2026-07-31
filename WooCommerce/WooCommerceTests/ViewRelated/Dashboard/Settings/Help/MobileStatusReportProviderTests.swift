@@ -2,6 +2,7 @@ import Testing
 import Experiments
 import Foundation
 import Networking
+import struct Storage.GeneralAppSettingsStorage
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -20,6 +21,7 @@ struct MobileStatusReportProviderTests {
     private let storageManager: MockStorageManager
     private let posEligibilityService = MockPOSEligibilityService()
     private let posCatalogSettingsService = MockPOSCatalogSettingsService()
+    private let appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
 
     init() {
         sessionManager = SessionManager.testingInstance
@@ -90,6 +92,9 @@ struct MobileStatusReportProviderTests {
 
         ## Feature Flags (app-wide)
         <redacted>
+
+        ## Experimental Features (app-wide)
+        <redacted>
         """)
     }
 
@@ -126,6 +131,19 @@ struct MobileStatusReportProviderTests {
         #expect(report.contains("Remote values in effect: true"))
         #expect(report.contains("pointOfSale: true (remote)"))
         #expect(report.contains("qrCodeLogin: not returned by server"))
+    }
+
+    @Test func experimental_features_lists_every_toggle_from_the_settings_screen() async throws {
+        // Given
+        try appSettings.setValue(true, for: BetaFeature.viewAddOns.settingsKey)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        let lines = section("## Experimental Features", in: report)
+        #expect(lines.count == BetaFeature.allCases.count)
+        #expect(lines.contains("\(BetaFeature.viewAddOns.title): true"))
     }
 
     @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {
@@ -210,10 +228,10 @@ struct MobileStatusReportProviderTests {
 
 private extension MobileStatusReportProviderTests {
 
-    /// Replaces the body of the section that enumerates every known flag, so an unrelated addition to that list
-    /// does not fail a whole-report comparison.
+    /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated
+    /// addition to either list does not fail a whole-report comparison.
     func redactingEnumeratedSections(_ report: String) -> String {
-        ["## Feature Flags"].reduce(report) { report, heading in
+        ["## Feature Flags", "## Experimental Features"].reduce(report) { report, heading in
             let lines = report.components(separatedBy: "\n")
             guard let start = lines.firstIndex(where: { $0.hasPrefix(heading + " ") }) else {
                 return report
@@ -235,7 +253,16 @@ private extension MobileStatusReportProviderTests {
                                    onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
                                    posEligibilityService: posEligibilityService,
                                    posCatalogSettingsService: posCatalogSettingsService,
-                                   featureFlagService: MockFeatureFlagService())
+                                   featureFlagService: MockFeatureFlagService(),
+                                   generalAppSettings: appSettings)
+    }
+
+    func section(_ heading: String, in report: String) -> [String] {
+        let lines = report.components(separatedBy: "\n")
+        guard let start = lines.firstIndex(where: { $0.hasPrefix(heading + " ") }) else {
+            return []
+        }
+        return lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") }.filter { !$0.isEmpty }
     }
 }
 

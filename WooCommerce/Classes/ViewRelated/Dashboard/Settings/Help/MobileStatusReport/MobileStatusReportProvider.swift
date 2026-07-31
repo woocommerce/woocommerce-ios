@@ -3,6 +3,7 @@ import Foundation
 import Yosemite
 import enum Networking.RemoteFeatureFlag
 import enum Networking.WooConstants
+import struct Storage.GeneralAppSettingsStorage
 import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report attached to support tickets and shown to merchants in Help & Support — the
@@ -30,6 +31,7 @@ final class MobileStatusReportProvider {
     /// database to describe it would change what is being described.
     private let posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
     private let featureFlagService: FeatureFlagService
+    private let generalAppSettings: GeneralAppSettingsStorage
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
@@ -39,7 +41,8 @@ final class MobileStatusReportProvider {
                      posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
                      posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
                         = MobileStatusReportProvider.makeCatalogSettingsService(),
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
@@ -48,6 +51,7 @@ final class MobileStatusReportProvider {
         self.posEligibilityService = posEligibilityService
         self.posCatalogSettingsService = posCatalogSettingsService
         self.featureFlagService = featureFlagService
+        self.generalAppSettings = generalAppSettings
     }
 
     nonisolated private static func makeCatalogSettingsService() -> POSCatalogSettingsServiceProtocol? {
@@ -75,6 +79,7 @@ final class MobileStatusReportProvider {
         report += await section("## Payments", scope: storeScope) { self.paymentsSection(site) }
         report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
         report += await section("## Feature Flags", scope: Constants.appWide) { self.featureFlagsSection() }
+        report += await section("## Experimental Features", scope: Constants.appWide) { self.experimentalFeaturesSection() }
 
         return report.joined(separator: "\n")
     }
@@ -199,6 +204,11 @@ private extension MobileStatusReportProvider {
     /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
     func featureFlagsSection() -> [String] {
         ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + remoteFeatureFlags()
+    }
+
+    /// `BetaFeature` is the same list the settings screen renders, so a toggle added there appears here.
+    func experimentalFeaturesSection() -> [String] {
+        BetaFeature.allCases.map { entry($0.title, String(generalAppSettings.betaFeatureEnabled($0))) }
     }
 }
 

@@ -240,3 +240,16 @@ local flag, where one exists with the same name.
 
 `not returned by server` means the fetch succeeded but this key was absent from the response — usually a flag that
 has been retired on the backend but not yet removed from the app.
+
+## Experimental Features `(app-wide)`
+
+The beta toggles from **Settings → Experimental Features**, listed automatically from the app's own list of them.
+
+| Field | Values |
+| --- | --- |
+| `Product add-ons` | `true`, `false` |
+| `Application passwords` | `true`, `false` |
+| `POS local catalog` | `true`, `false` |
+
+A toggle the merchant has never seen reports its default. Some toggles are only shown for eligible stores, so a
+`false` here does not always mean the merchant chose `false`.

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import enum Networking.WooConstants
 import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report attached to support tickets and shown to merchants in Help & Support — the
@@ -36,6 +37,9 @@ final class MobileStatusReportProvider {
     func generateReport(siteAddress: String? = nil) async -> String {
         let system = await systemSnapshot()
 
+        let site = stores.sessionManager.defaultSite
+        let storeScope = site?.url.nilIfEmpty.map { "(selected store: \($0))" } ?? "(no store selected)"
+
         var report = [Constants.heading, Constants.scopeLegend, Constants.fieldReference]
 
         report += await section("## App", scope: Constants.appWide) { self.appSection(system) }
@@ -43,6 +47,7 @@ final class MobileStatusReportProvider {
         report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
         report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
         report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
+        report += await section("## Store Details", scope: storeScope) { self.storeDetailsSection(site) }
 
         return report.joined(separator: "\n")
     }
@@ -98,11 +103,69 @@ private extension MobileStatusReportProvider {
                 siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
+
+    func storeDetailsSection(_ site: Site?) -> [String] {
+        guard let site else {
+            return [Constants.noStore]
+        }
+
+        return [
+            // Blog ID is absent for every application-password store — exactly the population that files login
+            // tickets — while Store ID is absent until the first successful system status fetch. One being unset
+            // is normal; both being unset points at a store the app has never talked to successfully.
+            entry("Blog ID", blogID(site)),
+            entry("Store ID", storeID(site)),
+            entry("Auth method", authMethod()),
+            entry("Jetpack", "installed=\(site.isJetpackThePluginInstalled) " +
+                  "connected=\(site.isJetpackConnected) CP=\(site.isJetpackCPConnected)"),
+            entry("Plan", site.plan.nilIfEmpty ?? Constants.unknown),
+            entry("Woo core version", wooCoreVersion(siteID: site.siteID) ?? Constants.unknown)
+        ]
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    func blogID(_ site: Site) -> String {
+        site.siteID == Networking.WooConstants.placeholderSiteID ?
+            "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
+    }
+
+    /// `AppSettingsStore` resolves this inline, which is what lets the report stay synchronous here. Were that to
+    /// change, an unanswered dispatch would report "not set" for a store that has an ID.
+    func storeID(_ site: Site) -> String {
+        var storedID: String?
+        stores.dispatch(AppSettingsAction.getStoreID(siteID: site.siteID) { storedID = $0 })
+        return storedID?.nilIfEmpty ?? "\(Constants.notSet) (no store system status has been fetched yet)"
+    }
+
+    /// The credentials say what the app holds, the request mode says how it uses them, and a Jetpack site can be
+    /// driven by either.
+    func authMethod() -> String {
+        switch stores.sessionManager.defaultCredentials {
+        case .wpcom:
+            return "WPCom"
+        case .wporg:
+            return "SiteCredentials"
+        case .applicationPassword:
+            return stores.requestAuthenticationMode == .appPasswordsWithJetpack ?
+                "ApplicationPasswordsWithJetpack" : "ApplicationPasswords"
+        case .none:
+            return "not logged in"
+        }
+    }
+
+    func wooCoreVersion(siteID: Int64) -> String? {
+        sitePlugins(siteID: siteID).first { $0.plugin == "woocommerce/woocommerce" }?.version.nilIfEmpty
+    }
+
+    func sitePlugins(siteID: Int64) -> [SitePlugin] {
+        fetched(ResultsController<StorageSitePlugin>(storageManager: storageManager,
+                                                     matching: NSPredicate(format: "siteID == %lld", siteID),
+                                                     sortedBy: []))
+    }
 
     func allSites() -> [Site] {
         fetched(ResultsController<StorageSite>(storageManager: storageManager,
@@ -171,6 +234,8 @@ extension MobileStatusReportProvider {
         static let appWide = "(app-wide)"
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
+        static let notSet = "not set"
+        static let noStore = "Not applicable while no store is selected"
     }
 }
 

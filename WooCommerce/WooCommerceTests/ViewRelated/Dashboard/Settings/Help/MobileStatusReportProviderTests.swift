@@ -69,6 +69,9 @@ struct MobileStatusReportProviderTests {
         ## Account & Stores (app-wide)
         WPCom user ID: not logged in
         Connected stores: 0
+
+        ## Store Details (no store selected)
+        Not applicable while no store is selected
         """)
     }
 

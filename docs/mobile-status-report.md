@@ -114,3 +114,22 @@ contacting us precisely because the app picked up the wrong store.
 The full store list is included because merchants often report a problem on a store other than the selected one.
 Only the selected store's plugin data has usually been fetched, so the per-site lines carry plan and Jetpack state
 but no plugin versions.
+
+## Store Details `(selected store: <url>)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Blog ID` | The WordPress.com blog ID. | Numeric; `not set (stores connected with application passwords do not have one)` — the app uses a `-1` placeholder internally for these |
+| `Store ID` | The store's own identifier, learned from a `system_status` fetch and persisted per store. | String; `not set (no store system status has been fetched yet)` |
+| `Auth method` | How the app authenticates. | `WPCom`, `ApplicationPasswords`, `ApplicationPasswordsWithJetpack`, `SiteCredentials` |
+| `Jetpack` | Jetpack install and connection state. | e.g. `installed=true connected=true CP=false` |
+| `Plan` | The store's plan slug. | e.g. `business-bundle`; `unknown` |
+| `Woo core version` | Cached WooCommerce plugin version. | e.g. `9.4.2`; `unknown` when nothing has fetched plugins for this store yet |
+
+`Blog ID` and `Store ID` fail under opposite conditions, which is why both appear: `Blog ID` is absent for every
+application-password store — exactly the population that files login tickets — while `Store ID` is absent until
+the first successful system status fetch. One being unset is normal; both being unset points at a store the app
+has never talked to successfully.
+
+`CP=true` means a Jetpack Connection Package site: connected to WordPress.com without the full Jetpack plugin
+installed. Some features that assume a full Jetpack install are unavailable on these stores.

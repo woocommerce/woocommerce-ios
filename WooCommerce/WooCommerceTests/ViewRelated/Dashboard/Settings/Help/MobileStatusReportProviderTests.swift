@@ -29,6 +29,11 @@ struct MobileStatusReportProviderTests {
         Screen: 393x852 pt (phone)
         Device locale: en-US
         App language: en-GB
+
+        ## Connectivity (app-wide)
+        Network type: WiFi or Ethernet
+        Expensive connection: false
+        Low Data Mode: false
         """)
     }
 }
@@ -51,6 +56,9 @@ private extension MobileStatusReportSystemSnapshot {
                                          freeSpace: "12.40 GB",
                                          screen: "393x852 pt (phone)",
                                          deviceLocale: "en-US",
-                                         appLanguage: "en-GB")
+                                         appLanguage: "en-GB",
+                                         networkType: "WiFi or Ethernet",
+                                         expensiveConnection: "false",
+                                         lowDataMode: "false")
     }
 }

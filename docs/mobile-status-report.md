@@ -58,3 +58,17 @@ merchant has not visited the relevant screen since launching the app — and it 
 | `Screen` | Screen size in points, with the interface idiom. Distinguishes phone from tablet, which matters for POS. | e.g. `393x852 pt (phone)` |
 | `Device locale` | The device's locale. | BCP-47 tag, e.g. `en-US`; `unknown` |
 | `App language` | The in-app language, which can differ from the device locale because iOS allows a per-app language override. | BCP-47 tag, e.g. `en-GB`; `unknown` |
+
+## Connectivity `(app-wide)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Network type` | The connection in use. | `WiFi or Ethernet`, `Cellular`, `Other`, `Not reachable`, `Unknown` |
+| `Expensive connection` | iOS considers the current path expensive — typically cellular or a personal hotspot. Background work is deprioritised on such paths. | `true`, `false`; `unknown` before the first network update |
+| `Low Data Mode` | Low Data Mode is on for the current network. Unlike a device-wide setting, this is per-network: it can be on for the merchant's cellular plan and off on their office WiFi. | `true`, `false`; `unknown` before the first network update |
+
+The network fields describe the path at the moment the report was generated, which for a ticket is the moment it
+was filed — not necessarily the moment the reported problem happened.
+
+Carrier and network country are not reported. `CTCarrier` was deprecated in iOS 16 and returns a placeholder, and
+there is no replacement API.

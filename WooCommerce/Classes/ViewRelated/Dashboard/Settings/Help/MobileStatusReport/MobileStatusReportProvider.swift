@@ -27,6 +27,7 @@ final class MobileStatusReportProvider {
 
         report += await section("## App", scope: Constants.appWide) { self.appSection(system) }
         report += await section("## Device", scope: Constants.appWide) { self.deviceSection(system) }
+        report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
 
         return report.joined(separator: "\n")
     }
@@ -48,6 +49,12 @@ private extension MobileStatusReportProvider {
          entry("Screen", system.screen),
          entry("Device locale", system.deviceLocale),
          entry("App language", system.appLanguage)]
+    }
+
+    func connectivitySection(_ system: MobileStatusReportSystemSnapshot) -> [String] {
+        [entry("Network type", system.networkType),
+         entry("Expensive connection", system.expensiveConnection),
+         entry("Low Data Mode", system.lowDataMode)]
     }
 }
 

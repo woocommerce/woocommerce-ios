@@ -6,6 +6,20 @@ import enum Networking.WooConstants
 import struct Storage.GeneralAppSettingsStorage
 import protocol Storage.StorageManagerType
 
+/// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
+/// report instead of assembling the provider's dependencies.
+protocol MobileStatusReportProviding {
+    /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
+    /// selected store when they are contacting us precisely because the app picked up the wrong one.
+    func generateReport(siteAddress: String?) async -> String
+}
+
+extension MobileStatusReportProviding {
+    func generateReport() async -> String {
+        await generateReport(siteAddress: nil)
+    }
+}
+
 /// Builds the Mobile Status Report attached to support tickets and shown to merchants in Help & Support — the
 /// app-level counterpart to the server-side System Status Report, which carries no device or app information and
 /// is empty on tickets filed from the login screen.
@@ -18,7 +32,7 @@ import protocol Storage.StorageManagerType
 ///   is trying to reach support and must never be the reason they cannot.
 ///
 @MainActor
-final class MobileStatusReportProvider {
+final class MobileStatusReportProvider: MobileStatusReportProviding {
 
     private let systemSnapshot: () async -> MobileStatusReportSystemSnapshot
     private let pushNotesManager: PushNotesManager
@@ -59,9 +73,7 @@ final class MobileStatusReportProvider {
     }
 
 
-    /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
-    /// selected store when they are contacting us precisely because the app picked up the wrong one.
-    func generateReport(siteAddress: String? = nil) async -> String {
+    func generateReport(siteAddress: String?) async -> String {
         let system = await systemSnapshot()
 
         let site = stores.sessionManager.defaultSite

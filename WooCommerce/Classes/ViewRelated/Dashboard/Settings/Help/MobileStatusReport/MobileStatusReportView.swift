@@ -29,10 +29,10 @@ struct MobileStatusReportView: View {
 
     @State private var report: String = ""
 
-    private let reportProvider: MobileStatusReportProvider
+    private let reportProvider: MobileStatusReportProviding
     private let analytics: Analytics
 
-    init(reportProvider: MobileStatusReportProvider = MobileStatusReportProvider(),
+    init(reportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.reportProvider = reportProvider
         self.analytics = analytics

@@ -64,7 +64,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Builds the app-level status report attached to every ticket.
     ///
-    private let mobileStatusReportProvider: MobileStatusReportProvider
+    private let mobileStatusReportProvider: MobileStatusReportProviding
 
     /// Handles the communication with Tracks..
     ///
@@ -123,7 +123,7 @@ public final class SupportFormViewModel: ObservableObject {
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-         mobileStatusReportProvider: MobileStatusReportProvider = MobileStatusReportProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
          transcript: String? = nil,

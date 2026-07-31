@@ -361,11 +361,13 @@ struct SupportEscalationCoordinatorTests {
         let attachmentProvider = DefaultSupportRequestAttachmentProvider(
             applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
         )
+        let reportProvider = MockMobileStatusReportProvider()
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = makeCoordinator(
             navigationController: navigationController,
             additionalAttachmentsProvider: { [diagnostic] },
             attachmentProvider: attachmentProvider,
+            mobileStatusReportProvider: reportProvider,
             zendesk: zendesk
         )
 
@@ -379,6 +381,8 @@ struct SupportEscalationCoordinatorTests {
         // Then
         let request = try #require(zendesk.latestSupportRequest)
         #expect(request.attachments.map(\.filename) == ["connectivitytest_log.txt", "application_log.txt", "mobile_status_report.txt"])
+        #expect(request.customFields[MobileStatusReportZendesk.customFieldID] == reportProvider.report)
+        #expect(reportProvider.generateReportSiteAddresses == ["https://example.com"])
     }
 
     // MARK: - Ticket Persistence Tests
@@ -401,6 +405,7 @@ struct SupportEscalationCoordinatorTests {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             zendeskProvider: zendesk,
             stores: stores,
             transcriptConsentPresenter: Self.sendTicketConsentPresenter
@@ -432,6 +437,7 @@ struct SupportEscalationCoordinatorTests {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             zendeskProvider: zendesk,
             stores: stores,
             transcriptConsentPresenter: Self.sendTicketConsentPresenter
@@ -463,6 +469,7 @@ struct SupportEscalationCoordinatorTests {
         let navigationController = UINavigationController(rootViewController: UIViewController())
         let coordinator = SupportEscalationCoordinator(
             navigationController: navigationController,
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             zendeskProvider: zendesk,
             stores: stores,
             transcriptConsentPresenter: Self.sendTicketConsentPresenter
@@ -656,6 +663,7 @@ private extension SupportEscalationCoordinatorTests {
     func makeCoordinator(navigationController: UINavigationController? = nil,
                          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
                          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
+                         mobileStatusReportProvider: MobileStatusReportProviding = MockMobileStatusReportProvider(),
                          zendesk: MockZendeskManager,
                          analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
                          stores: StoresManager = MockStoresManager(
@@ -667,6 +675,7 @@ private extension SupportEscalationCoordinatorTests {
             navigationController: navigationController,
             additionalAttachmentsProvider: additionalAttachmentsProvider,
             attachmentProvider: attachmentProvider,
+            mobileStatusReportProvider: mobileStatusReportProvider,
             zendeskProvider: zendesk,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             stores: stores,

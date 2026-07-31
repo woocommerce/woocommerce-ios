@@ -79,7 +79,10 @@ final class SupportFormViewModelTests: XCTestCase {
         // Given
         let sourceTag = "custom-tag"
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(), sourceTag: sourceTag, zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             sourceTag: sourceTag,
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         viewModel.area = viewModel.areas.first
 
         // When
@@ -134,7 +137,8 @@ final class SupportFormViewModelTests: XCTestCase {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         XCTAssertFalse(viewModel.shouldShowSuccessAlert)
 
         // When
@@ -150,7 +154,8 @@ final class SupportFormViewModelTests: XCTestCase {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
         // When
@@ -166,7 +171,8 @@ final class SupportFormViewModelTests: XCTestCase {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.selectArea(area)
@@ -211,6 +217,7 @@ final class SupportFormViewModelTests: XCTestCase {
         let transcript = "Transcript header\n\nTest transcript"
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
                                              zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
                                              transcript: transcript)
         viewModel.area = viewModel.areas.first
         viewModel.subject = "Subject"
@@ -230,6 +237,7 @@ final class SupportFormViewModelTests: XCTestCase {
         let zendesk = MockZendeskManager()
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
                                              zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
                                              transcript: " \n ")
         viewModel.area = viewModel.areas.first
         viewModel.description = "Additional details"
@@ -251,9 +259,11 @@ final class SupportFormViewModelTests: XCTestCase {
         let attachmentProvider = DefaultSupportRequestAttachmentProvider(
             applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
         )
+        let reportProvider = MockMobileStatusReportProvider()
         let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
                                              zendeskProvider: zendesk,
                                              attachmentProvider: attachmentProvider,
+                                             mobileStatusReportProvider: reportProvider,
                                              attachments: [diagnostic])
         viewModel.area = viewModel.areas.first
 
@@ -263,6 +273,8 @@ final class SupportFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(zendesk.latestSupportRequest?.attachments.map(\.filename),
                        ["connectivitytest_log.txt", "application_log.txt", "mobile_status_report.txt"])
+        XCTAssertEqual(zendesk.latestSupportRequest?.customFields[MobileStatusReportZendesk.customFieldID],
+                       reportProvider.report)
     }
 }
 

@@ -22,7 +22,7 @@ final class SupportEscalationCoordinator {
     private weak var navigationController: UINavigationController?
     private let additionalAttachmentsProvider: () -> [ZendeskAttachment]
     private let attachmentProvider: SupportRequestAttachmentProviding
-    private let mobileStatusReportProvider: MobileStatusReportProvider
+    private let mobileStatusReportProvider: MobileStatusReportProviding
     private let zendeskProvider: ZendeskManagerProtocol
     private let analytics: Analytics
     private let stores: StoresManager
@@ -54,7 +54,7 @@ final class SupportEscalationCoordinator {
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-         mobileStatusReportProvider: MobileStatusReportProvider = MobileStatusReportProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
@@ -129,6 +129,7 @@ final class SupportEscalationCoordinator {
             additionalTags: additionalTags(for: supportAreaInfo),
             zendeskProvider: zendeskProvider,
             attachmentProvider: attachmentProvider,
+            mobileStatusReportProvider: mobileStatusReportProvider,
             attachments: attachments,
             transcript: transcript,
             preselectedArea: supportAreaInfo?.area,

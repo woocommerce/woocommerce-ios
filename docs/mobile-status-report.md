@@ -72,3 +72,25 @@ was filed — not necessarily the moment the reported problem happened.
 
 Carrier and network country are not reported. `CTCarrier` was deprecated in iOS 16 and returns a placeholder, and
 there is no replacement API.
+
+## Notifications `(app-wide)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `APNs environment` | Which Apple push environment the build registers with. Tokens are not interchangeable between the two, so a mismatch against server logs explains push that works in one build and not another. | `sandbox` for development builds; `production` for internal, TestFlight and App Store builds |
+| `Authorization status` | The notification permission, reported as the raw iOS state rather than a boolean. | `authorized`, `denied`, `notDetermined`, `provisional`, `ephemeral` |
+| `Alerts` | Whether banners/alerts are allowed. | `enabled`, `disabled`, `not supported` |
+| `Sounds` | Whether notification sounds are allowed. A merchant who cannot hear new-order alerts but sees them has this disabled. | `enabled`, `disabled`, `not supported` |
+| `Lock screen` | Whether notifications appear on the lock screen. | `enabled`, `disabled`, `not supported` |
+| `Time-sensitive` | Whether the app may send time-sensitive notifications, which break through Focus modes. | `enabled`, `disabled`, `not supported` |
+| `Scheduled summary` | Whether the merchant has put the app into Notification Summary. Notifications are then held and delivered in batches at set times. | `enabled`, `disabled`, `not supported` |
+
+`Authorization status` is the single permission gate on iOS — there is no separate app-level toggle beneath it, and
+no per-channel notification settings, so neither is reported.
+
+`provisional` is easy to misread: the app may deliver quietly, without asking permission first. Notifications
+arrive but land only in Notification Centre, with no banner and no sound. A merchant reporting "I get no
+notifications" with `provisional` here is usually receiving them and not seeing them.
+
+Push registration is **not** in this section — it is keyed on a single store, so it is reported under Store
+Notifications along with the store it belongs to.

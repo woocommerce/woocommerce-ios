@@ -28,6 +28,7 @@ final class MobileStatusReportProvider {
         report += await section("## App", scope: Constants.appWide) { self.appSection(system) }
         report += await section("## Device", scope: Constants.appWide) { self.deviceSection(system) }
         report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
+        report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
 
         return report.joined(separator: "\n")
     }
@@ -55,6 +56,20 @@ private extension MobileStatusReportProvider {
         [entry("Network type", system.networkType),
          entry("Expensive connection", system.expensiveConnection),
          entry("Low Data Mode", system.lowDataMode)]
+    }
+
+    /// Push registration is the one notification value keyed on a single store, so it is reported with that store
+    /// rather than among these device-level settings.
+    func notificationsSection(_ system: MobileStatusReportSystemSnapshot) -> [String] {
+        [entry("APNs environment", system.apnsEnvironment),
+         // The raw state, because `provisional` means the app delivers quietly — notifications arrive with no
+         // banner and no sound, which a merchant reads as none arriving at all.
+         entry("Authorization status", system.authorizationStatus),
+         entry("Alerts", system.alerts),
+         entry("Sounds", system.sounds),
+         entry("Lock screen", system.lockScreen),
+         entry("Time-sensitive", system.timeSensitive),
+         entry("Scheduled summary", system.scheduledSummary)]
     }
 }
 

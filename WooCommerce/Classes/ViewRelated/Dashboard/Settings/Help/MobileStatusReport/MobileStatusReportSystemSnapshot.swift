@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import UserNotifications
 import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectivityStatus
@@ -26,13 +27,24 @@ struct MobileStatusReportSystemSnapshot: Equatable {
     let networkType: String
     let expensiveConnection: String
     let lowDataMode: String
+
+    let apnsEnvironment: String
+    let authorizationStatus: String
+    let alerts: String
+    let sounds: String
+    let lockScreen: String
+    let timeSensitive: String
+    let scheduledSummary: String
 }
 
 extension MobileStatusReportSystemSnapshot {
 
     @MainActor
-    static func current(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) async -> Self {
-        MobileStatusReportSystemSnapshot(version: "\(Bundle.main.marketingVersion) (\(Bundle.main.buildNumber))",
+    static func current(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+                        notificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current()) async -> Self {
+        let notifications = await notificationCenter.notificationSettings()
+
+        return MobileStatusReportSystemSnapshot(version: "\(Bundle.main.marketingVersion) (\(Bundle.main.buildNumber))",
                                          build: BuildConfiguration.current.rawValue,
                                          model: UIDevice.current.modelIdentifier,
                                          os: "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)",
@@ -46,7 +58,14 @@ extension MobileStatusReportSystemSnapshot {
                                          expensiveConnection: connectivityObserver.isCurrentPathExpensive
                                             .map(String.init) ?? unknown,
                                          lowDataMode: connectivityObserver.isCurrentPathConstrained
-                                            .map(String.init) ?? unknown)
+                                            .map(String.init) ?? unknown,
+                                         apnsEnvironment: apnsEnvironment,
+                                         authorizationStatus: String(describing: notifications.authorizationStatus),
+                                         alerts: notifications.alertSetting.description,
+                                         sounds: notifications.soundSetting.description,
+                                         lockScreen: notifications.lockScreenSetting.description,
+                                         timeSensitive: notifications.timeSensitiveSetting.description,
+                                         scheduledSummary: notifications.scheduledDeliverySetting.description)
     }
 }
 
@@ -71,6 +90,16 @@ private extension MobileStatusReportSystemSnapshot {
         return "\(Int(size.width))x\(Int(size.height)) pt (\(String(describing: UIDevice.current.userInterfaceIdiom)))"
     }
 
+    /// Read back from the build rather than the entitlement, which has no runtime API. Tokens are not
+    /// interchangeable between the two environments, so a mismatch against server logs explains push that works
+    /// in one build and not another.
+    static var apnsEnvironment: String {
+        #if DEBUG
+        return "sandbox"
+        #else
+        return "production"
+        #endif
+    }
 }
 
 private extension ConnectivityStatus {
@@ -90,3 +119,17 @@ private extension ConnectivityStatus {
     }
 }
 
+private extension UNNotificationSetting {
+    var description: String {
+        switch self {
+        case .notSupported:
+            return "not supported"
+        case .disabled:
+            return "disabled"
+        case .enabled:
+            return "enabled"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}

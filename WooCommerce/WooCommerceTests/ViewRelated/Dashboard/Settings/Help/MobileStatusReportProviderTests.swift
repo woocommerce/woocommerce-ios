@@ -34,6 +34,15 @@ struct MobileStatusReportProviderTests {
         Network type: WiFi or Ethernet
         Expensive connection: false
         Low Data Mode: false
+
+        ## Notifications (app-wide)
+        APNs environment: production
+        Authorization status: authorized
+        Alerts: enabled
+        Sounds: enabled
+        Lock screen: enabled
+        Time-sensitive: enabled
+        Scheduled summary: disabled
         """)
     }
 }
@@ -59,6 +68,13 @@ private extension MobileStatusReportSystemSnapshot {
                                          appLanguage: "en-GB",
                                          networkType: "WiFi or Ethernet",
                                          expensiveConnection: "false",
-                                         lowDataMode: "false")
+                                         lowDataMode: "false",
+                                         apnsEnvironment: "production",
+                                         authorizationStatus: "authorized",
+                                         alerts: "enabled",
+                                         sounds: "enabled",
+                                         lockScreen: "enabled",
+                                         timeSensitive: "enabled",
+                                         scheduledSummary: "disabled")
     }
 }

@@ -21,6 +21,14 @@ struct MobileStatusReportProviderTests {
         ## App (app-wide)
         Version: 21.3 (2103003)
         Build: appStore
+
+        ## Device (app-wide)
+        Model: iPhone17,1
+        OS: iOS 18.4
+        Free space: 12.40 GB
+        Screen: 393x852 pt (phone)
+        Device locale: en-US
+        App language: en-GB
         """)
     }
 }
@@ -36,6 +44,13 @@ private extension MobileStatusReportProviderTests {
 
 private extension MobileStatusReportSystemSnapshot {
     static func fixture() -> Self {
-        MobileStatusReportSystemSnapshot(version: "21.3 (2103003)", build: "appStore")
+        MobileStatusReportSystemSnapshot(version: "21.3 (2103003)",
+                                         build: "appStore",
+                                         model: "iPhone17,1",
+                                         os: "iOS 18.4",
+                                         freeSpace: "12.40 GB",
+                                         screen: "393x852 pt (phone)",
+                                         deviceLocale: "en-US",
+                                         appLanguage: "en-GB")
     }
 }

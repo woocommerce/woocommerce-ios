@@ -47,3 +47,14 @@ merchant has not visited the relevant screen since launching the app — and it 
 | `Build` | Which build configuration the app is running. | `appStore`, `alpha` (internal distribution), `localDeveloper` |
 
 `alpha` is worth noticing on its own: internal builds can carry changes that are not in the released app.
+
+## Device `(app-wide)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Model` | Hardware model identifier. Not the marketing name — `iPhone17,1` rather than `iPhone 16 Pro`. Look it up when the exact device matters. | e.g. `iPhone17,1`, `iPad14,3` |
+| `OS` | iOS release. | e.g. `iOS 18.4` |
+| `Free space` | Available storage on the boot volume. | e.g. `12.40 GB` |
+| `Screen` | Screen size in points, with the interface idiom. Distinguishes phone from tablet, which matters for POS. | e.g. `393x852 pt (phone)` |
+| `Device locale` | The device's locale. | BCP-47 tag, e.g. `en-US`; `unknown` |
+| `App language` | The in-app language, which can differ from the device locale because iOS allows a per-app language override. | BCP-47 tag, e.g. `en-GB`; `unknown` |

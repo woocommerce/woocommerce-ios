@@ -36,6 +36,19 @@ struct MobileStatusReportProviderTests {
         sessionManager.defaultSite = nil
         sessionManager.defaultAccount = nil
         sessionManager.defaultCredentials = nil
+
+        // The provider's `awaitedDispatch` waits out its timeout when nothing answers an action, so the
+        // storage-backed lookups are answered "nothing stored" up front; tests override as needed.
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getStoreID(_, onCompletion):
+                onCompletion(nil)
+            case let .getPreferredInPersonPaymentGateway(_, onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
     }
 
     @Test func report_when_no_store_is_selected() async {
@@ -262,6 +275,19 @@ struct MobileStatusReportProviderTests {
         #expect(report.contains("Remote values in effect: true"))
         #expect(report.contains("pointOfSale: true (remote)"))
         #expect(report.contains("qrCodeLogin: not returned by server"))
+    }
+
+    /// The deauthenticated stores manager drops actions for stores it does not run, and a dropped dispatch has
+    /// no completion coming. The report must degrade to the fallback value rather than wait on it forever.
+    @Test func an_unanswered_dispatch_degrades_instead_of_stalling_the_report() async {
+        // Given: nothing ever answers the feature-flag action
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { _ in }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values in effect: false (nothing fetched this session, or the last fetch aged out)"))
     }
 
     @Test func experimental_features_lists_every_toggle_from_the_settings_screen() async throws {

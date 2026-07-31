@@ -74,11 +74,11 @@ final class MobileStatusReportProvider {
         report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
         report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
         report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
-        report += await section("## Store Details", scope: storeScope) { self.storeDetailsSection(site) }
+        report += await section("## Store Details", scope: storeScope) { await self.storeDetailsSection(site) }
         report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
-        report += await section("## Payments", scope: storeScope) { self.paymentsSection(site) }
+        report += await section("## Payments", scope: storeScope) { await self.paymentsSection(site) }
         report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
-        report += await section("## Feature Flags", scope: Constants.appWide) { self.featureFlagsSection() }
+        report += await section("## Feature Flags", scope: Constants.appWide) { await self.featureFlagsSection() }
         report += await section("## Experimental Features", scope: Constants.appWide) { self.experimentalFeaturesSection() }
 
         return report.joined(separator: "\n")
@@ -136,7 +136,7 @@ private extension MobileStatusReportProvider {
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
-    func storeDetailsSection(_ site: Site?) -> [String] {
+    func storeDetailsSection(_ site: Site?) async -> [String] {
         guard let site else {
             return [Constants.noStore]
         }
@@ -146,7 +146,7 @@ private extension MobileStatusReportProvider {
             // tickets — while Store ID is absent until the first successful system status fetch. One being unset
             // is normal; both being unset points at a store the app has never talked to successfully.
             entry("Blog ID", blogID(site)),
-            entry("Store ID", storeID(site)),
+            entry("Store ID", await storeID(site)),
             entry("Auth method", authMethod()),
             entry("Jetpack", "installed=\(site.isJetpackThePluginInstalled) " +
                   "connected=\(site.isJetpackConnected) CP=\(site.isJetpackCPConnected)"),
@@ -165,7 +165,7 @@ private extension MobileStatusReportProvider {
         return [entry("Push registration", pushRegistration(siteID: site.siteID))]
     }
 
-    func paymentsSection(_ site: Site?) -> [String] {
+    func paymentsSection(_ site: Site?) async -> [String] {
         guard let site else {
             return [Constants.noStore]
         }
@@ -177,7 +177,7 @@ private extension MobileStatusReportProvider {
             [entry("Payment plugins", "unknown (none cached for this store)")] :
             CardPresentPaymentsPlugin.allCases.map { entry($0.pluginName, state(of: $0, in: plugins)) }
 
-        return installState + inPersonPayments(site, plugins: plugins)
+        return installState + (await inPersonPayments(site, plugins: plugins))
     }
 
     /// Why POS is hidden or unlaunchable is deliberately not computed: the checks that decide it write these
@@ -202,8 +202,8 @@ private extension MobileStatusReportProvider {
 
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
     /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
-    func featureFlagsSection() -> [String] {
-        ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + remoteFeatureFlags()
+    func featureFlagsSection() async -> [String] {
+        ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + (await remoteFeatureFlags())
     }
 
     /// `BetaFeature` is the same list the settings screen renders, so a toggle added there appears here.
@@ -222,11 +222,11 @@ private extension MobileStatusReportProvider {
 
     /// What the app is acting on, which is not the same as what is in the cache: an expired cache is not
     /// consulted, so listing it would describe behaviour the app is not exhibiting.
-    func remoteFeatureFlags() -> [String] {
-        // Resolved inline by `FeatureFlagStore` — the action deliberately does not fetch. An unanswered dispatch
-        // degrades to nil, which is the safe reading.
-        var values: [RemoteFeatureFlag: Bool]?
-        stores.dispatch(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { values = $0 })
+    func remoteFeatureFlags() async -> [String] {
+        // The action deliberately does not fetch. A dropped dispatch degrades to nil, the safe reading.
+        let values = await awaitedDispatch(fallback: [RemoteFeatureFlag: Bool]?.none) { completion in
+            FeatureFlagAction.loadRemoteFeatureFlagsInEffect(completion: completion)
+        }
 
         guard let values else {
             return [entry("Remote values in effect", "false (nothing fetched this session, or the last fetch aged out)")]
@@ -260,9 +260,10 @@ private extension MobileStatusReportProvider {
 
     /// Install state alone cannot say which gateway drives in-person payments when both plugins are present. Read
     /// from the stored preference rather than the onboarding use case, which falls back to a network fetch.
-    func inPersonPayments(_ site: Site, plugins: [SitePlugin]) -> [String] {
-        var gatewayID: String?
-        stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: site.siteID) { gatewayID = $0 })
+    func inPersonPayments(_ site: Site, plugins: [SitePlugin]) async -> [String] {
+        let gatewayID = await awaitedDispatch(fallback: String?.none) { completion in
+            AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: site.siteID, onCompletion: completion)
+        }
 
         let gateway = gatewayID
             .flatMap { CardPresentPaymentsPlugin.with(gatewayID: $0) }
@@ -300,11 +301,10 @@ private extension MobileStatusReportProvider {
             "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
     }
 
-    /// `AppSettingsStore` resolves this inline, which is what lets the report stay synchronous here. Were that to
-    /// change, an unanswered dispatch would report "not set" for a store that has an ID.
-    func storeID(_ site: Site) -> String {
-        var storedID: String?
-        stores.dispatch(AppSettingsAction.getStoreID(siteID: site.siteID) { storedID = $0 })
+    func storeID(_ site: Site) async -> String {
+        let storedID = await awaitedDispatch(fallback: String?.none) { completion in
+            AppSettingsAction.getStoreID(siteID: site.siteID, onCompletion: completion)
+        }
         return storedID?.nilIfEmpty ?? "\(Constants.notSet) (no store system status has been fetched yet)"
     }
 
@@ -382,6 +382,30 @@ private extension MobileStatusReportProvider {
     func entry(_ key: String, _ value: String) -> String {
         "\(key): \(value)"
     }
+
+    /// Dispatches an action answered from local state and returns its completion value.
+    ///
+    /// The await is bounded because a dispatch is not guaranteed an answer: the deauthenticated stores manager
+    /// drops actions for stores it does not run (`AppSettingsStore` among them), and no completion ever comes.
+    /// After `Constants.dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is
+    /// recoverable, a report that never finishes while a merchant files a ticket is not.
+    func awaitedDispatch<Value>(fallback: Value,
+                                _ makeAction: (@escaping (Value) -> Void) -> Action) async -> Value {
+        await withCheckedContinuation { continuation in
+            var resumed = false
+            let resumeOnce: (Value) -> Void = { value in
+                guard !resumed else { return }
+                resumed = true
+                continuation.resume(returning: value)
+            }
+            stores.dispatch(makeAction { value in
+                // Stores answer these inline on the main queue today; the hop keeps `resumed` main-only if one
+                // ever answers from elsewhere.
+                DispatchQueue.main.async { resumeOnce(value) }
+            })
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.dispatchTimeout) { resumeOnce(fallback) }
+        }
+    }
 }
 
 extension MobileStatusReportProvider {
@@ -404,6 +428,9 @@ extension MobileStatusReportProvider {
         static let notSet = "not set"
         static let noStore = "Not applicable while no store is selected"
         static let notEvaluated = "not evaluated"
+
+        /// How long `awaitedDispatch` waits before degrading to its fallback.
+        static let dispatchTimeout: TimeInterval = 1
     }
 }
 

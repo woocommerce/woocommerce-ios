@@ -84,6 +84,10 @@ there is no replacement API.
 | `Lock screen` | Whether notifications appear on the lock screen. | `enabled`, `disabled`, `not supported` |
 | `Time-sensitive` | Whether the app may send time-sensitive notifications, which break through Focus modes. | `enabled`, `disabled`, `not supported` |
 | `Scheduled summary` | Whether the merchant has put the app into Notification Summary. Notifications are then held and delivered in batches at set times. | `enabled`, `disabled`, `not supported` |
+| `APNs device token` | Whether Apple issued a push token. Redacted to its last six characters — enough to compare against server logs, not enough to address the device. | `present (…abc123)`, `missing` |
+| `Woo push token ID` | Whether a token is registered with the Woo-driven push system. Redacted to its last six characters, like the APNs token — enough to compare against server logs. | `present (…162342)`, `missing` |
+| `Background refresh` | The system-level Background App Refresh setting. When this is not `available`, background work the app relies on will not run. | `available`, `denied` (turned off by the merchant), `restricted` (blocked by policy or parental controls) |
+| `Low Power Mode` | Battery saver is on device-wide, which defers background activity. | `true`, `false` |
 
 `Authorization status` is the single permission gate on iOS — there is no separate app-level toggle beneath it, and
 no per-channel notification settings, so neither is reported.

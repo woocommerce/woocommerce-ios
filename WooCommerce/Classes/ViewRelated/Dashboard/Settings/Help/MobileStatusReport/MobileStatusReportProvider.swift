@@ -15,9 +15,12 @@ import Foundation
 final class MobileStatusReportProvider {
 
     private let systemSnapshot: () async -> MobileStatusReportSystemSnapshot
+    private let pushNotesManager: PushNotesManager
 
-    nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() }) {
+    nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.systemSnapshot = systemSnapshot
+        self.pushNotesManager = pushNotesManager
     }
 
     func generateReport() async -> String {
@@ -69,7 +72,23 @@ private extension MobileStatusReportProvider {
          entry("Sounds", system.sounds),
          entry("Lock screen", system.lockScreen),
          entry("Time-sensitive", system.timeSensitive),
-         entry("Scheduled summary", system.scheduledSummary)]
+         entry("Scheduled summary", system.scheduledSummary),
+         entry("APNs device token", redactedToken(pushNotesManager.deviceToken)),
+         // Redacted like the APNs token: the last characters are enough to match against server logs, which is
+         // the only reason to report it.
+         entry("Woo push token ID", redactedToken(pushNotesManager.wooPushNotificationToken)),
+         entry("Background refresh", system.backgroundRefresh),
+         entry("Low Power Mode", system.lowPowerMode)]
+    }
+}
+
+// MARK: - Values
+
+private extension MobileStatusReportProvider {
+
+    /// Enough to compare against server logs, not enough to address the device.
+    func redactedToken(_ token: String?) -> String {
+        token?.nilIfEmpty.map { "present (…\($0.suffix(6)))" } ?? "missing"
     }
 }
 
@@ -109,5 +128,11 @@ extension MobileStatusReportProvider {
 
         static let appWide = "(app-wide)"
         static let sectionUnavailable = "Info not found"
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
     }
 }

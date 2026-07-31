@@ -43,7 +43,26 @@ struct MobileStatusReportProviderTests {
         Lock screen: enabled
         Time-sensitive: enabled
         Scheduled summary: disabled
+        APNs device token: missing
+        Woo push token ID: missing
+        Background refresh: available
+        Low Power Mode: false
         """)
+    }
+
+    @Test func no_push_token_reaches_the_report_in_full() async {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager(deviceToken: "0123456789abcdef",
+                                                            wooPushNotificationToken: "4815162342")
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
+
+        // Then
+        #expect(report.contains("APNs device token: present (…abcdef)"))
+        #expect(!report.contains("0123456789abcdef"))
+        #expect(report.contains("Woo push token ID: present (…162342)"))
+        #expect(!report.contains("4815162342"))
     }
 }
 
@@ -51,8 +70,9 @@ struct MobileStatusReportProviderTests {
 
 private extension MobileStatusReportProviderTests {
 
-    func makeProvider() -> MobileStatusReportProvider {
-        MobileStatusReportProvider(systemSnapshot: { .fixture() })
+    func makeProvider(pushNotesManager: PushNotesManager = MockPushNotificationsManager())
+    -> MobileStatusReportProvider {
+        MobileStatusReportProvider(systemSnapshot: { .fixture() }, pushNotesManager: pushNotesManager)
     }
 }
 
@@ -75,6 +95,8 @@ private extension MobileStatusReportSystemSnapshot {
                                          sounds: "enabled",
                                          lockScreen: "enabled",
                                          timeSensitive: "enabled",
-                                         scheduledSummary: "disabled")
+                                         scheduledSummary: "disabled",
+                                         backgroundRefresh: "available",
+                                         lowPowerMode: "false")
     }
 }

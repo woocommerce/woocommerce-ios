@@ -35,6 +35,8 @@ struct MobileStatusReportSystemSnapshot: Equatable {
     let lockScreen: String
     let timeSensitive: String
     let scheduledSummary: String
+    let backgroundRefresh: String
+    let lowPowerMode: String
 }
 
 extension MobileStatusReportSystemSnapshot {
@@ -65,7 +67,9 @@ extension MobileStatusReportSystemSnapshot {
                                          sounds: notifications.soundSetting.description,
                                          lockScreen: notifications.lockScreenSetting.description,
                                          timeSensitive: notifications.timeSensitiveSetting.description,
-                                         scheduledSummary: notifications.scheduledDeliverySetting.description)
+                                         scheduledSummary: notifications.scheduledDeliverySetting.description,
+                                         backgroundRefresh: String(describing: UIApplication.shared.backgroundRefreshStatus),
+                                         lowPowerMode: String(ProcessInfo.processInfo.isLowPowerModeEnabled))
     }
 }
 

@@ -19,6 +19,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: nil, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -39,6 +40,7 @@ struct SupportEscalationCoordinatorTests {
                                      supportAreaInfo: nil,
                                      entryPoint: .helpAndSupport,
                                      hasReceivedBotResponse: false)
+        await coordinator.directTicketCreationTask?.value
 
         // When
         let viewModel = supportFormViewModel(from: navigationController)
@@ -49,7 +51,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.contains("ai_skip") == false)
     }
 
-    @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() {
+    @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -66,10 +68,11 @@ struct SupportEscalationCoordinatorTests {
 
         // Then
         let viewModel = supportFormViewModel(from: navigationController)
+        await coordinator.directTicketCreationTask?.value
         #expect(viewModel?.siteAddress == "https://prelogin.example.com")
     }
 
-    @Test func handleEscalation_when_high_confidence_and_has_identity_then_creates_ticket_directly_after_transcript_consent() throws {
+    @Test func handleEscalation_when_high_confidence_and_has_identity_then_creates_ticket_directly_after_transcript_consent() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -81,6 +84,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
@@ -91,7 +95,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(description.components(separatedBy: "Test transcript").count == 2)
     }
 
-    @Test func handleEscalation_when_high_confidence_and_has_identity_then_asks_for_transcript_consent_before_creating_ticket() {
+    @Test func handleEscalation_when_high_confidence_and_has_identity_then_asks_for_transcript_consent_before_creating_ticket() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -112,6 +116,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(didAskForConsent)
@@ -138,6 +143,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -152,7 +158,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestSupportRequest?.description == "Additional details\n\n\(expectedFormattedTranscript)")
     }
 
-    @Test func handleEscalation_when_transcript_consent_cancelled_then_takes_no_action() {
+    @Test func handleEscalation_when_transcript_consent_cancelled_then_takes_no_action() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -172,6 +178,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -189,6 +196,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -218,6 +226,7 @@ struct SupportEscalationCoordinatorTests {
 
         // Then
         try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
+        await coordinator.directTicketCreationTask?.value
     }
 
     @Test func handleEscalation_when_high_confidence_but_no_site_address_then_shows_support_form() async throws {
@@ -242,6 +251,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .preLogin)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -249,7 +259,7 @@ struct SupportEscalationCoordinatorTests {
         try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
-    @Test func handleEscalation_when_preLogin_has_site_address_then_can_create_ticket_directly_after_transcript_consent() {
+    @Test func handleEscalation_when_preLogin_has_site_address_then_can_create_ticket_directly_after_transcript_consent() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -271,6 +281,7 @@ struct SupportEscalationCoordinatorTests {
                                      siteAddress: "https://prelogin.example.com")
 
         // Then
+        await coordinator.directTicketCreationTask?.value
         #expect(zendesk.latestInvokedTags.contains("in_app_support_escalate"))
         #expect(zendesk.latestInvokedCustomFields.values.contains("https://prelogin.example.com"))
     }
@@ -286,6 +297,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -304,6 +316,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(zendesk.latestInvokedTags.isEmpty)
@@ -323,6 +336,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: " \n ",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         let viewModel = try #require(supportFormViewModel(from: navigationController))
@@ -336,7 +350,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestSupportRequest?.description == "Additional details")
     }
 
-    @Test func createTicketDirectly_includes_connectivity_diagnostic_and_application_log() throws {
+    @Test func createTicketDirectly_includes_connectivity_diagnostic_and_application_log() async throws {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -360,15 +374,16 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         let request = try #require(zendesk.latestSupportRequest)
-        #expect(request.attachments.map(\.filename) == ["connectivitytest_log.txt", "application_log.txt"])
+        #expect(request.attachments.map(\.filename) == ["connectivitytest_log.txt", "application_log.txt", "mobile_status_report.txt"])
     }
 
     // MARK: - Ticket Persistence Tests
 
-    @Test func createTicketDirectly_when_succeeds_and_has_chatID_then_dispatches_markTicketCreated() {
+    @Test func createTicketDirectly_when_succeeds_and_has_chatID_then_dispatches_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -394,12 +409,13 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(dispatchedChatID == 123)
     }
 
-    @Test func createTicketDirectly_when_succeeds_and_no_chatID_then_does_not_dispatch_markTicketCreated() {
+    @Test func createTicketDirectly_when_succeeds_and_no_chatID_then_does_not_dispatch_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -424,12 +440,13 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: nil, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(markTicketCreatedCalled == false)
     }
 
-    @Test func createTicketDirectly_when_fails_then_does_not_dispatch_markTicketCreated() {
+    @Test func createTicketDirectly_when_fails_then_does_not_dispatch_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -454,6 +471,7 @@ struct SupportEscalationCoordinatorTests {
 
         // When
         coordinator.handleEscalation(chatID: 123, transcript: "Test transcript", supportAreaInfo: areaInfo, entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         #expect(markTicketCreatedCalled == false)
@@ -472,6 +490,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
@@ -479,7 +498,7 @@ struct SupportEscalationCoordinatorTests {
 
     // MARK: - Analytics Tests
 
-    @Test func createTicketDirectly_when_succeeds_then_tracks_ticketCreated_with_direct_route() {
+    @Test func createTicketDirectly_when_succeeds_then_tracks_ticketCreated_with_direct_route() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let zendesk = MockZendeskManager()
@@ -493,6 +512,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         assertLastProperties(
@@ -521,6 +541,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeMediumConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // When
         let viewModel = supportFormViewModel(from: navigationController)
@@ -540,7 +561,7 @@ struct SupportEscalationCoordinatorTests {
         )
     }
 
-    @Test func createTicketDirectly_when_fails_with_identity_error_then_tracks_ticketCreationFailed_with_identity_errorType() {
+    @Test func createTicketDirectly_when_fails_with_identity_error_then_tracks_ticketCreationFailed_with_identity_errorType() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let zendesk = MockZendeskManager()
@@ -554,6 +575,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         assertLastProperties(
@@ -567,7 +589,7 @@ struct SupportEscalationCoordinatorTests {
         )
     }
 
-    @Test func createTicketDirectly_when_fails_with_generic_error_then_tracks_ticketCreationFailed_with_zendesk_errorType() {
+    @Test func createTicketDirectly_when_fails_with_generic_error_then_tracks_ticketCreationFailed_with_zendesk_errorType() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let zendesk = MockZendeskManager()
@@ -581,6 +603,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // Then
         assertLastProperties(
@@ -607,6 +630,7 @@ struct SupportEscalationCoordinatorTests {
                                      transcript: "Test transcript",
                                      supportAreaInfo: makeMediumConfidenceSupportAreaInfo(),
                                      entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
 
         // When
         let viewModel = supportFormViewModel(from: navigationController)

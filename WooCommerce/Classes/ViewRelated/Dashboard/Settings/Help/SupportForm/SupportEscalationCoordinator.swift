@@ -22,6 +22,7 @@ final class SupportEscalationCoordinator {
     private weak var navigationController: UINavigationController?
     private let additionalAttachmentsProvider: () -> [ZendeskAttachment]
     private let attachmentProvider: SupportRequestAttachmentProviding
+    private let mobileStatusReportProvider: MobileStatusReportProvider
     private let zendeskProvider: ZendeskManagerProtocol
     private let analytics: Analytics
     private let stores: StoresManager
@@ -30,6 +31,10 @@ final class SupportEscalationCoordinator {
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
+
+    /// The in-flight direct ticket creation. The UI fires this and forgets it, so without a handle there is
+    /// nothing to await — neither a caller that needs to know it finished nor a test asserting on the request.
+    private(set) var directTicketCreationTask: Task<Void, Never>?
     private var escalationSiteAddress: String?
     private var hasReceivedBotResponse = true
 
@@ -39,6 +44,7 @@ final class SupportEscalationCoordinator {
     ///   - navigationController: The navigation controller to present from.
     ///   - additionalAttachmentsProvider: Closure that returns extra attachments (e.g., troubleshooting logs).
     ///   - attachmentProvider: Composes diagnostics with the application log for each request.
+    ///   - mobileStatusReportProvider: Builds the app-level status report attached to every ticket.
     ///   - zendeskProvider: Zendesk service provider.
     ///   - analytics: Analytics tracker.
     ///   - stores: Stores manager for site info.
@@ -48,6 +54,7 @@ final class SupportEscalationCoordinator {
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
+         mobileStatusReportProvider: MobileStatusReportProvider = MobileStatusReportProvider(),
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
@@ -56,6 +63,7 @@ final class SupportEscalationCoordinator {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
         self.attachmentProvider = attachmentProvider
+        self.mobileStatusReportProvider = mobileStatusReportProvider
         self.zendeskProvider = zendeskProvider
         self.analytics = analytics
         self.stores = stores
@@ -179,40 +187,52 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        let attachments = attachmentProvider.attachments(including: additionalAttachmentsProvider())
-
         let siteAddress = siteAddress ?? ""
         let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
-        let request = ZendeskSupportRequest(
-            formID: areaInfo.area.datasource.formID,
-            customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
-            tags: tags,
-            subject: SupportFormViewModel.subject(for: areaInfo.areaType),
-            description: transcript ?? "",
-            attachments: attachments
-        )
 
-        zendeskProvider.createSupportRequest(request) { [weak self] result in
-            loadingViewController.dismiss(animated: true) {
-                switch result {
-                case .success:
-                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
-                        route: .directTicketCreation,
-                        supportAreaInfo: areaInfo,
-                        entryPoint: entryPoint
-                    ))
-                    self?.persistTicketCreated()
-                    self?.onTicketCreated?()
-                    self?.showSuccessAndPop()
-                case .failure(let error):
-                    DDLogError("⛔️ Support chat ticket creation failed via direct ticket creation: \(error)")
-                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
-                        route: .directTicketCreation,
-                        supportAreaInfo: areaInfo,
-                        entryPoint: entryPoint,
-                        errorType: Self.errorType(for: error)
-                    ))
-                    self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+        // Generating the Mobile Status Report is async — it reads notification settings and the POS catalog,
+        // neither of which can be read synchronously — so the request is assembled once it is ready.
+        directTicketCreationTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+
+            let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
+            var customFields = areaInfo.area.datasource.customFields(siteAddress: siteAddress)
+            customFields[MobileStatusReportZendesk.customFieldID] = mobileStatusReport
+
+            let attachments = attachmentProvider.attachments(including: additionalAttachmentsProvider())
+                + [MobileStatusReportZendesk.attachment(for: mobileStatusReport)].compactMap { $0 }
+
+            let request = ZendeskSupportRequest(
+                formID: areaInfo.area.datasource.formID,
+                customFields: customFields,
+                tags: tags,
+                subject: SupportFormViewModel.subject(for: areaInfo.areaType),
+                description: transcript ?? "",
+                attachments: attachments
+            )
+
+            zendeskProvider.createSupportRequest(request) { [weak self] result in
+                loadingViewController.dismiss(animated: true) {
+                    switch result {
+                    case .success:
+                        self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                            route: .directTicketCreation,
+                            supportAreaInfo: areaInfo,
+                            entryPoint: entryPoint
+                        ))
+                        self?.persistTicketCreated()
+                        self?.onTicketCreated?()
+                        self?.showSuccessAndPop()
+                    case .failure(let error):
+                        DDLogError("⛔️ Support chat ticket creation failed via direct ticket creation: \(error)")
+                        self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                            route: .directTicketCreation,
+                            supportAreaInfo: areaInfo,
+                            entryPoint: entryPoint,
+                            errorType: Self.errorType(for: error)
+                        ))
+                        self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+                    }
                 }
             }
         }

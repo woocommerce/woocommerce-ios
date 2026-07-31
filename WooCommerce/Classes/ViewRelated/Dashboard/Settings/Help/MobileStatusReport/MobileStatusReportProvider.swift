@@ -22,18 +22,33 @@ final class MobileStatusReportProvider {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let onboardingStateCache: CardPresentPaymentOnboardingStateCache
+    private let posEligibilityService: POSEligibilityServiceProtocol
+
+    /// `nil` when the POS database has not been opened this session. The report does not open it: spinning up a
+    /// database to describe it would change what is being described.
+    private let posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
+                     onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+                     posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+                     posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
+                        = MobileStatusReportProvider.makeCatalogSettingsService()) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
         self.onboardingStateCache = onboardingStateCache
+        self.posEligibilityService = posEligibilityService
+        self.posCatalogSettingsService = posCatalogSettingsService
     }
+
+    nonisolated private static func makeCatalogSettingsService() -> POSCatalogSettingsServiceProtocol? {
+        ServiceLocator.initializedGRDBManager.map { POSCatalogSettingsService(grdbManager: $0) }
+    }
+
 
     /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
     /// selected store when they are contacting us precisely because the app picked up the wrong one.
@@ -53,6 +68,7 @@ final class MobileStatusReportProvider {
         report += await section("## Store Details", scope: storeScope) { self.storeDetailsSection(site) }
         report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
         report += await section("## Payments", scope: storeScope) { self.paymentsSection(site) }
+        report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
 
         return report.joined(separator: "\n")
     }
@@ -152,11 +168,45 @@ private extension MobileStatusReportProvider {
 
         return installState + inPersonPayments(site, plugins: plugins)
     }
+
+    /// Why POS is hidden or unlaunchable is deliberately not computed: the checks that decide it write these
+    /// values as a side effect of evaluating, and a status report must not change what it reports. They log the
+    /// reason, and that log is on the same ticket.
+    func pointOfSaleSection(_ site: Site?) async throws -> [String] {
+        guard let site else {
+            return [Constants.noStore]
+        }
+
+        let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
+        let eligible = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
+        let entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
+                       entry("POS eligible", eligible.map(String.init) ?? Constants.notEvaluated)]
+            + (try await localCatalog(siteID: site.siteID))
+
+        guard tabVisible == false || eligible == false else {
+            return entries
+        }
+        return entries + ["Reason is logged - search application_log.txt for the POS eligibility entries"]
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    /// Counts sit alongside the timestamps because a catalog that has synced but holds no products is a different
+    /// problem from one that has never synced.
+    func localCatalog(siteID: Int64) async throws -> [String] {
+        guard let posCatalogSettingsService else {
+            return [entry("Local catalog", "\(Constants.notEvaluated) (the POS catalog database has not been opened since launch)")]
+        }
+
+        let info = try await posCatalogSettingsService.loadCatalogInfo(for: siteID)
+        return [entry("Local catalog last full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
+                entry("Local catalog last incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never"),
+                entry("Local catalog products", String(info.productCount)),
+                entry("Local catalog variations", String(info.variationCount))]
+    }
 
     func state(of plugin: CardPresentPaymentsPlugin, in plugins: [SitePlugin]) -> String {
         guard let installed = plugins.first(where: { $0.plugin == plugin.fileNameWithPathExtension }) else {
@@ -318,5 +368,11 @@ extension MobileStatusReportProvider {
 private extension String {
     var nilIfEmpty: String? {
         isEmpty ? nil : self
+    }
+}
+
+private extension Date {
+    var iso8601String: String {
+        ISO8601DateFormatter().string(from: self)
     }
 }

@@ -185,3 +185,22 @@ store's plugin list yet.
 
 `not evaluated in this session` is likewise not a fault. It is the expected value for a merchant whose ticket is
 about something other than payments.
+
+## Point of Sale `(selected store: <url>)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `POS tab visible` | Whether the POS tab is shown for this store. | `true`, `false`, `not evaluated` |
+| `POS eligible` | The last definite POS eligibility result from an online check. Indeterminate results, such as being offline, leave the previous value untouched. | `true`, `false`, `not evaluated` |
+| `Local catalog last full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never` |
+| `Local catalog last incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never` |
+| `Local catalog products` | Products currently in the local catalog. | Integer |
+| `Local catalog variations` | Variations currently in the local catalog. | Integer |
+| `Local catalog` | Replaces the four rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
+
+The timestamps and counts cover the POS local catalog only — not general order or product sync. A catalog that has
+synced but holds zero products is a different problem from one that has never synced.
+
+When either value is `false` the section points at `application_log.txt` instead of giving a reason. That is
+deliberate: the checks that decide visibility and eligibility write these values as a side effect of evaluating,
+and a status report must not change what it reports. Search the attached log for the POS eligibility entries.

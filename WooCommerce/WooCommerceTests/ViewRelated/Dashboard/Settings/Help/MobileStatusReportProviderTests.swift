@@ -16,6 +16,8 @@ struct MobileStatusReportProviderTests {
     private let sessionManager: SessionManager
     private let stores: MockStoresManager
     private let storageManager: MockStorageManager
+    private let posEligibilityService = MockPOSEligibilityService()
+    private let posCatalogSettingsService = MockPOSCatalogSettingsService()
 
     init() {
         sessionManager = SessionManager.testingInstance
@@ -78,7 +80,42 @@ struct MobileStatusReportProviderTests {
 
         ## Payments (no store selected)
         Not applicable while no store is selected
+
+        ## Point of Sale (no store selected)
+        Not applicable while no store is selected
         """)
+    }
+
+    @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posEligibilityService.cachedTabVisibility[1] = false
+
+        // When
+        let hidden = await makeProvider().generateReport()
+        posEligibilityService.cachedTabVisibility[1] = true
+        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        let available = await makeProvider().generateReport()
+
+        // Then
+        #expect(hidden.contains("Reason is logged - search application_log.txt for the POS eligibility entries"))
+        #expect(!available.contains("Reason is logged"))
+    }
+
+    @Test func a_failing_section_degrades_without_taking_the_report_with_it() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posCatalogSettingsService.catalogInfoResult = .failure(MockError.anyError)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("""
+        ## Point of Sale (selected store: https://example.com)
+        Info not found
+        """))
+        #expect(report.contains("## Payments"))
     }
 
     /// Reporting these as "not installed" would send triage the opposite way from what is true.
@@ -137,7 +174,9 @@ private extension MobileStatusReportProviderTests {
                                    pushNotesManager: pushNotesManager,
                                    stores: stores,
                                    storageManager: storageManager,
-                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache())
+                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
+                                   posEligibilityService: posEligibilityService,
+                                   posCatalogSettingsService: posCatalogSettingsService)
     }
 }
 

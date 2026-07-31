@@ -193,7 +193,11 @@ final class SupportEscalationCoordinator {
         // Generating the Mobile Status Report is async — it reads notification settings and the POS catalog,
         // neither of which can be read synchronously — so the request is assembled once it is ready.
         directTicketCreationTask = Task { @MainActor [weak self] in
-            guard let self else { return }
+            guard let self else {
+                // The coordinator went away mid-generation; the merchant must not stay stuck behind the spinner.
+                loadingViewController.dismiss(animated: true, completion: nil)
+                return
+            }
 
             let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
             var customFields = areaInfo.area.datasource.customFields(siteAddress: siteAddress)

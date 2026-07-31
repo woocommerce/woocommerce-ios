@@ -1,17 +1,21 @@
 import Testing
-import Experiments
 import Foundation
+import Experiments
 import Networking
-import struct Storage.GeneralAppSettingsStorage
 import Yosemite
 import YosemiteTestHelpers
+import struct Storage.GeneralAppSettingsStorage
 @testable import WooCommerce
 
-/// The report is a text artifact, so it is pinned by comparing the whole thing: that catches an omitted field, a
-/// lost section and a broken scope in one assertion, which per-field tests do not.
+/// The report is a text artifact, so most of it is pinned by comparing the whole thing: that catches an omitted
+/// field, a lost section and a broken scope in one assertion, which per-field tests do not.
 ///
-/// Serialized because `SessionManager.testingInstance` is backed by a shared `UserDefaults` suite: tests here set
-/// a selected store, and in parallel they overwrite each other's.
+/// The Feature Flags and Experimental Features bodies are redacted from those comparisons — they enumerate
+/// `FeatureFlag.allCases` and `BetaFeature.allCases`, so an inline expectation would fail on every unrelated PR
+/// that adds a flag. They have their own tests below.
+///
+/// Serialized because `SessionManager.testingInstance` is backed by a shared `UserDefaults` suite: every test
+/// here sets a selected store, and in parallel they overwrite each other's.
 @MainActor
 @Suite(.serialized)
 struct MobileStatusReportProviderTests {
@@ -19,6 +23,7 @@ struct MobileStatusReportProviderTests {
     private let sessionManager: SessionManager
     private let stores: MockStoresManager
     private let storageManager: MockStorageManager
+    private let pushNotesManager: MockPushNotificationsManager
     private let posEligibilityService = MockPOSEligibilityService()
     private let posCatalogSettingsService = MockPOSCatalogSettingsService()
     private let appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
@@ -27,14 +32,13 @@ struct MobileStatusReportProviderTests {
         sessionManager = SessionManager.testingInstance
         stores = MockStoresManager(sessionManager: sessionManager)
         storageManager = MockStorageManager()
+        pushNotesManager = MockPushNotificationsManager()
         sessionManager.defaultSite = nil
         sessionManager.defaultAccount = nil
         sessionManager.defaultCredentials = nil
     }
 
-    /// The Feature Flags body is redacted from the comparison: it enumerates `FeatureFlag.allCases`, so an inline
-    /// expectation would fail on every unrelated PR that adds a flag.
-    @Test func report_contents() async {
+    @Test func report_when_no_store_is_selected() async {
         // Given, When
         let report = await makeProvider().generateReport()
 
@@ -98,6 +102,133 @@ struct MobileStatusReportProviderTests {
         """)
     }
 
+    @Test func report_when_a_store_is_selected() async throws {
+        // Given
+        let pushNotesManager = try await givenAFullyPopulatedStore()
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager)
+            .generateReport(siteAddress: "https://typed.example.com")
+
+        // Then
+        #expect(redactingEnumeratedSections(report).contains("""
+        ## Account & Stores (app-wide)
+        WPCom user ID: 12345
+        Address given in the form: https://typed.example.com
+        Connected stores: 2
+
+        All connected sites:
+        https://example.com: Plan: business-bundle Jetpack: installed=true connected=true
+        https://other.example.com: Plan: unknown Jetpack: installed=false connected=false
+
+        ## Store Details (selected store: https://example.com)
+        Blog ID: 1
+        Store ID: store-abc
+        Auth method: WPCom
+        Jetpack: installed=true connected=true CP=false
+        Plan: business-bundle
+        Woo core version: 9.4.2
+
+        ## Store Notifications (selected store: https://example.com)
+        Push registration: REGISTERED_BOTH
+
+        ## Payments (selected store: https://example.com)
+        WooPayments: active 8.1.0
+        WooCommerce Stripe Gateway: installed, not active 7.0.0
+        In-person payments gateway: WooPayments 8.1.0
+        In-person payments onboarding: not evaluated (the merchant has not opened a payments screen since launch)
+
+        ## Point of Sale (selected store: https://example.com)
+        POS tab visible: true
+        POS eligible: true
+        Local catalog last full sync: 2023-11-14T22:13:20Z
+        Local catalog last incremental sync: never
+        Local catalog products: 42
+        Local catalog variations: 7
+        """))
+    }
+
+    // MARK: - Values a whole-report comparison would not make obvious
+
+    @Test func no_push_token_reaches_the_report_in_full() async {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager(deviceToken: "0123456789abcdef",
+                                                            wooPushNotificationToken: "4815162342")
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
+
+        // Then
+        #expect(report.contains("APNs device token: present (…abcdef)"))
+        #expect(!report.contains("0123456789abcdef"))
+        #expect(report.contains("Woo push token ID: present (…162342)"))
+        #expect(!report.contains("4815162342"))
+    }
+
+    @Test(arguments: [(true, "device-id", "REGISTERED_BOTH"),
+                      (true, nil, "REGISTERED_WOO_ONLY"),
+                      (false, "device-id", "REGISTERED_WPCOM_ONLY"),
+                      (false, nil, "UNREGISTERED")])
+    func push_registration_covers_both_systems(wooRegistered: Bool, deviceID: String?, expected: String) async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        let pushNotesManager = MockPushNotificationsManager(mockedDeviceID: deviceID,
+                                                            siteIDsRegisteredForWooPNs: wooRegistered ? [1] : [])
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
+
+        // Then
+        #expect(report.contains("Push registration: \(expected)"))
+    }
+
+    /// Reporting these as "not installed" would send triage the opposite way from what is true.
+    @Test func an_empty_plugin_cache_is_not_reported_as_plugins_being_absent() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Payment plugins: unknown (none cached for this store)"))
+        #expect(!report.contains("WooPayments: not installed"))
+    }
+
+    @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posEligibilityService.cachedTabVisibility[1] = false
+
+        // When
+        let hidden = await makeProvider().generateReport()
+        posEligibilityService.cachedTabVisibility[1] = true
+        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        let available = await makeProvider().generateReport()
+
+        // Then
+        #expect(hidden.contains("Reason is logged - search application_log.txt for the POS eligibility entries"))
+        #expect(!available.contains("Reason is logged"))
+    }
+
+    @Test func a_failing_section_degrades_without_taking_the_report_with_it() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posCatalogSettingsService.catalogInfoResult = .failure(MockError.anyError)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("""
+        ## Point of Sale (selected store: https://example.com)
+        Info not found
+        """))
+        #expect(report.contains("## Experimental Features"))
+    }
+
+    // MARK: - Feature flags
+
     /// An aged-out cache is not what `isRemoteFeatureFlagEnabled` returns, so listing its values would describe
     /// behaviour the app is not exhibiting.
     @Test func remote_flags_are_not_listed_when_none_are_in_effect() async {
@@ -145,88 +276,84 @@ struct MobileStatusReportProviderTests {
         #expect(lines.count == BetaFeature.allCases.count)
         #expect(lines.contains("\(BetaFeature.viewAddOns.title): true"))
     }
-
-    @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {
-        // Given
-        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
-        posEligibilityService.cachedTabVisibility[1] = false
-
-        // When
-        let hidden = await makeProvider().generateReport()
-        posEligibilityService.cachedTabVisibility[1] = true
-        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
-        let available = await makeProvider().generateReport()
-
-        // Then
-        #expect(hidden.contains("Reason is logged - search application_log.txt for the POS eligibility entries"))
-        #expect(!available.contains("Reason is logged"))
-    }
-
-    @Test func a_failing_section_degrades_without_taking_the_report_with_it() async {
-        // Given
-        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
-        posCatalogSettingsService.catalogInfoResult = .failure(MockError.anyError)
-
-        // When
-        let report = await makeProvider().generateReport()
-
-        // Then
-        #expect(report.contains("""
-        ## Point of Sale (selected store: https://example.com)
-        Info not found
-        """))
-        #expect(report.contains("## Payments"))
-    }
-
-    /// Reporting these as "not installed" would send triage the opposite way from what is true.
-    @Test func an_empty_plugin_cache_is_not_reported_as_plugins_being_absent() async {
-        // Given
-        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
-
-        // When
-        let report = await makeProvider().generateReport()
-
-        // Then
-        #expect(report.contains("Payment plugins: unknown (none cached for this store)"))
-        #expect(!report.contains("WooPayments: not installed"))
-    }
-
-    @Test(arguments: [(true, "device-id", "REGISTERED_BOTH"),
-                      (true, nil, "REGISTERED_WOO_ONLY"),
-                      (false, "device-id", "REGISTERED_WPCOM_ONLY"),
-                      (false, nil, "UNREGISTERED")])
-    func push_registration_covers_both_systems(wooRegistered: Bool, deviceID: String?, expected: String) async {
-        // Given
-        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
-        let pushNotesManager = MockPushNotificationsManager(mockedDeviceID: deviceID,
-                                                            siteIDsRegisteredForWooPNs: wooRegistered ? [1] : [])
-
-        // When
-        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
-
-        // Then
-        #expect(report.contains("Push registration: \(expected)"))
-    }
-
-    @Test func no_push_token_reaches_the_report_in_full() async {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager(deviceToken: "0123456789abcdef",
-                                                            wooPushNotificationToken: "4815162342")
-
-        // When
-        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
-
-        // Then
-        #expect(report.contains("APNs device token: present (…abcdef)"))
-        #expect(!report.contains("0123456789abcdef"))
-        #expect(report.contains("Woo push token ID: present (…162342)"))
-        #expect(!report.contains("4815162342"))
-    }
 }
 
 // MARK: - Helpers
 
 private extension MobileStatusReportProviderTests {
+
+    func makeProvider(pushNotesManager: PushNotesManager? = nil) -> MobileStatusReportProvider {
+        MobileStatusReportProvider(systemSnapshot: { .fixture() },
+                                   pushNotesManager: pushNotesManager ?? self.pushNotesManager,
+                                   stores: stores,
+                                   storageManager: storageManager,
+                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
+                                   posEligibilityService: posEligibilityService,
+                                   posCatalogSettingsService: posCatalogSettingsService,
+                                   featureFlagService: MockFeatureFlagService(),
+                                   generalAppSettings: appSettings)
+    }
+
+    func givenAFullyPopulatedStore() async throws -> MockPushNotificationsManager {
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1,
+                                                               name: "A",
+                                                               url: "https://example.com",
+                                                               plan: "business-bundle",
+                                                               isJetpackThePluginInstalled: true,
+                                                               isJetpackConnected: true)
+        sessionManager.defaultAccount = Account(userID: 12345,
+                                                displayName: "",
+                                                email: "",
+                                                username: "",
+                                                gravatarUrl: nil)
+        sessionManager.defaultCredentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://example.com")
+
+        try await insert(sites: [Yosemite.Site.fake().copy(siteID: 1, name: "A", url: "https://example.com",
+                                                           plan: "business-bundle",
+                                                           isJetpackThePluginInstalled: true, isJetpackConnected: true),
+                                 Yosemite.Site.fake().copy(siteID: 2, name: "B", url: "https://other.example.com",
+                                                           plan: "",
+                                                           isJetpackThePluginInstalled: false, isJetpackConnected: false)],
+                         plugins: [SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce/woocommerce", version: "9.4.2"),
+                                   SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce-payments/woocommerce-payments",
+                                                          status: .active, version: "8.1.0"),
+                                   SitePlugin.fake().copy(siteID: 1,
+                                                          plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
+                                                          status: .inactive, version: "7.0.0")])
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getStoreID(_, onCompletion):
+                onCompletion("store-abc")
+            case let .getPreferredInPersonPaymentGateway(_, onCompletion):
+                onCompletion(CardPresentPaymentsPlugin.wcPay.gatewayID)
+            default:
+                break
+            }
+        }
+
+        posEligibilityService.cachedTabVisibility[1] = true
+        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        posCatalogSettingsService.catalogInfoResult = .success(
+            .init(productCount: 42,
+                  variationCount: 7,
+                  lastFullSyncDate: Date(timeIntervalSince1970: 1_700_000_000),
+                  lastIncrementalSyncDate: nil)
+        )
+
+        return MockPushNotificationsManager(mockedDeviceID: "device-id", siteIDsRegisteredForWooPNs: [1])
+    }
+
+    func insert(sites: [Yosemite.Site], plugins: [SitePlugin]) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            storageManager.performAndSave({ storage in
+                sites.forEach { storage.insertNewObject(ofType: StorageSite.self).update(with: $0) }
+                plugins.forEach { storage.insertNewObject(ofType: StorageSitePlugin.self).update(with: $0) }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
+        }
+    }
 
     /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated
     /// addition to either list does not fail a whole-report comparison.
@@ -242,19 +369,6 @@ private extension MobileStatusReportProviderTests {
             return (lines[...start] + ["<redacted>"] + separators + lines[(start + 1 + body.count)...])
                 .joined(separator: "\n")
         }
-    }
-
-    func makeProvider(pushNotesManager: PushNotesManager = MockPushNotificationsManager())
-    -> MobileStatusReportProvider {
-        MobileStatusReportProvider(systemSnapshot: { .fixture() },
-                                   pushNotesManager: pushNotesManager,
-                                   stores: stores,
-                                   storageManager: storageManager,
-                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
-                                   posEligibilityService: posEligibilityService,
-                                   posCatalogSettingsService: posCatalogSettingsService,
-                                   featureFlagService: MockFeatureFlagService(),
-                                   generalAppSettings: appSettings)
     }
 
     func section(_ heading: String, in report: String) -> [String] {

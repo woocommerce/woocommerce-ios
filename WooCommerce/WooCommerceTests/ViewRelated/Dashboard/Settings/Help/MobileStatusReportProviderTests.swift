@@ -95,6 +95,12 @@ struct MobileStatusReportProviderTests {
         WPCom user ID: not logged in
         Connected stores: 0
 
+        ## Feature Flags (app-wide)
+        <redacted>
+
+        ## Experimental Features (app-wide)
+        <redacted>
+
         ## Store Details (no store selected)
         Not applicable while no store is selected
 
@@ -106,12 +112,6 @@ struct MobileStatusReportProviderTests {
 
         ## Point of Sale (no store selected)
         Not applicable while no store is selected
-
-        ## Feature Flags (app-wide)
-        <redacted>
-
-        ## Experimental Features (app-wide)
-        <redacted>
         """)
     }
 
@@ -130,9 +130,15 @@ struct MobileStatusReportProviderTests {
         Address given in the form: https://typed.example.com
         Connected stores: 2
 
-        All connected sites:
+        All connected stores:
         https://example.com: Plan: business-bundle Jetpack: installed=true connected=true
         https://other.example.com: Plan: unknown Jetpack: installed=false connected=false
+
+        ## Feature Flags (app-wide)
+        <redacted>
+
+        ## Experimental Features (app-wide)
+        <redacted>
 
         ## Store Details (selected store: https://example.com)
         Blog ID: 1
@@ -147,17 +153,17 @@ struct MobileStatusReportProviderTests {
 
         ## Payments (selected store: https://example.com)
         WooPayments: active 8.1.0
-        WooCommerce Stripe Gateway: installed, not active 7.0.0
-        In-person payments gateway: WooPayments 8.1.0
+        Stripe extension: installed, not active 7.0.0
+        In-person payments plugin: WooPayments 8.1.0
         In-person payments onboarding: not evaluated (the merchant has not opened a payments screen since launch)
 
         ## Point of Sale (selected store: https://example.com)
         POS tab visible: true
-        POS eligible: true
-        Local catalog last full sync: 2023-11-14T22:13:20Z
-        Local catalog last incremental sync: never
+        POS launchable: true
         Local catalog products: 42
         Local catalog variations: 7
+        Local catalog full sync: 2023-11-14T22:13:20Z
+        Local catalog incremental sync: never
         """))
     }
 
@@ -256,7 +262,7 @@ struct MobileStatusReportProviderTests {
         let report = await makeProvider().generateReport()
 
         // Then
-        #expect(report.contains("Remote values in effect: false (nothing fetched this session, or the last fetch aged out)"))
+        #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
         #expect(!report.contains("(remote)"))
     }
 
@@ -272,7 +278,7 @@ struct MobileStatusReportProviderTests {
         let report = await makeProvider().generateReport()
 
         // Then
-        #expect(report.contains("Remote values in effect: true"))
+        #expect(report.contains("Remote values loaded: true"))
         #expect(report.contains("pointOfSale: true (remote)"))
         #expect(report.contains("qrCodeLogin: not returned by server"))
     }
@@ -287,7 +293,7 @@ struct MobileStatusReportProviderTests {
         let report = await makeProvider().generateReport()
 
         // Then
-        #expect(report.contains("Remote values in effect: false (nothing fetched this session, or the last fetch aged out)"))
+        #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
     }
 
     @Test func experimental_features_lists_every_toggle_from_the_settings_screen() async throws {

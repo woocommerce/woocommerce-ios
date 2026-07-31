@@ -23,6 +23,11 @@ The distinction matters for merchants with more than one store: an `(app-wide)` 
 that happens on one store and not another, and a store-scoped value says nothing about the merchant's other
 stores.
 
+Section order and field names match the Android app's Mobile Status Report wherever the concept exists on both
+platforms — app-wide sections first, the store-scoped block last — so tickets from either platform read the same
+way and can be searched with the same terms. Fields that only one platform has are a deliberate difference, not
+drift.
+
 Three conventions apply throughout:
 
 - **The report never touches the network.** Every value is read from `UserDefaults`, Core Data, the app's own
@@ -106,7 +111,7 @@ Notifications along with the store it belongs to.
 | `WPCom user ID` | The logged-in WordPress.com account. | Numeric ID; `not logged in` — expected for application-password logins, which have no WPCom account |
 | `Address given in the form` | The store address the merchant typed into the support form. Present only when they typed one. | A URL |
 | `Connected stores` | How many stores the app knows about. | Integer |
-| `All connected sites:` | One line per store: `<url>: Plan: ... Jetpack: installed=... connected=...`. | — |
+| `All connected stores:` | One line per store: `<url>: Plan: ... Jetpack: installed=... connected=...`. | — |
 
 `Address given in the form` is worth comparing against the selected store: when they differ, the merchant may be
 contacting us precisely because the app picked up the wrong store.
@@ -114,6 +119,55 @@ contacting us precisely because the app picked up the wrong store.
 The full store list is included because merchants often report a problem on a store other than the selected one.
 Only the selected store's plugin data has usually been fetched, so the per-site lines carry plan and Jetpack state
 but no plugin versions.
+
+## Feature Flags `(app-wide)`
+
+The app has two independent flag systems and the report covers both, in separate subsections. They hold different
+flags: most flags live in exactly one of the two.
+
+### Local flags
+
+Compiled into the build and resolved from the build configuration. Every flag is listed, not only the enabled
+ones: an absent key would be ambiguous between disabled, renamed and deleted.
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `<flag name>` | Effective value. | `true`, `false` |
+
+### Remote flags
+
+Served by the backend and cached in memory for 24 hours. The cache is not persisted, so it is empty on every fresh
+launch until something asks for a flag.
+
+The report describes the values the app is **acting on**, which is not the same as whatever sits in the cache. An
+aged-out cache is not consulted — the next flag check refetches, and until that returns every feature falls back
+to its own default — so expired values are not listed at all. Listing them would tell you the app is behaving in a
+way it is not.
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Remote values loaded` | Whether the app is currently acting on server-supplied flag values. | `true`; `false (nothing fetched this session, or the last fetch aged out)` |
+| `<flag name>` | The value in force, keyed by the app's own name for the flag rather than the server key. Listed only when values are in effect. | `true (remote)`, `false (remote)`, `not returned by server` |
+
+Read `false` as "no remote values are in force", not as "everything is off". Each feature is then on its own
+compiled-in default. Those defaults are not identical across features and are not listed here; check the relevant
+local flag, where one exists with the same name.
+
+`not returned by server` means the fetch succeeded but this key was absent from the response — usually a flag that
+has been retired on the backend but not yet removed from the app.
+
+## Experimental Features `(app-wide)`
+
+The beta toggles from **Settings → Experimental Features**, listed automatically from the app's own list of them.
+
+| Field | Values |
+| --- | --- |
+| `Product add-ons` | `true`, `false` |
+| `Application passwords` | `true`, `false` |
+| `POS local catalog` | `true`, `false` |
+
+A toggle the merchant has never seen reports its default. Some toggles are only shown for eligible stores, so a
+`false` here does not always mean the merchant chose `false`.
 
 ## Store Details `(selected store: <url>)`
 
@@ -176,8 +230,8 @@ Read from the plugin cache and app settings, never fetched, so that ticket creat
 | --- | --- | --- |
 | `Payment plugins` | Shown instead of the two rows below when the plugin cache is empty for this store. | `unknown (none cached for this store)` |
 | `WooPayments` | WooPayments install state and version. | `active <version>`, `installed, not active <version>`, `not installed` |
-| `WooCommerce Stripe Gateway` | Stripe gateway install state and version. | as above |
-| `In-person payments gateway` | The gateway the app is set to use for in-person payments, which install state alone cannot tell you when both plugins are present. | e.g. `woocommerce-payments 8.1.0`; `not set` |
+| `Stripe extension` | Stripe gateway install state and version. | as above |
+| `In-person payments plugin` | The plugin the app is set to use for in-person payments, which install state alone cannot tell you when both plugins are present. | e.g. `WooPayments 8.1.0`; `not set` |
 | `In-person payments onboarding` | The last card-reader onboarding outcome computed in this app session. Held in memory only, so it is absent until the merchant opens a payments screen. | An onboarding state; `not evaluated in this session (the merchant has not opened a payments screen since launch)` |
 
 `unknown (none cached for this store)` is not the same as "not installed" — it means nothing has fetched this
@@ -191,65 +245,17 @@ about something other than payments.
 | Field | Meaning | Values |
 | --- | --- | --- |
 | `POS tab visible` | Whether the POS tab is shown for this store. | `true`, `false`, `not evaluated` |
-| `POS eligible` | The last definite POS eligibility result from an online check. Indeterminate results, such as being offline, leave the previous value untouched. | `true`, `false`, `not evaluated` |
-| `Local catalog last full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never` |
-| `Local catalog last incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never` |
+| `POS launchable` | The last definite POS eligibility result from an online check. Indeterminate results, such as being offline, leave the previous value untouched. | `true`, `false`, `not evaluated` |
 | `Local catalog products` | Products currently in the local catalog. | Integer |
 | `Local catalog variations` | Variations currently in the local catalog. | Integer |
-| `Local catalog` | Replaces the four rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
+| `Local catalog full sync` | When the POS local catalog last completed a full sync. | ISO-8601 UTC instant; `never` |
+| `Local catalog incremental sync` | When the catalog last synced incrementally. | ISO-8601 UTC instant; `never` |
+| `Local catalog` | Replaces the four catalog rows above when the POS database has not been opened this session. The report does not open it: spinning up a database to describe it would change what is being described. | `not evaluated (the POS catalog database has not been opened since launch)` |
 
 The timestamps and counts cover the POS local catalog only — not general order or product sync. A catalog that has
 synced but holds zero products is a different problem from one that has never synced.
 
-When either value is `false` the section points at `application_log.txt` instead of giving a reason. That is
-deliberate: the checks that decide visibility and eligibility write these values as a side effect of evaluating,
-and a status report must not change what it reports. Search the attached log for the POS eligibility entries.
-
-## Feature Flags `(app-wide)`
-
-The app has two independent flag systems and the report covers both, in separate subsections. They hold different
-flags: most flags live in exactly one of the two.
-
-### Local flags
-
-Compiled into the build and resolved from the build configuration. Every flag is listed, not only the enabled
-ones: an absent key would be ambiguous between disabled, renamed and deleted.
-
-| Field | Meaning | Values |
-| --- | --- | --- |
-| `<flag name>` | Effective value. | `true`, `false` |
-
-### Remote flags
-
-Served by the backend and cached in memory for 24 hours. The cache is not persisted, so it is empty on every fresh
-launch until something asks for a flag.
-
-The report describes the values the app is **acting on**, which is not the same as whatever sits in the cache. An
-aged-out cache is not consulted — the next flag check refetches, and until that returns every feature falls back
-to its own default — so expired values are not listed at all. Listing them would tell you the app is behaving in a
-way it is not.
-
-| Field | Meaning | Values |
-| --- | --- | --- |
-| `Remote values in effect` | Whether the app is currently acting on server-supplied flag values. | `true`; `false (nothing fetched this session, or the last fetch aged out)` |
-| `<flag name>` | The value in force, keyed by the app's own name for the flag rather than the server key. Listed only when values are in effect. | `true (remote)`, `false (remote)`, `not returned by server` |
-
-Read `false` as "no remote values are in force", not as "everything is off". Each feature is then on its own
-compiled-in default. Those defaults are not identical across features and are not listed here; check the relevant
-local flag, where one exists with the same name.
-
-`not returned by server` means the fetch succeeded but this key was absent from the response — usually a flag that
-has been retired on the backend but not yet removed from the app.
-
-## Experimental Features `(app-wide)`
-
-The beta toggles from **Settings → Experimental Features**, listed automatically from the app's own list of them.
-
-| Field | Values |
-| --- | --- |
-| `Product add-ons` | `true`, `false` |
-| `Application passwords` | `true`, `false` |
-| `POS local catalog` | `true`, `false` |
-
-A toggle the merchant has never seen reports its default. Some toggles are only shown for eligible stores, so a
-`false` here does not always mean the merchant chose `false`.
+When `POS tab visible` or `POS launchable` is `false` the section points at `application_log.txt` instead of
+giving a reason. That is deliberate: the checks that decide visibility and launchability write these values as a
+side effect of evaluating, and a status report must not change what it reports. Search the attached log for the
+POS eligibility entries.

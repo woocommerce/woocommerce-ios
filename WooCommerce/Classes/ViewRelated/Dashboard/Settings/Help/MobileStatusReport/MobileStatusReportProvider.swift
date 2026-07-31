@@ -86,12 +86,14 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Connectivity", scope: Constants.appWide) { self.connectivitySection(system) }
         report += await section("## Notifications", scope: Constants.appWide) { self.notificationsSection(system) }
         report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
+        // App-wide sections first and the store-scoped block last, matching the Android report so a ticket
+        // from either platform reads in the same order.
+        report += await section("## Feature Flags", scope: Constants.appWide) { await self.featureFlagsSection() }
+        report += await section("## Experimental Features", scope: Constants.appWide) { self.experimentalFeaturesSection() }
         report += await section("## Store Details", scope: storeScope) { await self.storeDetailsSection(site) }
         report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
         report += await section("## Payments", scope: storeScope) { await self.paymentsSection(site) }
         report += await section("## Point of Sale", scope: storeScope) { try await self.pointOfSaleSection(site) }
-        report += await section("## Feature Flags", scope: Constants.appWide) { await self.featureFlagsSection() }
-        report += await section("## Experimental Features", scope: Constants.appWide) { self.experimentalFeaturesSection() }
 
         return report.joined(separator: "\n")
     }
@@ -187,7 +189,7 @@ private extension MobileStatusReportProvider {
         // opposite way from "not installed".
         let installState = plugins.isEmpty ?
             [entry("Payment plugins", "unknown (none cached for this store)")] :
-            CardPresentPaymentsPlugin.allCases.map { entry($0.pluginName, state(of: $0, in: plugins)) }
+            CardPresentPaymentsPlugin.allCases.map { entry(reportName(of: $0), state(of: $0, in: plugins)) }
 
         return installState + (await inPersonPayments(site, plugins: plugins))
     }
@@ -201,12 +203,12 @@ private extension MobileStatusReportProvider {
         }
 
         let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
-        let eligible = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
+        let launchable = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
         let entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
-                       entry("POS eligible", eligible.map(String.init) ?? Constants.notEvaluated)]
+                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated)]
             + (try await localCatalog(siteID: site.siteID))
 
-        guard tabVisible == false || eligible == false else {
+        guard tabVisible == false || launchable == false else {
             return entries
         }
         return entries + ["Reason is logged - search application_log.txt for the POS eligibility entries"]
@@ -241,9 +243,9 @@ private extension MobileStatusReportProvider {
         }
 
         guard let values else {
-            return [entry("Remote values in effect", "false (nothing fetched this session, or the last fetch aged out)")]
+            return [entry("Remote values loaded", "false (nothing fetched this session, or the last fetch aged out)")]
         }
-        return [entry("Remote values in effect", "true")] + RemoteFeatureFlag.allCases.map { flag in
+        return [entry("Remote values loaded", "true")] + RemoteFeatureFlag.allCases.map { flag in
             entry(String(describing: flag), values[flag].map { "\($0) (remote)" } ?? "not returned by server")
         }
     }
@@ -256,10 +258,21 @@ private extension MobileStatusReportProvider {
         }
 
         let info = try await posCatalogSettingsService.loadCatalogInfo(for: siteID)
-        return [entry("Local catalog last full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
-                entry("Local catalog last incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never"),
-                entry("Local catalog products", String(info.productCount)),
-                entry("Local catalog variations", String(info.variationCount))]
+        return [entry("Local catalog products", String(info.productCount)),
+                entry("Local catalog variations", String(info.variationCount)),
+                entry("Local catalog full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
+                entry("Local catalog incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never")]
+    }
+
+    /// The names the Android report uses for the same plugins, so a Happiness Engineer can grep tickets from
+    /// both platforms with one term. `pluginName` is not reused: it labels UI, and the Stripe one differs.
+    func reportName(of plugin: CardPresentPaymentsPlugin) -> String {
+        switch plugin {
+        case .wcPay:
+            return "WooPayments"
+        case .stripe:
+            return "Stripe extension"
+        }
     }
 
     func state(of plugin: CardPresentPaymentsPlugin, in plugins: [SitePlugin]) -> String {
@@ -281,10 +294,10 @@ private extension MobileStatusReportProvider {
             .flatMap { CardPresentPaymentsPlugin.with(gatewayID: $0) }
             .map { plugin in
                 let version = plugins.first { $0.plugin == plugin.fileNameWithPathExtension }?.version.nilIfEmpty
-                return "\(plugin.pluginName) \(version ?? Constants.unknown)"
+                return "\(reportName(of: plugin)) \(version ?? Constants.unknown)"
             }
 
-        return [entry("In-person payments gateway", gateway ?? Constants.notSet),
+        return [entry("In-person payments plugin", gateway ?? Constants.notSet),
                 // Held in memory only, so absent until the merchant opens a payments screen — the expected value
                 // for a ticket about anything else.
                 entry("In-person payments onboarding",
@@ -363,7 +376,7 @@ private extension MobileStatusReportProvider {
             return []
         }
 
-        return ["", "All connected sites:"] + sites.map { site in
+        return ["", "All connected stores:"] + sites.map { site in
             entry(site.url.nilIfEmpty ?? Constants.unknown,
                   "Plan: \(site.plan.nilIfEmpty ?? Constants.unknown) " +
                   "Jetpack: installed=\(site.isJetpackThePluginInstalled) connected=\(site.isJetpackConnected)")

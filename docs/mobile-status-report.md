@@ -133,3 +133,37 @@ has never talked to successfully.
 
 `CP=true` means a Jetpack Connection Package site: connected to WordPress.com without the full Jetpack plugin
 installed. Some features that assume a full Jetpack install are unavailable on these stores.
+
+## Store Notifications `(selected store: <url>)`
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Push registration` | Which push system holds a token for this store. `REGISTERED_WOO_ONLY` is Woo-driven, `REGISTERED_WPCOM_ONLY` is the legacy Jetpack-driven system, `REGISTERED_BOTH` means both hold one — a known duplicate-notification cause. | `REGISTERED_BOTH`, `REGISTERED_WOO_ONLY`, `REGISTERED_WPCOM_ONLY`, `UNREGISTERED` |
+
+The report states the registration status and nothing more — it does not try to work out *why*. The inputs that
+decide it are reported elsewhere as their own fields, and reading them together is the diagnosis:
+
+| Check | Where it is in the report | What it means |
+| --- | --- | --- |
+| Is there a push token at all? | `APNs device token` (Notifications) | `missing` blocks both systems — nothing can register. Start here. |
+| Did the merchant ever grant permission? | `Authorization status` (Notifications) | `denied` or `notDetermined` means no token was ever requested. |
+| Is Woo-driven push switched on? | `selfDrivenPushNotificationsM1` (Feature Flags → Remote) | `false` means the Woo-driven path is never attempted, whatever the store supports. |
+| Is the plugin new enough? | `Woo core version` (Store Details) | Woo-driven push needs **10.9.2 or later**. Below that, only the legacy WPCom system can serve the store. |
+| Can the legacy system serve it? | `Auth method` (Store Details) | The legacy system needs a WPCom account and a full Jetpack connection. An application-password login has neither, so a store below the version gate on such a login receives nothing at all. |
+
+Worked combinations:
+
+- **`UNREGISTERED`, Woo below 10.9.2, `Auth method: ApplicationPasswords`** — nothing will arrive. Woo-driven is
+  unavailable and there is no legacy fallback for this merchant. Updating Woo is the only fix.
+- **`REGISTERED_WPCOM_ONLY`, Woo below 10.9.2, `Auth method: WPCom`** — working as designed on the legacy system.
+  Updating Woo moves the store onto Woo-driven push.
+- **`UNREGISTERED`, Woo 10.9.2 or later, flag `true`, token present** — the store is not the constraint.
+  Registration was attempted and did not succeed; check `application_log.txt` for the registration call.
+- **`REGISTERED_BOTH`** — both systems hold a token, the usual explanation for duplicate new-order notifications.
+
+Don't reach for "install Jetpack" on a store above the version gate — Woo-driven push needs only a site connection.
+
+The store's own alert settings — the new-order, review and stock toggles and their thresholds — are **not** in the
+report. The app does not persist them; they are read from the store on demand, and fetching them here would put a
+network call on the ticket creation path. Ask the merchant to open **Settings → Notifications**, or read the
+settings server-side.

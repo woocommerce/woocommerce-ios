@@ -72,7 +72,27 @@ struct MobileStatusReportProviderTests {
 
         ## Store Details (no store selected)
         Not applicable while no store is selected
+
+        ## Store Notifications (no store selected)
+        Not applicable while no store is selected
         """)
+    }
+
+    @Test(arguments: [(true, "device-id", "REGISTERED_BOTH"),
+                      (true, nil, "REGISTERED_WOO_ONLY"),
+                      (false, "device-id", "REGISTERED_WPCOM_ONLY"),
+                      (false, nil, "UNREGISTERED")])
+    func push_registration_covers_both_systems(wooRegistered: Bool, deviceID: String?, expected: String) async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        let pushNotesManager = MockPushNotificationsManager(mockedDeviceID: deviceID,
+                                                            siteIDsRegisteredForWooPNs: wooRegistered ? [1] : [])
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
+
+        // Then
+        #expect(report.contains("Push registration: \(expected)"))
     }
 
     @Test func no_push_token_reaches_the_report_in_full() async {

@@ -293,6 +293,7 @@ public enum WooAnalyticsStat: String {
     case supportIdentitySet = "support_identity_set"
     case supportSSROpened = "support_ssr_opened"
     case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
+    case supportMobileStatusReportCopyButtonTapped = "support_mobile_status_report_copy_button_tapped"
 
     // MARK: Settings Plugin List Events
     //

@@ -1,6 +1,7 @@
 import Testing
 import Experiments
 import Foundation
+import Networking
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -90,6 +91,41 @@ struct MobileStatusReportProviderTests {
         ## Feature Flags (app-wide)
         <redacted>
         """)
+    }
+
+    /// An aged-out cache is not what `isRemoteFeatureFlagEnabled` returns, so listing its values would describe
+    /// behaviour the app is not exhibiting.
+    @Test func remote_flags_are_not_listed_when_none_are_in_effect() async {
+        // Given
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .loadRemoteFeatureFlagsInEffect(completion) = action {
+                completion(nil)
+            }
+        }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values in effect: false (nothing fetched this session, or the last fetch aged out)"))
+        #expect(!report.contains("(remote)"))
+    }
+
+    @Test func remote_flags_report_the_server_value_and_the_keys_it_omitted() async {
+        // Given
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .loadRemoteFeatureFlagsInEffect(completion) = action {
+                completion([.pointOfSale: true])
+            }
+        }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values in effect: true"))
+        #expect(report.contains("pointOfSale: true (remote)"))
+        #expect(report.contains("qrCodeLogin: not returned by server"))
     }
 
     @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {

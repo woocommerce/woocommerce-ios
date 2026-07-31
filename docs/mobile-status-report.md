@@ -218,3 +218,25 @@ ones: an absent key would be ambiguous between disabled, renamed and deleted.
 | Field | Meaning | Values |
 | --- | --- | --- |
 | `<flag name>` | Effective value. | `true`, `false` |
+
+### Remote flags
+
+Served by the backend and cached in memory for 24 hours. The cache is not persisted, so it is empty on every fresh
+launch until something asks for a flag.
+
+The report describes the values the app is **acting on**, which is not the same as whatever sits in the cache. An
+aged-out cache is not consulted — the next flag check refetches, and until that returns every feature falls back
+to its own default — so expired values are not listed at all. Listing them would tell you the app is behaving in a
+way it is not.
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Remote values in effect` | Whether the app is currently acting on server-supplied flag values. | `true`; `false (nothing fetched this session, or the last fetch aged out)` |
+| `<flag name>` | The value in force, keyed by the app's own name for the flag rather than the server key. Listed only when values are in effect. | `true (remote)`, `false (remote)`, `not returned by server` |
+
+Read `false` as "no remote values are in force", not as "everything is off". Each feature is then on its own
+compiled-in default. Those defaults are not identical across features and are not listed here; check the relevant
+local flag, where one exists with the same name.
+
+`not returned by server` means the fetch succeeded but this key was absent from the response — usually a flag that
+has been retired on the backend but not yet removed from the app.

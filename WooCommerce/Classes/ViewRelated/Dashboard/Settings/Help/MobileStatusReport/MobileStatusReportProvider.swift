@@ -1,6 +1,7 @@
 import Experiments
 import Foundation
 import Yosemite
+import enum Networking.RemoteFeatureFlag
 import enum Networking.WooConstants
 import protocol Storage.StorageManagerType
 
@@ -194,10 +195,10 @@ private extension MobileStatusReportProvider {
         return entries + ["Reason is logged - search application_log.txt for the POS eligibility entries"]
     }
 
-    /// Every flag is listed, not only the enabled ones: an absent key would be ambiguous between disabled,
-    /// renamed and deleted.
+    /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
+    /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
     func featureFlagsSection() -> [String] {
-        ["", "### Local flags"] + localFeatureFlags()
+        ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + remoteFeatureFlags()
     }
 }
 
@@ -207,6 +208,22 @@ private extension MobileStatusReportProvider {
 
     func localFeatureFlags() -> [String] {
         FeatureFlag.allCases.map { entry(String(describing: $0), String(featureFlagService.isFeatureFlagEnabled($0))) }
+    }
+
+    /// What the app is acting on, which is not the same as what is in the cache: an expired cache is not
+    /// consulted, so listing it would describe behaviour the app is not exhibiting.
+    func remoteFeatureFlags() -> [String] {
+        // Resolved inline by `FeatureFlagStore` — the action deliberately does not fetch. An unanswered dispatch
+        // degrades to nil, which is the safe reading.
+        var values: [RemoteFeatureFlag: Bool]?
+        stores.dispatch(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { values = $0 })
+
+        guard let values else {
+            return [entry("Remote values in effect", "false (nothing fetched this session, or the last fetch aged out)")]
+        }
+        return [entry("Remote values in effect", "true")] + RemoteFeatureFlag.allCases.map { flag in
+            entry(String(describing: flag), values[flag].map { "\($0) (remote)" } ?? "not returned by server")
+        }
     }
 
     /// Counts sit alongside the timestamps because a catalog that has synced but holds no products is a different

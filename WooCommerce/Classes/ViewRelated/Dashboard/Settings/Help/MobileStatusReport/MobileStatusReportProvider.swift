@@ -21,15 +21,18 @@ final class MobileStatusReportProvider {
     private let pushNotesManager: PushNotesManager
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let onboardingStateCache: CardPresentPaymentOnboardingStateCache
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
+        self.onboardingStateCache = onboardingStateCache
     }
 
     /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
@@ -49,6 +52,7 @@ final class MobileStatusReportProvider {
         report += await section("## Account & Stores", scope: Constants.appWide) { self.accountSection(siteAddress) }
         report += await section("## Store Details", scope: storeScope) { self.storeDetailsSection(site) }
         report += await section("## Store Notifications", scope: storeScope) { self.storeNotificationsSection(site) }
+        report += await section("## Payments", scope: storeScope) { self.paymentsSection(site) }
 
         return report.joined(separator: "\n")
     }
@@ -133,11 +137,55 @@ private extension MobileStatusReportProvider {
         }
         return [entry("Push registration", pushRegistration(siteID: site.siteID))]
     }
+
+    func paymentsSection(_ site: Site?) -> [String] {
+        guard let site else {
+            return [Constants.noStore]
+        }
+
+        let plugins = sitePlugins(siteID: site.siteID)
+        // An empty cache means nothing has fetched this store's plugin list yet, which would send triage the
+        // opposite way from "not installed".
+        let installState = plugins.isEmpty ?
+            [entry("Payment plugins", "unknown (none cached for this store)")] :
+            CardPresentPaymentsPlugin.allCases.map { entry($0.pluginName, state(of: $0, in: plugins)) }
+
+        return installState + inPersonPayments(site, plugins: plugins)
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    func state(of plugin: CardPresentPaymentsPlugin, in plugins: [SitePlugin]) -> String {
+        guard let installed = plugins.first(where: { $0.plugin == plugin.fileNameWithPathExtension }) else {
+            return "not installed"
+        }
+        let state = installed.status == .inactive ? "installed, not active" : "active"
+        return "\(state) \(installed.version.nilIfEmpty ?? Constants.unknown)"
+    }
+
+    /// Install state alone cannot say which gateway drives in-person payments when both plugins are present. Read
+    /// from the stored preference rather than the onboarding use case, which falls back to a network fetch.
+    func inPersonPayments(_ site: Site, plugins: [SitePlugin]) -> [String] {
+        var gatewayID: String?
+        stores.dispatch(AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: site.siteID) { gatewayID = $0 })
+
+        let gateway = gatewayID
+            .flatMap { CardPresentPaymentsPlugin.with(gatewayID: $0) }
+            .map { plugin in
+                let version = plugins.first { $0.plugin == plugin.fileNameWithPathExtension }?.version.nilIfEmpty
+                return "\(plugin.pluginName) \(version ?? Constants.unknown)"
+            }
+
+        return [entry("In-person payments gateway", gateway ?? Constants.notSet),
+                // Held in memory only, so absent until the merchant opens a payments screen — the expected value
+                // for a ticket about anything else.
+                entry("In-person payments onboarding",
+                      onboardingStateCache.value?.reasonForAnalytics
+                      ?? "\(Constants.notEvaluated) (the merchant has not opened a payments screen since launch)")]
+    }
 
     /// The Woo token is registered per store; the WPCom device registration is account-wide. `REGISTERED_BOTH` is
     /// the usual explanation for duplicate new-order notifications.
@@ -263,6 +311,7 @@ extension MobileStatusReportProvider {
         static let unknown = "unknown"
         static let notSet = "not set"
         static let noStore = "Not applicable while no store is selected"
+        static let notEvaluated = "not evaluated"
     }
 }
 

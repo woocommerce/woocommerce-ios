@@ -167,3 +167,21 @@ The store's own alert settings — the new-order, review and stock toggles and t
 report. The app does not persist them; they are read from the store on demand, and fetching them here would put a
 network call on the ticket creation path. Ask the merchant to open **Settings → Notifications**, or read the
 settings server-side.
+
+## Payments `(selected store: <url>)`
+
+Read from the plugin cache and app settings, never fetched, so that ticket creation stays off the network.
+
+| Field | Meaning | Values |
+| --- | --- | --- |
+| `Payment plugins` | Shown instead of the two rows below when the plugin cache is empty for this store. | `unknown (none cached for this store)` |
+| `WooPayments` | WooPayments install state and version. | `active <version>`, `installed, not active <version>`, `not installed` |
+| `WooCommerce Stripe Gateway` | Stripe gateway install state and version. | as above |
+| `In-person payments gateway` | The gateway the app is set to use for in-person payments, which install state alone cannot tell you when both plugins are present. | e.g. `woocommerce-payments 8.1.0`; `not set` |
+| `In-person payments onboarding` | The last card-reader onboarding outcome computed in this app session. Held in memory only, so it is absent until the merchant opens a payments screen. | An onboarding state; `not evaluated in this session (the merchant has not opened a payments screen since launch)` |
+
+`unknown (none cached for this store)` is not the same as "not installed" — it means nothing has fetched this
+store's plugin list yet.
+
+`not evaluated in this session` is likewise not a fault. It is the expected value for a merchant whose ticket is
+about something other than payments.

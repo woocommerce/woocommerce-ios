@@ -75,7 +75,23 @@ struct MobileStatusReportProviderTests {
 
         ## Store Notifications (no store selected)
         Not applicable while no store is selected
+
+        ## Payments (no store selected)
+        Not applicable while no store is selected
         """)
+    }
+
+    /// Reporting these as "not installed" would send triage the opposite way from what is true.
+    @Test func an_empty_plugin_cache_is_not_reported_as_plugins_being_absent() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Payment plugins: unknown (none cached for this store)"))
+        #expect(!report.contains("WooPayments: not installed"))
     }
 
     @Test(arguments: [(true, "device-id", "REGISTERED_BOTH"),
@@ -120,7 +136,8 @@ private extension MobileStatusReportProviderTests {
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
                                    pushNotesManager: pushNotesManager,
                                    stores: stores,
-                                   storageManager: storageManager)
+                                   storageManager: storageManager,
+                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache())
     }
 }
 

@@ -1427,9 +1427,19 @@ platform :ios do
   ########################################################################
   # Helper Lanes
   ########################################################################
-  desc 'Run release preflight checks'
-  lane :release_preflight do
-    configure_validate
+  desc 'Apply configuration to set up secrets for development'
+  lane :configure_secrets do
+    unless system('command -v a8c-secrets > /dev/null 2>&1')
+      UI.user_error!(<<~MSG)
+        `a8c-secrets` was not found on your PATH. Install it with:
+
+            curl -fsSL https://raw.githubusercontent.com/Automattic/a8c-secrets/main/install.sh | bash
+
+        See https://github.com/Automattic/a8c-secrets for details.
+      MSG
+    end
+
+    sh('a8c-secrets', 'decrypt')
   end
 
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).

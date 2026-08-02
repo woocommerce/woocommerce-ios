@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 env:
-  CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
+  A8C_SECRETS_IDENTITY: ${{ secrets.A8C_SECRETS_IDENTITY }}
 
 jobs:
   build:
@@ -26,6 +26,9 @@ jobs:
 
     - name: Install App Dependencies
       run: bundle exec rake dependencies
+
+    - name: Install Secrets
+      run: .buildkite/commands/install-secrets.sh
 
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
@@ -53,8 +56,8 @@ jobs:
       with:
         bundler-cache: true
 
-    - name: Install Fastlane Dependencies
-      run: bundle exec fastlane run configure_apply
+    - name: Install Secrets
+      run: .buildkite/commands/install-secrets.sh
 
     - name: Download Build Products
       uses: actions/download-artifact@v4
@@ -118,8 +121,8 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Install Fastlane Dependencies
-        run: bundle exec fastlane run configure_apply
+      - name: Install Secrets
+        run: .buildkite/commands/install-secrets.sh
 
       - name: Download Generated Screenshots
         uses: actions/download-artifact@v4

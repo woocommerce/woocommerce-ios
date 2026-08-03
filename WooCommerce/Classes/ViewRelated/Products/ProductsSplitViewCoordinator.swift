@@ -101,7 +101,7 @@ private extension ProductsSplitViewCoordinator {
                 }, onCancel: { [weak self] in
                     guard let self else { return }
                     primaryNavigationController.viewControllers = [productsViewController]
-                    primaryNavigationController.setNavigationBarHidden(false, animated: true)
+                    primaryNavigationController.setNavigationBarHidden(false, animated: false)
                 })
                 let searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,

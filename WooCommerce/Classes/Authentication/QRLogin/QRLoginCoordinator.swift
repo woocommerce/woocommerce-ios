@@ -316,8 +316,12 @@ private extension QRLoginCoordinator {
                 // `showLoginEpilogue` assertion. Dismiss the sheet first, then
                 // hand off from the now-stable root.
                 rootViewController.dismiss(animated: false) {
+                    // QR login shares the magic-link `.login` case but never saved a site address,
+                    // so it must not restore one (would leak a stale address from an abandoned
+                    // email magic-link request into this account — wrong-store error).
                     _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
-                                                                             rootViewController: rootViewController)
+                                                                             rootViewController: rootViewController,
+                                                                             restoresSiteAddress: false)
                 }
                 // Sign-in proceeds through WordPressAuthenticator from here —
                 // release the coordinator; the login UI is about to be replaced.

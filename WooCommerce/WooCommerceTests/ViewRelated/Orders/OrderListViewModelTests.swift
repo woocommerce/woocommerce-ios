@@ -172,6 +172,27 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(snapshot.numberOfItems(inSection: sectionID), expectedOrders.future.count)
     }
 
+    // MARK: - Order Statuses
+
+    func test_statusesDidChange_emits_when_the_stored_order_statuses_change() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
+        viewModel.activate()
+
+        let expectation = expectation(description: "statusesDidChange emits when the stored order statuses change")
+        viewModel.statusesDidChange
+            .sink {
+                expectation.fulfill()
+            }
+            .store(in: &subscriptions)
+
+        // When
+        insertOrderStatus(status: .processing)
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - App Activation
 
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
@@ -422,6 +443,16 @@ private extension OrderListViewModelTests {
 
     func orderStatus(with status: OrderStatusEnum) -> Yosemite.OrderStatus {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
+    }
+
+    @discardableResult
+    func insertOrderStatus(status: OrderStatusEnum) -> StorageOrderStatus {
+        let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+        storageOrderStatus.siteID = siteID
+        storageOrderStatus.slug = status.rawValue
+        storageOrderStatus.name = status.rawValue
+        storage.saveIfNeeded()
+        return storageOrderStatus
     }
 
     func insertOrder(id orderID: Int64,

@@ -17,7 +17,7 @@ struct ProductDetailsFactory {
                                forceReadOnly: Bool,
                                productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
                                onDeleteCompletion: @escaping () -> Void = {},
-                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
+                               onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
         let vc = productDetails(product: product,
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
@@ -36,7 +36,7 @@ private extension ProductDetailsFactory {
                                isEditProductsEnabled: Bool,
                                productImageUploader: ProductImageUploaderProtocol,
                                onDeleteCompletion: @escaping () -> Void,
-                               onDuplicateCompletion: ((Product) -> Void)? = nil) -> UIViewController {
+                               onDuplicateCompletion: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = productImageUploader

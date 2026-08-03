@@ -67,7 +67,17 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Feature Flags") { await self.featureFlagsSection() }
         report += await section("## Experimental Features") { self.experimentalFeaturesSection() }
 
+        // Everything above describes the whole app on this device, everything below only the named store. The
+        // band says so once — the same format and position the Android report uses, so a ticket from either
+        // platform reads the same way, and a report with no store ends here as Android's does.
+        let site = stores.sessionManager.defaultSite
+        report += ["", site.map { "# Selected store: \(storeLabel($0))" } ?? Constants.noStoreHeading]
+
         return report.joined(separator: "\n")
+    }
+
+    private func storeLabel(_ site: Site) -> String {
+        site.url.nilIfEmpty ?? site.name.nilIfEmpty ?? "site ID \(site.siteID)"
     }
 }
 
@@ -263,6 +273,7 @@ extension MobileStatusReportProvider {
         static let fieldReference = "Field reference: " +
             "https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md"
 
+        static let noStoreHeading = "# No store selected"
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
 

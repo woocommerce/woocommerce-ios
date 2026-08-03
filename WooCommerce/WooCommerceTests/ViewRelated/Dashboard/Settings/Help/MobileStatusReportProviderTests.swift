@@ -8,7 +8,7 @@ import struct Storage.GeneralAppSettingsStorage
 @testable import WooCommerce
 
 /// The report is a text artifact, so most of it is pinned by comparing the whole thing: that catches an omitted
-/// field and a lost section in one assertion, which per-field tests do not.
+/// field, a lost section and a misplaced store band in one assertion, which per-field tests do not.
 ///
 /// The Feature Flags and Experimental Features bodies are redacted from those comparisons — they enumerate
 /// `FeatureFlag.allCases` and `BetaFeature.allCases`, so an inline expectation would fail on every unrelated PR
@@ -84,6 +84,8 @@ struct MobileStatusReportProviderTests {
 
         ## Experimental Features
         <redacted>
+
+        # No store selected
         """)
     }
 

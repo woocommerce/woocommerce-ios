@@ -207,6 +207,9 @@ private extension POSTabEligibilityChecker {
             guard reason.isDefiniteIneligibility else {
                 return
             }
+            // The literal prefix is quoted by the Mobile Status Report's Point of Sale hint line — keep the
+            // two in step.
+            DDLogInfo("POS cannot be launched for site \(siteID): \(String(describing: reason))")
             eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: false)
         }
     }

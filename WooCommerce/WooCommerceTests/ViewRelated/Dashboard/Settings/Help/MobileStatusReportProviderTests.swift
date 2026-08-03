@@ -24,6 +24,7 @@ struct MobileStatusReportProviderTests {
     private let stores: MockStoresManager
     private let storageManager: MockStorageManager
     private let pushNotesManager: MockPushNotificationsManager
+    private let posEligibilityService = MockPOSEligibilityService()
     private let appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
 
     init() {
@@ -145,6 +146,10 @@ struct MobileStatusReportProviderTests {
         Stripe extension: installed, not active 7.0.0
         In-person payments plugin: WooPayments 8.1.0
         In-person payments onboarding: not evaluated (the merchant has not opened a payments screen since launch)
+
+        ## Point of Sale
+        POS tab visible: true
+        POS launchable: true
         """))
     }
 
@@ -193,6 +198,22 @@ struct MobileStatusReportProviderTests {
         // Then
         #expect(report.contains("Payment plugins: unknown (none cached for this store)"))
         #expect(!report.contains("WooPayments: not installed"))
+    }
+
+    @Test func point_of_sale_points_at_the_log_only_when_something_is_unavailable() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posEligibilityService.cachedTabVisibility[1] = false
+
+        // When
+        let hidden = await makeProvider().generateReport()
+        posEligibilityService.cachedTabVisibility[1] = true
+        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        let available = await makeProvider().generateReport()
+
+        // Then
+        #expect(hidden.contains("Reason is logged - search application_log.txt for \"POS tab not visible\" or \"POS cannot be launched\""))
+        #expect(!available.contains("Reason is logged"))
     }
 
     // MARK: - Feature flags
@@ -283,6 +304,7 @@ private extension MobileStatusReportProviderTests {
                                    stores: stores,
                                    storageManager: storageManager,
                                    onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
+                                   posEligibilityService: posEligibilityService,
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings)
     }
@@ -326,6 +348,9 @@ private extension MobileStatusReportProviderTests {
                 break
             }
         }
+
+        posEligibilityService.cachedTabVisibility[1] = true
+        posEligibilityService.cachedLastKnownPOSEligibility[1] = true
 
         return MockPushNotificationsManager(mockedDeviceID: "device-id", siteIDsRegisteredForWooPNs: [1])
     }

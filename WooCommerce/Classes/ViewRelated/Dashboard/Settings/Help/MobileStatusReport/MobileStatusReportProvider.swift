@@ -39,6 +39,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let onboardingStateCache: CardPresentPaymentOnboardingStateCache
+    private let posEligibilityService: POSEligibilityServiceProtocol
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
@@ -47,6 +48,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
+                     posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.systemSnapshot = systemSnapshot
@@ -54,6 +56,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         self.stores = stores
         self.storageManager = storageManager
         self.onboardingStateCache = onboardingStateCache
+        self.posEligibilityService = posEligibilityService
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
     }
@@ -81,6 +84,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
             report += await section("## Store Details") { await self.storeDetailsSection(site) }
             report += await section("## Store Notifications") { self.storeNotificationsSection(site) }
             report += await section("## Payments") { await self.paymentsSection(site) }
+            report += await section("## Point of Sale") { await self.pointOfSaleSection(site) }
         }
 
         return report.joined(separator: "\n")
@@ -173,6 +177,21 @@ private extension MobileStatusReportProvider {
             CardPresentPaymentsPlugin.allCases.map { entry(reportName(of: $0), state(of: $0, in: plugins)) }
 
         return installState + (await inPersonPayments(site, plugins: plugins))
+    }
+
+    /// Why POS is hidden or unlaunchable is deliberately not computed: the checks that decide it write these
+    /// values as a side effect of evaluating, and a status report must not change what it reports. They log the
+    /// reason, and that log is on the same ticket.
+    func pointOfSaleSection(_ site: Site) async -> [String] {
+        let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
+        let launchable = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
+        let entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
+                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated)]
+
+        guard tabVisible == false || launchable == false else {
+            return entries
+        }
+        return entries + [Constants.posReasonHint]
     }
 
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
@@ -416,6 +435,11 @@ extension MobileStatusReportProvider {
         static let unknown = "unknown"
         static let notSet = "not set"
         static let notEvaluated = "not evaluated"
+
+        /// The quoted strings are the literal prefixes `POSTabVisibilityChecker` and `POSTabEligibilityChecker`
+        /// log with — keep the three in step.
+        static let posReasonHint = "Reason is logged - search application_log.txt for " +
+            "\"POS tab not visible\" or \"POS cannot be launched\""
 
         /// How long `awaitedDispatch` waits before degrading to its fallback.
         static let dispatchTimeout: TimeInterval = 1

@@ -27,6 +27,11 @@ struct MobileStatusReportProviderTests {
         Screen: 393x852 pt (phone)
         Device locale: en-US
         App language: en-GB
+
+        ## Connectivity
+        Network type: WiFi or Ethernet
+        Expensive connection: false
+        Low Data Mode: false
         """)
     }
 }

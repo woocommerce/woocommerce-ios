@@ -38,6 +38,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let pushNotesManager: PushNotesManager
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let onboardingStateCache: CardPresentPaymentOnboardingStateCache
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
@@ -45,12 +46,14 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
+        self.onboardingStateCache = onboardingStateCache
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
     }
@@ -77,6 +80,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         if let site {
             report += await section("## Store Details") { await self.storeDetailsSection(site) }
             report += await section("## Store Notifications") { self.storeNotificationsSection(site) }
+            report += await section("## Payments") { await self.paymentsSection(site) }
         }
 
         return report.joined(separator: "\n")
@@ -160,6 +164,17 @@ private extension MobileStatusReportProvider {
         [entry("Push registration", pushRegistration(siteID: site.siteID))]
     }
 
+    func paymentsSection(_ site: Site) async -> [String] {
+        let plugins = sitePlugins(siteID: site.siteID)
+        // An empty cache means nothing has fetched this store's plugin list yet, which would send triage the
+        // opposite way from "not installed".
+        let installState = plugins.isEmpty ?
+            [entry("Payment plugins", "unknown (none cached for this store)")] :
+            CardPresentPaymentsPlugin.allCases.map { entry(reportName(of: $0), state(of: $0, in: plugins)) }
+
+        return installState + (await inPersonPayments(site, plugins: plugins))
+    }
+
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
     /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
     func featureFlagsSection() async -> [String] {
@@ -212,6 +227,47 @@ private extension MobileStatusReportProvider {
         case .posLocalCatalog:
             return "POS local catalog"
         }
+    }
+
+    /// The names the Android report uses for the same plugins, so a Happiness Engineer can grep tickets from
+    /// both platforms with one term. `pluginName` is not reused: it labels UI, and the Stripe one differs.
+    func reportName(of plugin: CardPresentPaymentsPlugin) -> String {
+        switch plugin {
+        case .wcPay:
+            return "WooPayments"
+        case .stripe:
+            return "Stripe extension"
+        }
+    }
+
+    func state(of plugin: CardPresentPaymentsPlugin, in plugins: [SitePlugin]) -> String {
+        guard let installed = plugins.first(where: { $0.plugin == plugin.fileNameWithPathExtension }) else {
+            return "not installed"
+        }
+        let state = installed.status == .inactive ? "installed, not active" : "active"
+        return "\(state) \(installed.version.nilIfEmpty ?? Constants.unknown)"
+    }
+
+    /// Install state alone cannot say which gateway drives in-person payments when both plugins are present. Read
+    /// from the stored preference rather than the onboarding use case, which falls back to a network fetch.
+    func inPersonPayments(_ site: Site, plugins: [SitePlugin]) async -> [String] {
+        let gatewayID = await awaitedDispatch(fallback: String?.none) { completion in
+            AppSettingsAction.getPreferredInPersonPaymentGateway(siteID: site.siteID, onCompletion: completion)
+        }
+
+        let gateway = gatewayID
+            .flatMap { CardPresentPaymentsPlugin.with(gatewayID: $0) }
+            .map { plugin in
+                let version = plugins.first { $0.plugin == plugin.fileNameWithPathExtension }?.version.nilIfEmpty
+                return "\(reportName(of: plugin)) \(version ?? Constants.unknown)"
+            }
+
+        return [entry("In-person payments plugin", gateway ?? Constants.notSet),
+                // Held in memory only, so absent until the merchant opens a payments screen — the expected value
+                // for a ticket about anything else.
+                entry("In-person payments onboarding",
+                      onboardingStateCache.value?.reasonForAnalytics
+                      ?? "\(Constants.notEvaluated) (the merchant has not opened a payments screen since launch)")]
     }
 
     /// The Woo token is registered per store; the WPCom device registration is account-wide. `REGISTERED_BOTH` is
@@ -359,6 +415,7 @@ extension MobileStatusReportProvider {
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
         static let notSet = "not set"
+        static let notEvaluated = "not evaluated"
 
         /// How long `awaitedDispatch` waits before degrading to its fallback.
         static let dispatchTimeout: TimeInterval = 1

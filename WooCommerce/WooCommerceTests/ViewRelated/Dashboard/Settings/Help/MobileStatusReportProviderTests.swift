@@ -41,6 +41,8 @@ struct MobileStatusReportProviderTests {
             switch action {
             case let .getStoreID(_, onCompletion):
                 onCompletion(nil)
+            case let .getPreferredInPersonPaymentGateway(_, onCompletion):
+                onCompletion(nil)
             default:
                 break
             }
@@ -137,6 +139,12 @@ struct MobileStatusReportProviderTests {
 
         ## Store Notifications
         Push registration: REGISTERED_BOTH
+
+        ## Payments
+        WooPayments: active 8.1.0
+        Stripe extension: installed, not active 7.0.0
+        In-person payments plugin: WooPayments 8.1.0
+        In-person payments onboarding: not evaluated (the merchant has not opened a payments screen since launch)
         """))
     }
 
@@ -172,6 +180,19 @@ struct MobileStatusReportProviderTests {
 
         // Then
         #expect(report.contains("Push registration: \(expected)"))
+    }
+
+    /// Reporting these as "not installed" would send triage the opposite way from what is true.
+    @Test func an_empty_plugin_cache_is_not_reported_as_plugins_being_absent() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Payment plugins: unknown (none cached for this store)"))
+        #expect(!report.contains("WooPayments: not installed"))
     }
 
     // MARK: - Feature flags
@@ -261,6 +282,7 @@ private extension MobileStatusReportProviderTests {
                                    pushNotesManager: pushNotesManager ?? self.pushNotesManager,
                                    stores: stores,
                                    storageManager: storageManager,
+                                   onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings)
     }
@@ -287,12 +309,19 @@ private extension MobileStatusReportProviderTests {
                                                            plan: "",
                                                            isJetpackThePluginInstalled: false, isJetpackConnected: false,
                                                            isWooCommerceActive: true)],
-                         plugins: [SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce/woocommerce", version: "9.4.2")])
+                         plugins: [SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce/woocommerce", version: "9.4.2"),
+                                   SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce-payments/woocommerce-payments",
+                                                          status: .active, version: "8.1.0"),
+                                   SitePlugin.fake().copy(siteID: 1,
+                                                          plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe",
+                                                          status: .inactive, version: "7.0.0")])
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .getStoreID(_, onCompletion):
                 onCompletion("store-abc")
+            case let .getPreferredInPersonPaymentGateway(_, onCompletion):
+                onCompletion(CardPresentPaymentsPlugin.wcPay.gatewayID)
             default:
                 break
             }

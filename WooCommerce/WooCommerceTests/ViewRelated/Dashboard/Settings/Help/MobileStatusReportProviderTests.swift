@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import Networking
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -94,6 +95,8 @@ struct MobileStatusReportProviderTests {
         #expect(!report.contains("4815162342"))
     }
 
+    // MARK: - Feature flags
+
     /// `FeatureFlag.null` exists only so the enum can declare a raw type. The feature flag service answers it
     /// through its `default` branch, so without filtering it the local flag list opens with `null: true`,
     /// which reads as a real feature that is switched on.
@@ -104,6 +107,54 @@ struct MobileStatusReportProviderTests {
         // Then
         #expect(!report.contains("\nnull: "))
         #expect(report.contains("### Local flags"))
+    }
+
+    /// An aged-out cache is not what `isRemoteFeatureFlagEnabled` returns, so listing its values would describe
+    /// behaviour the app is not exhibiting.
+    @Test func remote_flags_are_not_listed_when_none_are_in_effect() async {
+        // Given
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .loadRemoteFeatureFlagsInEffect(completion) = action {
+                completion(nil)
+            }
+        }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
+        #expect(!report.contains("(remote)"))
+    }
+
+    @Test func remote_flags_report_the_server_value_and_the_keys_it_omitted() async {
+        // Given
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            if case let .loadRemoteFeatureFlagsInEffect(completion) = action {
+                completion([.pointOfSale: true])
+            }
+        }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values loaded: true"))
+        #expect(report.contains("pointOfSale: true (remote)"))
+        #expect(report.contains("qrCodeLogin: not returned by server"))
+    }
+
+    /// The deauthenticated stores manager drops actions for stores it does not run, and a dropped dispatch has
+    /// no completion coming. The report must degrade to the fallback value rather than wait on it forever.
+    @Test func an_unanswered_dispatch_degrades_instead_of_stalling_the_report() async {
+        // Given: nothing ever answers the feature-flag action
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { _ in }
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
     }
 }
 

@@ -1,6 +1,7 @@
 import Experiments
 import Foundation
 import Yosemite
+import enum Networking.RemoteFeatureFlag
 import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
@@ -59,7 +60,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Connectivity") { self.connectivitySection(system) }
         report += await section("## Notifications") { self.notificationsSection(system) }
         report += await section("## Account & Stores") { self.accountSection(siteAddress) }
-        report += await section("## Feature Flags") { self.featureFlagsSection() }
+        report += await section("## Feature Flags") { await self.featureFlagsSection() }
 
         return report.joined(separator: "\n")
     }
@@ -116,10 +117,10 @@ private extension MobileStatusReportProvider {
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
-    /// Every flag is listed, not only the enabled ones: an absent key would be ambiguous between disabled,
-    /// renamed and deleted.
-    func featureFlagsSection() -> [String] {
-        ["", "### Local flags"] + localFeatureFlags()
+    /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
+    /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
+    func featureFlagsSection() async -> [String] {
+        ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + (await remoteFeatureFlags())
     }
 }
 
@@ -132,6 +133,22 @@ private extension MobileStatusReportProvider {
     func localFeatureFlags() -> [String] {
         FeatureFlag.allCases.filter { $0 != .null }
             .map { entry(String(describing: $0), String(featureFlagService.isFeatureFlagEnabled($0))) }
+    }
+
+    /// What the app is acting on, which is not the same as what is in the cache: an expired cache is not
+    /// consulted, so listing it would describe behaviour the app is not exhibiting.
+    func remoteFeatureFlags() async -> [String] {
+        // The action deliberately does not fetch. A dropped dispatch degrades to nil, the safe reading.
+        let values = await awaitedDispatch(fallback: [RemoteFeatureFlag: Bool]?.none) { completion in
+            FeatureFlagAction.loadRemoteFeatureFlagsInEffect(completion: completion)
+        }
+
+        guard let values else {
+            return [entry("Remote values loaded", "false (nothing fetched this session, or the last fetch aged out)")]
+        }
+        return [entry("Remote values loaded", "true")] + RemoteFeatureFlag.allCases.map { flag in
+            entry(String(describing: flag), values[flag].map { "\($0) (remote)" } ?? "not returned by server")
+        }
     }
 
     /// Only stores running WooCommerce: the storage holds every site on the WPCom account, and the Android
@@ -186,6 +203,30 @@ private extension MobileStatusReportProvider {
     func entry(_ key: String, _ value: String) -> String {
         "\(key): \(value)"
     }
+
+    /// Dispatches an action answered from local state and returns its completion value.
+    ///
+    /// The await is bounded because a dispatch is not guaranteed an answer: the deauthenticated stores manager
+    /// drops actions for stores it does not run (`AppSettingsStore` among them), and no completion ever comes.
+    /// After `Constants.dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is
+    /// recoverable, a report that never finishes while a merchant files a ticket is not.
+    func awaitedDispatch<Value>(fallback: Value,
+                                _ makeAction: (@escaping (Value) -> Void) -> Action) async -> Value {
+        await withCheckedContinuation { continuation in
+            var resumed = false
+            let resumeOnce: (Value) -> Void = { value in
+                guard !resumed else { return }
+                resumed = true
+                continuation.resume(returning: value)
+            }
+            stores.dispatch(makeAction { value in
+                // Stores answer these inline on the main queue today; the hop keeps `resumed` main-only if one
+                // ever answers from elsewhere.
+                DispatchQueue.main.async { resumeOnce(value) }
+            })
+            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.dispatchTimeout) { resumeOnce(fallback) }
+        }
+    }
 }
 
 extension MobileStatusReportProvider {
@@ -199,6 +240,9 @@ extension MobileStatusReportProvider {
 
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
+
+        /// How long `awaitedDispatch` waits before degrading to its fallback.
+        static let dispatchTimeout: TimeInterval = 1
     }
 }
 

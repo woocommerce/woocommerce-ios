@@ -102,10 +102,11 @@ struct MobileStatusReportProviderTests {
 
     @Test func report_when_a_store_is_selected() async throws {
         // Given
-        try await givenAFullyPopulatedStore()
+        let pushNotesManager = try await givenAFullyPopulatedStore()
 
         // When
-        let report = await makeProvider().generateReport(siteAddress: "https://typed.example.com")
+        let report = await makeProvider(pushNotesManager: pushNotesManager)
+            .generateReport(siteAddress: "https://typed.example.com")
 
         // Then
         #expect(redactingEnumeratedSections(report).contains("""
@@ -133,6 +134,9 @@ struct MobileStatusReportProviderTests {
         Jetpack: installed=true connected=true CP=false
         Plan: business-bundle
         Woo core version: 9.4.2
+
+        ## Store Notifications
+        Push registration: REGISTERED_BOTH
         """))
     }
 
@@ -151,6 +155,23 @@ struct MobileStatusReportProviderTests {
         #expect(!report.contains("0123456789abcdef"))
         #expect(report.contains("Woo push token ID: present (…162342)"))
         #expect(!report.contains("4815162342"))
+    }
+
+    @Test(arguments: [(true, "device-id", "REGISTERED_BOTH"),
+                      (true, nil, "REGISTERED_WOO_ONLY"),
+                      (false, "device-id", "REGISTERED_WPCOM_ONLY"),
+                      (false, nil, "UNREGISTERED")])
+    func push_registration_covers_both_systems(wooRegistered: Bool, deviceID: String?, expected: String) async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        let pushNotesManager = MockPushNotificationsManager(mockedDeviceID: deviceID,
+                                                            siteIDsRegisteredForWooPNs: wooRegistered ? [1] : [])
+
+        // When
+        let report = await makeProvider(pushNotesManager: pushNotesManager).generateReport()
+
+        // Then
+        #expect(report.contains("Push registration: \(expected)"))
     }
 
     // MARK: - Feature flags
@@ -244,7 +265,7 @@ private extension MobileStatusReportProviderTests {
                                    generalAppSettings: appSettings)
     }
 
-    func givenAFullyPopulatedStore() async throws {
+    func givenAFullyPopulatedStore() async throws -> MockPushNotificationsManager {
         sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1,
                                                                name: "A",
                                                                url: "https://example.com",
@@ -276,6 +297,8 @@ private extension MobileStatusReportProviderTests {
                 break
             }
         }
+
+        return MockPushNotificationsManager(mockedDeviceID: "device-id", siteIDsRegisteredForWooPNs: [1])
     }
 
     func insert(sites: [Yosemite.Site], plugins: [SitePlugin]) async throws {

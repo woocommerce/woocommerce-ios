@@ -76,6 +76,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
 
         if let site {
             report += await section("## Store Details") { await self.storeDetailsSection(site) }
+            report += await section("## Store Notifications") { self.storeNotificationsSection(site) }
         }
 
         return report.joined(separator: "\n")
@@ -152,6 +153,13 @@ private extension MobileStatusReportProvider {
         ]
     }
 
+    /// The bare status. Why it is what it is depends on the token, the permission, a remote flag and the Woo
+    /// version, all of which the report already carries — deriving a cause would be a second copy of the
+    /// registration rules that starts stating confident nonsense as soon as the two drift.
+    func storeNotificationsSection(_ site: Site) -> [String] {
+        [entry("Push registration", pushRegistration(siteID: site.siteID))]
+    }
+
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
     /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
     func featureFlagsSection() async -> [String] {
@@ -203,6 +211,22 @@ private extension MobileStatusReportProvider {
             return "Application passwords"
         case .posLocalCatalog:
             return "POS local catalog"
+        }
+    }
+
+    /// The Woo token is registered per store; the WPCom device registration is account-wide. `REGISTERED_BOTH` is
+    /// the usual explanation for duplicate new-order notifications.
+    func pushRegistration(siteID: Int64) -> String {
+        switch (pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID),
+                pushNotesManager.deviceID?.isNotEmpty == true) {
+        case (true, true):
+            return "REGISTERED_BOTH"
+        case (true, false):
+            return "REGISTERED_WOO_ONLY"
+        case (false, true):
+            return "REGISTERED_WPCOM_ONLY"
+        case (false, false):
+            return "UNREGISTERED"
         }
     }
 

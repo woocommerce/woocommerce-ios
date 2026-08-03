@@ -2,6 +2,7 @@ import Experiments
 import Foundation
 import Yosemite
 import enum Networking.RemoteFeatureFlag
+import struct Storage.GeneralAppSettingsStorage
 import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
@@ -37,17 +38,20 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
+    private let generalAppSettings: GeneralAppSettingsStorage
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
+        self.generalAppSettings = generalAppSettings
     }
 
     func generateReport(siteAddress: String?) async -> String {
@@ -61,6 +65,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Notifications") { self.notificationsSection(system) }
         report += await section("## Account & Stores") { self.accountSection(siteAddress) }
         report += await section("## Feature Flags") { await self.featureFlagsSection() }
+        report += await section("## Experimental Features") { self.experimentalFeaturesSection() }
 
         return report.joined(separator: "\n")
     }
@@ -122,6 +127,12 @@ private extension MobileStatusReportProvider {
     func featureFlagsSection() async -> [String] {
         ["", "### Local flags"] + localFeatureFlags() + ["", "### Remote flags"] + (await remoteFeatureFlags())
     }
+
+    /// `BetaFeature` is the same list the settings screen renders, so a toggle added there appears here — and
+    /// the exhaustive switch in `reportName(of:)` then forces it to be given a report label.
+    func experimentalFeaturesSection() -> [String] {
+        BetaFeature.allCases.map { entry(reportName(of: $0), String(generalAppSettings.betaFeatureEnabled($0))) }
+    }
 }
 
 // MARK: - Values
@@ -148,6 +159,20 @@ private extension MobileStatusReportProvider {
         }
         return [entry("Remote values loaded", "true")] + RemoteFeatureFlag.allCases.map { flag in
             entry(String(describing: flag), values[flag].map { "\($0) (remote)" } ?? "not returned by server")
+        }
+    }
+
+    /// Stable English labels, not `title`: that is localized UI copy, which would put translated keys in a
+    /// report Happiness Engineers grep in English. `Product add-ons` and `POS local catalog` are the labels the
+    /// Android report uses for its equivalent toggles.
+    func reportName(of feature: BetaFeature) -> String {
+        switch feature {
+        case .viewAddOns:
+            return "Product add-ons"
+        case .applicationPasswords:
+            return "Application passwords"
+        case .posLocalCatalog:
+            return "POS local catalog"
         }
     }
 

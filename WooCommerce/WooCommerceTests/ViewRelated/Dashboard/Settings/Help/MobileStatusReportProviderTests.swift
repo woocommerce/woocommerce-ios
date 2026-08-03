@@ -1,15 +1,18 @@
 import Testing
 import Foundation
+import Experiments
 import Networking
 import Yosemite
 import YosemiteTestHelpers
+import struct Storage.GeneralAppSettingsStorage
 @testable import WooCommerce
 
 /// The report is a text artifact, so most of it is pinned by comparing the whole thing: that catches an omitted
 /// field and a lost section in one assertion, which per-field tests do not.
 ///
-/// The Feature Flags body is redacted from those comparisons — it enumerates `FeatureFlag.allCases`, so an
-/// inline expectation would fail on every unrelated PR that adds a flag. It has its own tests below.
+/// The Feature Flags and Experimental Features bodies are redacted from those comparisons — they enumerate
+/// `FeatureFlag.allCases` and `BetaFeature.allCases`, so an inline expectation would fail on every unrelated PR
+/// that adds a flag. They have their own tests below.
 ///
 /// Serialized because `SessionManager.testingInstance` is backed by a shared `UserDefaults` suite: every test
 /// here sets a selected store, and in parallel they overwrite each other's.
@@ -20,17 +23,20 @@ struct MobileStatusReportProviderTests {
     private let sessionManager: SessionManager
     private let stores: MockStoresManager
     private let storageManager: MockStorageManager
+    private let pushNotesManager: MockPushNotificationsManager
+    private let appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
 
     init() {
         sessionManager = SessionManager.testingInstance
         stores = MockStoresManager(sessionManager: sessionManager)
         storageManager = MockStorageManager()
+        pushNotesManager = MockPushNotificationsManager()
         sessionManager.defaultSite = nil
         sessionManager.defaultAccount = nil
         sessionManager.defaultCredentials = nil
     }
 
-    @Test func report_carries_every_section() async {
+    @Test func report_when_no_store_is_selected() async {
         // Given, When
         let report = await makeProvider().generateReport()
 
@@ -74,6 +80,9 @@ struct MobileStatusReportProviderTests {
         Connected stores: 0
 
         ## Feature Flags
+        <redacted>
+
+        ## Experimental Features
         <redacted>
         """)
     }
@@ -156,21 +165,37 @@ struct MobileStatusReportProviderTests {
         // Then
         #expect(report.contains("Remote values loaded: false (nothing fetched this session, or the last fetch aged out)"))
     }
+
+    @Test func experimental_features_lists_every_toggle_from_the_settings_screen() async throws {
+        // Given
+        try appSettings.setValue(true, for: BetaFeature.viewAddOns.settingsKey)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        let lines = section("## Experimental Features", in: report)
+        #expect(lines.count == BetaFeature.allCases.count)
+        // The stable English report label, not `BetaFeature.title`: that is localized UI copy, and a report
+        // generated on a non-English device must still carry greppable English keys.
+        #expect(lines.contains("Product add-ons: true"))
+    }
 }
 
 // MARK: - Helpers
 
 private extension MobileStatusReportProviderTests {
 
-    func makeProvider(pushNotesManager: PushNotesManager = MockPushNotificationsManager()) -> MobileStatusReportProvider {
+    func makeProvider(pushNotesManager: PushNotesManager? = nil) -> MobileStatusReportProvider {
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
-                                   pushNotesManager: pushNotesManager,
+                                   pushNotesManager: pushNotesManager ?? self.pushNotesManager,
                                    stores: stores,
                                    storageManager: storageManager,
-                                   featureFlagService: MockFeatureFlagService())
+                                   featureFlagService: MockFeatureFlagService(),
+                                   generalAppSettings: appSettings)
     }
 
-    /// Replaces the bodies of the sections that enumerate every known flag and beta toggle, so an unrelated
+    /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated
     /// addition to either list does not fail a whole-report comparison.
     func redactingEnumeratedSections(_ report: String) -> String {
         ["## Feature Flags", "## Experimental Features"].reduce(report) { report, heading in
@@ -186,6 +211,14 @@ private extension MobileStatusReportProviderTests {
             return (lines[...start] + ["<redacted>"] + separators + lines[(start + 1 + body.count)...])
                 .joined(separator: "\n")
         }
+    }
+
+    func section(_ heading: String, in report: String) -> [String] {
+        let lines = report.components(separatedBy: "\n")
+        guard let start = lines.firstIndex(of: heading) else {
+            return []
+        }
+        return lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") && !$0.hasPrefix("# ") }.filter { !$0.isEmpty }
     }
 }
 

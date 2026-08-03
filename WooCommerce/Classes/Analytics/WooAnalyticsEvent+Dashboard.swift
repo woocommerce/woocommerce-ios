@@ -1,4 +1,5 @@
 import Foundation
+import enum Yosemite.StatsGranularityV4
 import enum Yosemite.StatsTimeRangeV4
 import enum Yosemite.AnalyticsOrderDateType
 import enum Yosemite.DashboardRevenueStatsType
@@ -15,6 +16,7 @@ extension WooAnalyticsEvent {
             static let type = "type"
             static let option = "option"
             static let date = "date"
+            static let granularity = "granularity"
         }
 
         /// Shared `type` value for all stats card events. Mirrors the Android
@@ -36,11 +38,13 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardMainStatsLoaded, properties: [Keys.range: timeRange.analyticsValue])
         }
 
-        /// Tracked when a store returns a stats interval whose date can't be parsed, so it is dropped from
-        /// the Store Performance chart. Mirrors Android's `stats_unexpected_format`.
-        static func statsUnexpectedDateFormat(timeRange: StatsTimeRangeV4, dateStrings: [String]) -> WooAnalyticsEvent {
+        /// Tracked when a store returns a stats interval whose date can't be parsed, so it is dropped from the Store Performance chart.
+        static func statsUnexpectedDateFormat(timeRange: StatsTimeRangeV4,
+                                              granularity: StatsGranularityV4,
+                                              dateStrings: [String]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dashboardStatsUnexpectedDateFormat,
                               properties: [Keys.range: timeRange.analyticsValue,
+                                           Keys.granularity: granularity.rawValue,
                                            Keys.date: dateStrings.joined(separator: ", ")])
         }
 

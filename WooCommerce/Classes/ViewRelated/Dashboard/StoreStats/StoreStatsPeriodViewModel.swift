@@ -147,6 +147,7 @@ final class StoreStatsPeriodViewModel {
     private let analytics: Analytics
 
     private var cancellables: Set<AnyCancellable> = []
+    private var reportedUnparseableDateStarts: Set<[String]> = []
 
     init(siteID: Int64,
          timeRange: StatsTimeRangeV4,
@@ -299,8 +300,7 @@ private extension StoreStatsPeriodViewModel {
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 
-    /// Reports the intervals dropped for an unparseable date, with the offending strings, once per
-    /// sync — not in `sortStatsIntervals`, which runs many times per render.
+    /// Reports each unique set of intervals dropped for an unparseable date once over the lifetime of the view model.
     func reportUnparseableIntervalsIfNeeded(in orderStats: OrderStatsV4?, keptCount: Int) {
         guard let orderStats, orderStats.intervals.count > keptCount else {
             return
@@ -309,13 +309,19 @@ private extension StoreStatsPeriodViewModel {
         let unparseableDateStarts = orderStats.intervals
             .filter { $0.dateStart(timeZone: .siteTimezone) == nil }
             .map(\.dateStart)
+            .sorted()
+        guard reportedUnparseableDateStarts.insert(unparseableDateStarts).inserted else {
+            return
+        }
         crashLogging.logMessage(
             "Dropped stats interval(s) with an unparseable date during dashboard sync",
             properties: ["dropped_interval_count": orderStats.intervals.count - keptCount,
                          "unparseable_date_starts": unparseableDateStarts],
             level: .error
         )
-        analytics.track(event: .Dashboard.statsUnexpectedDateFormat(timeRange: timeRange, dateStrings: unparseableDateStarts))
+        analytics.track(event: .Dashboard.statsUnexpectedDateFormat(timeRange: timeRange,
+                                                                     granularity: orderStats.granularity,
+                                                                     dateStrings: unparseableDateStarts))
     }
 }
 

@@ -407,7 +407,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
     // MARK: - Unparseable interval dates: reporting and alignment
 
-    func test_updateOrderData_when_an_interval_has_unparseable_date_then_reports_non_fatal_once_with_bad_date() {
+    func test_loadCachedContent_when_same_unparseable_date_is_processed_repeatedly_then_reports_non_fatal_once() {
         // Given
         let timeRange: StatsTimeRangeV4 = .thisMonth
         let crashLogger = MockCrashLogger()
@@ -423,6 +423,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // When
         insertOrderStats(orderStats, timeRange: timeRange)
+        viewModel.loadCachedContent()
+        viewModel.loadCachedContent()
 
         // Then
         XCTAssertEqual(crashLogger.loggedMessages.count, 1)
@@ -450,7 +452,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertTrue(crashLogger.loggedMessages.isEmpty)
     }
 
-    func test_updateOrderData_when_an_interval_has_unparseable_date_then_tracks_unexpected_format_event() {
+    func test_loadCachedContent_when_same_unparseable_date_is_processed_repeatedly_then_tracks_unexpected_format_event_once() {
         // Given
         let timeRange: StatsTimeRangeV4 = .thisMonth
         let analyticsProvider = MockAnalyticsProvider()
@@ -467,6 +469,8 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 
         // When
         insertOrderStats(orderStats, timeRange: timeRange)
+        viewModel.loadCachedContent()
+        viewModel.loadCachedContent()
 
         // Then
         let eventIndices = analyticsProvider.receivedEvents.enumerated()
@@ -475,6 +479,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(eventIndices.count, 1)
         let properties = eventIndices.first.map { analyticsProvider.receivedProperties[$0] }
         XCTAssertEqual(properties?["date"] as? String, "")
+        XCTAssertEqual(properties?["granularity"] as? String, "day")
     }
 
     func test_visitorStatsText_when_an_interval_has_unparseable_date_then_selected_visitor_count_stays_aligned() {

@@ -182,7 +182,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     // MARK: - Split view support
 
-    func test_navigation_bar_changes_are_not_animated() {
+    func test_animateNavigationBarVisibilityChanges_when_using_product_search_then_is_false() {
         // Given
         let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
 

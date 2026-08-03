@@ -33,6 +33,12 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
+    /// Apple's Push Notification device token, as last received from APNs.
+    ///
+    /// `nil` means the app never obtained one, which blocks both push systems.
+    ///
+    var deviceToken: String? { get }
+
     /// Self-driven push notification token ID
     ///
     var wooPushNotificationToken: String? { get }

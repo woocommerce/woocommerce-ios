@@ -7,6 +7,7 @@
 
 25.3
 -----
+- [Internal] Mitigate a potential navigation crash when opening products from search results. [https://github.com/woocommerce/woocommerce-ios/pull/17645]
 - [Internal] Prevent offline banner updates from overlapping navigation transitions. [https://github.com/woocommerce/woocommerce-ios/pull/17611]
 - [Internal] Send a persistent device id in remote feature flag requests so logins without a WordPress.com account are included in progressive rollouts. [https://github.com/woocommerce/woocommerce-ios/pull/17605]
 - [*] Payments: fixed successful in-person payments appearing to fail when the capture response is interrupted. [https://github.com/woocommerce/woocommerce-ios/pull/17593]

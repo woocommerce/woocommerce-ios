@@ -15,9 +15,19 @@ enum MobileStatusReportZendesk {
 
     private static let contentType = "text/plain"
 
+    /// Adds the report to what a ticket already carries. The one place that encodes "the report travels twice",
+    /// shared by the support form and the direct ticket creation path so the two cannot drift apart.
+    static func embed(_ report: String,
+                      intoCustomFields customFields: [Int64: String],
+                      attachments: [ZendeskAttachment]) -> (customFields: [Int64: String], attachments: [ZendeskAttachment]) {
+        var customFields = customFields
+        customFields[customFieldID] = report
+        return (customFields, attachments + [attachment(for: report)].compactMap { $0 })
+    }
+
     /// `nil` when the report is empty or cannot be encoded, so a failure here drops the attachment rather than
     /// the ticket.
-    static func attachment(for report: String) -> ZendeskAttachment? {
+    private static func attachment(for report: String) -> ZendeskAttachment? {
         guard report.isNotEmpty, let data = report.data(using: .utf8) else {
             return nil
         }

@@ -201,11 +201,10 @@ final class SupportEscalationCoordinator {
             }
 
             let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
-            var customFields = areaInfo.area.datasource.customFields(siteAddress: siteAddress)
-            customFields[MobileStatusReportZendesk.customFieldID] = mobileStatusReport
-
-            let attachments = attachmentProvider.attachments(including: additionalAttachmentsProvider())
-                + [MobileStatusReportZendesk.attachment(for: mobileStatusReport)].compactMap { $0 }
+            let (customFields, attachments) = MobileStatusReportZendesk.embed(
+                mobileStatusReport,
+                intoCustomFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
+                attachments: attachmentProvider.attachments(including: additionalAttachmentsProvider()))
 
             let request = ZendeskSupportRequest(
                 formID: areaInfo.area.datasource.formID,

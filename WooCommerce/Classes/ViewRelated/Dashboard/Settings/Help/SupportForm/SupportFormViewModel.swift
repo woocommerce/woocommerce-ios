@@ -195,11 +195,10 @@ public final class SupportFormViewModel: ObservableObject {
         showLoadingIndicator = true
 
         let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
-        var customFields = area.datasource.customFields(siteAddress: siteAddress)
-        customFields[MobileStatusReportZendesk.customFieldID] = mobileStatusReport
-
-        let requestAttachments = attachmentProvider.attachments(including: attachments)
-            + [MobileStatusReportZendesk.attachment(for: mobileStatusReport)].compactMap { $0 }
+        let (customFields, requestAttachments) = MobileStatusReportZendesk.embed(
+            mobileStatusReport,
+            intoCustomFields: area.datasource.customFields(siteAddress: siteAddress),
+            attachments: attachmentProvider.attachments(including: attachments))
 
         let request = ZendeskSupportRequest(formID: area.datasource.formID,
                                             customFields: customFields,

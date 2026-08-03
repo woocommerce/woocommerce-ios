@@ -34,6 +34,17 @@ struct MobileStatusReportProviderTests {
         sessionManager.defaultSite = nil
         sessionManager.defaultAccount = nil
         sessionManager.defaultCredentials = nil
+
+        // The provider's `awaitedDispatch` waits out its timeout when nothing answers an action, so the
+        // storage-backed lookups are answered "nothing stored" up front; tests override as needed.
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getStoreID(_, onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
     }
 
     @Test func report_when_no_store_is_selected() async {
@@ -87,6 +98,42 @@ struct MobileStatusReportProviderTests {
 
         # No store selected
         """)
+    }
+
+    @Test func report_when_a_store_is_selected() async throws {
+        // Given
+        try await givenAFullyPopulatedStore()
+
+        // When
+        let report = await makeProvider().generateReport(siteAddress: "https://typed.example.com")
+
+        // Then
+        #expect(redactingEnumeratedSections(report).contains("""
+        ## Account & Stores
+        WPCom user ID: 12345
+        Address given in the form: https://typed.example.com
+        Connected stores: 2
+
+        All connected stores:
+        https://example.com: Plan: business-bundle Jetpack: installed=true connected=true
+        https://other.example.com: Plan: unknown Jetpack: installed=false connected=false
+
+        ## Feature Flags
+        <redacted>
+
+        ## Experimental Features
+        <redacted>
+
+        # Selected store: https://example.com
+
+        ## Store Details
+        Blog ID: 1
+        Store ID: store-abc
+        Auth method: WPCom
+        Jetpack: installed=true connected=true CP=false
+        Plan: business-bundle
+        Woo core version: 9.4.2
+        """))
     }
 
     // MARK: - Values a whole-report comparison would not make obvious
@@ -195,6 +242,51 @@ private extension MobileStatusReportProviderTests {
                                    storageManager: storageManager,
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings)
+    }
+
+    func givenAFullyPopulatedStore() async throws {
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1,
+                                                               name: "A",
+                                                               url: "https://example.com",
+                                                               plan: "business-bundle",
+                                                               isJetpackThePluginInstalled: true,
+                                                               isJetpackConnected: true)
+        sessionManager.defaultAccount = Account(userID: 12345,
+                                                displayName: "",
+                                                email: "",
+                                                username: "",
+                                                gravatarUrl: nil)
+        sessionManager.defaultCredentials = .wpcom(username: "u", authToken: "t", siteAddress: "https://example.com")
+
+        try await insert(sites: [Yosemite.Site.fake().copy(siteID: 1, name: "A", url: "https://example.com",
+                                                           plan: "business-bundle",
+                                                           isJetpackThePluginInstalled: true, isJetpackConnected: true,
+                                                           isWooCommerceActive: true),
+                                 Yosemite.Site.fake().copy(siteID: 2, name: "B", url: "https://other.example.com",
+                                                           plan: "",
+                                                           isJetpackThePluginInstalled: false, isJetpackConnected: false,
+                                                           isWooCommerceActive: true)],
+                         plugins: [SitePlugin.fake().copy(siteID: 1, plugin: "woocommerce/woocommerce", version: "9.4.2")])
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getStoreID(_, onCompletion):
+                onCompletion("store-abc")
+            default:
+                break
+            }
+        }
+    }
+
+    func insert(sites: [Yosemite.Site], plugins: [SitePlugin]) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            storageManager.performAndSave({ storage in
+                sites.forEach { storage.insertNewObject(ofType: StorageSite.self).update(with: $0) }
+                plugins.forEach { storage.insertNewObject(ofType: StorageSitePlugin.self).update(with: $0) }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
+        }
     }
 
     /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated

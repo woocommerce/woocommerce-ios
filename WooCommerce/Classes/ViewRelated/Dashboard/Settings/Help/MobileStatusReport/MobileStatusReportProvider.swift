@@ -2,6 +2,7 @@ import Experiments
 import Foundation
 import Yosemite
 import enum Networking.RemoteFeatureFlag
+import enum Networking.WooConstants
 import struct Storage.GeneralAppSettingsStorage
 import protocol Storage.StorageManagerType
 
@@ -73,6 +74,10 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         let site = stores.sessionManager.defaultSite
         report += ["", site.map { "# Selected store: \(storeLabel($0))" } ?? Constants.noStoreHeading]
 
+        if let site {
+            report += await section("## Store Details") { await self.storeDetailsSection(site) }
+        }
+
         return report.joined(separator: "\n")
     }
 
@@ -132,6 +137,21 @@ private extension MobileStatusReportProvider {
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
+    func storeDetailsSection(_ site: Site) async -> [String] {
+        [
+            // Blog ID is absent for every application-password store — exactly the population that files login
+            // tickets — while Store ID is absent until the first successful system status fetch. One being unset
+            // is normal; both being unset points at a store the app has never talked to successfully.
+            entry("Blog ID", blogID(site)),
+            entry("Store ID", await storeID(site)),
+            entry("Auth method", authMethod()),
+            entry("Jetpack", "installed=\(site.isJetpackThePluginInstalled) " +
+                  "connected=\(site.isJetpackConnected) CP=\(site.isJetpackCPConnected)"),
+            entry("Plan", site.plan.nilIfEmpty ?? Constants.unknown),
+            entry("Woo core version", wooCoreVersion(siteID: site.siteID) ?? Constants.unknown)
+        ]
+    }
+
     /// Two independent systems holding different flags, so both are reported and labelled. Every flag is listed,
     /// not only the enabled ones: an absent key would be ambiguous between disabled, renamed and deleted.
     func featureFlagsSection() async -> [String] {
@@ -184,6 +204,44 @@ private extension MobileStatusReportProvider {
         case .posLocalCatalog:
             return "POS local catalog"
         }
+    }
+
+    func blogID(_ site: Site) -> String {
+        site.siteID == Networking.WooConstants.placeholderSiteID ?
+            "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
+    }
+
+    func storeID(_ site: Site) async -> String {
+        let storedID = await awaitedDispatch(fallback: String?.none) { completion in
+            AppSettingsAction.getStoreID(siteID: site.siteID, onCompletion: completion)
+        }
+        return storedID?.nilIfEmpty ?? "\(Constants.notSet) (no store system status has been fetched yet)"
+    }
+
+    /// The credentials say what the app holds, the request mode says how it uses them, and a Jetpack site can be
+    /// driven by either.
+    func authMethod() -> String {
+        switch stores.sessionManager.defaultCredentials {
+        case .wpcom:
+            return "WPCom"
+        case .wporg:
+            return "SiteCredentials"
+        case .applicationPassword:
+            return stores.requestAuthenticationMode == .appPasswordsWithJetpack ?
+                "ApplicationPasswordsWithJetpack" : "ApplicationPasswords"
+        case .none:
+            return "not logged in"
+        }
+    }
+
+    func wooCoreVersion(siteID: Int64) -> String? {
+        sitePlugins(siteID: siteID).first { $0.plugin == "woocommerce/woocommerce" }?.version.nilIfEmpty
+    }
+
+    func sitePlugins(siteID: Int64) -> [SitePlugin] {
+        fetched(ResultsController<StorageSitePlugin>(storageManager: storageManager,
+                                                     matching: NSPredicate(format: "siteID == %lld", siteID),
+                                                     sortedBy: []))
     }
 
     /// Only stores running WooCommerce: the storage holds every site on the WPCom account, and the Android
@@ -276,6 +334,7 @@ extension MobileStatusReportProvider {
         static let noStoreHeading = "# No store selected"
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
+        static let notSet = "not set"
 
         /// How long `awaitedDispatch` waits before degrading to its fallback.
         static let dispatchTimeout: TimeInterval = 1

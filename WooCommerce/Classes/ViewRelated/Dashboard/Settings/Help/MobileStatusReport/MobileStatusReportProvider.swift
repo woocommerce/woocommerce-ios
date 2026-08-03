@@ -1,4 +1,6 @@
 import Foundation
+import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
 /// report instead of assembling the provider's dependencies.
@@ -30,11 +32,17 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
 
     private let systemSnapshot: () async -> MobileStatusReportSystemSnapshot
     private let pushNotesManager: PushNotesManager
+    private let stores: StoresManager
+    private let storageManager: StorageManagerType
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
-                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
+        self.stores = stores
+        self.storageManager = storageManager
     }
 
     func generateReport(siteAddress: String?) async -> String {
@@ -46,6 +54,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Device") { self.deviceSection(system) }
         report += await section("## Connectivity") { self.connectivitySection(system) }
         report += await section("## Notifications") { self.notificationsSection(system) }
+        report += await section("## Account & Stores") { self.accountSection(siteAddress) }
 
         return report.joined(separator: "\n")
     }
@@ -94,11 +103,46 @@ private extension MobileStatusReportProvider {
          entry("Background refresh", system.backgroundRefresh),
          entry("Low Power Mode", system.lowPowerMode)]
     }
+
+    func accountSection(_ siteAddress: String?) -> [String] {
+        let sites = allSites()
+        return [entry("WPCom user ID", stores.sessionManager.defaultAccount.map { String($0.userID) } ?? "not logged in"),
+                siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
+                entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    /// Only stores running WooCommerce: the storage holds every site on the WPCom account, and the Android
+    /// report counts Woo stores, so the same merchant must not get two different counts on a cross-platform
+    /// ticket.
+    func allSites() -> [Site] {
+        fetched(ResultsController<StorageSite>(storageManager: storageManager,
+                                               matching: NSPredicate(format: "isWooCommerceActive == YES"),
+                                               sortedBy: [NSSortDescriptor(key: "name", ascending: true)]))
+    }
+
+    func fetched<T>(_ controller: ResultsController<T>) -> [T.ReadOnlyType] {
+        try? controller.performFetch()
+        return controller.fetchedObjects
+    }
+
+    /// Merchants often report a problem on a store other than the selected one. Only the selected store's plugins
+    /// have usually been fetched, so these lines carry no plugin versions.
+    func siteList(_ sites: [Site]) -> [String] {
+        guard sites.isNotEmpty else {
+            return []
+        }
+
+        return ["", "All connected stores:"] + sites.map { site in
+            entry(site.url.nilIfEmpty ?? Constants.unknown,
+                  "Plan: \(site.plan.nilIfEmpty ?? Constants.unknown) " +
+                  "Jetpack: installed=\(site.isJetpackThePluginInstalled) connected=\(site.isJetpackConnected)")
+        }
+    }
 
     /// Enough to compare against server logs, not enough to address the device.
     func redactedToken(_ token: String?) -> String {
@@ -136,6 +180,7 @@ extension MobileStatusReportProvider {
             "https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md"
 
         static let sectionUnavailable = "Info not found"
+        static let unknown = "unknown"
     }
 }
 

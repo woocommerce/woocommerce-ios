@@ -40,6 +40,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         var report = [Constants.heading, Constants.fieldReference]
 
         report += await section("## App") { self.appSection(system) }
+        report += await section("## Device") { self.deviceSection(system) }
 
         return report.joined(separator: "\n")
     }
@@ -52,6 +53,15 @@ private extension MobileStatusReportProvider {
     func appSection(_ system: MobileStatusReportSystemSnapshot) -> [String] {
         [entry("Version", system.version),
          entry("Build", system.build)]
+    }
+
+    func deviceSection(_ system: MobileStatusReportSystemSnapshot) -> [String] {
+        [entry("Model", system.model),
+         entry("OS", system.os),
+         entry("Free space", system.freeSpace),
+         entry("Screen", system.screen),
+         entry("Device locale", system.deviceLocale),
+         entry("App language", system.appLanguage)]
     }
 }
 

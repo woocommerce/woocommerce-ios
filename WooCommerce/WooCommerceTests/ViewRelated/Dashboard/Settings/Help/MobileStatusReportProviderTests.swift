@@ -7,7 +7,7 @@ import Foundation
 @MainActor
 struct MobileStatusReportProviderTests {
 
-    @Test func report_carries_the_heading_and_the_app_section() async {
+    @Test func report_carries_every_section() async {
         // Given, When
         let report = await makeProvider().generateReport()
 
@@ -19,6 +19,14 @@ struct MobileStatusReportProviderTests {
         ## App
         Version: 21.3 (2103003)
         Build: appStore
+
+        ## Device
+        Model: iPhone17,1
+        OS: iOS 18.4
+        Free space: 12.40 GB
+        Screen: 393x852 pt (phone)
+        Device locale: en-US
+        App language: en-GB
         """)
     }
 }

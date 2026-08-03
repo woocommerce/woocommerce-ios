@@ -112,10 +112,11 @@ struct POSRefundSubmissionMapping {
             RefundPreviewLineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
         }
 
-        let feeLines = components.fees.map { fee -> RefundPreviewLineItem in
-            let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
-            let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
-            return RefundPreviewLineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
+        let feeLines = components.fees.compactMap { fee -> RefundPreviewLineItem? in
+            guard let refundTotal = grossRefundTotal(for: fee) else {
+                return nil
+            }
+            return RefundPreviewLineItem.amountBased(lineItemID: fee.feeID, refundTotal: refundTotal)
         }
 
         return productLines + feeLines
@@ -131,10 +132,11 @@ struct POSRefundSubmissionMapping {
             ComputedRefundLineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
         }
 
-        let feeLines = components.fees.map { fee -> ComputedRefundLineItem in
-            let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
-            let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
-            return ComputedRefundLineItem.amountBased(lineItemID: fee.feeID, refundTotal: total + totalTax)
+        let feeLines = components.fees.compactMap { fee -> ComputedRefundLineItem? in
+            guard let refundTotal = grossRefundTotal(for: fee) else {
+                return nil
+            }
+            return ComputedRefundLineItem.amountBased(lineItemID: fee.feeID, refundTotal: refundTotal)
         }
 
         return productLines + feeLines
@@ -182,6 +184,18 @@ struct POSRefundSubmissionMapping {
 }
 
 private extension POSRefundSubmissionMapping {
+    /// The tax-inclusive amount to request for a fee line, or nil for a zero-total fee.
+    /// Zero lines must be dropped from both the preview and the computed create: the server
+    /// rejects a gross line refund of zero with `invalid_refund_total`, and a zero line
+    /// contributes nothing to the refund. Fee totals are store-formatted decimal strings,
+    /// so an exact-zero comparison is sufficient.
+    func grossRefundTotal(for fee: OrderFeeLine) -> Decimal? {
+        let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+        let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+        let gross = total + totalTax
+        return gross == .zero ? nil : gross
+    }
+
     func displayName(for fee: OrderFeeLine) -> String {
         let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName

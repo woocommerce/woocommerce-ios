@@ -32,6 +32,15 @@ struct MobileStatusReportProviderTests {
         Network type: WiFi or Ethernet
         Expensive connection: false
         Low Data Mode: false
+
+        ## Notifications
+        APNs environment: production
+        Authorization status: authorized
+        Alerts: enabled
+        Sounds: enabled
+        Lock screen: enabled
+        Time-sensitive: enabled
+        Scheduled summary: disabled
         """)
     }
 }

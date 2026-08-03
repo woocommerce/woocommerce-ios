@@ -25,6 +25,7 @@ struct MobileStatusReportProviderTests {
     private let storageManager: MockStorageManager
     private let pushNotesManager: MockPushNotificationsManager
     private let posEligibilityService = MockPOSEligibilityService()
+    private let posCatalogSettingsService = MockPOSCatalogSettingsService()
     private let appSettings = GeneralAppSettingsStorage(fileStorage: MockInMemoryStorage())
 
     init() {
@@ -44,6 +45,12 @@ struct MobileStatusReportProviderTests {
                 onCompletion(nil)
             case let .getPreferredInPersonPaymentGateway(_, onCompletion):
                 onCompletion(nil)
+            case let .getPOSLastOpenedDate(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSLocalCatalogCellularDataAllowed(_, onCompletion):
+                onCompletion(false)
+            case let .getPOSCatalogFileBlockedByHost(_, onCompletion):
+                onCompletion(false)
             default:
                 break
             }
@@ -150,6 +157,14 @@ struct MobileStatusReportProviderTests {
         ## Point of Sale
         POS tab visible: true
         POS launchable: true
+        Catalog strategy: local catalog
+        POS last opened: 2023-11-13T22:13:20Z
+        Local catalog products: 42
+        Local catalog variations: 7
+        Local catalog full sync: 2023-11-14T22:13:20Z
+        Local catalog incremental sync: never
+        Catalog file blocked: false
+        Full sync on cellular allowed: true
         """))
     }
 
@@ -214,6 +229,31 @@ struct MobileStatusReportProviderTests {
         // Then
         #expect(hidden.contains("Reason is logged - search application_log.txt for \"POS tab not visible\" or \"POS cannot be launched\""))
         #expect(!available.contains("Reason is logged"))
+    }
+
+    /// Matching the Android report's per-field degradation: the eligibility rows around the catalog read
+    /// survive it failing, and `unknown` keeps an unreadable catalog distinct from an empty or unsynced one.
+    @Test func a_failing_catalog_read_degrades_its_own_rows_without_taking_the_section_with_it() async {
+        // Given
+        sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1, url: "https://example.com")
+        posEligibilityService.cachedTabVisibility[1] = true
+        posCatalogSettingsService.catalogInfoResult = .failure(MockError.anyError)
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("""
+        POS tab visible: true
+        POS launchable: not evaluated
+        """))
+        #expect(report.contains("""
+        Local catalog products: unknown
+        Local catalog variations: unknown
+        Local catalog full sync: unknown
+        Local catalog incremental sync: unknown
+        Catalog file blocked: false
+        """))
     }
 
     // MARK: - Feature flags
@@ -305,6 +345,7 @@ private extension MobileStatusReportProviderTests {
                                    storageManager: storageManager,
                                    onboardingStateCache: CardPresentPaymentOnboardingStateCache(),
                                    posEligibilityService: posEligibilityService,
+                                   posCatalogSettingsService: posCatalogSettingsService,
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings)
     }
@@ -344,6 +385,12 @@ private extension MobileStatusReportProviderTests {
                 onCompletion("store-abc")
             case let .getPreferredInPersonPaymentGateway(_, onCompletion):
                 onCompletion(CardPresentPaymentsPlugin.wcPay.gatewayID)
+            case let .getPOSLastOpenedDate(_, onCompletion):
+                onCompletion(Date(timeIntervalSince1970: 1_699_913_600))
+            case let .getPOSLocalCatalogCellularDataAllowed(_, onCompletion):
+                onCompletion(true)
+            case let .getPOSCatalogFileBlockedByHost(_, onCompletion):
+                onCompletion(false)
             default:
                 break
             }
@@ -351,6 +398,13 @@ private extension MobileStatusReportProviderTests {
 
         posEligibilityService.cachedTabVisibility[1] = true
         posEligibilityService.cachedLastKnownPOSEligibility[1] = true
+        stores.testPOSCatalogEligibilityChecker = MockPOSLocalCatalogEligibilityService(cachedStates: [1: .eligible])
+        posCatalogSettingsService.catalogInfoResult = .success(
+            .init(productCount: 42,
+                  variationCount: 7,
+                  lastFullSyncDate: Date(timeIntervalSince1970: 1_700_000_000),
+                  lastIncrementalSyncDate: nil)
+        )
 
         return MockPushNotificationsManager(mockedDeviceID: "device-id", siteIDsRegisteredForWooPNs: [1])
     }

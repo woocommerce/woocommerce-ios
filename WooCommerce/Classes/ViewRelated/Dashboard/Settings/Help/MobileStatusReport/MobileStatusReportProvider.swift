@@ -40,6 +40,10 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let storageManager: StorageManagerType
     private let onboardingStateCache: CardPresentPaymentOnboardingStateCache
     private let posEligibilityService: POSEligibilityServiceProtocol
+
+    /// `nil` when the POS database has not been opened this session. The report does not open it: spinning up a
+    /// database to describe it would change what is being described.
+    private let posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
@@ -49,6 +53,8 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      onboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
                      posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+                     posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
+                        = MobileStatusReportProvider.makeCatalogSettingsService(),
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
         self.systemSnapshot = systemSnapshot
@@ -57,9 +63,15 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         self.storageManager = storageManager
         self.onboardingStateCache = onboardingStateCache
         self.posEligibilityService = posEligibilityService
+        self.posCatalogSettingsService = posCatalogSettingsService
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
     }
+
+    nonisolated private static func makeCatalogSettingsService() -> POSCatalogSettingsServiceProtocol? {
+        ServiceLocator.initializedGRDBManager.map { POSCatalogSettingsService(grdbManager: $0) }
+    }
+
 
     func generateReport(siteAddress: String?) async -> String {
         let system = await systemSnapshot()
@@ -185,8 +197,13 @@ private extension MobileStatusReportProvider {
     func pointOfSaleSection(_ site: Site) async -> [String] {
         let tabVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID)
         let launchable = posEligibilityService.loadLastKnownPOSEligibility(siteID: site.siteID)
-        let entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
-                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated)]
+        var entries = [entry("POS tab visible", tabVisible.map(String.init) ?? Constants.notEvaluated),
+                       entry("POS launchable", launchable.map(String.init) ?? Constants.notEvaluated),
+                       entry("Catalog strategy", await catalogStrategy(siteID: site.siteID)),
+                       entry("POS last opened", await posLastOpened(siteID: site.siteID))]
+        entries += await localCatalog(siteID: site.siteID)
+        entries += [entry("Catalog file blocked", await catalogFileBlocked(siteID: site.siteID)),
+                    entry("Full sync on cellular allowed", await fullSyncOnCellularAllowed(siteID: site.siteID))]
 
         guard tabVisible == false || launchable == false else {
             return entries
@@ -232,6 +249,71 @@ private extension MobileStatusReportProvider {
         return [entry("Remote values loaded", "true")] + RemoteFeatureFlag.allCases.map { flag in
             entry(String(describing: flag), values[flag].map { "\($0) (remote)" } ?? "not returned by server")
         }
+    }
+
+    /// Counts sit alongside the timestamps because a catalog that has synced but holds no products is a different
+    /// problem from one that has never synced.
+    func localCatalog(siteID: Int64) async -> [String] {
+        guard let posCatalogSettingsService else {
+            return [entry("Local catalog", "\(Constants.notEvaluated) (the POS catalog database has not been opened since launch)")]
+        }
+
+        do {
+            let info = try await posCatalogSettingsService.loadCatalogInfo(for: siteID)
+            return [entry("Local catalog products", String(info.productCount)),
+                    entry("Local catalog variations", String(info.variationCount)),
+                    entry("Local catalog full sync", info.lastFullSyncDate?.iso8601String ?? "never"),
+                    entry("Local catalog incremental sync", info.lastIncrementalSyncDate?.iso8601String ?? "never")]
+        } catch {
+            // Confined to these rows, matching the Android report's per-field degradation: the database read is
+            // the section's most failure-prone lookup, and the eligibility rows around it are still worth having.
+            DDLogError("⛔️ MobileStatusReportProvider: reading the POS catalog failed: \(error)")
+            return [entry("Local catalog products", Constants.unknown),
+                    entry("Local catalog variations", Constants.unknown),
+                    entry("Local catalog full sync", Constants.unknown),
+                    entry("Local catalog incremental sync", Constants.unknown)]
+        }
+    }
+
+    /// The strategy as POS last decided it — the live check refreshes on a cache miss, which can fetch, so only
+    /// the cached decision is read. `not evaluated` means POS has not made the decision since launch.
+    func catalogStrategy(siteID: Int64) async -> String {
+        guard let checker = stores.posCatalogEligibilityChecker else {
+            return Constants.notEvaluated
+        }
+        switch await checker.cachedCatalogEligibility(for: siteID) {
+        case .eligible:
+            return "local catalog"
+        case .ineligible:
+            // `remote` and not `remote API`: the Android report calls the same strategy `remote`, and the value
+            // should grep the same across both platforms' tickets.
+            return "remote"
+        case nil:
+            return Constants.notEvaluated
+        }
+    }
+
+    func posLastOpened(siteID: Int64) async -> String {
+        let date = await awaitedDispatch(fallback: Date?.none) { completion in
+            AppSettingsAction.getPOSLastOpenedDate(siteID: siteID, onCompletion: completion)
+        }
+        return date?.iso8601String ?? "never"
+    }
+
+    /// Recorded when a catalog file sync fails because the host blocked the file, cleared when it succeeds
+    /// again. `true` explains a store that keeps falling back to the slower paginated sync.
+    func catalogFileBlocked(siteID: Int64) async -> String {
+        let blocked = await awaitedDispatch(fallback: false) { completion in
+            AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: siteID, onCompletion: completion)
+        }
+        return String(blocked)
+    }
+
+    func fullSyncOnCellularAllowed(siteID: Int64) async -> String {
+        let allowed = await awaitedDispatch(fallback: false) { completion in
+            AppSettingsAction.getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: completion)
+        }
+        return String(allowed)
     }
 
     /// Stable English labels, not `title`: that is localized UI copy, which would put translated keys in a
@@ -449,5 +531,11 @@ extension MobileStatusReportProvider {
 private extension String {
     var nilIfEmpty: String? {
         isEmpty ? nil : self
+    }
+}
+
+private extension Date {
+    var iso8601String: String {
+        ISO8601DateFormatter().string(from: self)
     }
 }

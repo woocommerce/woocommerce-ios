@@ -74,6 +74,32 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         XCTAssertEqual(observer.currentStatus, .notReachable)
         XCTAssertEqual(result, .notReachable)
     }
+
+    func test_path_flags_are_nil_before_the_first_update_and_reflect_the_path_afterwards() {
+        // Given
+        let networkMonitor = MockNetworkMonitor()
+        let expectation = expectation(description: "Path flags updated")
+        let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
+        XCTAssertNil(observer.isCurrentPathExpensive)
+        XCTAssertNil(observer.isCurrentPathConstrained)
+
+        // When
+        observer.statusPublisher
+            .dropFirst()
+            .sink { _ in
+                expectation.fulfill()
+            }
+            .store(in: &subscriptions)
+        networkMonitor.fakeNetworkUpdate(network: MockNetwork(status: .satisfied,
+                                                              currentInterface: .cellular,
+                                                              isExpensive: true,
+                                                              isConstrained: true))
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(observer.isCurrentPathExpensive, true)
+        XCTAssertEqual(observer.isCurrentPathConstrained, true)
+    }
 }
 
 final class MockNetworkMonitor: NetworkMonitoring {
@@ -99,11 +125,18 @@ final class MockNetworkMonitor: NetworkMonitoring {
 
 private struct MockNetwork: NetworkMonitorable {
     let status: NWPath.Status
+    let isExpensive: Bool
+    let isConstrained: Bool
     private let currentInterface: NWInterface.InterfaceType
 
-    init(status: NWPath.Status, currentInterface: NWInterface.InterfaceType) {
+    init(status: NWPath.Status,
+         currentInterface: NWInterface.InterfaceType,
+         isExpensive: Bool = false,
+         isConstrained: Bool = false) {
         self.status = status
         self.currentInterface = currentInterface
+        self.isExpensive = isExpensive
+        self.isConstrained = isConstrained
     }
 
     func usesInterfaceType(_ type: NWInterface.InterfaceType) -> Bool {

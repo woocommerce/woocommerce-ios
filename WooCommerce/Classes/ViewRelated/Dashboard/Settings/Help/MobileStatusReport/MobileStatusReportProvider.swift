@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -34,15 +35,18 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let pushNotesManager: PushNotesManager
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let featureFlagService: FeatureFlagService
 
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
+        self.featureFlagService = featureFlagService
     }
 
     func generateReport(siteAddress: String?) async -> String {
@@ -55,6 +59,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         report += await section("## Connectivity") { self.connectivitySection(system) }
         report += await section("## Notifications") { self.notificationsSection(system) }
         report += await section("## Account & Stores") { self.accountSection(siteAddress) }
+        report += await section("## Feature Flags") { self.featureFlagsSection() }
 
         return report.joined(separator: "\n")
     }
@@ -110,11 +115,24 @@ private extension MobileStatusReportProvider {
                 siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
+
+    /// Every flag is listed, not only the enabled ones: an absent key would be ambiguous between disabled,
+    /// renamed and deleted.
+    func featureFlagsSection() -> [String] {
+        ["", "### Local flags"] + localFeatureFlags()
+    }
 }
 
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    /// `.null` is skipped: it is a throwaway case that exists only so the enum can declare a raw type, and the
+    /// service answers it through the `default` branch, so it would appear as a real flag that is switched on.
+    func localFeatureFlags() -> [String] {
+        FeatureFlag.allCases.filter { $0 != .null }
+            .map { entry(String(describing: $0), String(featureFlagService.isFeatureFlagEnabled($0))) }
+    }
 
     /// Only stores running WooCommerce: the storage holds every site on the WPCom account, and the Android
     /// report counts Woo stores, so the same merchant must not get two different counts on a cross-platform

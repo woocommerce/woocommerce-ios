@@ -7,6 +7,9 @@ import YosemiteTestHelpers
 /// The report is a text artifact, so most of it is pinned by comparing the whole thing: that catches an omitted
 /// field and a lost section in one assertion, which per-field tests do not.
 ///
+/// The Feature Flags body is redacted from those comparisons — it enumerates `FeatureFlag.allCases`, so an
+/// inline expectation would fail on every unrelated PR that adds a flag. It has its own tests below.
+///
 /// Serialized because `SessionManager.testingInstance` is backed by a shared `UserDefaults` suite: every test
 /// here sets a selected store, and in parallel they overwrite each other's.
 @MainActor
@@ -31,7 +34,7 @@ struct MobileStatusReportProviderTests {
         let report = await makeProvider().generateReport()
 
         // Then
-        #expect(report == """
+        #expect(redactingEnumeratedSections(report) == """
         ### Mobile Status Report generated via the WooCommerce iOS app ###
         Field reference: https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/mobile-status-report.md
 
@@ -68,6 +71,9 @@ struct MobileStatusReportProviderTests {
         ## Account & Stores
         WPCom user ID: not logged in
         Connected stores: 0
+
+        ## Feature Flags
+        <redacted>
         """)
     }
 
@@ -87,6 +93,18 @@ struct MobileStatusReportProviderTests {
         #expect(report.contains("Woo push token ID: present (…162342)"))
         #expect(!report.contains("4815162342"))
     }
+
+    /// `FeatureFlag.null` exists only so the enum can declare a raw type. The feature flag service answers it
+    /// through its `default` branch, so without filtering it the local flag list opens with `null: true`,
+    /// which reads as a real feature that is switched on.
+    @Test func the_placeholder_feature_flag_case_is_not_reported() async {
+        // Given, When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(!report.contains("\nnull: "))
+        #expect(report.contains("### Local flags"))
+    }
 }
 
 // MARK: - Helpers
@@ -97,7 +115,26 @@ private extension MobileStatusReportProviderTests {
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
                                    pushNotesManager: pushNotesManager,
                                    stores: stores,
-                                   storageManager: storageManager)
+                                   storageManager: storageManager,
+                                   featureFlagService: MockFeatureFlagService())
+    }
+
+    /// Replaces the bodies of the sections that enumerate every known flag and beta toggle, so an unrelated
+    /// addition to either list does not fail a whole-report comparison.
+    func redactingEnumeratedSections(_ report: String) -> String {
+        ["## Feature Flags", "## Experimental Features"].reduce(report) { report, heading in
+            let lines = report.components(separatedBy: "\n")
+            guard let start = lines.firstIndex(of: heading) else {
+                return report
+            }
+            // Sections end at the next `## ` section heading or the `# ` selected-store band — but not at the
+            // `### ` subsection headings inside the Feature Flags body.
+            let body = Array(lines[lines.index(after: start)...].prefix { !$0.hasPrefix("## ") && !$0.hasPrefix("# ") })
+            // The blank line before the next heading belongs to the layout, not the section, so it survives.
+            let separators = Array(repeating: "", count: body.reversed().prefix { $0.isEmpty }.count)
+            return (lines[...start] + ["<redacted>"] + separators + lines[(start + 1 + body.count)...])
+                .joined(separator: "\n")
+        }
     }
 }
 

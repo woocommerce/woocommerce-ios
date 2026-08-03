@@ -73,6 +73,7 @@ extension WooAnalyticsEvent {
             static let responseContentType = "response_content_type"
             static let reason = "reason"
             static let wooCommerceVersion = "woocommerce_version"
+            static let cachedWooCoreVersion = "cached_woo_core_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -163,13 +164,15 @@ extension WooAnalyticsEvent {
             lastGenerationState: String? = nil,
             failureStage: String? = nil,
             httpStatusCode: Int? = nil,
-            responseContentType: String? = nil
+            responseContentType: String? = nil,
+            cachedWooCoreVersion: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
                 Key.syncStrategy: syncStrategy,
-                Key.errorType: errorType
+                Key.errorType: errorType,
+                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
             ]
             if let pollAttempts {
                 properties[Key.pollAttempts] = "\(pollAttempts)"

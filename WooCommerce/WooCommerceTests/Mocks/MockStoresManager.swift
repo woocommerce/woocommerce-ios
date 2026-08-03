@@ -23,6 +23,10 @@ final class MockStoresManager: DefaultStoresManager {
     ///
     var testPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
+    /// Optional test checker for POS local catalog eligibility
+    ///
+    var testPOSCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
+
     /// Accept a concrete implementation (in addition to the pre-existing Protocol-based initializer)
     ///
     init(sessionManager: SessionManager) {
@@ -33,6 +37,11 @@ final class MockStoresManager: DefaultStoresManager {
 
     override var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
         testPOSCatalogSyncCoordinator
+    }
+
+    override var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol? {
+        get { testPOSCatalogEligibilityChecker }
+        set { testPOSCatalogEligibilityChecker = newValue }
     }
 
     // MARK: - Overridden Methods

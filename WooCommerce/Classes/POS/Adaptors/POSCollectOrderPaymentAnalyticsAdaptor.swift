@@ -104,10 +104,36 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     func trackPaymentFailure(with error: any Error) {
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentFailed(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            error: error,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel,
+            millisecondsSinceCustomerIteractionStarted: calculateElapsedTimeInMilliseconds(since: customerInteractionStarted),
+            millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
+            millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
+            millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
+            checkoutTapCount: checkoutTapCount
+        ))
+
+        // The checkout tap count is deliberately not reset:
+        // the merchant can retry after a failure, and we want the count to reflect every attempt made for the same customer interaction.
         resetProcessingPaymentTracking()
     }
 
     func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentCanceled(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel,
+            cancellationSource: cancelationSource.rawValue,
+            millisecondsSinceCustomerIteractionStarted: calculateElapsedTimeInMilliseconds(since: customerInteractionStarted),
+            millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
+            millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
+            millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
+            checkoutTapCount: checkoutTapCount
+        ))
+
         resetProcessingPaymentTracking()
     }
 

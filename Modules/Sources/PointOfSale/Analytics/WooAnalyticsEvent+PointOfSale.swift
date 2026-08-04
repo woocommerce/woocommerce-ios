@@ -33,6 +33,7 @@ extension WooAnalyticsEvent {
             static let countryCode = "country"
             static let paymentMethodType = "payment_method_type"
             static let gatewayID = "plugin_slug"
+            static let cancellationSource = "cancellation_source"
             static let scanDurationMs = "scan_duration_ms"
             static let barcodeLength = "barcode_length"
             static let failReason = "fail_reason"
@@ -263,6 +264,53 @@ extension WooAnalyticsEvent {
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
                 Key.paymentMethodType: analyticsValue(for: paymentMethod),
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
+                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ])
+        }
+
+        /// Tracked when a card present payment fails in POS.
+        ///
+        public static func cardPresentCollectPaymentFailed(forGatewayID: String?,
+                                                           error: Error,
+                                                           countryCode: CountryCode,
+                                                           cardReaderModel: String?,
+                                                           millisecondsSinceCustomerIteractionStarted: Double,
+                                                           millisecondsSinceOrderSyncSuccess: Double,
+                                                           millisecondsSinceReaderReadyToCollect: Double,
+                                                           millisecondsSinceCardTapped: Double,
+                                                           checkoutTapCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentFailed, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
+                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ], error: error)
+        }
+
+        /// Tracked when a card present payment is cancelled in POS.
+        /// 
+        public static func cardPresentCollectPaymentCanceled(forGatewayID: String?,
+                                                             countryCode: CountryCode,
+                                                             cardReaderModel: String?,
+                                                             cancellationSource: String,
+                                                             millisecondsSinceCustomerIteractionStarted: Double,
+                                                             millisecondsSinceOrderSyncSuccess: Double,
+                                                             millisecondsSinceReaderReadyToCollect: Double,
+                                                             millisecondsSinceCardTapped: Double,
+                                                             checkoutTapCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.cancellationSource: cancellationSource,
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",

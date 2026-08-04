@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import PointOfSale
 import enum Experiments.FeatureFlag
 import protocol Experiments.FeatureFlagService
@@ -10,11 +11,13 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 
 /// Resolves Tap to Pay availability for the current POS session.
 ///
-/// Three gates, evaluated in order — fail fast on whichever is first to deny:
-/// 1. The `pointOfSaleTapToPay` feature flag (cheapest check, shortcuts the rest).
-/// 2. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
+/// Four gates, evaluated in order — fail fast on whichever is first to deny:
+/// 1. Device idiom — POS Tap to Pay is phone-only. iPad POS keeps its Bluetooth-primary
+///    flow, so we deny statically rather than paying for the async device-support check.
+/// 2. The `pointOfSaleTapToPay` feature flag (cheapest remaining check, shortcuts the rest).
+/// 3. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
 ///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
-/// 3. Site eligibility — proxied off cached POS tab visibility, which is itself driven
+/// 4. Site eligibility — proxied off cached POS tab visibility, which is itself driven
 ///    by IPP/country eligibility checks in `POSTabVisibilityChecker`.
 ///
 /// One-shot — `POSTapToPayAvailabilityController` calls `checkAvailability()` once on
@@ -24,18 +27,24 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let eligibilityService: POSEligibilityServiceProtocol
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         eligibilityService: POSEligibilityServiceProtocol) {
+         eligibilityService: POSEligibilityServiceProtocol,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.eligibilityService = eligibilityService
+        self.userInterfaceIdiom = userInterfaceIdiom
     }
 
     func checkAvailability() async -> POSTapToPayAvailabilityState {
+        guard userInterfaceIdiom == .phone else {
+            return .unavailable(reason: .deviceNotSupported)
+        }
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleTapToPay) else {
             return .unavailable(reason: .featureFlagDisabled)
         }

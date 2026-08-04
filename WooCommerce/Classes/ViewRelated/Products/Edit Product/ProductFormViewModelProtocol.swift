@@ -26,6 +26,12 @@ enum SaveMessageType {
     case duplicate
 }
 
+/// An immutable persisted source captured for a product duplication attempt.
+struct ProductDuplicationSnapshot<ProductModel> {
+    let product: ProductModel
+    let password: String?
+}
+
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
@@ -173,7 +179,12 @@ protocol ProductFormViewModelProtocol {
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+    /// Captures the persisted source for a duplication attempt, or returns `nil` when duplication is unavailable.
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>?
+
+    /// Duplicates the exact persisted source captured when the merchant initiated duplication.
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
     // Reset action
 

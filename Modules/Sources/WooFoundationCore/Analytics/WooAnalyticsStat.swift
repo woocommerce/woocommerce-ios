@@ -139,6 +139,7 @@ public enum WooAnalyticsStat: String {
     case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
     case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
     case dashboardStoreTimezoneDifferFromDevice = "dashboard_store_timezone_differ_from_device"
+    case dashboardStatsUnexpectedDateFormat = "stats_unexpected_format"
 
     // MARK: Dashboard stats custom range
     case dashboardStatsCustomRangeAddButtonTapped = "dashboard_stats_custom_range_add_button_tapped"

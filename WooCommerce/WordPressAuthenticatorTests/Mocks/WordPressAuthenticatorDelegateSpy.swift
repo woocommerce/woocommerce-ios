@@ -10,6 +10,9 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var shouldHandleError: Bool = false
 
     private(set) var presentSignupEpilogueCalled = false
+    private(set) var presentLoginEpilogueCalled = false
+    private(set) var trackedEvents: [WPAnalyticsStat] = []
+    private(set) var lastTrackedProperties: [AnyHashable: Any]?
     private(set) var socialUser: SocialUser?
 
     func createdWordPressComAccount(username: String, authToken: String) {
@@ -29,7 +32,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, source: SignInSource?, onDismiss: @escaping () -> Void) {
-        // no-op
+        presentLoginEpilogueCalled = true
     }
 
     func presentSignupEpilogue(
@@ -76,14 +79,15 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func track(event: WPAnalyticsStat) {
-        // no-op
+        trackedEvents.append(event)
     }
 
     func track(event: WPAnalyticsStat, properties: [AnyHashable: Any]) {
-        // no-op
+        trackedEvents.append(event)
+        lastTrackedProperties = properties
     }
 
     func track(event: WPAnalyticsStat, error: Error) {
-        // no-op
+        trackedEvents.append(event)
     }
 }

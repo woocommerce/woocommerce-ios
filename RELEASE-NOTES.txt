@@ -10,6 +10,7 @@
 - [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]
 - [*] Products: Fixed bulk Regular Price update failing for variable products whose variations share a duplicate SKU or GTIN. [https://github.com/woocommerce/woocommerce-ios/pull/17556]
 - [Internal] Removed leftover code for the retired Products tab feedback banner and its survey. [https://github.com/woocommerce/woocommerce-ios/pull/17569]
+- [*] POS Phones: UX improvement - Cart button hides when empty [https://github.com/woocommerce/woocommerce-ios/pull/17647]
 
 25.3
 -----

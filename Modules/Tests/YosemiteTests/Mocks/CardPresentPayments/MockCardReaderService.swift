@@ -59,6 +59,9 @@ final class MockCardReaderService: CardReaderService {
     /// The publisher to return in `capturePayment`.
     private var capturePaymentPublisher: AnyPublisher<PaymentIntent, Error>?
 
+    private var retrievePaymentIntentPublisher: AnyPublisher<PaymentIntent, Error>?
+    private(set) var retrievedPaymentIntentClientSecret: String?
+
 
     var didCheckSupport = false
     var spyCheckSupportCardReaderType: CardReaderType? = nil
@@ -176,6 +179,13 @@ final class MockCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    func retrievePaymentIntent(clientSecret: String) -> AnyPublisher<PaymentIntent, Error> {
+        retrievedPaymentIntentClientSecret = clientSecret
+        return retrievePaymentIntentPublisher ?? Just(.fake())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     func cancelPaymentIntent() -> Future<Void, Error> {
         Future() { [weak self] promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
@@ -214,6 +224,10 @@ extension MockCardReaderService {
     /// Set the return value if `capturePayment` is called.
     func whenCapturingPayment(thenReturn publisher: AnyPublisher<PaymentIntent, Error>) {
         capturePaymentPublisher = publisher
+    }
+
+    func whenRetrievingPaymentIntent(thenReturn publisher: AnyPublisher<PaymentIntent, Error>) {
+        retrievePaymentIntentPublisher = publisher
     }
 
     /// Set the return value if `waitForInsertedCardToBeRemoved` is called.

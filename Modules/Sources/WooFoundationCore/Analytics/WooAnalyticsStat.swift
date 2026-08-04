@@ -139,6 +139,7 @@ public enum WooAnalyticsStat: String {
     case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
     case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
     case dashboardStoreTimezoneDifferFromDevice = "dashboard_store_timezone_differ_from_device"
+    case dashboardStatsUnexpectedDateFormat = "stats_unexpected_format"
 
     // MARK: Dashboard stats custom range
     case dashboardStatsCustomRangeAddButtonTapped = "dashboard_stats_custom_range_add_button_tapped"
@@ -347,6 +348,9 @@ public enum WooAnalyticsStat: String {
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
+    case cardReaderLocationSuccess = "card_reader_location_success"
+    case cardReaderLocationFailure = "card_reader_location_failure"
+    case cardReaderLocationMissingTapped = "card_reader_location_missing_tapped"
 
     // MARK: Card Reader Software Update Events
     //

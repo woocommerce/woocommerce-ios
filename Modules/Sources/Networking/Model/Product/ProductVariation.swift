@@ -190,7 +190,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let productVariationID = try container.decode(Int64.self, forKey: .productVariationID)
-        let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
+        let attributes = try container.decodeIfPresent([ProductVariationAttribute].self, forKey: .attributes) ?? []
         let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -255,7 +255,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         ?? true
         let virtual = try container.decode(Bool.self, forKey: .virtual)
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
-        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
+        let downloads = try container.decodeIfPresent([ProductDownload].self, forKey: .downloads) ?? []
         let downloadLimit = try container.decode(Int64.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int64.self, forKey: .downloadExpiry)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)

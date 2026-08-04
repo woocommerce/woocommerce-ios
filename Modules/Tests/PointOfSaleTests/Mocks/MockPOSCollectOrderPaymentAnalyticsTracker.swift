@@ -48,24 +48,4 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
     func trackPaymentFailure(with error: any Error) {
         // no-op
     }
-
-    func trackEmailTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintTapped() {
-        // no-op
-    }
-
-    func trackReceiptPrintSuccess() {
-        // no-op
-    }
-
-    func trackReceiptPrintCanceled() {
-        // no-op
-    }
-
-    func trackReceiptPrintFailed(error: any Error) {
-        // no-op
-    }
 }

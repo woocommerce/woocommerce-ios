@@ -233,13 +233,14 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var taxBasedOnLine: some View {
-        HStack(spacing: Constants.taxBasedOnLineTextPadding) {
+        AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxBasedOnLineTextPadding) {
             Text(viewModel.taxBasedOnSetting?.displayTaxCalculationHint ?? "")
                 .footnoteStyle()
                 .multilineTextAlignment(.leading)
             Text(Localization.taxInformationLearnMore)
                 .font(.footnote)
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                .multilineTextAlignment(.leading)
                 .renderedIf(viewModel.shouldShowTaxesInfoButton)
         }
     }
@@ -301,9 +302,9 @@ private extension OrderPaymentSection {
             value: "Tax rate location added automatically",
             comment: "Notice in editable order details when the tax rate was added to the order")
         static let taxInformationLearnMore = NSLocalizedString(
-            "order.form.paymentSection.taxes.learnMore",
-            value: "Learn More.",
-            comment: "A 'Learn More' label text, which shows tax information upon being clicked.")
+            "order.form.paymentSection.taxes.learnMore.sentenceCase",
+            value: "Learn more",
+            comment: "A 'Learn more' label text, which shows tax information upon being clicked.")
         static let shippingTax = NSLocalizedString(
             "order.form.paymentSection.taxes.shippingTax",
             value: "Shipping Tax",

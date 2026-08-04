@@ -86,4 +86,24 @@ class DotcomValidatorTests: XCTestCase {
             XCTAssertEqual(dotcomError, .statsModuleDisabled())
         }
     }
+
+    func test_raw_body_error_preserves_data_raw_body() throws {
+        // Given
+        let payloadAsData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-error", extension: "json"))
+
+        // Then
+        XCTAssertThrowsError(try DotcomValidator().validate(data: payloadAsData)) { error in
+            guard case let DotcomError.unknown(code, message, data) = error else {
+                return XCTFail("Expected DotcomError.unknown")
+            }
+
+            XCTAssertEqual(code, "no_response_body")
+            XCTAssertEqual(message, "Server could not read response.")
+            XCTAssertEqual(data?["status"]?.value as? Int, 502)
+            XCTAssertEqual(
+                data?["raw_body"]?.value as? String,
+                "<html>\n  Fatal error consumer_key=ck_secret Authorization: Bearer bearer-secret Cookie: session=abc\n</html>"
+            )
+        }
+    }
 }

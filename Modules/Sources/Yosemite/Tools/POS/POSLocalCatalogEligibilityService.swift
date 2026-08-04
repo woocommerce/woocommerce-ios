@@ -10,6 +10,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let isCatalogAPIFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
+    private let syncStatusChecker: POSCatalogSyncStatusCheckerProtocol?
 
     // Eligibility states cached per site
     private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
@@ -27,6 +28,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
+    ///   - syncStatusChecker: Checks whether a full catalog sync completed for a site.
+    ///     Used to keep the local catalog usable when remote eligibility checks fail (e.g. offline).
     ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
@@ -35,6 +38,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         isCatalogAPIFeatureFlagEnabled: Bool = false,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
+        syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil,
         catalogSizeLimit: Int? = nil
     ) {
         self.catalogSizeChecker = catalogSizeChecker
@@ -43,6 +47,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         self.isCatalogAPIFeatureFlagEnabled = isCatalogAPIFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
+        self.syncStatusChecker = syncStatusChecker
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
         // Eagerly start fetching the remote flag in the background
         Task {
@@ -84,8 +89,18 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ///   - isEligible: Whether POS is eligible
     ///   - siteID: The site ID to refresh eligibility for
     public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws {
+        let previousEligibility = posEligibilityStates[siteID]
         // Store the POS eligibility state for this site
         posEligibilityStates[siteID] = isEligible
+
+        // When nothing changed and an eligible state is already cached, keep it so POS entry
+        // (like Android) doesn't wait on remote re-checks that a previous refresh already ran.
+        // Cached ineligible states always re-validate, so recoverable conditions (e.g. the beta
+        // toggle turning on, or a transient check failure) are picked up without an app restart.
+        if previousEligibility == isEligible, eligibilityStates[siteID] == .eligible {
+            return
+        }
+
         // Refresh eligibility for the current site now that POS eligibility has changed
         try await refreshEligibilityState(for: siteID)
     }
@@ -148,6 +163,16 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {
+            // Loading the plugin info for the version check failed (e.g. offline or a server
+            // error) — the version itself could not be determined. A completed full sync implies
+            // the version requirement was met when the catalog was synced, so this should not
+            // drop POS to remote mode. The tolerant result is not cached so the next refresh
+            // re-validates.
+            if await syncStatusChecker?.hasCompletedFullSync(for: siteID) == true {
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: Failed to load plugin info for the version check " +
+                          "for site \(siteID), using previously synced catalog: \(error)")
+                return .eligible
+            }
             let errorString = String(describing: error)
             let state = POSLocalCatalogEligibilityState.ineligible(
                 reason: .catalogSizeCheckFailed(underlyingError: errorString)
@@ -184,6 +209,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {
+            // Same tolerance as the version check above: a previously synced catalog stays usable
+            // when the size re-check fails (e.g. offline). Not cached so the next refresh re-validates.
+            if await syncStatusChecker?.hasCompletedFullSync(for: siteID) == true {
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: Size check failed for site \(siteID), using previously synced catalog: \(error)")
+                return .eligible
+            }
             let errorString = String(describing: error)
             let state = POSLocalCatalogEligibilityState.ineligible(
                 reason: .catalogSizeCheckFailed(underlyingError: errorString)
@@ -192,6 +223,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
             return state
         }
+    }
+
+    /// Whether the local catalog feature is enabled based on locally available signals only.
+    public func isLocalCatalogFeatureEnabled() async -> Bool {
+        let (isLocalEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        return isLocalEnabled && isRemoteEnabled && isBetaToggleEnabled
     }
 
     private func featureFlagSettings() async -> (Bool, Bool, Bool) {

@@ -184,8 +184,6 @@ final class OrderDetailsViewModel {
         order.billingAddress?.email
     }
 
-    private var receipt: CardPresentReceiptParameters? = nil
-
     /// Returns edit action availability given the internal state.
     ///
     var editButtonBehaviour: EditButtonBehaviour {
@@ -329,11 +327,6 @@ extension OrderDetailsViewModel {
             }
             await syncTrackingsWhenShipmentTrackingIsEnabled()
             onReloadSections?()
-        }
-
-        group.enter()
-        syncSavedReceipts {_ in
-            group.leave()
         }
 
         // Receipt eligibility need to be synced after the order but before we complete the order sync group,
@@ -555,7 +548,9 @@ extension OrderDetailsViewModel {
 
         case .seeReceipt:
             let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
+            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode,
+                                                                                     source: .backend,
+                                                                                     currency: order.currency))
 
             guard let cell = tableView.cellForRow(at: indexPath) as? TwoColumnHeadlineFootnoteTableViewCell else {
                 return
@@ -570,26 +565,18 @@ extension OrderDetailsViewModel {
                     let siteName = stores.sessionManager.defaultSite?.name
                     let receiptViewModel = ReceiptViewModel(receipt: receipt,
                                                             orderID: orderID,
-                                                            siteName: siteName)
+                                                            siteName: siteName,
+                                                            currency: order.currency)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
                     cell.stopLoading()
                 case let .failure(error):
-                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
+                    ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error, currency: order.currency))
                     self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
                     cell.stopLoading()
                 }
             }
             ServiceLocator.stores.dispatch(action)
-        case .seeLegacyReceipt:
-            let countryCode = configurationLoader.configuration.countryCode
-            ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
-            guard let receipt else {
-                return
-            }
-            let viewModel = LegacyReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
-            let receiptViewController = LegacyReceiptViewController(viewModel: viewModel)
-            viewController.navigationController?.pushViewController(receiptViewController, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -737,20 +724,6 @@ extension OrderDetailsViewModel {
             let updatedOrder = order.copy(shippingLabels: shippingLabels)
             update(order: updatedOrder)
         }
-    }
-
-    func syncSavedReceipts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ReceiptAction.loadReceipt(order: order) { [weak self] result in
-            switch result {
-            case .success(let parameters):
-                self?.receipt = parameters
-                self?.dataSource.orderHasLocalReceipt = true
-            case .failure:
-                self?.dataSource.orderHasLocalReceipt = false
-            }
-            onCompletion?(nil)
-        }
-        stores.dispatch(action)
     }
 
     @MainActor

@@ -1,0 +1,6 @@
+sources:
+    include:
+        - ../../../StoreDesignSystem/
+templates:
+    - TokenCatalogs.swifttemplate
+output: ../../../../../WooCommerce/Classes/ViewRelated/DesignSystemDemo/Catalog/

@@ -18,6 +18,11 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
 
+    /// Product search replaces the primary navigation stack of a split view, unlike Order search, which is presented
+    /// in its own modal navigation controller. Avoid animating the navigation bar while UIKit transfers presentation
+    /// to the secondary navigation stack in a collapsed layout.
+    let animateNavigationBarVisibilityChanges = false
+
     var reloadUIRequests: AnyPublisher<Void, Never> {
         reloadUINeeded.eraseToAnyPublisher()
     }
@@ -155,6 +160,7 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
+        viewController.view.endEditing(true)
         onProductSelection(model)
     }
 

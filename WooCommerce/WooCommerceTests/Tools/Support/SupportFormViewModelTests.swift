@@ -193,6 +193,81 @@ final class SupportFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.siteAddress, defaultSite.url)
     }
+
+    func test_transcript_context_does_not_enable_submit_when_editable_message_is_empty() {
+        // Given
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(), transcript: "Formatted transcript")
+
+        // When
+        viewModel.area = viewModel.areas.first
+        viewModel.subject = "Subject"
+        viewModel.siteAddress = "site-address"
+        viewModel.description = ""
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowTranscriptDisclosure)
+        XCTAssertTrue(viewModel.submitButtonDisabled)
+    }
+
+    func test_submitSupportRequest_appends_immutable_transcript_after_user_message() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let transcript = "Transcript header\n\nTest transcript"
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             transcript: transcript)
+        viewModel.area = viewModel.areas.first
+        viewModel.subject = "Subject"
+        viewModel.siteAddress = "site-address"
+        viewModel.description = "Additional details"
+
+        // When
+        viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertEqual(zendesk.latestSupportRequest?.description, "Additional details\n\n\(transcript)")
+        XCTAssertEqual(zendesk.latestSupportRequest?.description.components(separatedBy: "Test transcript").count, 2)
+    }
+
+    func test_submitSupportRequest_when_transcript_is_whitespace_then_does_not_add_disclosure_or_transcript_separator() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             transcript: " \n ")
+        viewModel.area = viewModel.areas.first
+        viewModel.description = "Additional details"
+
+        // When
+        viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowTranscriptDisclosure)
+        XCTAssertEqual(zendesk.latestSupportRequest?.description, "Additional details")
+    }
+
+    func test_submitSupportRequest_includes_diagnostic_and_application_log_attachments() {
+        // Given
+        let zendesk = MockZendeskManager()
+        let diagnostic = ZendeskAttachment(data: Data("Diagnostic".utf8),
+                                           filename: "connectivitytest_log.txt",
+                                           contentType: "text/plain")
+        let attachmentProvider = DefaultSupportRequestAttachmentProvider(
+            applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
+        )
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             attachmentProvider: attachmentProvider,
+                                             attachments: [diagnostic])
+        viewModel.area = viewModel.areas.first
+
+        // When
+        viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertEqual(zendesk.latestSupportRequest?.attachments.map(\.filename),
+                       ["connectivitytest_log.txt", "application_log.txt"])
+    }
 }
 
 private extension SupportFormViewModelTests {

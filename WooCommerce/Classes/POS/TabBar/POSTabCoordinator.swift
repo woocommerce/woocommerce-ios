@@ -155,8 +155,10 @@ final class POSTabCoordinator {
                 return
             }
 
-            // Check actual POS eligibility using the eligibility checker
-            let eligibilityState = await eligibilityChecker.checkEligibility()
+            // Check actual POS eligibility using the eligibility checker. This is the background
+            // re-validation checkpoint (site load and app resume), so it forces a remote check
+            // instead of the local state that POS entry can rely on.
+            let eligibilityState = await eligibilityChecker.checkEligibility(forceRemoteCheck: true)
             let isPOSEligible = eligibilityState == .eligible
             do {
                 try await catalogEligibilityService.updatePOSEligibility(isEligible: isPOSEligible,
@@ -201,7 +203,7 @@ private extension POSTabCoordinator {
             let isLocalCatalogEligible: Bool
             if let service = localCatalogEligibilityService {
                 // Resolve POS eligibility before deciding the fetch strategy
-                let posState = await eligibilityChecker.checkEligibility()
+                let posState = await eligibilityChecker.checkEligibility(forceRemoteCheck: false)
                 try? await service.updatePOSEligibility(isEligible: posState == .eligible, for: siteID)
 
                 // Retry transient failures before using the value
@@ -306,7 +308,22 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod = .bluetooth
                 }
 
+                let refundService: RefundServiceProtocol
+                if let mockRefundService = makeMockPOSRefundService(orderService: orderService) {
+                    refundService = mockRefundService
+                } else if let posRefundService = RefundService(credentials: credentials,
+                                                              selectedSite: defaultSitePublisher,
+                                                              appPasswordSupportState: isAppPasswordSupported,
+                                                              storageManager: storageManager) {
+                    refundService = posRefundService
+                } else {
+                    DDLogError("RefundService not provided")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           refundService: refundService,
                                                                            stores: storesManager,
                                                                            storageManager: storageManager,
                                                                            currencySettings: currencySettings)
@@ -414,6 +431,20 @@ private extension POSTabCoordinator {
 
         if ProcessConfiguration.shouldBypassPOSOrderSyncing {
             return POSOrderServiceScreenshotMock(currency: currency)
+        }
+
+        return nil
+    }
+
+    func makeMockPOSRefundService(orderService: POSOrderServiceProtocol) -> RefundServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return POSRefundServiceMock(orderService: orderService)
+        }
+        #endif
+
+        if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+            return POSRefundServiceMock(orderService: orderService)
         }
 
         return nil

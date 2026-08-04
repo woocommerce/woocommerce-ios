@@ -59,6 +59,8 @@ final class QRLoginCoordinator {
     /// stack once it has delivered a payload. (WOOMOB-3136)
     private weak var scannerViewController: UIViewController?
 
+    private weak var rootViewController: UIViewController?
+
     init(mode: Mode = .camera,
          navigationController: UINavigationController,
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
@@ -99,6 +101,14 @@ final class QRLoginCoordinator {
     /// orphaning a second coordinator on the same navigation stack.
     func presentDeepLink(payload: QRLoginPayload) {
         handleScanned(payload: payload)
+    }
+
+    /// Whether this flow's own screens are still on the navigation stack.
+    var isNavigationStackShowingQRFlow: Bool {
+        guard let rootViewController else {
+            return false
+        }
+        return navigationController.viewControllers.contains(rootViewController)
     }
 }
 
@@ -172,7 +182,7 @@ private extension QRLoginCoordinator {
 
     func fallbackToSiteAddress() {
         analytics.trackClick(.qrLoginFallback)
-        handleEnterSiteURL()
+        NavigateToEnterSite(trackedFlow: .loginQR).execute(from: navigationController)
     }
 
     static func copyLoginURL() {
@@ -306,8 +316,12 @@ private extension QRLoginCoordinator {
                 // `showLoginEpilogue` assertion. Dismiss the sheet first, then
                 // hand off from the now-stable root.
                 rootViewController.dismiss(animated: false) {
+                    // QR login shares the magic-link `.login` case but never saved a site address,
+                    // so it must not restore one (would leak a stale address from an abandoned
+                    // email magic-link request into this account — wrong-store error).
                     _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
-                                                                             rootViewController: rootViewController)
+                                                                             rootViewController: rootViewController,
+                                                                             restoresSiteAddress: false)
                 }
                 // Sign-in proceeds through WordPressAuthenticator from here —
                 // release the coordinator; the login UI is about to be replaced.
@@ -461,6 +475,9 @@ private extension QRLoginCoordinator {
                 title: Localization.help,
                 primaryAction: UIAction { [weak self] _ in self?.showHelp() }
             )
+        }
+        if rootViewController == nil {
+            rootViewController = hosting
         }
         navigationController.pushViewController(hosting, animated: true)
         return hosting

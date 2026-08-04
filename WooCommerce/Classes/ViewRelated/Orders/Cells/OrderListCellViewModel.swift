@@ -8,10 +8,12 @@ import WooFoundationCore
 struct OrderListCellViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter
+    private let siteStatuses: [OrderStatus]
 
-    init(order: Order, currencySettings: CurrencySettings) {
+    init(order: Order, currencySettings: CurrencySettings, siteStatuses: [OrderStatus] = []) {
         self.order = order
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.siteStatuses = siteStatuses
     }
 
     /// For example, #560 Pamela Nguyen
@@ -63,7 +65,7 @@ struct OrderListCellViewModel {
     /// Textual representation of the status.
     ///
     var statusString: String {
-        order.status.localizedName
+        siteStatuses.displayName(for: order.status)
     }
 
     /// Sales channel

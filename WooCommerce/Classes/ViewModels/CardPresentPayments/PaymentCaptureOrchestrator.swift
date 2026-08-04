@@ -33,10 +33,6 @@ protocol PaymentCaptureOrchestrating {
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void)
 
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void)
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
-
     func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void)
 }
 
@@ -197,14 +193,6 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         stores.dispatch(action)
     }
 
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
-            onContent(emailContent)
-        }
-
-        stores.dispatch(action)
-    }
-
     func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void) {
         let action = ReceiptAction.retrieveReceipt(order: order) { result in
             switch result {
@@ -214,12 +202,6 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onCompletion(.failure(error))
             }
         }
-        stores.dispatch(action)
-    }
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.saveReceipt(order: order, parameters: params)
-
         stores.dispatch(action)
     }
 }
@@ -291,7 +273,6 @@ private extension PaymentCaptureOrchestrator {
             }
 
             celebrate() // plays a sound, haptic
-            saveReceipt(for: order, params: receiptParameters)
             onCompletion(.success(.init(paymentMethod: paymentMethod,
                                         receiptParameters: receiptParameters)))
             self.handlersForActivePayment = nil

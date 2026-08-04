@@ -716,7 +716,7 @@ platform :ios do
     UI.success("Successfully downloaded and committed latest translations for #{release_version_current}")
   end
 
-  # Finalizes a release by bumping version number, removing branch protection, closing milestone,
+  # Finalizes a release by bumping version number, closing milestone,
   # and triggering the final release build on CI
   #
   # @param [Boolean] skip_confirm (default: false) If set, will skip the confirmation prompt before running the rest of the lane
@@ -750,11 +750,6 @@ platform :ios do
     trigger_release_build(branch_to_build: "release/#{version}")
 
     create_backmerge_pr
-
-    remove_branch_protection(
-      repository: GITHUB_REPO,
-      branch: "release/#{version}"
-    )
 
     # Close milestone
     begin
@@ -894,11 +889,11 @@ platform :ios do
 
     build_for_app_store_connect
 
-    sentry_upload_dsym(
+    sentry_debug_files_upload(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
-      dsym_path: File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')
+      path: [File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')]
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
@@ -974,11 +969,11 @@ platform :ios do
       groups: FIREBASE_TESTERS_GROUP
     )
 
-    sentry_upload_dsym(
+    sentry_debug_files_upload(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
-      dsym_path: './build/WooCommerce.app.dSYM.zip'
+      path: ['./build/WooCommerce.app.dSYM.zip']
     )
 
     next if pull_request_number.nil?
@@ -1450,6 +1445,7 @@ platform :ios do
     ios_generate_strings_file_from_code(
       paths: [
         'WooCommerce/',
+        'Modules/Sources/StoreDesignSystem/',
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',

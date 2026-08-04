@@ -171,7 +171,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.full.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue))
+                                                                      syncStrategy: syncStrategy.rawValue,
+                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -188,7 +189,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType))
+                                                                  connectionType: connectionType,
+                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
 
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
@@ -226,7 +228,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs,
                 generationDurationMs: syncedCatalog.syncMetadata?.generationDurationMs,
-                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts
+                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
@@ -453,7 +456,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.incremental.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue))
+                                                                      syncStrategy: syncStrategy.rawValue,
+                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
             return
         }
 
@@ -483,7 +487,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType))
+                                                                  connectionType: connectionType,
+                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
 
         let syncStartTime = Date()
 
@@ -515,7 +520,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
-                syncDurationMs: syncDurationMs
+                syncDurationMs: syncDurationMs,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             // Track sync failed analytics

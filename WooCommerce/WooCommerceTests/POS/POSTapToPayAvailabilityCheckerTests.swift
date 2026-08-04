@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import UIKit
 import Experiments
 import Yosemite
 @testable import WooCommerce
@@ -9,6 +10,43 @@ import Yosemite
 struct POSTapToPayAvailabilityCheckerTests {
 
     private let siteID: Int64 = 123
+
+    // MARK: - Device Idiom Gate
+
+    @Test func checkAvailability_when_idiom_is_pad_then_returns_deviceNotSupported() async {
+        // Given
+        let featureFlags = makeEnabledFeatureFlags()
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachedTabVisibility[siteID] = true
+        let sut = makeSUT(featureFlagService: featureFlags,
+                          eligibilityService: eligibilityService,
+                          userInterfaceIdiom: .pad)
+
+        // When
+        let result = await sut.checkAvailability()
+
+        // Then
+        #expect(result == .unavailable(reason: .deviceNotSupported))
+    }
+
+    @Test func checkAvailability_when_idiom_is_pad_then_does_not_dispatch_device_check() async {
+        // Given
+        let featureFlags = makeEnabledFeatureFlags()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var deviceCheckDispatched = false
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case .checkDeviceSupport = action {
+                deviceCheckDispatched = true
+            }
+        }
+        let sut = makeSUT(featureFlagService: featureFlags, stores: stores, userInterfaceIdiom: .pad)
+
+        // When
+        _ = await sut.checkAvailability()
+
+        // Then
+        #expect(deviceCheckDispatched == false)
+    }
 
     // MARK: - Feature Flag Gate
 
@@ -162,16 +200,20 @@ private extension POSTapToPayAvailabilityCheckerTests {
         return service
     }
 
+    /// Defaults to `.phone` so the flag / device / eligibility tests stay deterministic
+    /// regardless of the simulator the suite runs on.
     func makeSUT(
         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
         stores: MockStoresManager = MockStoresManager(sessionManager: .makeForTesting()),
-        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService()
+        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService(),
+        userInterfaceIdiom: UIUserInterfaceIdiom = .phone
     ) -> POSTapToPayAvailabilityChecker {
         POSTapToPayAvailabilityChecker(
             siteID: siteID,
             stores: stores,
             featureFlagService: featureFlagService,
-            eligibilityService: eligibilityService
+            eligibilityService: eligibilityService,
+            userInterfaceIdiom: userInterfaceIdiom
         )
     }
 }

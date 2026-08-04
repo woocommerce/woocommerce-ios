@@ -45,7 +45,18 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         }
     }
 
-    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
+        guard let paymentMethod = intent.paymentMethod(),
+              case .interacPresent = paymentMethod else {
+            return
+        }
+
+        analytics.track(event: .PointOfSale.interacCollectPaymentSuccess(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel
+        ))
+    }
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         // Property: milliseconds_since_customer_interaction_started

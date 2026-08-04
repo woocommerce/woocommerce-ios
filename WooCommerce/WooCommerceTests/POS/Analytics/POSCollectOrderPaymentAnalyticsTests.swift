@@ -1,6 +1,7 @@
 @testable import WooCommerce
 import protocol WooFoundation.Analytics
 import struct Yosemite.CardPresentPaymentsConfiguration
+import typealias Yosemite.PaymentIntent
 import enum WooFoundation.CountryCode
 import Foundation
 import Testing
@@ -285,6 +286,32 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_customer_interaction_started", in: "card_present_collect_payment_failed") == "5000.0")
         #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_failed") == "3000.0")
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_failed") == "2000.0")
+    }
+
+    @Test func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .CA))
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
+
+        // When
+        sut.trackProcessingCompletion(intent: intent)
+
+        // Then
+        #expect(property("country", in: "card_interac_collect_payment_success") == "CA")
+    }
+
+    @Test func test_track_processing_completion_when_payment_method_is_not_interac_then_tracks_nothing() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US))
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+
+        // When
+        sut.trackProcessingCompletion(intent: intent)
+
+        // Then
+        #expect(analytics.events.isEmpty)
     }
 
     @Test func test_track_payment_failure_when_checkout_retried_then_preserves_checkout_tap_count() {

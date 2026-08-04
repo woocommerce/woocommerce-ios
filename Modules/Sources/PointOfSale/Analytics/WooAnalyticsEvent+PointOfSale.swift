@@ -319,6 +319,18 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        /// Tracked when an Interac payment is processed in POS, alongside the regular card payment success event.
+        ///
+        public static func interacCollectPaymentSuccess(forGatewayID: String?,
+                                                        countryCode: CountryCode,
+                                                        cardReaderModel: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID)
+            ])
+        }
+
         static func analyticsValue(for paymentMethod: PaymentMethod) -> String {
             switch paymentMethod {
             case .card, .cardPresent:

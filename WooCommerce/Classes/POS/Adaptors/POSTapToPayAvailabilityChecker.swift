@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import PointOfSale
+import ProximityReader
 import enum Experiments.FeatureFlag
 import protocol Experiments.FeatureFlagService
 import enum Yosemite.CardPresentPaymentAction
@@ -42,7 +43,7 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     }
 
     func checkAvailability() async -> POSTapToPayAvailabilityState {
-        guard userInterfaceIdiom == .phone else {
+        guard PaymentCardReader.isSupported else {
             return .unavailable(reason: .deviceNotSupported)
         }
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleTapToPay) else {

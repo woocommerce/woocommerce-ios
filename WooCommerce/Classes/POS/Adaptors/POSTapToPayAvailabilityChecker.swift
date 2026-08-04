@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 import PointOfSale
 import ProximityReader
 import enum Experiments.FeatureFlag
@@ -13,8 +12,7 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 /// Resolves Tap to Pay availability for the current POS session.
 ///
 /// Four gates, evaluated in order — fail fast on whichever is first to deny:
-/// 1. Device idiom — POS Tap to Pay is phone-only. iPad POS keeps its Bluetooth-primary
-///    flow, so we deny statically rather than paying for the async device-support check.
+/// 1. Hardware support — Apple's `PaymentCardReader.isSupported`.
 /// 2. The `pointOfSaleTapToPay` feature flag (cheapest remaining check, shortcuts the rest).
 /// 3. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
 ///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
@@ -28,22 +26,22 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let eligibilityService: POSEligibilityServiceProtocol
-    private let userInterfaceIdiom: UIUserInterfaceIdiom
+    private let isTapToPayHardwareSupported: Bool
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          eligibilityService: POSEligibilityServiceProtocol,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom) {
+         isTapToPayHardwareSupported: Bool = PaymentCardReader.isSupported) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.eligibilityService = eligibilityService
-        self.userInterfaceIdiom = userInterfaceIdiom
+        self.isTapToPayHardwareSupported = isTapToPayHardwareSupported
     }
 
     func checkAvailability() async -> POSTapToPayAvailabilityState {
-        guard PaymentCardReader.isSupported else {
+        guard isTapToPayHardwareSupported else {
             return .unavailable(reason: .deviceNotSupported)
         }
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleTapToPay) else {

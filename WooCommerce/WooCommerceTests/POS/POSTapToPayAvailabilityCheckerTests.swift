@@ -1,6 +1,5 @@
 import Testing
 import Foundation
-import UIKit
 import Experiments
 import Yosemite
 @testable import WooCommerce
@@ -11,16 +10,16 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     private let siteID: Int64 = 123
 
-    // MARK: - Device Idiom Gate
+    // MARK: - Hardware Support Gate
 
-    @Test func checkAvailability_when_idiom_is_pad_then_returns_deviceNotSupported() async {
+    @Test func checkAvailability_when_tapToPay_hardware_unsupported_then_returns_deviceNotSupported() async {
         // Given
         let featureFlags = makeEnabledFeatureFlags()
         let eligibilityService = MockPOSEligibilityService()
         eligibilityService.cachedTabVisibility[siteID] = true
         let sut = makeSUT(featureFlagService: featureFlags,
                           eligibilityService: eligibilityService,
-                          userInterfaceIdiom: .pad)
+                          isTapToPayHardwareSupported: false)
 
         // When
         let result = await sut.checkAvailability()
@@ -29,7 +28,7 @@ struct POSTapToPayAvailabilityCheckerTests {
         #expect(result == .unavailable(reason: .deviceNotSupported))
     }
 
-    @Test func checkAvailability_when_idiom_is_pad_then_does_not_dispatch_device_check() async {
+    @Test func checkAvailability_when_tapToPay_hardware_unsupported_then_does_not_dispatch_device_check() async {
         // Given
         let featureFlags = makeEnabledFeatureFlags()
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -39,7 +38,7 @@ struct POSTapToPayAvailabilityCheckerTests {
                 deviceCheckDispatched = true
             }
         }
-        let sut = makeSUT(featureFlagService: featureFlags, stores: stores, userInterfaceIdiom: .pad)
+        let sut = makeSUT(featureFlagService: featureFlags, stores: stores, isTapToPayHardwareSupported: false)
 
         // When
         _ = await sut.checkAvailability()
@@ -200,20 +199,20 @@ private extension POSTapToPayAvailabilityCheckerTests {
         return service
     }
 
-    /// Defaults to `.phone` so the flag / device / eligibility tests stay deterministic
+    /// Hardware support defaults to `true` so the flag / device / eligibility tests stay deterministic
     /// regardless of the simulator the suite runs on.
     func makeSUT(
         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
         stores: MockStoresManager = MockStoresManager(sessionManager: .makeForTesting()),
         eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService(),
-        userInterfaceIdiom: UIUserInterfaceIdiom = .phone
+        isTapToPayHardwareSupported: Bool = true
     ) -> POSTapToPayAvailabilityChecker {
         POSTapToPayAvailabilityChecker(
             siteID: siteID,
             stores: stores,
             featureFlagService: featureFlagService,
             eligibilityService: eligibilityService,
-            userInterfaceIdiom: userInterfaceIdiom
+            isTapToPayHardwareSupported: isTapToPayHardwareSupported
         )
     }
 }

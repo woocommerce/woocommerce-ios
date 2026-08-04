@@ -35,13 +35,8 @@ public struct ComputedRefundLineItem: Encodable, Equatable {
         ComputedRefundLineItem(lineItemID: lineItemID, quantity: nil, refundTotal: refundTotal)
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(lineItemID, forKey: .lineItemID)
-        try container.encodeIfPresent(quantity, forKey: .quantity)
-        try container.encodeIfPresent(refundTotal, forKey: .refundTotal)
-    }
-
+    // Encoding is synthesized: optionals encode via `encodeIfPresent`, so a nil `quantity` or
+    // `refund_total` is omitted rather than sent as null.
     private enum CodingKeys: String, CodingKey {
         case lineItemID = "id"
         case quantity

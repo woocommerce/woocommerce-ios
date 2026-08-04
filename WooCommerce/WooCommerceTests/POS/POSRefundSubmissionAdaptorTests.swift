@@ -128,6 +128,80 @@ struct POSRefundSubmissionAdaptorTests {
         #expect(amount == "22")
     }
 
+    @Test func submitRefund_when_uncancelled_previews_resolve_out_of_order_uses_the_reviewed_total() async throws {
+        // Given two previews in flight for different selections and neither cancelled, so both
+        // write their result. Totals are stored per selection, so the order in which they land
+        // cannot change what a given selection submits.
+        let harness = makeHarness(previewResult: nil, manualPreviewResolution: true, orderQuantity: 2)
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+        let selectionA = Array(preparation.selectableItems.prefix(1))
+        let selectionB = preparation.selectableItems
+
+        let taskA = Task { @MainActor in
+            try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: selectionA,
+                                                        reason: nil)
+        }
+        while harness.service.pendingPreviewCompletions.count < 1 {
+            await Task.yield()
+        }
+
+        let taskB = Task { @MainActor in
+            try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: selectionB,
+                                                        reason: nil)
+        }
+        while harness.service.pendingPreviewCompletions.count < 2 {
+            await Task.yield()
+        }
+
+        // When selection B resolves first ($22, the reviewed selection) and selection A resolves
+        // afterwards ($10)
+        harness.service.pendingPreviewCompletions[1](.success(preview(total: 22)))
+        _ = try await taskB.value
+        harness.service.pendingPreviewCompletions[0](.success(preview(total: 10)))
+        _ = try await taskA.value
+
+        try await harness.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: selectionB,
+                                               reason: nil)
+
+        // Then selection B is charged its own server total, not the late arrival's
+        #expect(harness.service.createRefundLineItems?.count == 1)
+        #expect(harness.service.createRefundLineItems?.first?.quantity == 2)
+        let createEventIndex = try #require(harness.analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.refundCreate.rawValue))
+        let amount = harness.analyticsProvider.receivedProperties[createEventIndex]["amount"] as? String
+        #expect(amount == "22")
+    }
+
+    @Test func submitRefund_when_a_previewed_selection_falls_back_then_the_classic_create_is_used() async throws {
+        // Given a selection previewed successfully, then previewed again with the server flow no
+        // longer available (the clearing side of the ghost-refund invariant).
+        let harness = makeHarness(previewResult: .success(preview(total: 22)))
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+        _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: preparation.selectableItems,
+                                                        reason: nil)
+
+        // When the same selection is re-previewed and the site now reports the local fallback
+        harness.flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: false]
+        _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: preparation.selectableItems,
+                                                        reason: nil)
+        try await harness.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: preparation.selectableItems,
+                                               reason: nil)
+
+        // Then no computed create is sent: the stale server total was cleared for that selection.
+        #expect(harness.service.createRefundLineItems == nil)
+    }
+
     @Test func prepareReviewData_when_preview_errors_then_throws_refundPreviewFailed() async throws {
         // Given
         let harness = makeHarness(previewResult: .failure(NetworkError.timeout()))
@@ -237,6 +311,8 @@ private extension POSRefundSubmissionAdaptorTests {
         let service: MockManualRefundService
         let spy: RefundActionSpy
         let analyticsProvider: MockAnalyticsProvider
+        /// Exposed so a test can change eligibility between two previews of the same selection.
+        let flags: MockFeatureFlagService
     }
 
     /// Builds the adaptor with a mocked order service, refund service, stores manager, and a fresh
@@ -277,7 +353,7 @@ private extension POSRefundSubmissionAdaptorTests {
         }
 
         let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posRefundsV4: flagEnabled]
+        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let previewUseCase = POSServerRefundPreviewUseCase(refundService: service,
                                                            stores: stores,
                                                            featureFlagService: flags,
@@ -295,7 +371,11 @@ private extension POSRefundSubmissionAdaptorTests {
                                                  currencySettings: usdCurrencySettings(),
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider),
                                                  serverRefundPreviewUseCase: previewUseCase)
-        return Harness(adaptor: adaptor, service: service, spy: spy, analyticsProvider: analyticsProvider)
+        return Harness(adaptor: adaptor,
+                       service: service,
+                       spy: spy,
+                       analyticsProvider: analyticsProvider,
+                       flags: flags)
     }
 
     func usdCurrencySettings() -> CurrencySettings {

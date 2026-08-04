@@ -105,7 +105,7 @@ private extension POSRefundFlowResolverTests {
         session.cachedWooCommerceVersion = cachedWooVersion
         let stores = MockStoresManager(sessionManager: session)
         let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posRefundsV4: flagEnabled]
+        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         return POSRefundFlowResolver(stores: stores,
                                      featureFlagService: flags,
                                      availabilityCache: cache,

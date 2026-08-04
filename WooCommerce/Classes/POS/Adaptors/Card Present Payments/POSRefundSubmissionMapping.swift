@@ -106,37 +106,40 @@ struct POSRefundSubmissionMapping {
     /// Builds the preview request lines: products refunded by quantity, fees by tax-inclusive amount.
     func refundPreviewLineItems(from selectedItems: [POSRefundSelectableItem],
                                 context: PreparedRefundContext) -> [RefundPreviewLineItem] {
-        let components = refundComponents(from: selectedItems, context: context)
-
-        let productLines = components.items.map {
-            RefundPreviewLineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
-        }
-
-        let feeLines = components.fees.compactMap { fee -> RefundPreviewLineItem? in
-            guard let refundTotal = grossRefundTotal(for: fee) else {
-                return nil
-            }
-            return RefundPreviewLineItem.amountBased(lineItemID: fee.feeID, refundTotal: refundTotal)
-        }
-
-        return productLines + feeLines
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: RefundPreviewLineItem.quantityBased,
+                    amountBased: RefundPreviewLineItem.amountBased)
     }
 
     /// Builds the `compute_totals` creation request lines. Same construction as
     /// `refundPreviewLineItems(from:context:)`, but the creation endpoint keys lines by `id`.
     func computedRefundLineItems(from selectedItems: [POSRefundSelectableItem],
                                  context: PreparedRefundContext) -> [ComputedRefundLineItem] {
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: ComputedRefundLineItem.quantityBased,
+                    amountBased: ComputedRefundLineItem.amountBased)
+    }
+
+    /// Shared construction for both request shapes. The safety invariant is that a computed create
+    /// sends exactly what was previewed, so the two differ only in the line type they build — never
+    /// in which lines they include or what amounts those lines carry.
+    private func refundLines<Line>(from selectedItems: [POSRefundSelectableItem],
+                                   context: PreparedRefundContext,
+                                   quantityBased: (Int64, Decimal) -> Line,
+                                   amountBased: (Int64, Decimal) -> Line) -> [Line] {
         let components = refundComponents(from: selectedItems, context: context)
 
         let productLines = components.items.map {
-            ComputedRefundLineItem.quantityBased(lineItemID: $0.item.itemID, quantity: Decimal($0.quantity))
+            quantityBased($0.item.itemID, Decimal($0.quantity))
         }
 
-        let feeLines = components.fees.compactMap { fee -> ComputedRefundLineItem? in
+        let feeLines = components.fees.compactMap { fee -> Line? in
             guard let refundTotal = grossRefundTotal(for: fee) else {
                 return nil
             }
-            return ComputedRefundLineItem.amountBased(lineItemID: fee.feeID, refundTotal: refundTotal)
+            return amountBased(fee.feeID, refundTotal)
         }
 
         return productLines + feeLines

@@ -428,7 +428,12 @@ private extension RefundSubmissionUseCase {
             return
         }
         if details.serverLineItems != nil {
-            DDLogError("⛔️ Server refund line items provided without a RefundService — falling back to the classic submission path")
+            // Refuse rather than fall through. `details.amount` is the server preview total while
+            // the refund's line items carry locally computed totals, so submitting here would
+            // record a refund whose total need not equal the sum of its lines. A misconfigured
+            // caller must fail loudly instead of booking money against inconsistent figures.
+            DDLogError("⛔️ Server refund line items provided without a RefundService — refusing to submit")
+            return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingRefundService))
         }
 
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
@@ -590,6 +595,9 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case unknownPaymentGatewayAccount
     case canceledByUser
     case missingCreatedRefund
+    /// Server-computed line items were supplied without the service needed to submit them, so the
+    /// refund cannot be sent through the path its amount was calculated for.
+    case missingRefundService
 }
 
 private enum RefundSubmissionUseCaseDefinitions {

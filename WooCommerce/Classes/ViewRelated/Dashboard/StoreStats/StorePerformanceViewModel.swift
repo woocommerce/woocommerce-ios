@@ -536,12 +536,14 @@ private extension StorePerformanceViewModel {
 
     func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval],
                                       revenueType: DashboardRevenueStatsType) -> [StoreStatsChartData] {
-            let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
-            let revenues = orderStatsIntervals.map { ($0.revenueValue(for: revenueType) as NSDecimalNumber).doubleValue }
-            return zip(intervalDates, revenues)
-                .map { x, y -> StoreStatsChartData in
-                    .init(date: x, revenue: y)
+            // Skip intervals with an unparseable start date (bad server data) rather than crashing.
+            return orderStatsIntervals.compactMap { interval -> StoreStatsChartData? in
+                guard let date = interval.dateStart(timeZone: siteTimezone) else {
+                    return nil
                 }
+                let revenue = (interval.revenueValue(for: revenueType) as NSDecimalNumber).doubleValue
+                return StoreStatsChartData(date: date, revenue: revenue)
+            }
         }
 
     @MainActor

@@ -32,7 +32,7 @@ public protocol ProductVariationsRemoteProtocol {
                                      completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
@@ -288,7 +288,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///
     public func updateProductVariations(siteID: Int64,
                                         productID: Int64,
-                                        productVariations: [ProductVariation],
+                                        productVariations: [PartialProductVariationUpdate],
                                         completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
 
         do {

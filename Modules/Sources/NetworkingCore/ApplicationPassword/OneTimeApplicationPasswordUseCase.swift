@@ -1,7 +1,7 @@
 import Foundation
 import KeychainAccess
 
-public protocol URLSessionProtocol {
+public protocol URLSessionProtocol: AnyObject {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
@@ -42,7 +42,7 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             self.discovery = discovery
         } else {
             let wordpressDiscovery = WordPressAPIDiscovery()
-            self.discovery = { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) }
+            self.discovery = { siteURL in await wordpressDiscovery.resolveRESTAPIRootURL(for: siteURL) }
         }
     }
 
@@ -123,12 +123,11 @@ private extension OneTimeApplicationPasswordUseCase {
     }
 
     func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
-        let root = discoveredRoot ?? (siteAddress + Path.root)
+        let root = discoveredRoot ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteAddress)
         return URL(string: root + path)
     }
 
     enum Path {
-        static let root = "/?rest_route=/"
         static let introspect = "wp/v2/users/me/application-passwords/introspect"
         static let applicationPasswords = "wp/v2/users/me/application-passwords/"
     }

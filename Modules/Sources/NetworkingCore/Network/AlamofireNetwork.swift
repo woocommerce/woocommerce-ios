@@ -133,7 +133,7 @@ public class AlamofireNetwork: Network {
             guard sessionManager == nil else { return nil }
             return Task {
                 guard WordPressRESTAPIRootCache.shared.root(for: siteURL) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteURL)
+                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteURL)
             }
         }()
 

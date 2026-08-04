@@ -188,7 +188,7 @@ public struct RESTRequest: Request {
         let rootComponents: [String?] = if let cachedRoot = WordPressRESTAPIRootCache.shared.root(for: siteURL) {
             [cachedRoot, apiVersionPath, path]
         } else {
-            [siteURL, Settings.basePath, apiVersionPath, path]
+            [WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteURL), apiVersionPath, path]
         }
         let components = rootComponents
             .compactMap { $0 }
@@ -208,11 +208,5 @@ public struct RESTRequest: Request {
 
     public func responseDataValidator() -> ResponseDataValidator {
         PlaceholderDataValidator()
-    }
-}
-
-extension RESTRequest {
-    enum Settings {
-        static let basePath = "?rest_route="
     }
 }

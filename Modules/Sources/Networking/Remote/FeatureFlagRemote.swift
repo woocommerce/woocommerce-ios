@@ -9,10 +9,18 @@ public protocol FeatureFlagRemoteProtocol {
 /// Feature Flags: Remote Endpoints
 ///
 public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
+    private let userDefaults: UserDefaults
+
+    public init(network: Network, userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        super.init(network: network)
+    }
+
     public func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
         let parameters: [String: String] = [
             ParameterKeys.platform: "ios",
             ParameterKeys.marketingVersion: Bundle.main.marketingVersion,
+            ParameterKeys.deviceID: deviceID,
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Paths.lookup, parameters: parameters)
@@ -23,6 +31,16 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
             }
             return (featureFlag, value)
         })
+    }
+
+    /// Stable per-install identifier sent as `device_id` for rollout bucketing.
+    private var deviceID: String {
+        if let storedID = userDefaults.string(forKey: UserDefaultsKeys.deviceID) {
+            return storedID
+        }
+        let newID = UUID().uuidString
+        userDefaults.set(newID, forKey: UserDefaultsKeys.deviceID)
+        return newID
     }
 }
 
@@ -91,5 +109,10 @@ private extension FeatureFlagRemote {
     enum ParameterKeys {
         static let platform = "platform"
         static let marketingVersion = "marketing_version"
+        static let deviceID = "device_id"
+    }
+
+    enum UserDefaultsKeys {
+        static let deviceID = "FeatureFlagDeviceID"
     }
 }

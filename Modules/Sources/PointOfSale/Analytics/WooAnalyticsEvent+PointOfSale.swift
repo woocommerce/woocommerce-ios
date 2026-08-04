@@ -296,7 +296,7 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when a card present payment is cancelled in POS.
-        /// 
+        ///
         public static func cardPresentCollectPaymentCanceled(forGatewayID: String?,
                                                              countryCode: CountryCode,
                                                              cardReaderModel: String?,

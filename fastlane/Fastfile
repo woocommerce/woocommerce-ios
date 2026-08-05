@@ -972,7 +972,7 @@ platform :ios do
     sentry_debug_files_upload(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
-      project_slug: 'woocommerce-ios',
+      project_slug: 'woocommerce-ios-alpha',
       path: ['./build/WooCommerce.app.dSYM.zip']
     )
 

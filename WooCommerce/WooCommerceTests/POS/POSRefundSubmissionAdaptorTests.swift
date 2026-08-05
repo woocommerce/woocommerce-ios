@@ -144,7 +144,7 @@ struct POSRefundSubmissionAdaptorTests {
 
     @Test func prepareReviewData_when_preview_rejected_with_mapped_code_then_throws_typed_rejection() async throws {
         // Given the server rejects the selection with an actionable code
-        let error = DotcomError.unknown(code: "line_item_already_refunded", message: nil, data: nil)
+        let error = DotcomError.unknown(code: "woocommerce_rest_line_item_already_refunded", message: nil, data: nil)
         let harness = makeHarness(previewResult: .failure(error))
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
 
@@ -161,7 +161,7 @@ struct POSRefundSubmissionAdaptorTests {
         // Given a successful preview (so the server-computed create path is used) and a create
         // that the server rejects because the order changed in the meantime
         let harness = makeHarness(previewResult: .success(preview()))
-        harness.service.createRefundError = DotcomError.unknown(code: "refund_exceeds_remaining", message: nil, data: nil)
+        harness.service.createRefundError = DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining", message: nil, data: nil)
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
         _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
                                                         preparation: preparation,

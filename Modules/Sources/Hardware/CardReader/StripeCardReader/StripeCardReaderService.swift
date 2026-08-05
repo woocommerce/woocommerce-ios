@@ -360,7 +360,12 @@ extension StripeCardReaderService: CardReaderService {
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }
-            .map(PaymentIntent.init(intent:))
+            .tryMap { intent in
+                guard let paymentIntent = PaymentIntent(intent: intent) else {
+                    throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
+                }
+                return paymentIntent
+            }
             .eraseToAnyPublisher()
     }
 
@@ -378,7 +383,12 @@ extension StripeCardReaderService: CardReaderService {
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    guard let paymentIntent = PaymentIntent(intent: intent) else {
+                        throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
+                    }
+                    return paymentIntent
+                }
                 .mapError { [weak self] error in
                     if case CardReaderServiceError.paymentMethodCollection = error {
                         // This is supposed to happen in `collectPaymentMethod(intent:)` when there's an error.
@@ -396,10 +406,19 @@ extension StripeCardReaderService: CardReaderService {
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    guard let paymentIntent = PaymentIntent(intent: intent) else {
+                        throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
+                    }
+                    return paymentIntent
+                }
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            return Just(PaymentIntent(intent: activePaymentIntent))
+            guard let paymentIntent = PaymentIntent(intent: activePaymentIntent) else {
+                return Fail(error: CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing))
+                    .eraseToAnyPublisher()
+            }
+            return Just(paymentIntent)
                 .setFailureType(to: CardReaderServiceError.self)
                 .mapError({ $0 as Error })
                 .eraseToAnyPublisher()
@@ -439,7 +458,11 @@ extension StripeCardReaderService: CardReaderService {
                     return promise(.failure(CardReaderServiceError.intentCreation()))
                 }
 
-                promise(.success(PaymentIntent(intent: intent)))
+                guard let paymentIntent = PaymentIntent(intent: intent) else {
+                    return promise(.failure(CardReaderServiceError.intentCreation(underlyingError: .paymentIntentIdMissing)))
+                }
+
+                promise(.success(paymentIntent))
             }
         }
         .eraseToAnyPublisher()
@@ -824,7 +847,11 @@ private extension StripeCardReaderService {
         intent: StripeTerminal.PaymentIntent,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        beforePaymentConfirmation(PaymentIntent(intent: intent))
+        guard let paymentIntent = PaymentIntent(intent: intent) else {
+            return Fail(error: CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing))
+                .eraseToAnyPublisher()
+        }
+        return beforePaymentConfirmation(paymentIntent)
             .map { intent }
             .eraseToAnyPublisher()
     }
@@ -841,7 +868,7 @@ private extension StripeCardReaderService {
                     }
 
                     self.activePaymentIntent = paymentIntent
-                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent)?.paymentMethod()) {
                     case (.requiresCapture, _):
                         // This payment intent can be used, we lost context to get an error with a PI that requires capture
                         self.activePaymentIntent = nil

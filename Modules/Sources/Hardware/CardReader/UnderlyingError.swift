@@ -155,6 +155,11 @@ public enum UnderlyingError: Error, Equatable {
     ///
     case noActivePaymentIntent
 
+    /// The Stripe payment intent has a nil or empty id. Since the Stripe SDK 3.0.0 the id is nullable to support
+    /// offline payments, which the app does not support, so such an intent cannot be used.
+    ///
+    case paymentIntentIdMissing
+
     // MARK: - Tap to Pay on iPhone related errors
 
     /// The device must have a passcode in order to use Tap to Pay on iPhone
@@ -628,6 +633,13 @@ extension UnderlyingError: LocalizedError {
             return NSLocalizedString("Sorry, we could not complete this action, as no active payment was found.",
                                      comment: "Underlying error message for actions which require an active payment, " +
                                      "such as cancellation, when none is found. Unlikely to be shown.")
+
+        case .paymentIntentIdMissing:
+            return NSLocalizedString(
+                "hardware.cardReader.underlyingError.paymentIntentIdMissing",
+                value: "Please contact support - the payment intent id is missing.",
+                comment: "Error message when the payment intent has no id, so the payment cannot be processed."
+            )
 
             // MARK: - Tap to Pay on iPhone errors
         case .passcodeNotEnabled:

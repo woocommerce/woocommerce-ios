@@ -3,16 +3,16 @@ import StripeTerminal
 
 extension PaymentIntent {
 
-    /// Convenience initializer
+    /// Convenience initializer. Fails when the Stripe intent id is nil or empty:
+    /// since the Stripe SDK 3.0.0 the id is nullable to support offline payments,
+    /// which the app does not support, so such an intent cannot be used.
     /// - Parameter intent: An instance of a StripeTerminal.PaymentIntent
-    init(intent: StripePaymentIntent) {
-        if let stripeId = intent.stripeId, !stripeId.isEmpty {
-            self.id = stripeId
-        } else {
-            // Improvement: Ideally this initializer should be failable: https://github.com/woocommerce/woocommerce-ios/issues/11208
+    init?(intent: StripePaymentIntent) {
+        guard let stripeId = intent.stripeId, !stripeId.isEmpty else {
             DDLogError("Failed to create a PaymentIntent. Intent ID is nil or empty: \(String(describing: intent.stripeId))")
-            self.id = ""
+            return nil
         }
+        self.id = stripeId
         self.status = PaymentIntentStatus.with(status: intent.status)
         self.clientSecret = intent.clientSecret
         self.created = intent.created
@@ -41,15 +41,5 @@ protocol StripePaymentIntent {
     var paymentMethod: StripeTerminal.PaymentMethod? { get }
 }
 
-/// StripePaymentIntent Conformance
-///
-/// Our implementation of PaymentIntent does not allow`id` to be nullable, as offline payments are not supported in the app.
-/// This differs from StripeTerminal.PaymentIntent since 3.0.0, these can be nullable to support offline payments.
-/// In order to not make our implementation accept a property that does not correspond to the app logic,
-/// we provide an empty string if no stripeID can be found.
-extension StripeTerminal.PaymentIntent: StripePaymentIntent {
-    var id: String {
-        stripeId ?? ""
-    }
-}
+extension StripeTerminal.PaymentIntent: StripePaymentIntent {}
 #endif

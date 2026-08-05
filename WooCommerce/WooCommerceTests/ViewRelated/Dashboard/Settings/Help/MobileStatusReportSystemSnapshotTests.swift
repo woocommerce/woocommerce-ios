@@ -10,8 +10,8 @@ struct MobileStatusReportSystemSnapshotTests {
         // Given
         let connectivity = MockConnectivityObserver()
         connectivity.setStatus(.reachable(type: .cellular))
-        connectivity.isCurrentPathExpensive = true
-        connectivity.isCurrentPathConstrained = false
+        connectivity.isConnectionMetered = true
+        connectivity.isLowDataModeEnabled = false
 
         // When
         let snapshot = await MobileStatusReportSystemSnapshot.current(connectivityObserver: connectivity,
@@ -26,8 +26,8 @@ struct MobileStatusReportSystemSnapshotTests {
     @Test func test_current_when_path_flags_never_arrived_then_reports_unknown() async {
         // Given
         let connectivity = MockConnectivityObserver()
-        connectivity.isCurrentPathExpensive = nil
-        connectivity.isCurrentPathConstrained = nil
+        connectivity.isConnectionMetered = nil
+        connectivity.isLowDataModeEnabled = nil
 
         // When
         let snapshot = await MobileStatusReportSystemSnapshot.current(connectivityObserver: connectivity,

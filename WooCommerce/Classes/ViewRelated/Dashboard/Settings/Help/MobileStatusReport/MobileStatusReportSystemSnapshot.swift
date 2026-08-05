@@ -55,9 +55,9 @@ extension MobileStatusReportSystemSnapshot {
                                          networkType: connectivityObserver.currentStatus.description,
                                          // From the observer's app-lifetime path monitor — the report must not
                                          // spin up its own and wait on a first update.
-                                         expensiveConnection: connectivityObserver.isCurrentPathExpensive
+                                         expensiveConnection: connectivityObserver.isConnectionMetered
                                             .map(String.init) ?? unknown,
-                                         lowDataMode: connectivityObserver.isCurrentPathConstrained
+                                         lowDataMode: connectivityObserver.isLowDataModeEnabled
                                             .map(String.init) ?? unknown,
                                          apnsEnvironment: apnsEnvironment,
                                          authorizationStatus: String(describing: notifications.authorizationStatus),

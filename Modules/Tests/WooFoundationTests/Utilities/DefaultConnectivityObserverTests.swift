@@ -80,8 +80,8 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         let networkMonitor = MockNetworkMonitor()
         let expectation = expectation(description: "Path flags updated")
         let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
-        XCTAssertNil(observer.isCurrentPathExpensive)
-        XCTAssertNil(observer.isCurrentPathConstrained)
+        XCTAssertNil(observer.isConnectionMetered)
+        XCTAssertNil(observer.isLowDataModeEnabled)
 
         // When
         observer.statusPublisher
@@ -97,8 +97,8 @@ final class DefaultConnectivityObserverTests: XCTestCase {
 
         // Then
         wait(for: [expectation], timeout: 1)
-        XCTAssertEqual(observer.isCurrentPathExpensive, true)
-        XCTAssertEqual(observer.isCurrentPathConstrained, true)
+        XCTAssertEqual(observer.isConnectionMetered, true)
+        XCTAssertEqual(observer.isLowDataModeEnabled, true)
     }
 }
 

@@ -5,8 +5,8 @@ import WooFoundation
 final class MockConnectivityObserver: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .unknown
 
-    var isCurrentPathExpensive: Bool?
-    var isCurrentPathConstrained: Bool?
+    var isConnectionMetered: Bool?
+    var isLowDataModeEnabled: Bool?
 
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()

@@ -141,8 +141,8 @@ class EmptyPOSConnectivityProvider: POSConnectivityProviding {
 
 class EmptyPOSConnectivity: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
-    var isCurrentPathExpensive: Bool? { nil }
-    var isCurrentPathConstrained: Bool? { nil }
+    var isConnectionMetered: Bool? { nil }
+    var isLowDataModeEnabled: Bool? { nil }
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
     init() {}
 }

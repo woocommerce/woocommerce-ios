@@ -66,7 +66,7 @@ merchant has not visited the relevant screen since launching the app — and it 
 | Field | Meaning | Values |
 | --- | --- | --- |
 | `Network type` | The connection in use. | `WiFi or Ethernet`, `Cellular`, `Other`, `Not reachable`, `Unknown` |
-| `Expensive connection` | iOS considers the current path expensive — typically cellular or a personal hotspot. Background work is deprioritised on such paths. | `true`, `false`; `unknown` before the first network update |
+| `Metered connection` | iOS considers the current connection metered (its "expensive path") — typically cellular or a personal hotspot. Background work is deprioritised on such connections. | `true`, `false`; `unknown` before the first network update |
 | `Low Data Mode` | Low Data Mode is on for the current network. Unlike a device-wide setting, this is per-network: it can be on for the merchant's cellular plan and off on their office WiFi. | `true`, `false`; `unknown` before the first network update |
 
 The network fields describe the path at the moment the report was generated, which for a ticket is the moment it

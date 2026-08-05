@@ -19,7 +19,7 @@ struct MobileStatusReportSystemSnapshotTests {
 
         // Then
         #expect(snapshot.networkType == "Cellular")
-        #expect(snapshot.expensiveConnection == "true")
+        #expect(snapshot.meteredConnection == "true")
         #expect(snapshot.lowDataMode == "false")
     }
 
@@ -35,7 +35,7 @@ struct MobileStatusReportSystemSnapshotTests {
 
         // Then
         #expect(snapshot.networkType == "Unknown")
-        #expect(snapshot.expensiveConnection == "unknown")
+        #expect(snapshot.meteredConnection == "unknown")
         #expect(snapshot.lowDataMode == "unknown")
     }
 

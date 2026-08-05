@@ -20,8 +20,9 @@ final class TracksProviderThreadSafetyTests: XCTestCase {
                 allDone.fulfill()
             }
             DispatchQueue.global().async {
-                provider.refreshUserData()
-                allDone.fulfill()
+                provider.refreshUserData {
+                    allDone.fulfill()
+                }
             }
         }
 

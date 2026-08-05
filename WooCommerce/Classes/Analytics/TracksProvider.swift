@@ -79,10 +79,6 @@ extension TracksProvider {
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData() {
-        refreshUserData(completion: {})
-    }
-
     func refreshUserData(completion: @escaping () -> Void) {
         switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()

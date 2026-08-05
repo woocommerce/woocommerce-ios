@@ -32,12 +32,8 @@ public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTrac
 //
 public extension MockAnalyticsProvider {
 
-    func refreshUserData() {
-        userID = "aGeneratedUserGUID"
-    }
-
     func refreshUserData(completion: @escaping () -> Void) {
-        refreshUserData()
+        userID = "aGeneratedUserGUID"
         if defersRefreshUserDataCompletion {
             refreshUserDataCompletion = completion
         } else {

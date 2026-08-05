@@ -77,14 +77,8 @@ private extension MobileStatusReportSystemSnapshot {
 
     static let unknown = "unknown"
 
-    /// Not `ByteCountFormatter`, which translates its units: the report leaves the device and is read by
-    /// Happiness Engineers rather than by the merchant.
     static func freeSpace() -> String {
-        guard let values = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-              let capacity = values.volumeAvailableCapacity else {
-            return unknown
-        }
-        return Int64(capacity).englishByteCountRepresentable
+        UIDevice.current.freeDiskSpaceInEnglish ?? unknown
     }
 
     /// The idiom alongside the size is what actually answers "phone or tablet" when triaging POS.

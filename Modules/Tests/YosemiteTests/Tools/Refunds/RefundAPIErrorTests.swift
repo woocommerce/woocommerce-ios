@@ -11,13 +11,13 @@ struct RefundAPIErrorTests {
     @Test func init_maps_each_actionable_code_from_dotcom_unknown_error() {
         // Given the unprefixed codes the refund endpoints return with 400/422 statuses
         let expectations: [(code: String, rejection: RefundAPIError)] = [
-            ("quantity_exceeds_refundable", .quantityExceedsRefundable),
-            ("line_item_already_refunded", .lineItemAlreadyRefunded),
-            ("order_not_refundable", .orderNotRefundable),
-            ("preview_exceeds_max_refundable", .refundExceedsRemaining),
-            ("refund_exceeds_remaining", .refundExceedsRemaining),
-            ("refund_total_exceeds_line", .refundTotalExceedsLine),
-            ("invalid_refund_amount", .invalidRefundAmount)
+            ("woocommerce_rest_quantity_exceeds_refundable", .quantityExceedsRefundable),
+            ("woocommerce_rest_line_item_already_refunded", .lineItemAlreadyRefunded),
+            ("woocommerce_rest_order_not_refundable", .orderNotRefundable),
+            ("woocommerce_rest_preview_exceeds_max_refundable", .refundExceedsRemaining),
+            ("woocommerce_rest_refund_exceeds_remaining", .refundExceedsRemaining),
+            ("woocommerce_rest_refund_total_exceeds_line", .refundTotalExceedsLine),
+            ("woocommerce_rest_invalid_refund_amount", .invalidRefundAmount)
         ]
 
         for (code, rejection) in expectations {
@@ -31,7 +31,7 @@ struct RefundAPIErrorTests {
 
     @Test func init_maps_code_from_network_error_response_body() {
         // Given a REST 422 whose body carries the rejection code
-        let response = Data(#"{"code":"refund_exceeds_remaining"}"#.utf8)
+        let response = Data(#"{"code":"woocommerce_rest_refund_exceeds_remaining"}"#.utf8)
         let error = NetworkError.unacceptableStatusCode(statusCode: 422, response: response)
 
         // When
@@ -44,13 +44,13 @@ struct RefundAPIErrorTests {
     @Test func init_returns_nil_for_programming_error_codes() {
         // Given codes that indicate a client bug rather than an actionable order state change
         let programmingErrorCodes = [
-            "invalid_line_item",
-            "invalid_quantity",
-            "invalid_refund_total",
-            "missing_quantity_or_refund_total",
-            "duplicate_line_item",
-            "line_item_not_found",
-            "missing_line_items"
+            "woocommerce_rest_invalid_line_item",
+            "woocommerce_rest_invalid_quantity",
+            "woocommerce_rest_invalid_refund_total",
+            "woocommerce_rest_missing_quantity_or_refund_total",
+            "woocommerce_rest_duplicate_line_item",
+            "woocommerce_rest_line_item_not_found",
+            "woocommerce_rest_missing_line_items"
         ]
 
         for code in programmingErrorCodes {

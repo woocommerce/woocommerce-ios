@@ -52,13 +52,13 @@ public enum RefundAPIError: Error, Equatable {
     }
 
     private static let rejectionsByCode: [String: RefundAPIError] = [
-        "quantity_exceeds_refundable": .quantityExceedsRefundable,
-        "line_item_already_refunded": .lineItemAlreadyRefunded,
-        "order_not_refundable": .orderNotRefundable,
-        "preview_exceeds_max_refundable": .refundExceedsRemaining,
-        "refund_exceeds_remaining": .refundExceedsRemaining,
-        "refund_total_exceeds_line": .refundTotalExceedsLine,
-        "invalid_refund_amount": .invalidRefundAmount
+        "woocommerce_rest_quantity_exceeds_refundable": .quantityExceedsRefundable,
+        "woocommerce_rest_line_item_already_refunded": .lineItemAlreadyRefunded,
+        "woocommerce_rest_order_not_refundable": .orderNotRefundable,
+        "woocommerce_rest_preview_exceeds_max_refundable": .refundExceedsRemaining,
+        "woocommerce_rest_refund_exceeds_remaining": .refundExceedsRemaining,
+        "woocommerce_rest_refund_total_exceeds_line": .refundTotalExceedsLine,
+        "woocommerce_rest_invalid_refund_amount": .invalidRefundAmount
     ]
 }
 

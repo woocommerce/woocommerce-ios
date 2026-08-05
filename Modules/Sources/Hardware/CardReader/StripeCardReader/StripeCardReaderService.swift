@@ -361,10 +361,7 @@ extension StripeCardReaderService: CardReaderService {
                 self.processPayment(intent: intent)
             }
             .tryMap { intent in
-                guard let paymentIntent = PaymentIntent(intent: intent) else {
-                    throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
-                }
-                return paymentIntent
+                try Self.paymentIntent(from: intent)
             }
             .eraseToAnyPublisher()
     }
@@ -384,10 +381,7 @@ extension StripeCardReaderService: CardReaderService {
                     self.processPayment(intent: intent)
                 }
                 .tryMap { intent in
-                    guard let paymentIntent = PaymentIntent(intent: intent) else {
-                        throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
-                    }
-                    return paymentIntent
+                    try Self.paymentIntent(from: intent)
                 }
                 .mapError { [weak self] error in
                     if case CardReaderServiceError.paymentMethodCollection = error {
@@ -407,20 +401,12 @@ extension StripeCardReaderService: CardReaderService {
                     self.processPayment(intent: intent)
                 }
                 .tryMap { intent in
-                    guard let paymentIntent = PaymentIntent(intent: intent) else {
-                        throw CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
-                    }
-                    return paymentIntent
+                    try Self.paymentIntent(from: intent)
                 }
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            guard let paymentIntent = PaymentIntent(intent: activePaymentIntent) else {
-                return Fail(error: CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing))
-                    .eraseToAnyPublisher()
-            }
-            return Just(paymentIntent)
-                .setFailureType(to: CardReaderServiceError.self)
-                .mapError({ $0 as Error })
+            return Result { try Self.paymentIntent(from: activePaymentIntent) }
+                .publisher
                 .eraseToAnyPublisher()
         case .processing:
             return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
@@ -458,11 +444,7 @@ extension StripeCardReaderService: CardReaderService {
                     return promise(.failure(CardReaderServiceError.intentCreation()))
                 }
 
-                guard let paymentIntent = PaymentIntent(intent: intent) else {
-                    return promise(.failure(CardReaderServiceError.intentCreation(underlyingError: .paymentIntentIdMissing)))
-                }
-
-                promise(.success(paymentIntent))
+                promise(Result { try Self.paymentIntent(from: intent, orFail: .intentCreation(underlyingError: .paymentIntentIdMissing)) })
             }
         }
         .eraseToAnyPublisher()
@@ -843,17 +825,27 @@ private extension StripeCardReaderService {
         }
     }
 
+    /// Maps a Stripe intent to a `PaymentIntent`, throwing the given error when the intent
+    /// cannot be used because its Stripe id is nil or empty.
+    static func paymentIntent(from intent: StripePaymentIntent,
+                              orFail error: CardReaderServiceError = .paymentCapture(underlyingError: .paymentIntentIdMissing)) throws -> PaymentIntent {
+        guard let paymentIntent = PaymentIntent(intent: intent) else {
+            throw error
+        }
+        return paymentIntent
+    }
+
     func prepareForPaymentConfirmation(
         intent: StripeTerminal.PaymentIntent,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        guard let paymentIntent = PaymentIntent(intent: intent) else {
-            return Fail(error: CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing))
+        do {
+            return beforePaymentConfirmation(try Self.paymentIntent(from: intent))
+                .map { intent }
                 .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
         }
-        return beforePaymentConfirmation(paymentIntent)
-            .map { intent }
-            .eraseToAnyPublisher()
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {

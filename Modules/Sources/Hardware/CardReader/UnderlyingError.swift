@@ -637,7 +637,7 @@ extension UnderlyingError: LocalizedError {
         case .paymentIntentIdMissing:
             return NSLocalizedString(
                 "hardware.cardReader.underlyingError.paymentIntentIdMissing",
-                value: "Please contact support - the payment intent id is missing.",
+                value: "Sorry, we could not complete this payment, as no payment id was found.",
                 comment: "Error message when the payment intent has no id, so the payment cannot be processed."
             )
 

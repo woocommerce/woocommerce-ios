@@ -3,14 +3,14 @@ import StripeTerminal
 
 extension PaymentIntent {
 
-    /// Convenience initializer. Fails when the Stripe intent id is nil or empty:
-    /// since the Stripe SDK 3.0.0 the id is nullable to support offline payments,
+    /// Convenience initializer. Throws `UnderlyingError.paymentIntentIdMissing` when the Stripe intent id
+    /// is nil or empty: since the Stripe SDK 3.0.0 the id is nullable to support offline payments,
     /// which the app does not support, so such an intent cannot be used.
     /// - Parameter intent: An instance of a StripeTerminal.PaymentIntent
-    init?(intent: StripePaymentIntent) {
+    init(intent: StripePaymentIntent) throws(UnderlyingError) {
         guard let stripeId = intent.stripeId, !stripeId.isEmpty else {
             DDLogError("Failed to create a PaymentIntent. Intent ID is nil or empty: \(String(describing: intent.stripeId))")
-            return nil
+            throw .paymentIntentIdMissing
         }
         self.id = stripeId
         self.status = PaymentIntentStatus.with(status: intent.status)

@@ -1,4 +1,5 @@
 import EventHorizonSDK
+import Experiments
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
@@ -171,6 +172,34 @@ class WooAnalyticsTests: XCTestCase {
     func testClearAllEvents() {
         testingProvider?.clearEvents()
         XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
+    }
+
+    @MainActor
+    func test_refreshUserData_starts_AB_tests_after_provider_refresh_completes() async {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        testingProvider.defersRefreshUserDataCompletion = true
+        let abTestStarted = expectation(description: "A/B test started")
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: testingProvider,
+                                 userDefaults: userDefaults,
+                                 startABTest: { context in
+            startedContexts.append(context)
+            abTestStarted.fulfill()
+        })
+
+        // When
+        analytics.refreshUserData()
+        await Task.yield()
+
+        // Then
+        XCTAssertTrue(startedContexts.isEmpty)
+
+        testingProvider.completeRefreshUserData()
+        await fulfillment(of: [abTestStarted], timeout: 1.0)
+        XCTAssertEqual(startedContexts, [.loggedOut])
     }
 
     func test_events_when_logged_in_include_site_properties() {

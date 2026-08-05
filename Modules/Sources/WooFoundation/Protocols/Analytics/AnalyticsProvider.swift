@@ -7,6 +7,12 @@ public protocol AnalyticsProvider {
     ///
     func refreshUserData()
 
+    /// Refresh the tracking metadata for the current user and notify the caller when the refresh has completed.
+    ///
+    /// Providers that perform the refresh asynchronously should override this method so dependent work does not
+    /// race with a user switch.
+    func refreshUserData(completion: @escaping () -> Void)
+
     /// Track a spcific event without any associated properties
     ///
     /// - Parameter eventName: the event name
@@ -29,4 +35,11 @@ public protocol AnalyticsProvider {
     /// Switch between an authed user and anon user
     ///
     func clearUsers()
+}
+
+public extension AnalyticsProvider {
+    func refreshUserData(completion: @escaping () -> Void) {
+        refreshUserData()
+        completion()
+    }
 }

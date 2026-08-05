@@ -22,11 +22,11 @@ struct ApiCredentials {
     ///
     static let tracksPrefix = "%{tracks_prefix}"
 
-    /// Sentry API Key
+    /// Sentry DSN
     ///
     static let sentryDSN = "%{sentry_dsn}"
 
-    /// Sentry API Key for non-production builds
+    /// Sentry DSN for non-production builds
     ///
     static let sentryDSNInternal = "%{sentry_dsn_internal}"
 

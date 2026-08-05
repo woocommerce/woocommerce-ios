@@ -127,7 +127,7 @@ private extension MobileStatusReportProvider {
 
     func connectivitySection(_ system: MobileStatusReportSystemSnapshot) -> [String] {
         [entry("Network type", system.networkType),
-         entry("Expensive connection", system.expensiveConnection),
+         entry("Metered connection", system.meteredConnection),
          entry("Low Data Mode", system.lowDataMode)]
     }
 

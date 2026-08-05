@@ -20,18 +20,47 @@ extension UINavigationController {
     }
 
     /// Two-stage tab re-selection: pop to root, or scroll to top when already at root.
-    func popToRootOrScrollToTop(animated: Bool) {
-        if viewControllers.count > 1 {
-            // Every screen being popped must permit it (unsaved-changes guard), like tapping Back through them.
-            for viewController in viewControllers.dropFirst().reversed() {
-                guard viewController.shouldPopOnBackButton() else {
-                    return
+    /// Every screen being popped must permit it (`shouldPopOnBackButton`), like tapping Back
+    /// through them; the first screen that refuses becomes the new top instead. Screens inside
+    /// a nested navigation controller (e.g. a collapsed split view's column) are asked too.
+    /// Returns `true` when the stack ends up at its root, `false` when a screen refused.
+    @discardableResult
+    func popToRootOrScrollToTop(animated: Bool) -> Bool {
+        guard viewControllers.count > 1 else {
+            scrollContentToTop(animated: animated)
+            return true
+        }
+        for element in viewControllers.dropFirst().reversed() {
+            for screen in Self.screens(in: element) {
+                guard screen.shouldPopOnBackButton() else {
+                    revealRefusingScreen(screen, poppedElement: element, animated: animated)
+                    return false
                 }
             }
-            popToRootViewController(animated: animated)
-        } else {
-            scrollContentToTop(animated: animated)
         }
+        popToRootViewController(animated: animated)
+        return true
+    }
+
+    /// The screens a stack element stands for, top-down. A collapsed split view puts its column
+    /// into the stack as a navigation controller, so that element stands for everything inside it.
+    static func screens(in element: UIViewController) -> [UIViewController] {
+        guard let nestedNavigationController = element as? UINavigationController else {
+            return [element]
+        }
+        return nestedNavigationController.viewControllers.reversed()
+    }
+
+    /// Pops down to the screen that refused, making it the visible top.
+    private func revealRefusingScreen(_ screen: UIViewController, poppedElement element: UIViewController, animated: Bool) {
+        if topViewController !== element {
+            popToViewController(element, animated: animated)
+        }
+        guard let nestedNavigationController = element as? UINavigationController,
+              nestedNavigationController.topViewController !== screen else {
+            return
+        }
+        nestedNavigationController.popToViewController(screen, animated: animated)
     }
 
     /// Completion block for popToRootViewController

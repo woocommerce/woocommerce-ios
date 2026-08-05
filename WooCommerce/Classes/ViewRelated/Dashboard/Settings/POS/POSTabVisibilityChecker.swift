@@ -103,7 +103,14 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         // Unknown connectivity (e.g. before the first path update at cold start) proceeds with
         // the full check so a fresh online launch is not stuck with stale cached visibility.
         if case .notReachable = connectivityObserver.currentStatus {
-            return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
+            guard let cached = eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) else {
+                logNotVisible("offline with no cached visibility for the site")
+                return false
+            }
+            if !cached {
+                logNotVisible("offline, and the last known visibility was hidden")
+            }
+            return cached
         }
 
         async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()

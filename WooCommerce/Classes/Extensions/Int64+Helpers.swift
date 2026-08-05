@@ -18,7 +18,7 @@ extension Int64 {
         var sizeAbbreviationsIndex = 0
         var capacity = Double(self)
 
-        while capacity > 1024 && sizeAbbreviationsIndex < sizeAbbreviations.count - 1 {
+        while capacity >= 1024 && sizeAbbreviationsIndex < sizeAbbreviations.count - 1 {
             capacity /= 1024
             sizeAbbreviationsIndex += 1
         }

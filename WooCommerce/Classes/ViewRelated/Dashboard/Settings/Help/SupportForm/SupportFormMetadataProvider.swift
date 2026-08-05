@@ -1,6 +1,7 @@
 import Foundation
 import CoreTelephony
 import Yosemite
+import class UIKit.UIDevice
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.ConnectivityObserver
@@ -150,12 +151,7 @@ private extension SupportFormMetadataProvider {
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
-        guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-              let capacityBytes = resourceValues.volumeAvailableCapacity else {
-            return Constants.unknownValue
-        }
-
-        return Int64(capacityBytes).englishByteCountRepresentable
+        UIDevice.current.freeDiskSpaceInEnglish ?? Constants.unknownValue
     }
 
     /// Gets the content of the main/first log file. Trimmed with a character limit.

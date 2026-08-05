@@ -10,8 +10,8 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
 
     @Published public private(set) var currentStatus: ConnectivityStatus = .unknown
 
-    public private(set) var isCurrentPathExpensive: Bool?
-    public private(set) var isCurrentPathConstrained: Bool?
+    public private(set) var isConnectionMetered: Bool?
+    public private(set) var isLowDataModeEnabled: Bool?
 
     public var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()
@@ -29,8 +29,8 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
             DispatchQueue.main.async {
                 // Before `currentStatus`, whose publisher fires synchronously: a subscriber reacting to the
                 // status change must already see this path's flags.
-                self.isCurrentPathExpensive = path.isExpensive
-                self.isCurrentPathConstrained = path.isConstrained
+                self.isConnectionMetered = path.isExpensive
+                self.isLowDataModeEnabled = path.isConstrained
                 self.currentStatus = self.connectivityStatus(from: path)
             }
         }

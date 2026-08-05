@@ -17,11 +17,6 @@ public protocol ConnectivityObserver {
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }
 }
 
-public extension ConnectivityObserver {
-    var isCurrentPathExpensive: Bool? { nil }
-    var isCurrentPathConstrained: Bool? { nil }
-}
-
 /// Defines the various states of network connectivity.
 ///
 /// - unknown:      It is unknown whether the network is reachable.

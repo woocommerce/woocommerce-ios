@@ -169,9 +169,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     /// Non-production builds report to a separate Sentry project.
     ///
-    /// Sentry compares release versions with the bundle ID stripped and the build metadata ignored, so an alpha release such as
-    /// `com.automattic.alpha.woocommerce@25.3+pr123-abc1234` counts as `25.3` in the production project. Issues auto-resolved in
-    /// "the next release" then match against alpha builds that nobody ships, and never surface as regressions.
+    /// A different Sentry project for non-production builds avoids workflow issues due to how Sentry
+    /// computes latest and next releases when an automation marks an issue as solved there.
     ///
     var sentryDSN: String {
         return buildConfiguration.isProduction ? ApiCredentials.sentryDSN : ApiCredentials.sentryDSNInternal

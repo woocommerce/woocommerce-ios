@@ -97,6 +97,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     let featureFlagService: FeatureFlagService
 
+    private let buildConfiguration: BuildConfiguration
+
     let enableAppHangTracking = false
     let enableCaptureFailedRequests = false
 
@@ -104,8 +106,9 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     ///
     private var hasBeenInitialized = false
 
-    init(featureFlagService: FeatureFlagService) {
+    init(featureFlagService: FeatureFlagService, buildConfiguration: BuildConfiguration = .current) {
         self.featureFlagService = featureFlagService
+        self.buildConfiguration = buildConfiguration
 
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .defaultAccountWasUpdated, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateCrashLoggingSystem(_:)), name: .logOutEventReceived, object: nil)
@@ -164,12 +167,18 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
         return TracksUser(userID: "\(account.userID)", email: account.email, username: account.username)
     }
 
+    /// Non-production builds report to a separate Sentry project.
+    ///
+    /// Sentry compares release versions with the bundle ID stripped and the build metadata ignored, so an alpha release such as
+    /// `com.automattic.alpha.woocommerce@25.3+pr123-abc1234` counts as `25.3` in the production project. Issues auto-resolved in
+    /// "the next release" then match against alpha builds that nobody ships, and never surface as regressions.
+    ///
     var sentryDSN: String {
-        return ApiCredentials.sentryDSN
+        return buildConfiguration.isProduction ? ApiCredentials.sentryDSN : ApiCredentials.sentryDSNInternal
     }
 
     var buildType: String {
-        return BuildConfiguration.current.rawValue
+        return buildConfiguration.rawValue
     }
 
     var shouldEnableAutomaticSessionTracking: Bool {

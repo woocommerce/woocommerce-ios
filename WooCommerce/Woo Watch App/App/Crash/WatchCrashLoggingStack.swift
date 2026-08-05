@@ -67,8 +67,10 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
 ///
 class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
 
+    /// See `WCCrashLoggingDataProvider.sentryDSN` for why non-production builds use a different project.
+    ///
     var sentryDSN: String {
-        ApiCredentials.sentryDSN
+        BuildConfiguration.current.isProduction ? ApiCredentials.sentryDSN : ApiCredentials.sentryDSNInternal
     }
 
     var userHasOptedOut: Bool = false

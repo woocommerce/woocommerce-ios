@@ -26,6 +26,10 @@ struct ApiCredentials {
     ///
     static let sentryDSN: String = "<#Sentry DSN#>"
 
+    /// Sentry API Key for non-production builds
+    ///
+    static let sentryDSNInternal: String = "<#Sentry DSN Internal#>"
+
     /// Zendesk App ID
     ///
     static let zendeskAppId: String = "<#Zendesk App ID#>"

@@ -7,11 +7,9 @@ import enum WooFoundation.ConnectivityStatus
 
 /// Everything the Mobile Status Report learns from the device itself, captured in one pass.
 ///
-/// Values are captured already formatted. Everything in `current()` reads a live `Bundle`, `UIDevice`,
-/// `UNUserNotificationCenter` or the app-wide connectivity observer and so cannot be exercised by a test at all;
-/// keeping the mapping there
-/// leaves the untestable part thin and at the boundary, and lets the report be tested by building a snapshot
-/// literally.
+/// Values are captured already formatted. The connectivity observer and notification center are injected, so
+/// their mapping is tested; the rest of `current()` reads live singletons (`Bundle`, `UIDevice`, `UIScreen`,
+/// `UIApplication`) at the boundary, and the report itself is tested by building a snapshot literally.
 ///
 struct MobileStatusReportSystemSnapshot: Equatable {
     let version: String

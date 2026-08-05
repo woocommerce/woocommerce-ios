@@ -191,7 +191,7 @@ struct POSServerRefundPreviewUseCaseTests {
     @Test func previewRefund_when_rejected_with_mapped_code_then_returns_typed_rejection_without_marking_unavailable() async {
         // Given a rejection the cashier can act on (e.g. another register already refunded the line)
         let cache = ServerRefundAvailabilityCache()
-        let error = DotcomError.unknown(code: "quantity_exceeds_refundable", message: nil, data: nil)
+        let error = DotcomError.unknown(code: "woocommerce_rest_quantity_exceeds_refundable", message: nil, data: nil)
         let (sut, _, _) = makeSUT(cache: cache, previewResult: .failure(error))
 
         // When
@@ -205,7 +205,7 @@ struct POSServerRefundPreviewUseCaseTests {
     @Test func previewRefund_when_rejected_with_unmapped_code_then_returns_generic_error() async {
         // Given a programming-error code that must keep the generic path
         let cache = ServerRefundAvailabilityCache()
-        let error = DotcomError.unknown(code: "invalid_line_item", message: nil, data: nil)
+        let error = DotcomError.unknown(code: "woocommerce_rest_invalid_line_item", message: nil, data: nil)
         let (sut, _, _) = makeSUT(cache: cache, previewResult: .failure(error))
 
         // When

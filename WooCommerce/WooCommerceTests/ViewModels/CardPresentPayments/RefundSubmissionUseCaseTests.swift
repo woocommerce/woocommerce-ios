@@ -135,7 +135,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
-        refundService.createRefundResult = .failure(DotcomError.unknown(code: "refund_exceeds_remaining", message: nil, data: nil))
+        refundService.createRefundResult = .failure(DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining", message: nil, data: nil))
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -156,7 +156,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
                                     serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
-        let error = DotcomError.unknown(code: "invalid_line_item", message: nil, data: nil)
+        let error = DotcomError.unknown(code: "woocommerce_rest_invalid_line_item", message: nil, data: nil)
         refundService.createRefundResult = .failure(error)
 
         // When
@@ -177,7 +177,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                    charge: nil,
                                                    amount: "2.28",
                                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-        mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "order_not_refundable", message: nil, data: nil))
+        mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "woocommerce_rest_order_not_refundable", message: nil, data: nil))
 
         // When
         let result: Result<Void, Error> = waitFor { promise in

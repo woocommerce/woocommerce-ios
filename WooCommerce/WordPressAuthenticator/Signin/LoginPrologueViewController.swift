@@ -139,6 +139,10 @@ class LoginPrologueViewController: LoginViewController {
         return UIDevice.isPad() ? .all : .portrait
     }
 
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         setButtonViewMargins(forWidth: view.frame.width)

@@ -35,7 +35,8 @@ protocol PushNotesManager {
 
     /// Apple's Push Notification device token, as last received from APNs.
     ///
-    /// `nil` means the app never obtained one, which blocks both push systems.
+    /// `nil` means the app holds no current token — never obtained, cleared on unregistration, or APNs
+    /// registration failed — any of which blocks both push systems.
     ///
     var deviceToken: String? { get }
 

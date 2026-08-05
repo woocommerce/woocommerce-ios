@@ -446,8 +446,10 @@ extension StripeCardReaderService: CardReaderService {
 
                 do {
                     promise(.success(try PaymentIntent(intent: intent)))
-                } catch {
+                } catch let error as UnderlyingError {
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: error)))
+                } catch {
+                    promise(.failure(CardReaderServiceError.intentCreation()))
                 }
             }
         }

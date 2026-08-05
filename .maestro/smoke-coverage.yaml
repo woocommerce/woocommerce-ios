@@ -1,8 +1,8 @@
-# WooCommerce iOS Maestro smoke coverage snapshot (88 P2 checks).
+# WooCommerce iOS Maestro smoke coverage snapshot.
 #
 # Source P2: https://woomobilep2.wordpress.com/flows-for-app-features-smoke-testing/
-# Fetched through context-a8c wpcom/posts-text on 2026-07-04.
-# P2 modified timestamp observed: 2026-05-18T02:37:47+00:00.
+# Fetched through context-a8c wpcom/posts-text on 2026-08-05.
+# P2 modified timestamp observed: 2026-07-28T06:29:33+00:00.
 #
 # Every item needs either `flow:` or `manual:`. Flow YAMLs declare covered
 # items with `# p2:` headers, and .maestro/scripts/check-smoke-coverage.py
@@ -14,7 +14,7 @@ items:
     manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
   - id: install.fresh
     title: Fresh install smoke
-    flow: .maestro/flows/login_successful.yaml
+    manual: "Requires uninstall/data reset plus first-launch assertions; simctl install can preserve an existing app container."
 
   - id: login.help
     title: Login help section
@@ -52,6 +52,37 @@ items:
   - id: login.2fa
     title: Login with 2FA
     manual: "Needs dedicated test account plus TOTP secret handling."
+  - id: login.qr.wpcom-session
+    title: QR login from an active WordPress.com browser session
+    manual: "Guided only until the browser session and QR handoff are deterministic test fixtures."
+  - id: login.qr.wp-admin-session
+    title: QR login from an active wp-admin browser session
+    manual: "Guided only until the browser session and QR handoff are deterministic test fixtures."
+  - id: login.qr.mobile-app-modal
+    title: QR login from the wp-admin install mobile app modal
+    manual: "Guided only until the wp-admin modal and QR handoff are deterministic test fixtures."
+
+  - id: push-no-jetpack.login
+    title: Login to a no-Jetpack store for push setup
+    manual: "Requires a disposable no-Jetpack store and isolated notification account state."
+  - id: push-no-jetpack.card-visible
+    title: Never miss a new order card is visible
+    manual: "Part of the guided no-Jetpack push setup until the store fixture is deterministic."
+  - id: push-no-jetpack.unlock
+    title: Open and continue through Unlock push notifications
+    manual: "Requires deterministic notification permissions and backend setup state."
+  - id: push-no-jetpack.setup-completes
+    title: No-Jetpack push setup completes
+    manual: "Requires deterministic notification permissions and backend setup state."
+  - id: push-no-jetpack.card-hidden
+    title: Never miss a new order card is hidden after setup
+    manual: "Blocked with deterministic no-Jetpack push setup."
+  - id: push-no-jetpack.notification-arrives
+    title: Web order triggers a push without Jetpack
+    manual: "Needs an API-created order and deterministic push-delivery fixture."
+  - id: push-no-jetpack.notification-deep-link
+    title: No-Jetpack push opens the correct order
+    manual: "Blocked with deterministic no-Jetpack push delivery."
 
   - id: dashboard.stats
     title: Dashboard charts and stats respond
@@ -74,7 +105,7 @@ items:
     flow: .maestro/flows/orders_list_and_search.yaml
   - id: orders.pagination
     title: Orders pagination
-    flow: .maestro/flows/orders_list_and_search.yaml
+    manual: "The current flow scrolls the list but does not prove a next-page boundary or newly loaded order."
   - id: orders.search
     title: Search for an order
     flow: .maestro/flows/orders_list_and_search.yaml

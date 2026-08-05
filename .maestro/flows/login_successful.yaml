@@ -1,4 +1,4 @@
-# p2: install.fresh, login.jetpack
+# p2: login.jetpack
 # Kept last in config execution order so the suite leaves a reusable session.
 appId: ${APP_ID}
 name: "Login - Successful Jetpack store login"

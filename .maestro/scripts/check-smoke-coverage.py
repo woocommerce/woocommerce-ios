@@ -15,13 +15,16 @@ MANUAL_RE = re.compile(r"^\s+manual:\s*(.+?)\s*$")
 P2_RE = re.compile(r"^#\s*p2:\s*(.+?)\s*$")
 
 
-def parse_snapshot(path: Path) -> dict[str, dict[str, str]]:
+def parse_snapshot(path: Path) -> tuple[dict[str, dict[str, str]], set[str]]:
     items: dict[str, dict[str, str]] = {}
+    duplicates: set[str] = set()
     current: str | None = None
     for line in path.read_text(encoding="utf-8").splitlines():
         id_match = ID_RE.match(line)
         if id_match:
             current = id_match.group(1)
+            if current in items:
+                duplicates.add(current)
             items[current] = {}
             continue
         if current is None:
@@ -34,7 +37,7 @@ def parse_snapshot(path: Path) -> dict[str, dict[str, str]]:
         if manual_match:
             items[current]["manual"] = manual_match.group(1).strip().strip('"')
             continue
-    return items
+    return items, duplicates
 
 
 def parse_flow_headers(flows_dir: Path) -> dict[str, set[str]]:
@@ -55,26 +58,37 @@ def main() -> int:
     parser.add_argument("--flows-dir", default=".maestro/flows", type=Path)
     args = parser.parse_args()
 
-    items = parse_snapshot(args.coverage)
+    items, duplicates = parse_snapshot(args.coverage)
     flow_headers = parse_flow_headers(args.flows_dir)
     errors: list[str] = []
 
+    for item_id in sorted(duplicates):
+        errors.append(f"{args.coverage}: duplicate item id {item_id}")
+
     for item_id, data in sorted(items.items()):
-        if not data.get("flow") and not data.get("manual"):
+        has_flow = bool(data.get("flow"))
+        has_manual = bool(data.get("manual"))
+        if has_flow and has_manual:
+            errors.append(f"{args.coverage}: item {item_id} has both flow and manual reason")
+        elif not has_flow and not has_manual:
             errors.append(f"{args.coverage}: item {item_id} has neither flow nor manual reason")
 
     known_ids = set(items)
-    header_ids = set().union(*flow_headers.values()) if flow_headers else set()
     for flow, ids in flow_headers.items():
         if not ids:
             errors.append(f"{flow}: missing '# p2:' header")
         for item_id in sorted(ids - known_ids):
             errors.append(f"{flow}: unknown p2 id {item_id}")
 
+        for item_id in sorted(ids & known_ids):
+            mapped_flow = items[item_id].get("flow", "")
+            if mapped_flow != flow:
+                errors.append(f"{flow}: p2 id {item_id} maps to {mapped_flow or 'manual coverage'}")
+
     for item_id, data in sorted(items.items()):
         flow = data.get("flow", "")
-        if flow and item_id not in header_ids:
-            errors.append(f"{args.coverage}: item {item_id} maps to {flow}, but no flow header declares it")
+        if flow and item_id not in flow_headers.get(flow, set()):
+            errors.append(f"{args.coverage}: item {item_id} maps to {flow}, but that flow does not declare it")
 
     if errors:
         print("\n".join(errors), file=sys.stderr)

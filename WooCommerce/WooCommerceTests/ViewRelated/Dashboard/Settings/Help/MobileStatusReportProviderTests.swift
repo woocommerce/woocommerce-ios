@@ -59,7 +59,7 @@ struct MobileStatusReportProviderTests {
 
         ## Connectivity
         Network type: WiFi or Ethernet
-        Expensive connection: false
+        Metered connection: false
         Low Data Mode: false
 
         ## Notifications
@@ -233,7 +233,7 @@ private extension MobileStatusReportSystemSnapshot {
                                          deviceLocale: "en-US",
                                          appLanguage: "en-GB",
                                          networkType: "WiFi or Ethernet",
-                                         expensiveConnection: "false",
+                                         meteredConnection: "false",
                                          lowDataMode: "false",
                                          apnsEnvironment: "production",
                                          authorizationStatus: "authorized",

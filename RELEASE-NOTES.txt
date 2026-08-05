@@ -23,6 +23,7 @@
 - [*] Fixed a crash when undoing pasted product tags containing tabs or extra whitespace. [https://github.com/woocommerce/woocommerce-ios/pull/17592]
 - [*] Point of Sale: once the local catalog has fully synced, POS opens instantly without waiting on network checks and also works offline. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
 - [*] Order Creation: fixed custom amount fields losing entered values and keyboard focus after rotating an iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17550]
+- [*] In-Person Payments: Shop Managers no longer see an install/activate CTA that dead-ends in an error during WooPayments onboarding; the screen now explains an administrator needs to do it.
 - [Internal] Reduce app binary size by converting the Tap to Pay education artwork to PNGs (~45 MB smaller compiled asset catalog). [https://github.com/woocommerce/woocommerce-ios/pull/17560]
 - [*] Fixed product saves replacing shortcode-based short descriptions with their rendered output. [https://github.com/woocommerce/woocommerce-ios/pull/17543]
 - [*] Order Creation: Fixed Collect Payment not opening payment methods after creating an order on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17552]

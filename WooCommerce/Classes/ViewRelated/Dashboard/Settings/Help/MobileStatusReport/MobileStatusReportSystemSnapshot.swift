@@ -60,13 +60,13 @@ extension MobileStatusReportSystemSnapshot {
                                          lowDataMode: connectivityObserver.isLowDataModeEnabled
                                             .map(String.init) ?? unknown,
                                          apnsEnvironment: apnsEnvironment,
-                                         authorizationStatus: String(describing: notifications.authorizationStatus),
+                                         authorizationStatus: notifications.authorizationStatus.description,
                                          alerts: notifications.alertSetting.description,
                                          sounds: notifications.soundSetting.description,
                                          lockScreen: notifications.lockScreenSetting.description,
                                          timeSensitive: notifications.timeSensitiveSetting.description,
                                          scheduledSummary: notifications.scheduledDeliverySetting.description,
-                                         backgroundRefresh: String(describing: UIApplication.shared.backgroundRefreshStatus),
+                                         backgroundRefresh: UIApplication.shared.backgroundRefreshStatus.description,
                                          lowPowerMode: String(ProcessInfo.processInfo.isLowPowerModeEnabled))
     }
 }
@@ -83,7 +83,7 @@ private extension MobileStatusReportSystemSnapshot {
     @MainActor
     static func screen() -> String {
         let size = UIScreen.main.bounds.size
-        return "\(Int(size.width))x\(Int(size.height)) pt (\(String(describing: UIDevice.current.userInterfaceIdiom)))"
+        return "\(Int(size.width))x\(Int(size.height)) pt (\(UIDevice.current.userInterfaceIdiom.description))"
     }
 
     /// Read back from the build rather than the entitlement, which has no runtime API. Tokens are not
@@ -124,6 +124,66 @@ private extension UNNotificationSetting {
             return "disabled"
         case .enabled:
             return "enabled"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}
+
+// The ObjC-imported enums carry no case names — `String(describing:)` renders them as
+// `UNAuthorizationStatus(rawValue: 2)`, which is exactly what the report must not show.
+
+private extension UNAuthorizationStatus {
+    var description: String {
+        switch self {
+        case .notDetermined:
+            return "notDetermined"
+        case .denied:
+            return "denied"
+        case .authorized:
+            return "authorized"
+        case .provisional:
+            return "provisional"
+        case .ephemeral:
+            return "ephemeral"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}
+
+private extension UIBackgroundRefreshStatus {
+    var description: String {
+        switch self {
+        case .restricted:
+            return "restricted"
+        case .denied:
+            return "denied"
+        case .available:
+            return "available"
+        @unknown default:
+            return "unknown"
+        }
+    }
+}
+
+private extension UIUserInterfaceIdiom {
+    var description: String {
+        switch self {
+        case .phone:
+            return "phone"
+        case .pad:
+            return "pad"
+        case .mac:
+            return "mac"
+        case .tv:
+            return "tv"
+        case .carPlay:
+            return "carPlay"
+        case .vision:
+            return "vision"
+        case .unspecified:
+            return "unspecified"
         @unknown default:
             return "unknown"
         }

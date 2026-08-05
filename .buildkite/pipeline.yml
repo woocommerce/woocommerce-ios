@@ -229,7 +229,15 @@ steps:
       MAESTRO_WOO_LAB_JETPACK_STORE_URL: MAESTRO_WOO_LAB_JETPACK_STORE_URL
       MAESTRO_WOO_LAB_WPCOM_EMAIL: MAESTRO_WOO_LAB_WPCOM_EMAIL
       MAESTRO_WOO_LAB_WPCOM_PASSWORD: MAESTRO_WOO_LAB_WPCOM_PASSWORD
-    plugins: [$CI_TOOLKIT]
+      MAESTRO_WOO_CONSUMER_KEY: MAESTRO_WOO_CONSUMER_KEY
+      MAESTRO_WOO_CONSUMER_SECRET: MAESTRO_WOO_CONSUMER_SECRET
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: build/maestro/**/report.xml
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_MAESTRO_TESTS
     soft_fail: true
     concurrency: 1
     concurrency_group: "woocommerce-ios/maestro/${MAESTRO_CI_RESOURCE_KEY:-unconfigured}"

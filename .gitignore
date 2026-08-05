@@ -98,6 +98,10 @@ default.profraw
 # Can't imagine ever needing to commit one of these
 *.bak
 
+# Python tooling
+__pycache__/
+*.py[cod]
+
 # WireMock (UI Tests)
 API-Mocks/vendor/
 

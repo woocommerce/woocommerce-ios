@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
@@ -276,7 +275,7 @@ private extension CartView {
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
                 .overlay(alignment: .top) {
-                    SharedImageAsset.shoppingBags.decorativeImage
+                    PointOfSaleAssets.shoppingBags.decorativeImage
                         .resizable()
                         .frame(width: Constants.shoppingBagImageSize, height: Constants.shoppingBagImageSize, alignment: .bottom)
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))

@@ -6,20 +6,16 @@ public protocol ConnectivityObserver {
     /// Getter for current state of the connectivity.
     var currentStatus: ConnectivityStatus { get }
 
-    /// Whether the system considers the current network path expensive — typically cellular or a personal
+    /// Whether the current connection is metered (`NWPath.isExpensive`) — typically cellular or a personal
     /// hotspot. `nil` until the first path update arrives.
-    var isCurrentPathExpensive: Bool? { get }
+    var isConnectionMetered: Bool? { get }
 
-    /// Whether Low Data Mode constrains the current network path. `nil` until the first path update arrives.
-    var isCurrentPathConstrained: Bool? { get }
+    /// Whether Low Data Mode (`NWPath.isConstrained`) applies to the current connection. `nil` until the
+    /// first path update arrives.
+    var isLowDataModeEnabled: Bool? { get }
 
     /// Publisher for connectivity availability.
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }
-}
-
-public extension ConnectivityObserver {
-    var isCurrentPathExpensive: Bool? { nil }
-    var isCurrentPathConstrained: Bool? { nil }
 }
 
 /// Defines the various states of network connectivity.

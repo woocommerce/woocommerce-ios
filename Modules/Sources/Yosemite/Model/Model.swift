@@ -144,7 +144,6 @@ public typealias Receipt = Networking.Receipt
 public typealias Refund = Networking.Refund
 public typealias RefundPreview = Networking.RefundPreview
 public typealias RefundPreviewLineItem = Networking.RefundPreviewLineItem
-public typealias RefundV4LineItem = Networking.RefundV4LineItem
 public typealias RemoteFeatureFlag = Networking.RemoteFeatureFlag
 public typealias RemoteFeatureFlagOverrideStore = Networking.RemoteFeatureFlagOverrideStore
 public typealias SelfHostedQRLoginExchangeResponse = Networking.SelfHostedQRLoginExchangeResponse

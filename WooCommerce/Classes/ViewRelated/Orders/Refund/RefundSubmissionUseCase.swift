@@ -45,7 +45,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let storageManager: StorageManagerType
 
-    /// Async service for the v4 refund endpoints. Only required when `details.v4LineItems` is set.
+    /// Async service for the server-calculated refund endpoints. Only required when
+    /// `details.serverLineItems` is set.
     private let refundService: RefundServiceProtocol?
 
     /// Analytics manager.
@@ -229,18 +230,20 @@ extension RefundSubmissionUseCase {
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
 
-        let v4LineItems: [RefundV4LineItem]?
+        /// When set, the refund is submitted via the server-computed `compute_totals` create
+        /// instead of the classic `RefundAction.createRefund` path.
+        let serverLineItems: [ComputedRefundLineItem]?
 
         init(order: Order,
              charge: WCPayCharge?,
              amount: String,
              paymentGatewayAccount: PaymentGatewayAccount?,
-             v4LineItems: [RefundV4LineItem]? = nil) {
+             serverLineItems: [ComputedRefundLineItem]? = nil) {
             self.order = order
             self.charge = charge
             self.amount = amount
             self.paymentGatewayAccount = paymentGatewayAccount
-            self.v4LineItems = v4LineItems
+            self.serverLineItems = serverLineItems
         }
     }
 }
@@ -418,14 +421,19 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        if let v4LineItems = details.v4LineItems, let refundService {
+        if let serverLineItems = details.serverLineItems, let refundService {
             Task {
-                await submitRefundV4ToSite(refund: refund, lineItems: v4LineItems, refundService: refundService, onCompletion: onCompletion)
+                await submitComputedRefundToSite(refund: refund, lineItems: serverLineItems, refundService: refundService, onCompletion: onCompletion)
             }
             return
         }
-        if details.v4LineItems != nil {
-            DDLogError("⛔️ v4 refund line items provided without a RefundService — falling back to the v3 submission path")
+        if details.serverLineItems != nil {
+            // Refuse rather than fall through. `details.amount` is the server preview total while
+            // the refund's line items carry locally computed totals, so submitting here would
+            // record a refund whose total need not equal the sum of its lines. A misconfigured
+            // caller must fail loudly instead of booking money against inconsistent figures.
+            DDLogError("⛔️ Server refund line items provided without a RefundService — refusing to submit")
+            return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingRefundService))
         }
 
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
@@ -455,10 +463,10 @@ private extension RefundSubmissionUseCase {
     }
 
     @MainActor
-    private func submitRefundV4ToSite(refund: Refund,
-                                      lineItems: [RefundV4LineItem],
-                                      refundService: RefundServiceProtocol,
-                                      onCompletion: @escaping (Result<Void, Error>) -> Void) async {
+    private func submitComputedRefundToSite(refund: Refund,
+                                            lineItems: [ComputedRefundLineItem],
+                                            refundService: RefundServiceProtocol,
+                                            onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
         do {
             let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
@@ -466,12 +474,13 @@ private extension RefundSubmissionUseCase {
                                                                      reason: refund.reason,
                                                                      automaticRefund: refund.createAutomated ?? false,
                                                                      restockItems: true,
+                                                                     amount: nil,
                                                                      lineItems: lineItems)
             retrieveUpdatedRefundData(refund: createdRefund)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()
         } catch {
-            DDLogError("Error creating v4 refund: \(refund)\nWith Error: \(error)")
+            DDLogError("Error creating server-computed refund: \(refund)\nWith Error: \(error)")
             trackCreateRefundRequestFailed(error: error)
             onCompletion(.failure(error))
         }
@@ -576,6 +585,9 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case unknownPaymentGatewayAccount
     case canceledByUser
     case missingCreatedRefund
+    /// Server-computed line items were supplied without the service needed to submit them, so the
+    /// refund cannot be sent through the path its amount was calculated for.
+    case missingRefundService
 }
 
 private enum RefundSubmissionUseCaseDefinitions {

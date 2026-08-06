@@ -15,37 +15,7 @@ final class MockRefundService: RefundServiceProtocol {
     // Spy properties for verification
     private(set) var previewRefundCallCount = 0
     private(set) var spyCreateRefundRestockItems: Bool?
-
-    func previewRefund(siteID: Int64,
-                       orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
-        previewRefundCallCount += 1
-        switch previewRefundResult {
-        case .success(let preview):
-            return preview
-        case .failure(let error):
-            throw error
-        case nil:
-            throw MockError.notStubbed
-        }
-    }
-
-    func createRefund(siteID: Int64,
-                      orderID: Int64,
-                      reason: String,
-                      automaticRefund: Bool,
-                      restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund {
-        spyCreateRefundRestockItems = restockItems
-        switch createRefundResult {
-        case .success(let refund):
-            return refund
-        case .failure(let error):
-            throw error
-        case nil:
-            throw MockError.notStubbed
-        }
-    }
+    private(set) var spyCreateRefundAmount: String??
 
     func previewRefund(siteID: Int64,
                        orderID: Int64,
@@ -69,6 +39,7 @@ final class MockRefundService: RefundServiceProtocol {
                       amount: String?,
                       lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         spyCreateRefundRestockItems = restockItems
+        spyCreateRefundAmount = amount
         switch createRefundResult {
         case .success(let refund):
             return refund

@@ -8,9 +8,9 @@ import WooFoundation
 @testable import PointOfSale
 @testable import WooCommerce
 
-/// Covers the v4 wire-in seams of `POSRefundSubmissionAdaptor`: review data built from the
-/// server-calculated preview vs the local fallback, the preview-failure error, and routing the
-/// submission through the simplified v4 create only when a preview was obtained.
+/// Covers the server-calculated wire-in seams of `POSRefundSubmissionAdaptor`: review data built
+/// from the server-calculated preview vs the local fallback, the preview-failure error, and routing
+/// the submission through the server-computed create only when a preview was obtained.
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSRefundSubmissionAdaptorTests {
@@ -18,7 +18,7 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
-    @Test func prepareReviewData_when_preview_is_server_calculated_then_shows_server_totals_and_submits_via_v4() async throws {
+    @Test func prepareReviewData_when_preview_is_server_calculated_then_shows_server_totals_and_submits_via_computed_create() async throws {
         // Given
         let harness = makeHarness(previewResult: .success(preview()))
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
@@ -40,13 +40,13 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: preparation.selectableItems,
                                                reason: "Damaged item")
 
-        // Then the simplified v4 create was dispatched instead of the v3 create
+        // Then the server-computed create was dispatched instead of the classic v3 create
         #expect(harness.service.createRefundLineItems?.isEmpty == false)
         #expect(harness.service.createRefundReason == "Damaged item")
-        #expect(harness.spy.dispatchedV3Create == false)
+        #expect(harness.spy.dispatchedClassicCreate == false)
     }
 
-    @Test func prepareReviewData_when_preview_falls_back_then_shows_local_totals_and_submits_via_v3() async throws {
+    @Test func prepareReviewData_when_preview_falls_back_then_shows_local_totals_and_submits_via_classic_create() async throws {
         // Given the flag is off, so the preview use case falls back without probing
         let harness = makeHarness(previewResult: nil, flagEnabled: false)
         let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
@@ -57,7 +57,7 @@ struct POSRefundSubmissionAdaptorTests {
                                                                      selectedItems: preparation.selectableItems,
                                                                      reason: nil)
 
-        // Then the review shows the locally calculated totals (unchanged v3 behaviour)
+        // Then the review shows the locally calculated totals (unchanged classic behaviour)
         #expect(reviewData.formattedItemsSubtotal == "$10.00")
         #expect(reviewData.formattedTax == "$1.00")
         #expect(reviewData.formattedRefundTotal == "$11.00")
@@ -68,8 +68,8 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: preparation.selectableItems,
                                                reason: nil)
 
-        // Then the v3 create was dispatched and the v4 create was not
-        #expect(harness.spy.dispatchedV3Create == true)
+        // Then the classic v3 create was dispatched and the computed create was not
+        #expect(harness.spy.dispatchedClassicCreate == true)
         #expect(harness.service.createRefundLineItems == nil)
     }
 
@@ -119,12 +119,86 @@ struct POSRefundSubmissionAdaptorTests {
                                                selectedItems: selectionB,
                                                reason: nil)
 
-        // Then the v4 create carries selection B and the charged amount is the latest server total
+        // Then the computed create carries selection B and the charged amount is the latest server total
         #expect(harness.service.createRefundLineItems?.count == 1)
         #expect(harness.service.createRefundLineItems?.first?.quantity == 2)
         let createEventIndex = try #require(harness.analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.refundCreate.rawValue))
         let amount = harness.analyticsProvider.receivedProperties[createEventIndex]["amount"] as? String
         #expect(amount == "22")
+    }
+
+    @Test func submitRefund_when_uncancelled_previews_resolve_out_of_order_uses_the_reviewed_total() async throws {
+        // Given two previews in flight for different selections and neither cancelled, so both
+        // write their result. Totals are stored per selection, so the order in which they land
+        // cannot change what a given selection submits.
+        let harness = makeHarness(previewResult: nil, manualPreviewResolution: true, orderQuantity: 2)
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+        let selectionA = Array(preparation.selectableItems.prefix(1))
+        let selectionB = preparation.selectableItems
+
+        let taskA = Task { @MainActor in
+            try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: selectionA,
+                                                        reason: nil)
+        }
+        while harness.service.pendingPreviewCompletions.count < 1 {
+            await Task.yield()
+        }
+
+        let taskB = Task { @MainActor in
+            try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: selectionB,
+                                                        reason: nil)
+        }
+        while harness.service.pendingPreviewCompletions.count < 2 {
+            await Task.yield()
+        }
+
+        // When selection B resolves first ($22, the reviewed selection) and selection A resolves
+        // afterwards ($10)
+        harness.service.pendingPreviewCompletions[1](.success(preview(total: 22)))
+        _ = try await taskB.value
+        harness.service.pendingPreviewCompletions[0](.success(preview(total: 10)))
+        _ = try await taskA.value
+
+        try await harness.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: selectionB,
+                                               reason: nil)
+
+        // Then selection B is charged its own server total, not the late arrival's
+        #expect(harness.service.createRefundLineItems?.count == 1)
+        #expect(harness.service.createRefundLineItems?.first?.quantity == 2)
+        let createEventIndex = try #require(harness.analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.refundCreate.rawValue))
+        let amount = harness.analyticsProvider.receivedProperties[createEventIndex]["amount"] as? String
+        #expect(amount == "22")
+    }
+
+    @Test func submitRefund_when_a_previewed_selection_falls_back_then_the_classic_create_is_used() async throws {
+        // Given a selection previewed successfully, then previewed again with the server flow no
+        // longer available (the clearing side of the ghost-refund invariant).
+        let harness = makeHarness(previewResult: .success(preview(total: 22)))
+        let preparation = try await harness.adaptor.prepareRefund(for: posOrder())
+        _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: preparation.selectableItems,
+                                                        reason: nil)
+
+        // When the same selection is re-previewed and the site now reports the local fallback
+        harness.flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: false]
+        _ = try await harness.adaptor.prepareReviewData(for: posOrder(),
+                                                        preparation: preparation,
+                                                        selectedItems: preparation.selectableItems,
+                                                        reason: nil)
+        try await harness.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: preparation.selectableItems,
+                                               reason: nil)
+
+        // Then no computed create is sent: the stale server total was cleared for that selection.
+        #expect(harness.service.createRefundLineItems == nil)
     }
 
     @Test func prepareReviewData_when_preview_errors_then_throws_refundPreviewFailed() async throws {
@@ -145,7 +219,7 @@ struct POSRefundSubmissionAdaptorTests {
 private extension POSRefundSubmissionAdaptorTests {
 
     final class RefundActionSpy {
-        var dispatchedV3Create = false
+        var dispatchedClassicCreate = false
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -160,35 +234,8 @@ private extension POSRefundSubmissionAdaptorTests {
         var manualPreviewResolution = false
         /// Captured `previewRefund` continuations when the harness uses manual resolution.
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
-        private(set) var createRefundLineItems: [RefundV4LineItem]?
+        private(set) var createRefundLineItems: [ComputedRefundLineItem]?
         private(set) var createRefundReason: String?
-
-        func previewRefund(siteID: Int64,
-                           orderID: Int64,
-                           lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
-            if manualPreviewResolution {
-                return try await withCheckedThrowingContinuation { continuation in
-                    pendingPreviewCompletions.append { result in
-                        continuation.resume(with: result)
-                    }
-                }
-            }
-            guard let previewResult else {
-                throw MockError.notStubbed
-            }
-            return try previewResult.get()
-        }
-
-        func createRefund(siteID: Int64,
-                          orderID: Int64,
-                          reason: String,
-                          automaticRefund: Bool,
-                          restockItems: Bool,
-                          lineItems: [RefundV4LineItem]) async throws -> Refund {
-            createRefundLineItems = lineItems
-            createRefundReason = reason
-            return .fake()
-        }
 
         func previewRefund(siteID: Int64,
                            orderID: Int64,
@@ -213,6 +260,7 @@ private extension POSRefundSubmissionAdaptorTests {
                           restockItems: Bool,
                           amount: String?,
                           lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+            createRefundLineItems = lineItems
             createRefundReason = reason
             return .fake()
         }
@@ -223,6 +271,8 @@ private extension POSRefundSubmissionAdaptorTests {
         let service: MockManualRefundService
         let spy: RefundActionSpy
         let analyticsProvider: MockAnalyticsProvider
+        /// Exposed so a test can change eligibility between two previews of the same selection.
+        let flags: MockFeatureFlagService
     }
 
     /// Builds the adaptor with a mocked order service, refund service, stores manager, and a fresh
@@ -233,7 +283,7 @@ private extension POSRefundSubmissionAdaptorTests {
                      manualPreviewResolution: Bool = false,
                      orderQuantity: Decimal = 1) -> Harness {
         let session = SessionManager.testingInstance
-        session.cachedWooCommerceVersion = "10.9.0"
+        session.cachedWooCommerceVersion = "11.1.0"
         let stores = MockStoresManager(sessionManager: session)
         let spy = RefundActionSpy()
         let service = MockManualRefundService()
@@ -243,7 +293,7 @@ private extension POSRefundSubmissionAdaptorTests {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             switch action {
             case .createRefund(_, _, let refund, let onCompletion):
-                spy.dispatchedV3Create = true
+                spy.dispatchedClassicCreate = true
                 onCompletion(refund, nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)
@@ -264,11 +314,13 @@ private extension POSRefundSubmissionAdaptorTests {
 
         let flags = MockFeatureFlagService()
         flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
-        let previewUseCase = POSV4RefundPreviewUseCase(refundService: service,
-                                                       stores: stores,
-                                                       featureFlagService: flags,
-                                                       availabilityCache: V4RefundAvailabilityCache(),
-                                                       minimumWooVersion: "10.9.0")
+        let availabilityCache = ServerRefundAvailabilityCache()
+        let previewUseCase = POSServerRefundPreviewUseCase(refundService: service,
+                                                           flowResolver: POSRefundFlowResolver(stores: stores,
+                                                                                               featureFlagService: flags,
+                                                                                               availabilityCache: availabilityCache,
+                                                                                               minimumWooVersion: "11.1.0"),
+                                                           availabilityCache: availabilityCache)
 
         let orderService = MockPOSOrderService()
         orderService.orderToReturn = order(quantity: orderQuantity)
@@ -280,8 +332,12 @@ private extension POSRefundSubmissionAdaptorTests {
                                                  storageManager: MockStorageManager(),
                                                  currencySettings: usdCurrencySettings(),
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider),
-                                                 v4RefundPreviewUseCase: previewUseCase)
-        return Harness(adaptor: adaptor, service: service, spy: spy, analyticsProvider: analyticsProvider)
+                                                 serverRefundPreviewUseCase: previewUseCase)
+        return Harness(adaptor: adaptor,
+                       service: service,
+                       spy: spy,
+                       analyticsProvider: analyticsProvider,
+                       flags: flags)
     }
 
     func usdCurrencySettings() -> CurrencySettings {

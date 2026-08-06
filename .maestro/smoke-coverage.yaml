@@ -1,0 +1,283 @@
+# WooCommerce iOS Maestro smoke coverage snapshot (88 P2 checks).
+#
+# Source P2: https://woomobilep2.wordpress.com/flows-for-app-features-smoke-testing/
+# Fetched through context-a8c wpcom/posts-text on 2026-07-04.
+# P2 modified timestamp observed: 2026-05-18T02:37:47+00:00.
+#
+# Every item needs either `flow:` or `manual:`. Flow YAMLs declare covered
+# items with `# p2:` headers, and .maestro/scripts/check-smoke-coverage.py
+# validates this file offline.
+
+items:
+  - id: install.upgrade
+    title: Upgrade from existing store version
+    manual: "Requires App Store build replacement and logged-in migration state outside the initial simulator suite."
+  - id: install.fresh
+    title: Fresh install smoke
+    flow: .maestro/flows/login_successful.yaml
+
+  - id: login.help
+    title: Login help section
+    flow: .maestro/flows/login_help.yaml
+  - id: login.not-wp-site
+    title: Login with a non-WordPress site
+    flow: .maestro/flows/login_not_wp_site.yaml
+  - id: login.not-woo-store
+    title: Login to a WordPress site without WooCommerce
+    flow: .maestro/flows/login_not_woo_store.yaml
+  - id: login.no-jetpack
+    title: Login to WooCommerce site without Jetpack
+    flow: .maestro/flows/login_no_jetpack.yaml
+  - id: login.jetpack-not-connected
+    title: Login with Jetpack installed but not connected
+    manual: "Requires manually disconnecting Jetpack on a disposable Jurassic Ninja site."
+  - id: login.jetpack
+    title: Login to Jetpack-connected WooCommerce store
+    flow: .maestro/flows/login_successful.yaml
+  - id: login.wrong-account
+    title: Wrong account for the store
+    flow: .maestro/flows/login_wrong_account.yaml
+  - id: login.wrong-credentials
+    title: Wrong credentials
+    flow: .maestro/flows/login_wrong_credentials.yaml
+  - id: login.passwordless
+    title: Passwordless login
+    manual: "Later automation needs Mailosaur API and secret management."
+  - id: login.social-google
+    title: Social login with Google
+    flow: .maestro/flows/login_google.yaml
+  - id: login.social-apple
+    title: Social login with Apple
+    manual: "External Apple account completion is deferred until a simulator account fixture is supported."
+  - id: login.2fa
+    title: Login with 2FA
+    manual: "Needs dedicated test account plus TOTP secret handling."
+
+  - id: dashboard.stats
+    title: Dashboard charts and stats respond
+    flow: .maestro/flows/dashboard_stats.yaml
+  - id: dashboard.analytics
+    title: View all store analytics
+    flow: .maestro/flows/dashboard_view_all_analytics.yaml
+  - id: dashboard.customization
+    title: Dashboard card customization
+    flow: .maestro/flows/dashboard_customize.yaml
+
+  - id: orders.push.arrives
+    title: New order push notification arrives
+    manual: "Later automation should trigger an order via API and assert push delivery."
+  - id: orders.push.deep-link
+    title: Push opens the correct order
+    manual: "Blocked with push delivery automation."
+  - id: orders.list
+    title: Orders list loads
+    flow: .maestro/flows/orders_list_and_search.yaml
+  - id: orders.pagination
+    title: Orders pagination
+    flow: .maestro/flows/orders_list_and_search.yaml
+  - id: orders.search
+    title: Search for an order
+    flow: .maestro/flows/orders_list_and_search.yaml
+  - id: orders.create.products
+    title: Create order with products
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.variable-products
+    title: Create order with variable products
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.quantity
+    title: Increase and decrease quantity
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.product-discount
+    title: Apply product discount
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.custom-amount
+    title: Add custom amount
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.custom-amount-note
+    title: Add custom amount with note
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.shipping
+    title: Add shipping
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.customer-add
+    title: Add existing customer
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.customer-edit
+    title: Edit existing customer
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.create.note
+    title: Add customer note during order creation
+    flow: .maestro/flows/orders_create.yaml
+  - id: orders.barcode.open-scanner
+    title: Barcode button opens scanner
+    flow: .maestro/flows/orders_barcode_scanner.yaml
+  - id: orders.barcode.add-product
+    title: Add product using barcode scanner
+    manual: "Requires camera or guided manual mode."
+  - id: orders.collect-payment.qr
+    title: Scan to Pay displays QR code
+    flow: .maestro/flows/orders_qr_payment.yaml
+  - id: orders.collect-payment.share-link
+    title: Share payment link
+    flow: .maestro/flows/orders_share_payment_link.yaml
+  - id: orders.collect-payment.cash
+    title: Cash payment method
+    flow: .maestro/flows/orders_cash_payment.yaml
+  - id: orders.receipt
+    title: See receipt from order detail
+    flow: .maestro/flows/orders_details_and_actions.yaml
+  - id: orders.refund
+    title: Refund an order
+    flow: .maestro/flows/orders_refund.yaml
+  - id: orders.note
+    title: Add order note
+    flow: .maestro/flows/orders_details_and_actions.yaml
+  - id: orders.shipping-label
+    title: Create a shipping label
+    manual: "External shipping-label flow is outside current smoke scope."
+  - id: orders.mark-complete
+    title: Mark order complete
+    flow: .maestro/flows/orders_mark_complete.yaml
+  - id: orders.barcode.start-order
+    title: Start order creation by scanning barcode
+    manual: "Requires camera or guided manual mode."
+
+  - id: products.list
+    title: Product list loads
+    flow: .maestro/flows/products_list_and_sort.yaml
+  - id: products.pagination
+    title: Product pagination
+    flow: .maestro/flows/products_list_and_sort.yaml
+  - id: products.sort
+    title: Sort product list
+    flow: .maestro/flows/products_list_and_sort.yaml
+  - id: products.search
+    title: Search product list
+    flow: .maestro/flows/products_list_and_sort.yaml
+  - id: products.detail.description
+    title: Product description details
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.media
+    title: Product media upload persists
+    flow: .maestro/flows/products_media_upload.yaml
+  - id: products.detail.price
+    title: Product price settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.inventory
+    title: Product inventory settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.categories
+    title: Product categories settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.type
+    title: Product type settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.tags
+    title: Product tags settings
+    flow: .maestro/flows/products_variations_and_tags.yaml
+  - id: products.detail.shipping
+    title: Product shipping settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.short-description
+    title: Product short description settings
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.linked
+    title: Linked products
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.downloads
+    title: Downloadable files
+    flow: .maestro/flows/products_detail.yaml
+  - id: products.detail.variations
+    title: Variations and variation detail
+    flow: .maestro/flows/products_variations_and_tags.yaml
+  - id: products.detail.variation-attributes
+    title: Variation attributes
+    flow: .maestro/flows/products_variations_and_tags.yaml
+  - id: products.create
+    title: Create product
+    flow: .maestro/flows/products_create.yaml
+
+  - id: hub.change-store
+    title: Change store
+    flow: .maestro/flows/hub_menu_admin_and_store.yaml
+  - id: hub.settings
+    title: Hub settings
+    flow: .maestro/flows/hub_menu_settings.yaml
+  - id: hub.payments
+    title: Payments hub
+    flow: .maestro/flows/hub_menu_payments.yaml
+  - id: hub.coupons.create
+    title: Create a coupon
+    flow: .maestro/flows/hub_menu_coupons.yaml
+  - id: hub.customers
+    title: Customers
+    flow: .maestro/flows/hub_menu_customers_inbox.yaml
+  - id: hub.inbox
+    title: Inbox
+    flow: .maestro/flows/hub_menu_customers_inbox.yaml
+  - id: hub.wc-admin
+    title: WC Admin
+    flow: .maestro/flows/hub_menu_admin_and_store.yaml
+  - id: hub.view-store
+    title: View Store
+    flow: .maestro/flows/hub_menu_admin_and_store.yaml
+  - id: hub.blaze.create
+    title: Blaze campaign creation entry point
+    flow: .maestro/flows/blaze_campaign.yaml
+  - id: hub.google-for-woo
+    title: Google for Woo campaign webview
+    flow: .maestro/flows/google_for_woo.yaml
+
+  - id: payments.card-reader
+    title: Collect payment using card reader
+    manual: "Hardware-dependent; later guided-manual mode."
+  - id: payments.ttp
+    title: Collect payment using Tap to Pay
+    manual: "Hardware/account-dependent; later guided-manual mode."
+  - id: payments.ipp-refund
+    title: Refund an IPP order
+    manual: "Hardware/payment-account dependent."
+
+  - id: pos.search-products
+    title: POS search products
+    flow: .maestro/flows/pos_search_and_coupons.yaml
+  - id: pos.add-products
+    title: POS add products to cart
+    flow: .maestro/flows/pos_cash_payment.yaml
+  - id: pos.coupons
+    title: POS use coupons
+    flow: .maestro/flows/pos_search_and_coupons.yaml
+  - id: pos.pay-card
+    title: POS pay with card
+    manual: "Card reader hardware-dependent; later guided-manual mode."
+  - id: pos.pay-cash
+    title: POS pay with cash
+    flow: .maestro/flows/pos_cash_payment.yaml
+  - id: pos.email-receipts
+    title: POS send and check email receipts
+    manual: "Sending and externally checking email requires a dedicated configured test address and mailbox access."
+
+  - id: other.localization
+    title: Switch device to non-English language
+    manual: "Requires locale matrix run; selectors are prepared to avoid text-driven navigation."
+  - id: other.home-widget
+    title: Home screen widgets
+    manual: "Outside Maestro app surface."
+  - id: other.quick-actions
+    title: Quick Actions
+    flow: .maestro/flows/ios_quick_actions.yaml
+  - id: other.ios-push-long-press
+    title: Long press iPhone push notification
+    flow: .maestro/flows/ios_notification_long_press.yaml
+  - id: other.watch.my-store
+    title: Watch app My Store
+    manual: "Watch app stays manual per plan."
+  - id: other.watch.orders-list
+    title: Watch app order list
+    manual: "Watch app stays manual per plan."
+  - id: other.watch.order-detail
+    title: Watch app order detail
+    manual: "Watch app stays manual per plan."
+  - id: other.watch.push
+    title: Watch push notification opens order details
+    manual: "Watch app stays manual per plan."

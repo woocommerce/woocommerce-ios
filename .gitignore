@@ -88,6 +88,7 @@ default.profraw
 
 # Ignore Local Configuration files (like the ones used for Fastlane)
 .env
+**/.env.local
 
 # All secrets should be stored under .configure-files
 # Everything without a .enc extension is ignored

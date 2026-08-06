@@ -10,6 +10,8 @@ import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.POSReceiptInformation
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSCatalogSyncState
@@ -524,6 +526,77 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
+        @Test func printReceipt_when_invoked_then_prints_current_order_on_printer() async throws {
+            // Given
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then
+            #expect(printer.printedOrder?.orderID == 42)
+            #expect(printer.printedStoreInformation != nil)
+        }
+
+        @Test func printReceipt_refreshes_store_information_before_printing() async throws {
+            // Given a connected printer, a current order, and store settings that changed this session
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let settingsService = MockPointOfSaleSettingsService()
+            settingsService.retrievePointOfSaleSettingsResult = .success(
+                POSReceiptInformation(storeName: nil,
+                                      storeAddress: nil,
+                                      phone: "555-0100",
+                                      email: nil,
+                                      refundReturnsPolicy: nil))
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "99.0.0", active: true))
+            let settingsController = MockPOSSettingsController()
+            settingsController.storeViewModel = POSSettingsStoreViewModel(
+                siteID: 123,
+                settingsService: settingsService,
+                pluginsService: pluginsService,
+                defaultSiteName: "Sample Store",
+                siteSettings: [],
+                receiptSettingsAdminURL: "")
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                settingsController: settingsController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then the settings are re-fetched and the fresh values reach the printout
+            #expect(settingsService.retrievePointOfSaleSettingsWasCalled == true)
+            #expect(printer.printedStoreInformation?.phone == "555-0100")
+        }
+
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
@@ -670,9 +743,9 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // When / Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelPaymentCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.startCashPayment()
 
@@ -1170,9 +1243,9 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics)
 
             // When
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelReconnectionCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.cancelReconnection()
             }
@@ -1245,10 +1318,10 @@ struct PointOfSaleAggregateModelTests {
             barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
 
             // When & Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 soundPlayer.onPlaySound = { sound in
                     #expect(sound == .barcodeScanFailure)
-                    continuation.resume()
+                    fire()
                 }
                 sut.barcodeScanned(.success("123456"))
             }
@@ -1307,8 +1380,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let analytics = MockPOSAnalytics()
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(analytics: analytics,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1329,8 +1401,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let analytics = MockPOSAnalytics()
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(analytics: analytics,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1350,8 +1421,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let siteID: Int64 = 123
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(siteID: siteID,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1360,11 +1430,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.showStaleSyncWarning == true)
 
             // When
-            coordinator.isSyncStaleResult = false
-            await fireOnce { fire in
-                coordinator.onIsSyncStaleCalled = { fire() }
-                coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID), for: siteID)
-            }
+            coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID, syncDate: Date()), for: siteID)
 
             // Then
             #expect(sut.showStaleSyncWarning == false)
@@ -1374,8 +1440,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let siteID: Int64 = 123
             let coordinator = MockPOSCatalogSyncCoordinator()
-            coordinator.isSyncStaleResult = true
-            coordinator.hoursSinceLastSyncResult = 42
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
             let sut = makePointOfSaleAggregateModel(siteID: siteID,
                                                     catalogSyncCoordinator: coordinator,
                                                     isLocalCatalogEligible: true)
@@ -1384,16 +1449,49 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.showStaleSyncWarning == true)
 
             // When
-            coordinator.isSyncStaleResult = false
-            coordinator.onIsSyncStaleCalled = {
-                #expect(Bool(false))
-            }
             coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
-            await Task.yield()
-            coordinator.onIsSyncStaleCalled = nil
 
             // Then
             #expect(sut.showStaleSyncWarning == true)
+        }
+
+        @Test func staleSyncWarning_when_fresh_full_sync_fails_then_does_not_show_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date()
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == false)
+
+            // When
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+        }
+
+        @Test func staleSyncWarning_when_never_synced_then_does_not_show_warning_or_track_shown_event() async {
+            // Given - no full sync has ever completed (no sync date)
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = nil
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
         }
     }
 
@@ -1654,4 +1752,19 @@ private func makePointOfSaleAggregateModel(
         sunsetWarningChecker: sunsetWarningChecker,
         receiptPrinter: receiptPrinter
     )
+}
+
+private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
+    var retrievePointOfSaleSettingsWasCalled = false
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
+
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        retrievePointOfSaleSettingsWasCalled = true
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
+        }
+    }
 }

@@ -3,6 +3,8 @@ import Foundation
 import Combine
 import struct Yosemite.Order
 import struct Yosemite.Address
+import struct Yosemite.ReceiptStoreInformation
+import protocol Yosemite.ReceiptPrinterServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import enum WooFoundationCore.WooAnalyticsStat
 @testable import PointOfSale
@@ -142,9 +144,9 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        await withCheckedContinuation { continuation in
+        await fireOnce { fire in
             service.onCancelPaymentCalled = {
-                continuation.resume()
+                fire()
             }
             sut.startCashPayment()
 
@@ -365,9 +367,9 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        await withCheckedContinuation { continuation in
+        await fireOnce { fire in
             service.onCancelPaymentCalled = {
-                continuation.resume()
+                fire()
             }
             sut.startMarkAsPaidPayment()
 
@@ -769,6 +771,70 @@ struct POSPaymentModelTests {
         }
     }
 
+    @Test("printReceipt prints the current order on the connected printer")
+    @MainActor
+    func test_printReceipt_when_order_present_then_prints_current_order() async throws {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.orderToReturn = order
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: printer)
+
+        // Collect a payment to set the currentOrder
+        await sut.startPayment()
+
+        // When
+        try await sut.printReceipt(storeInformation: .empty)
+
+        // Then
+        #expect(printer.printedOrder?.orderID == 123)
+    }
+
+    @Test("printReceipt throws when no current order")
+    @MainActor
+    func test_printReceipt_when_no_order_then_throws() async {
+        // Given
+        let printer = MockReceiptPrinterService()
+        let sut = makePaymentController(receiptPrinter: printer)
+
+        // When / Then
+        await #expect(throws: POSPaymentError.self) {
+            try await sut.printReceipt(storeInformation: .empty)
+        }
+        #expect(printer.printedOrder == nil)
+    }
+
+    @Test("printReceipt is a no-op when no printer is configured")
+    @MainActor
+    func test_printReceipt_when_printer_nil_then_does_not_throw() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptPrinter: nil)
+
+        await sut.startPayment()
+
+        // When / Then — printing without a configured printer silently no-ops.
+        try await sut.printReceipt(storeInformation: .empty)
+    }
+
     // MARK: - Reset
 
     @Test("reset clears all state")
@@ -1101,6 +1167,84 @@ struct POSPaymentModelTests {
 
         #expect(service.collectPaymentWasCalled == false)
         #expect(sut.paymentState.cash == .collectingCash)
+    }
+
+    @Test("reader disconnection observer does not restart card payment during cash flow")
+    @MainActor
+    func test_observeReaderReconnection_when_cash_payment_active_then_does_not_start_card_payment_on_reconnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+        sut.observeReaderReconnection()
+        sut.startCashPayment()
+
+        // When
+        await disconnectAndReconnectReader(service: service, observedBy: sut)
+
+        // Then
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState.cash == .collectingCash)
+    }
+
+    @Test("reader disconnection observer does not restart card payment during scan-to-pay flow")
+    @MainActor
+    func test_observeReaderReconnection_when_scan_to_pay_active_then_does_not_start_card_payment_on_reconnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+        sut.observeReaderReconnection()
+        await sut.startScanToPayPayment()
+        service.collectPaymentWasCalled = false
+
+        // When
+        await disconnectAndReconnectReader(service: service, observedBy: sut)
+
+        // Then
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+    }
+
+    @Test("reader disconnection observer does not restart card payment during mark-as-paid flow")
+    @MainActor
+    func test_observeReaderReconnection_when_mark_as_paid_active_then_does_not_start_card_payment_on_reconnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+        sut.observeReaderReconnection()
+        sut.startMarkAsPaidPayment()
+        service.collectPaymentWasCalled = false
+
+        // When
+        await disconnectAndReconnectReader(service: service, observedBy: sut)
+
+        // Then
+        #expect(sut.currentPaymentMethod == nil)
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState.markAsPaid == .confirming)
     }
 
     // MARK: - Card Events During Cash Flow
@@ -2165,8 +2309,8 @@ struct POSPaymentModelTests {
         // so wait for the SDK-level `connectReader` to be called before
         // asserting. Without this the Task hasn't been scheduled yet by the
         // time the test continues.
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             Task { @MainActor in await sut.startPayment() }
         }
 
@@ -2201,8 +2345,8 @@ struct POSPaymentModelTests {
         // spawns its own Task; wait for the SDK-level `connectReader` to
         // be called so the post-connect `lastConnectedMethod` assignment
         // has landed before we proceed.
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
         #expect(sut.lastConnectedMethod == .bluetooth)
@@ -2212,8 +2356,8 @@ struct POSPaymentModelTests {
         // `startPayment` sees the BT cleanup conditions (TTP preferred +
         // `lastConnectedMethod == .bluetooth` + reader still connected) and
         // disconnects before kicking the silent TTP pre-connect.
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             Task { @MainActor in await sut.startPayment() }
         }
 
@@ -2257,8 +2401,8 @@ struct POSPaymentModelTests {
             preferredConnectionMethod: .tapToPay,
             cardPaymentSelectionMode: .compact)
 
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
         #expect(sut.selectedCardPaymentRail == .bluetoothReader)
@@ -2283,15 +2427,19 @@ struct POSPaymentModelTests {
             preferredConnectionMethod: .tapToPay,
             cardPaymentSelectionMode: .compact)
 
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
         #expect(sut.selectedCardPaymentRail == .bluetoothReader)
 
         // When
-        await withCheckedContinuation { continuation in
-            service.onDisconnectReaderCalled = { continuation.resume() }
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.selectedCardPaymentRail
+            } onChange: {
+                Task { @MainActor in fire() }
+            }
             sut.disconnectCardReader()
         }
 
@@ -2311,9 +2459,9 @@ struct POSPaymentModelTests {
         await sut.selectCardPaymentRail(.bluetoothReader)
 
         // When
-        await withCheckedContinuation { continuation in
+        await fireOnce { fire in
             service.onCancelPaymentCalled = {
-                continuation.resume()
+                fire()
             }
             sut.startCashPayment()
         }
@@ -2322,6 +2470,130 @@ struct POSPaymentModelTests {
         #expect(sut.selectedCardPaymentRail == .bluetoothReader)
         #expect(sut.paymentState.cash == .collectingCash)
         #expect(service.cancelPaymentCalled == true)
+    }
+
+    @Test("compact mode Scan to Pay preserves Tap to Pay selection after cancellation")
+    @MainActor
+    func test_startScanToPayPayment_when_compact_mode_and_TTP_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelScanToPayPayment()
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("compact mode Scan to Pay preserves Bluetooth selection after cancellation")
+    @MainActor
+    func test_startScanToPayPayment_when_compact_mode_and_BT_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+        orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.scanToPay.isShowingQRCode == true)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelScanToPayPayment()
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.scanToPay == .idle)
+    }
+
+    @Test("compact mode Mark as Paid preserves Tap to Pay selection after cancellation")
+    @MainActor
+    func test_startMarkAsPaidPayment_when_compact_mode_and_TTP_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            sut.startMarkAsPaidPayment()
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.markAsPaid == .confirming)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelMarkAsPaidPayment()
+        #expect(sut.selectedCardPaymentRail == .tapToPay)
+        #expect(sut.paymentState.markAsPaid == .idle)
+    }
+
+    @Test("compact mode Mark as Paid preserves Bluetooth selection after cancellation")
+    @MainActor
+    func test_startMarkAsPaidPayment_when_compact_mode_and_BT_selected_then_cancel_preserves_selected_rail() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            preferredConnectionMethod: .tapToPay,
+            cardPaymentSelectionMode: .compact)
+        await sut.selectCardPaymentRail(.bluetoothReader)
+
+        // When
+        await fireOnce { fire in
+            service.onCancelPaymentCalled = {
+                fire()
+            }
+            sut.startMarkAsPaidPayment()
+        }
+
+        // Then
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.markAsPaid == .confirming)
+        #expect(service.cancelPaymentCalled == true)
+
+        await sut.cancelMarkAsPaidPayment()
+        #expect(sut.selectedCardPaymentRail == .bluetoothReader)
+        #expect(sut.paymentState.markAsPaid == .idle)
     }
 
     @Test("compact mode with Bluetooth selected waits for a reader without marking Bluetooth active")
@@ -2365,8 +2637,8 @@ struct POSPaymentModelTests {
             cardPaymentSelectionMode: .compact)
 
         // When
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             Task { @MainActor in await sut.startCardPayment(with: .bluetoothReader) }
         }
 
@@ -2413,8 +2685,8 @@ struct POSPaymentModelTests {
             cardPresentPaymentService: service,
             orderProvider: orderProvider,
             preferredConnectionMethod: .bluetooth)
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             Task { @MainActor in await sut.startPayment() }
         }
         let connectCountAfterFirst = service.connectReaderCallCount
@@ -2448,8 +2720,8 @@ struct POSPaymentModelTests {
             cardPresentPaymentService: service,
             orderProvider: orderProvider,
             preferredConnectionMethod: .bluetooth)
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = { continuation.resume() }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             Task { @MainActor in await sut.startPayment() }
         }
         service.cancelPaymentCalled = false
@@ -2484,6 +2756,7 @@ private func makePaymentController(
     scanToPayVerifier: POSScanToPayVerifying? = nil,
     markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
     postPaymentStep: (() async throws -> Void)? = nil,
     configuration: POSPaymentFlowConfiguration = .cart(onNewOrder: {}, onEditOrder: {}),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
@@ -2502,6 +2775,7 @@ private func makePaymentController(
         scanToPayVerifier: scanToPayVerifier,
         markAsPaidHandler: markAsPaidHandler,
         receiptSender: receiptSender,
+        receiptPrinter: receiptPrinter,
         postPaymentStep: postPaymentStep,
         configuration: configuration,
         analytics: analytics,
@@ -2511,4 +2785,32 @@ private func makePaymentController(
         preferredConnectionMethod: preferredConnectionMethod,
         cardPaymentSelectionMode: cardPaymentSelectionMode,
         paymentState: paymentState)
+}
+
+@MainActor
+private func disconnectAndReconnectReader(service: MockCardPresentPaymentService,
+                                          observedBy sut: POSPaymentModel) async {
+    await updateReaderConnectionStatus(observedBy: sut) {
+        service.connectedReader = nil
+    }
+    await updateReaderConnectionStatus(observedBy: sut) {
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+    }
+}
+
+@MainActor
+private func updateReaderConnectionStatus(observedBy sut: POSPaymentModel,
+                                          _ update: () -> Void) async {
+    await fireOnce { fire in
+        withObservationTracking {
+            _ = sut.cardReaderConnectionStatus
+        } onChange: {
+            Task { @MainActor in fire() }
+        }
+        update()
+    }
+
+    // `observeReaderReconnection` handles publisher values in a MainActor task.
+    // Yield once so that observer can either restart card collection or return.
+    await Task.yield()
 }

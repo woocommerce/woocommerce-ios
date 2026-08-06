@@ -119,14 +119,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case splitViewInProductsTab
 
-    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
-    ///
-    case subscriptionsInOrderCreationUI
-
-    /// Enables a new customer creation flow in order creation for subscriptions support.
-    ///
-    case subscriptionsInOrderCreationCustomers
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
@@ -162,10 +154,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
-
-    /// Shows inventory levels and inventory status in POS item cards
-    ///
-    case inventoryProductLabelsInPOS
 
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
@@ -236,10 +224,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case loggedOutFFPanel
 
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
-
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
@@ -259,4 +243,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
+
+    case posRefundsV4
 }

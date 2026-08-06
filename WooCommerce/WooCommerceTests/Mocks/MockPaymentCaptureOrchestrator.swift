@@ -66,27 +66,6 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         onCompletion(mockCancelPaymentResult)
     }
 
-    var spyDidCallEmailReceipt = false
-    var spyEmailReceiptOrder: Order? = nil
-    var spyEmailReceiptParams: CardPresentReceiptParameters? = nil
-    func emailReceipt(for order: Order,
-                      params: CardPresentReceiptParameters,
-                      onContent: @escaping (String) -> Void) {
-        spyDidCallEmailReceipt = true
-        spyEmailReceiptOrder = order
-        spyEmailReceiptParams = params
-    }
-
-    var spyDidCallSaveReceipt = false
-    var spySaveReceiptOrder: Order? = nil
-    var spySaveReceiptParams: CardPresentReceiptParameters? = nil
-    func saveReceipt(for order: Order,
-                     params: CardPresentReceiptParameters) {
-        spyDidCallSaveReceipt = true
-        spySaveReceiptOrder = order
-        spySaveReceiptParams = params
-    }
-
     func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Result<Yosemite.Receipt, Error>) -> Void) {
         // no implemented
     }

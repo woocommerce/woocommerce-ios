@@ -21,6 +21,23 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
+        /// Tracked when the self-driven push token is successfully deleted for a specific target site.
+        /// Emits the target site's analytics properties so per-site dashboards attribute the event to the
+        /// correct site instead of the currently selected one.
+        static func wooPushTokenDeleteSuccess(targetSite: Site?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .wooPushTokenDeleteSuccess,
+                              properties: properties(for: targetSite))
+        }
+
+        /// Tracked when the self-driven push token deletion fails for a specific target site.
+        /// Emits the target site's analytics properties so per-site dashboards attribute the event to the
+        /// correct site instead of the currently selected one.
+        static func wooPushTokenDeleteError(targetSite: Site?, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .wooPushTokenDeleteError,
+                              properties: properties(for: targetSite),
+                              error: error)
+        }
+
         /// Combines the target site's analytics properties with session-level fields (`store_id`,
         /// `cached_woo_core_version`) that the default-site enrichment would normally attach.
         /// These events opt out of that enrichment to protect the target-site attribution, so the

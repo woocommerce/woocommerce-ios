@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import protocol WooFoundation.Analytics
 
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -8,6 +9,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     typealias ResultData = ProductFormRemoteActionUseCase.ResultData
     private var storesManager: MockStoresManager!
     private var storageManager: MockStorageManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var originalAnalytics: Analytics!
     private let siteID: Int64 = 123
     private let pluginName = "WooCommerce"
     private let pluginSlug = "woocommerce"
@@ -17,11 +20,17 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
         storesManager.sessionManager.setStoreId(siteID)
         storageManager = MockStorageManager()
+        originalAnalytics = ServiceLocator.analytics
+        analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
     }
 
     override func tearDown() {
         storesManager = nil
         storageManager = nil
+        ServiceLocator.setAnalytics(originalAnalytics)
+        analyticsProvider = nil
+        originalAnalytics = nil
         super.tearDown()
     }
 
@@ -46,6 +55,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == WooAnalyticsStat.addProductSuccess.rawValue },
+                       [WooAnalyticsStat.addProductSuccess.rawValue])
     }
 
     func test_adding_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
@@ -105,6 +116,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == WooAnalyticsStat.addProductFailed.rawValue },
+                       [WooAnalyticsStat.addProductFailed.rawValue])
     }
 
     // MARK: - Editing a product (`addProduct`)
@@ -399,6 +412,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         // When
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
+            case .duplicateProduct(_, _, let onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
             case .addProduct(let product, _):
                 copiedProductName = product.name
                 copiedProductStatusKey = product.statusKey
@@ -415,14 +430,48 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertNil(copiedProductSKU)
     }
 
+    func test_duplicating_product_clears_slug_so_server_assigns_a_unique_one() {
+        // Given
+        // Reusing the source slug in the create request risks the storefront resolving to the
+        // original product, so the duplicate must be created with an empty slug for the server
+        // to assign a unique one.
+        let product = Product.fake().copy(slug: "original-slug", permalink: "https://store.example/original-slug")
+        let model = EditableProductModel(product: product)
+        var copiedProductSlug: String?
+        var copiedProductPermalink: String?
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .duplicateProduct(_, _, let onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case .addProduct(let product, _):
+                copiedProductSlug = product.slug
+                copiedProductPermalink = product.permalink
+            default:
+                break
+            }
+        }
+        useCase.duplicateProduct(originalProduct: model, password: nil, onCompletion: { _ in })
+
+        // Then
+        assertEqual("", copiedProductSlug)
+        assertEqual("", copiedProductPermalink)
+        // The source product is never mutated when building the duplicate.
+        assertEqual("original-slug", product.slug)
+        assertEqual("https://store.example/original-slug", product.permalink)
+    }
+
     func test_duplicating_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Given
         let product = Product.fake()
         let model = EditableProductModel(product: product)
         let password = "wo0oo!"
+        let passwordError = NSError(domain: "PasswordUpdate", code: 100)
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
         mockAddProduct(result: .success(product))
-        mockUpdatePassword(result: .failure(NSError(domain: "", code: 100, userInfo: nil)))
+        mockUpdatePassword(result: .failure(passwordError))
 
         // When
         var result: Result<ResultData, ProductUpdateError>?
@@ -434,6 +483,9 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_domain"] as? String, passwordError.domain)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_code"] as? String, String(passwordError.code))
     }
 
     func test_duplicating_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
@@ -453,6 +505,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductSuccess.rawValue])
     }
 
     func test_duplicating_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
@@ -472,6 +525,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
     }
 
     func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() throws {
@@ -514,10 +568,221 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(returnedProduct.product.customFields, customFields)
     }
 
-    func test_duplicating_variable_product_triggers_retrieving_original_product_variations_and_creating_new_variations_for_duplicated_product() {
+    func test_core_duplicate_fetches_canonical_product_without_dispatching_legacy_copy_actions_for_supported_product_types() throws {
+        for productType in [ProductType.simple, .variable, .subscription, .variableSubscription] {
+            // Given
+            storesManager.reset()
+            analyticsProvider.clearEvents()
+            let sourceProductID: Int64 = 5
+            let duplicatedProductID: Int64 = 99
+            let source = Product.fake().copy(siteID: siteID,
+                                             productID: sourceProductID,
+                                             productTypeKey: productType.rawValue,
+                                             variations: [11, 12],
+                                             customFields: [MetaData(metadataID: 1, key: "custom_key", value: "source_value")])
+            let canonicalDuplicate = source.copy(productID: duplicatedProductID,
+                                                 name: "Server Copy",
+                                                 slug: "server-copy",
+                                                 permalink: "https://example.com/product/server-copy")
+            storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case let .duplicateProduct(receivedSiteID, receivedProductID, onCompletion):
+                    XCTAssertEqual(receivedSiteID, self.siteID)
+                    XCTAssertEqual(receivedProductID, sourceProductID)
+                    onCompletion(.success(duplicatedProductID))
+                case let .retrieveProduct(receivedSiteID, receivedProductID, onCompletion):
+                    XCTAssertEqual(receivedSiteID, self.siteID)
+                    XCTAssertEqual(receivedProductID, duplicatedProductID)
+                    XCTAssertTrue(self.duplicateAnalyticsEvents.isEmpty)
+                    onCompletion(.success(canonicalDuplicate))
+                case .addProduct:
+                    XCTFail("Core duplication must not create a second product with the legacy endpoint")
+                default:
+                    break
+                }
+            }
+            let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+            // When
+            var result: Result<ResultData, ProductUpdateError>?
+            useCase.duplicateProduct(originalProduct: EditableProductModel(product: source), password: "secret") {
+                result = $0
+            }
+
+            // Then
+            let resultData = try XCTUnwrap(result?.get())
+            XCTAssertEqual(resultData.product, EditableProductModel(product: canonicalDuplicate))
+            XCTAssertEqual(resultData.password, "secret")
+            XCTAssertEqual(storesManager.receivedActions.compactMap { $0 as? ProductAction }.count, 2)
+            XCTAssertFalse(storesManager.receivedActions.contains { $0 is MetaDataAction })
+            XCTAssertFalse(storesManager.receivedActions.contains { $0 is ProductVariationAction })
+            XCTAssertFalse(storesManager.receivedActions.contains { $0 is SitePostAction })
+            XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductSuccess.rawValue])
+        }
+    }
+
+    func test_core_duplicate_failure_is_terminal_and_does_not_run_legacy_fallback() {
         // Given
+        let underlyingError = NSError(domain: "ProductDuplicate", code: 500)
+        let product = Product.fake().copy(siteID: siteID, productID: 5)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.unknown(error: AnyError(underlyingError))))
+            case .addProduct, .retrieveProduct:
+                XCTFail("Ambiguous duplication failures must not trigger another product request")
+            default:
+                break
+            }
+        }
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: EditableProductModel(product: product), password: nil) {
+            result = $0
+        }
+
+        // Then
+        XCTAssertEqual(result, .failure(.unknown(error: AnyError(underlyingError))))
+        XCTAssertEqual(storesManager.receivedActions.compactMap { $0 as? ProductAction }.count, 1)
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
+    }
+
+    func test_core_duplicate_canonical_retrieval_failure_is_terminal_and_does_not_run_legacy_fallback() {
+        // Given
+        let underlyingError = NSError(domain: "ProductRetrieve", code: 500)
+        let product = Product.fake().copy(siteID: siteID, productID: 5)
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.success(99))
+            case let .retrieveProduct(_, _, onCompletion):
+                onCompletion(.failure(underlyingError))
+            case .addProduct:
+                XCTFail("A failed canonical fetch after duplication must not create another product")
+            default:
+                break
+            }
+        }
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: EditableProductModel(product: product), password: nil) {
+            result = $0
+        }
+
+        // Then
+        XCTAssertEqual(result, .failure(.unknown(error: AnyError(underlyingError))))
+        XCTAssertEqual(storesManager.receivedActions.compactMap { $0 as? ProductAction }.count, 2)
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_domain"] as? String, underlyingError.domain)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_code"] as? String, String(underlyingError.code))
+    }
+
+    func test_legacy_fallback_preserves_images_and_does_not_mutate_subscription_source_product() throws {
+        // Given
+        let images = [ProductImage(imageID: 12,
+                                   dateCreated: Date(),
+                                   dateModified: Date(),
+                                   src: "https://example.com/source.jpg",
+                                   name: "source",
+                                   alt: "Source image")]
+        let source = Product.fake().copy(siteID: siteID,
+                                         productID: 5,
+                                         slug: "source-product",
+                                         permalink: "https://example.com/product/source-product",
+                                         productTypeKey: ProductType.subscription.rawValue,
+                                         images: images)
+        let sourceModel = EditableProductModel(product: source)
+        var submittedProduct: Product?
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(product, onCompletion):
+                submittedProduct = product
+                onCompletion(.success(product.copy(productID: 99)))
+            default:
+                break
+            }
+        }
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: sourceModel, password: nil) {
+            result = $0
+        }
+
+        // Then
+        XCTAssertEqual(submittedProduct?.images, images)
+        XCTAssertEqual(submittedProduct?.slug, "")
+        XCTAssertEqual(submittedProduct?.permalink, "")
+        XCTAssertEqual(sourceModel, EditableProductModel(product: source))
+        XCTAssertEqual(try result?.get().product.product.images, images)
+    }
+
+    func test_legacy_fallback_for_variable_product_types_recreates_variations() {
+        for productType in [ProductType.variable, .variableSubscription] {
+            assertLegacyFallbackRecreatesVariations(for: productType)
+        }
+    }
+
+    func test_legacy_fallback_variable_product_failure_tracks_one_failure_only_after_final_retrieval_fails() {
+        // Given
+        let variationID: Int64 = 11
+        let source = Product.fake().copy(siteID: siteID,
+                                         productID: 2,
+                                         productTypeKey: ProductType.variable.rawValue,
+                                         variations: [variationID])
+        let copiedProduct = source.copy(productID: 13)
+        let retrievalError = NSError(domain: "ProductRetrieve", code: 500)
+        storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .retrieveProductVariation(_, _, _, onCompletion):
+                onCompletion(.success(ProductVariation.fake().copy(productVariationID: variationID)))
+            case let .createProductVariation(_, _, _, onCompletion):
+                onCompletion(.success(ProductVariation.fake().copy(productVariationID: 99)))
+            default:
+                break
+            }
+        }
+        storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(_, onCompletion):
+                onCompletion(.success(copiedProduct))
+            case let .retrieveProduct(_, _, onCompletion):
+                XCTAssertTrue(self.duplicateAnalyticsEvents.isEmpty)
+                onCompletion(.failure(retrievalError))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: EditableProductModel(product: source), password: nil) {
+            result = $0
+        }
+        waitUntil { result != nil }
+
+        // Then
+        XCTAssertEqual(result, .failure(.unknown(error: AnyError(retrievalError))))
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
+    }
+}
+
+private extension ProductFormRemoteActionUseCaseTests {
+    func assertLegacyFallbackRecreatesVariations(for productType: ProductType) {
+        // Given
+        analyticsProvider.clearEvents()
         let testVariationIDs: [Int64] = [11, 20, 35]
-        let product = Product.fake().copy(productID: 2, productTypeKey: ProductType.variable.rawValue, variations: testVariationIDs)
+        let product = Product.fake().copy(productID: 2, productTypeKey: productType.rawValue, variations: testVariationIDs)
         let model = EditableProductModel(product: product)
 
         var retrievedVariationIDs: [Int64] = []
@@ -529,8 +794,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
                 onCompletion(.success(ProductVariation.fake().copy(productVariationID: variationID)))
             case let .createProductVariation(_, _, _, onCompletion):
                 createdVariationCount += 1
-                let fakeVariation = ProductVariation.fake().copy(productVariationID: Int64.random(in: 99..<999))
-                onCompletion(.success(fakeVariation))
+                onCompletion(.success(ProductVariation.fake().copy(productVariationID: Int64.random(in: 99..<999))))
             default:
                 break
             }
@@ -540,9 +804,12 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let finalProduct = copiedProduct.copy(variations: testVariationIDs)
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .addProduct(_, let onCompletion):
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(_, onCompletion):
                 onCompletion(.success(copiedProduct))
-            case .retrieveProduct(_, _, let onCompletion):
+            case let .retrieveProduct(_, _, onCompletion):
+                XCTAssertTrue(self.duplicateAnalyticsEvents.isEmpty)
                 onCompletion(.success(finalProduct))
             default:
                 break
@@ -552,25 +819,34 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         // When
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
         var result: Result<ResultData, ProductUpdateError>?
-        useCase.duplicateProduct(originalProduct: model, password: nil) { aResult in
-            result = aResult
+        useCase.duplicateProduct(originalProduct: model, password: nil) {
+            result = $0
         }
         waitUntil {
-            createdVariationCount == 3 &&
-            result != nil
+            createdVariationCount == testVariationIDs.count && result != nil
         }
 
         // Then
         XCTAssertEqual(retrievedVariationIDs.sorted(), testVariationIDs.sorted())
         XCTAssertEqual(result?.isSuccess, true)
+        XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductSuccess.rawValue])
     }
-}
 
-private extension ProductFormRemoteActionUseCaseTests {
+    var duplicateAnalyticsEvents: [String] {
+        analyticsProvider.receivedEvents.filter {
+            $0 == WooAnalyticsStat.duplicateProductSuccess.rawValue || $0 == WooAnalyticsStat.duplicateProductFailed.rawValue
+        }
+    }
+
     func mockAddProduct(result: Result<Product, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
-            if case let ProductAction.addProduct(_, onCompletion) = action {
+            switch action {
+            case let .duplicateProduct(_, _, onCompletion):
+                onCompletion(.failure(.endpointUnavailable))
+            case let .addProduct(_, onCompletion):
                 onCompletion(result)
+            default:
+                break
             }
         }
     }

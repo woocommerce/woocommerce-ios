@@ -109,10 +109,6 @@ final class MainTabBarController: UITabBarController {
         .default
     }
 
-    /// Notifications badge
-    ///
-    private let notificationsBadge = NotificationsBadgeController()
-
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
@@ -146,6 +142,10 @@ final class MainTabBarController: UITabBarController {
 
     private var cancellableSiteID: AnyCancellable?
     private var cancellableSite: AnyCancellable?
+    private var cancellableForeground: AnyCancellable?
+
+    /// The site currently driving the conditional tabs, re-checked when the app enters the foreground.
+    private var conditionalTabsSite: Site?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
@@ -491,11 +491,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersSelected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListSelected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
@@ -512,11 +510,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersReselected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListReselected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
@@ -941,9 +937,22 @@ private extension MainTabBarController {
                     return
                 }
 
+                conditionalTabsSite = site
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
                 refreshCardPresentExpansionEligibilityIfNeeded(for: site)
+            }
+
+        // Re-validates POS visibility and eligibility whenever the app returns to the foreground,
+        // like Android's onResume re-check. POS entry relies on locally recorded eligibility, so
+        // this checkpoint is what detects a store that became ineligible while the app was inactive.
+        cancellableForeground = NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                guard let self, let site = conditionalTabsSite else {
+                    return
+                }
+                observePOSEligibilityForPOSTabVisibility(site: site)
             }
     }
 
@@ -1114,11 +1123,6 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        guard #available(iOS 26.0, *) else {
-            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
-            notificationsBadge.updateBadge(with: input)
-            return
-        }
 
         switch action {
         case .show:

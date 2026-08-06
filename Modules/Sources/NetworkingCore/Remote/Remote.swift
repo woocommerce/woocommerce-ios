@@ -10,6 +10,10 @@ open class Remote: NSObject {
     ///
     let network: Network
 
+    /// Jetpack Tunnel raw-body diagnostics logger.
+    ///
+    var jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging = JetpackTunnelRawBodyErrorLogger()
+
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -35,6 +39,7 @@ open class Remote: NSObject {
         do {
             try request.responseDataValidator().validate(data: data)
         } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
             throw error
         }
@@ -56,6 +61,7 @@ open class Remote: NSObject {
             try request.responseDataValidator().validate(data: data)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
             handleDecodingError(error: error, for: request, entityName: "\(T.self)")
             throw error
@@ -251,6 +257,7 @@ private extension Remote {
 
             DispatchQueue.main.async {
                 if case let .failure(error) = result {
+                    self?.logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
                     self?.handleResponseError(error: error, for: request)
                     self?.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
                     DDLogError("<> Mapping Error: \(error)")
@@ -265,6 +272,7 @@ private extension Remote {
         do {
             return try Self.validateAndMap(data, request: request, mapper: mapper)
         } catch {
+            logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             DDLogError("<> Mapping Error: \(error)")
             handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
             throw error
@@ -275,6 +283,18 @@ private extension Remote {
 // MARK: - Private Methods
 //
 private extension Remote {
+
+    func logJetpackTunnelRawBodyErrorIfPresent(responseData: Data?, request: Request, transportStatus: Int?) {
+        guard request is JetpackRequest else {
+            return
+        }
+
+        jetpackTunnelRawBodyErrorLogger.logIfNeeded(
+            responseData: responseData,
+            request: request,
+            transportStatus: transportStatus
+        )
+    }
 
     /// Handles *all* of the DotcomError(s) that are successfully parsed.
     ///
@@ -317,6 +337,12 @@ private extension Remote {
         guard let response = networkError.response else {
             return networkError
         }
+
+        logJetpackTunnelRawBodyErrorIfPresent(
+            responseData: response,
+            request: request,
+            transportStatus: networkError.responseCode
+        )
 
         /// Pass the response to request's validator
         /// which will attempt to parse the response into corresponding error.

@@ -254,21 +254,23 @@ private extension InPersonPaymentsCashOnDeliveryToggleRowViewModel {
 
 private enum Localization {
     static let enableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
-        "Failed to enable Pay in Person. Please try again later.",
-        comment: "Error displayed when the attempt to enable a Pay in Person checkout payment option fails")
+        "menu.payments.payInPerson.toggle.enableFailureNotice.title",
+        value: "Failed to enable Pay In Person. Please try again later.",
+        comment: "Error displayed when the attempt to enable a Pay In Person checkout payment option fails")
 
     static let disableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
-        "Failed to disable Pay in Person. Please try again later.",
-        comment: "Error displayed when the attempt to disable a Pay in Person checkout payment option fails")
+        "menu.payments.payInPerson.toggle.disableFailureNotice.title",
+        value: "Failed to disable Pay In Person. Please try again later.",
+        comment: "Error displayed when the attempt to disable a Pay In Person checkout payment option fails")
 
     static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
         "Retry",
         comment: "Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails")
 
     static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
-        "menu.payments.payInPerson.learnMore.description",
-        value: "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
-        comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
+        "menu.payments.payInPerson.learnMore.description.payInPersonCasing",
+        value: "The Pay In Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
+        comment: "A label prompting users to learn more about adding Pay In Person to their checkout. " +
         "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
         "which should be translated separately and considered part of this sentence.")
 

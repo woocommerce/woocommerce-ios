@@ -47,12 +47,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .subscriptionsInOrderCreationUI:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
-        case .subscriptionsInOrderCreationCustomers:
-            // Feature paused pdqJU4-4mn-p2#comment-2067
-            return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
@@ -69,8 +63,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .inventoryProductLabelsInPOS:
-            return false
         case .productImageOptimizedHandling:
             return true
         case .orderAddressMapSearch:
@@ -92,9 +84,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
         case .pointOfSaleTapToPay:
-            // Behind the flag while the TTP integration lands. localDeveloper-only so
-            // alpha and beta keep showing only Cash + Card reader for now.
-            return buildConfig == .localDeveloper
+            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:
@@ -105,8 +95,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
-        case .aiSupportChat:
-            return true
         case .wooAIAssistant:
             return true
         case .arParcelFitting:
@@ -114,6 +102,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .smarterNotifications:
             return true
         case .starReceiptPrinterSupport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .posRefundsV4:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

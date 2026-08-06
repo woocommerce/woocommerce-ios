@@ -60,6 +60,26 @@ final class AccountRemoteTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    func test_updateCrashReportingOptOut_sends_correct_parameters() throws {
+        // Given
+        let optOut = true
+        let remote = AccountRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            remote.updateCrashReportingOptOut(optOut: optOut) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
+        XCTAssertEqual(request.parameters?["woomobile_crash_reporting_opt_out"] as? String, "true")
+        XCTAssertEqual(request.parameters?["fields"] as? String, "woomobile_crash_reporting_opt_out")
+    }
+
     // MARK: - `loadSites`
 
     func test_loadSites_emits_sites_in_response() throws {

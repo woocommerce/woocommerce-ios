@@ -14,6 +14,7 @@ extension PaymentIntent {
             self.id = ""
         }
         self.status = PaymentIntentStatus.with(status: intent.status)
+        self.clientSecret = intent.clientSecret
         self.created = intent.created
         self.amount = intent.amount
         self.currency = intent.currency
@@ -30,6 +31,7 @@ extension PaymentIntent {
 /// and initialize Harware.CardReader with a type conforming to it.
 protocol StripePaymentIntent {
     var stripeId: String? { get }
+    var clientSecret: String? { get }
     var created: Date { get }
     var status: StripeTerminal.PaymentIntentStatus { get }
     var amount: UInt { get }

@@ -24,6 +24,12 @@ final class SiteAddressViewController: LoginViewController {
     /// rotation or re-appearance never re-submits.
     var autoSubmitsPrefilledSiteAddress = false
 
+    /// When set, the screen's step event is tracked under this flow instead of
+    /// the default `.loginWithSiteAddress`. Set by callers that reach this
+    /// screen from another flow (e.g. the QR-login prologue's site-address
+    /// fallback).
+    var trackedFlow: AuthenticatorAnalyticsTracker.Flow?
+
     /// A state variable that is `true` if network calls are currently happening and so the
     /// view should be showing a loading indicator.
     ///
@@ -94,7 +100,7 @@ final class SiteAddressViewController: LoginViewController {
         if isSiteDiscovery {
             tracker.set(flow: .siteDiscovery)
         } else {
-            tracker.set(flow: .loginWithSiteAddress)
+            tracker.set(flow: trackedFlow ?? .loginWithSiteAddress)
         }
 
         if isMovingToParent {

@@ -59,15 +59,6 @@ struct ProductRow: View {
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                    VStack(alignment: .leading) {
-                        Text(viewModel.subscriptionConditionsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.subscriptionConditionsLabel.isNotEmpty)
-                        Text(viewModel.subscriptionBillingDetailsLabel)
-                            .font(.subheadline)
-                            .foregroundColor(Color(.text))
-                    }
-                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails)
                 Text(viewModel.secondaryProductDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)

@@ -211,7 +211,7 @@ struct WooShippingEditAddressView: View {
 
                 Button(Localization.Button.label(for: viewModel.status)) {
                     actionType = .validateOrConfirm
-                    switch viewModel.status {
+                    switch viewModel.validatedStatus() {
                     case .verified:
                         dismiss()
                     case .unverified:

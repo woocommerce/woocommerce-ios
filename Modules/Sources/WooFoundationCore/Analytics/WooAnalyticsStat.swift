@@ -139,6 +139,7 @@ public enum WooAnalyticsStat: String {
     case dashboardMainStatsWaitingTimeLoaded = "dashboard_main_stats_waiting_time_loaded"
     case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
     case dashboardStoreTimezoneDifferFromDevice = "dashboard_store_timezone_differ_from_device"
+    case dashboardStatsUnexpectedDateFormat = "stats_unexpected_format"
 
     // MARK: Dashboard stats custom range
     case dashboardStatsCustomRangeAddButtonTapped = "dashboard_stats_custom_range_add_button_tapped"
@@ -347,6 +348,9 @@ public enum WooAnalyticsStat: String {
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
+    case cardReaderLocationSuccess = "card_reader_location_success"
+    case cardReaderLocationFailure = "card_reader_location_failure"
+    case cardReaderLocationMissingTapped = "card_reader_location_missing_tapped"
 
     // MARK: Card Reader Software Update Events
     //
@@ -633,8 +637,12 @@ public enum WooAnalyticsStat: String {
 
     case wooPushTokenRegisterSuccess = "woo_push_token_register_success"
     case wooPushTokenRegisterError = "woo_push_token_register_error"
+    case wooPushTokenDeleteSuccess = "woo_push_token_delete_success"
+    case wooPushTokenDeleteError = "woo_push_token_delete_error"
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
+    case wpcomDeviceEnablePushNotificationsSuccess = "wpcom_device_enable_push_notifications_success"
+    case wpcomDeviceEnablePushNotificationsError = "wpcom_device_enable_push_notifications_error"
 
     case pushNotificationsCardView = "push_notifications_card_view"
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
@@ -1250,7 +1258,6 @@ public enum WooAnalyticsStat: String {
     // MARK: Connectivity Tool
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
-    case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
     case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App
@@ -1455,10 +1462,11 @@ extension WooAnalyticsStat {
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
             return false
-        // Per-site push token registration events attribute properties to the target site via a factory,
-        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
-        // with the currently selected site.
-        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
+        // Per-site push token registration/deletion events attribute properties to the target site via a
+        // factory, so opt out of the default-site enrichment that would otherwise overwrite `blog_id` /
+        // `site_url` with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
+             .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
             return false
         default:
             return true

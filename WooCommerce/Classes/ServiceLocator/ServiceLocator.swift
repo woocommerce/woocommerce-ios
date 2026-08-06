@@ -113,7 +113,7 @@ final class ServiceLocator {
     private static var _cardReader: CardReaderService = NoOpCardReaderService()
     #endif
 
-    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider()
+    private static var _cardReaderConfigProvider: CommonReaderConfigProviding = CommonReaderConfigProvider(analytics: analytics)
 
     /// Support for printing receipts
     ///

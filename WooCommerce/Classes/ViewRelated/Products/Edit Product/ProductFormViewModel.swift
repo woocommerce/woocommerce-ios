@@ -275,6 +275,29 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                        originalImages: originalProduct.images)
         return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
     }
+
+    /// Re-fetches the product from the server so the detail screen reflects remote changes (e.g. new reviews or
+    /// an updated price) made since it was cached. The fresh product is only applied when there are no unsaved
+    /// local edits, so an in-progress edit is never clobbered.
+    func refreshProduct() {
+        guard originalProduct.product.existsRemotely else {
+            return
+        }
+        let productID = originalProduct.productID
+        let siteID = originalProduct.siteID
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let refreshedProduct = try await self.remoteActionUseCase.retrieveProduct(id: productID, siteID: siteID)
+                guard !self.hasUnsavedChanges() else {
+                    return
+                }
+                self.originalProduct = EditableProductModel(product: refreshedProduct)
+            } catch {
+                DDLogError("⛔️ Error refreshing product on product detail: \(error)")
+            }
+        }
+    }
 }
 
 // MARK: - More menu
@@ -325,7 +348,7 @@ extension ProductFormViewModel {
     }
 
     func canDuplicateProduct() -> Bool {
-        formType == .edit
+        formType == .edit && originalProduct.product.existsRemotely
     }
 }
 
@@ -624,10 +647,21 @@ extension ProductFormViewModel {
         }
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>? {
+        guard canDuplicateProduct() else {
+            return nil
+        }
+        return ProductDuplicationSnapshot(product: originalProduct, password: originalPassword)
+    }
 
-        remoteActionUseCase.duplicateProduct(originalProduct: product,
-                                             password: password) { [weak self] result in
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        guard formType == .edit, snapshot.product.product.existsRemotely else {
+            return
+        }
+
+        remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
+                                             password: snapshot.password) { [weak self] result in
             guard let self else { return }
             switch result {
             case .failure(let error):
@@ -717,8 +751,7 @@ extension ProductFormViewModel {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.canEditQuantityRules
         analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
-                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules,
-                                                                      horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                                                     hasMinMaxQuantityRules: hasMinMaxQuantityRules))
     }
 }
 

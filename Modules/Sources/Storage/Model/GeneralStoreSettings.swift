@@ -90,6 +90,12 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isPOSTabVisible: Bool?
 
+    /// The last definite POS entry eligibility result from an online check.
+    /// `nil` when no definite result has been recorded. Indeterminate results
+    /// (e.g. offline) leave this value untouched.
+    ///
+    public var lastKnownPOSEligibility: Bool?
+
     /// The last time POS was opened for this store.
     ///
     public var lastPOSOpenedDate: Date?
@@ -138,6 +144,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 favoriteProductIDs: [Int64] = [],
                 searchTermsByKey: [String: [String]] = [:],
                 isPOSTabVisible: Bool? = nil,
+                lastKnownPOSEligibility: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
@@ -165,6 +172,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
         self.isPOSTabVisible = isPOSTabVisible
+        self.lastKnownPOSEligibility = lastKnownPOSEligibility
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
@@ -194,6 +202,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              favoriteProductIDs: favoriteProductIDs,
                              searchTermsByKey: searchTermsByKey,
                              isPOSTabVisible: isPOSTabVisible,
+                             lastKnownPOSEligibility: lastKnownPOSEligibility,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
                              posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
@@ -234,6 +243,7 @@ extension GeneralStoreSettings {
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
 
         self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
+        self.lastKnownPOSEligibility = try container.decodeIfPresent(Bool.self, forKey: .lastKnownPOSEligibility)
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true

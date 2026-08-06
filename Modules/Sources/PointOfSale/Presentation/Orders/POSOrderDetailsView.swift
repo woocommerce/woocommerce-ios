@@ -82,19 +82,15 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    let isLoadingOrderRefunds = orderListModel.ordersController.isLoadingOrderRefunds
-                    if isLoadingOrderRefunds {
-                        // Render skeletons for both sections while refund details load so
-                        // the items don't get rearranged when filtering kicks in.
-                        ghostItemsSection(rowCount: order.lineItems.count + order.customAmounts.count)
+                    switch orderListModel.ordersController.orderDetailsItemsState {
+                    case .loading(let rowCount):
+                        ghostItemsSection(rowCount: rowCount)
                         ghostRefundedProductsSection
-                    } else {
-                        let displayedLineItems = orderListModel.ordersController.displayedLineItems
-                        let displayedCustomAmounts = orderListModel.ordersController.displayedCustomAmounts
-                        if !displayedLineItems.isEmpty || !displayedCustomAmounts.isEmpty {
-                            itemsSection(products: displayedLineItems, customAmounts: displayedCustomAmounts)
+
+                    case .loaded(let lineItems, let customAmounts, let refundedItems):
+                        if !lineItems.isEmpty || !customAmounts.isEmpty {
+                            itemsSection(products: lineItems, customAmounts: customAmounts)
                         }
-                        let refundedItems = order.refunds.flatMap { $0.items }
                         if !refundedItems.isEmpty {
                             refundedProductsSection(refundedItems)
                         }
@@ -281,7 +277,8 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingItemsAccessibilityLabel)
     }
 
     @ViewBuilder
@@ -297,7 +294,8 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Localization.loadingRefundedItemsAccessibilityLabel)
     }
 
     @ViewBuilder
@@ -626,12 +624,17 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundSelectionState = .preparationError
-            return
+        Task { @MainActor in
+            switch await orderListModel.ordersController.prepareRefundReview() {
+            case .ready(var reviewData):
+                reviewData.refundReason = currentRefundReason
+                refundModalState = .review(reviewData)
+            case .preparationError:
+                refundSelectionState = .preparationError
+            case .previewError, .superseded:
+                break
+            }
         }
-        reviewData.refundReason = currentRefundReason
-        refundModalState = .review(reviewData)
     }
 
     func returnToRefundSelection() {
@@ -712,6 +715,18 @@ private enum Localization {
         "pos.orderDetailsView.refundedItemsTitle",
         value: "Refunded items",
         comment: "Section title for the refunded items list (products and custom amounts) in order details"
+    )
+
+    static let loadingItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingItems.accessibilityLabel",
+        value: "Loading items",
+        comment: "Accessibility label for the order items section while refund details are loading."
+    )
+
+    static let loadingRefundedItemsAccessibilityLabel = NSLocalizedString(
+        "pos.orderDetailsView.loadingRefundedItems.accessibilityLabel",
+        value: "Loading refunded items",
+        comment: "Accessibility label for the refunded items section while refund details are loading."
     )
 
     static func customAmountRowAccessibilityLabel(name: String, total: String) -> String {

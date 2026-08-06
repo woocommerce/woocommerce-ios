@@ -29,40 +29,65 @@ final class ProductFormRemoteActionUseCase {
                     successEventName: WooAnalyticsStat = .addProductSuccess,
                     failureEventName: WooAnalyticsStat = .addProductFailed,
                     onCompletion: @escaping AddProductCompletion) {
-        let updatedProduct = EditableProductModel(product: product.product.copy(password: password))
-        addProductRemotely(product: updatedProduct) { productResult in
-            switch productResult {
-            case .failure(let error):
-                ServiceLocator.analytics.track(failureEventName, withError: error)
-                onCompletion(.failure(error))
-            case .success(let product):
-                // `self` is retained because the use case is not usually strongly held.
-                self.updatePasswordRemotely(product: product, password: password) { passwordResult in
-                    switch passwordResult {
-                    case .failure(let error):
-                        ServiceLocator.analytics.track(failureEventName, withError: error)
-                        onCompletion(.failure(.passwordCannotBeUpdated))
-                    case .success(let password):
-                        ServiceLocator.analytics.track(successEventName)
-                        onCompletion(.success(ResultData(product: product, password: password)))
-                    }
-                }
-            }
+        addProduct(product: product,
+                   password: password,
+                   successEventName: successEventName,
+                   failureEventName: failureEventName,
+                   trackAnalytics: true) { result, _ in
+            onCompletion(result)
         }
     }
 
-    /// Adds a copy of the input product remotely. The new product will have an updated name, no SKU and its status will be Draft.
+    /// Duplicates a product remotely, using the core endpoint when available and a compatibility fallback on older stores.
     /// - Parameters:
     ///   - originalProduct: The product to be duplicated remotely.
-    ///   - onCompletion: Called when the remote process finishes.
+    ///   - password: Optional password of the duplicated product.
+    ///   - onCompletion: Called when the complete duplication flow finishes.
     func duplicateProduct(originalProduct: EditableProductModel,
                           password: String?,
                           onCompletion: @escaping DuplicateProductCompletion) {
+        let trackedCompletion: (_ result: Result<ResultData, ProductUpdateError>, _ analyticsError: Error?) -> Void = { result, analyticsError in
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(.duplicateProductSuccess)
+            case .failure(let error):
+                ServiceLocator.analytics.track(.duplicateProductFailed, withError: analyticsError ?? error)
+            }
+            onCompletion(result)
+        }
+
+        let action = ProductAction.duplicateProduct(siteID: originalProduct.siteID, productID: originalProduct.productID) { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .success(let duplicatedProductID):
+                self.retrieveDuplicatedProduct(id: duplicatedProductID,
+                                                siteID: originalProduct.siteID,
+                                                password: password,
+                                                onCompletion: trackedCompletion)
+            case .failure(.endpointUnavailable):
+                self.duplicateProductUsingLegacyFlow(originalProduct: originalProduct,
+                                                     password: password,
+                                                     onCompletion: trackedCompletion)
+            case .failure(.unknown(let error)):
+                trackedCompletion(.failure(.unknown(error: error)), error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Compatibility fallback for stores where the core duplication endpoint is conclusively unavailable.
+    private func duplicateProductUsingLegacyFlow(originalProduct: EditableProductModel,
+                                                 password: String?,
+                                                 onCompletion: @escaping (_ result: Result<ResultData, ProductUpdateError>,
+                                                                          _ analyticsError: Error?) -> Void) {
         let productModelToSave: EditableProductModel = {
             let newName = String(format: Localization.copyProductName, originalProduct.name)
             let copiedProduct = originalProduct.product.copy(
                 productID: 0,
                 name: newName,
+                slug: "", // let the server assign a unique slug for the duplicate instead of reusing the original's
+                permalink: "", // derived server-side; cleared for local consistency
                 statusKey: ProductStatus.draft.rawValue,
                 sku: .some(nil), // just resetting SKU to nil for simplicity
                 password: password
@@ -70,13 +95,11 @@ final class ProductFormRemoteActionUseCase {
             return EditableProductModel(product: copiedProduct)
         }()
 
-        let successEventName: WooAnalyticsStat = .duplicateProductSuccess
-        let failureEventName: WooAnalyticsStat = .duplicateProductFailed
-
         addProduct(product: productModelToSave,
                    password: password,
-                   successEventName: successEventName,
-                   failureEventName: failureEventName) { [weak self] result in
+                   successEventName: .duplicateProductSuccess,
+                   failureEventName: .duplicateProductFailed,
+                   trackAnalytics: false) { [weak self] result, analyticsError in
             guard let self else { return }
             switch result {
             case .success(let data):
@@ -88,16 +111,16 @@ final class ProductFormRemoteActionUseCase {
                                       siteID: data.product.siteID)
 
                 // Wrap completion to optimistically inject custom fields so the UI shows them immediately.
-                let onCompletionWithCustomFields: DuplicateProductCompletion = { result in
+                let onCompletionWithCustomFields = { (result: Result<ResultData, ProductUpdateError>, analyticsError: Error?) in
                     onCompletion(result.map { data in
                         ResultData(product: EditableProductModel(product: data.product.product.copy(customFields: originalCustomFields)),
                                    password: data.password)
-                    })
+                    }, analyticsError)
                 }
 
                 let variableTypes: [ProductType] = [.variable, .variableSubscription]
                 guard variableTypes.contains(data.product.productType) else {
-                    return onCompletionWithCustomFields(.success(data))
+                    return onCompletionWithCustomFields(.success(data), nil)
                 }
                 self.duplicateVariations(originalProduct.product.variations,
                                          from: originalProduct.productID,
@@ -105,15 +128,48 @@ final class ProductFormRemoteActionUseCase {
                                          onCompletion: { result in
                     switch result {
                     case .success(let product):
-                        ServiceLocator.analytics.track(successEventName)
-                        onCompletionWithCustomFields(.success(ResultData(product: product, password: data.password)))
+                        onCompletionWithCustomFields(.success(ResultData(product: product, password: data.password)), nil)
                     case .failure(let error):
-                        ServiceLocator.analytics.track(failureEventName, withError: error)
-                        onCompletionWithCustomFields(.failure(error))
+                        onCompletionWithCustomFields(.failure(error), error)
                     }
                 })
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(error), analyticsError)
+            }
+        }
+    }
+
+    private func addProduct(product: EditableProductModel,
+                            password: String?,
+                            successEventName: WooAnalyticsStat,
+                            failureEventName: WooAnalyticsStat,
+                            trackAnalytics: Bool,
+                            onCompletion: @escaping (_ result: Result<ResultData, ProductUpdateError>,
+                                                     _ analyticsError: Error?) -> Void) {
+        let updatedProduct = EditableProductModel(product: product.product.copy(password: password))
+        addProductRemotely(product: updatedProduct) { productResult in
+            switch productResult {
+            case .failure(let error):
+                if trackAnalytics {
+                    ServiceLocator.analytics.track(failureEventName, withError: error)
+                }
+                onCompletion(.failure(error), error)
+            case .success(let product):
+                // `self` is retained because the use case is not usually strongly held.
+                self.updatePasswordRemotely(product: product, password: password) { passwordResult in
+                    switch passwordResult {
+                    case .failure(let error):
+                        if trackAnalytics {
+                            ServiceLocator.analytics.track(failureEventName, withError: error)
+                        }
+                        onCompletion(.failure(.passwordCannotBeUpdated), error)
+                    case .success(let password):
+                        if trackAnalytics {
+                            ServiceLocator.analytics.track(successEventName)
+                        }
+                        onCompletion(.success(ResultData(product: product, password: password)), nil)
+                    }
+                }
             }
         }
     }
@@ -197,7 +253,42 @@ final class ProductFormRemoteActionUseCase {
     }
 }
 
+extension ProductFormRemoteActionUseCase {
+    /// Fetches the latest product from the server and updates local storage.
+    func retrieveProduct(id: Int64, siteID: Int64) async throws -> Product {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
+                switch result {
+                case .success(let product):
+                    continuation.resume(returning: product)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.stores.dispatch(action)
+            }
+        } as Product
+    }
+}
+
 private extension ProductFormRemoteActionUseCase {
+    func retrieveDuplicatedProduct(id: Int64,
+                                   siteID: Int64,
+                                   password: String?,
+                                   onCompletion: @escaping (_ result: Result<ResultData, ProductUpdateError>,
+                                                            _ analyticsError: Error?) -> Void) {
+        let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
+            switch result {
+            case .success(let product):
+                onCompletion(.success(ResultData(product: EditableProductModel(product: product), password: password)), nil)
+            case .failure(let error):
+                onCompletion(.failure(.unknown(error: AnyError(error))), error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
     func addProductRemotely(product: EditableProductModel, onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
         let updateProductAction = ProductAction.addProduct(product: product.product) { result in
             switch result {
@@ -324,22 +415,6 @@ private extension ProductFormRemoteActionUseCase {
                 }
             }
         }
-    }
-
-    func retrieveProduct(id: Int64, siteID: Int64) async throws -> Product {
-        try await withCheckedThrowingContinuation { [weak self] continuation in
-            let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
-                switch result {
-                case .success(let product):
-                    continuation.resume(returning: product)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-            DispatchQueue.main.async { [weak self] in
-                self?.stores.dispatch(action)
-            }
-        } as Product
     }
 
     func retrieveProductVariation(variationID: Int64, siteID: Int64, productID: Int64) async -> ProductVariation? {

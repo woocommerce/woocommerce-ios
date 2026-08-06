@@ -27,6 +27,8 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             // This immediately brings up the `CardPresentModalTapCard` screen, which is used by
             // `WooCommerceScreenshots` to display it for screenshotting purpose.
             onCardReaderMessage(.waitingForInput([.tap, .swipe, .insert]))
+        case .retrievePaymentIntent(_, let onCompletion):
+            onCompletion(.failure(NSError(domain: "MockCardPresentPaymentActionHandler", code: 1)))
         default:
             unimplementedAction(action: action)
         }

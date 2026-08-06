@@ -1,15 +1,66 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.4
+-----
+- [*] Fixed magic link login not navigating to the store dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17622]
+- [*] Login: Fixed stores failing to load when hosting blocks one of the WordPress REST API URL formats. [https://github.com/woocommerce/woocommerce-ios/pull/17602]
+- [*] Order statuses now display in the store's language across the order list, search, filters, and the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17595]
+- [*] Orders: Fixed a crash when rotating order details on large iPhones running iOS 27. [https://github.com/woocommerce/woocommerce-ios/pull/17620]
+- [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]
+- [*] Products: Fixed bulk Regular Price update failing for variable products whose variations share a duplicate SKU or GTIN. [https://github.com/woocommerce/woocommerce-ios/pull/17556]
+- [Internal] Removed leftover code for the retired Products tab feedback banner and its survey. [https://github.com/woocommerce/woocommerce-ios/pull/17569]
+- [Internal] Alpha and local development builds now report crashes to a separate Sentry project. [https://github.com/woocommerce/woocommerce-ios/pull/17652]
+- [*] Login: Fixed a navigation bar flicker when opening the QR login screen. [https://github.com/woocommerce/woocommerce-ios/pull/17635]
+
+25.3
+-----
+- [*] Dashboard: Fixed a crash on the store performance card when a store returns stats with an invalid date. [https://github.com/woocommerce/woocommerce-ios/pull/17628]
+- [Internal] Mitigate a potential navigation crash when opening products from search results. [https://github.com/woocommerce/woocommerce-ios/pull/17645]
+- [Internal] Prevent offline banner updates from overlapping navigation transitions. [https://github.com/woocommerce/woocommerce-ios/pull/17611]
+- [Internal] Send a persistent device id in remote feature flag requests so logins without a WordPress.com account are included in progressive rollouts. [https://github.com/woocommerce/woocommerce-ios/pull/17605]
+- [*] Payments: fixed successful in-person payments appearing to fail when the capture response is interrupted. [https://github.com/woocommerce/woocommerce-ios/pull/17593]
+- [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/17548]
+- [*] Fixed products failing to load when a plugin returns null for a product's categories, tags, images, or other list fields. [https://github.com/woocommerce/woocommerce-ios/pull/17545]
+- [*] Fixed a crash when undoing pasted product tags containing tabs or extra whitespace. [https://github.com/woocommerce/woocommerce-ios/pull/17592]
+- [*] Point of Sale: once the local catalog has fully synced, POS opens instantly without waiting on network checks and also works offline. [https://github.com/woocommerce/woocommerce-ios/pull/17498]
+- [*] Order Creation: fixed custom amount fields losing entered values and keyboard focus after rotating an iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17550]
+- [Internal] Reduce app binary size by converting the Tap to Pay education artwork to PNGs (~45 MB smaller compiled asset catalog). [https://github.com/woocommerce/woocommerce-ios/pull/17560]
+- [*] Fixed product saves replacing shortcode-based short descriptions with their rendered output. [https://github.com/woocommerce/woocommerce-ios/pull/17543]
+- [*] Order Creation: Fixed Collect Payment not opening payment methods after creating an order on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17552]
+- [*] Fixed RTL currency values showing the currency symbol and minus sign in the wrong order. [https://github.com/woocommerce/woocommerce-ios/pull/17547]
+- [*] Improved widget display at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/17559]
+- [*] In-Person Payments: Corrected the casing of "Pay In Person" and removed the quote marks around it. [https://github.com/woocommerce/woocommerce-ios/pull/17564]
+- [*] Product duplication now uses WooCommerce's built-in copy flow when available, with compatibility support for older stores. [https://github.com/woocommerce/woocommerce-ios/pull/17553]
+- [*] Product details now refresh when you reopen a product, so review counts, price, and other fields stay up to date without restarting the app. [https://github.com/woocommerce/woocommerce-ios/pull/17546]
+- [*] Fixed the tax information "Learn more" link being cramped and poorly wrapped in the order form at larger Dynamic Type sizes. [https://github.com/woocommerce/woocommerce-ios/pull/17604]
+
 25.2
 -----
+- [Internal] Remove redundant API requests from orders pull-to-refresh and the order creation product selector. [https://github.com/woocommerce/woocommerce-ios/pull/17494]
+- [*] The "Report Crashes" privacy setting is now saved to your WordPress.com account, so it persists across devices and reinstalls. [https://github.com/woocommerce/woocommerce-ios/pull/17473]
+- [*] Shipping Labels: Prevent skipping phone number validation when confirming an address by tapping too quickly. [https://github.com/woocommerce/woocommerce-ios/pull/17478]
 - [*] Fixed the card reader connection Cancel button being too small to tap in landscape on iPhone. [https://github.com/woocommerce/woocommerce-ios/pull/17437]
 - [Internal] Updated Automattic Tracks to 4.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/17432]
+- [*] Fix duplicated products reusing the original product's slug, which could make the storefront preview open the wrong product. [https://github.com/woocommerce/woocommerce-ios/pull/17436]
 - [Internal] Fix `push_notification_source` being logged as `wpcom` instead of `woo_driven` for Woo-driven notifications. [https://github.com/woocommerce/woocommerce-ios/pull/17463]
+- [*] Fixed non-subscription products incorrectly showing recurring subscription pricing in the product editor. [https://github.com/woocommerce/woocommerce-ios/pull/17475]
+- [*] Payments: Fixed the In-Person Payments Learn more footer text showing text selection controls. [https://github.com/woocommerce/woocommerce-ios/pull/17481]
+- [Internal] POS: Order list and search responses no longer include order metadata, reducing memory use on stores with metadata-heavy plugins. [https://github.com/woocommerce/woocommerce-ios/pull/17489]
+- [*] POS: Refunded order details now show a loading state until refund details are ready, instead of briefly rendering incomplete item lists; refund link buttons are also easier to read in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17483]
 
+25.1.2
+------
+- [*] Fixed a crash that could occur when showing the notification badge on the Menu tab on iOS versions below 26. [https://github.com/woocommerce/woocommerce-ios/pull/17583]
+
+25.1.1
+------
+- [*] Fixed Collect Payment from order creation closing without opening the payment method flow on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17557]
 
 25.1
 -----
+- [Internal] Track Woo push token deletion results (woo_push_token_delete_success/error). [https://github.com/woocommerce/woocommerce-ios/pull/17477]
+- [Internal] Push notifications: migrate stores back to WordPress.com notifications when the self-driven push feature is turned off. [https://github.com/woocommerce/woocommerce-ios/pull/17472]
 - [*] Order creation product search: the Products/SKU filter now appears below the search bar while you're searching, making SKU search easier to find. [https://github.com/woocommerce/woocommerce-ios/pull/17375]
 - [Internal] Parse all network responses off the main thread to keep the UI responsive on large payloads. [https://github.com/woocommerce/woocommerce-ios/pull/17402]
 - [*] Payments: the balance summary now shows Total balance (available + pending funds) and Available funds [https://github.com/woocommerce/woocommerce-ios/pull/17404]
@@ -25,6 +76,7 @@
 - [*] Add support for Liquid Glass on iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/17337]
 - [*] Order Creation: fixed visual issues with screen layout [https://github.com/woocommerce/woocommerce-ios/pull/17346]
 - [internal] Make API request parameters Sendable [https://github.com/woocommerce/woocommerce-ios/pull/17370]
+- [*] POS: Allow disconnecting a card reader from cash payment, payment success, and email receipt screens. [https://github.com/woocommerce/woocommerce-ios/pull/17454]
 - [*] POS: Fixed discarded card reader checkout orders appearing in Orders until refresh. [https://github.com/woocommerce/woocommerce-ios/pull/17357]
 - [*] POS: Fixed new orders on iPad returning to the previous variation selector instead of the root product list. [https://github.com/woocommerce/woocommerce-ios/pull/17356]
 - [Internal] Improved site-credential login nonce retrieval by handling redirects explicitly, reducing HTTP 429 failures during login. [https://github.com/woocommerce/woocommerce-ios/pull/17376]

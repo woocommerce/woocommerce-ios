@@ -1,13 +1,22 @@
 import Foundation
 import enum Yosemite.SubscriptionPeriod
+import enum Yosemite.ProductType
 
 extension ProductFormDataModel {
 
+    /// Whether to treat this product as a subscription for display purposes.
+    var isSubscriptionProduct: Bool {
+        productType.isSubscription
+    }
+
     /// Returns the formatted subscription period info in readable text.
-    /// Returns nil if the product does not have subscription info.
+    /// Returns nil if the product is not a subscription or does not have subscription info.
     ///
     var subscriptionPeriodDescription: String? {
-        subscription.map { String.formatSubscriptionPeriodDescription(period: $0.period, interval: $0.periodInterval) }
+        guard isSubscriptionProduct else {
+            return nil
+        }
+        return subscription.map { String.formatSubscriptionPeriodDescription(period: $0.period, interval: $0.periodInterval) }
     }
 }
 

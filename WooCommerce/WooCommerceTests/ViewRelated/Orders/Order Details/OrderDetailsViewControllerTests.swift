@@ -225,15 +225,6 @@ private struct OrderDetailStoreManagerFactory {
             }
         }
 
-        storesManager.whenReceivingAction(ofType: ReceiptAction.self) { action in
-            switch action {
-            case let .loadReceipt(_, onCompletion):
-                onCompletion(.success(.fake()))
-            default:
-                break
-            }
-        }
-
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadOrderAddOnsSwitchState(onCompletion):

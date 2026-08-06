@@ -150,6 +150,7 @@ struct ItemListRow: View {
             }, label: {
                 CouponCardView(coupon: coupon)
             })
+            .accessibilityIdentifier("pos-coupon-card-\(coupon.id.itemID)")
         }
     }
 }

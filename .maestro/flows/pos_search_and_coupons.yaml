@@ -1,0 +1,70 @@
+# p2: pos.search-products, pos.coupons
+# Prerequisites: an authenticated, genuinely POS-eligible store on an iPad,
+# at least one purchasable product, and at least one active coupon.
+appId: ${APP_ID}
+name: "POS - Search, products, cart, and coupons"
+tags:
+  - flaky_quarantine
+  - pos_ipad
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- tapOn:
+    id: tab-bar-pos-item
+- extendedWaitUntil:
+    visible:
+      id: "pos-product-card-.*|pos-ineligible-view"
+    timeout: 90000
+- assertNotVisible:
+    id: pos-ineligible-view
+- assertVisible:
+    id: "pos-product-card-.*"
+
+# Derive the search from the live catalog instead of requiring fixture names.
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "pos-product-card-.*"
+    index: 0
+- evalScript: ${output.posProductName = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.posProductName.length > 0}
+    label: First live POS product exposes a searchable name
+- tapOn:
+    id: pos-search-button
+- assertVisible:
+    id: pos-search-field
+- tapOn:
+    id: pos-search-field
+- evalScript: ${output.clipboardText = output.posProductName}
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+- extendedWaitUntil:
+    visible:
+      text: ${output.posProductName}
+      childOf:
+        id: "pos-product-card-.*"
+    timeout: 30000
+- tapOn:
+    id: "pos-product-card-.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"
+    timeout: 30000
+
+# Apply an actual live-store coupon and prove it reaches the cart.
+- tapOn: Coupons
+- extendedWaitUntil:
+    visible:
+      id: "pos-coupon-card-.*"
+    timeout: 30000
+- tapOn:
+    id: "pos-coupon-card-.*"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "pos-cart-coupon-.*"
+    timeout: 30000
+- assertVisible:
+    id: pos-checkout-button
+- takeScreenshot: pos_product_and_coupon_cart

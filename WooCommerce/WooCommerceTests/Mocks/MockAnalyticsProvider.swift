@@ -25,6 +25,7 @@ public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTrac
     var userID: String?
     var userOptedIn = true
     var defersRefreshUserDataCompletion = false
+    private(set) var refreshUserDataCallCount = 0
     private var refreshUserDataCompletion: (() -> Void)?
 }
 
@@ -33,6 +34,7 @@ public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTrac
 public extension MockAnalyticsProvider {
 
     func refreshUserData(completion: @escaping () -> Void) {
+        refreshUserDataCallCount += 1
         userID = "aGeneratedUserGUID"
         if defersRefreshUserDataCompletion {
             refreshUserDataCompletion = completion

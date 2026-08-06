@@ -116,7 +116,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        XCTAssertEqual(productRow?.productRow.totalPriceAfterProductDiscountLabel, "€16.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceQuantityLine, "2 × €8.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceBeforeDiscountsLabel, "€16.00")
     }
 
     func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_variation_row_with_request_currency() {
@@ -149,7 +150,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
 
         // Then
-        XCTAssertEqual(productRow?.productRow.totalPriceAfterProductDiscountLabel, "€16.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceQuantityLine, "2 × €8.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceBeforeDiscountsLabel, "€16.00")
     }
 
     // MARK: - Navigation

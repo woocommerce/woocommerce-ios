@@ -12,6 +12,8 @@ from pathlib import Path
 ID_RE = re.compile(r"^\s*-\s+id:\s*([A-Za-z0-9_.-]+)\s*$")
 FLOW_RE = re.compile(r"^\s+flow:\s*(.+?)\s*$")
 MANUAL_RE = re.compile(r"^\s+manual:\s*(.+?)\s*$")
+FIDELITY_RE = re.compile(r"^\s+fidelity:\s*(.+?)\s*$")
+GAP_RE = re.compile(r"^\s+gap:\s*(.+?)\s*$")
 P2_RE = re.compile(r"^#\s*p2:\s*(.+?)\s*$")
 
 
@@ -37,6 +39,13 @@ def parse_snapshot(path: Path) -> tuple[dict[str, dict[str, str]], set[str]]:
         if manual_match:
             items[current]["manual"] = manual_match.group(1).strip().strip('"')
             continue
+        fidelity_match = FIDELITY_RE.match(line)
+        if fidelity_match:
+            items[current]["fidelity"] = fidelity_match.group(1).strip().strip('"')
+            continue
+        gap_match = GAP_RE.match(line)
+        if gap_match:
+            items[current]["gap"] = gap_match.group(1).strip().strip('"')
     return items, duplicates
 
 
@@ -72,6 +81,16 @@ def main() -> int:
             errors.append(f"{args.coverage}: item {item_id} has both flow and manual reason")
         elif not has_flow and not has_manual:
             errors.append(f"{args.coverage}: item {item_id} has neither flow nor manual reason")
+        elif has_flow:
+            fidelity = data.get("fidelity", "full")
+            if fidelity not in {"full", "partial"}:
+                errors.append(f"{args.coverage}: item {item_id} has unknown fidelity {fidelity!r}")
+            elif fidelity == "partial" and not data.get("gap"):
+                errors.append(f"{args.coverage}: partial item {item_id} has no gap explanation")
+            elif fidelity == "full" and data.get("gap"):
+                errors.append(f"{args.coverage}: full item {item_id} must not declare a gap")
+        elif data.get("fidelity") or data.get("gap"):
+            errors.append(f"{args.coverage}: manual item {item_id} must not declare flow fidelity")
 
     known_ids = set(items)
     for flow, ids in flow_headers.items():
@@ -93,7 +112,13 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    print(f"Coverage snapshot OK: {len(items)} items, {len(flow_headers)} flows")
+    full = sum(1 for data in items.values() if data.get("flow") and data.get("fidelity", "full") == "full")
+    partial = sum(1 for data in items.values() if data.get("flow") and data.get("fidelity") == "partial")
+    manual = sum(1 for data in items.values() if data.get("manual"))
+    print(
+        f"Coverage snapshot OK: {len(items)} items, {len(flow_headers)} flows "
+        f"({full} full, {partial} partial, {manual} manual)"
+    )
     return 0
 
 

@@ -96,3 +96,7 @@ python3 .maestro/scripts/check-smoke-coverage.py
 python3 -m unittest discover .maestro/scripts/tests
 bash -n .maestro/scripts/*.sh
 ```
+
+The coverage checker reports full, partial, and manual item counts separately.
+A flow-backed partial item must document its exact gap in
+`smoke-coverage.yaml`; its existence is not treated as complete P2 coverage.

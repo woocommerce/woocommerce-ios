@@ -1,0 +1,68 @@
+# p2: orders.list, orders.pagination, orders.search
+# Prerequisite: the live store has enough orders to expose additional rows.
+appId: ${APP_ID}
+name: "Orders - List, pagination, and search"
+tags:
+  - smoke_core
+  - orders
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_orders.yaml
+- assertVisible:
+    id: "orders-table-view"
+
+# Capture the first live order title (for example, "#560 Pamela Nguyen").
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "orders-table-view"
+    index: 0
+- evalScript: ${output.initialOrderTitle = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.initialOrderTitle.startsWith('#')}
+    label: First live order row exposes an order number
+- evalScript: ${output.orderSearchText = output.initialOrderTitle.split(' ')[0].replace('#', '')}
+- takeScreenshot: orders_list
+
+# Moving to another live row proves the list is scrollable and populated past
+# its initial viewport. Stores without enough orders fail as a prerequisite.
+- scroll
+- scroll
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "orders-table-view"
+    index: 0
+- evalScript: ${output.afterScrollOrderTitle = String(maestro.copiedText || '').trim()}
+- assertTrue:
+    condition: ${output.afterScrollOrderTitle.length > 0 && output.afterScrollOrderTitle !== output.initialOrderTitle}
+    label: Orders list exposes an additional row after scrolling
+- takeScreenshot: orders_list_scrolled
+
+- tapOn:
+    id: "order-search-button"
+- extendedWaitUntil:
+    visible:
+      id: "order-search-screen-search-field"
+    timeout: 15000
+- tapOn:
+    id: "order-search-screen-search-field"
+- evalScript: ${output.clipboardText = output.orderSearchText}
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+- pressKey: Enter
+- extendedWaitUntil:
+    visible:
+      id: "updated-search-results-table-view"
+    timeout: 30000
+- assertVisible:
+    text: "#${output.orderSearchText}.*"
+    childOf:
+      id: "updated-search-results-table-view"
+- takeScreenshot: orders_search_results
+- tapOn:
+    id: "order-search-screen-cancel-button"
+- assertVisible:
+    id: "orders-table-view"

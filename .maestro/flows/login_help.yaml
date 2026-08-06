@@ -1,0 +1,45 @@
+# p2: login.help
+# Verifies the pre-login help action reaches the native Help screen.
+appId: ${APP_ID}
+name: "Login - Help section"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- extendedWaitUntil:
+    visible:
+      id: "Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+- runFlow:
+    when:
+      visible:
+        id: "Login Onboarding Skip Button"
+    commands:
+      - tapOn:
+          id: "Login Onboarding Skip Button"
+- extendedWaitUntil:
+    visible:
+      id: "prologue-title-label"
+    timeout: 15000
+- tapOn:
+    id: "Prologue Self Hosted Button"
+- runFlow:
+    when:
+      visible: "No computer? Log in with site address"
+    commands:
+      - tapOn: "No computer? Log in with site address"
+- extendedWaitUntil:
+    visible:
+      id: "authenticator-help-button"
+    timeout: 15000
+- tapOn:
+    id: "authenticator-help-button"
+- extendedWaitUntil:
+    visible: "Help"
+    timeout: 20000
+- assertVisible: "Contact Support"
+- takeScreenshot: login_help

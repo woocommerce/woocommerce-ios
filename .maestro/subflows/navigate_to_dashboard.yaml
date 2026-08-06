@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "tab-bar-my-store-item"
+- extendedWaitUntil:
+    visible:
+      id: "performance-time-range-menu"
+    timeout: 30000

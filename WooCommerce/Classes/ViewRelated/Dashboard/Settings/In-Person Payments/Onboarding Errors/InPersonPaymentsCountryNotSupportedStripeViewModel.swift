@@ -20,7 +20,8 @@ struct InPersonPaymentsCountryNotSupportedStripeViewModel {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "We don’t support In‑Person Payments with Stripe in %1$@",
+        "inPersonPayments.countryNotSupportedStripe.title",
+        value: "We don’t support card In‑Person Payments with Stripe in %1$@",
         comment: """
                  Title for the error screen when In-Person Payments is not supported in a specific country
                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -29,7 +30,8 @@ private enum Localization {
     )
 
     static let titleUnknownCountry = NSLocalizedString(
-        "We don’t support In‑Person Payments with Stripe in your country",
+        "inPersonPayments.countryNotSupportedStripe.titleUnknownCountry",
+        value: "We don’t support card In‑Person Payments with Stripe in your country",
         comment: """
                  Title for the error screen when In-Person Payments is not supported because we don't know the name of the country
                  The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).

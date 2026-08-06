@@ -13,6 +13,7 @@ struct InPersonPaymentsCountryNotSupportedViewModelsTests {
         let expectedCountryName = try #require(Locale.current.localizedString(forRegionCode: "ES"))
 
         // Then
+        #expect(sut.title.contains("card In‑Person Payments"))
         #expect(sut.title.contains(expectedCountryName))
     }
 
@@ -21,6 +22,7 @@ struct InPersonPaymentsCountryNotSupportedViewModelsTests {
         let sut = InPersonPaymentsCountryNotSupportedViewModel(countryCode: .unknown, analyticReason: "")
 
         // Then
+        #expect(sut.title.contains("card In‑Person Payments"))
         #expect(sut.title.contains("your country"))
         #expect(!sut.title.contains("%1$@"))
     }
@@ -31,6 +33,7 @@ struct InPersonPaymentsCountryNotSupportedViewModelsTests {
         let expectedCountryName = try #require(Locale.current.localizedString(forRegionCode: "ES"))
 
         // Then
+        #expect(sut.title.contains("card In‑Person Payments"))
         #expect(sut.title.contains(expectedCountryName))
         #expect(sut.title.contains("Stripe"))
     }
@@ -40,6 +43,7 @@ struct InPersonPaymentsCountryNotSupportedViewModelsTests {
         let sut = InPersonPaymentsCountryNotSupportedStripeViewModel(countryCode: .unknown, analyticReason: "")
 
         // Then
+        #expect(sut.title.contains("card In‑Person Payments"))
         #expect(sut.title.contains("your country"))
         #expect(!sut.title.contains("%1$@"))
     }

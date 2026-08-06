@@ -14,6 +14,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import time
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
@@ -28,6 +29,11 @@ ENV_FILE = MAESTRO_DIR / ".env.local"
 CONFIG_FILE = MAESTRO_DIR / "config.yaml"
 LINT_ENV = SCRIPT_DIR / "lint-env.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
+NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
+NOT_WOO_STORE_WPCOM_FALLBACK = {
+    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
+    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
+}
 
 PROFILES = {
     "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], 1, "iphone"),
@@ -230,7 +236,10 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
             continue
         visited.add(path)
         text = path.read_text(errors="replace")
-        required.update(ENV_REFERENCE_RE.findall(text))
+        references = set(ENV_REFERENCE_RE.findall(text))
+        if path.name == NOT_WOO_STORE_FLOW:
+            references.difference_update(NOT_WOO_STORE_WPCOM_FALLBACK)
+        required.update(references)
         for reference in SUBFLOW_REFERENCE_RE.findall(text):
             paths.append((path.parent / reference).resolve())
     if seed:
@@ -242,6 +251,10 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
     missing = sorted(name for name in required_environment(flows, seed=seed) if not values.get(name))
     if missing:
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
+    if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
+        configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
+        if any(configured_fallback) and not all(configured_fallback):
+            raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
 
 
 def maestro_env_args(values: dict[str, str], app_id: str, run_id: str) -> list[str]:
@@ -261,6 +274,14 @@ def redact(text: str, values: dict[str, str]) -> str:
     for value in sorted(set(secrets_to_hide), key=len, reverse=True):
         text = text.replace(value, "<redacted>")
     return text
+
+
+def flow_status(returncodes: list[int]) -> str:
+    if not returncodes or returncodes[-1] != 0:
+        return "FAIL"
+    if len(returncodes) > 1:
+        return "FLAKY"
+    return "PASS"
 
 
 def sanitize_artifacts(root: Path, values: dict[str, str], *, remove_images: bool = False) -> None:
@@ -360,13 +381,30 @@ def main() -> int:
 
     if args.seed:
         seed = SCRIPT_DIR / "seed-fixtures.py"
+        print("--- Seeding deterministic fixtures", flush=True)
         run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=values)
 
     attempts: list[Attempt] = []
     env_args = maestro_env_args(values, app_id, run_id)
+    total_runs = len(flows) * repeat
+    suite_started = time.monotonic()
+    run_index = 0
+    statuses: list[str] = []
+    print("--- Running Maestro flows", flush=True)
+    print(f"Run ID:       {run_id}", flush=True)
+    print(f"Profile:      {args.profile}", flush=True)
+    print(f"Simulator:    {simulator['name']} ({simulator['udid']})", flush=True)
+    print(f"Output:       {output}", flush=True)
+    print(f"Repeat:       {repeat}", flush=True)
+    print(f"Include tags: {','.join(include) or '<none>'}", flush=True)
+    print(f"Exclude tags: {','.join(exclude) or '<none>'}", flush=True)
     try:
         for repetition in range(1, repeat + 1):
             for flow in flows:
+                run_index += 1
+                flow_started = time.monotonic()
+                flow_returncodes: list[int] = []
+                print(f"[{run_index}/{total_runs}] {flow.stem} (repeat {repetition}/{repeat})", flush=True)
                 for attempt_number in (1, 2):
                     prefix = f"r{repetition:02d}-{flow.stem}-a{attempt_number}"
                     junit = output / f"{prefix}.xml"
@@ -383,8 +421,15 @@ def main() -> int:
                     sanitize_artifacts(screenshot_dir, values, remove_images=is_login)
                     sanitize_artifacts(junit.parent, values)
                     attempts.append(Attempt(flow, repetition, attempt_number, completed.returncode, junit, log, debug))
+                    flow_returncodes.append(completed.returncode)
                     if completed.returncode == 0:
                         break
+                    if attempt_number == 1:
+                        print("  first attempt failed; retrying once", flush=True)
+                status = flow_status(flow_returncodes)
+                statuses.append(status)
+                duration = round(time.monotonic() - flow_started)
+                print(f"  {status} in {duration}s", flush=True)
     finally:
         if args.seed and not args.no_cleanup:
             run([sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "cleanup", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], check=False, env=values)
@@ -393,12 +438,20 @@ def main() -> int:
     for attempt in attempts:
         final_by_flow_run[(attempt.flow, attempt.repeat)] = attempt
     report_attempts = list(final_by_flow_run.values())
+    print("--- Generating reports", flush=True)
     tests, failures, skipped = write_combined_junit(report_attempts, output / "report.xml")
     write_html(output / "report.html", run_id=run_id, app=app, app_id=app_id, simulator=simulator, profile=args.profile, attempts=attempts, tests=tests, failures=failures, skipped=skipped)
     sanitize_artifacts(output, values)
+    passed = statuses.count("PASS")
+    flaky = statuses.count("FLAKY")
+    failed = statuses.count("FAIL")
+    suite_duration = round(time.monotonic() - suite_started)
     print(f"Maestro artifacts: {output}")
+    print(f"Report: {output / 'report.html'}")
+    print(f"JUnit:  {output / 'report.xml'}")
     print(f"Simulator: {simulator['name']} ({simulator['udid']})")
     print(f"Bundle identifier: {app_id}")
+    print(f"Result: {passed} passed, {flaky} flaky, {failed} failed out of {total_runs} executions ({suite_duration}s)")
     print(f"Final results: {tests} tests, {failures} failures, {skipped} skipped")
     return 1 if any(attempt.returncode for attempt in report_attempts) else 0
 

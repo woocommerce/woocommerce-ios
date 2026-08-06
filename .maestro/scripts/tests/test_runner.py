@@ -20,6 +20,11 @@ class RunnerTests(unittest.TestCase):
         values = {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": "do-not-print"}
         self.assertEqual("failure: <redacted>", RUNNER.redact("failure: do-not-print", values))
 
+    def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
+        self.assertEqual("PASS", RUNNER.flow_status([0]))
+        self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))
+        self.assertEqual("FAIL", RUNNER.flow_status([1, 1]))
+
     def test_profile_contract(self) -> None:
         self.assertEqual("iphone", RUNNER.PROFILES["core"][3])
         self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][3])
@@ -67,6 +72,34 @@ class RunnerTests(unittest.TestCase):
             required = RUNNER.required_environment([flow], seed=False)
             self.assertIn("MAESTRO_WOO_VARIABLE_PRODUCT_NAME", required)
             self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", required)
+
+    def test_not_woo_store_requires_site_admin_credentials_only(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
+
+        required = RUNNER.required_environment([flow], seed=False)
+
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_URL", required)
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME", required)
+        self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD", required)
+        self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL", required)
+        self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD", required)
+        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_EMAIL", required)
+        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_PASSWORD", required)
+
+    def test_not_woo_store_wpcom_fallback_must_be_complete(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
+        values = {
+            "MAESTRO_WOO_NOT_A_WOO_STORE_URL": "https://example.com",
+            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME": "admin",
+            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD": "password",
+            "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL": "merchant@example.com",
+        }
+
+        with self.assertRaisesRegex(SystemExit, "requires both email and password"):
+            RUNNER.validate_environment([flow], values, seed=False)
+
+        values.pop("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL")
+        RUNNER.validate_environment([flow], values, seed=False)
 
     def test_seed_explicitly_requires_consumer_keys(self) -> None:
         required = RUNNER.required_environment([], seed=True)

@@ -171,7 +171,7 @@ struct POSServerRefundPreviewUseCaseTests {
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then the server flow stays enabled for the session; only `rest_no_route` may disable it.
-        #expect(result == .error)
+        #expect(isError(result))
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
 
@@ -184,7 +184,7 @@ struct POSServerRefundPreviewUseCaseTests {
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
-        #expect(result == .error)
+        #expect(isError(result))
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
 
@@ -212,7 +212,7 @@ struct POSServerRefundPreviewUseCaseTests {
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
-        #expect(result == .error)
+        #expect(isError(result))
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
 }
@@ -233,17 +233,26 @@ private extension POSServerRefundPreviewUseCaseTests {
         let service = MockRefundService()
         service.previewRefundResult = previewResult
         let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posRefundsV4: flagEnabled]
+        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let sut = POSServerRefundPreviewUseCase(refundService: service,
-                                            stores: stores,
-                                            featureFlagService: flags,
-                                            availabilityCache: cache,
-                                            minimumWooVersion: "11.1.0")
+                                                flowResolver: POSRefundFlowResolver(stores: stores,
+                                                                                    featureFlagService: flags,
+                                                                                    availabilityCache: cache,
+                                                                                    minimumWooVersion: "11.1.0"),
+                                                availabilityCache: cache)
         return (sut, service, stores)
     }
 
     func lineItem() -> RefundPreviewLineItem {
         .quantityBased(lineItemID: 10, quantity: 1)
+    }
+
+    /// `.error` carries the underlying error for logging, so match on the case rather than a value.
+    func isError(_ result: POSServerRefundPreviewUseCase.Result) -> Bool {
+        if case .error = result {
+            return true
+        }
+        return false
     }
 
     func preview() -> RefundPreview {

@@ -16,6 +16,9 @@ final class ServerRefundAvailabilityCache {
 
     init() {}
 
+    // The siteID > 0 guards are deliberate: 0 is the placeholder when no site is selected,
+    // and a verdict recorded under it would answer for every session in that state.
+    // Returning nil means unknown, which fails closed to the local flow.
     func isAvailable(siteID: Int64) -> Bool? {
         guard siteID > 0 else {
             return nil

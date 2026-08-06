@@ -84,9 +84,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
         case .pointOfSaleTapToPay:
-            // Behind the flag while the TTP integration lands. localDeveloper-only so
-            // alpha and beta keep showing only Cash + Card reader for now.
-            return buildConfig == .localDeveloper
+            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:
@@ -105,7 +103,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .posRefundsV4:
+        case .posServerCalculatedRefunds:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

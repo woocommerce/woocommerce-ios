@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Yosemite
 import Experiments
@@ -15,13 +16,17 @@ import enum NetworkingCore.NetworkError
 @MainActor
 final class POSServerRefundPreviewUseCase {
 
-    enum Result: Equatable {
+    enum Result {
         case serverCalculated(RefundPreview)
         case fallbackToLocal
         /// The server rejected the requested refund with an actionable code (for example the
         /// order changed since the screen was loaded); the rejection carries cashier-facing copy.
         case rejected(RefundAPIError)
-        case error
+        /// The preview failed for a reason with no cashier-facing mapping: a transport failure, or
+        /// a server error whose code we do not recognise. The error is carried so the cause is
+        /// attributable in logs rather than collapsing every failure into one indistinguishable
+        /// state.
+        case error(Error)
     }
 
     private let refundService: RefundServiceProtocol
@@ -34,19 +39,6 @@ final class POSServerRefundPreviewUseCase {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
-    }
-
-    convenience init(refundService: RefundServiceProtocol,
-                     stores: StoresManager = ServiceLocator.stores,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     availabilityCache: ServerRefundAvailabilityCache = .shared,
-                     minimumWooVersion: String = POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds) {
-        self.init(refundService: refundService,
-                  flowResolver: POSRefundFlowResolver(stores: stores,
-                                                      featureFlagService: featureFlagService,
-                                                      availabilityCache: availabilityCache,
-                                                      minimumWooVersion: minimumWooVersion),
-                  availabilityCache: availabilityCache)
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
@@ -65,9 +57,11 @@ final class POSServerRefundPreviewUseCase {
                 return .fallbackToLocal
             }
             if let rejection = RefundAPIError(error) {
+                DDLogWarn("POS refund preview rejected for order \(orderID): \(rejection)")
                 return .rejected(rejection)
             }
-            return .error
+            DDLogError("⛔️ POS refund preview failed for order \(orderID): \(error)")
+            return .error(error)
         }
     }
 
@@ -79,5 +73,24 @@ final class POSServerRefundPreviewUseCase {
             return true
         }
         return false
+    }
+}
+
+extension POSServerRefundPreviewUseCase.Result: Equatable {
+    /// Two failures compare equal regardless of the underlying error: the payload is carried for
+    /// logging, not to distinguish one failure from another.
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case let (.serverCalculated(lhsPreview), .serverCalculated(rhsPreview)):
+            return lhsPreview == rhsPreview
+        case (.fallbackToLocal, .fallbackToLocal):
+            return true
+        case let (.rejected(lhsRejection), .rejected(rhsRejection)):
+            return lhsRejection == rhsRejection
+        case (.error, .error):
+            return true
+        default:
+            return false
+        }
     }
 }

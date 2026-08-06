@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pos-exclamation-mark.pdf",
+      "filename" : "pos-exclamation-mark-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-exclamation-mark-dark.pdf",
       "idiom" : "universal"
     }
   ],

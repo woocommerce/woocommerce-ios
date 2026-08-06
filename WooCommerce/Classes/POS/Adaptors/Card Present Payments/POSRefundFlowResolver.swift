@@ -16,7 +16,7 @@ enum POSRefundFlow: Equatable {
 /// Decides which refund calculation flow a site is eligible for.
 ///
 /// `serverComputed` requires all of:
-/// - the `posRefundsV4` feature flag (the name predates the port of the endpoints to `/wc/v3`),
+/// - the `posServerCalculatedRefunds` feature flag,
 /// - the site not being cached as unavailable (a preview already returned `rest_no_route`),
 /// - a cached WooCommerce version that is known and at least
 ///   ``Constants/minimumWooVersionForServerRefunds``; an unknown version fails closed to
@@ -39,10 +39,12 @@ struct POSRefundFlowResolver {
     private let availabilityCache: ServerRefundAvailabilityCache
     private let minimumWooVersion: String
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         availabilityCache: ServerRefundAvailabilityCache = .shared,
-         minimumWooVersion: String = Constants.minimumWooVersionForServerRefunds) {
+    // Every dependency is explicit (no defaults) so a missing one is a compile error
+    // rather than a silently picked service, per review.
+    init(stores: StoresManager,
+         featureFlagService: FeatureFlagService,
+         availabilityCache: ServerRefundAvailabilityCache,
+         minimumWooVersion: String) {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.availabilityCache = availabilityCache
@@ -50,7 +52,7 @@ struct POSRefundFlowResolver {
     }
 
     func resolveFlow(siteID: Int64) -> POSRefundFlow {
-        guard featureFlagService.isFeatureFlagEnabled(.posRefundsV4) else {
+        guard featureFlagService.isFeatureFlagEnabled(.posServerCalculatedRefunds) else {
             return .localComputed
         }
         guard availabilityCache.isAvailable(siteID: siteID) != false else {

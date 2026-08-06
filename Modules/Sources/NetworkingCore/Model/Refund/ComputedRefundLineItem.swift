@@ -26,22 +26,21 @@ public struct ComputedRefundLineItem: Encodable, Equatable {
     }
 
     /// A product line refunded by quantity; the server calculates the refunded totals and taxes.
+    /// `refundTotal` is deliberately nil: the synthesized encoding omits it from the payload
+    /// entirely, which is how the API distinguishes a quantity-based line.
     public static func quantityBased(lineItemID: Int64, quantity: Decimal) -> ComputedRefundLineItem {
         ComputedRefundLineItem(lineItemID: lineItemID, quantity: quantity, refundTotal: nil)
     }
 
     /// A fee or shipping line refunded by a tax-inclusive amount.
+    /// `quantity` is deliberately nil: the synthesized encoding omits it from the payload
+    /// entirely, which is how the API distinguishes an amount-based line.
     public static func amountBased(lineItemID: Int64, refundTotal: Decimal) -> ComputedRefundLineItem {
         ComputedRefundLineItem(lineItemID: lineItemID, quantity: nil, refundTotal: refundTotal)
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(lineItemID, forKey: .lineItemID)
-        try container.encodeIfPresent(quantity, forKey: .quantity)
-        try container.encodeIfPresent(refundTotal, forKey: .refundTotal)
-    }
-
+    // Encoding is synthesized: optionals encode via `encodeIfPresent`, so a nil `quantity` or
+    // `refund_total` is omitted rather than sent as null.
     private enum CodingKeys: String, CodingKey {
         case lineItemID = "id"
         case quantity

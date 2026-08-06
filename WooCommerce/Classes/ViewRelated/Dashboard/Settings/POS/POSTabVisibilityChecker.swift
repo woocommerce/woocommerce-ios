@@ -147,8 +147,13 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
-        guard userInterfaceIdiom != .phone || countryCode == .GB else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+        // Phone POS is GB-only, except for US stores when the `woo_pos_phone_us` remote flag
+        // is enabled — WPCOM whitelists that flag to Automattic accounts so internal testers
+        // can use Tap to Pay on US stores ahead of a wider rollout (WOOMOB-3775).
+        if userInterfaceIdiom == .phone, countryCode != .GB {
+            guard countryCode == .US, await isPhonePointOfSaleUSRemoteFlagEnabled() else {
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+            }
         }
 
         // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
@@ -157,6 +162,19 @@ private extension POSTabVisibilityChecker {
         await expansionEligibilityRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
+    }
+
+    @MainActor
+    func isPhonePointOfSaleUSRemoteFlagEnabled() async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: false)
+            }
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.phonePointOfSaleUS, defaultValue: false) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            }
+            self.stores.dispatch(action)
+        }
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {

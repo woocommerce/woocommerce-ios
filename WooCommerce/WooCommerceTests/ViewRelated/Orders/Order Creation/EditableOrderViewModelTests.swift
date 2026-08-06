@@ -99,7 +99,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_product_row_with_request_currency() {
         // Given
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
@@ -110,7 +110,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                                        decimalSeparator: ".",
                                                                        numberOfDecimals: 2),
                                                requestCurrency: "EUR")
-        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 8)
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 8, subtotal: "16")
 
         // When
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
@@ -129,7 +129,8 @@ final class EditableOrderViewModelTests: XCTestCase {
                                           variations: [variationID])
         let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
                                                       productID: sampleProductID,
-                                                      productVariationID: variationID)
+                                                      productVariationID: variationID,
+                                                      price: "8")
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variation, on: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
@@ -144,7 +145,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderItem = OrderItem.fake().copy(productID: product.productID,
                                               variationID: variation.productVariationID,
                                               quantity: 2,
-                                              price: 8)
+                                              price: 8,
+                                              subtotal: "16")
 
         // When
         let productRow = viewModel.createProductRowViewModel(for: orderItem)
@@ -152,6 +154,82 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceQuantityLine, "2 × €8.00")
         XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceBeforeDiscountsLabel, "€16.00")
+    }
+
+    func test_addCustomAmountViewModel_when_request_currency_is_configured_then_formats_placeholder_with_request_currency() throws {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        let customAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+
+        // Then
+        let amountViewModel = try XCTUnwrap(customAmountViewModel.formattableAmountTextFieldViewModel)
+        XCTAssertEqual(amountViewModel.formattedAmount, "€0.00")
+    }
+
+    func test_addShippingLine_when_request_currency_is_configured_then_formats_placeholder_with_request_currency() throws {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        viewModel.shippingLineViewModel.addShippingLine()
+
+        // Then
+        let shippingDetails = try XCTUnwrap(viewModel.shippingLineViewModel.shippingLineDetails)
+        XCTAssertEqual(shippingDetails.formattableAmountViewModel.formattedAmount, "€0.00")
+    }
+
+    func test_setDiscountViewModel_when_request_currency_is_configured_then_formats_discount_fields_with_request_currency() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          price: "10",
+                                          purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let item = OrderItem.fake().copy(itemID: 17,
+                                         productID: sampleProductID,
+                                         quantity: 1,
+                                         price: 10,
+                                         subtotal: "10",
+                                         total: "10")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "EUR", items: [item])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        viewModel.setDiscountViewModel(item.itemID)
+        let discountDetails = try XCTUnwrap(viewModel.discountViewModel?.discountDetailsViewModel)
+        discountDetails.updateAmount("2")
+
+        // Then
+        XCTAssertEqual(discountDetails.currencySymbol, "€")
+        XCTAssertEqual(discountDetails.signedFinalAmountString, "-€2.00")
+        XCTAssertEqual(discountDetails.formattedPriceAfterDiscount, "€8.00")
     }
 
     // MARK: - Navigation

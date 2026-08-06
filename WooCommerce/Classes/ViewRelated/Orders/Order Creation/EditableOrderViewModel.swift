@@ -16,6 +16,7 @@ final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let orderCurrencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
@@ -486,6 +487,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.requestCurrency = requestCurrency
+        self.orderCurrencySettings = orderCurrencySettings
         self.currencyFormatter = CurrencyFormatter(currencySettings: orderCurrencySettings)
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID,
@@ -510,7 +512,10 @@ final class EditableOrderViewModel: ObservableObject {
                                                                    onAddressUpdate: nil)
         self.addressFormViewModel = addressFormViewModel
 
-        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID,
+                                                                        flow: flow,
+                                                                        orderSynchronizer: orderSynchronizer,
+                                                                        currencySettings: orderCurrencySettings)
         self.couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
@@ -611,7 +616,8 @@ final class EditableOrderViewModel: ObservableObject {
                                   name: rowViewModel.productRow.name,
                                   totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                  currencySettings: orderCurrencySettings)
     }
 
     /// Removes an item from the order.
@@ -1050,6 +1056,7 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 storeCurrencySettings: orderCurrencySettings,
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
 

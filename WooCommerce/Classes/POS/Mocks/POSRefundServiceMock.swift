@@ -55,4 +55,43 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       items: [],
                       shippingLines: [])
     }
+
+    func previewRefund(siteID: Int64,
+                       orderID: Int64,
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
+        try await previewRefund(siteID: siteID,
+                                orderID: orderID,
+                                lineItems: lineItems.map { legacyLineItem(from: $0) })
+    }
+
+    func createRefund(siteID: Int64,
+                      orderID: Int64,
+                      reason: String,
+                      automaticRefund: Bool,
+                      restockItems: Bool,
+                      amount: String?,
+                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+        try await createRefund(siteID: siteID,
+                               orderID: orderID,
+                               reason: reason,
+                               automaticRefund: automaticRefund,
+                               restockItems: restockItems,
+                               lineItems: lineItems.map { legacyLineItem(from: $0) })
+    }
+
+    /// The mock computes totals the same way for every generation of the request models,
+    /// so the v3 shapes are converted to the v4 one the computation helpers consume.
+    private func legacyLineItem(from lineItem: RefundPreviewLineItem) -> RefundV4LineItem {
+        if let quantity = lineItem.quantity {
+            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: quantity)
+        }
+        return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: lineItem.refundTotal ?? .zero)
+    }
+
+    private func legacyLineItem(from lineItem: ComputedRefundLineItem) -> RefundV4LineItem {
+        if let quantity = lineItem.quantity {
+            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: quantity)
+        }
+        return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: lineItem.refundTotal ?? .zero)
+    }
 }

@@ -1,0 +1,25 @@
+# p2: other.ios-push-long-press
+# External prerequisite: a Woo notification must already be delivered to this
+# simulator. Generating a real push is intentionally deferred from this stack.
+appId: ${APP_ID}
+name: "iOS system - Notification long press"
+tags:
+  - flaky_quarantine
+  - ios_system
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- stopApp
+- pressKey: HOME
+- swipe:
+    start: "50%,0%"
+    end: "50%,75%"
+    duration: 1000
+- extendedWaitUntil:
+    visible: "Woo.*"
+    timeout: 10000
+- longPressOn:
+    text: "Woo.*"
+    index: 0
+- assertVisible: View
+- assertVisible: "Woo.*"
+- takeScreenshot: ios_notification_long_press

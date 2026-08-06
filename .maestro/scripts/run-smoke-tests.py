@@ -57,6 +57,8 @@ ORDERED_FLOWS = [
 
 SECRET_NAME_RE = re.compile(r"(?:PASSWORD|SECRET|CONSUMER_KEY|TOKEN)", re.I)
 ENV_ASSIGNMENT_RE = re.compile(r"^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
+ENV_REFERENCE_RE = re.compile(r"\$\{(MAESTRO_[A-Z0-9_]+)\}")
+SUBFLOW_REFERENCE_RE = re.compile(r"(?:file:|runFlow:)\s*([^\s#]+\.ya?ml)")
 
 
 @dataclass
@@ -217,6 +219,31 @@ def normalized_store_host(value: str) -> str:
     return (parsed.hostname or "").lower().rstrip(".")
 
 
+def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
+    """Return selected-flow requirements without making optional REST keys global."""
+    paths = list(flows)
+    visited: set[Path] = set()
+    required = set()
+    while paths:
+        path = paths.pop().resolve()
+        if path in visited or not path.exists():
+            continue
+        visited.add(path)
+        text = path.read_text(errors="replace")
+        required.update(ENV_REFERENCE_RE.findall(text))
+        for reference in SUBFLOW_REFERENCE_RE.findall(text):
+            paths.append((path.parent / reference).resolve())
+    if seed:
+        required.update({"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"})
+    return required
+
+
+def validate_environment(flows: list[Path], values: dict[str, str], *, seed: bool) -> None:
+    missing = sorted(name for name in required_environment(flows, seed=seed) if not values.get(name))
+    if missing:
+        raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
+
+
 def maestro_env_args(values: dict[str, str], app_id: str, run_id: str) -> list[str]:
     exported = {name: value for name, value in values.items() if name.startswith("MAESTRO_") and value}
     lab_store_url = values.get("MAESTRO_WOO_LAB_JETPACK_STORE_URL", "")
@@ -310,9 +337,6 @@ def main() -> int:
     values = load_environment()
     app = args.app.expanduser().resolve()
     app_id = app_identifier(app)
-    simulator = resolve_simulator(args.device, family)
-    run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
-
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_id = f"SUITE-{stamp}-{secrets.token_hex(3)}"
     output_root = (args.output_dir or Path(values.get("WOO_MAESTRO_OUTPUT_DIR", OUTPUT_DEFAULT))).expanduser()
@@ -323,6 +347,9 @@ def main() -> int:
     (output / "logs").mkdir()
 
     flows = select_flows(args, include, exclude)
+    validate_environment(flows, values, seed=args.seed)
+    simulator = resolve_simulator(args.device, family)
+    run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
         "run_id": run_id, "profile": args.profile, "app": str(app), "app_id": app_id,
         "simulator_name": simulator["name"], "simulator_udid": simulator["udid"],

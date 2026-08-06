@@ -60,6 +60,12 @@ The lab store used by `phone-full` must be eligible for Inbox. The P2 lists
 Inbox as required hub coverage, so an absent `menu-inbox` fails the extended
 flow instead of being reported as a feature-gated skip.
 
+The destructive order-creation flow additionally requires exact names for one
+priced simple product, one priced variable product with an available variation,
+and an existing-customer search value. Configure them with the three
+`MAESTRO_WOO_*` fixture variables documented in `env.example`; the runner fails
+preflight rather than silently omitting those assertions.
+
 Validate traceability and static files with:
 
 ```bash

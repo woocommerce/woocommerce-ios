@@ -68,13 +68,7 @@ def main() -> int:
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
 
-    required = {
-        "MAESTRO_WOO_LAB_JETPACK_STORE_URL",
-        "MAESTRO_WOO_LAB_WPCOM_EMAIL",
-        "MAESTRO_WOO_LAB_WPCOM_PASSWORD",
-    }
-    if args.seed:
-        required.update({"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"})
+    required = RUNNER.required_environment(flows if 'flows' in locals() else [], seed=args.seed)
     missing = sorted(name for name in required if not values.get(name))
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
 

@@ -1,4 +1,4 @@
-# p2: products.detail.tags, products.detail.variations, products.detail.variation-attributes
+# p2: products.detail.variations, products.detail.variation-attributes
 # Prerequisite: store has an editable Variable product with at least one generated variation and attribute.
 appId: ${APP_ID}
 name: "Products - Variations and tags"

@@ -1,0 +1,60 @@
+# p2: products.detail.media
+appId: ${APP_ID}
+name: Create a run-owned product with persisted device media
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - products
+---
+# Put a deterministic image in the simulator library before opening the app picker.
+- addMedia:
+    - ../../WooCommerce/WooCommerceScreenshots/ScreenshotImages.xcassets/black-coral-shades.imageset/black-coral-shades.png
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_products.yaml
+- tapOn:
+    id: product-add-button
+- assertVisible:
+    id: product-creation-sheet
+- tapOn: Physical product
+- tapOn:
+    id: product-title
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Media ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn: Add a product image
+- assertVisible: Choose from device
+- tapOn: Choose from device
+- extendedWaitUntil:
+    visible:
+      text: Photos
+    timeout: 15000
+- tapOn:
+    point: 20%,25%
+- tapOn: Add
+- extendedWaitUntil:
+    notVisible:
+      text: Add a product image
+    timeout: 30000
+- tapOn:
+    id: publish-product-button
+- extendedWaitUntil:
+    visible:
+      id: save-product-button
+    timeout: 30000
+- assertNotVisible: Add a product image
+- assertVisible: Media ${SUITE_RUN_ID}
+- tapOn:
+    text: Products
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: Media ${SUITE_RUN_ID}
+    timeout: 30000
+- tapOn: Media ${SUITE_RUN_ID}
+- assertVisible:
+    id: save-product-button
+- assertNotVisible: Add a product image

@@ -1,0 +1,72 @@
+# p2: orders.refund
+appId: ${APP_ID}
+name: Refund a run-owned paid order
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - orders
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Refund ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+- tapOn:
+    id: order-details-collect-payment-button
+- tapOn:
+    id: payment-methods-view-cash-row
+- tapOn: Cash received
+- inputText: "9999"
+- tapOn: Mark Order as Complete
+- extendedWaitUntil:
+    visible:
+      text: Issue Refund
+    timeout: 30000
+- tapOn: Issue Refund
+- assertVisible: Select all
+- tapOn: Select all
+- tapOn: Next
+- extendedWaitUntil:
+    visible:
+      text: Refund
+    timeout: 15000
+- tapOn: Refund
+- extendedWaitUntil:
+    visible:
+      text: Refunded Products
+    timeout: 30000
+- assertVisible: Refunded Products
+- scrollUntilVisible:
+    element:
+      text: Refund ${SUITE_RUN_ID}
+    direction: DOWN
+- assertVisible: Refund ${SUITE_RUN_ID}

@@ -60,6 +60,19 @@ class RunnerTests(unittest.TestCase):
 
         self.assertIn("MAESTRO_WOO_LAB_JETPACK_STORE_HOST=shop.example.com", args)
 
+    def test_selected_flow_environment_is_required_but_consumer_keys_are_not(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            flow = Path(directory) / "flow.yaml"
+            flow.write_text("appId: ${APP_ID}\n---\n- inputText: ${MAESTRO_WOO_VARIABLE_PRODUCT_NAME}\n")
+            required = RUNNER.required_environment([flow], seed=False)
+            self.assertIn("MAESTRO_WOO_VARIABLE_PRODUCT_NAME", required)
+            self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", required)
+
+    def test_seed_explicitly_requires_consumer_keys(self) -> None:
+        required = RUNNER.required_environment([], seed=True)
+        self.assertIn("MAESTRO_WOO_CONSUMER_KEY", required)
+        self.assertIn("MAESTRO_WOO_CONSUMER_SECRET", required)
+
 
 if __name__ == "__main__":
     unittest.main()

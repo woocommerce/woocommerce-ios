@@ -1,0 +1,63 @@
+# p2: orders.collect-payment.cash
+appId: ${APP_ID}
+name: Collect cash for a run-owned order
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - orders
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: add-customer-note-button
+- tapOn:
+    id: edit-note-text-editor
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Cash ${SUITE_RUN_ID}
+- tapOn:
+    id: edit-note-done-button
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+- tapOn:
+    id: order-details-collect-payment-button
+- assertVisible:
+    id: payment-methods-header-label
+- tapOn:
+    id: payment-methods-view-cash-row
+- assertVisible: Cash received
+- tapOn: Cash received
+- inputText: "9999"
+- assertVisible: Change due
+- tapOn: Mark Order as Complete
+- extendedWaitUntil:
+    visible:
+      text: Completed
+    timeout: 30000
+- assertVisible: Completed
+- scrollUntilVisible:
+    element:
+      text: Cash ${SUITE_RUN_ID}
+    direction: DOWN
+- assertVisible: Cash ${SUITE_RUN_ID}

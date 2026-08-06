@@ -156,13 +156,13 @@ items:
     flow: .maestro/flows/products_list_and_sort.yaml
   - id: products.detail.description
     title: Product description details
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.media
     title: Product media upload persists
     flow: .maestro/flows/products_media_upload.yaml
   - id: products.detail.price
     title: Product price settings
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.inventory
     title: Product inventory settings
     flow: .maestro/flows/products_detail.yaml
@@ -171,22 +171,22 @@ items:
     flow: .maestro/flows/products_detail.yaml
   - id: products.detail.type
     title: Product type settings
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.tags
     title: Product tags settings
-    flow: .maestro/flows/products_variations_and_tags.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.shipping
     title: Product shipping settings
     flow: .maestro/flows/products_detail.yaml
   - id: products.detail.short-description
     title: Product short description settings
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.linked
     title: Linked products
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.downloads
     title: Downloadable files
-    flow: .maestro/flows/products_detail.yaml
+    flow: .maestro/flows/products_create.yaml
   - id: products.detail.variations
     title: Variations and variation detail
     flow: .maestro/flows/products_variations_and_tags.yaml

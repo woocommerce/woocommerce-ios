@@ -15,6 +15,7 @@
 
 25.3
 -----
+- [Internal] Prevent A/B test startup from racing Tracks user switching. [https://github.com/woocommerce/woocommerce-ios/pull/17657]
 - [*] Dashboard: Fixed a crash on the store performance card when a store returns stats with an invalid date. [https://github.com/woocommerce/woocommerce-ios/pull/17628]
 - [Internal] Mitigate a potential navigation crash when opening products from search results. [https://github.com/woocommerce/woocommerce-ios/pull/17645]
 - [Internal] Prevent offline banner updates from overlapping navigation transitions. [https://github.com/woocommerce/woocommerce-ios/pull/17611]

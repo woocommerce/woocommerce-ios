@@ -1,0 +1,103 @@
+# p2: products.detail.tags, products.detail.variations, products.detail.variation-attributes
+# Prerequisite: store has an editable Variable product with at least one generated variation and attribute.
+appId: ${APP_ID}
+name: "Products - Variations and tags"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - products
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+- tapOn:
+    id: "product-filter-button"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Product Type"
+    timeout: 10000
+- tapOn: "Product Type"
+- extendedWaitUntil:
+    visible: "Variable"
+    timeout: 10000
+- tapOn: "Variable"
+- tapOn: "Show Products"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 20000
+- tapOn:
+    point: "50%,37%"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 20000
+- tapOn:
+    id: "edit-product-more-options-button"
+- extendedWaitUntil:
+    visible: "Product Settings"
+    timeout: 10000
+- tapOn: "Product Settings"
+- extendedWaitUntil:
+    visible: "PUBLISH SETTINGS"
+    timeout: 10000
+- assertVisible: "Status"
+- assertVisible: "Visibility"
+- tapOn: "Done"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Add more details"
+    direction: DOWN
+    timeout: 15000
+- tapOn: "Add more details"
+- extendedWaitUntil:
+    visible: "Tags"
+    timeout: 10000
+- tapOn: "Tags"
+- extendedWaitUntil:
+    visible:
+      id: "add-tags"
+    timeout: 15000
+- assertVisible: "Tags"
+- assertVisible:
+    id: "add-tags"
+- takeScreenshot: products_tags
+- tapOn:
+    point: "10%,12%"
+- runFlow:
+    when:
+      visible: "Dismiss"
+    commands:
+      - tapOn: "Dismiss"
+- extendedWaitUntil:
+    visible:
+      id: "edit-product-more-options-button"
+    timeout: 10000
+- scrollUntilVisible:
+    element: "Variations"
+    direction: DOWN
+    timeout: 15000
+- assertVisible: "2 variations"
+- assertVisible: "Variations"
+- tapOn: "Variations"
+- extendedWaitUntil:
+    visible: "Variations"
+    timeout: 20000
+- assertVisible: "Variations"
+- tapOn:
+    point: "93%,27%"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Attributes"
+    timeout: 20000
+- assertVisible: "Attributes"
+- assertVisible: "Enabled"
+- takeScreenshot: products_variation_detail
+- back
+- extendedWaitUntil:
+    visible: "Variations"
+    timeout: 10000

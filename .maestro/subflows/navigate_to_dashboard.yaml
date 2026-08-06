@@ -4,5 +4,5 @@ appId: ${APP_ID}
     id: "tab-bar-my-store-item"
 - extendedWaitUntil:
     visible:
-      id: "performance-time-range-menu"
+      text: "Edit"
     timeout: 30000

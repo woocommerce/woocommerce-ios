@@ -57,24 +57,20 @@ tags:
           id: "Sign in with site credentials Button"
 
 - extendedWaitUntil:
-    visible:
-      id: "usernameField"
+    visible: "Username"
     timeout: 30000
-- tapOn:
-    id: "usernameField"
+- tapOn: "Username"
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
       TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME}
-- tapOn:
-    id: "passwordField"
+- tapOn: "Password"
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
       TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD}
 - hideKeyboard
-- tapOn:
-    id: "submitButton"
+- tapOn: "Continue"
 
 - runFlow:
     when:
@@ -95,9 +91,35 @@ tags:
       - tapOn: "Not now"
 
 - extendedWaitUntil:
-    visible:
-      id: "tab-bar-my-store-item"
+    visible: "Manage Privacy|Save Password\\?"
     timeout: 60000
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?|Orders"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 15000
 - assertVisible:
     id: "tab-bar-orders-item"
 - assertVisible:

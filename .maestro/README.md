@@ -56,6 +56,10 @@ POS runs require a real-eligible store/account and an iPad simulator. System
 surface flows are quarantined separately. Neither profile turns an ineligible
 device/store into a passing no-op.
 
+The lab store used by `phone-full` must be eligible for Inbox. The P2 lists
+Inbox as required hub coverage, so an absent `menu-inbox` fails the extended
+flow instead of being reported as a feature-gated skip.
+
 Validate traceability and static files with:
 
 ```bash

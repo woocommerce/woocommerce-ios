@@ -10,13 +10,15 @@ DEVICE="${MAESTRO_DEVICE:-}"
 OUTPUT_KEY="${BUILDKITE_JOB_ID:-local-$$}"
 OUTPUT_ROOT="${MAESTRO_OUTPUT_DIR:-build/maestro/$OUTPUT_KEY}"
 
+source .maestro/scripts/configure-toolchain.sh
+
 if [[ "${BUILDKITE:-false}" == "true" && -e .maestro/.env.local ]]; then
   echo "CI Maestro runs must use protected environment variables, not .maestro/.env.local." >&2
   exit 2
 fi
 
 case "$PROFILE" in
-  release|burst|pos-ipad|ios-system) ;;
+  release|burst|phone-full|pos-ipad|ios-system) ;;
   *)
     echo "Unsupported CI Maestro profile: $PROFILE" >&2
     exit 2
@@ -47,6 +49,28 @@ required_environment=(
   MAESTRO_WOO_LAB_WPCOM_EMAIL
   MAESTRO_WOO_LAB_WPCOM_PASSWORD
 )
+NEEDS_CLEANUP=false
+case "$PROFILE" in
+  phone-full|pos-ipad|ios-system)
+    NEEDS_CLEANUP=true
+    required_environment+=(
+      MAESTRO_WOO_CONSUMER_KEY
+      MAESTRO_WOO_CONSUMER_SECRET
+    )
+    ;;
+esac
+if [[ "$PROFILE" == "phone-full" ]]; then
+  required_environment+=(
+    MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH
+    MAESTRO_WOO_NOT_A_WOO_STORE_URL
+    MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME
+    MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD
+    MAESTRO_WOO_NO_JETPACK_SITE_URL
+    MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME
+    MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD
+    MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL
+  )
+fi
 for variable in "${required_environment[@]}"; do
   if [[ -z "${!variable:-}" ]]; then
     echo "Missing protected environment variable: $variable" >&2
@@ -103,6 +127,9 @@ runner=(
 if [[ -n "$DEVICE" ]]; then
   runner+=(--device "$DEVICE")
 fi
+if [[ "$NEEDS_CLEANUP" == "true" ]]; then
+  runner+=(--seed)
+fi
 
 echo "--- :iphone: Running Maestro $PROFILE profile with the $APP_VARIANT simulator app"
 set +e
@@ -119,6 +146,20 @@ if [[ "$report_count" -eq 0 || "$html_count" -eq 0 ]]; then
   fi
 else
   echo "Maestro produced $report_count JUnit report(s) and $html_count HTML report(s)."
+fi
+
+if [[ "${BUILDKITE:-false}" == "true" ]]; then
+  latest_junit="$(find "$OUTPUT_ROOT" -type f -name report.xml | sort | tail -n 1)"
+  if [[ -n "$latest_junit" ]]; then
+    latest_summary="$(dirname "$latest_junit")/run-summary.json"
+    annotation_args=(--junit "$latest_junit")
+    if [[ -f "$latest_summary" ]]; then
+      annotation_args+=(--summary "$latest_summary")
+    fi
+    python3 .maestro/scripts/annotate-run.py "${annotation_args[@]}" |
+      buildkite-agent annotate --context maestro-smoke --style info ||
+      echo "Warning: could not publish the Maestro Buildkite annotation." >&2
+  fi
 fi
 
 exit "$status"

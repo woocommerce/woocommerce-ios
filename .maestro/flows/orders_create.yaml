@@ -131,9 +131,9 @@ tags:
 - tapOn: Add
 - assertVisible: Discount
 
-# Select the first real customer exposed by the live store. Source inspection
-# confirms Edit Customer Details writes only the draft order's copied billing
-# and shipping snapshot; it never dispatches a customer-update action.
+# Select the configured synthetic customer. Edit Customer Details writes only
+# the draft order's copied billing and shipping snapshot; it never dispatches
+# a customer-update action.
 - swipe:
     direction: UP
 - tapOn: Add Customer Details
@@ -144,30 +144,21 @@ tags:
       - tapOn: Add Customer Details
 - extendedWaitUntil:
     visible:
-      id: default-search-results-table-view
+      id: customer-search-screen-search-field
     timeout: 30000
-- copyTextFrom:
-    text: ".+@.+"
-    childOf:
-      id: default-search-results-table-view
-    index: 0
-- evalScript: ${output.selectedCustomerEmail = (String(maestro.copiedText || '').match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+/) || [''])[0]}
-- assertTrue:
-    condition: ${output.selectedCustomerEmail.length > 0}
-    label: "External prerequisite: the live store must expose at least one existing customer with an email address"
 - tapOn:
     id: customer-search-screen-search-field
 - runFlow:
     file: ../subflows/paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${output.selectedCustomerEmail}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
 - pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: updated-search-results-table-view
     timeout: 30000
 - tapOn:
-    text: "${output.selectedCustomerEmail}"
+    text: "${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}"
     childOf:
       id: updated-search-results-table-view
 - extendedWaitUntil:
@@ -280,4 +271,4 @@ tags:
 - assertVisible:
     text: '[\s\S]*Maestro-${SUITE_RUN_ID}[\s\S]*'
 - assertVisible:
-    text: "Email: ${output.selectedCustomerEmail}"
+    text: "Email: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}"

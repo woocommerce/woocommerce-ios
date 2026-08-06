@@ -14,12 +14,28 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 RUNNER_PATH = SCRIPT_DIR / "run-smoke-tests.py"
+CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
 SPEC = importlib.util.spec_from_file_location("woo_maestro_runner", RUNNER_PATH)
 if SPEC is None or SPEC.loader is None:
     raise RuntimeError(f"Cannot load {RUNNER_PATH}")
 RUNNER = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = RUNNER
 SPEC.loader.exec_module(RUNNER)
+
+
+def check_toolchain() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(CHECK_TOOLCHAIN)],
+        cwd=RUNNER.REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        return True, "toolchain matches the repository pin"
+    details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+    reason = details[-1] if details else "toolchain check failed"
+    return False, f"toolchain: {reason}"
 
 
 def main() -> int:
@@ -36,6 +52,7 @@ def main() -> int:
     for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
         path = shutil.which(command)
         checks.append((path is not None, f"{command}: {path or 'not found'}"))
+    checks.append(check_toolchain())
 
     try:
         values = RUNNER.load_environment()
@@ -52,7 +69,7 @@ def main() -> int:
 
     family = RUNNER.PROFILES[args.profile][3]
     try:
-        simulator = RUNNER.resolve_simulator(args.device, family)
+        simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
         checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
     except (SystemExit, subprocess.SubprocessError) as error:
         checks.append((False, f"simulator: {error}"))

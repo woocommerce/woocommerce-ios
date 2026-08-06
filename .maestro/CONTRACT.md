@@ -1,7 +1,7 @@
 # Maestro iOS implementation contract
 
-This contract freezes the shared interfaces for the seven-branch Maestro stack.
-Flow owners may reference these interfaces but must not redefine them.
+This contract freezes the shared interfaces for the eight-PR Maestro integration
+stack. Flow owners may reference these interfaces but must not redefine them.
 
 ## App and simulator
 
@@ -91,11 +91,12 @@ Tags are limited to `smoke_core`, `smoke_extended`, `flaky_quarantine`,
 `destructive`, `login`, `dashboard`, `orders`, `products`, `hub_menu`,
 `pos_ipad`, and `ios_system`.
 
-Coverage IDs come from the committed 88-item P2 snapshot. An ID maps to a flow
-only when that flow asserts the complete behavior. Unsupported hardware,
-watchOS, migration, real push delivery, external account completion, and camera
-decoding remain explicit `manual:` entries. Entry-point-only coverage is not
-promoted to a complete mapping.
+Coverage IDs come from the committed 98-item P2 snapshot. Flow-backed items
+default to `fidelity: full`. A partial or entry-point-only implementation uses
+`fidelity: partial` plus a concrete `gap:` and is counted separately from full
+automation. Unsupported hardware, watchOS, migration, real push delivery,
+external account completion, and camera decoding remain explicit `manual:`
+entries.
 
 ## Assertion and state rules
 

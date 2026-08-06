@@ -6,7 +6,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, significantAppChangeApprovalRequired: true)),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -29,7 +29,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: false)),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -52,7 +52,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: 12, significantAppChangeApprovalRequired: false)),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -74,7 +74,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: nil, significantAppChangeApprovalRequired: false)),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -96,7 +96,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .failure(AgeRangeProviderError.declinedSharing),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -118,7 +118,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .failure(AgeRangeProviderError.unknown),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -140,7 +140,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .failure(AgeRangeProviderError.notAvailable),
-            eligibilityResult: .success(true)
+            requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -158,11 +158,11 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_verifyAgeRange_when_eligibility_false_returns_ineligibleForAgeFeatures() {
+    func test_verifyAgeRange_when_compliance_is_not_required_returns_ineligibleForAgeFeatures() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
             snapshotResult: .success(AgeRangeSnapshot(lowerBound: 18, significantAppChangeApprovalRequired: false)),
-            eligibilityResult: .success(false)
+            requirementsResult: .success(.notRequired())
         )
         let sut = AgeRangeVerificationService(provider: provider)
         let exp = expectation(description: "completion")
@@ -178,27 +178,118 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         }
 
         waitForExpectations(timeout: 1)
+        XCTAssertEqual(provider.requestCallCount, 0)
+    }
+
+    func test_verifyAgeRange_when_requirements_include_parental_consent_uses_requirements_value() {
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: false)),
+            requirementsResult: .success(.required(significantAppChangeApprovalRequired: true))
+        )
+        let sut = AgeRangeVerificationService(provider: provider)
+        let exp = expectation(description: "completion")
+
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { result in
+            switch result {
+            case let .eligible(approvalRequired, isMinor):
+                XCTAssertTrue(approvalRequired)
+                XCTAssertTrue(isMinor)
+            default:
+                XCTFail("Expected .eligible, got \(result)")
+            }
+            exp.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, significantAppChangeApprovalRequired: false)),
+            requirementsResult: .success(.required()),
+            requirementsDelayNanoseconds: 100_000_000
+        )
+        let sut = AgeRangeVerificationService(provider: provider)
+        let exp = expectation(description: "completion")
+        exp.expectedFulfillmentCount = 2
+
+        for _ in 0..<2 {
+            sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { result in
+                guard case .eligible = result else {
+                    XCTFail("Expected .eligible, got \(result)")
+                    exp.fulfill()
+                    return
+                }
+                exp.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(provider.requirementsCallCount, 1)
+        XCTAssertEqual(provider.requestCallCount, 1)
     }
 }
 
-private final class MockAgeRangeProvider: AgeRangeProviding {
+private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable {
     let snapshotResult: Result<AgeRangeSnapshot, Error>
-    let eligibilityResult: Result<Bool, Error>
+    let requirementsResult: Result<AgeRangeRequirements, Error>
+    let requirementsDelayNanoseconds: UInt64
 
-    init(snapshotResult: Result<AgeRangeSnapshot, Error>, eligibilityResult: Result<Bool, Error>) {
-        self.snapshotResult = snapshotResult
-        self.eligibilityResult = eligibilityResult
+    private let stateQueue = DispatchQueue(label: "com.automattic.woocommerce.age-range-provider-mock")
+    private var _requestCallCount = 0
+    private var _requirementsCallCount = 0
+
+    var requestCallCount: Int {
+        stateQueue.sync { _requestCallCount }
     }
 
+    var requirementsCallCount: Int {
+        stateQueue.sync { _requirementsCallCount }
+    }
+
+    init(
+        snapshotResult: Result<AgeRangeSnapshot, Error>,
+        requirementsResult: Result<AgeRangeRequirements, Error>,
+        requirementsDelayNanoseconds: UInt64 = 0
+    ) {
+        self.snapshotResult = snapshotResult
+        self.requirementsResult = requirementsResult
+        self.requirementsDelayNanoseconds = requirementsDelayNanoseconds
+    }
+
+    @MainActor
     func requestAgeRange(
         minimumAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot {
-        try snapshotResult.get()
+        stateQueue.sync { _requestCallCount += 1 }
+        return try snapshotResult.get()
     }
 
-    func isEligibleForAgeFeatures() async throws -> Bool {
-        try eligibilityResult.get()
+    func retrieveAgeRangeRequirements() async throws -> AgeRangeRequirements {
+        stateQueue.sync { _requirementsCallCount += 1 }
+        if requirementsDelayNanoseconds > 0 {
+            try await Task.sleep(nanoseconds: requirementsDelayNanoseconds)
+        }
+        return try requirementsResult.get()
+    }
+}
+
+private extension AgeRangeRequirements {
+    static func required(significantAppChangeApprovalRequired: Bool? = nil) -> AgeRangeRequirements {
+        AgeRangeRequirements(
+            isComplianceRequired: true,
+            significantAppChangeApprovalRequired: significantAppChangeApprovalRequired
+        )
+    }
+
+    static func notRequired() -> AgeRangeRequirements {
+        AgeRangeRequirements(
+            isComplianceRequired: false,
+            significantAppChangeApprovalRequired: nil
+        )
     }
 }
 

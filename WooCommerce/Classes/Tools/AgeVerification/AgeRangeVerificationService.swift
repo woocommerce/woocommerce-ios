@@ -43,6 +43,8 @@ protocol AgeRangeVerificationServiceProtocol {
 
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
     private let provider: AgeRangeProviding
+    @MainActor private var isVerificationInProgress = false
+    @MainActor private var pendingCompletions: [(AgeRangeVerificationResult) -> Void] = []
 
     init(provider: AgeRangeProviding = DeclaredAgeRangeProvider()) {
         self.provider = provider
@@ -55,57 +57,12 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
         Task { @MainActor in
-            let eligibility: Bool?
-            do {
-                eligibility = try await provider.isEligibleForAgeFeatures()
-            } catch {
-                DDLogError("Age Range: Failed to fetch eligibility signals. Error: \(error)")
-                eligibility = nil
-            }
+            pendingCompletions.append(completion)
+            guard isVerificationInProgress == false else { return }
+            isVerificationInProgress = true
 
-            if eligibility == false {
-                completion(.ineligibleForAgeFeatures)
-                return
-            }
-
-            // Use the topmost visible controller as the anchor to ensure UI can be presented.
-            let anchor = viewController.topmostPresentedViewController
-            guard anchor.view.window != nil else {
-                DDLogWarn("Age Range: Anchor viewController is not in window; skipping request.")
-                completion(.invalidUIState)
-                return
-            }
-
-            do {
-                let snapshot = try await provider.requestAgeRange(
-                    minimumAge: minimumAge,
-                    in: anchor
-                )
-                let result = mapSnapshotToResult(
-                    snapshot,
-                    minimumAge: minimumAge
-                )
-                DDLogInfo("Age Range: Response mapped to \(result)")
-                completion(result)
-            } catch {
-                if let providerError = error as? AgeRangeProviderError {
-                    switch providerError {
-                    case .declinedSharing:
-                        completion(.declinedSharing)
-                        return
-                    case .notAvailable:
-                        DDLogInfo("Age Range: Not available (simulator or account not eligible); skipping further prompts.")
-                    case .unknown:
-                        completion(.unknown)
-                        return
-                    case .other(let underlying):
-                        DDLogError("Age Range: Failed to retrieve age range. Error: \(underlying)")
-                    }
-                } else {
-                    DDLogError("Age Range: Failed to retrieve age range. Error: \(error)")
-                }
-                completion(.sdkError(error))
-            }
+            let result = await performVerification(in: viewController, minimumAge: minimumAge)
+            finishVerification(with: result)
         }
     }
 
@@ -113,13 +70,80 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
 }
 
 private extension AgeRangeVerificationService {
+    @MainActor
+    func performVerification(
+        in viewController: UIViewController,
+        minimumAge: Int
+    ) async -> AgeRangeVerificationResult {
+        let requirements: AgeRangeRequirements?
+        do {
+            let provider = provider
+            requirements = try await Task.detached(priority: .userInitiated) {
+                try await provider.retrieveAgeRangeRequirements()
+            }.value
+        } catch {
+            DDLogError("Age Range: Failed to fetch regulatory requirements. Error: \(error)")
+            requirements = nil
+        }
+
+        if requirements?.isComplianceRequired == false {
+            return .ineligibleForAgeFeatures
+        }
+
+        // Use the topmost visible controller as the anchor to ensure UI can be presented.
+        let anchor = viewController.topmostPresentedViewController
+        guard anchor.view.window != nil else {
+            DDLogWarn("Age Range: Anchor viewController is not in window; skipping request.")
+            return .invalidUIState
+        }
+
+        do {
+            let snapshot = try await provider.requestAgeRange(
+                minimumAge: minimumAge,
+                in: anchor
+            )
+            let result = mapSnapshotToResult(
+                snapshot,
+                minimumAge: minimumAge,
+                significantAppChangeApprovalRequired: requirements?.significantAppChangeApprovalRequired
+            )
+            DDLogInfo("Age Range: Response mapped to \(result)")
+            return result
+        } catch {
+            if let providerError = error as? AgeRangeProviderError {
+                switch providerError {
+                case .declinedSharing:
+                    return .declinedSharing
+                case .notAvailable:
+                    DDLogInfo("Age Range: Not available (simulator or account not eligible); skipping further prompts.")
+                case .unknown:
+                    return .unknown
+                case .other(let underlying):
+                    DDLogError("Age Range: Failed to retrieve age range. Error: \(underlying)")
+                }
+            } else {
+                DDLogError("Age Range: Failed to retrieve age range. Error: \(error)")
+            }
+            return .sdkError(error)
+        }
+    }
+
+    @MainActor
+    func finishVerification(with result: AgeRangeVerificationResult) {
+        let completions = pendingCompletions
+        pendingCompletions.removeAll()
+        isVerificationInProgress = false
+        completions.forEach { $0(result) }
+    }
+
     func mapSnapshotToResult(
         _ snapshot: AgeRangeSnapshot,
-        minimumAge: Int
+        minimumAge: Int,
+        significantAppChangeApprovalRequired: Bool?
     ) -> AgeRangeVerificationResult {
         if let lowerBound = snapshot.lowerBound, lowerBound >= minimumAge {
             return .eligible(
-                significantAppChangeApprovalRequired: snapshot.significantAppChangeApprovalRequired,
+                significantAppChangeApprovalRequired: significantAppChangeApprovalRequired ?? snapshot.significantAppChangeApprovalRequired,
                 isMinor: isMinor(lowerBound: lowerBound)
             )
         }

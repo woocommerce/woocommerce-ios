@@ -134,7 +134,10 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     /// Called when the user confirms the pending toggle change from the confirmation alert.
-    func confirmCashOnDeliveryToggle(targetState: Bool) {
+    func confirmCashOnDeliveryToggle() {
+        guard let targetState = pendingToggleConfirmation?.targetState else {
+            return
+        }
         pendingToggleConfirmation = nil
         // Optimistically reflects the new state while the update is in flight; failure handlers revert it.
         cashOnDeliveryEnabledState = targetState
@@ -164,12 +167,13 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     /// Enabling overwrites the gateway's customer-facing title with "Pay in Person", so the message warns
     /// about the rename when the store currently uses a different title.
     private var enableConfirmationMessage: String {
-        guard let currentTitle = cashOnDeliveryGateway?.title,
-              currentTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
-              currentTitle.caseInsensitiveCompare(PaymentGateway.defaultPayInPersonTitle) != .orderedSame else {
+        let defaultTitle = PaymentGateway.defaultPayInPersonTitle
+        guard let currentTitle = cashOnDeliveryGateway?.title.trimmingCharacters(in: .whitespacesAndNewlines),
+              currentTitle.isEmpty == false,
+              currentTitle.localizedCaseInsensitiveCompare(defaultTitle) != .orderedSame else {
             return Localization.enableConfirmationMessage
         }
-        return String.localizedStringWithFormat(Localization.enableConfirmationMessageRenameFormat, currentTitle)
+        return String.localizedStringWithFormat(Localization.enableConfirmationMessageRenameFormat, currentTitle, defaultTitle)
     }
 
     func updateCashOnDeliverySetting(enabled: Bool) {
@@ -321,12 +325,13 @@ private enum Localization {
         "payment option and the payment method already has the default Pay in Person title")
 
     static let enableConfirmationMessageRenameFormat = NSLocalizedString(
-        "menu.payments.payInPerson.toggle.enableConfirmation.messageRename",
+        "menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles",
         value: "This enables the Cash on Delivery payment method at your store’s checkout and renames it " +
-        "from “%1$@” to “Pay in Person” for your customers, including on your website’s checkout.",
+        "from “%1$@” to “%2$@” for your customers, including on your website’s checkout.",
         comment: "Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout " +
         "payment option and the payment method has a custom title which will be replaced. " +
-        "%1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\".")
+        "%1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". " +
+        "%2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\".")
 
     static let enableConfirmationButton = NSLocalizedString(
         "menu.payments.payInPerson.toggle.enableConfirmation.confirmButton",

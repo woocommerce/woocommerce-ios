@@ -261,7 +261,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         sut.cashOnDeliveryToggleRequested(enabled: true)
 
         // When
-        sut.confirmCashOnDeliveryToggle(targetState: true)
+        sut.confirmCashOnDeliveryToggle()
 
         // Then
         XCTAssertNil(sut.pendingToggleConfirmation)
@@ -272,6 +272,16 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
             return XCTFail("Expected updatePaymentGateway, got \(action)")
         }
         XCTAssertTrue(gateway.enabled)
+    }
+
+    func test_confirmCashOnDeliveryToggle_when_no_confirmation_is_pending_then_nothing_happens() {
+        // When
+        sut.confirmCashOnDeliveryToggle()
+
+        // Then
+        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
+        assertEmpty(stores.receivedActions)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
     }
 
     func test_dismissCashOnDeliveryToggleConfirmation_then_the_gateway_is_left_untouched() {

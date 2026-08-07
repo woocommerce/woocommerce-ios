@@ -346,6 +346,51 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
+    @Test func is_visible_when_device_is_phone_and_US_store_and_phonePointOfSaleUS_flag_enabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: .us, currency: .USD)
+        accountWhitelistedInBackend(true, phonePointOfSaleUSFlagEnabled: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test(arguments: [
+        (country: Country.pr, currency: CurrencyCode.USD),
+        (country: Country.ca, currency: CurrencyCode.CAD)
+    ])
+    func is_invisible_when_device_is_phone_and_non_US_store_even_if_phonePointOfSaleUS_flag_enabled(country: Country,
+                                                                                                   currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true, phonePointOfSaleUSFlagEnabled: true)
+        let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .phone,
+                                              siteSettings: siteSettings,
+                                              stores: stores,
+                                              featureFlagService: featureFlagService,
+                                              isOperatingSystemAtLeast: { _ in true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
     @Test func is_invisible_when_device_is_phone_and_store_is_expansion_country() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
@@ -586,13 +631,17 @@ extension POSTabVisibilityCheckerTests {
 
     /// Configures the mock stores to respond to `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
     /// `isAllowed` controls the `.pointOfSale` flag (whitelisting).
-    func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
+    /// `phonePointOfSaleUSFlagEnabled` controls the flag opening Phone POS to US stores.
+    func accountWhitelistedInBackend(_ isAllowed: Bool = false,
+                                     phonePointOfSaleUSFlagEnabled: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
             case let .isRemoteFeatureFlagEnabled(flag, _, _, completion):
                 switch flag {
                 case .pointOfSale:
                     completion(isAllowed)
+                case .phonePointOfSaleUS:
+                    completion(phonePointOfSaleUSFlagEnabled)
                 default:
                     completion(false)
                 }

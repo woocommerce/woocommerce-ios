@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import protocol WordPressAuthenticator.LoginNavigationBarHiding
 
 /// Navigation-bar treatment for a QR-login screen.
 enum QRLoginNavigationBarStyle {
@@ -16,7 +17,11 @@ enum QRLoginNavigationBarStyle {
 /// The WordPress-Authenticator prologue hides the navigation bar in its own
 /// `viewWillAppear`, so each QR screen re-applies the navigation-bar state it
 /// needs when it appears.
-final class QRLoginHostingController<Content: View>: UIHostingController<Content> {
+final class QRLoginHostingController<Content: View>: UIHostingController<Content>, LoginNavigationBarHiding {
+
+    var prefersNavigationBarHidden: Bool {
+        navigationBarStyle == .hidden
+    }
 
     var navigationBarStyle: QRLoginNavigationBarStyle = .inherited
 

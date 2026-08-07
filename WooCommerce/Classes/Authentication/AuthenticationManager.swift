@@ -114,12 +114,14 @@ class AuthenticationManager: Authentication {
                 self.analytics.track(.loginPrologueContinueTapped)
                 return false
             }
-            // A coordinator is already driving the QR-login flow — e.g. a rapid
-            // second tap while the availability check from the first tap was
-            // still in flight. Don't build a second one; it would orphan the
-            // first along with its navigation stack.
-            guard self.qrLoginCoordinator == nil else {
-                return true
+            // Reuse a coordinator only while its QR screens are still live (e.g.
+            // a rapid second tap); release a stale one an error-screen restart
+            // left behind, or its tap is swallowed forever.
+            if let existingCoordinator = self.qrLoginCoordinator {
+                guard existingCoordinator.isNavigationStackShowingQRFlow == false else {
+                    return true
+                }
+                self.qrLoginCoordinator = nil
             }
             // Track the click while the active flow is still `prologue`;
             // the QR coordinator's `start()` switches it to `login_qr`.

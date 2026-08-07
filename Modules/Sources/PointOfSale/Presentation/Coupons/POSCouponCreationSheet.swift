@@ -33,7 +33,10 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                     showTypeSelection: $showCouponSelectionSheet,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
-                        addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))
+                        addedCouponItem = .coupon(.init(id: id,
+                                                        code: coupon.code,
+                                                        summary: coupon.summary(currencySettings: currencySettings),
+                                                        appliesToWholeCart: coupon.appliesToWholeCart))
                     },
                     dismissHandler: {
                         selectedType = nil

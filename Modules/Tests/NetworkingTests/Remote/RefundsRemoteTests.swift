@@ -117,7 +117,7 @@ struct RefundsRemoteTests {
                                                   reason: "reason",
                                                   apiRefund: true,
                                                   apiRestock: true,
-                                                  amount: nil,
+                                                  amountOverride: nil,
                                                   lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then
@@ -139,7 +139,7 @@ struct RefundsRemoteTests {
                                                   reason: "Item was damaged",
                                                   apiRefund: true,
                                                   apiRestock: false,
-                                                  amount: nil,
+                                                  amountOverride: nil,
                                                   lineItems: [.quantityBased(lineItemID: 50, quantity: 2),
                                                               .amountBased(lineItemID: 51, refundTotal: 74)])
 
@@ -182,7 +182,7 @@ struct RefundsRemoteTests {
                                                   reason: "",
                                                   apiRefund: false,
                                                   apiRestock: true,
-                                                  amount: "29.43",
+                                                  amountOverride: "29.43",
                                                   lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then
@@ -201,7 +201,7 @@ struct RefundsRemoteTests {
                                                            reason: "reason",
                                                            apiRefund: false,
                                                            apiRestock: true,
-                                                           amount: nil,
+                                                           amountOverride: nil,
                                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then the classic v3 refund object is decoded, display fields included
@@ -225,7 +225,7 @@ struct RefundsRemoteTests {
                                                       reason: "",
                                                       apiRefund: false,
                                                       apiRestock: true,
-                                                      amount: nil,
+                                                      amountOverride: nil,
                                                       lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
         }
     }

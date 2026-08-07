@@ -26,7 +26,7 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                 return runningTotal + refundTotal
             }
             let unitPrice = order?.items.first { $0.itemID == lineItem.lineItemID }?.price.decimalValue ?? .zero
-            return runningTotal + unitPrice * (lineItem.quantity ?? .zero)
+            return runningTotal + unitPrice * Decimal(lineItem.quantity ?? 0)
         }
         let emptySection = RefundPreview.Section(items: [], subtotal: .zero, tax: .zero, total: .zero)
         return RefundPreview(subtotal: subtotal,
@@ -41,13 +41,17 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      amount: String?,
+                      amountOverride: String?,
                       lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         let previewLineItems = lineItems.map { lineItem -> RefundPreviewLineItem in
             if let refundTotal = lineItem.refundTotal {
                 return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: refundTotal)
             }
-            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: lineItem.quantity ?? .zero)
+            if let quantity = lineItem.quantity {
+                return .quantityBased(lineItemID: lineItem.lineItemID, quantity: quantity)
+            }
+            assertionFailure("ComputedRefundLineItem carries quantity or refundTotal by construction; the factories enforce it.")
+            return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: .zero)
         }
         let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: previewLineItems)
         return Refund(refundID: 1,

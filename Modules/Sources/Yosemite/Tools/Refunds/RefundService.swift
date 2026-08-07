@@ -19,7 +19,7 @@ public protocol RefundServiceProtocol {
                        lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview
 
     /// Creates a refund via the `compute_totals` request (line items only; the server owns the
-    /// math unless an explicit `amount` override is supplied). On success the returned refund is
+    /// math unless an explicit `amountOverride` is supplied). On success the returned refund is
     /// upserted to storage exactly like the classic `RefundAction.createRefund` path.
     ///
     /// SAFETY: must only be called after a successful `previewRefund` confirmed server-calculated
@@ -30,7 +30,7 @@ public protocol RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      amount: String?,
+                      amountOverride: String?,
                       lineItems: [ComputedRefundLineItem]) async throws -> Refund
 }
 
@@ -68,14 +68,14 @@ public final class RefundService: RefundServiceProtocol {
                              reason: String,
                              automaticRefund: Bool,
                              restockItems: Bool,
-                             amount: String?,
+                             amountOverride: String?,
                              lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         let refund = try await remote.createComputedRefund(for: siteID,
                                                            orderID: orderID,
                                                            reason: reason,
                                                            apiRefund: automaticRefund,
                                                            apiRestock: restockItems,
-                                                           amount: amount,
+                                                           amountOverride: amountOverride,
                                                            lineItems: lineItems)
         await upserter.upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund])
         return refund

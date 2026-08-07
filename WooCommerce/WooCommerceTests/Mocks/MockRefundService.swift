@@ -36,7 +36,7 @@ final class MockRefundService: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      amount: String?,
+                      amountOverride: String?,
                       lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         spyCreateRefundRestockItems = restockItems
         spyCreateRefundAmount = amount

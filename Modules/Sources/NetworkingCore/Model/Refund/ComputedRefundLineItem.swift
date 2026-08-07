@@ -13,13 +13,14 @@ public struct ComputedRefundLineItem: Encodable, Equatable {
     /// The ID of the order line item being refunded.
     public let lineItemID: Int64
 
-    /// Quantity to refund. Set only for product lines.
-    public let quantity: Decimal?
+    /// Quantity to refund. Set only for product lines. Whole units: the server schema
+    /// declares `type: integer, minimum: 1` and rejects fractional quantities.
+    public let quantity: Int?
 
     /// Tax-inclusive amount to refund. Set only for fee/shipping lines.
     public let refundTotal: Decimal?
 
-    private init(lineItemID: Int64, quantity: Decimal?, refundTotal: Decimal?) {
+    private init(lineItemID: Int64, quantity: Int?, refundTotal: Decimal?) {
         self.lineItemID = lineItemID
         self.quantity = quantity
         self.refundTotal = refundTotal
@@ -28,8 +29,9 @@ public struct ComputedRefundLineItem: Encodable, Equatable {
     /// A product line refunded by quantity; the server calculates the refunded totals and taxes.
     /// `refundTotal` is deliberately nil: the synthesized encoding omits it from the payload
     /// entirely, which is how the API distinguishes a quantity-based line.
-    public static func quantityBased(lineItemID: Int64, quantity: Decimal) -> ComputedRefundLineItem {
-        ComputedRefundLineItem(lineItemID: lineItemID, quantity: quantity, refundTotal: nil)
+    public static func quantityBased(lineItemID: Int64, quantity: Int) -> ComputedRefundLineItem {
+        precondition(quantity >= 1, "The server schema requires quantity >= 1.")
+        return ComputedRefundLineItem(lineItemID: lineItemID, quantity: quantity, refundTotal: nil)
     }
 
     /// A fee or shipping line refunded by a tax-inclusive amount.

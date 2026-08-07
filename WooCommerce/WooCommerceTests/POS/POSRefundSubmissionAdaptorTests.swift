@@ -258,7 +258,7 @@ private extension POSRefundSubmissionAdaptorTests {
                           reason: String,
                           automaticRefund: Bool,
                           restockItems: Bool,
-                          amount: String?,
+                          amountOverride: String?,
                           lineItems: [ComputedRefundLineItem]) async throws -> Refund {
             createRefundLineItems = lineItems
             createRefundReason = reason

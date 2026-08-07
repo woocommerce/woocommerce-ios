@@ -31,10 +31,16 @@ public struct POSCoupon: Equatable, Hashable {
 }
 
 public extension Coupon {
+    /// The core discount types known to apply to the whole cart. Deliberately an
+    /// allow-list: plugin-provided types (`.other`) may or may not discount order fees,
+    /// and a false "Discount not applied" note is worse than a missing one, so unknown
+    /// types are never treated as whole-cart.
+    private static let wholeCartDiscountTypes: Set<DiscountType> = [.percent, .fixedCart]
+
     /// Whether the coupon discounts the whole cart: a percent or fixed-cart discount
     /// with no product or category restrictions.
     var appliesToWholeCart: Bool {
-        (discountType == .percent || discountType == .fixedCart)
+        Self.wholeCartDiscountTypes.contains(discountType)
             && productIds.isEmpty
             && productCategories.isEmpty
     }

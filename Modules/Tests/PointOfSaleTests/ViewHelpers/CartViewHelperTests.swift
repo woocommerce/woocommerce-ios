@@ -157,6 +157,23 @@ struct CartViewHelperTests {
                                    couponItem: coupon) == .valid(couponTotal))
     }
 
+    @Test func couponRowState_coupon_code_match_is_case_insensitive() async throws {
+        // Given
+        let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")
+        let couponTotal = PointOfSaleCouponTotal(code: "test10", total: "10.00")
+        let orderTotals = PointOfSaleOrderTotals(
+            cartTotal: "$10.00",
+            orderTotal: "$12.00",
+            taxTotal: "$2.00",
+            orderTotalDecimal: 12.0,
+            couponsTotals: [couponTotal])
+
+        // When, Then
+        #expect(sut.couponRowState(orderStage: .finalizing,
+                                   orderState: .loaded(orderTotals),
+                                   couponItem: coupon) == .valid(couponTotal))
+    }
+
     @Test func couponRowState_finalizing_and_loaded_with_no_matching_coupon_returns_idle() async throws {
         // Given
         let coupon = Cart.CouponItem(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "TEST10", summary: "")

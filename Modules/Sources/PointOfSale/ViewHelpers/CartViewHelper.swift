@@ -93,15 +93,13 @@ extension CartViewHelper {
             return false
         }
 
-        let discountingCouponCodes = totals.couponsTotals
-            .filter(\.hasDiscount)
-            .map { $0.code.lowercased() }
-        guard discountingCouponCodes.isNotEmpty else {
+        let discountingCoupons = totals.couponsTotals.filter(\.hasDiscount)
+        guard discountingCoupons.isNotEmpty else {
             return false
         }
 
         return cart.coupons.contains { coupon in
-            coupon.appliesToWholeCart && discountingCouponCodes.contains(coupon.code.lowercased())
+            coupon.appliesToWholeCart && discountingCoupons.contains { $0.matches(code: coupon.code) }
         }
     }
 
@@ -119,7 +117,7 @@ extension CartViewHelper {
             return .validating
         case .loaded(let totals):
             if let couponTotal = totals.couponsTotals
-                .first(where: { $0.code == couponItem.code }) {
+                .first(where: { $0.matches(code: couponItem.code) }) {
                     return .valid(couponTotal)
                 } else {
                     return .idle
@@ -129,5 +127,13 @@ extension CartViewHelper {
         default:
             return .idle
         }
+    }
+}
+
+private extension PointOfSaleCouponTotal {
+    /// WooCommerce treats coupon codes as case-insensitive, and the code in the order
+    /// response may be cased differently from the one the merchant added to the cart.
+    func matches(code: String) -> Bool {
+        self.code.caseInsensitiveCompare(code) == .orderedSame
     }
 }

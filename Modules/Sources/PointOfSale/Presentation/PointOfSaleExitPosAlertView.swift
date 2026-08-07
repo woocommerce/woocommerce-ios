@@ -11,8 +11,12 @@ struct PointOfSaleExitPosAlertView: View {
         self._isPresented = isPresented
     }
 
+    private var isCompactWidth: Bool {
+        horizontalSizeClass == .compact
+    }
+
     var body: some View {
-        if horizontalSizeClass == .compact {
+        if isCompactWidth {
             compactBody
         } else {
             regularBody
@@ -63,12 +67,18 @@ struct PointOfSaleExitPosAlertView: View {
 
     private var messageContent: some View {
         VStack(spacing: Constants.verticalSpacing) {
-            Text(Localization.exitTitle)
-                .font(.posHeadingBold)
-                .foregroundColor(Color.posOnSurface)
-            Text(Localization.exitBody)
-                .font(.posBodyLargeRegular())
-                .foregroundColor(Color.posOnSurface)
+            if isCompactWidth {
+                POSErrorXMark(color: .posPrimary)
+            }
+
+            VStack(spacing: isCompactWidth ? Constants.compactTitleSpacing : Constants.verticalSpacing) {
+                Text(Localization.exitTitle)
+                    .font(.posHeadingBold)
+                    .foregroundColor(Color.posOnSurface)
+                Text(Localization.exitBody)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(Color.posOnSurface)
+            }
         }
     }
 
@@ -81,18 +91,18 @@ struct PointOfSaleExitPosAlertView: View {
                                          analytics.track(.pointOfSaleExitConfirmed)
                                          dismiss()
                                      }),
-                secondaryButton: backButtonConfig
+                secondaryButton: cancelButtonConfig
             )
         )
     }
 
     /// Regular width keeps the single-button modal, where the close button in the corner is the way out.
-    private var backButtonConfig: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
-        guard horizontalSizeClass == .compact else {
+    private var cancelButtonConfig: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
+        guard isCompactWidth else {
             return nil
         }
-        return .init(title: Localization.backButton,
-                     accessibilityIdentifier: "pos-exit-back-button",
+        return .init(title: Localization.cancelButton,
+                     accessibilityIdentifier: "pos-exit-cancel-button",
                      action: {
                          isPresented = false
                      })
@@ -102,6 +112,7 @@ struct PointOfSaleExitPosAlertView: View {
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
         static let verticalSpacing: CGFloat = POSSpacing.xLarge
+        static let compactTitleSpacing: CGFloat = POSSpacing.small
         static let padding: CGFloat = POSPadding.medium
     }
 
@@ -121,10 +132,10 @@ private extension PointOfSaleExitPosAlertView {
             value: "Exit",
             comment: "Button text of the exit Point of Sale modal alert"
         )
-        static let backButton = NSLocalizedString(
-            "pos.exitPOSModal.backButton",
-            value: "Back",
-            comment: "Button on the exit Point of Sale modal that dismisses it and returns to Point of Sale."
+        static let cancelButton = NSLocalizedString(
+            "pos.exitPOSModal.cancelButton",
+            value: "Cancel",
+            comment: "Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale."
         )
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.exitPOSModal.closeButton.accessibilityLabel",

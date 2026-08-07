@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleFlowButtonsView: View {
+struct POSFlowButtonsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     let configuration: PointOfSaleFlowButtonConfiguration
@@ -100,10 +100,10 @@ private extension PointOfSaleFlowButtonConfiguration {
 
 #Preview("Compact — stacked") {
     VStack(spacing: POSSpacing.xLarge) {
-        PointOfSaleFlowButtonsView(configuration: .preview())
-        PointOfSaleFlowButtonsView(configuration: .preview(secondary: nil))
-        PointOfSaleFlowButtonsView(configuration: .preview(primary: nil))
-        PointOfSaleFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
+        POSFlowButtonsView(configuration: .preview())
+        POSFlowButtonsView(configuration: .preview(secondary: nil))
+        POSFlowButtonsView(configuration: .preview(primary: nil))
+        POSFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
                                                            secondary: "Zurück zur Auswahl"))
     }
     .padding(POSPadding.xLarge)
@@ -113,10 +113,10 @@ private extension PointOfSaleFlowButtonConfiguration {
 
 #Preview("Regular — side by side") {
     VStack(spacing: POSSpacing.xLarge) {
-        PointOfSaleFlowButtonsView(configuration: .preview())
-        PointOfSaleFlowButtonsView(configuration: .preview(secondary: nil))
-        PointOfSaleFlowButtonsView(configuration: .preview(primary: nil))
-        PointOfSaleFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
+        POSFlowButtonsView(configuration: .preview())
+        POSFlowButtonsView(configuration: .preview(secondary: nil))
+        POSFlowButtonsView(configuration: .preview(primary: nil))
+        POSFlowButtonsView(configuration: .preview(primary: "Weiter zur Einrichtung",
                                                            secondary: "Zurück zur Auswahl"))
     }
     .padding(POSPadding.xLarge)

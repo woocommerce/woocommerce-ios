@@ -64,7 +64,7 @@ struct POSPrinterSetupModal: View {
             .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 
             if let buttonConfiguration {
-                PointOfSaleFlowButtonsView(configuration: buttonConfiguration)
+                POSFlowButtonsView(configuration: buttonConfiguration)
             }
         }
         .posModalCloseButton(action: {

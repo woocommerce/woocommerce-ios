@@ -73,7 +73,7 @@ struct PointOfSaleExitPosAlertView: View {
     }
 
     private var buttons: some View {
-        PointOfSaleFlowButtonsView(
+        POSFlowButtonsView(
             configuration: .init(
                 primaryButton: .init(title: Localization.exitButton,
                                      accessibilityIdentifier: "pos-exit-confirm-button",

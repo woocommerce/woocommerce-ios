@@ -204,6 +204,29 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func test_verifyAgeRange_when_requirements_fetch_fails_falls_back_to_snapshot_approval_value() {
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            requirementsResult: .failure(AgeRangeProviderError.unknown)
+        )
+        let sut = AgeRangeVerificationService(provider: provider)
+        let exp = expectation(description: "completion")
+
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { result in
+            switch result {
+            case let .eligible(approvalRequired, isMinor):
+                XCTAssertTrue(approvalRequired)
+                XCTAssertTrue(isMinor)
+            default:
+                XCTFail("Expected .eligible, got \(result)")
+            }
+            exp.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
     func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(

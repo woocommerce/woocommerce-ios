@@ -59,4 +59,8 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     func cancelledOnReader() -> CardPresentPaymentEventDetails? {
         .cancelledOnReader
     }
+
+    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> CardPresentPaymentEventDetails? {
+        .paymentCancellationConfirmation(onDismiss: onDismiss)
+    }
 }

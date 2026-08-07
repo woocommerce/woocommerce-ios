@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] In-Person Payments: Fixed Tap to Pay appearing after cancellation and clarified when no payment was taken. [https://github.com/woocommerce/woocommerce-ios/pull/17675]
 
 
 25.4

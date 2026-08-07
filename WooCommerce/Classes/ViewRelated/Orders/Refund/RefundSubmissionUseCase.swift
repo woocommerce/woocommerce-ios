@@ -474,7 +474,7 @@ private extension RefundSubmissionUseCase {
                                                                      reason: refund.reason,
                                                                      automaticRefund: refund.createAutomated ?? false,
                                                                      restockItems: true,
-                                                                     amount: nil,
+                                                                     amountOverride: nil,
                                                                      lineItems: lineItems)
             retrieveUpdatedRefundData(refund: createdRefund)
             onCompletion(.success(()))

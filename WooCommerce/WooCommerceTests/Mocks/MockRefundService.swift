@@ -39,7 +39,7 @@ final class MockRefundService: RefundServiceProtocol {
                       amountOverride: String?,
                       lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         spyCreateRefundRestockItems = restockItems
-        spyCreateRefundAmount = amount
+        spyCreateRefundAmount = amountOverride
         switch createRefundResult {
         case .success(let refund):
             return refund

@@ -61,19 +61,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              receiptEligibilityUseCase: receiptEligibilityUseCase)
     }
 
-    func test_retryApproach_when_paymentCapture_fails_with_paymentIntentIdMissing_then_dontRetry() {
-        // Given
-        let error = CardReaderServiceError.paymentCapture(underlyingError: .paymentIntentIdMissing)
-
-        // When
-        let retryApproach = error.retryApproach
-
-        // Then
-        guard case .dontRetry = retryApproach else {
-            return XCTFail("Expected .dontRetry, got \(retryApproach)")
-        }
-    }
-
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
         // Given
 

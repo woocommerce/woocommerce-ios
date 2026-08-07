@@ -28,7 +28,7 @@ public protocol RefundsRemoteProtocol {
                               reason: String,
                               apiRefund: Bool,
                               apiRestock: Bool,
-                              amount: String?,
+                              amountOverride: String?,
                               lineItems: [ComputedRefundLineItem]) async throws -> Refund
 }
 
@@ -218,8 +218,9 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     // MARK: Server-calculated refund endpoints (wc/v3)
 
     /// Previews a refund via `POST /wc/v3/orders/{orderID}/refunds/preview` (WC 11.1.0+),
-    /// returning the server-calculated breakdown. On stores where the route is not registered the request
-    /// fails with `DotcomError.noRestRoute` (404 `rest_no_route`) — the signal callers use to fall back
+    /// returning the server-calculated breakdown. When the route is not registered the request fails
+    /// with either `DotcomError.noRestRoute` through the Jetpack tunnel or `NetworkError.notFound`
+    /// with error code `rest_no_route` through direct REST — the signal callers use to fall back
     /// to locally calculated refunds.
     ///
     /// - Parameters:
@@ -257,8 +258,8 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     ///       Always sent explicitly — the v3 endpoint defaults it to `true`.
     ///     - apiRestock: Whether refunded items are restocked (`api_restock`). Always sent
     ///       explicitly — the v3 endpoint defaults it to `true`.
-    ///     - amount: Optional order-level total override. When omitted the server derives the
-    ///       amount from the line items.
+    ///     - amountOverride: Optional order-level total override. When omitted the server
+    ///       derives the amount from the line items.
     ///     - lineItems: What to refund; the server computes all monetary values.
     ///
     public func createComputedRefund(for siteID: Int64,
@@ -266,13 +267,13 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
                                      reason: String,
                                      apiRefund: Bool,
                                      apiRestock: Bool,
-                                     amount: String?,
+                                     amountOverride: String?,
                                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         let body = ComputedRefundBody(computeTotals: String(true),
                                       reason: reason,
                                       apiRefund: String(apiRefund),
                                       apiRestock: String(apiRestock),
-                                      amount: amount,
+                                      amount: amountOverride,
                                       lineItems: lineItems)
         let path = "\(Path.orders)/\(orderID)/\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3,

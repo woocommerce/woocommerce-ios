@@ -4,6 +4,7 @@ import struct Yosemite.POSCustomAmount
 
 struct CustomAmountRowView: View {
     private let customAmount: POSCustomAmount
+    private let showsDiscountNotAppliedNote: Bool
     private let onEdit: (() -> Void)?
     private let onRemove: (() -> Void)?
 
@@ -11,9 +12,11 @@ struct CustomAmountRowView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
 
     init(customAmount: POSCustomAmount,
+         showsDiscountNotAppliedNote: Bool = false,
          onEdit: (() -> Void)? = nil,
          onRemove: (() -> Void)? = nil) {
         self.customAmount = customAmount
+        self.showsDiscountNotAppliedNote = showsDiscountNotAppliedNote
         self.onEdit = onEdit
         self.onRemove = onRemove
     }
@@ -36,7 +39,14 @@ struct CustomAmountRowView: View {
                 Text(formattedAmount)
                     .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                     .font(Constants.amountFont)
+
+                if showsDiscountNotAppliedNote {
+                    Text(Localization.discountNotApplied)
+                        .foregroundColor(.posAlert)
+                        .font(Constants.amountFont)
+                }
             }
+            .animation(.default, value: showsDiscountNotAppliedNote)
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityElement(children: .combine)
 
@@ -63,6 +73,14 @@ struct CustomAmountRowView: View {
 }
 
 private extension CustomAmountRowView {
+    enum Localization {
+        static let discountNotApplied = NSLocalizedString(
+            "pointOfSale.customAmountRow.discountNotApplied",
+            value: "Discount not applied",
+            comment: "Note shown on a custom amount row in the Point of Sale cart at checkout "
+                + "when a coupon is applied, since coupons never discount custom amounts.")
+    }
+
     enum Constants {
         static let iconSize: CGFloat = 96
         static let maximumIconSize: CGFloat = Self.iconSize * 1.5
@@ -86,6 +104,13 @@ private extension CustomAmountRowView {
 #Preview("Read-only", traits: .sizeThatFitsLayout) {
     CustomAmountRowView(
         customAmount: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: true)
+    )
+}
+
+#Preview("Discount not applied", traits: .sizeThatFitsLayout) {
+    CustomAmountRowView(
+        customAmount: POSCustomAmount(name: "Service fee", amount: "12.50", isTaxable: true),
+        showsDiscountNotAppliedNote: true
     )
 }
 #endif

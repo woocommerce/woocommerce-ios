@@ -449,12 +449,20 @@ private struct CustomAmountsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
 
+    private let viewHelper = CartViewHelper()
+
     var body: some View {
+        let showsDiscountNotAppliedNote = viewHelper.shouldShowCustomAmountDiscountNotAppliedNote(
+            orderStage: posModel.orderStage,
+            orderState: posModel.orderState,
+            cart: posModel.cart
+        )
         LazyVStack(spacing: Constants.cartItemSpacing) {
             ForEach(posModel.cart.customAmounts, id: \.id) { customAmount in
                 let isInteractive = posModel.orderStage == .building
                 CustomAmountRowView(
                     customAmount: customAmount,
+                    showsDiscountNotAppliedNote: showsDiscountNotAppliedNote,
                     onEdit: isInteractive ? { posModel.editingCustomAmount = customAmount } : nil,
                     onRemove: isInteractive ? {
                         analytics.track(

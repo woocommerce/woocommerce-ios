@@ -330,12 +330,23 @@ private extension POSPrinterSetupModal {
             return .init(primaryButton: .init(title: Localization.settingsButton, action: {
                 openDeviceSettings()
             }),
-                         secondaryButton: nil)
+                         secondaryButton: cancelButton)
         }
         return .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-                     secondaryButton: nil)
+                     secondaryButton: cancelButton)
+    }
+
+    /// Compact width pairs the primary action with a stacked Cancel. Regular width keeps the
+    /// single-button modal, where the close button in the corner is the way out.
+    var cancelButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
+        guard isCompactWidth else {
+            return nil
+        }
+        return .init(title: Localization.cancelButton, action: {
+            isPresented = false
+        })
     }
 
     func openDeviceSettings() {

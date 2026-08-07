@@ -29,22 +29,30 @@ struct PointOfSaleFlowButtonsView: View {
     @ViewBuilder
     private var primaryButton: some View {
         if let primaryButton = configuration.primaryButton {
-            Button(primaryButton.title) {
-                primaryButton.action()
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .disabled(!primaryButton.isEnabled)
+            button(for: primaryButton)
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
     }
 
     @ViewBuilder
     private var secondaryButton: some View {
         if let secondaryButton = configuration.secondaryButton {
-            Button(secondaryButton.title) {
-                secondaryButton.action()
-            }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .disabled(!secondaryButton.isEnabled)
+            button(for: secondaryButton)
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        }
+    }
+
+    @ViewBuilder
+    private func button(for config: PointOfSaleFlowButtonConfiguration.ButtonConfig) -> some View {
+        let button = Button(config.title) {
+            config.action()
+        }
+        .disabled(!config.isEnabled)
+
+        if let accessibilityIdentifier = config.accessibilityIdentifier {
+            button.accessibilityIdentifier(accessibilityIdentifier)
+        } else {
+            button
         }
     }
 }
@@ -57,15 +65,18 @@ struct PointOfSaleFlowButtonConfiguration {
     struct ButtonConfig {
         let title: String
         let isEnabled: Bool
+        let accessibilityIdentifier: String?
         let action: () -> Void
 
         init(
             title: String,
             isEnabled: Bool = true,
+            accessibilityIdentifier: String? = nil,
             action: @escaping () -> Void,
         ) {
             self.title = title
             self.isEnabled = isEnabled
+            self.accessibilityIdentifier = accessibilityIdentifier
             self.action = action
         }
     }

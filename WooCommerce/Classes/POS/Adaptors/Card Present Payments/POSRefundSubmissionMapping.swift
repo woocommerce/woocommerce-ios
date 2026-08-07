@@ -127,12 +127,12 @@ struct POSRefundSubmissionMapping {
     /// in which lines they include or what amounts those lines carry.
     private func refundLines<Line>(from selectedItems: [POSRefundSelectableItem],
                                    context: PreparedRefundContext,
-                                   quantityBased: (Int64, Decimal) -> Line,
+                                   quantityBased: (Int64, Int) -> Line,
                                    amountBased: (Int64, Decimal) -> Line) -> [Line] {
         let components = refundComponents(from: selectedItems, context: context)
 
         let productLines = components.items.map {
-            quantityBased($0.item.itemID, Decimal($0.quantity))
+            quantityBased($0.item.itemID, $0.quantity)
         }
 
         let feeLines = components.fees.compactMap { fee -> Line? in

@@ -112,7 +112,7 @@ struct RefundServiceTests {
                                                     reason: "Damaged item",
                                                     automaticRefund: true,
                                                     restockItems: true,
-                                                    amount: nil,
+                                                    amountOverride: nil,
                                                     lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
         // Then the classic v3 refund object is decoded, display fields included
@@ -136,7 +136,7 @@ struct RefundServiceTests {
                                            reason: "",
                                            automaticRefund: false,
                                            restockItems: true,
-                                           amount: nil,
+                                           amountOverride: nil,
                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
         }
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 0)

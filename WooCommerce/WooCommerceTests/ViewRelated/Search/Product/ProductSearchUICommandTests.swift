@@ -182,6 +182,34 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     // MARK: - Split view support
 
+    func test_animateNavigationBarVisibilityChanges_when_using_product_search_then_is_false() {
+        // Given
+        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+
+        // Then
+        XCTAssertFalse(command.animateNavigationBarVisibilityChanges)
+    }
+
+    func test_didSelectSearchResult_ends_editing_before_invoking_onProductSelection() {
+        // Given
+        let product = Product.fake()
+        let view = EndEditingSpyView()
+        let viewController = UIViewController()
+        viewController.view = view
+        var editingHadEndedWhenProductWasSelected = false
+        let command = ProductSearchUICommand(siteID: sampleSiteID,
+                                             isSearchProductsBySKUEnabled: true,
+                                             onProductSelection: { _ in
+            editingHadEndedWhenProductWasSelected = view.didEndEditing
+        }, onCancel: {})
+
+        // When
+        command.didSelectSearchResult(model: product, from: viewController, reloadData: {}, updateActionButton: {})
+
+        // Then
+        XCTAssertTrue(editingHadEndedWhenProductWasSelected)
+    }
+
     func test_onProductSelection_is_invoked_when_didSelectSearchResult_is_called() throws {
         // Given
         let product = Product.fake().copy(name: "Product")
@@ -221,6 +249,15 @@ final class ProductSearchUICommandTests: XCTestCase {
 
         // Then
         XCTAssertFalse(command.shouldDeselectSearchResultOnSelection())
+    }
+}
+
+private final class EndEditingSpyView: UIView {
+    private(set) var didEndEditing = false
+
+    override func endEditing(_ force: Bool) -> Bool {
+        didEndEditing = true
+        return super.endEditing(force)
     }
 }
 

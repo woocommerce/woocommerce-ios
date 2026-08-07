@@ -224,7 +224,7 @@ private final class SpyAnalytics: Analytics {
 }
 
 private final class SpyAnalyticsProvider: AnalyticsProvider {
-    func refreshUserData() {}
+    func refreshUserData(completion: @escaping () -> Void) { completion() }
     func track(_ eventName: String) {}
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {}
     func clearEvents() {}

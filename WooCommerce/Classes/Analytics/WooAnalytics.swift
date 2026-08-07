@@ -13,6 +13,8 @@ import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 
+    typealias ABTestStarter = @MainActor (ExperimentContext) async -> Void
+
     // MARK: - Properties
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
@@ -28,6 +30,8 @@ final class WooAnalytics: Analytics {
     /// Defaults database used to persist the analytics opt-in state
     ///
     private let userDefaults: UserDefaults
+
+    private let startABTest: ABTestStarter
 
     /// Check user opt-in for analytics
     ///
@@ -47,9 +51,12 @@ final class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker, userDefaults: UserDefaults = .standard) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
+         userDefaults: UserDefaults = .standard,
+         startABTest: @escaping ABTestStarter = { await ABTest.start(for: $0) }) {
         self.analyticsProvider = analyticsProvider
         self.userDefaults = userDefaults
+        self.startABTest = startABTest
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -76,17 +83,20 @@ extension WooAnalytics {
 
         // Skips refreshing user data when user is authenticated without WPCom
         // since they are still identified with anonymous ID.
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-            analyticsProvider.refreshUserData()
-        }
-
-        // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
-        // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
-        // access.
         let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
             .loggedIn: .loggedOut
-        Task { @MainActor in
-            await ABTest.start(for: context)
+
+        let refreshABTests: () -> Void = { [startABTest] in
+            Task { @MainActor in
+                await startABTest(context)
+            }
+        }
+
+        // Refreshes A/B experiments after Tracks finishes switching users because that switch resets `ExPlat.shared`.
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+            analyticsProvider.refreshUserData(completion: refreshABTests)
+        } else {
+            refreshABTests()
         }
     }
 

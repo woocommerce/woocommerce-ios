@@ -1,15 +1,27 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+
 25.4
 -----
 - [*] POS: custom amounts in the cart now show a "Discount not applied" note at checkout when a coupon is applied, since coupons don't discount custom amounts [https://github.com/woocommerce/woocommerce-ios/pull/17623]
+- [*] Products: Fixed a crash when returning from product details on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17671]
+- [Internal] POS: Phone POS is now available on US stores for Automattic accounts behind the woo_pos_phone_us remote feature flag. [https://github.com/woocommerce/woocommerce-ios/pull/17663]
+- [*] Fixed magic link login not navigating to the store dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17622]
 - [*] Login: Fixed stores failing to load when hosting blocks one of the WordPress REST API URL formats. [https://github.com/woocommerce/woocommerce-ios/pull/17602]
+- [*] Order statuses now display in the store's language across the order list, search, filters, and the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17595]
 - [*] Orders: Fixed a crash when rotating order details on large iPhones running iOS 27. [https://github.com/woocommerce/woocommerce-ios/pull/17620]
 - [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]
 - [*] Products: Fixed bulk Regular Price update failing for variable products whose variations share a duplicate SKU or GTIN. [https://github.com/woocommerce/woocommerce-ios/pull/17556]
+- [Internal] Removed leftover code for the retired Products tab feedback banner and its survey. [https://github.com/woocommerce/woocommerce-ios/pull/17569]
+- [Internal] Alpha and local development builds now report crashes to a separate Sentry project. [https://github.com/woocommerce/woocommerce-ios/pull/17652]
+- [*] Login: Fixed a navigation bar flicker when opening the QR login screen. [https://github.com/woocommerce/woocommerce-ios/pull/17635]
 
 25.3
 -----
+- [Internal] Prevent A/B test startup from racing Tracks user switching. [https://github.com/woocommerce/woocommerce-ios/pull/17657]
+- [*] Dashboard: Fixed a crash on the store performance card when a store returns stats with an invalid date. [https://github.com/woocommerce/woocommerce-ios/pull/17628]
+- [Internal] Mitigate a potential navigation crash when opening products from search results. [https://github.com/woocommerce/woocommerce-ios/pull/17645]
+- [Internal] Prevent offline banner updates from overlapping navigation transitions. [https://github.com/woocommerce/woocommerce-ios/pull/17611]
 - [Internal] Send a persistent device id in remote feature flag requests so logins without a WordPress.com account are included in progressive rollouts. [https://github.com/woocommerce/woocommerce-ios/pull/17605]
 - [*] Payments: fixed successful in-person payments appearing to fail when the capture response is interrupted. [https://github.com/woocommerce/woocommerce-ios/pull/17593]
 - [Internal] Add `payment_method_type` and `currency` properties to receipt Tracks events for Android parity. [https://github.com/woocommerce/woocommerce-ios/pull/17548]

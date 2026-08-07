@@ -277,7 +277,9 @@ private extension PasswordViewController {
         loginFields.meta.emailMagicLinkSource = .login
 
         updateLoadingUI(isRequestingMagicLink: true)
-        let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username, jetpackLogin: loginFields.meta.jetpackLogin)
+        let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username,
+                                                                 jetpackLogin: loginFields.meta.jetpackLogin,
+                                                                 siteAddress: loginFields.siteAddress)
         switch result {
         case .success:
             didRequestAuthenticationLink()

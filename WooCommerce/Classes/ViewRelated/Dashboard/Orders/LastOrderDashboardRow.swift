@@ -124,9 +124,11 @@ private extension LastOrderDashboardRow {
 struct LastOrderDashboardRowViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     let order: Order
+    private let siteStatuses: [OrderStatus]
 
-    init(order: Order) {
+    init(order: Order, siteStatuses: [OrderStatus] = []) {
         self.order = order
+        self.siteStatuses = siteStatuses
     }
 
     var rowData: LastOrderDashboardRow.RowData {
@@ -163,7 +165,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusDescription: String {
-        order.status.description
+        siteStatuses.displayName(for: order.status)
     }
 
     /// The value will only include the year if the `createdDate` is not from the current year.

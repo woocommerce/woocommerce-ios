@@ -3,7 +3,7 @@
 
 25.5
 -----
-
+- [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
 
 25.4
 -----

@@ -1,5 +1,6 @@
 import Experiments
 import Foundation
+import WordPressShared
 import Yosemite
 import enum Networking.RemoteFeatureFlag
 import enum Networking.WooConstants
@@ -47,6 +48,10 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
+    /// How long `awaitedDispatch` waits before an unanswered dispatch degrades to its fallback. Injectable so
+    /// tests can exercise the degradation without waiting out the production value.
+    private let dispatchTimeout: TimeInterval
+
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
@@ -56,7 +61,8 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
                      posCatalogSettingsService: POSCatalogSettingsServiceProtocol?
                         = MobileStatusReportProvider.makeCatalogSettingsService(),
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
+                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+                     dispatchTimeout: TimeInterval = 1) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
@@ -66,6 +72,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
         self.posCatalogSettingsService = posCatalogSettingsService
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
+        self.dispatchTimeout = dispatchTimeout
     }
 
     nonisolated private static func makeCatalogSettingsService() -> POSCatalogSettingsServiceProtocol? {
@@ -103,7 +110,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     }
 
     private func storeLabel(_ site: Site) -> String {
-        site.url.nilIfEmpty ?? site.name.nilIfEmpty ?? "site ID \(site.siteID)"
+        site.url.nonEmptyString() ?? site.name.nonEmptyString() ?? "site ID \(site.siteID)"
     }
 }
 
@@ -153,8 +160,8 @@ private extension MobileStatusReportProvider {
 
     func accountSection(_ siteAddress: String?) -> [String] {
         let sites = allSites()
-        return [entry("WPCom user ID", stores.sessionManager.defaultAccount.map { String($0.userID) } ?? "not logged in"),
-                siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
+        return [entry("WPCom user ID", wpcomUserID()),
+                siteAddress?.nonEmptyString().map { entry("Address given in the form", $0) },
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
@@ -168,7 +175,7 @@ private extension MobileStatusReportProvider {
             entry("Auth method", authMethod()),
             entry("Jetpack", "installed=\(site.isJetpackThePluginInstalled) " +
                   "connected=\(site.isJetpackConnected) CP=\(site.isJetpackCPConnected)"),
-            entry("Plan", site.plan.nilIfEmpty ?? Constants.unknown),
+            entry("Plan", site.plan.nonEmptyString() ?? Constants.unknown),
             entry("Woo core version", wooCoreVersion(siteID: site.siteID) ?? Constants.unknown)
         ]
     }
@@ -227,6 +234,22 @@ private extension MobileStatusReportProvider {
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    /// An account exists only for WPCom logins, so its absence alone does not distinguish a merchant using site
+    /// credentials or application passwords from one who is not logged in at all — the held credentials do.
+    func wpcomUserID() -> String {
+        if let account = stores.sessionManager.defaultAccount {
+            return String(account.userID)
+        }
+        switch stores.sessionManager.defaultCredentials {
+        case .wpcom:
+            return "\(Constants.unknown) (WPCom login, account not synced)"
+        case .wporg, .applicationPassword:
+            return "N/A (no WPCom account)"
+        case .none:
+            return "not logged in"
+        }
+    }
 
     /// `.null` is skipped: it is a throwaway case that exists only so the enum can declare a raw type, and the
     /// service answers it through the `default` branch, so it would appear as a real flag that is switched on.
@@ -346,7 +369,7 @@ private extension MobileStatusReportProvider {
             return "not installed"
         }
         let state = installed.status == .inactive ? "installed, not active" : "active"
-        return "\(state) \(installed.version.nilIfEmpty ?? Constants.unknown)"
+        return "\(state) \(installed.version.nonEmptyString() ?? Constants.unknown)"
     }
 
     /// Install state alone cannot say which gateway drives in-person payments when both plugins are present. Read
@@ -359,7 +382,7 @@ private extension MobileStatusReportProvider {
         let gateway = gatewayID
             .flatMap { CardPresentPaymentsPlugin.with(gatewayID: $0) }
             .map { plugin in
-                let version = plugins.first { $0.plugin == plugin.fileNameWithPathExtension }?.version.nilIfEmpty
+                let version = plugins.first { $0.plugin == plugin.fileNameWithPathExtension }?.version.nonEmptyString()
                 return "\(reportName(of: plugin)) \(version ?? Constants.unknown)"
             }
 
@@ -396,7 +419,7 @@ private extension MobileStatusReportProvider {
         let storedID = await awaitedDispatch(fallback: String?.none) { completion in
             AppSettingsAction.getStoreID(siteID: site.siteID, onCompletion: completion)
         }
-        return storedID?.nilIfEmpty ?? "\(Constants.notSet) (no store system status has been fetched yet)"
+        return storedID?.nonEmptyString() ?? "\(Constants.notSet) (no store system status has been fetched yet)"
     }
 
     /// The credentials say what the app holds, the request mode says how it uses them, and a Jetpack site can be
@@ -416,7 +439,7 @@ private extension MobileStatusReportProvider {
     }
 
     func wooCoreVersion(siteID: Int64) -> String? {
-        sitePlugins(siteID: siteID).first { $0.plugin == "woocommerce/woocommerce" }?.version.nilIfEmpty
+        sitePlugins(siteID: siteID).first { $0.plugin == "woocommerce/woocommerce" }?.version.nonEmptyString()
     }
 
     func sitePlugins(siteID: Int64) -> [SitePlugin] {
@@ -435,7 +458,11 @@ private extension MobileStatusReportProvider {
     }
 
     func fetched<T>(_ controller: ResultsController<T>) -> [T.ReadOnlyType] {
-        try? controller.performFetch()
+        do {
+            try controller.performFetch()
+        } catch {
+            DDLogError("⛔️ MobileStatusReportProvider: fetching \(T.entityName) failed: \(error)")
+        }
         return controller.fetchedObjects
     }
 
@@ -447,15 +474,15 @@ private extension MobileStatusReportProvider {
         }
 
         return ["", "All connected stores:"] + sites.map { site in
-            entry(site.url.nilIfEmpty ?? Constants.unknown,
-                  "Plan: \(site.plan.nilIfEmpty ?? Constants.unknown) " +
+            entry(site.url.nonEmptyString() ?? Constants.unknown,
+                  "Plan: \(site.plan.nonEmptyString() ?? Constants.unknown) " +
                   "Jetpack: installed=\(site.isJetpackThePluginInstalled) connected=\(site.isJetpackConnected)")
         }
     }
 
     /// Enough to compare against server logs, not enough to address the device.
     func redactedToken(_ token: String?) -> String {
-        token?.nilIfEmpty.map { "present (…\($0.suffix(6)))" } ?? "missing"
+        token?.nonEmptyString().map { "present (…\($0.suffix(6)))" } ?? "missing"
     }
 }
 
@@ -482,8 +509,8 @@ private extension MobileStatusReportProvider {
     ///
     /// The await is bounded because a dispatch is not guaranteed an answer: the deauthenticated stores manager
     /// drops actions for stores it does not run (`AppSettingsStore` among them), and no completion ever comes.
-    /// After `Constants.dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is
-    /// recoverable, a report that never finishes while a merchant files a ticket is not.
+    /// After `dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is recoverable, a
+    /// report that never finishes while a merchant files a ticket is not.
     func awaitedDispatch<Value>(fallback: Value,
                                 _ makeAction: (@escaping (Value) -> Void) -> Action) async -> Value {
         await withCheckedContinuation { continuation in
@@ -498,12 +525,12 @@ private extension MobileStatusReportProvider {
                 // ever answers from elsewhere.
                 DispatchQueue.main.async { resumeOnce(value) }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.dispatchTimeout) { resumeOnce(fallback) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + dispatchTimeout) { resumeOnce(fallback) }
         }
     }
 }
 
-extension MobileStatusReportProvider {
+private extension MobileStatusReportProvider {
     enum Constants {
         static let heading = "### Mobile Status Report generated via the WooCommerce iOS app ###"
 
@@ -522,15 +549,6 @@ extension MobileStatusReportProvider {
         /// log with — keep the three in step.
         static let posReasonHint = "Reason is logged - search application_log.txt for " +
             "\"POS tab not visible\" or \"POS cannot be launched\""
-
-        /// How long `awaitedDispatch` waits before degrading to its fallback.
-        static let dispatchTimeout: TimeInterval = 1
-    }
-}
-
-private extension String {
-    var nilIfEmpty: String? {
-        isEmpty ? nil : self
     }
 }
 

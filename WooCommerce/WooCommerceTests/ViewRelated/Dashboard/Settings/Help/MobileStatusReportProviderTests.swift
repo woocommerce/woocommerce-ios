@@ -256,6 +256,72 @@ struct MobileStatusReportProviderTests {
         """))
     }
 
+    @Test func every_connected_woo_store_is_listed_with_its_plan_and_jetpack_state() async throws {
+        // Given
+        try await insert(sites: [
+            .fake().copy(siteID: 1,
+                         name: "Alpha",
+                         url: "https://alpha.example.com",
+                         plan: "business-bundle",
+                         isJetpackThePluginInstalled: true,
+                         isJetpackConnected: true,
+                         isWooCommerceActive: true),
+            .fake().copy(siteID: 2,
+                         name: "Beta",
+                         url: "https://beta.example.com",
+                         plan: "",
+                         isJetpackThePluginInstalled: false,
+                         isJetpackConnected: false,
+                         isWooCommerceActive: true),
+            // A WPCom site without WooCommerce: on the account, but not a store the count or list may include.
+            .fake().copy(siteID: 3,
+                         name: "Blog",
+                         url: "https://blog.example.com",
+                         isWooCommerceActive: false)
+        ])
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Connected stores: 2"))
+        #expect(report.contains("All connected stores:"))
+        #expect(report.contains("https://alpha.example.com: Plan: business-bundle Jetpack: installed=true connected=true"))
+        #expect(report.contains("https://beta.example.com: Plan: unknown Jetpack: installed=false connected=false"))
+        #expect(!report.contains("https://blog.example.com"))
+    }
+
+    /// `defaultAccount` exists only for WPCom logins. A merchant authenticated with site credentials or an
+    /// application password has none, and their report must not claim they are not logged in.
+    @Test func a_login_without_a_wpcom_account_is_not_reported_as_logged_out() async {
+        // Given
+        sessionManager.defaultCredentials = .applicationPassword(username: "merchant",
+                                                                 password: "secret",
+                                                                 siteAddress: "https://store.example.com")
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("WPCom user ID: N/A (no WPCom account)"))
+        #expect(!report.contains("not logged in"))
+    }
+
+    /// The remaining `defaultAccount == nil` state: WPCom credentials whose account object has not synced yet,
+    /// which is neither "no WPCom account" nor "not logged in".
+    @Test func a_wpcom_login_without_a_synced_account_is_reported_as_unknown() async {
+        // Given
+        sessionManager.defaultCredentials = .wpcom(username: "merchant",
+                                                   authToken: "token",
+                                                   siteAddress: "https://store.example.com")
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("WPCom user ID: unknown (WPCom login, account not synced)"))
+    }
+
     // MARK: - Feature flags
 
     /// `FeatureFlag.null` exists only so the enum can declare a raw type. The feature flag service answers it
@@ -339,6 +405,8 @@ struct MobileStatusReportProviderTests {
 private extension MobileStatusReportProviderTests {
 
     func makeProvider(pushNotesManager: PushNotesManager? = nil) -> MobileStatusReportProvider {
+        // A short timeout so the unanswered-dispatch test exercises the degradation without waiting out the
+        // production value.
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
                                    pushNotesManager: pushNotesManager ?? self.pushNotesManager,
                                    stores: stores,
@@ -347,7 +415,8 @@ private extension MobileStatusReportProviderTests {
                                    posEligibilityService: posEligibilityService,
                                    posCatalogSettingsService: posCatalogSettingsService,
                                    featureFlagService: MockFeatureFlagService(),
-                                   generalAppSettings: appSettings)
+                                   generalAppSettings: appSettings,
+                                   dispatchTimeout: 0.05)
     }
 
     func givenAFullyPopulatedStore() async throws -> MockPushNotificationsManager {
@@ -409,7 +478,7 @@ private extension MobileStatusReportProviderTests {
         return MockPushNotificationsManager(mockedDeviceID: "device-id", siteIDsRegisteredForWooPNs: [1])
     }
 
-    func insert(sites: [Yosemite.Site], plugins: [SitePlugin]) async throws {
+    func insert(sites: [Yosemite.Site], plugins: [SitePlugin] = []) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             storageManager.performAndSave({ storage in
                 sites.forEach { storage.insertNewObject(ofType: StorageSite.self).update(with: $0) }

@@ -225,13 +225,17 @@ public struct RESTRequest: Request {
         let url = try components.joined(separator: "/").asURL()
         var request = try URLRequest(url: url, method: method)
         request.allowsCellularAccess = allowsCellularAccess
-        request = try URLEncoding.queryString.encode(request, with: queryParameters.validatedAlamofireParameters())
         let parameters = try requestParameters.validatedAlamofireParameters()
+        let queryParameters = try queryParameters.validatedAlamofireParameters()
         switch method {
         case .post, .put, .patch:
+            request = try URLEncoding.queryString.encode(request, with: queryParameters)
             return try JSONEncoding.default.encode(request, with: parameters)
         default:
-            return try URLEncoding.default.encode(request, with: parameters)
+            let mergedParameters = (parameters ?? [:]).merging(queryParameters ?? [:]) { _, queryParameter in
+                queryParameter
+            }
+            return try URLEncoding.default.encode(request, with: mergedParameters)
         }
     }
 

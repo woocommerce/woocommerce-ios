@@ -106,15 +106,16 @@ final class FeatureFlagRemoteTests: XCTestCase {
         XCTAssertEqual(flag, .wooAIAssistant)
     }
 
-    func test_rawValue_when_woo_ipp_australia_woopayments_then_maps_to_inPersonPaymentsAustraliaWooPayments_case() {
-        // Given
-        let key = "woo_ipp_australia_woopayments"
+    func test_rawValue_when_retired_ipp_country_expansion_key_then_returns_nil() {
+        let retiredKeys = [
+            "woo_ipp_country_expansion",
+            "woo_ipp_country_expansion_eu_extended",
+            "woo_ipp_australia_woopayments"
+        ]
 
-        // When
-        let flag = RemoteFeatureFlag(rawValue: key)
-
-        // Then
-        XCTAssertEqual(flag, .inPersonPaymentsAustraliaWooPayments)
+        for key in retiredKeys {
+            XCTAssertNil(RemoteFeatureFlag(rawValue: key))
+        }
     }
 
     func test_rawValue_when_smarter_notifications_then_maps_to_smarterNotifications_case() {

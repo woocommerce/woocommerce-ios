@@ -28,7 +28,7 @@ final class MockAnalytics: Analytics {
 
 /// Minimal mock for AnalyticsProvider
 final class MockAnalyticsProvider: AnalyticsProvider {
-    func refreshUserData() {}
+    func refreshUserData(completion: @escaping () -> Void) { completion() }
     func track(_ eventName: String) {}
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {}
     func clearEvents() {}

@@ -14,7 +14,7 @@ struct BookingStoreTests {
     /// Spy remote to check request parameter use
     ///
     private var remote: MockBookingsRemote
-    private var ordersRemote: MockOrdersRemote
+    private var ordersRemote: MockBookingOrdersRemote
 
     /// Mock Storage: InMemory
     ///
@@ -60,7 +60,7 @@ struct BookingStoreTests {
         network = MockNetwork()
         storageManager = MockStorageManager()
         remote = MockBookingsRemote()
-        ordersRemote = MockOrdersRemote()
+        ordersRemote = MockBookingOrdersRemote()
     }
 
     // MARK: - synchronizeBookings
@@ -1461,7 +1461,7 @@ private extension BookingStoreTests {
     }
 }
 
-private class MockOrdersRemote: OrdersRemoteProtocol {
+private class MockBookingOrdersRemote: BookingOrdersRemoteProtocol {
     var invokedLoadOrders = false
     var invokedLoadOrdersParameters: (siteID: Int64, orderIDs: [Int64])?
     private var loadOrdersResult: Result<[Yosemite.Order], Error> = .success([])
@@ -1470,7 +1470,7 @@ private class MockOrdersRemote: OrdersRemoteProtocol {
         loadOrdersResult = result
     }
 
-    func loadOrders(for siteID: Int64, orderIDs: [Int64]) async throws -> [Yosemite.Order] {
+    func loadBookingOrders(for siteID: Int64, orderIDs: [Int64]) async throws -> [Yosemite.Order] {
         invokedLoadOrders = true
         invokedLoadOrdersParameters = (siteID, orderIDs)
         switch loadOrdersResult {

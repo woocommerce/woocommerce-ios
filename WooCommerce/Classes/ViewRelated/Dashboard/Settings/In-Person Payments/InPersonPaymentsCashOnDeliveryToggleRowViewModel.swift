@@ -134,10 +134,10 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     /// Called when the user confirms the pending toggle change from the confirmation alert.
-    func confirmCashOnDeliveryToggle() {
-        guard let targetState = pendingToggleConfirmation?.targetState else {
-            return
-        }
+    /// Takes the target state as a parameter rather than reading `pendingToggleConfirmation`,
+    /// because alert dismissal clears that property and its ordering relative to the button
+    /// action is undocumented.
+    func confirmCashOnDeliveryToggle(targetState: Bool) {
         pendingToggleConfirmation = nil
         // Optimistically reflects the new state while the update is in flight; failure handlers revert it.
         cashOnDeliveryEnabledState = targetState

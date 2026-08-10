@@ -49,7 +49,7 @@ struct PaymentsToggleRow: View {
                 }),
                presenting: toggleRowViewModel.pendingToggleConfirmation) { confirmation in
             Button(confirmation.confirmButtonTitle) {
-                toggleRowViewModel.confirmCashOnDeliveryToggle()
+                toggleRowViewModel.confirmCashOnDeliveryToggle(targetState: confirmation.targetState)
             }
             Button(confirmation.cancelButtonTitle, role: .cancel) {
                 toggleRowViewModel.dismissCashOnDeliveryToggleConfirmation()

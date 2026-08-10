@@ -261,7 +261,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         sut.cashOnDeliveryToggleRequested(enabled: true)
 
         // When
-        sut.confirmCashOnDeliveryToggle()
+        sut.confirmCashOnDeliveryToggle(targetState: true)
 
         // Then
         XCTAssertNil(sut.pendingToggleConfirmation)
@@ -274,14 +274,22 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertTrue(gateway.enabled)
     }
 
-    func test_confirmCashOnDeliveryToggle_when_no_confirmation_is_pending_then_nothing_happens() {
+    func test_confirmCashOnDeliveryToggle_when_alert_dismissal_already_cleared_the_confirmation_then_the_update_still_happens() throws {
+        // Given the alert's isPresented binding may clear the pending confirmation before the button action runs
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+        sut.dismissCashOnDeliveryToggleConfirmation()
+
         // When
-        sut.confirmCashOnDeliveryToggle()
+        sut.confirmCashOnDeliveryToggle(targetState: true)
 
         // Then
-        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
-        assertEmpty(stores.receivedActions)
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
+        XCTAssertTrue(sut.cashOnDeliveryEnabledState)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
+        let action = try XCTUnwrap(stores.receivedActions.compactMap { $0 as? PaymentGatewayAction }.first)
+        guard case .updatePaymentGateway(let gateway, _) = action else {
+            return XCTFail("Expected updatePaymentGateway, got \(action)")
+        }
+        XCTAssertTrue(gateway.enabled)
     }
 
     func test_dismissCashOnDeliveryToggleConfirmation_then_the_gateway_is_left_untouched() {

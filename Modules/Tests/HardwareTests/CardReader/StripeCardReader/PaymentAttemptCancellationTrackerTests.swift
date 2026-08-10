@@ -3,7 +3,7 @@ import Testing
 @testable import Hardware
 
 struct PaymentAttemptCancellationTrackerTests {
-    @Test func canceling_active_attempt_marks_it_as_canceled() {
+    @Test func test_cancelActiveAttempt_activeAttemptExists_marksAttemptAsCanceled() {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let attemptID = tracker.beginAttempt()
@@ -16,7 +16,7 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.isCanceled(attemptID))
     }
 
-    @Test func beginning_new_attempt_does_not_clear_cancellation_from_previous_attempt() {
+    @Test func test_beginAttempt_previousAttemptWasCanceled_preservesPreviousCancellation() {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let canceledAttemptID = tracker.beginAttempt()
@@ -30,7 +30,7 @@ struct PaymentAttemptCancellationTrackerTests {
         #expect(tracker.isCanceled(newAttemptID) == false)
     }
 
-    @Test func finishing_old_attempt_does_not_clear_new_active_attempt() {
+    @Test func test_finishAttempt_newerAttemptIsActive_preservesNewerActiveAttempt() {
         // Given
         let tracker = PaymentAttemptCancellationTracker()
         let oldAttemptID = tracker.beginAttempt()

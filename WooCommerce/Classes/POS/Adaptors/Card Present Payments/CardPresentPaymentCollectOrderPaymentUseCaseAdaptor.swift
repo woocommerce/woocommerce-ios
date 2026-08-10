@@ -52,7 +52,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 configuration: configuration,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
-                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
                 analyticsTracker: collectOrderPaymentAnalyticsTracker)

@@ -22,11 +22,10 @@ public final class ExternalAppScreen {
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         safari.launch()
 
-        // To accommodate elements on both iPhone and iPad
-        let searchBarElement = UIDevice.current.userInterfaceIdiom == .phone ? "CapsuleNavigationBar?isSelected=true" : "UnifiedTabBar"
-
         // Go to Wiremock's HTML file with universal links
-        safari.otherElements[searchBarElement].tap()
+        let identifiedAddressField = safari.textFields["TabBarItemTitle"]
+        let addressField = identifiedAddressField.exists ? identifiedAddressField : safari.textFields.firstMatch
+        addressField.tap()
         safari.typeText("http://localhost:8282/links.html")
         safari.buttons["Go"].tap()
 

@@ -26,6 +26,12 @@ enum SaveMessageType {
     case duplicate
 }
 
+/// An immutable persisted source captured for a product duplication attempt.
+struct ProductDuplicationSnapshot<ProductModel> {
+    let product: ProductModel
+    let password: String?
+}
+
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
@@ -161,6 +167,10 @@ protocol ProductFormViewModelProtocol {
 
     // Remote action
 
+    /// Refreshes the product from the server so the detail screen reflects remote changes (e.g. new reviews)
+    /// made since the product was cached. Any unsaved local edits are preserved.
+    func refreshProduct()
+
     /// Creates/updates a product remotely given an optional product status to override.
     /// - Parameters:
     ///   - status: If non-nil, the given status overrides the latest product's status to be saved remotely.
@@ -169,7 +179,12 @@ protocol ProductFormViewModelProtocol {
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+    /// Captures the persisted source for a duplication attempt, or returns `nil` when duplication is unavailable.
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>?
+
+    /// Duplicates the exact persisted source captured when the merchant initiated duplication.
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
     // Reset action
 
@@ -194,6 +209,9 @@ protocol ProductFormViewModelProtocol {
 }
 
 extension ProductFormViewModelProtocol {
+    /// No-op by default. Conformers backed by a remotely-editable product override this to re-fetch.
+    func refreshProduct() {}
+
     func shouldShowMoreOptionsMenu() -> Bool {
         canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct() || canFavoriteProduct()
     }

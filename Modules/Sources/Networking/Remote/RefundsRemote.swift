@@ -2,9 +2,25 @@ import CocoaLumberjackSwift
 import Foundation
 
 
+/// The v4 refund endpoints (WC 10.9.0+ behind the server `rest-api-v4` flag),
+/// abstracted for injection into `RefundService`.
+///
+public protocol RefundsRemoteProtocol {
+    func previewRefund(for siteID: Int64,
+                       orderID: Int64,
+                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview
+
+    func createRefundV4(for siteID: Int64,
+                        orderID: Int64,
+                        reason: String,
+                        automaticRefund: Bool,
+                        restockItems: Bool,
+                        lineItems: [RefundV4LineItem]) async throws -> Refund
+}
+
 /// Refunds: Remote Endpoints
 ///
-public final class RefundsRemote: Remote {
+public final class RefundsRemote: Remote, RefundsRemoteProtocol {
 
     /// Retrieves all `Refunds` available for a specific `orderID`.
     ///

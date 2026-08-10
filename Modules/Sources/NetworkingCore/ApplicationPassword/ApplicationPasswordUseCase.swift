@@ -98,7 +98,7 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         if case .wporg(_, _, let siteAddress) = type, !(network is AlamofireNetwork) {
             self.discoveryTask = Task {
                 guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
             }
         } else {
             self.discoveryTask = nil
@@ -123,7 +123,7 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             } else {
                 self.discoveryTask = Task {
                     guard rootCache.root(for: siteAddress) == nil else { return }
-                    _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+                    _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
                 }
             }
         } else {
@@ -140,7 +140,7 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
             self.discoveryTask = Task {
                 guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
             }
         }
     }

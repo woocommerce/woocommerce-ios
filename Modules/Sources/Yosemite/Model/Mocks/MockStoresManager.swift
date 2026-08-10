@@ -27,7 +27,6 @@ public class MockStoresManager: StoresManager {
     private let productActionHandler: MockProductActionHandler
     private let productReviewActionHandler: MockProductReviewActionHandler
     private let productVariationActionHandler: MockProductVariationActionHandler
-    private let receiptActionHandler: MockReceiptActionHandler
     private let refundActionHandler: MockRefundActionHandler
     private let settingActionHandler: MockSettingActionHandler
     private let shipmentActionHandler: MockShipmentActionHandler
@@ -61,7 +60,6 @@ public class MockStoresManager: StoresManager {
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productActionHandler = MockProductActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productVariationActionHandler = MockProductVariationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
-        receiptActionHandler = MockReceiptActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         refundActionHandler = MockRefundActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingLabelActionHandler = MockShippingLabelActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shipmentActionHandler = MockShipmentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
@@ -145,8 +143,6 @@ public class MockStoresManager: StoresManager {
             userActionHandler.handle(action: action)
         case let action as AnnouncementsAction:
             announcementsActionHandler.handle(action: action)
-        case let action as ReceiptAction:
-            receiptActionHandler.handle(action: action)
         case let action as OrderCardPresentPaymentEligibilityAction:
             orderCardPresentPaymentEligibilityActionHandler.handle(action: action)
         case let action as SystemStatusAction:

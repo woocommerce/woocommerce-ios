@@ -234,13 +234,15 @@ struct PointOfSaleDashboardView: View {
                             ))
                         }
                     )
-                    // Always shown — even with an empty cart — so the flow is always discoverable
-                    // and the merchant has a consistent landmark at the bottom of the screen.
-                    // Suppressed when a pushed view (e.g. the custom amount form) signals via
-                    // POSHidesFloatingControlPreferenceKey that overlays should hide.
-                    phoneCartButton
-                        .renderedIf(!floatingControlSuppressed)
+                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                        cartIsEmpty: posModel.cart.isEmpty,
+                        floatingControlSuppressed: floatingControlSuppressed
+                    ) {
+                        phoneCartButton
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
@@ -651,6 +653,7 @@ private extension PointOfSaleDashboardView {
         // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
         // before the exit confirmation presents on the shared modal manager.
         static let exitOverrideHandoffDelay: TimeInterval = 0.3
+        static let cartButtonAppearanceDuration: TimeInterval = 0.25
         static let supportTag = "origin:point-of-sale"
     }
 

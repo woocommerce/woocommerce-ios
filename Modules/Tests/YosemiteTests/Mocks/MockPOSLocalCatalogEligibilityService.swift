@@ -26,4 +26,10 @@ actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServicePr
     func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         return eligibilityStates[siteID] ?? .eligible
     }
+
+    var isLocalCatalogFeatureEnabledResult = true
+
+    func isLocalCatalogFeatureEnabled() async -> Bool {
+        isLocalCatalogFeatureEnabledResult
+    }
 }

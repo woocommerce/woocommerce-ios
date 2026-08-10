@@ -60,7 +60,7 @@ struct LastOrdersDashboardCard: View {
 private extension LastOrdersDashboardCard {
     var emptyView: some View {
         VStack(spacing: 0) {
-            LastOrdersDashboardEmptyView(orderStatus: viewModel.selectedOrderStatus)
+            LastOrdersDashboardEmptyView(statusName: viewModel.selectedOrderStatusDisplayName)
                 .frame(maxWidth: .infinity)
 
             Divider()
@@ -124,7 +124,7 @@ private extension LastOrdersDashboardCard {
                             await viewModel.updateOrderStatus(status)
                         }
                     } label: {
-                        SelectableItemRow(title: status.description, selected: status.status == viewModel.selectedOrderStatus)
+                        SelectableItemRow(title: viewModel.title(for: status), selected: status.status == viewModel.selectedOrderStatus)
                     }
                 }
             } label: {

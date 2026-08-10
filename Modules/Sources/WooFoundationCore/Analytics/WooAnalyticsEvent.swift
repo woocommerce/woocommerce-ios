@@ -73,6 +73,7 @@ extension WooAnalyticsEvent {
             static let responseContentType = "response_content_type"
             static let reason = "reason"
             static let wooCommerceVersion = "woocommerce_version"
+            static let cachedWooCoreVersion = "cached_woo_core_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -116,12 +117,16 @@ extension WooAnalyticsEvent {
 
         // MARK: - Core Sync Events
 
-        public static func syncStarted(syncType: String, syncStrategy: String, connectionType: String) -> WooAnalyticsEvent {
+        public static func syncStarted(syncType: String,
+                                       syncStrategy: String,
+                                       connectionType: String,
+                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
                               properties: [
                                 Key.syncType: syncType,
                                 Key.syncStrategy: syncStrategy,
-                                Key.connectionType: connectionType
+                                Key.connectionType: connectionType,
+                                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
                               ])
         }
 
@@ -134,7 +139,8 @@ extension WooAnalyticsEvent {
             totalVariations: Int,
             syncDurationMs: Int,
             generationDurationMs: Int? = nil,
-            pollAttempts: Int? = nil
+            pollAttempts: Int? = nil,
+            cachedWooCoreVersion: String? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
@@ -143,7 +149,8 @@ extension WooAnalyticsEvent {
                 Key.variationsSynced: "\(variationsSynced)",
                 Key.totalProducts: "\(totalProducts)",
                 Key.totalVariations: "\(totalVariations)",
-                Key.syncDurationMs: "\(syncDurationMs)"
+                Key.syncDurationMs: "\(syncDurationMs)",
+                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
             ]
             if let generationDurationMs {
                 properties[Key.generationDurationMs] = "\(generationDurationMs)"
@@ -163,13 +170,15 @@ extension WooAnalyticsEvent {
             lastGenerationState: String? = nil,
             failureStage: String? = nil,
             httpStatusCode: Int? = nil,
-            responseContentType: String? = nil
+            responseContentType: String? = nil,
+            cachedWooCoreVersion: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
                 Key.syncStrategy: syncStrategy,
-                Key.errorType: errorType
+                Key.errorType: errorType,
+                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
             ]
             if let pollAttempts {
                 properties[Key.pollAttempts] = "\(pollAttempts)"
@@ -189,11 +198,15 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed, properties: properties, error: error)
         }
 
-        public static func syncSkipped(reason: String, syncType: String, syncStrategy: String) -> WooAnalyticsEvent {
+        public static func syncSkipped(reason: String,
+                                       syncType: String,
+                                       syncStrategy: String,
+                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
-                                           Key.syncStrategy: syncStrategy])
+                                           Key.syncStrategy: syncStrategy,
+                                           Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"])
         }
 
         // MARK: - Host-Blocked Catalog File Events
@@ -203,6 +216,44 @@ extension WooAnalyticsEvent {
         public static func blockedFellBackToRemote(wooCommerceVersion: String?) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogBlockedFellBackToRemote,
                               properties: [Key.wooCommerceVersion: wooCommerceVersion ?? "unknown"])
+        }
+    }
+}
+
+// MARK: - In-Person Payments Card Reader Location Events
+extension WooAnalyticsEvent {
+    /// Analytics events for the outcome of card reader location fetching.
+    ///
+    /// Tracked from the data layer (`CommonReaderConfigProvider`), where the location fetch
+    /// resolves and the failure reason is determined. Defined here (rather than in the app target's
+    /// `InPersonPayments` group) so that Yosemite can reach them.
+    public enum InPersonPaymentsLocation {
+        /// Event property keys.
+        private enum Key {
+            static let siteID = "site_id"
+            static let reason = "reason"
+        }
+
+        /// Reason the location fetch failed. Raw values are sent as the `reason` property.
+        public enum FailureReason: String {
+            case incompleteStoreAddress = "incomplete_store_address"
+            case invalidPostalCode = "invalid_postal_code"
+            case other
+        }
+
+        /// Tracked when the default reader location is fetched successfully.
+        public static func cardReaderLocationSuccess(siteID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationSuccess,
+                              properties: [Key.siteID: "\(siteID)"])
+        }
+
+        /// Tracked when the default reader location fetch fails.
+        public static func cardReaderLocationFailure(siteID: Int64, reason: FailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderLocationFailure,
+                              properties: [
+                                Key.siteID: "\(siteID)",
+                                Key.reason: reason.rawValue
+                              ])
         }
     }
 }

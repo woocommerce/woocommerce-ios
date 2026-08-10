@@ -130,12 +130,12 @@ extension Storage.GeneralStoreSettings {
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
         isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        lastKnownPOSEligibility: NullableCopiableProp<Bool> = .copy,
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
         posCatalogFileBlockedByHostAt: NullableCopiableProp<Date> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
-        isCardPresentPaymentsCountryExpansionEligible: NullableCopiableProp<Bool> = .copy
+        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -158,12 +158,12 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let lastKnownPOSEligibility = lastKnownPOSEligibility ?? self.lastKnownPOSEligibility
         let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
         let posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt ?? self.posCatalogFileBlockedByHostAt
         let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
-        let isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible ?? self.isCardPresentPaymentsCountryExpansionEligible
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -187,12 +187,12 @@ extension Storage.GeneralStoreSettings {
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
             isPOSTabVisible: isPOSTabVisible,
+            lastKnownPOSEligibility: lastKnownPOSEligibility,
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
-            isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible
+            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate
         )
     }
 }

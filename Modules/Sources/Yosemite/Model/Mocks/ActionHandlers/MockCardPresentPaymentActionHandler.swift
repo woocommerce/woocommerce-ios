@@ -38,6 +38,8 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             onCompletion(.success(()))
         case .reset(let onCompletion):
             onCompletion()
+        case .retrievePaymentIntent(_, let onCompletion):
+            onCompletion(.failure(NSError(domain: "MockCardPresentPaymentActionHandler", code: 1)))
         default:
             unimplementedAction(action: action)
         }

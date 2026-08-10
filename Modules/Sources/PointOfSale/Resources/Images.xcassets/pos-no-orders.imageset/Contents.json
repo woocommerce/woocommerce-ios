@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pos-no-orders.pdf",
+      "filename" : "pos-no-orders-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-no-orders-dark.pdf",
       "idiom" : "universal"
     }
   ],

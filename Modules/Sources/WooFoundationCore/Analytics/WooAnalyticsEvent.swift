@@ -73,6 +73,7 @@ extension WooAnalyticsEvent {
             static let responseContentType = "response_content_type"
             static let reason = "reason"
             static let wooCommerceVersion = "woocommerce_version"
+            static let cachedWooCoreVersion = "cached_woo_core_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -116,12 +117,16 @@ extension WooAnalyticsEvent {
 
         // MARK: - Core Sync Events
 
-        public static func syncStarted(syncType: String, syncStrategy: String, connectionType: String) -> WooAnalyticsEvent {
+        public static func syncStarted(syncType: String,
+                                       syncStrategy: String,
+                                       connectionType: String,
+                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
                               properties: [
                                 Key.syncType: syncType,
                                 Key.syncStrategy: syncStrategy,
-                                Key.connectionType: connectionType
+                                Key.connectionType: connectionType,
+                                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
                               ])
         }
 
@@ -134,7 +139,8 @@ extension WooAnalyticsEvent {
             totalVariations: Int,
             syncDurationMs: Int,
             generationDurationMs: Int? = nil,
-            pollAttempts: Int? = nil
+            pollAttempts: Int? = nil,
+            cachedWooCoreVersion: String? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
@@ -143,7 +149,8 @@ extension WooAnalyticsEvent {
                 Key.variationsSynced: "\(variationsSynced)",
                 Key.totalProducts: "\(totalProducts)",
                 Key.totalVariations: "\(totalVariations)",
-                Key.syncDurationMs: "\(syncDurationMs)"
+                Key.syncDurationMs: "\(syncDurationMs)",
+                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
             ]
             if let generationDurationMs {
                 properties[Key.generationDurationMs] = "\(generationDurationMs)"
@@ -163,13 +170,15 @@ extension WooAnalyticsEvent {
             lastGenerationState: String? = nil,
             failureStage: String? = nil,
             httpStatusCode: Int? = nil,
-            responseContentType: String? = nil
+            responseContentType: String? = nil,
+            cachedWooCoreVersion: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
                 Key.syncStrategy: syncStrategy,
-                Key.errorType: errorType
+                Key.errorType: errorType,
+                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
             ]
             if let pollAttempts {
                 properties[Key.pollAttempts] = "\(pollAttempts)"
@@ -189,11 +198,15 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed, properties: properties, error: error)
         }
 
-        public static func syncSkipped(reason: String, syncType: String, syncStrategy: String) -> WooAnalyticsEvent {
+        public static func syncSkipped(reason: String,
+                                       syncType: String,
+                                       syncStrategy: String,
+                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
-                                           Key.syncStrategy: syncStrategy])
+                                           Key.syncStrategy: syncStrategy,
+                                           Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"])
         }
 
         // MARK: - Host-Blocked Catalog File Events

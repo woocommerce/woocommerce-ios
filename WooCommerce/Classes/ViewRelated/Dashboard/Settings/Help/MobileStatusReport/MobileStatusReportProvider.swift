@@ -117,7 +117,7 @@ private extension MobileStatusReportProvider {
 
     func accountSection(_ siteAddress: String?) -> [String] {
         let sites = allSites()
-        return [entry("WPCom user ID", stores.sessionManager.defaultAccount.map { String($0.userID) } ?? "not logged in"),
+        return [entry("WPCom user ID", wpcomUserID()),
                 siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
@@ -138,6 +138,22 @@ private extension MobileStatusReportProvider {
 // MARK: - Values
 
 private extension MobileStatusReportProvider {
+
+    /// An account exists only for WPCom logins, so its absence alone does not distinguish a merchant using site
+    /// credentials or application passwords from one who is not logged in at all — the held credentials do.
+    func wpcomUserID() -> String {
+        if let account = stores.sessionManager.defaultAccount {
+            return String(account.userID)
+        }
+        switch stores.sessionManager.defaultCredentials {
+        case .wpcom:
+            return "\(Constants.unknown) (WPCom login, account not synced)"
+        case .wporg, .applicationPassword:
+            return "N/A (no WPCom account)"
+        case .none:
+            return "not logged in"
+        }
+    }
 
     /// `.null` is skipped: it is a throwaway case that exists only so the enum can declare a raw type, and the
     /// service answers it through the `default` branch, so it would appear as a real flag that is switched on.

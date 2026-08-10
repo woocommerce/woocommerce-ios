@@ -178,7 +178,9 @@ private extension OrderStore {
                     onCompletion(Date().timeIntervalSince(startTime), result)
                 case .deleteAllBeforeSaving, .save:
                     let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
-                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders,
+                                                         removeAllStoredOrders: removeAllStoredOrders,
+                                                         includingMetadataDerivedFields: false) {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
@@ -215,7 +217,7 @@ private extension OrderStore {
                                                             createdVia: createdVia,
                                                             pageNumber: pageNumber,
                                                             pageSize: pageSize)
-                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                upsertStoredOrdersInBackground(readOnlyOrders: orders, includingMetadataDerivedFields: false) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
             } catch {
@@ -249,10 +251,15 @@ private extension OrderStore {
     ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        // The date-modified shortcut below is only valid when the stored order is complete: order list and
+        // search fetches omit `meta_data` (see `OrdersRemote.ParameterValues.listFieldValues`), so an order
+        // stored without any metadata-derived values must be synced in full before it can be served locally.
         let storage = storageManager.viewStorage
-        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID),
+              storageOrder.containsMetadataDerivedValues else {
             return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
+        let storedOrder = storageOrder.toReadOnly()
 
         Task {
             // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
@@ -640,7 +647,10 @@ private extension OrderStore {
     func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               insertingSearchResults: true,
+                               includingMetadataDerivedFields: false,
+                               in: derivedStorage)
             upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
@@ -702,13 +712,16 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,
+                                                includingMetadataDerivedFields: Bool = true,
                                                 onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             if removeAllStoredOrders {
                 derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
             }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               includingMetadataDerivedFields: includingMetadataDerivedFields,
+                               in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -717,13 +730,19 @@ private extension OrderStore {
     /// - Parameters:
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - includingMetadataDerivedFields: Pass `false` for orders fetched without the `meta_data` field
+    ///                                       (list and search fetches) so previously stored metadata-derived
+    ///                                       values are preserved instead of overwritten.
     ///     - storage: Where we should save all the things!
     ///
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
+                                    includingMetadataDerivedFields: Bool = true,
                                     in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+        useCase.upsert(readOnlyOrders,
+                       insertingSearchResults: insertingSearchResults,
+                       includingMetadataDerivedFields: includingMetadataDerivedFields)
     }
 }
 
@@ -835,5 +854,25 @@ private extension OrderStore.GiftCardError {
                 comment: "Order gift card error notice message when the gift card is invalid."
             )
         }
+    }
+}
+
+private extension Storage.Order {
+    /// Whether this stored order carries any metadata-derived values, proving it was upserted from a
+    /// fetch that included the `meta_data` field. Order list and search fetches omit `meta_data`
+    /// (`OrdersRemote.ParameterValues.listFieldValues`), so an order stored only from those fetches has
+    /// none of these values and cannot be served from storage without a full sync first.
+    ///
+    /// `attributionInfo` alone identifies almost all fully-synced orders: `OrderAttributionInfo(metaData:)`
+    /// is non-failable, so the order decoder produces a non-nil value whenever the response contained at
+    /// least one metadata entry. Orders with zero metadata entries can never be certified as complete and
+    /// always take the full fetch — their payloads are the smallest, so the extra cost is minimal.
+    /// `fulfillmentStatusKey` is deliberately omitted: a non-unknown value implies a `_fulfillment_status`
+    /// metadata entry was present, which already makes `attributionInfo` non-nil.
+    var containsMetadataDerivedValues: Bool {
+        attributionInfo != nil
+            || customFields?.isEmpty == false
+            || chargeID != nil
+            || renewalSubscriptionID != nil
     }
 }

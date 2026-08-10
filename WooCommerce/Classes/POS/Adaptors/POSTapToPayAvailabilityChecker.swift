@@ -1,5 +1,6 @@
 import Foundation
 import PointOfSale
+import ProximityReader
 import enum Experiments.FeatureFlag
 import protocol Experiments.FeatureFlagService
 import enum Yosemite.CardPresentPaymentAction
@@ -10,11 +11,12 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 
 /// Resolves Tap to Pay availability for the current POS session.
 ///
-/// Three gates, evaluated in order — fail fast on whichever is first to deny:
-/// 1. The `pointOfSaleTapToPay` feature flag (cheapest check, shortcuts the rest).
-/// 2. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
+/// Four gates, evaluated in order — fail fast on whichever is first to deny:
+/// 1. Hardware support — Apple's `PaymentCardReader.isSupported`.
+/// 2. The `pointOfSaleTapToPay` feature flag (cheapest remaining check, shortcuts the rest).
+/// 3. Device support — Stripe's `Terminal.shared.supportsReaders(of: .appleBuiltIn, ...)`,
 ///    dispatched via `CardPresentPaymentAction.checkDeviceSupport`.
-/// 3. Site eligibility — proxied off cached POS tab visibility, which is itself driven
+/// 4. Site eligibility — proxied off cached POS tab visibility, which is itself driven
 ///    by IPP/country eligibility checks in `POSTabVisibilityChecker`.
 ///
 /// One-shot — `POSTapToPayAvailabilityController` calls `checkAvailability()` once on
@@ -24,18 +26,24 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let eligibilityService: POSEligibilityServiceProtocol
+    private let isTapToPayHardwareSupported: Bool
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         eligibilityService: POSEligibilityServiceProtocol) {
+         eligibilityService: POSEligibilityServiceProtocol,
+         isTapToPayHardwareSupported: Bool = PaymentCardReader.isSupported) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.eligibilityService = eligibilityService
+        self.isTapToPayHardwareSupported = isTapToPayHardwareSupported
     }
 
     func checkAvailability() async -> POSTapToPayAvailabilityState {
+        guard isTapToPayHardwareSupported else {
+            return .unavailable(reason: .deviceNotSupported)
+        }
         guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleTapToPay) else {
             return .unavailable(reason: .featureFlagDisabled)
         }

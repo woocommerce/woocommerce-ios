@@ -96,7 +96,7 @@ final class OrderDetailsViewModel {
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
         self.featureFlagService = featureFlagService
         self.syncStateController = syncStateController
-        self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
+        self.configurationLoader = CardPresentConfigurationLoader()
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase

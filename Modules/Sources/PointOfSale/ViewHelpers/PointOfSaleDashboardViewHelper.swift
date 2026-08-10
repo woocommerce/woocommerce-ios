@@ -25,6 +25,12 @@ struct PointOfSaleDashboardViewHelper {
             return .ineligible(reason: reason)
         }
     }
+
+    /// Whether the compact-layout cart button should be shown below the item list.
+    ///
+    static func showsCompactCartButton(cartIsEmpty: Bool, floatingControlSuppressed: Bool) -> Bool {
+        !cartIsEmpty && !floatingControlSuppressed
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {

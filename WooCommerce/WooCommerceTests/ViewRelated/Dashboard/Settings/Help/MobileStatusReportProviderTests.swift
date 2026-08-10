@@ -119,7 +119,7 @@ struct MobileStatusReportProviderTests {
             .generateReport(siteAddress: "https://typed.example.com")
 
         // Then
-        #expect(redactingEnumeratedSections(report).contains("""
+        #expect(redactingEnumeratedSections(report).hasSuffix("""
         ## Account & Stores
         WPCom user ID: 12345
         Address given in the form: https://typed.example.com

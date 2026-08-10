@@ -409,7 +409,7 @@ private extension MobileStatusReportProvider {
     }
 
     func blogID(_ site: Site) -> String {
-        site.siteID == Yosemite.WooConstants.placeholderSiteID ?
+        site.siteID == -1 ?
             "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
     }
 

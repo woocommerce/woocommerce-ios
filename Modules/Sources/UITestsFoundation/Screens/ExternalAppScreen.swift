@@ -2,48 +2,21 @@ import XCTest
 
 public final class ExternalAppScreen {
 
-    public private(set) var app: XCUIApplication!
-
-    public init() {
-        app = XCUIApplication()
-    }
+    public init() {}
 
     let universalLinks = [
         "payments": "https://woocommerce.com/mobile/payments",
         "orders": "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337"
     ]
 
-    // To open universal links listed in mocked HTML file
-    public func openUniversalLinkFromSafariApp(linkedScreen: String) throws {
+    public func openUniversalLink(linkedScreen: String) throws {
         guard let universalLink = universalLinks[linkedScreen] else {
             throw NSError(domain: "UI Test", code: 0, userInfo: [NSLocalizedDescriptionKey: "Universal link not found for key: \(linkedScreen)"])
         }
-
-        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
-        safari.launch()
-
-        // Go to Wiremock's HTML file with universal links
-        let addressField = safari.textFields["TabBarItemTitle"]
-        let searchFieldPredicate = NSPredicate(format: "identifier BEGINSWITH %@", "SearchFieldItemView?")
-        let searchFieldButton = safari.buttons.matching(searchFieldPredicate).firstMatch
-        let legacyAddressBar: XCUIElement
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            let capsulePredicate = NSPredicate(format: "identifier BEGINSWITH %@", "CapsuleNavigationBar?isSelected=true")
-            legacyAddressBar = safari.otherElements.matching(capsulePredicate).firstMatch
-        } else {
-            legacyAddressBar = safari.otherElements["UnifiedTabBar"]
+        guard let url = URL(string: universalLink) else {
+            throw NSError(domain: "UI Test", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid universal link: \(universalLink)"])
         }
-        let addressBarCandidates = [addressField, searchFieldButton, legacyAddressBar]
-        guard let addressBar = addressBarCandidates.first(where: { $0.waitForIsHittable(timeout: 2) }) else {
-            return XCTFail("Safari's address bar is not displayed!")
-        }
-        addressBar.tap()
-        safari.typeText("http://localhost:8282/links.html")
-        safari.buttons["Go"].tap()
 
-        guard safari.links[universalLink].waitForIsHittable(timeout: 10) else {
-            return XCTFail("\(universalLink) is not displayed!")
-        }
-        safari.links[universalLink].tap()
+        XCUIDevice.shared.system.open(url)
     }
 }

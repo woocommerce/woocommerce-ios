@@ -686,6 +686,23 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
     }
 
+    func test_searchProducts_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
+
     // MARK: - Search Products by SKU
 
     func test_searchProductsBySKU_with_currency_includes_currency_param_in_network_request() async throws {
@@ -702,6 +719,22 @@ final class ProductsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+    }
+
+    func test_searchProductsBySKU_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                 keyword: "SKU",
+                                                 pageNumber: 1,
+                                                 pageSize: 25,
+                                                 productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
     }
 
     func test_searchProductsBySKU_properly_returns_parsed_products() async throws {

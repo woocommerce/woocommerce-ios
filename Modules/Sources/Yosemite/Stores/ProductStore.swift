@@ -95,7 +95,7 @@ public class ProductStore: Store {
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
         case let .searchProductsTransiently(siteID, currency, keyword, filter, pageNumber, pageSize, stockStatus, productStatus,
-                                            productType, productCategory, excludedProductIDs, onCompletion):
+                                            productType, productCategory, productIDs, excludedProductIDs, onCompletion):
             searchProductsTransiently(siteID: siteID,
                                       currency: currency,
                                       keyword: keyword,
@@ -106,6 +106,7 @@ public class ProductStore: Store {
                                       productStatus: productStatus,
                                       productType: productType,
                                       productCategory: productCategory,
+                                      productIDs: productIDs,
                                       excludedProductIDs: excludedProductIDs,
                                       onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
@@ -281,6 +282,7 @@ private extension ProductStore {
                                    productStatus: ProductStatus?,
                                    productType: ProductType?,
                                    productCategory: ProductCategory?,
+                                   productIDs: [Int64],
                                    excludedProductIDs: [Int64],
                                    onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         Task { @MainActor in
@@ -291,6 +293,7 @@ private extension ProductStore {
                                                                     keyword: keyword,
                                                                     pageNumber: pageNumber,
                                                                     pageSize: pageSize,
+                                                                    productIDs: productIDs,
                                                                     currency: currency)
                 } else {
                     let fields: [ProductSearchField] = filter == .name ? [.name] : []
@@ -303,6 +306,7 @@ private extension ProductStore {
                                                                productStatus: productStatus,
                                                                productType: productType,
                                                                productCategory: productCategory,
+                                                               productIDs: productIDs,
                                                                excludedProductIDs: excludedProductIDs,
                                                                currency: currency)
                 }
@@ -348,6 +352,7 @@ private extension ProductStore {
                                             productStatus: productStatus,
                                             productType: productType,
                                             productCategory: productCategory,
+                                            productIDs: [],
                                             excludedProductIDs: excludedProductIDs,
                                             currency: nil)
         }
@@ -364,6 +369,7 @@ private extension ProductStore {
                                                                     keyword: keyword,
                                                                     pageNumber: pageNumber,
                                                                     pageSize: pageSize,
+                                                                    productIDs: [],
                                                                     currency: nil)
                 }
                 await upsertSearchResultsInBackground(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: products)
@@ -1456,6 +1462,7 @@ private extension ProductStore {
                                              keyword: keyword,
                                              pageNumber: Remote.Default.firstPageNumber,
                                              pageSize: ProductsRemote.Default.pageSize,
+                                             productIDs: [],
                                              currency: nil)
     }
 

@@ -78,7 +78,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .searchProductsTransiently(_, currency, keyword, _, pageNumber, _, _, _, _, _, _, onCompletion):
+            case let .searchProductsTransiently(_, currency, keyword, _, pageNumber, _, _, _, _, _, _, _, onCompletion):
                 searchedPages.append(pageNumber)
                 XCTAssertEqual(currency, "EUR")
                 XCTAssertEqual(keyword, "shirt")
@@ -96,6 +96,53 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(searchedPages, [1, 2])
         XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
+    }
+
+    func test_sync_when_transient_product_retrieval_fails_then_shows_sync_notice() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
+    }
+
+    func test_sync_when_transient_product_search_fails_then_shows_search_notice() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        viewModel.searchTerm = "shirt"
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
     }
 
     func test_view_model_is_initialized_with_default_values() {
@@ -1732,6 +1779,72 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
+    }
+
+    func test_sync_when_currency_and_empty_favorites_filter_are_configured_then_returns_empty_without_request() {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = []
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        viewModel.updateFilters(.init(stockStatus: nil,
+                                      productStatus: nil,
+                                      promotableProductType: nil,
+                                      productCategory: nil,
+                                      favoriteProduct: FavoriteProductsFilter(),
+                                      numberOfActiveFilters: 1))
+        var dispatchedAction = false
+        stores.whenReceivingAction(ofType: ProductAction.self) { _ in
+            dispatchedAction = true
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertFalse(dispatchedAction)
+        XCTAssertTrue(viewModel.productRows.isEmpty)
+        XCTAssertEqual(viewModel.syncStatus, .empty)
+    }
+
+    func test_sync_when_currency_search_and_favorites_filter_are_configured_then_forwards_favorite_productIDs() async {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [23, 89, 432]
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        await viewModel.loadFavoriteProductIDs()
+        viewModel.updateFilters(.init(stockStatus: nil,
+                                      productStatus: nil,
+                                      promotableProductType: nil,
+                                      productCategory: nil,
+                                      favoriteProduct: FavoriteProductsFilter(),
+                                      numberOfActiveFilters: 1))
+        viewModel.searchTerm = "shirt"
+        var requestedProductIDs: [Int64] = []
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, _, _, _, _, _, _, _, _, _, productIDs, _, onCompletion):
+                requestedProductIDs = productIDs
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(requestedProductIDs, favoriteProductsUseCase.favoriteProductIDsValue)
     }
 
     // MARK: - Resetting filters

@@ -616,7 +616,13 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
     }
 
     private func syncProductsTransiently(currency: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
-        let productIDs = filtersSubject.value.favoriteProduct != nil ? favoriteProductIDs : []
+        let favoritesFilterIsActive = filtersSubject.value.favoriteProduct != nil
+        guard !favoritesFilterIsActive || favoriteProductIDs.isNotEmpty else {
+            handleTransientResult(.success((products: [], hasNextPage: false)), pageNumber: pageNumber, onCompletion: onCompletion)
+            return
+        }
+
+        let productIDs = favoritesFilterIsActive ? favoriteProductIDs : []
         let action = ProductAction.retrieveProductsTransiently(siteID: siteID,
                                                                currency: currency,
                                                                pageNumber: pageNumber,
@@ -628,6 +634,12 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                                sortOrder: .nameAscending,
                                                                productIDs: productIDs) { [weak self] result in
             guard let self else { return }
+            if case let .failure(error) = result {
+                productNotice = NoticeFactory.productSyncNotice { [weak self] in
+                    self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                }
+                DDLogError("⛔️ Error retrieving transient products during order creation: \(error)")
+            }
             self.handleTransientResult(result, pageNumber: pageNumber, onCompletion: onCompletion)
         }
         stores.dispatch(action)
@@ -638,6 +650,13 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                            pageNumber: Int,
                                            pageSize: Int,
                                            onCompletion: SyncCompletion?) {
+        let favoritesFilterIsActive = filtersSubject.value.favoriteProduct != nil
+        guard !favoritesFilterIsActive || favoriteProductIDs.isNotEmpty else {
+            handleTransientResult(.success((products: [], hasNextPage: false)), pageNumber: pageNumber, onCompletion: onCompletion)
+            return
+        }
+
+        let productIDs = favoritesFilterIsActive ? favoriteProductIDs : []
         let action = ProductAction.searchProductsTransiently(siteID: siteID,
                                                              currency: currency,
                                                              keyword: keyword,
@@ -647,13 +666,23 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                              stockStatus: filtersSubject.value.stockStatus,
                                                              productStatus: filtersSubject.value.productStatus,
                                                              productType: filtersSubject.value.promotableProductType?.productType,
-                                                             productCategory: filtersSubject.value.productCategory) { [weak self] result in
+                                                             productCategory: filtersSubject.value.productCategory,
+                                                             productIDs: productIDs) { [weak self] result in
             guard let self, keyword == self.searchTerm else { return }
             switch result {
             case .success:
                 self.tracker.trackSearchSuccessIfNecessary()
             case .failure(let error):
                 self.tracker.trackSearchFailureIfNecessary(with: error)
+                self.productNotice = NoticeFactory.productSearchNotice { [weak self] in
+                    guard let self else { return }
+                    self.searchProducts(siteID: self.siteID,
+                                        keyword: keyword,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize,
+                                        onCompletion: nil)
+                }
+                DDLogError("⛔️ Error searching transient products during order creation: \(error)")
             }
             self.handleTransientResult(result, pageNumber: pageNumber, onCompletion: onCompletion)
         }
@@ -983,23 +1012,10 @@ private extension ProductSelectorViewModel {
 
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
-                                       currencyFormatter: currencyFormatter,
+                                       currency: currency,
                                        featureFlagService: featureFlagService,
                                        configure: configure)
         }
-    }
-
-    var currencyFormatter: CurrencyFormatter {
-        let siteSettings = ServiceLocator.currencySettings
-        guard let currency, let currencyCode = CurrencyCode(rawValue: currency) else {
-            return CurrencyFormatter(currencySettings: siteSettings)
-        }
-        let settings = CurrencySettings(currencyCode: currencyCode,
-                                        currencyPosition: siteSettings.currencyPosition,
-                                        thousandSeparator: siteSettings.groupingSeparator,
-                                        decimalSeparator: siteSettings.decimalSeparator,
-                                        numberOfDecimals: siteSettings.fractionDigits)
-        return CurrencyFormatter(currencySettings: settings)
     }
 }
 

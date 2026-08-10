@@ -32,12 +32,14 @@ public protocol ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
+                        productIDs: [Int64],
                         excludedProductIDs: [Int64],
                         currency: String?) async throws -> [Product]
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
                              pageSize: Int,
+                             productIDs: [Int64],
                              currency: String?) async throws -> [Product]
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
                              keyword: String,
@@ -479,8 +481,10 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                productStatus: ProductStatus? = nil,
                                productType: ProductType? = nil,
                                productCategory: ProductCategory? = nil,
+                               productIDs: [Int64] = [],
                                excludedProductIDs: [Int64] = [],
                                currency: String? = nil) async throws -> [Product] {
+        let stringOfProductIDs = productIDs.map(String.init).joined(separator: ",")
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
 
@@ -489,6 +493,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.productStatus: productStatus?.rawValue ?? "",
             ParameterKey.productType: productType?.rawValue ?? "",
             ParameterKey.category: filterProductCategoryParemeterValue(from: productCategory),
+            ParameterKey.include: stringOfProductIDs,
             ParameterKey.exclude: stringOfExcludedProductIDs
         ].filter({ $0.value.isEmpty == false })
 
@@ -520,15 +525,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                     keyword: String,
                                     pageNumber: Int,
                                     pageSize: Int,
+                                    productIDs: [Int64] = [],
                                     currency: String? = nil) async throws -> [Product] {
+        let stringOfProductIDs = productIDs.map(String.init).joined(separator: ",")
         let parameters = [
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: Default.context,
+            ParameterKey.include: stringOfProductIDs,
             ParameterKey.currency: currency
         ].compactMapValues { $0 }
+            .filter { key, value in key != ParameterKey.include || value.isNotEmpty }
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ListMapper<Product>(siteID: siteID)

@@ -323,6 +323,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
+                        productIDs: [Int64],
                         excludedProductIDs: [Int64],
                         currency: String?) async throws -> [Product] {
         searchProductTriggered = true
@@ -345,6 +346,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                              keyword: String,
                              pageNumber: Int,
                              pageSize: Int,
+                             productIDs: [Int64],
                              currency: String?) async throws -> [Product] {
         guard let result = searchProductsBySKUResultsBySKU[keyword] else {
             XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")

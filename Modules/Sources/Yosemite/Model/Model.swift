@@ -217,7 +217,6 @@ public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User
 public typealias WooAPIVersion = Networking.WooAPIVersion
-public typealias WooConstants = Networking.WooConstants
 public typealias WooShippingAddress = Networking.WooShippingAddress
 public typealias WooShippingNormalizedAddress = Networking.WooShippingNormalizedAddress
 public typealias WooShippingAddressValidationSuccess = Networking.WooShippingAddressValidationSuccess

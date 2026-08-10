@@ -370,7 +370,8 @@ final class ProductStoreTests: XCTestCase {
                                                              currency: "GBP",
                                                              keyword: "photo",
                                                              pageNumber: 1,
-                                                             pageSize: 25) { result in
+                                                             pageSize: 25,
+                                                             productIDs: [12, 34]) { result in
             XCTAssertFalse((try? result.get().products.isEmpty) ?? true)
             expectation.fulfill()
         }
@@ -381,6 +382,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSearchResults.self), 0)
         XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
     }
 
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.

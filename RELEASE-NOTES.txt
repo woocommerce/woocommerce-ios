@@ -3,11 +3,11 @@
 
 25.5
 -----
+- [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
 
 25.4
 -----
-- [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] POS: custom amounts in the cart now show a "Discount not applied" note at checkout when a coupon is applied, since coupons don't discount custom amounts [https://github.com/woocommerce/woocommerce-ios/pull/17623]
 - [*] Products: Fixed a crash when returning from product details on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17671]
 - [Internal] POS: Phone POS is now available on US stores for Automattic accounts behind the woo_pos_phone_us remote feature flag. [https://github.com/woocommerce/woocommerce-ios/pull/17663]

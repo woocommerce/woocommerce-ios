@@ -76,10 +76,4 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     }
 
     func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {}
-
-    func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool? {
-        nil
-    }
-
-    func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool) {}
 }

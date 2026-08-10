@@ -531,6 +531,76 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertNil(storageOrder.attributionInfo)
     }
 
+    // MARK: - Excluding metadata-derived fields (orders fetched without `meta_data`)
+
+    func test_upsert_when_excluding_metadata_derived_fields_then_existing_custom_fields_are_preserved() throws {
+        // Given
+        let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
+        let order = makeOrder().copy(siteID: 3, customFields: [customField])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(customFields: [])], includingMetadataDerivedFields: false)
+
+        // Then
+        let storageCustomField = try XCTUnwrap(viewStorage.loadOrderMetaData(siteID: 3, orderID: order.orderID, metadataID: 1))
+        XCTAssertEqual(storageCustomField.toReadOnly(), customField)
+    }
+
+    func test_upsert_when_excluding_metadata_derived_fields_then_existing_attribution_info_is_preserved() throws {
+        // Given
+        let siteID: Int64 = 3
+        let orderID: Int64 = 11
+        let attributionInfo = OrderAttributionInfo.fake().copy(source: "admin")
+        let order = makeOrder().copy(siteID: siteID, orderID: orderID, attributionInfo: attributionInfo)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(attributionInfo: .some(nil))], includingMetadataDerivedFields: false)
+
+        // Then
+        let storageAttributionInfo = try XCTUnwrap(viewStorage.loadOrder(siteID: siteID, orderID: orderID)?.attributionInfo)
+        XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
+    }
+
+    func test_upsert_when_excluding_metadata_derived_fields_then_existing_metadata_derived_attributes_are_preserved() throws {
+        // Given
+        let orderID: Int64 = 11
+        let order = makeOrder().copy(orderID: orderID,
+                                     chargeID: "ch_123",
+                                     fulfillmentStatus: .fulfilled,
+                                     renewalSubscriptionID: "281")
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(chargeID: .some(nil), fulfillmentStatus: .unknown, renewalSubscriptionID: .some(nil))],
+                       includingMetadataDerivedFields: false)
+
+        // Then
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: orderID))
+        XCTAssertEqual(storageOrder.chargeID, "ch_123")
+        XCTAssertEqual(storageOrder.fulfillmentStatusKey, OrderFulfillmentStatus.fulfilled.rawValue)
+        XCTAssertEqual(storageOrder.renewalSubscriptionID, "281")
+    }
+
+    func test_upsert_when_excluding_metadata_derived_fields_then_other_fields_are_still_updated() throws {
+        // Given
+        let orderID: Int64 = 11
+        let order = makeOrder().copy(orderID: orderID, status: .processing)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        useCase.upsert([order.copy(status: .completed)], includingMetadataDerivedFields: false)
+
+        // Then
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: orderID))
+        XCTAssertEqual(storageOrder.statusKey, OrderStatusEnum.completed.rawValue)
+    }
+
     func test_it_removes_existing_order_items_from_storage_if_removed_in_remote() throws {
         // Given
         let orderID: Int64 = 11

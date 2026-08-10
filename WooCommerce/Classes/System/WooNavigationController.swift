@@ -54,7 +54,7 @@ extension WooNavigationController {
 /// Make sure to implement the method in ALL subclasses of `WooNavigationController`,
 /// otherwise it will break the interactive pop gesture.
 ///
-private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
+final class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     private let connectivityObserver: ConnectivityObserver
     private weak var currentController: UIViewController?
@@ -116,9 +116,41 @@ private extension WooNavigationControllerDelegate {
         connectivityObserver.statusPublisher
             .sink { [weak self] status in
                 guard let self, let currentController = self.currentController else { return }
-                self.configureOfflineBanner(for: currentController, status: status)
+                self.configureOfflineBannerWhenNavigationIsStable(for: currentController, status: status)
             }
             .store(in: &subscriptions)
+    }
+
+    /// Connectivity can change while a navigation transition is updating content overlay insets.
+    /// Updating the safe area at the same time can cause UIKit to recursively lay out the navigation hierarchy.
+    func configureOfflineBannerWhenNavigationIsStable(for viewController: UIViewController, status: ConnectivityStatus) {
+        guard isVisibleTopViewController(viewController) else {
+            return
+        }
+
+        guard let transitionCoordinator = viewController.navigationController?.transitionCoordinator else {
+            return configureOfflineBanner(for: viewController, status: status)
+        }
+
+        let scheduledAlongsideTransition = transitionCoordinator.animate(alongsideTransition: nil) { [weak self, weak viewController] _ in
+            guard let self, let viewController, self.isVisibleTopViewController(viewController) else {
+                return
+            }
+            self.configureOfflineBanner(for: viewController, status: status)
+        }
+
+        if !scheduledAlongsideTransition {
+            configureOfflineBanner(for: viewController, status: status)
+        }
+    }
+
+    func isVisibleTopViewController(_ viewController: UIViewController) -> Bool {
+        guard viewController.viewIfLoaded?.window != nil,
+              let navigationController = viewController.navigationController else {
+            return false
+        }
+
+        return navigationController.topViewController === viewController
     }
 
     /// Shows or hides offline banner based on the input connectivity status and

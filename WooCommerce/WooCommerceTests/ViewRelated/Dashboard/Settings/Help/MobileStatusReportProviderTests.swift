@@ -104,6 +104,41 @@ struct MobileStatusReportProviderTests {
         #expect(!report.contains("4815162342"))
     }
 
+    @Test func every_connected_woo_store_is_listed_with_its_plan_and_jetpack_state() async {
+        // Given
+        await insert(sites: [
+            .fake().copy(siteID: 1,
+                         name: "Alpha",
+                         url: "https://alpha.example.com",
+                         plan: "business-bundle",
+                         isJetpackThePluginInstalled: true,
+                         isJetpackConnected: true,
+                         isWooCommerceActive: true),
+            .fake().copy(siteID: 2,
+                         name: "Beta",
+                         url: "https://beta.example.com",
+                         plan: "",
+                         isJetpackThePluginInstalled: false,
+                         isJetpackConnected: false,
+                         isWooCommerceActive: true),
+            // A WPCom site without WooCommerce: on the account, but not a store the count or list may include.
+            .fake().copy(siteID: 3,
+                         name: "Blog",
+                         url: "https://blog.example.com",
+                         isWooCommerceActive: false)
+        ])
+
+        // When
+        let report = await makeProvider().generateReport()
+
+        // Then
+        #expect(report.contains("Connected stores: 2"))
+        #expect(report.contains("All connected stores:"))
+        #expect(report.contains("https://alpha.example.com: Plan: business-bundle Jetpack: installed=true connected=true"))
+        #expect(report.contains("https://beta.example.com: Plan: unknown Jetpack: installed=false connected=false"))
+        #expect(!report.contains("https://blog.example.com"))
+    }
+
     /// `defaultAccount` exists only for WPCom logins. A merchant authenticated with site credentials or an
     /// application password has none, and their report must not claim they are not logged in.
     @Test func a_login_without_a_wpcom_account_is_not_reported_as_logged_out() async {
@@ -227,6 +262,16 @@ private extension MobileStatusReportProviderTests {
                                    featureFlagService: MockFeatureFlagService(),
                                    generalAppSettings: appSettings,
                                    dispatchTimeout: 0.05)
+    }
+
+    func insert(sites: [Site]) async {
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ [storageManager] _ in
+                sites.forEach { storageManager.insertSampleSite(readOnlySite: $0) }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
+        }
     }
 
     /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated

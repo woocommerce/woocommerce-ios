@@ -632,6 +632,37 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_popToRoot_when_navigationPath_is_non_empty_then_resets_to_root() {
+        // Given a Menu tab that has navigated into a deep stack (non-empty NavigationStack path).
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = NavigationPath(["testPath1", "testPath2"])
+        XCTAssertEqual(viewModel.navigationPath.count, 2)
+
+        // When re-selecting the tab triggers a pop to root.
+        viewModel.popToRoot()
+
+        // Then the stack returns to root so the tab shows its root screen again.
+        XCTAssertTrue(viewModel.navigationPath.isEmpty)
+        XCTAssertEqual(viewModel.navigationPath.count, 0)
+    }
+
+    @MainActor
+    func test_popToRoot_after_navigateToDestination_then_resets_to_root() {
+        // Given a Menu tab pushed to a destination (the realistic single-level navigation path).
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigateToDestination(.settings)
+        XCTAssertEqual(viewModel.navigationPath.count, 1)
+
+        // When re-selecting the tab triggers a pop to root.
+        viewModel.popToRoot()
+
+        // Then the pushed destination is dismissed, returning the tab to root.
+        XCTAssertTrue(viewModel.navigationPath.isEmpty)
+    }
+
+    @MainActor
     func test_navigateToDestination_without_destination_leaves_navigationPath_intact() {
         // Given
         let navigationPath = NavigationPath(["testPath1", "testPath2"])

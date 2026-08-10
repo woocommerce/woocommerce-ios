@@ -23,9 +23,21 @@ public final class ExternalAppScreen {
         safari.launch()
 
         // Go to Wiremock's HTML file with universal links
-        let identifiedAddressField = safari.textFields["TabBarItemTitle"]
-        let addressField = identifiedAddressField.exists ? identifiedAddressField : safari.textFields.firstMatch
-        addressField.tap()
+        let addressField = safari.textFields["TabBarItemTitle"]
+        let searchFieldPredicate = NSPredicate(format: "identifier BEGINSWITH %@", "SearchFieldItemView?")
+        let searchFieldButton = safari.buttons.matching(searchFieldPredicate).firstMatch
+        let legacyAddressBar: XCUIElement
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            let capsulePredicate = NSPredicate(format: "identifier BEGINSWITH %@", "CapsuleNavigationBar?isSelected=true")
+            legacyAddressBar = safari.otherElements.matching(capsulePredicate).firstMatch
+        } else {
+            legacyAddressBar = safari.otherElements["UnifiedTabBar"]
+        }
+        let addressBarCandidates = [addressField, searchFieldButton, legacyAddressBar]
+        guard let addressBar = addressBarCandidates.first(where: { $0.waitForIsHittable(timeout: 2) }) else {
+            return XCTFail("Safari's address bar is not displayed!")
+        }
+        addressBar.tap()
         safari.typeText("http://localhost:8282/links.html")
         safari.buttons["Go"].tap()
 

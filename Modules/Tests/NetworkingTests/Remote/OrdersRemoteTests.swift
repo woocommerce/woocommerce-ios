@@ -630,6 +630,67 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, "8")
     }
 
+    func test_updateOrder_with_request_currency_encodes_currency_in_tunnel_path_and_preserves_body() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake().copy(orderID: sampleOrderID, customerNote: "Updated note")
+
+        // When
+        remote.updateOrder(from: sampleSiteID,
+                           order: order,
+                           giftCard: nil,
+                           fields: [.customerNote],
+                           requestCurrency: "EUR") { _ in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let urlRequest = try request.asURLRequest()
+        let path = try encodedFormField(named: "path", in: urlRequest)
+        let body = try encodedFormField(named: "body", in: urlRequest)
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: Any])
+        XCTAssertEqual(path, "/wc/v3/orders/\(sampleOrderID)&currency=EUR&_method=post")
+        XCTAssertEqual(payload["customer_note"] as? String, "Updated note")
+        XCTAssertNil(payload["currency"])
+    }
+
+    func test_updateOrder_with_request_currency_preserves_query_when_converted_to_REST() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake().copy(orderID: sampleOrderID, customerNote: "Updated note")
+
+        // When
+        remote.updateOrder(from: sampleSiteID,
+                           order: order,
+                           giftCard: nil,
+                           fields: [.customerNote],
+                           requestCurrency: "EUR") { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let urlRequest = try request.asURLRequest()
+        let queryItems = URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?.queryItems
+        let payload = try XCTUnwrap(JSONSerialization.jsonObject(with: XCTUnwrap(urlRequest.httpBody)) as? [String: Any])
+        XCTAssertEqual(queryItems?.first { $0.name == "currency" }?.value, "EUR")
+        XCTAssertEqual(payload["customer_note"] as? String, "Updated note")
+        XCTAssertNil(payload["currency"])
+    }
+
+    func test_updateOrder_without_request_currency_omits_currency_query() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: .fake().copy(orderID: sampleOrderID), giftCard: nil, fields: []) { _ in }
+
+        // Then
+        let jetpackRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertNil(jetpackRequest.queryParameters.dictionary)
+        let request = try XCTUnwrap(jetpackRequest.asRESTRequest(with: "https://example.com"))
+        let queryItems = URLComponents(url: try XCTUnwrap(request.asURLRequest().url), resolvingAgainstBaseURL: false)?.queryItems
+        XCTAssertNil(queryItems?.first { $0.name == "currency" })
+    }
+
     // MARK: - Load Order Notes Tests
 
     /// Verifies that loadOrderNotes properly parses the `order-notes` sample response.

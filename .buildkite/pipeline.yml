@@ -48,13 +48,15 @@ steps:
     # On-demand only, and only on `trunk`: unlike a Prototype Build, this uploads to App Store
     # Connect, so every build consumes a build code and shows up to the internal testers.
     steps:
+      # DO NOT MERGE: `ainfra-2831-testflight-on-pr` is added so the flow can be exercised from a
+      # PR build before it ships. Revert to the `trunk`-only condition before this branch merges.
       - input: Create TestFlight Build?
         prompt: Build and upload to TestFlight for internal testers?
         key: testflight_build_triggered
-        if: build.branch == "trunk"
+        if: build.branch == "trunk" || build.branch == "ainfra-2831-testflight-on-pr"
       - label: ":testflight: TestFlight Build"
         depends_on: testflight_build_triggered
-        if: build.branch == "trunk"
+        if: build.branch == "trunk" || build.branch == "ainfra-2831-testflight-on-pr"
         command: .buildkite/commands/testflight-build.sh
         plugins: [$CI_TOOLKIT]
         notify:

@@ -831,15 +831,6 @@ private extension StripeCardReaderService {
         }
     }
 
-    /// Maps a Stripe intent to a `PaymentIntent`, rethrowing any mapping failure as a payment capture error.
-    static func capturedPaymentIntent(from intent: StripePaymentIntent) throws -> PaymentIntent {
-        do {
-            return try PaymentIntent(intent: intent)
-        } catch {
-            throw CardReaderServiceError.paymentCapture(underlyingError: error)
-        }
-    }
-
     func prepareForPaymentConfirmation(
         intent: StripeTerminal.PaymentIntent,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
@@ -883,6 +874,19 @@ private extension StripeCardReaderService {
                     return promise(.success(intent))
                 }
             }
+        }
+    }
+}
+
+// MARK: - Payment intent mapping
+extension StripeCardReaderService {
+    /// Maps a Stripe intent to a `PaymentIntent`, rethrowing any mapping failure as a payment capture error.
+    /// Internal rather than private so unit tests can verify the error wrapping.
+    static func capturedPaymentIntent(from intent: StripePaymentIntent) throws -> PaymentIntent {
+        do {
+            return try PaymentIntent(intent: intent)
+        } catch {
+            throw CardReaderServiceError.paymentCapture(underlyingError: error)
         }
     }
 }

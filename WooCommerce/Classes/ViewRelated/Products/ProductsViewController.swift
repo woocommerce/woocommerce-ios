@@ -307,6 +307,21 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
+
+        // On iOS 26, keeping the native refresh control attached during a navigation transition can cause
+        // UINavigationController's refresh control host and content overlay updates to recursively trigger each other.
+        // Detach it while this screen is covered, then restore it once the products list is fully visible again.
+        if #available(iOS 26.0, *) {
+            uninstallRefreshControl()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if #available(iOS 26.0, *) {
+            installRefreshControl()
+        }
     }
 
     override func viewDidLayoutSubviews() {

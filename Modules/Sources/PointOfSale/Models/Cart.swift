@@ -95,7 +95,22 @@ extension Cart {
         let posItemIdentifier: POSItemIdentifier
         let code: String
         let summary: String
+        /// Whether the coupon discounts the whole cart (as opposed to specific products
+        /// or categories). Used to warn that custom amounts are excluded from the discount.
+        let appliesToWholeCart: Bool
         let type: CartItemType = .coupon
+
+        init(id: UUID,
+             posItemIdentifier: POSItemIdentifier,
+             code: String,
+             summary: String,
+             appliesToWholeCart: Bool = false) {
+            self.id = id
+            self.posItemIdentifier = posItemIdentifier
+            self.code = code
+            self.summary = summary
+            self.appliesToWholeCart = appliesToWholeCart
+        }
     }
 }
 
@@ -106,7 +121,11 @@ extension Cart {
         if let purchasableItem = createPurchasableItem(from: posItem) {
             purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)
         } else if case .coupon(let coupon) = posItem {
-            let couponItem = Cart.CouponItem(id: UUID(), posItemIdentifier: coupon.id, code: coupon.code, summary: coupon.summary)
+            let couponItem = Cart.CouponItem(id: UUID(),
+                                             posItemIdentifier: coupon.id,
+                                             code: coupon.code,
+                                             summary: coupon.summary,
+                                             appliesToWholeCart: coupon.appliesToWholeCart)
             coupons.insert(couponItem, at: coupons.startIndex)
         }
     }

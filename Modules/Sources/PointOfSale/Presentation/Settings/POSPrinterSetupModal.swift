@@ -64,7 +64,7 @@ struct POSPrinterSetupModal: View {
             .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 
             if let buttonConfiguration {
-                PointOfSaleFlowButtonsView(configuration: buttonConfiguration)
+                POSFlowButtonsView(configuration: buttonConfiguration)
             }
         }
         .posModalCloseButton(action: {
@@ -85,17 +85,17 @@ private struct POSPrinterSetupContent: View {
     var body: some View {
         switch controller.discoveryState {
         case .idle:
-            messageContent(icon: "printer",
+            messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
                            title: Localization.pairTitle,
                            message: pairMessage)
         case .searching:
             progressContent(message: Localization.searching)
         case .noPrintersFound:
-            messageContent(icon: "printer",
+            messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
                            title: Localization.noPrintersTitle,
                            message: Localization.noPrintersMessage)
         case .foundOne(let device):
-            messageContent(icon: "printer",
+            messageContent(icon: PointOfSaleAssets.printer.decorativeImage,
                            title: String(format: Localization.foundPrinterFormat, device.name),
                            message: Localization.foundPrinterMessage)
         case .foundMultiple(let devices):
@@ -103,7 +103,7 @@ private struct POSPrinterSetupContent: View {
         case .connecting(let device):
             progressContent(message: String(format: Localization.connectingFormat, device.name))
         case .error:
-            messageContent(icon: "exclamationmark.triangle",
+            messageContent(icon: PointOfSaleAssets.exclamationMark.decorativeImage,
                            title: Localization.errorTitle,
                            message: Localization.errorMessage)
         }
@@ -120,9 +120,9 @@ private struct POSPrinterSetupContent: View {
         }
     }
 
-    private func messageContent(icon: String, title: String, message: String) -> some View {
+    private func messageContent(icon: Image, title: String, message: String) -> some View {
         VStack(spacing: POSSpacing.xLarge) {
-            Image(systemName: icon)
+            icon
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
@@ -330,12 +330,23 @@ private extension POSPrinterSetupModal {
             return .init(primaryButton: .init(title: Localization.settingsButton, action: {
                 openDeviceSettings()
             }),
-                         secondaryButton: nil)
+                         secondaryButton: cancelButton)
         }
         return .init(primaryButton: .init(title: primaryTitle, action: {
             controller.startDiscovery()
         }),
-                     secondaryButton: nil)
+                     secondaryButton: cancelButton)
+    }
+
+    /// Compact width pairs the primary action with a stacked Cancel. Regular width keeps the
+    /// single-button modal, where the close button in the corner is the way out.
+    var cancelButton: PointOfSaleFlowButtonConfiguration.ButtonConfig? {
+        guard isCompactWidth else {
+            return nil
+        }
+        return .init(title: Localization.cancelButton, action: {
+            isPresented = false
+        })
     }
 
     func openDeviceSettings() {
@@ -407,6 +418,21 @@ private extension POSPrinterSetupModal {
             devices: [PrinterDevice(id: "1", name: "Star TSP100")],
             keepDiscovering: true))
     controller.startDiscovery()
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+}
+
+#Preview("Discovery error") {
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(failsDiscovery: true))
+    controller.startDiscovery()
+    return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+}
+
+#Preview("Failed to connect") {
+    let device = PrinterDevice(id: "1", name: "Star TSP100")
+    let controller = POSPrinterConnectionController(
+        service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
+    controller.connect(to: device)
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
 }
 

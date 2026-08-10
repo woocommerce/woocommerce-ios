@@ -3,8 +3,8 @@ import Foundation
 public final class MockAnalyticsProviderPreview: AnalyticsProvider {
     public init() {}
 
-    public func refreshUserData() {
-        //
+    public func refreshUserData(completion: @escaping () -> Void) {
+        completion()
     }
 
     public func track(_ eventName: String) {

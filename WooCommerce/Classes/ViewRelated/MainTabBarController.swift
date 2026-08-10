@@ -479,12 +479,17 @@ extension MainTabBarController {
             return
         }
         let content = (selectedViewController as? TabContainerController)?.wrappedController ?? selectedViewController
-        let navigationController = content as? UINavigationController
 
-        navigationController?.popToRootOrScrollToTop(animated: true)
+        guard let navigationController = content as? UINavigationController else {
+            (content as? TabReselectionHandling)?.handleTabReselection()
+            return
+        }
 
-        let rootContent = navigationController?.viewControllers.first ?? content
-        (rootContent as? TabReselectionHandling)?.handleTabReselection()
+        // A refused pop skips the root's own reset, so its guarded screens are never bypassed.
+        guard navigationController.popToRootOrScrollToTop(animated: true) else {
+            return
+        }
+        (navigationController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
     }
 }
 

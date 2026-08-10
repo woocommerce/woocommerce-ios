@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.4
+Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+
 ## 25.3
 Running your store is now smoother: Point of Sale opens instantly offline after syncing, and product details update each time you reopen them. Creating orders and accepting payments works as expected on iPhone, and shop layouts and links display better at large font sizes.
 

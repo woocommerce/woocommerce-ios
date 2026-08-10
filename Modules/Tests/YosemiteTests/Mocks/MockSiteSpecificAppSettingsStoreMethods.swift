@@ -47,12 +47,6 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var setSunsetWarningLastDismissedDateCalled = false
     var mockSunsetWarningLastDismissedDate: Date?
 
-    // Card-present payments country expansion eligibility (RSM-637)
-    var loadCardPresentPaymentsCountryExpansionEligibilityCalled = false
-    var saveCardPresentPaymentsCountryExpansionEligibilityCalled = false
-    var mockCardPresentPaymentsCountryExpansionEligibility: Bool?
-    var spySavedCardPresentPaymentsCountryExpansionEligibility: Bool?
-    var spySavedCardPresentPaymentsCountryExpansionEligibilitySiteID: Int64?
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -164,18 +158,5 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {
         setSunsetWarningLastDismissedDateCalled = true
         mockSunsetWarningLastDismissedDate = date
-    }
-
-    // Card-present payments country expansion eligibility methods
-    func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool? {
-        loadCardPresentPaymentsCountryExpansionEligibilityCalled = true
-        return mockCardPresentPaymentsCountryExpansionEligibility
-    }
-
-    func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool) {
-        saveCardPresentPaymentsCountryExpansionEligibilityCalled = true
-        spySavedCardPresentPaymentsCountryExpansionEligibility = isEligible
-        spySavedCardPresentPaymentsCountryExpansionEligibilitySiteID = siteID
-        mockCardPresentPaymentsCountryExpansionEligibility = isEligible
     }
 }

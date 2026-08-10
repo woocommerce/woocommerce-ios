@@ -135,8 +135,7 @@ extension Storage.GeneralStoreSettings {
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
         posCatalogFileBlockedByHostAt: NullableCopiableProp<Date> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
-        isCardPresentPaymentsCountryExpansionEligible: NullableCopiableProp<Bool> = .copy
+        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -165,7 +164,6 @@ extension Storage.GeneralStoreSettings {
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
         let posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt ?? self.posCatalogFileBlockedByHostAt
         let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
-        let isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible ?? self.isCardPresentPaymentsCountryExpansionEligible
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -194,8 +192,7 @@ extension Storage.GeneralStoreSettings {
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
-            isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible
+            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate
         )
     }
 }

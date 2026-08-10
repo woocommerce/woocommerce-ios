@@ -218,12 +218,15 @@ struct MobileStatusReportProviderTests {
 private extension MobileStatusReportProviderTests {
 
     func makeProvider(pushNotesManager: PushNotesManager? = nil) -> MobileStatusReportProvider {
+        // A short timeout so the unanswered-dispatch test exercises the degradation without waiting out the
+        // production value.
         MobileStatusReportProvider(systemSnapshot: { .fixture() },
                                    pushNotesManager: pushNotesManager ?? self.pushNotesManager,
                                    stores: stores,
                                    storageManager: storageManager,
                                    featureFlagService: MockFeatureFlagService(),
-                                   generalAppSettings: appSettings)
+                                   generalAppSettings: appSettings,
+                                   dispatchTimeout: 0.05)
     }
 
     /// Replaces the bodies of the two sections that enumerate every known flag and beta toggle, so an unrelated

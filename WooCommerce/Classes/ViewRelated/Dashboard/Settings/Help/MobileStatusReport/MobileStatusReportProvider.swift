@@ -40,18 +40,24 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
+    /// How long `awaitedDispatch` waits before an unanswered dispatch degrades to its fallback. Injectable so
+    /// tests can exercise the degradation without waiting out the production value.
+    private let dispatchTimeout: TimeInterval
+
     nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings) {
+                     generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+                     dispatchTimeout: TimeInterval = 1) {
         self.systemSnapshot = systemSnapshot
         self.pushNotesManager = pushNotesManager
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
+        self.dispatchTimeout = dispatchTimeout
     }
 
     func generateReport(siteAddress: String?) async -> String {
@@ -253,8 +259,8 @@ private extension MobileStatusReportProvider {
     ///
     /// The await is bounded because a dispatch is not guaranteed an answer: the deauthenticated stores manager
     /// drops actions for stores it does not run (`AppSettingsStore` among them), and no completion ever comes.
-    /// After `Constants.dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is
-    /// recoverable, a report that never finishes while a merchant files a ticket is not.
+    /// After `dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is recoverable, a
+    /// report that never finishes while a merchant files a ticket is not.
     func awaitedDispatch<Value>(fallback: Value,
                                 _ makeAction: (@escaping (Value) -> Void) -> Action) async -> Value {
         await withCheckedContinuation { continuation in
@@ -269,7 +275,7 @@ private extension MobileStatusReportProvider {
                 // ever answers from elsewhere.
                 DispatchQueue.main.async { resumeOnce(value) }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.dispatchTimeout) { resumeOnce(fallback) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + dispatchTimeout) { resumeOnce(fallback) }
         }
     }
 }
@@ -285,9 +291,6 @@ extension MobileStatusReportProvider {
 
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
-
-        /// How long `awaitedDispatch` waits before degrading to its fallback.
-        static let dispatchTimeout: TimeInterval = 1
     }
 }
 

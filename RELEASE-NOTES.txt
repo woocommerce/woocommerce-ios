@@ -4,6 +4,7 @@
 25.5
 -----
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
+- [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [PR_URL]
 
 25.4
 -----

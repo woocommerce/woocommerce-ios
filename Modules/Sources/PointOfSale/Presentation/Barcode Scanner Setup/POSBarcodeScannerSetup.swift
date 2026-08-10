@@ -109,7 +109,7 @@ struct POSBarcodeScannerSetup: View {
     @ViewBuilder
     private var flowButtons: some View {
         if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
-            PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
+            POSFlowButtonsView(configuration: flowManager.buttonConfiguration)
         }
     }
 

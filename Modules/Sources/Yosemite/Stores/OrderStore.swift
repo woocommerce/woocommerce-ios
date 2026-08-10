@@ -853,6 +853,8 @@ private extension Storage.Order {
     /// is non-failable, so the order decoder produces a non-nil value whenever the response contained at
     /// least one metadata entry. Orders with zero metadata entries can never be certified as complete and
     /// always take the full fetch — their payloads are the smallest, so the extra cost is minimal.
+    /// `fulfillmentStatusKey` is deliberately omitted: a non-unknown value implies a `_fulfillment_status`
+    /// metadata entry was present, which already makes `attributionInfo` non-nil.
     var containsMetadataDerivedValues: Bool {
         attributionInfo != nil
             || customFields?.isEmpty == false

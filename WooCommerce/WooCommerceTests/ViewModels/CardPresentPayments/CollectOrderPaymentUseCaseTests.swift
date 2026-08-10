@@ -86,7 +86,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
-    func test_canceling_while_validating_order_prevents_payment_from_starting_after_validation_completes() throws {
+    func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() throws {
         // Given
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
         var orderRetrievalCompletion: ((Result<Order, Error>) -> Void)?
@@ -115,7 +115,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertFalse(mockPaymentOrchestrator.spyDidCallCollectPayment)
     }
 
-    func test_canceling_while_preparing_reader_ignores_subsequent_reader_events() throws {
+    func test_collectPayment_canceledWhilePreparingReader_ignoresSubsequentReaderEvents() throws {
         // Given
         var presentedAlertCountAfterCancellation: Int?
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
@@ -149,7 +149,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(alertsPresenter.spyPresentedAlertViewModels.count, try XCTUnwrap(presentedAlertCountAfterCancellation))
     }
 
-    func test_successful_cancellation_after_tap_to_pay_was_shown_requires_confirmation_before_completing() throws {
+    func test_collectPayment_successfulCancellationAfterTapToPayWasShown_requiresConfirmationBeforeCompleting() throws {
         // Given
         applicationState = .inactive
         var didCancelFlow = false
@@ -193,7 +193,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertTrue(didCancelFlow)
     }
 
-    func test_failed_cancellation_keeps_payment_flow_active() {
+    func test_collectPayment_failedCancellation_keepsPaymentFlowActive() {
         // Given
         mockPaymentOrchestrator.mockCancelPaymentResult = .failure(TestError.cancellationFailed)
         var didCancelFlow = false

@@ -492,7 +492,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.exclude: stringOfExcludedProductIDs
         ].filter({ $0.value.isEmpty == false })
 
-        let parameters: RequestParameterConvertibleDictionary = [
+        let parameters = ([
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.search: keyword,
@@ -500,7 +500,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.exclude: stringOfExcludedProductIDs,
             ParameterKey.contextKey: Default.context,
             ParameterKey.currency: currency
-        ].merging(filterParameters, uniquingKeysWith: { first, _ in first })
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
+            .merging(filterParameters, uniquingKeysWith: { first, _ in first })
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)

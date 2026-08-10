@@ -188,6 +188,8 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     private func enableCashOnDeliveryGateway() {
         guard let siteID else {
+            // Reverts the optimistic toggle state, since no update will be attempted.
+            updateCashOnDeliveryEnabledState()
             return
         }
 
@@ -219,6 +221,8 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     private func disableCashOnDeliveryGateway() {
         guard let cashOnDeliveryGateway else {
+            // Reverts the optimistic toggle state, since no update will be attempted.
+            updateCashOnDeliveryEnabledState()
             return
         }
 

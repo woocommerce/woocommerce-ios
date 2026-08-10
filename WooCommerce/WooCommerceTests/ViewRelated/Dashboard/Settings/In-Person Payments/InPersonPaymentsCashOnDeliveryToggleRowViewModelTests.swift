@@ -292,6 +292,26 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertTrue(gateway.enabled)
     }
 
+    func test_confirmCashOnDeliveryToggle_enabled_when_no_site_is_selected_then_the_toggle_state_reverts() {
+        // Given a stores manager with no selected site
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let dependencies = InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies(
+            stores: stores,
+            storageManager: storageManager,
+            noticePresenter: noticePresenter,
+            analytics: analytics
+        )
+        let sut = InPersonPaymentsCashOnDeliveryToggleRowViewModel(dependencies: dependencies,
+                                                                   configuration: configuration)
+
+        // When
+        sut.confirmCashOnDeliveryToggle(targetState: true)
+
+        // Then
+        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
+        assertEmpty(stores.receivedActions)
+    }
+
     func test_dismissCashOnDeliveryToggleConfirmation_then_the_gateway_is_left_untouched() {
         // Given
         sut.cashOnDeliveryToggleRequested(enabled: true)

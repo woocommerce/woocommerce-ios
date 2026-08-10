@@ -280,7 +280,7 @@ private extension MobileStatusReportProvider {
     }
 }
 
-extension MobileStatusReportProvider {
+private extension MobileStatusReportProvider {
     enum Constants {
         static let heading = "### Mobile Status Report generated via the WooCommerce iOS app ###"
 

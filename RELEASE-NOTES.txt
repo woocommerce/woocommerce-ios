@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Login: QR login now waits for you to choose a store when multiple sites are available. [https://github.com/woocommerce/woocommerce-ios/pull/17681]
 - [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
 

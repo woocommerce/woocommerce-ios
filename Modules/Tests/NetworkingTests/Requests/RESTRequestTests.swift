@@ -131,6 +131,26 @@ final class RESTRequestTests: XCTestCase {
         }
     }
 
+    func test_get_merges_parameters_and_queryParameters_with_queryParameters_taking_precedence() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .get,
+                                  path: sampleRPC,
+                                  parameters: ["currency": "USD", "status": "completed"],
+                                  queryParameters: ["currency": "EUR", "context": "edit"])
+
+        // When
+        let urlRequest = try request.asURLRequest()
+        let components = try XCTUnwrap(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false))
+        let queryItems = try XCTUnwrap(components.queryItems)
+
+        // Then
+        XCTAssertEqual(queryItems.filter { $0.name == "currency" }.map(\.value), ["EUR"])
+        XCTAssertEqual(queryItems.first { $0.name == "status" }?.value, "completed")
+        XCTAssertEqual(queryItems.first { $0.name == "context" }?.value, "edit")
+    }
+
     func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_put_and_patch() throws {
         // Given
         let methods: [HTTPMethod] = [.options, .get, .head, .delete, .trace, .connect]

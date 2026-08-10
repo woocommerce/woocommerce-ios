@@ -1,5 +1,6 @@
 import Experiments
 import Foundation
+import WordPressShared
 import Yosemite
 import enum Networking.RemoteFeatureFlag
 import struct Storage.GeneralAppSettingsStorage
@@ -124,7 +125,7 @@ private extension MobileStatusReportProvider {
     func accountSection(_ siteAddress: String?) -> [String] {
         let sites = allSites()
         return [entry("WPCom user ID", wpcomUserID()),
-                siteAddress?.nilIfEmpty.map { entry("Address given in the form", $0) },
+                siteAddress?.nonEmptyString().map { entry("Address given in the form", $0) },
                 entry("Connected stores", String(sites.count))].compactMap { $0 } + siteList(sites)
     }
 
@@ -224,15 +225,15 @@ private extension MobileStatusReportProvider {
         }
 
         return ["", "All connected stores:"] + sites.map { site in
-            entry(site.url.nilIfEmpty ?? Constants.unknown,
-                  "Plan: \(site.plan.nilIfEmpty ?? Constants.unknown) " +
+            entry(site.url.nonEmptyString() ?? Constants.unknown,
+                  "Plan: \(site.plan.nonEmptyString() ?? Constants.unknown) " +
                   "Jetpack: installed=\(site.isJetpackThePluginInstalled) connected=\(site.isJetpackConnected)")
         }
     }
 
     /// Enough to compare against server logs, not enough to address the device.
     func redactedToken(_ token: String?) -> String {
-        token?.nilIfEmpty.map { "present (…\($0.suffix(6)))" } ?? "missing"
+        token?.nonEmptyString().map { "present (…\($0.suffix(6)))" } ?? "missing"
     }
 }
 
@@ -291,11 +292,5 @@ private extension MobileStatusReportProvider {
 
         static let sectionUnavailable = "Info not found"
         static let unknown = "unknown"
-    }
-}
-
-private extension String {
-    var nilIfEmpty: String? {
-        isEmpty ? nil : self
     }
 }

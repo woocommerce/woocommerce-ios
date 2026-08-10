@@ -2,8 +2,6 @@ import Experiments
 import Foundation
 import WordPressShared
 import Yosemite
-import enum Networking.RemoteFeatureFlag
-import enum Networking.WooConstants
 import struct Storage.GeneralAppSettingsStorage
 import protocol Storage.StorageManagerType
 
@@ -411,7 +409,7 @@ private extension MobileStatusReportProvider {
     }
 
     func blogID(_ site: Site) -> String {
-        site.siteID == Networking.WooConstants.placeholderSiteID ?
+        site.siteID == WooConstants.placeholderSiteID ?
             "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
     }
 

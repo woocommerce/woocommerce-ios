@@ -55,6 +55,7 @@ final class OrderDetailsViewModel {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let siteCurrencyProvider: (Int64) -> CurrencyCode?
+    private let wooCommerceVersionProvider: (Int64) -> String?
     private let orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
@@ -79,6 +80,7 @@ final class OrderDetailsViewModel {
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          siteCurrencyProvider: ((Int64) -> CurrencyCode?)? = nil,
+         wooCommerceVersionProvider: ((Int64) -> String?)? = nil,
          orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
          pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
@@ -92,6 +94,13 @@ final class OrderDetailsViewModel {
                 return nil
             }
             return CurrencyCode(caseInsensitiveRawValue: currency)
+        }
+        self.wooCommerceVersionProvider = wooCommerceVersionProvider ?? { siteID in
+            storageManager.viewStorage.loadSystemPlugin(
+                siteID: siteID,
+                fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
+                active: nil
+            )?.toReadOnly().version
         }
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
         self.featureFlagService = featureFlagService
@@ -242,11 +251,22 @@ final class OrderDetailsViewModel {
             return .disabledForSyncing
         }
 
+        let siteCurrency = siteCurrencyProvider(order.siteID)
+        let wooCommerceVersion = wooCommerceVersionProvider(order.siteID)
         let shouldBlockEditing = orderCurrencyEditingEligibility.shouldBlockEditing(
             orderCurrency: order.currency,
-            siteCurrency: siteCurrencyProvider(order.siteID),
-            wooCommerceVersion: stores.sessionManager.cachedWooCommerceVersion
+            siteCurrency: siteCurrency,
+            wooCommerceVersion: wooCommerceVersion
         )
+        DDLogInfo("[OrderDetails] Multi-currency editing eligibility: " + [
+            "orderID=\(order.orderID)",
+            "siteID=\(order.siteID)",
+            "orderCurrency=\(order.currency)",
+            "siteCurrency=\(siteCurrency?.rawValue ?? "unknown")",
+            "storedWooCommerceVersion=\(wooCommerceVersion ?? "unknown")",
+            "sessionWooCommerceVersion=\(stores.sessionManager.cachedWooCommerceVersion ?? "unknown")",
+            "shouldBlockEditing=\(shouldBlockEditing)"
+        ].joined(separator: ", "))
         guard !shouldBlockEditing else {
             return .showNoticeForCurrencyConflict
         }
@@ -258,7 +278,7 @@ final class OrderDetailsViewModel {
         orderCurrencyEditingEligibility.requestCurrency(
             orderCurrency: order.currency,
             siteCurrency: siteCurrencyProvider(order.siteID),
-            wooCommerceVersion: stores.sessionManager.cachedWooCommerceVersion
+            wooCommerceVersion: wooCommerceVersionProvider(order.siteID)
         )
     }
 

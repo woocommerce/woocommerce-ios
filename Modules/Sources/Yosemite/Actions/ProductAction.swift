@@ -62,6 +62,36 @@ public enum ProductAction: Action {
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Retrieves a currency-scoped page of products without writing the results to local storage.
+    ///
+    case retrieveProductsTransiently(siteID: Int64,
+                                     currency: String,
+                                     pageNumber: Int,
+                                     pageSize: Int = ProductsRemote.Default.pageSize,
+                                     stockStatus: ProductStockStatus?,
+                                     productStatus: ProductStatus?,
+                                     productType: ProductType?,
+                                     productCategory: ProductCategory?,
+                                     sortOrder: ProductsSortOrder,
+                                     productIDs: [Int64] = [],
+                                     excludedProductIDs: [Int64] = [],
+                                     onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+
+    /// Searches for currency-scoped products without writing products or search results to local storage.
+    ///
+    case searchProductsTransiently(siteID: Int64,
+                                   currency: String,
+                                   keyword: String,
+                                   filter: ProductSearchFilter = .all,
+                                   pageNumber: Int,
+                                   pageSize: Int,
+                                   stockStatus: ProductStockStatus? = nil,
+                                   productStatus: ProductStatus? = nil,
+                                   productType: ProductType? = nil,
+                                   productCategory: ProductCategory? = nil,
+                                   excludedProductIDs: [Int64] = [],
+                                   onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+
     /// Retrieves the specified Product.
     ///
     case retrieveProduct(siteID: Int64, productID: Int64, onCompletion: (Result<Product, Error>) -> Void)

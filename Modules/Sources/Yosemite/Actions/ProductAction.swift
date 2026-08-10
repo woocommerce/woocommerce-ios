@@ -89,6 +89,7 @@ public enum ProductAction: Action {
                                    productStatus: ProductStatus? = nil,
                                    productType: ProductType? = nil,
                                    productCategory: ProductCategory? = nil,
+                                   productIDs: [Int64] = [],
                                    excludedProductIDs: [Int64] = [],
                                    onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 

@@ -99,7 +99,7 @@ final class OrderDetailsViewModel {
             storageManager.viewStorage.loadSystemPlugin(
                 siteID: siteID,
                 fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
-                active: nil
+                active: true
             )?.toReadOnly().version
         }
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility

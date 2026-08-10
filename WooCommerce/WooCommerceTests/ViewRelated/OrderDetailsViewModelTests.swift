@@ -629,17 +629,22 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
     }
 
-    func test_edit_order_action_uses_stored_woocommerce_version_instead_of_other_sites_session_cache() {
+    func test_edit_order_action_uses_active_stored_woocommerce_version_instead_of_inactive_or_session_versions() {
         // Given
         let order = Order.fake().copy(currency: "USD", total: "10.0")
         let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.0.0")
         let storesManager = MockStoresManager(sessionManager: sessionManager)
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
-        let plugin = SystemPlugin.fake().copy(siteID: order.siteID,
-                                              plugin: "woocommerce/woocommerce.php",
-                                              version: "11.1.0-dev",
-                                              active: true)
-        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: order.siteID,
+                                                      plugin: "woocommerce/woocommerce.php",
+                                                      version: "11.0.0",
+                                                      active: false)
+        let activePlugin = SystemPlugin.fake().copy(siteID: order.siteID,
+                                                    plugin: "woocommerce/woocommerce.php",
+                                                    version: "11.1.0-dev-31112307844-gb1a51de3",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: inactivePlugin)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
 
         // When
         let viewModel = OrderDetailsViewModel(order: order,

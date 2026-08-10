@@ -202,7 +202,11 @@ private extension MobileStatusReportProvider {
     }
 
     func fetched<T>(_ controller: ResultsController<T>) -> [T.ReadOnlyType] {
-        try? controller.performFetch()
+        do {
+            try controller.performFetch()
+        } catch {
+            DDLogError("⛔️ MobileStatusReportProvider: fetching \(T.entityName) failed: \(error)")
+        }
         return controller.fetchedObjects
     }
 

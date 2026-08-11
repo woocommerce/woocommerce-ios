@@ -482,7 +482,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, onCompletion):
+                case let .updateOrder(_, order, _, _, _, onCompletion):
                     promise(order)
                     onCompletion(.success(.fake()))
                 default:
@@ -3003,7 +3003,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, onCompletion):
+                case let .updateOrder(_, order, _, _, _, onCompletion):
                     promise(order)
                         onCompletion(.success(order))
                 default:
@@ -3072,7 +3072,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                    case let .updateOrder(_, order, _, _, onCompletion):
+                    case let .updateOrder(_, order, _, _, _, onCompletion):
                         promise(order)
                         onCompletion(.success(order))
                     default:
@@ -3141,7 +3141,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                    case let .updateOrder(_, order, _, _, onCompletion):
+                    case let .updateOrder(_, order, _, _, _, onCompletion):
                         promise(order)
                         onCompletion(.success(order))
                     default:
@@ -3193,7 +3193,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, onCompletion):
+                case let .updateOrder(_, order, _, _, _, onCompletion):
                     promise(order)
                     onCompletion(.success(order))
                 default:
@@ -3255,7 +3255,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let orderToUpdate: Order = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                    case let .updateOrder(_, order, _, _, onCompletion):
+                    case let .updateOrder(_, order, _, _, _, onCompletion):
                         promise(order)
                         onCompletion(.success(order))
                     default:

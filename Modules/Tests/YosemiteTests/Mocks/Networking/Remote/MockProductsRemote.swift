@@ -290,7 +290,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          productIDs: [Int64],
-                         excludedProductIDs: [Int64]) async throws -> [Product] {
+                         excludedProductIDs: [Int64],
+                         currency: String?) async throws -> [Product] {
         synchronizeProductsTriggered = true
         synchronizeProductsWithStockStatus = stockStatus
         synchronizeProductsWithProductStatus = productStatus
@@ -322,7 +323,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
-                        excludedProductIDs: [Int64]) async throws -> [Product] {
+                        productIDs: [Int64],
+                        excludedProductIDs: [Int64],
+                        currency: String?) async throws -> [Product] {
         searchProductTriggered = true
         searchProductWithStockStatus = stockStatus
         searchProductWithProductType = productType
@@ -342,7 +345,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int) async throws -> [Product] {
+                             pageSize: Int,
+                             productIDs: [Int64],
+                             currency: String?) async throws -> [Product] {
         guard let result = searchProductsBySKUResultsBySKU[keyword] else {
             XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")
             throw NetworkError.notFound()

@@ -373,23 +373,26 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReadyForNewOrder(previousProductID: Int? = nil, previousVariationID: Int? = nil) -> Self {
-        let compactCartButton = app.buttons["pos-compact-cart-button"]
-
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible for a new order.")
 
-        if compactCartButton.waitForIsHittable(timeout: 1) {
-            // Compact layouts use a collapsed cart button; regular layouts keep the cart pane visible.
-            XCTAssertTrue(compactCartButton.label.contains("0"), "Compact cart button should show an empty cart for a new order.")
-        } else {
-            XCTAssertTrue(cartViewGetter(app).waitForExistence(timeout: 10), "POS cart should be visible for a new order.")
-            if let previousProductID {
-                let previousProductCartItem = app.descendants(matching: .any)["pos-cart-item-product-\(previousProductID)"]
-                previousProductCartItem.waitForElementToNotExist(element: previousProductCartItem, timeout: 10)
-            }
-            if let previousVariationID {
-                let previousVariationCartItem = app.descendants(matching: .any)["pos-cart-item-variation-\(previousVariationID)"]
-                previousVariationCartItem.waitForElementToNotExist(element: previousVariationCartItem, timeout: 10)
-            }
+        // The compact cart button cannot identify the layout here: it is hidden while the cart is
+        // empty, which is exactly the state this check asserts. The regular-layout cart pane is
+        // always in the hierarchy, so its presence is the stable layout signal.
+        guard cartViewGetter(app).waitForExistence(timeout: 5) else {
+            // Compact layout: an empty cart hides the collapsed cart button, so its absence is the
+            // assertion that the order was reset.
+            let compactCartButton = app.buttons["pos-compact-cart-button"]
+            compactCartButton.waitForElementToNotExist(element: compactCartButton, timeout: 10)
+            return self
+        }
+
+        if let previousProductID {
+            let previousProductCartItem = app.descendants(matching: .any)["pos-cart-item-product-\(previousProductID)"]
+            previousProductCartItem.waitForElementToNotExist(element: previousProductCartItem, timeout: 10)
+        }
+        if let previousVariationID {
+            let previousVariationCartItem = app.descendants(matching: .any)["pos-cart-item-variation-\(previousVariationID)"]
+            previousVariationCartItem.waitForElementToNotExist(element: previousVariationCartItem, timeout: 10)
         }
         return self
     }

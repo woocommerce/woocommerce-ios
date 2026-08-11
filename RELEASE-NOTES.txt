@@ -6,6 +6,8 @@
 - [*] Fixed universal links using www.woocommerce.com or www.woo.com opening in Safari instead of the app. [https://github.com/woocommerce/woocommerce-ios/pull/17682]
 - [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
+- [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
+- [*] Tapping an already-selected tab now returns it to its root screen. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
 
 25.4
 -----

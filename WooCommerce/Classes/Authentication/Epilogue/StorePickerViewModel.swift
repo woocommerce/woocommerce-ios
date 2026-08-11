@@ -111,6 +111,7 @@ final class StorePickerViewModel {
             return nil
         }
 
+        // Login only preselects an explicit credential match or an unambiguous sole result.
         if configuration != .login, let site = stores.sessionManager.defaultSite {
             return site
         }

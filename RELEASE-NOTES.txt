@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
 
 
 25.4

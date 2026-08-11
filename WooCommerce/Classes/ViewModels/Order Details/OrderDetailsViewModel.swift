@@ -14,17 +14,23 @@ import protocol Storage.StorageManagerType
 /// Determines whether an order with a different currency can be edited in the app.
 ///
 /// WooCommerce 11.1 added support for currency-aware order editing. When either currency is
-/// unknown, editing remains available because a mismatch cannot be established.
+/// missing, editing remains available because a mismatch cannot be established.
 struct OrderCurrencyEditingEligibility {
     private static let minimumSupportedWooCommerceVersion = "11.1.0"
 
     func shouldBlockEditing(orderCurrency: String,
-                            siteCurrency: CurrencyCode?,
+                            siteCurrency: String?,
                             wooCommerceVersion: String?) -> Bool {
-        guard let orderCurrency = CurrencyCode(caseInsensitiveRawValue: orderCurrency),
-              let siteCurrency,
-              orderCurrency != siteCurrency else {
+        guard let orderCurrency = nonEmptyCurrencyCode(orderCurrency),
+              let siteCurrency = nonEmptyCurrencyCode(siteCurrency) else {
             return false
+        }
+        guard orderCurrency.caseInsensitiveCompare(siteCurrency) != .orderedSame else {
+            return false
+        }
+        guard CurrencyCode(caseInsensitiveRawValue: orderCurrency) != nil,
+              CurrencyCode(caseInsensitiveRawValue: siteCurrency) != nil else {
+            return true
         }
         guard let wooCommerceVersion else {
             return true
@@ -35,17 +41,26 @@ struct OrderCurrencyEditingEligibility {
     }
 
     func requestCurrency(orderCurrency: String,
-                         siteCurrency: CurrencyCode?,
+                         siteCurrency: String?,
                          wooCommerceVersion: String?) -> String? {
         guard !shouldBlockEditing(orderCurrency: orderCurrency,
                                   siteCurrency: siteCurrency,
                                   wooCommerceVersion: wooCommerceVersion),
               let orderCurrency = CurrencyCode(caseInsensitiveRawValue: orderCurrency),
               let siteCurrency,
+              let siteCurrency = CurrencyCode(caseInsensitiveRawValue: siteCurrency),
               orderCurrency != siteCurrency else {
             return nil
         }
         return orderCurrency.rawValue
+    }
+
+    private func nonEmptyCurrencyCode(_ currencyCode: String?) -> String? {
+        guard let currencyCode = currencyCode?.trimmingCharacters(in: .whitespacesAndNewlines),
+              currencyCode.isNotEmpty else {
+            return nil
+        }
+        return currencyCode
     }
 }
 
@@ -54,8 +69,7 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
-    private let siteCurrencyProvider: (Int64) -> CurrencyCode?
-    private let wooCommerceVersionProvider: (Int64) -> String?
+    private let siteCurrencyProvider: (Int64) -> String?
     private let orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
@@ -79,8 +93,7 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         siteCurrencyProvider: ((Int64) -> CurrencyCode?)? = nil,
-         wooCommerceVersionProvider: ((Int64) -> String?)? = nil,
+         siteCurrencyProvider: ((Int64) -> String?)? = nil,
          orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
          pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
@@ -88,19 +101,9 @@ final class OrderDetailsViewModel {
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
         self.siteCurrencyProvider = siteCurrencyProvider ?? { siteID in
-            guard let currency = storageManager.viewStorage
+            storageManager.viewStorage
                 .loadSiteSetting(siteID: siteID, settingID: CurrencySettings.Constants.currencyCodeKey)?
-                .value else {
-                return nil
-            }
-            return CurrencyCode(caseInsensitiveRawValue: currency)
-        }
-        self.wooCommerceVersionProvider = wooCommerceVersionProvider ?? { siteID in
-            storageManager.viewStorage.loadSystemPlugin(
-                siteID: siteID,
-                fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
-                active: true
-            )?.toReadOnly().version
+                .value
         }
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
         self.featureFlagService = featureFlagService
@@ -246,27 +249,19 @@ final class OrderDetailsViewModel {
 
     /// Returns edit action availability given the internal state.
     ///
+    @MainActor
     var editButtonBehaviour: EditButtonBehaviour {
         guard syncStateController.syncState == .synced else {
             return .disabledForSyncing
         }
 
         let siteCurrency = siteCurrencyProvider(order.siteID)
-        let wooCommerceVersion = wooCommerceVersionProvider(order.siteID)
+        let wooCommerceVersion = activeWooCommerceVersion()
         let shouldBlockEditing = orderCurrencyEditingEligibility.shouldBlockEditing(
             orderCurrency: order.currency,
             siteCurrency: siteCurrency,
             wooCommerceVersion: wooCommerceVersion
         )
-        DDLogInfo("[OrderDetails] Multi-currency editing eligibility: " + [
-            "orderID=\(order.orderID)",
-            "siteID=\(order.siteID)",
-            "orderCurrency=\(order.currency)",
-            "siteCurrency=\(siteCurrency?.rawValue ?? "unknown")",
-            "storedWooCommerceVersion=\(wooCommerceVersion ?? "unknown")",
-            "sessionWooCommerceVersion=\(stores.sessionManager.cachedWooCommerceVersion ?? "unknown")",
-            "shouldBlockEditing=\(shouldBlockEditing)"
-        ].joined(separator: ", "))
         guard !shouldBlockEditing else {
             return .showNoticeForCurrencyConflict
         }
@@ -274,12 +269,18 @@ final class OrderDetailsViewModel {
         return .enabled
     }
 
+    @MainActor
     var editOrderRequestCurrency: String? {
         orderCurrencyEditingEligibility.requestCurrency(
             orderCurrency: order.currency,
             siteCurrency: siteCurrencyProvider(order.siteID),
-            wooCommerceVersion: wooCommerceVersionProvider(order.siteID)
+            wooCommerceVersion: activeWooCommerceVersion()
         )
+    }
+
+    @MainActor
+    private func activeWooCommerceVersion() -> String? {
+        pluginsService.loadPluginInStorage(siteID: order.siteID, plugin: .wooCommerce, isActive: true)?.version
     }
 
     enum EditButtonBehaviour {
@@ -1159,8 +1160,9 @@ extension OrderDetailsViewModel {
         DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
     }
 
+    @MainActor
     func showNoticeForEditingWithCurrencyConflict(in viewController: UIViewController) {
-        guard let siteCurrency = siteCurrencyProvider(order.siteID)?.rawValue else {
+        guard let siteCurrency = siteCurrencyProvider(order.siteID) else {
             return
         }
         let noticePresenter = DefaultNoticePresenter()
@@ -1170,7 +1172,8 @@ extension OrderDetailsViewModel {
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
 
-        DDLogError("Attempt to edit order \(order.orderID) with currency \(order.currency), but did not match site's currency \(siteCurrency).")
+        DDLogError("Attempt to edit order \(order.orderID) with currency \(order.currency), but did not match site's currency \(siteCurrency). " +
+                   "Active WooCommerce version: \(activeWooCommerceVersion() ?? "unknown").")
     }
 
     enum Localization {

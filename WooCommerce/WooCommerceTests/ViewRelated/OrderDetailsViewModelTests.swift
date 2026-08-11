@@ -567,7 +567,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // When
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              siteCurrencyProvider: { _ in .GBP })
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.disabledForSyncing)
@@ -582,7 +582,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: usdOrder,
                                               stores: storesManager,
                                               syncStateController: syncStateController,
-                                              siteCurrencyProvider: { _ in .GBP })
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
@@ -598,12 +598,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                                       value: CurrencyCode.GBP.rawValue,
                                                       settingGroupKey: SiteSettingGroup.general.rawValue)
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: currencySetting)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.0.9", active: true))
 
         // When
         let viewModel = OrderDetailsViewModel(order: usdOrder,
                                               storageManager: storageManager,
                                               syncStateController: syncStateController,
-                                              wooCommerceVersionProvider: { _ in "11.0.9" })
+                                              pluginsService: pluginsService)
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
@@ -615,12 +617,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
             // Given
             let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
             let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: version, active: true))
 
             // When
             let viewModel = OrderDetailsViewModel(order: usdOrder,
                                                   syncStateController: syncStateController,
-                                                  siteCurrencyProvider: { _ in .GBP },
-                                                  wooCommerceVersionProvider: { _ in version })
+                                                  siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue },
+                                                  pluginsService: pluginsService)
 
             // Then
             XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled,
@@ -651,7 +655,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                               stores: storesManager,
                                               storageManager: storageManager,
                                               syncStateController: syncStateController,
-                                              siteCurrencyProvider: { _ in .GBP })
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, .enabled)
@@ -670,14 +674,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                               stores: storesManager,
                                               storageManager: storageManager,
                                               syncStateController: syncStateController,
-                                              siteCurrencyProvider: { _ in .GBP })
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
         XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
-    func test_edit_order_action_is_enabled_when_site_currency_is_unknown() {
+    func test_edit_order_action_is_enabled_when_site_currency_is_missing() {
         // Given
         let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
@@ -693,7 +697,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
-    func test_edit_order_action_is_enabled_when_order_currency_is_unknown() {
+    func test_edit_order_action_is_enabled_when_order_currency_is_empty() {
         // Given
         let order = Order.fake().copy(currency: "", total: "10.0")
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
@@ -702,10 +706,64 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
                                               syncStateController: syncStateController,
-                                              siteCurrencyProvider: { _ in .GBP })
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_blocked_when_order_currency_is_unsupported_and_differs_from_site_currency() {
+        // Given
+        let order = Order.fake().copy(currency: "XBT", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.1.0", active: true))
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.USD.rawValue },
+                                              pluginsService: pluginsService)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_blocked_when_site_currency_is_unsupported_and_differs_from_order_currency() {
+        // Given
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.1.0", active: true))
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in "XBT" },
+                                              pluginsService: pluginsService)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_matching_currency_is_unsupported() {
+        // Given
+        let order = Order.fake().copy(currency: "XBT", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in "xbt" })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .enabled)
         XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
@@ -718,7 +776,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let viewModel = OrderDetailsViewModel(order: usdOrder,
                                               stores: storesManager,
                                               syncStateController: syncStateController,
-                                              siteCurrencyProvider: { _ in .USD })
+                                              siteCurrencyProvider: { _ in CurrencyCode.USD.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)

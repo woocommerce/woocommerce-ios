@@ -1114,6 +1114,11 @@ platform :ios do
       output_simulator_logs: true,
       namespace_log_files: true,
 
+      # The xcodebuild log records only that the app "crashed in <external symbol>"; the crash
+      # report itself lives in the result bundle. Written to
+      # `fastlane/screenshots/test_output/<language>/<scheme>.xcresult`.
+      result_bundle: true,
+
       # Boot one simulator at a time so the Accessibility subsystem has enough
       # headroom to come up — under concurrent boots it times out ("Timed out
       # waiting for AX loaded notification") and the test runner fails to init.

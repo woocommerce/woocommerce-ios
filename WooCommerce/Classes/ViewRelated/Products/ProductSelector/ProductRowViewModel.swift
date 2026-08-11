@@ -8,6 +8,7 @@ import Combine
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
+    private let currency: String?
 
     /// Unique ID for the view model.
     ///
@@ -118,7 +119,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         guard let price else {
             return nil
         }
-        return currencyFormatter.formatAmount(price)
+        return currencyFormatter.formatAmount(price, with: currency)
     }
 
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
@@ -132,12 +133,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             return "-"
         }
         let productSubtotal = quantity * priceDecimal
-        let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal)
-
-        guard let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal),
-              productDiscount > 0,
-              let discountLabelComponent = currencyFormatter.formatAmount(productDiscount) else {
+        let priceLabelComponent = currencyFormatter.formatAmount(productSubtotal, with: currency)
+        guard productDiscount > 0,
+              let discountLabelComponent = currencyFormatter.formatAmount(productDiscount, with: currency) else {
             return priceLabelComponent
+        }
+
+        guard let priceLabelComponent else {
+            return nil
         }
 
         return priceLabelComponent + " - " + discountLabelComponent
@@ -261,6 +264,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         currency: String? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
@@ -279,6 +283,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.pricedIndividually = pricedIndividually
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
+        self.currency = currency
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
@@ -296,6 +301,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     currency: String? = nil,
                      analytics: Analytics = ServiceLocator.analytics,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
@@ -366,6 +372,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
+                  currency: currency,
                   analytics: analytics,
                   configure: configure)
     }
@@ -382,6 +389,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     currency: String? = nil,
                      analytics: Analytics = ServiceLocator.analytics) {
         let imageURL: URL?
         if let encodedImageURLString = productVariation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
@@ -411,6 +419,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
+                  currency: currency,
                   analytics: analytics)
     }
 

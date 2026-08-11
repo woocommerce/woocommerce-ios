@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 /// The main file for Refunded Products data.
@@ -19,17 +20,24 @@ final class RefundedProductsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
+    private let storageManager: StorageManagerType
+
     /// Designated initializer.
     ///
-    init(order: Order, refundedProducts: [AggregateOrderItem]) {
+    init(order: Order,
+         refundedProducts: [AggregateOrderItem],
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
         self.refundedProducts = refundedProducts
+        self.storageManager = storageManager
     }
 
     /// The results controllers used to display a refund
     ///
     private lazy var resultsControllers: RefundDetailsResultController = {
-        return RefundDetailsResultController(siteID: order.siteID)
+        return RefundDetailsResultController(siteID: order.siteID,
+                                             variationIDs: refundedProducts.map(\.variationID).filter { $0 != 0 },
+                                             storageManager: storageManager)
     }()
 
     /// Set up results controllers
@@ -48,6 +56,12 @@ final class RefundedProductsDataSource: NSObject {
     ///
     var products: [OrderDetailsProduct] {
         return resultsControllers.products
+    }
+
+    /// ProductVariations from a Refund
+    ///
+    var productVariations: [ProductVariation] {
+        return resultsControllers.productVariations
     }
 }
 
@@ -112,9 +126,9 @@ private extension RefundedProductsDataSource {
     ///
     func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedProduct = refundedProducts[indexPath.row]
-        let product = lookUpProduct(by: refundedProduct.productOrVariationID)
+        let product = lookUpProduct(by: refundedProduct.productID)
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(refundedProduct, in: refundedProducts)
-        let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct,
+        let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct.copy(imageURL: imageURL(for: refundedProduct)),
                                                                    currency: order.currency,
                                                                    product: product,
                                                                    hasAddOns: false,
@@ -129,9 +143,27 @@ private extension RefundedProductsDataSource {
 
 // MARK: - Lookup products
 //
-private extension RefundedProductsDataSource {
-    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
+extension RefundedProductsDataSource {
+    /// Resolves the image URL for a refunded item: the variation image when the item is a variation,
+    /// otherwise the product image.
+    ///
+    func imageURL(for item: AggregateOrderItem) -> URL? {
+        if item.variationID != 0 {
+            guard let imageURLString = lookUpProductVariation(productID: item.productID, variationID: item.variationID)?.image?.src,
+                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                return nil
+            }
+            return URL(string: encodedImageURLString)
+        }
+        return lookUpProduct(by: item.productID)?.imageURL
+    }
+
+    private func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return products.first(where: { $0.productID == productID })
+    }
+
+    private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
+        return productVariations.first(where: { $0.productID == productID && $0.productVariationID == variationID })
     }
 }
 

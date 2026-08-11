@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol Storage.StorageManagerType
 
 
 /// Results controllers used to render the Refund Details view
@@ -8,7 +9,6 @@ final class RefundDetailsResultController {
     /// Product ResultsController.
     ///
     private lazy var productResultsController: GenericResultsController<StorageProduct, OrderDetailsProduct> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -20,22 +20,43 @@ final class RefundDetailsResultController {
         )
     }()
 
+    /// ProductVariation ResultsController.
+    ///
+    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
+
+        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Products from an Order
     ///
     var products: [OrderDetailsProduct] {
         productResultsController.fetchedObjects
     }
 
-    private let siteID: Int64
+    /// ProductVariations from an Order
+    ///
+    var productVariations: [ProductVariation] {
+        productVariationResultsController.fetchedObjects
+    }
 
-    init(siteID: Int64) {
+    private let siteID: Int64
+    private let variationIDs: [Int64]
+    private let storageManager: StorageManagerType
+
+    init(siteID: Int64,
+         variationIDs: [Int64],
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.variationIDs = variationIDs
+        self.storageManager = storageManager
     }
 
     /// Configure the result controller(s)
     ///
     func configureResultsControllers(onReload: @escaping () -> Void) {
         configureProductResultsController(onReload: onReload)
+        configureProductVariationResultsController(onReload: onReload)
     }
 }
 
@@ -54,5 +75,19 @@ private extension RefundDetailsResultController {
         }
 
         try? productResultsController.performFetch()
+    }
+
+    /// Handle product variation event changes
+    ///
+    private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
+        productVariationResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        productVariationResultsController.onDidResetContent = {
+            onReload()
+        }
+
+        try? productVariationResultsController.performFetch()
     }
 }

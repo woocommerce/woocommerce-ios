@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// The main file for Refund Details data.
 /// Must conform to NSObject so it can be the UITableViewDataSource.
@@ -35,17 +36,30 @@ final class RefundDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// ProductVariations from a Refund
+    ///
+    var productVariations: [ProductVariation] {
+        return resultsControllers.productVariations
+    }
+
+    private let storageManager: StorageManagerType
+
     /// Refunds initializer
     ///
-    init(refund: Refund, order: Order) {
+    init(refund: Refund,
+         order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.refund = refund
         self.order = order
+        self.storageManager = storageManager
     }
 
     /// The results controllers used to display a refund
     ///
     private lazy var resultsControllers: RefundDetailsResultController = {
-        return RefundDetailsResultController(siteID: order.siteID)
+        return RefundDetailsResultController(siteID: order.siteID,
+                                             variationIDs: refund.items.map(\.variationID).filter { $0 != 0 },
+                                             storageManager: storageManager)
     }()
 
     /// Set up results controllers
@@ -153,10 +167,11 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundedOrderItem(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedItem = refundedItems[indexPath.row]
-        let product = lookUpProduct(by: refundedItem.productOrVariationID)
+        let product = lookUpProduct(by: refundedItem.productID)
         let itemViewModel = ProductDetailsCellViewModel(refundedItem: refundedItem,
                                                         currency: order.currency,
-                                                        product: product)
+                                                        product: product,
+                                                        imageURL: imageURL(for: refundedItem))
 
         let imageService = ServiceLocator.imageService
 
@@ -205,9 +220,27 @@ private extension RefundDetailsDataSource {
 
 // MARK: - Lookup products
 //
-private extension RefundDetailsDataSource {
-    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
+extension RefundDetailsDataSource {
+    /// Resolves the image URL for a refunded item: the variation image when the item is a variation,
+    /// otherwise the product image.
+    ///
+    func imageURL(for item: OrderItemRefund) -> URL? {
+        if item.variationID != 0 {
+            guard let imageURLString = lookUpProductVariation(productID: item.productID, variationID: item.variationID)?.image?.src,
+                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                return nil
+            }
+            return URL(string: encodedImageURLString)
+        }
+        return lookUpProduct(by: item.productID)?.imageURL
+    }
+
+    private func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return products.first(where: { $0.productID == productID })
+    }
+
+    private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
+        return productVariations.first(where: { $0.productID == productID && $0.productVariationID == variationID })
     }
 }
 

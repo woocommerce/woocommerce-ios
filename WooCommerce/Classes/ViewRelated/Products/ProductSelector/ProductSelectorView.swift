@@ -82,11 +82,20 @@ struct ProductSelectorView: View {
         return viewModel.selectProductsTitle
     }
 
+    /// In vertically compact environments the keyboard leaves roughly 100pt of usable height,
+    /// so secondary header rows give way to the results list while the merchant is typing.
+    private var isHeaderCollapsedForKeyboard: Bool {
+        verticalSizeClass == .compact && searchHeaderisBeingEdited
+    }
+
     /// The filter picker is revealed only when the merchant is actively searching or has chosen a
     /// non-default filter, so the row stays minimal during browsing while still being discoverable
     /// once the merchant engages with search.
     private var shouldShowProductSearchFilter: Bool {
-        searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
+        guard !isHeaderCollapsedForKeyboard else {
+            return false
+        }
+        return searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
     }
 
     private var productSelectorHeaderSearchRowHeight: CGFloat {
@@ -312,13 +321,17 @@ struct ProductSelectorView: View {
 private extension ProductSelectorView {
     @ViewBuilder var productSelectorHeader: some View {
         if horizontalSizeClass == .regular {
-            productSelectorHeaderTitleRow
+            if !isHeaderCollapsedForKeyboard {
+                productSelectorHeaderTitleRow
+            }
             productSelectorHeaderSearchRow
                 .padding(.bottom, Constants.defaultPadding)
                 .background(Color(.listForeground(modal: false)))
         } else {
             productSelectorHeaderSearchRow
-            productSelectorHeaderTitleRow
+            if !isHeaderCollapsedForKeyboard {
+                productSelectorHeaderTitleRow
+            }
         }
         Divider()
     }

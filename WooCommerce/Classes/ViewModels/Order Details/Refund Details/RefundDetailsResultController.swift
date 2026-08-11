@@ -46,7 +46,7 @@ final class RefundDetailsResultController {
 
     init(siteID: Int64,
          variationIDs: [Int64],
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType) {
         self.siteID = siteID
         self.variationIDs = variationIDs
         self.storageManager = storageManager

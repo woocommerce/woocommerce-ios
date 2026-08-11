@@ -331,6 +331,7 @@ public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - cashPaymentChangeDueAmount: Optional change due amount from cash payment.
     ///     - fields: Fields from the order to be updated.
+    ///     - requestCurrency: Optional currency used to calculate prices while updating the order.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int64,
@@ -338,6 +339,7 @@ public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
+                            requestCurrency: String? = nil,
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
@@ -398,6 +400,7 @@ public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         queryParameters: requestCurrency.map { [ParameterKeys.currency: .string($0)] },
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -622,6 +625,7 @@ public extension OrdersRemote {
         static let product = "product"
         static let createdVia = "created_via"
         static let decimalPlaces = "dp"
+        static let currency = "currency"
         /// Limits which keys are returned in `meta_data`. Available since WooCommerce 7.0; older stores ignore it and return all metadata.
         static let includeMeta = "include_meta"
     }

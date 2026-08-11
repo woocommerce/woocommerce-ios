@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-07-01 09:55:45+0000 */
+/* Translation-Revision-Date: 2026-07-28 11:57:51+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -68,9 +68,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Total value for the selected rates in Shipping Labels > Carrier and Rates */
 "%1$@ total" = "總共 %1$@ 個";
-
-/* Payment on <date> received via (payment method title) */
-"%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
 "%1$@ · Excl. %2$@" = "除了「%2$@」以外的「%1$@」";
@@ -158,9 +155,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
 "%@ label refund requested" = "已提出 %@ 標籤退款要求";
-
-/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
-"%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* Message of the free trial banner when there is more than 1 day left */
 "%d days left in your trial." = "試用期尚餘 %d 天。";
@@ -837,12 +831,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "平均訂單金額";
-
-/* The title on the payment row of the Order Details screen when the payment is still pending */
-"Awaiting payment" = "正在等待付款";
-
-/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
-"Awaiting payment via %@" = "正在等待透過 %@ 支付的款項";
 
 /* Country option for a site address. */
 "Azerbaijan" = "亞塞拜然";
@@ -1563,27 +1551,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已收合";
 
-/* The label points to the free trial conditions for product subscriptions */
-"CollapsibleProductRowCard.text.freetrial" = "免費試用";
-
-/* The label points to the charge interval for product subscriptions */
-"CollapsibleProductRowCard.text.interval" = "間隔";
-
-/* The label points to the sign up fee conditions for product subscriptions */
-"CollapsibleProductRowCard.text.signupfee" = "註冊費";
-
-/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
-"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "每 %2$@ %1$@";
-
-/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
-"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@免費";
-
-/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
-"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "註冊費只需 %1$@";
-
-/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
-"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
-
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "貨號：%1$@";
 
@@ -2163,8 +2130,7 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connected Reader > A button to disconnect the reader */
 "Disconnect Reader" = "與讀卡機中斷連線";
 
-/* Discount label for payment view
-   Text in the product row card when a discount has already been added to a product
+/* Text in the product row card when a discount has already been added to a product
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "折扣";
@@ -2237,9 +2203,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "不允許";
-
-/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
-"Do you want to add Pay in Person to your web checkout?" = "你想將「親自收款」選項新增至網頁結帳功能嗎？";
 
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "你要連線至讀卡機 %1$@ 嗎？";
@@ -2498,9 +2461,6 @@ which should be translated separately and considered part of this sentence. */
 /* The action button on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "Enable Coupons" = "啟用優惠券";
 
-/* Title for the button to enable the Pay in Person payment gateway during card present payments onboarding. */
-"Enable Pay in Person" = "啟用親自收款";
-
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "啟用評論";
 
@@ -2515,9 +2475,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the status row on Product Variation main screen to enable/disable a variation */
 "Enabled" = "啟用";
-
-/* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
-"Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card." = "若你啟用「親自收款」功能，顧客就能在到貨時以現金或卡片支付線上訂單款項。";
 
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
@@ -2812,12 +2769,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "刪除優惠券失敗。 請再試一次。";
 
-/* Error displayed when the attempt to disable a Pay in Person checkout payment option fails */
-"Failed to disable Pay in Person. Please try again later." = "無法停用「親自收款」功能。 請稍後再試一次。";
-
-/* Error displayed when the attempt to enable a Pay in Person checkout payment option fails */
-"Failed to enable Pay in Person. Please try again later." = "無法啟用親自收款功能。 請稍後再試一次。";
-
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "無法擷取應用程式密碼的授權 URL， 請再試一次。";
 
@@ -3074,8 +3025,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the gift card to apply to the order */
 "Gift Card" = "禮物卡";
 
-/* Gift Cards label for payment view
-   Gift Cards section title */
+/* Gift Cards section title */
 "Gift Cards" = "禮物卡";
 
 /* Header of the gift card code text field in the order form. */
@@ -3496,9 +3446,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "In‑Person Payments can be processed through either of these payment providers. Which provider would you like to use?" = "親自收款業務可透過這些付款服務供應商處理。 你想使用哪個供應商？";
 
 /* Title for the error screen when the merchant's payment account is restricted because it's under reviw
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it
-   Title for the error screen when the Stripe account is restricted because there are overdue requirements.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments is currently unavailable" = "目前無法親自收款";
@@ -5287,18 +5234,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar title for scanning a barcode or QR Code to use as a product's barcode. */
 "ProductBarcodeInputScanner.titleView" = "掃描條碼或 QR 碼";
 
-/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
-"ProductRowViewModel.formattedProductSubscriptionBilling" = "%2$@ %3$@只需 %1$@";
-
-/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditions" = "註冊費只需 %1$@ · %2$@ %3$@免費";
-
-/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@免費";
-
-/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
-"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "註冊費只需 %1$@";
-
 /* Bookable product type label interpretation as Service. Presented in product type picker in filters. */
 "ProductType.service" = "服務";
 
@@ -5428,16 +5363,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "退還訂單費用原因";
 
-/* The title of the view containing a receipt preview
-   Title of receipt. */
+/* Title of receipt. */
 "Receipt" = "收據";
 
 /* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
 "Receipt from %1$@" = "%1$@ 收據";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup
-   Button to refresh the state of the in-person payments setup. */
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "重新整理";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -5603,9 +5536,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重設密碼";
-
-/* Button to open a web view and resolve pending plugin requirements before using it. */
-"Resolve Now" = "立即解決";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "限用於以下電子郵件的顧客：%1$@";
@@ -5858,9 +5788,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
 "See Connected Stores" = "檢視連結的商店";
-
-/* Text on the button to see a saved receipt */
-"See Receipt" = "查看收據";
 
 /* Description of the 'My Store' screen - used for spotlight indexing on iOS. */
 "See at a glance which products are winning." = "一眼就能看出哪些是明星產品。";
@@ -7348,14 +7275,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
 "Try Out Tap to Pay on iPhone" = "試用「iPhone 卡緊收」";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "嘗試使用簽帳金融卡或信用卡支付 %1$@ 款項。 完成後即可進行退款。";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "嘗試付款";
-
-/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
-"Try a payment using your own card (and refund it when you're done.)" = "使用你自己的信用卡體驗付款 (體驗完後可退款)。";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
@@ -8216,9 +8137,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "加入我們的行列";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Would you like to try a payment" = "想嘗試付款嗎";
-
 /* Title in the product description AI generator view. */
 "Write a description" = "撰寫說明";
 
@@ -8300,11 +8218,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "你有新訂單！🎉";
-
-/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
-"You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "你的帳號中有至少一個逾期要求。 請處理此要求以繼續使用親自收款功能。";
 
 /* Error message for a short value in Description row in Customs screen of Shipping Label flow */
 "You must provide a clear, specific description for every item." = "你必須針對每件商品提供清楚明確的說明。";
@@ -9852,6 +9765,18 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce 設定";
 
+/* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.message" = "你的帳號有至少一個逾期要求。 你可略過並繼續收款，但如果要求限制你的帳號功能，在解決問題前，部分交易可能遭拒。";
+
+/* Button to open a web view and resolve overdue requirements before continuing with In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.resolveButton" = "立即處理";
+
+/* Button to skip the overdue-requirements onboarding step and continue accepting In-Person Payments. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.skipButton" = "略過";
+
+/* Title for the error screen when the Stripe account is restricted because there are overdue requirements. */
+"cardPresentPayments.onboarding.stripeAccountOverdue.title" = "你的帳號有逾期邀求";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "返回訂單";
 
@@ -9932,30 +9857,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "收款 (%1$@)";
-
-/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
-"ciabOrderStatusMapper.open" = "開啟";
-
-/* Title of the button to add address in the order form customer card. */
-"collapsibleCustomerCard.addAddress.title" = "新增顧客地址";
-
-/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
-"collapsibleCustomerCard.editAddress.address.header" = "地址";
-
-/* Billing address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.billing.header" = "帳單地址";
-
-/* Shipping address header text in the order form customer card. */
-"collapsibleCustomerCard.editAddress.shipping.header" = "運送地址";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.placeholder" = "輸入電子郵件地址";
-
-/* Title of the email text field in the order form customer card. */
-"collapsibleCustomerCard.emailTextField.title" = "電子郵件地址";
-
-/* Title of the button to remove customer from an order in the order form customer card. */
-"collapsibleCustomerCard.removeCustomerButton.title" = "從訂單移除顧客";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@。";
@@ -10283,9 +10184,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the banner when there are unsaved custom fields */
 "customFieldsListTopBanner.title" = "檢視和編輯自訂欄位";
-
-/* Accessibility title for the search button on the customer section. */
-"customer.search.button.accessibilityLabel" = "搜尋顧客";
 
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "訪客";
@@ -10990,6 +10888,18 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "卡片已插入";
 
+/* Title for the button to enable the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.enableButton" = "啟用「貨到付款」";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"inPersonPayments.cashOnDelivery.notSetUp.enableFailureNotice.title" = "無法啟用「貨到付款」功能。 請稍後再試。";
+
+/* The message explaining what will happen when the merchant enables the Pay In Person payment gateway during card present payments onboarding. */
+"inPersonPayments.cashOnDelivery.notSetUp.message" = "若你啟用「貨到付款」功能，顧客就能在到貨時以現金或卡片支付線上訂單款項。";
+
+/* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
+"inPersonPayments.cashOnDelivery.notSetUp.title" = "想將「貨到付款」選項新增至網頁結帳功能嗎？";
+
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
@@ -11148,9 +11058,6 @@ which should be translated separately and considered part of this sentence. */
 /* Caption displayed in the simplified prologue screen */
 "loginPrologue.title" = "與你一同茁壯的電子商務平台";
 
-/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
-"manual refund" = "手動退款";
-
 /* on request (lower case), shown in a sentence like 'Payout schedule: manual, on request' */
 "manually, on request" = "依要求手動存入";
 
@@ -11204,14 +11111,20 @@ which should be translated separately and considered part of this sentence. */
 /* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
 "menu.payments.inPersonPayments.setup.incomplete.notice.title" = "「貨到付款」設定未完成。";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"menu.payments.payInPerson.learnMore.description" = "「貨到付款」結帳選項會在客戶取貨或是貨物到府時，收取網站訂單付款。%1$@";
+/* A label prompting users to learn more about adding Pay In Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description.payInPersonCasing" = "啟用「貨到付款」結帳選項後，你就可以在客戶取貨或是貨物到府時，收取網站訂單付款。%1$@";
 
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link" = "深入瞭解";
 
 /* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link.accessibilityAction" = "深入瞭解";
+
+/* Error displayed when the attempt to disable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.disableFailureNotice.title" = "無法停用「貨到付款」功能。 請稍後再試。";
+
+/* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
+"menu.payments.payInPerson.toggle.enableFailureNotice.title" = "無法啟用「貨到付款」功能。 請稍後再試。";
 
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "貨到付款";
@@ -11522,8 +11435,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.giftCard.add.button.title" = "新增禮物卡";
 
-/* A 'Learn More' label text, which shows tax information upon being clicked. */
-"order.form.paymentSection.taxes.learnMore" = "深入瞭解。";
+/* A 'Learn more' label text, which shows tax information upon being clicked. */
+"order.form.paymentSection.taxes.learnMore.sentenceCase" = "深入了解";
 
 /* Label for the row showing the shipping tax. */
 "order.form.paymentSection.taxes.shippingTax" = "貨運稅";
@@ -11700,21 +11613,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "你想要如何新增自訂金額？";
 
-/* Title text of the button that adds customer data in the order form. */
-"orderForm.customerSection.addCustomer" = "新增顧客";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "電子郵件地址";
-
-/* Placeholder of the email in the header of a customer card in order form when an account is required. */
-"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "必須提供電子郵件地址";
-
-/* Header text of the customer card in the order form. */
-"orderForm.customerSection.customerHeader" = "顧客";
-
-/* Title of the order customer selection screen in the order form.. */
-"orderForm.customerSection.customerSelectorTitle" = "新增顧客詳細資料";
-
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "收取款項";
 
@@ -11736,14 +11634,29 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "運送方式";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has been fulfilled. */
-"orderFulfillmentStatus.badge.fulfilled" = "已完成";
+/* Discount label for payment view */
+"orderPaymentDetails.discount.title" = "折扣";
 
-/* Fulfillment status badge text with date, shown on the CIAB order details screen. %1$@ is the formatted date. */
-"orderFulfillmentStatus.badge.fulfilledWithDate" = "已於 %1$@ 完成";
+/* Gift Cards label for payment view */
+"orderPaymentDetails.giftCards.title" = "禮物卡";
 
-/* Fulfillment status badge text shown on CIAB order rows when the order has not been fulfilled. */
-"orderFulfillmentStatus.badge.unfulfilled" = "未完成";
+/* The title on the payment row of the Order Details screen when the payment is still pending */
+"orderPaymentDetails.paymentSummary.awaitingPayment" = "尚待付款";
+
+/* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
+"orderPaymentDetails.paymentSummary.awaitingPaymentViaPaymentMethod" = "尚待透過「%@」付款";
+
+/* Payment summary on the Order Details screen when the order is paid but has no payment method title. Reads like: Payment on Nov 19, 2019. %1$@ is the payment date. */
+"orderPaymentDetails.paymentSummary.dateOnly" = "付款日期：%1$@";
+
+/* Payment on <date> received via (payment method title) */
+"orderPaymentDetails.paymentSummary.withPaymentMethod" = "已在 %1$@透過「%2$@」方式退款";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"orderPaymentDetails.refundSummary.manualRefund" = "手動退款";
+
+/* Label for a refund on an order, which reads \"<date> via <refund method type>\", e.g. \"25 Apr 2022 via WooCommerce In-Person Payments\". Shown in a cell with a title \"Refunded\" for context */
+"orderPaymentDetails.refundSummary.withRefundMethod" = "已在 %1$@透過「%2$@」方式退款";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "優惠券";
@@ -12285,11 +12198,23 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the system fails to collect a cash payment. */
 "pointOfSale.cashview.failedtocollectcashpayment.errormessage" = "嘗試處理付款時發生錯誤。 請再試一次。";
 
-/* A description within a full screen loading view for POS catalog. */
-"pointOfSale.catalogLoadingView.exitButton.description" = "將在背景繼續同步";
+/* A description shown below the Exit POS button while the POS catalog is syncing. */
+"pointOfSale.catalogLoadingView.backgroundSyncSubtitle" = "你可離開頁面，系統會繼續在背景執行同步。";
 
 /* A button that exits POS. */
 "pointOfSale.catalogLoadingView.exitButton.title" = "結束 POS";
+
+/* A hint within a full screen loading view for POS catalog. */
+"pointOfSale.catalogLoadingView.hint" = "目錄同步可能需要幾分鐘。";
+
+/* Progress text for POS catalog sync. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat" = "第 %1$ld 個品項 (共 %2$ld 個品項)";
+
+/* Progress text for POS catalog sync when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"pointOfSale.catalogLoadingView.itemCountFormat.singular" = "第 %1$ld 個品項 (共 %2$ld 個品項)";
+
+/* Progress text shown while the POS catalog is being prepared before item counts are available. */
+"pointOfSale.catalogLoadingView.preparing" = "正在準備目錄……";
 
 /* A title of a full screen view that is displayed while the POS catalog is being synced. */
 "pointOfSale.catalogLoadingView.title" = "正在同步目錄";
@@ -12312,6 +12237,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to exit Point of Sale, shown in a popover menu.The action is confirmed in a modal. */
 "pointOfSale.floatingButtons.exit.button.title" = "結束 POS";
 
+/* The title of the menu button to lock Point of Sale, requiring PIN entry to continue. */
+"pointOfSale.floatingButtons.lock.button.title" = "鎖定 POS";
+
 /* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
 "pointOfSale.floatingButtons.orders.button.title" = "訂單";
 
@@ -12329,6 +12257,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the menu button to access Point of Sale settings. */
 "pointOfSale.floatingButtons.settings.button.title" = "設定";
+
+/* Format for the signed-in POS staff member shown in the menu: name, then role, e.g. \"Thomas - Cashier\". %1$@ is the staff name, %2$@ is the role. */
+"pointOfSale.floatingButtons.staff.labelFormat" = "%1$@ - %2$@";
 
 /* The accessibility label for the pencil button next to a custom amount in the Point of Sale cart. The button opens the edit form. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.edit.button.accessibilityLabel" = "編輯";
@@ -12410,18 +12341,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "一或多項商品";
-
-/* Row subtitle in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.subtitle" = "在你已經使用其他方式收取款項時使用。";
-
-/* Row title in the Other Payment Methods popover for manually marking an order as paid. */
-"pointOfSale.otherPaymentMethods.markOrderAsPaid.title" = "將訂單標示為已付款";
-
-/* Row subtitle in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.subtitle" = "顯示 QR 碼以便顧客透過手機付款 。";
-
-/* Row title in the Other Payment Methods popover for the QR-based scan-to-pay flow. */
-"pointOfSale.otherPaymentMethods.scanToPay.title" = "掃描付款";
 
 /* Message shown while loading the order for a payment in Point of Sale */
 "pointOfSale.payment.loading.message" = "正在載入訂單";
@@ -12519,6 +12438,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the view where an email address should be entered when sending receipts */
 "pointOfSale.sendreceipt.textfield.placeholder" = "輸入電子郵件地址";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the exit permission tries to leave Point of Sale. */
+"pointOfSaleDashboard.exit.overrideReason" = "結束銷售時點情報系統需要核准";
+
 /* Button to dismiss the payments onboarding sheet from the POS dashboard. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "取消";
 
@@ -12542,6 +12464,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Phone-only overflow menu item to open Point of Sale settings. */
 "pointOfSaleDashboard.phone.menu.settings" = "設定";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the view-settings permission tries to open Point of Sale settings. */
+"pointOfSaleDashboard.settings.overrideReason" = "開啟設定需要核准";
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "取消";
@@ -12603,11 +12528,35 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "讀卡機";
 
+/* Description of Receipt printer settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle" = "管理收據印表機連線";
+
+/* Navigation title of Receipt printer settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterTitle" = "收據印表機";
+
 /* Navigation title for the hardware settings list. */
 "pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "硬體";
 
 /* Button to dismiss the support form from POS settings. */
 "pointOfSaleSettingsHardwareDetailView.help.support.cancel" = "取消";
+
+/* Subtitle for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectSubtitle" = "連線收據印表機，並開始列印收據";
+
+/* Title for the receipt printer connect button when no printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerConnectTitle" = "連線印表機";
+
+/* Label for the connected receipt printer's name in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerDeviceNameTitle" = "裝置名稱";
+
+/* Title for the receipt printer disconnect button when a printer is connected. */
+"pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle" = "中斷印表機連線";
+
+/* Text shown when no receipt printer is connected in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.printerNotConnected" = "印表機未連線";
+
+/* Navigation title for receipt printers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.printersTitle" = "收據印表機";
 
 /* Text displayed on Point of Sale settings pointing to the card reader battery. */
 "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "電池";
@@ -12680,6 +12629,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title for the store details in POS settings. */
 "pointOfSaleSettingsStoreDetailView.storeTitle" = "商店";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the edit-settings permission tries to change a Point of Sale setting. */
+"pointOfSaleSettingsView.editOverrideReason" = "變更設定需要核准";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the manage-staff permission tries to open staff management. */
+"pointOfSaleSettingsView.manageStaffOverrideReason" = "管理員工需要核准";
 
 /* Title of the Point of Sale settings view. */
 "pointOfSaleSettingsView.navigationTitle" = "設定";
@@ -13068,6 +13023,9 @@ which should be translated separately and considered part of this sentence. */
 /* Fallback label/placeholder text for the search field in Point of Sale. */
 "pos.itemListView.searchField.label" = "搜尋";
 
+/* Message shown in the manager-override PIN prompt when a staff member without the create-coupons permission tries to create a coupon. */
+"pos.itemlistview.couponOverrideReason" = "建立折價券需要核准";
+
 /* Title of the button at the top of Point of Sale to switch to Coupons list. */
 "pos.itemlistview.couponsTitle" = "優惠券";
 
@@ -13164,6 +13122,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when loading refund information has failed */
 "pos.orderDetailsView.loadRefundError.title" = "無法載入退款詳細資料";
 
+/* Accessibility label for the order items section while refund details are loading. */
+"pos.orderDetailsView.loadingItems.accessibilityLabel" = "正在載入品項";
+
+/* Accessibility label for the refunded items section while refund details are loading. */
+"pos.orderDetailsView.loadingRefundedItems.accessibilityLabel" = "正在載入退款品項";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "更多動作";
 
@@ -13178,6 +13142,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Message shown in the manager-override PIN prompt when a staff member without the issue-refunds permission tries to start a refund. %1$@ is the order number. */
+"pos.orderDetailsView.refundOverride.description" = "退款訂單 #%1$@ 需要核准";
 
 /* Title for refund detail dialog header. %1$d is the refund number. */
 "pos.orderDetailsView.refundTitle" = "退款編號 %1$d";
@@ -13287,6 +13254,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "可用選項";
 
+/* Button title on the Point of Sale payment success screen for printing a receipt for the completed order. */
+"pos.paymentSuccess.button.printReceipt" = "列印收據";
+
 /* Accessibility label for the delete key on the POS PIN numpad */
 "pos.pinEntry.delete.accessibilityLabel" = "刪除";
 
@@ -13349,6 +13319,69 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "確定";
+
+/* Button to start printer discovery after pairing in POS settings. */
+"pos.printerSetup.connectButton" = "連線印表機";
+
+/* Message shown while connecting to a receipt printer. %1$@ is the printer name. */
+"pos.printerSetup.connecting.format" = "正在連線至 %1$@……";
+
+/* Message shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.message" = "無法連線至印表機， 請再試一次。";
+
+/* Title shown when receipt printer setup fails in POS settings. */
+"pos.printerSetup.error.title" = "發生錯誤";
+
+/* Button to close the receipt printer setup without connecting in POS settings. */
+"pos.printerSetup.foundMultiple.cancelButton" = "取消";
+
+/* Button in a printer row to connect to that receipt printer in POS settings. */
+"pos.printerSetup.foundMultiple.connectButton" = "連線";
+
+/* Accessibility label for the connect button in a printer row in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundMultiple.connectButton.accessibilityLabel" = "連線至 %1$@";
+
+/* Label shown next to a spinner while receipt printer scanning continues in POS settings. */
+"pos.printerSetup.foundMultiple.scanningLabel" = "正在掃瞄印表機";
+
+/* Title shown above the list of discovered receipt printers in POS settings. */
+"pos.printerSetup.foundMultiple.title" = "找到多部印表機";
+
+/* Button to connect to the single discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.connectButton" = "連線至印表機";
+
+/* Button to skip the discovered receipt printer and keep searching in POS settings. */
+"pos.printerSetup.foundOne.keepSearchingButton" = "繼續搜尋";
+
+/* Message asking the merchant to confirm connecting to the discovered receipt printer in POS settings. */
+"pos.printerSetup.foundOne.message" = "要連線至此印表機嗎？";
+
+/* Title shown when a single receipt printer is discovered in POS settings. %1$@ is the printer name. */
+"pos.printerSetup.foundOne.titleFormat" = "找到 %1$@";
+
+/* Message shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.pairInSettingsMessage" = "請確認印表機已開啟，且已使用藍牙下的設定應用程式配對，並重新搜尋。";
+
+/* Title shown when no receipt printers are discovered in POS settings. */
+"pos.printerSetup.noPrinters.title" = "找不到印表機";
+
+/* Instruction shown on the receipt printer pairing step when the app's Bluetooth permission is disabled, telling the merchant to enable it in the iOS Settings app. */
+"pos.printerSetup.pair.enableBluetoothInstruction" = "藍牙存取已關閉。 點選「開啟設定」即可開啟設定，並配對藍牙顯示的印表機。";
+
+/* Instruction for pairing a receipt printer in POS settings. Tells the user to pair the printer in the iOS Settings app under Bluetooth before searching in the app. */
+"pos.printerSetup.pair.pairInSettingsInstruction" = "開啟 Star Micronics 收據印表機，接著使用藍牙下的設定應用程式配對。 完成配對後，點選「連線印表機」尋找印表機。";
+
+/* Title for the printer pairing step in POS settings. */
+"pos.printerSetup.pair.title" = "配對印表機";
+
+/* Button to retry receipt printer discovery in POS settings. */
+"pos.printerSetup.searchAgainButton" = "重新搜尋";
+
+/* Message shown while discovering receipt printers in POS settings. */
+"pos.printerSetup.searching" = "正在搜尋印表機……";
+
+/* Secondary button that opens the app's Settings page, where Bluetooth can be enabled, during receipt printer setup in POS. */
+"pos.printerSetup.settingsButton" = "開啟設定";
 
 /* Error shown when POS tries to process a second refund while another refund is in progress. */
 "pos.refund.processing.error.alreadyInProgress" = "正在進行退款作業。 請稍待程序完成。";
@@ -13503,6 +13536,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label showing number of selected items in the refund items selection modal */
 "pos.refundItemsSelectionView.itemsSelectedCountFormat" = "(已選取 %d 個)";
+
+/* Error shown on the refund item-selection step when fetching the server-calculated refund total fails */
+"pos.refundItemsSelectionView.previewError" = "無法計算退款總金額。 請再試一次。";
+
+/* Button to retry fetching the server-calculated refund total on the refund item-selection step */
+"pos.refundItemsSelectionView.retryButton" = "重試";
 
 /* Accessibility label for the select-all checkbox in the refund items selection modal */
 "pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "選取或取消選取所有項目";
@@ -13663,11 +13702,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "為什麼我無法查看自己的商品？";
 
-/* Label to be displayed in the product's card when there's stock of a given product */
-"pos.stockStatusLabel.inStockWithQuantity" = "「%1$@」尚有庫存";
+/* Display name for the admin POS staff role. */
+"pos.staffPreset.admin" = "管理員";
 
-/* Label to be displayed in the product's card when out of stock */
-"pos.stockStatusLabel.outofstock" = "沒有庫存";
+/* Display name for the cashier POS staff role. */
+"pos.staffPreset.cashier" = "收銀員";
+
+/* Display name for the manager POS staff role. */
+"pos.staffPreset.manager" = "主管";
 
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
@@ -13726,6 +13768,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cash payment button title */
 "pos.totalsView.cash.button.title" = "現金付款";
 
+/* Title for the primary Point of Sale checkout button that starts the card reader connection flow. */
+"pos.totalsView.connectCardReader.button.title.1" = "連線讀卡機";
+
 /* Title for the custom amounts total amount field in the Point of Sale totals breakdown */
 "pos.totalsView.customAmountsTotal" = "自訂金額";
 
@@ -13741,7 +13786,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when the POS order created by the server does not match the cart contents. */
 "pos.totalsView.orderMismatch.error.title" = "無法結帳";
 
-/* Title for the Other payment methods button shown alongside the Tap to Pay hero on phone POS checkout. Tapping it opens a sheet with non-TTP options (currently Card reader). */
+/* Title for the Point of Sale checkout button that opens additional payment methods, such as Scan to Pay or Mark order as paid. */
 "pos.totalsView.otherPaymentMethods.button.title" = "其他付款方式";
 
 /* Title for subtotal amount field */
@@ -13818,6 +13863,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for updating the catalog manually. */
 "posSettingsLocalCatalogDetailView.updateCatalog" = "更新目錄";
+
+/* Button text shown while a manual POS catalog update is preparing before item counts are available. */
+"posSettingsLocalCatalogDetailView.updateCatalogPreparing" = "正在準備……";
+
+/* Button text shown during a manual POS catalog update. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat" = "第 %1$ld 個品項 (共 %2$ld 個品項)";
+
+/* Button text shown during a manual POS catalog update when there is one item. %1$ld is the number of catalog items processed, %2$ld is the total number of catalog items. */
+"posSettingsLocalCatalogDetailView.updateCatalogProgressFormat.singular" = "第 %1$ld 個品項 (共 %2$ld 個品項)";
 
 /* Format string for catalog size showing product count and variation count. %1$d will be replaced by the product count, and %2$ld will be replaced by the variation count. */
 "posSettingsLocalCatalogViewModel.catalogSizeFormat" = "%1$d 個商品和 %2$ld 個款式";
@@ -14743,6 +14797,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error selecting image */
 "selectPackageImageCoordinator.imageErrorAlert.title" = "無法選取圖片";
 
+/* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card, which creates a live transaction and incurs processing fees */
+"setUpTapToPayInformation.tryPayment.hint" = "嘗試使用你的信用卡即時支付 (支付後可退款──適用手續費)。";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. The trial payment is a live transaction and incurs processing fees. */
+"setUpTapToPayPaymentPrompt.description" = "嘗試使用簽帳金融卡或信用卡即時支付 %1$@ 款項。 支付後可退款 (適用手續費)。";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"setUpTapToPayPaymentPrompt.title" = "想嘗試付款嗎？";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "付款已完成";
 
@@ -14891,6 +14954,15 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "自訂範圍";
 
+/* VoiceOver value announced for a selected checkbox. */
+"storeCheckbox.accessibilityValue.checked" = "已核取";
+
+/* VoiceOver value announced for a checkbox in the indeterminate (partially selected) state. */
+"storeCheckbox.accessibilityValue.mixed" = "混合";
+
+/* VoiceOver value announced for an unselected checkbox. */
+"storeCheckbox.accessibilityValue.unchecked" = "未核取";
+
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
 
@@ -14956,6 +15028,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. The content inside the bracket indicates the number of stores hidden from the store picker. The placeholder is a number. Reads as: 'Pick Store to Connect (3 hidden)' */
 "storePickerViewModel.pickStoreWithHiddenStoreCount" = "挑選要連結的商店 (%1$d 間已隱藏)";
+
+/* VoiceOver position of a segment in a segmented control. %1$d is the position, %2$d the total count. */
+"storeSegmentedControl.accessibilityValue.position" = "第 %1$d 個，共 %2$d 個";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "已選取日期";
@@ -15331,13 +15406,16 @@ which should be translated separately and considered part of this sentence. */
 "supportEscalationCoordinator.ticketCreatedTitle" = "已傳送要求！";
 
 /* Message for the alert asking consent to send an AI chat transcript to support */
-"supportEscalationCoordinator.transcriptConsentMessage" = "我們可以使用此對談文字記錄建立支援要求，或開啟聯絡表單並自行輸入詳細資料。";
+"supportEscalationCoordinator.transcriptConsentMessageV2" = "兩個選項都包含此對談的逐字稿。 立即傳送要求，或開啟聯絡表單以便先新增詳細資料。";
 
 /* Title for the alert asking consent to send an AI chat transcript to support */
 "supportEscalationCoordinator.transcriptConsentTitle" = "要將此對談傳送給支援團隊嗎？";
 
 /* Header text before the chat transcript in support ticket description */
 "supportEscalationCoordinator.transcriptHeader" = "以下為應用程式內 AI 線上對談支援的逐字稿：";
+
+/* Disclosure below the support form message editor when an AI chat transcript will be included */
+"supportForm.aiChatTranscriptDisclosure" = "此要求也會包含你的 AI 支援對談逐字稿。";
 
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "收到";

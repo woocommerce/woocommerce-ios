@@ -9,10 +9,18 @@ public protocol FeatureFlagRemoteProtocol {
 /// Feature Flags: Remote Endpoints
 ///
 public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
+    private let userDefaults: UserDefaults
+
+    public init(network: Network, userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        super.init(network: network)
+    }
+
     public func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
         let parameters: [String: String] = [
             ParameterKeys.platform: "ios",
             ParameterKeys.marketingVersion: Bundle.main.marketingVersion,
+            ParameterKeys.deviceID: deviceID,
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: Paths.lookup, parameters: parameters)
@@ -24,6 +32,16 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
             return (featureFlag, value)
         })
     }
+
+    /// Stable per-install identifier sent as `device_id` for rollout bucketing.
+    private var deviceID: String {
+        if let storedID = userDefaults.string(forKey: UserDefaultsKeys.deviceID) {
+            return storedID
+        }
+        let newID = UUID().uuidString
+        userDefaults.set(newID, forKey: UserDefaultsKeys.deviceID)
+        return newID
+    }
 }
 
 public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
@@ -33,15 +51,13 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case posLocalCatalogM1
     case wooPosTabletPromoBanner
     case selfDrivenPushNotificationsM1
-    case inPersonPaymentsCountryExpansion
-    case inPersonPaymentsCountryExpansionEUExtended
-    case inPersonPaymentsAustraliaWooPayments
     case pointOfSaleScanToPay
     case pointOfSaleMarkOrderAsPaid
     case wooAIAssistant
     case arParcelFitting
     case smarterNotifications
     case qrCodeLogin
+    case phonePointOfSaleUS
 
     init?(rawValue: String) {
         switch rawValue {
@@ -57,12 +73,6 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .wooPosTabletPromoBanner
         case "woo_self_driven_push_notifications_m1":
             self = .selfDrivenPushNotificationsM1
-        case "woo_ipp_country_expansion":
-            self = .inPersonPaymentsCountryExpansion
-        case "woo_ipp_country_expansion_eu_extended":
-            self = .inPersonPaymentsCountryExpansionEUExtended
-        case "woo_ipp_australia_woopayments":
-            self = .inPersonPaymentsAustraliaWooPayments
         case "woo_pos_scan_to_pay":
             self = .pointOfSaleScanToPay
         case "woo_pos_mark_order_as_paid":
@@ -75,6 +85,8 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .smarterNotifications
         case "woo_qr_code_login":
             self = .qrCodeLogin
+        case "woo_pos_phone_us":
+            self = .phonePointOfSaleUS
         default:
             return nil
         }
@@ -91,5 +103,10 @@ private extension FeatureFlagRemote {
     enum ParameterKeys {
         static let platform = "platform"
         static let marketingVersion = "marketing_version"
+        static let deviceID = "device_id"
+    }
+
+    enum UserDefaultsKeys {
+        static let deviceID = "FeatureFlagDeviceID"
     }
 }

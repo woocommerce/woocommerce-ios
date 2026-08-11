@@ -1,7 +1,7 @@
 import Foundation
 import KeychainAccess
 
-public protocol URLSessionProtocol {
+public protocol URLSessionProtocol: AnyObject {
     func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }
 
@@ -15,6 +15,11 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// Whether the use case is capable of re-generating password
     public var canRegenerateApplicationPassword: Bool { false }
+
+    /// Whether the use case is capable of validating the stored password with the site.
+    public var canValidateApplicationPassword: Bool {
+        applicationPassword != nil
+    }
 
     private let siteAddress: String
     private let session: URLSessionProtocol
@@ -37,13 +42,36 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             self.discovery = discovery
         } else {
             let wordpressDiscovery = WordPressAPIDiscovery()
-            self.discovery = { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) }
+            self.discovery = { siteURL in await wordpressDiscovery.resolveRESTAPIRootURL(for: siteURL) }
         }
     }
 
     public func generateNewPassword() async throws -> ApplicationPassword {
         /// We don't support generating new password for this use case.
         throw ApplicationPasswordUseCaseError.notSupported
+    }
+
+    public func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        guard applicationPassword != nil else {
+            throw ApplicationPasswordUseCaseError.notSupported
+        }
+
+        let discoveredRoot = await discovery(siteAddress)
+        let (data, response) = try await fetchIntrospectionResponse(discoveredRoot: discoveredRoot)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidURL
+        }
+
+        if !Constants.successStatusCodes.contains(httpResponse.statusCode) {
+            let error = networkError(statusCode: httpResponse.statusCode, response: data)
+            if isCredentialInvalid(error) {
+                return .invalid(error)
+            }
+            throw error
+        }
+
+        return .valid
     }
 
     public func deletePassword(locally: Bool) async throws {
@@ -68,13 +96,10 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
 private extension OneTimeApplicationPasswordUseCase {
     func fetchApplicationPasswordUUID(discoveredRoot: String?) async throws -> String? {
-        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
+        guard restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) != nil else {
             return nil
         }
-
-        let request = try URLRequest(url: url, method: .get)
-        let authenticatedRequest = authenticateRequest(request: request)
-        let (data, _) = try await session.data(for: authenticatedRequest)
+        let (data, _) = try await fetchIntrospectionResponse(discoveredRoot: discoveredRoot)
 
         let decoder = JSONDecoder()
         if let username = applicationPassword?.wpOrgUsername {
@@ -87,13 +112,22 @@ private extension OneTimeApplicationPasswordUseCase {
         return password.uuid
     }
 
+    func fetchIntrospectionResponse(discoveredRoot: String?) async throws -> (Data, URLResponse) {
+        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
+            throw NetworkError.invalidURL
+        }
+
+        let request = try URLRequest(url: url, method: .get)
+        let authenticatedRequest = authenticateRequest(request: request)
+        return try await session.data(for: authenticatedRequest)
+    }
+
     func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
-        let root = discoveredRoot ?? (siteAddress + Path.root)
+        let root = discoveredRoot ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteAddress)
         return URL(string: root + path)
     }
 
     enum Path {
-        static let root = "/?rest_route=/"
         static let introspect = "wp/v2/users/me/application-passwords/introspect"
         static let applicationPasswords = "wp/v2/users/me/application-passwords/"
     }
@@ -114,5 +148,28 @@ private extension OneTimeApplicationPasswordUseCase {
         authenticatedRequest.httpShouldHandleCookies = false
 
         return authenticatedRequest
+    }
+
+    func networkError(statusCode: Int, response: Data?) -> NetworkError {
+        NetworkError(responseData: response, statusCode: statusCode) ?? .unacceptableStatusCode(statusCode: statusCode, response: response)
+    }
+
+    func isCredentialInvalid(_ error: NetworkError) -> Bool {
+        if let responseCode = error.responseCode,
+           Constants.credentialInvalidStatusCodes.contains(responseCode) {
+            return true
+        }
+
+        if let errorCode = error.errorCode,
+           Constants.credentialInvalidErrorCodes.contains(errorCode) {
+            return true
+        }
+        return false
+    }
+
+    enum Constants {
+        static let successStatusCodes = 200..<300
+        static let credentialInvalidStatusCodes = [401, 403]
+        static let credentialInvalidErrorCodes = ["incorrect_password"]
     }
 }

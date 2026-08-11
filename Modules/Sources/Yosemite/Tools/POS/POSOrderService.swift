@@ -203,7 +203,7 @@ private extension Order {
     func addItems(_ cartItems: [POSCartItem]) -> Order {
         let itemsToAdd = Array(cartItems.createGroupedOrderSyncProductInputs().values)
         return ProductInputTransformer
-            .updateMultipleItems(with: itemsToAdd, on: self, shouldUpdateOrDeleteZeroQuantities: .update)
+            .updateMultipleItems(with: itemsToAdd, on: self)
             .sanitizingLocalItems()
     }
 

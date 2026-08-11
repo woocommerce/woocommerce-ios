@@ -140,6 +140,124 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - Duplicate Product
+
+    func test_duplicateProduct_maps_only_the_product_ID_from_the_raw_core_response() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/duplicate", filename: "product-duplicate")
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(try result?.get(), 3946)
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.path, "products/\(sampleProductID)/duplicate")
+        XCTAssertEqual(request.method, .post)
+        XCTAssertTrue(request.requestParameters.isEmpty)
+        let directRequest = try XCTUnwrap(request.asRESTRequest(with: "https://example.com")?.asURLRequest())
+        XCTAssertNil(directRequest.httpBody)
+    }
+
+    func test_duplicateProduct_maps_only_the_product_ID_from_a_tunneled_response_envelope() throws {
+        // Given
+        let response = Data(#"{"data":{"id":3946,"name":"Product (Copy)","meta_data":[{"key":"custom","value":"value"}]}}"#.utf8)
+
+        // When
+        let productID = try ProductDuplicateMapper().map(response: response)
+
+        // Then
+        XCTAssertEqual(productID, 3946)
+    }
+
+    func test_duplicateProduct_rejects_an_invalid_product_ID() {
+        // Given
+        let response = Data(#"{"id":0,"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_negative_product_ID() {
+        // Given
+        let response = Data(#"{"id":-1,"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_missing_product_ID() {
+        // Given
+        let response = Data(#"{"name":"Product (Copy)"}"#.utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_a_malformed_response() {
+        // Given
+        let response = Data("not-json".utf8)
+
+        // Then
+        XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+    }
+
+    func test_duplicateProduct_rejects_nonpositive_product_IDs_in_a_tunneled_response_envelope() {
+        for productID in [0, -1] {
+            // Given
+            let response = Data(#"{"data":{"id":\#(productID),"name":"Product (Copy)"}}"#.utf8)
+
+            // Then
+            XCTAssertThrowsError(try ProductDuplicateMapper().map(response: response))
+        }
+    }
+
+    func test_duplicateProduct_relays_direct_REST_notFound_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":404}}"#.utf8)
+        let expectedError = NetworkError.notFound(response: response)
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)/duplicate", error: expectedError)
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.failure as? NetworkError, expectedError)
+    }
+
+    func test_duplicateProduct_relays_tunneled_noRestRoute_error() {
+        // Given
+        let remote = ProductsRemote(network: network)
+        let expectedError = DotcomError.noRestRoute()
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)/duplicate", error: expectedError)
+
+        // When
+        var result: Result<Int64, Error>?
+        waitForExpectation { expectation in
+            remote.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result?.failure as? DotcomError, expectedError)
+    }
+
     // MARK: - Delete Product
 
     func test_deleteProduct_with_success_mock_returns_a_product() {
@@ -306,6 +424,18 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(products.count, 10)
     }
 
+    func test_loadAllProducts_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        _ = try await remote.loadAllProducts(for: sampleSiteID, currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
     /// Verifies that loadAllProducts with `excludedProductIDs` makes a network request with the corresponding parameter.
     ///
     func test_loadAllProducts_with_excluded_ids_includes_an_exclude_param_in_network_request() async throws {
@@ -397,6 +527,23 @@ final class ProductsRemoteTests: XCTestCase {
 
         let product = try result.get()
         XCTAssertEqual(product.productID, sampleProductID)
+    }
+
+    func test_loadSingleProduct_when_requesting_product_then_uses_edit_context() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
+
+        // When
+        waitForExpectation { expectation in
+            remote.loadProduct(for: sampleSiteID, productID: sampleProductID) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParameters["context"] as? String, "edit")
     }
 
     /// Verifies that loadProduct properly parses the `product-external` sample response.
@@ -505,7 +652,90 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    func test_searchProducts_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_searchProducts_without_currency_omits_currency_param_from_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            currency: nil)
+
+        // Then
+        XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
+    }
+
+    func test_searchProducts_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
+
     // MARK: - Search Products by SKU
+
+    func test_searchProductsBySKU_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                 keyword: "SKU",
+                                                 pageNumber: 1,
+                                                 pageSize: 25,
+                                                 currency: "GBP")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+    }
+
+    func test_searchProductsBySKU_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                 keyword: "SKU",
+                                                 pageNumber: 1,
+                                                 pageSize: 25,
+                                                 productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
 
     func test_searchProductsBySKU_properly_returns_parsed_products() async throws {
         // Given
@@ -640,6 +870,28 @@ final class ProductsRemoteTests: XCTestCase {
                 expectation.fulfill()
             }
         }
+    }
+
+    func test_updateProduct_when_updating_unrelated_field_then_preserves_shortcode_short_description_in_request() throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update")
+        let shortDescription = """
+        [icon name="shoe-prints" prefix="fas"] [display_attribute attribute="recommended-age"]
+        Kids&#8217; dance class
+        """
+        let product = sampleProduct().copy(shortDescription: shortDescription, stockQuantity: 2)
+
+        // When
+        waitForExpectation { expectation in
+            remote.updateProduct(product: product) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(request.parameters["short_description"] as? String, shortDescription)
     }
 
     /// Verifies that updateProduct properly relays Networking Layer errors.

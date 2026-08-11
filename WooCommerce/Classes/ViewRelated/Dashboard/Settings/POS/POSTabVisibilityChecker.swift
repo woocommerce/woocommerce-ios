@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import class WooFoundation.CurrencySettings
+import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
@@ -12,9 +13,6 @@ import class Yosemite.POSEligibilityService
 import enum Yosemite.FeatureFlagAction
 import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
-import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityRefresher
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
@@ -23,9 +21,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-    private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
     private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
+    private let connectivityObserver: ConnectivityObserver
 
     private static let minimumPhonePOSOperatingSystemVersion = OperatingSystemVersion(majorVersion: 26, minorVersion: 0, patchVersion: 0)
 
@@ -35,8 +32,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
-         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          isOperatingSystemAtLeast: @escaping (OperatingSystemVersion) -> Bool = ProcessInfo.processInfo.isOperatingSystemAtLeast) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
@@ -44,12 +40,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.expansionEligibilityService = expansionEligibilityService
         self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
-        self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
-            eligibilityService: expansionEligibilityService,
-            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
-        )
+        self.connectivityObserver = connectivityObserver
     }
 
     /// Checks the initial visibility of the POS tab without dependence on network requests.
@@ -90,6 +82,14 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         }
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
             return false
+        }
+
+        // Offline, fall back to the cached visibility instead of remote checks that would fail
+        // or stall, so a previously visible tab stays available for offline POS entry.
+        // Unknown connectivity (e.g. before the first path update at cold start) proceeds with
+        // the full check so a fresh online launch is not stuck with stale cached visibility.
+        if case .notReachable = connectivityObserver.currentStatus {
+            return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
         }
 
         async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
@@ -135,16 +135,29 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
-        guard userInterfaceIdiom != .phone || countryCode == .GB else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+        // Phone POS is GB-only, except for US stores when the `woo_pos_phone_us` remote flag
+        // is enabled — WPCOM whitelists that flag to Automattic accounts so internal testers
+        // can use Tap to Pay on US stores ahead of a wider rollout (WOOMOB-3775).
+        if userInterfaceIdiom == .phone, countryCode != .GB {
+            guard countryCode == .US, await isPhonePointOfSaleUSRemoteFlagEnabled() else {
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+            }
         }
 
-        // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
-        // validating, so the country/currency check reflects the latest remote feature
-        // flag rather than a stale or empty cache on first launch.
-        await expansionEligibilityRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
-
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
+    }
+
+    @MainActor
+    func isPhonePointOfSaleUSRemoteFlagEnabled() async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: false)
+            }
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.phonePointOfSaleUS, defaultValue: false) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            }
+            self.stores.dispatch(action)
+        }
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
@@ -161,9 +174,7 @@ private extension POSTabVisibilityChecker {
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let validationResult = POSCountryCurrencyValidator.validate(
             countryCode: countryCode,
-            currencyCode: currencyCode,
-            siteID: site.siteID,
-            eligibilityService: expansionEligibilityService
+            currencyCode: currencyCode
         )
 
         switch validationResult {

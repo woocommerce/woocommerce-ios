@@ -203,6 +203,10 @@ final class HubMenuViewModel: ObservableObject {
         navigationPath.append(destination)
     }
 
+    func popToRoot() {
+        navigationPath = .init()
+    }
+
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         navigateToDestination(.reviewDetails(parcel: parcel))
     }

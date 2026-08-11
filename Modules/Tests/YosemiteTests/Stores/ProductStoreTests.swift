@@ -154,6 +154,82 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - ProductAction.duplicateProduct
+
+    func test_duplicateProduct_returns_the_duplicated_product_ID() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let duplicatedProductID: Int64 = 999
+        remote.whenDuplicatingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(duplicatedProductID))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        var result: Result<Int64, ProductDuplicateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result?.get(), duplicatedProductID)
+        XCTAssertEqual(remote.invocationCountOfDuplicateProduct, 1)
+    }
+
+    func test_duplicateProduct_maps_Dotcom_noRestRoute_to_endpointUnavailable() {
+        assertDuplicateProductError(DotcomError.noRestRoute(), equals: .endpointUnavailable)
+    }
+
+    func test_duplicateProduct_maps_notFound_NetworkError_with_rest_no_route_code_to_endpointUnavailable() {
+        let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":404}}"#.utf8)
+        let error = NetworkError.notFound(response: response)
+        assertDuplicateProductError(error, equals: .endpointUnavailable)
+    }
+
+    func test_duplicateProduct_preserves_non_route_errors_as_terminal_unknown_error() {
+        let response = Data(#"{"code":"woocommerce_rest_product_invalid_id","message":"Invalid product ID","data":{"status":404}}"#.utf8)
+        let error = NetworkError.notFound(response: response)
+        assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
+    }
+
+    func test_duplicateProduct_preserves_non_notFound_NetworkError_with_rest_no_route_code_as_terminal_unknown_error() {
+        let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":500}}"#.utf8)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500, response: response)
+        assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
+    }
+
+    func test_duplicateProduct_preserves_generic_transport_error_as_terminal_unknown_error() {
+        let error = URLError(.networkConnectionLost)
+        assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
+    }
+
+    func test_duplicateProduct_does_not_classify_WordPress_error_code_without_notFound_NetworkError_as_endpointUnavailable() {
+        let error = WordPressApiError.unknown(code: "rest_no_route", message: "No route found")
+        assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
+    }
+
+    private func assertDuplicateProductError(_ error: Error, equals expectedError: ProductDuplicateError) {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenDuplicatingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .failure(error))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        var result: Result<Int64, ProductDuplicateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.duplicateProduct(siteID: sampleSiteID, productID: sampleProductID) {
+                result = $0
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result?.failure, expectedError)
+    }
+
     // MARK: - ProductAction.deleteProduct
 
     func test_deleteProduct_deletes_the_stored_product() throws {
@@ -255,6 +331,59 @@ final class ProductStoreTests: XCTestCase {
     }
 
     // MARK: - ProductAction.synchronizeProducts
+
+    func test_retrieveProductsTransiently_returns_currency_scoped_products_without_persisting_them() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        let action = ProductAction.retrieveProductsTransiently(siteID: sampleSiteID,
+                                                               currency: "EUR",
+                                                               pageNumber: 1,
+                                                               pageSize: 25,
+                                                               stockStatus: nil,
+                                                               productStatus: nil,
+                                                               productType: nil,
+                                                               productCategory: nil,
+                                                               sortOrder: .nameAscending) { result in
+            XCTAssertEqual(try? result.get().products.count, 10)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_searchProductsTransiently_returns_currency_scoped_products_without_persisting_products_or_search_results() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        let action = ProductAction.searchProductsTransiently(siteID: sampleSiteID,
+                                                             currency: "GBP",
+                                                             keyword: "photo",
+                                                             pageNumber: 1,
+                                                             pageSize: 25,
+                                                             productIDs: [12, 34]) { result in
+            XCTAssertFalse((try? result.get().products.isEmpty) ?? true)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSearchResults.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
 
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
@@ -950,8 +1079,8 @@ final class ProductStoreTests: XCTestCase {
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 

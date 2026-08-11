@@ -228,6 +228,7 @@ private extension OrderCustomAmountsSection {
 
     func showAddCustomAmountsAfterOptionsDialog() {
         sectionViewModel.showCustomAmountOptionsDialog = false
+        viewModel.beginAddCustomAmountFlow()
         sectionViewModel.showCustomAmountView = true
     }
 }

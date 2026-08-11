@@ -1,6 +1,15 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.4
+Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+
+## 25.3
+Running your store is now smoother: Point of Sale opens instantly offline after syncing, and product details update each time you reopen them. Creating orders and accepting payments works as expected on iPhone, and shop layouts and links display better at large font sizes.
+
+## 25.2
+Your "Report Crashes" privacy setting now follows you across devices and reinstalls. Shipping Labels now require a valid phone number before confirming. It's now easier to connect your card reader in landscape, and refund details in POS appear clearly while loading and in dark mode.
+
 ## 25.1
 Phone POS is now available for UK-based stores. Product search when creating orders is easier with a new Products/SKU filter, and your payments balance summary splits out Total and Available funds. Product titles and order creation layouts are tidier, and picking images or viewing actions on iPad won’t crash your flow.
 

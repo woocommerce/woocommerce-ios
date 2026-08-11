@@ -1,7 +1,9 @@
 import Foundation
 
-public protocol OrdersRemoteProtocol {
-    func loadOrders(
+/// Order fetching for the Bookings feature. `meta_data` in responses from this protocol is limited to
+/// `_payment_status` — the only metadata key Bookings consumes (via `BookingOrderInfo`).
+public protocol BookingOrdersRemoteProtocol {
+    func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order]
@@ -9,7 +11,7 @@ public protocol OrdersRemoteProtocol {
 
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote, OrdersRemoteProtocol {
+public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement
@@ -54,7 +56,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
                 ParameterKeys.usesGMTDates: true,
-                ParameterKeys.fields: ParameterValues.fieldValues,
+                ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
             if let after {
@@ -118,7 +120,12 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves specific `Order`s.
+    /// Retrieves specific `Order`s for the Bookings feature.
+    ///
+    /// `meta_data` in the response is limited to `_payment_status` — the only metadata key Bookings
+    /// consumes (via `BookingOrderInfo`). If another feature needs to fetch orders by IDs with other
+    /// metadata-derived `Order` properties (custom fields, attribution, charge ID, subscription renewal),
+    /// add a separate method with the appropriate `include_meta` value instead of reusing this one.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
@@ -126,7 +133,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Returns: Array of orders.
     /// - Throws: Network or parsing errors.
     ///
-    public func loadOrders(
+    public func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order] {
@@ -137,7 +144,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.paymentStatusIncludedMetaKeys
         ]
 
         let path = Constants.ordersPath
@@ -193,7 +201,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.listFieldValues
         ]
 
         let path = Constants.ordersPath
@@ -323,6 +331,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - cashPaymentChangeDueAmount: Optional change due amount from cash payment.
     ///     - fields: Fields from the order to be updated.
+    ///     - requestCurrency: Optional currency used to calculate prices while updating the order.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int64,
@@ -330,6 +339,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
+                            requestCurrency: String? = nil,
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
@@ -390,6 +400,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         queryParameters: requestCurrency.map { [ParameterKeys.currency: .string($0)] },
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -537,7 +548,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
-            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
 
@@ -561,7 +572,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
-            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
         let path = Constants.ordersPath
@@ -614,18 +625,35 @@ public extension OrdersRemote {
         static let product = "product"
         static let createdVia = "created_via"
         static let decimalPlaces = "dp"
+        static let currency = "currency"
+        /// Limits which keys are returned in `meta_data`. Available since WooCommerce 7.0; older stores ignore it and return all metadata.
+        static let includeMeta = "include_meta"
     }
 
     enum ParameterValues {
         static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
+        /// Field values for order list and search fetches, which exclude `meta_data` because no list UI consumes
+        /// metadata-derived properties and its size is unbounded (plugins can attach hundreds of entries per order).
+        /// The order details screen re-syncs the single order with the full `fieldValues` before displaying
+        /// metadata-derived content (custom fields, attribution, charge ID, subscriptions).
+        static let listFieldValues: String = commonOrderFieldValues.filter { $0 != metaDataField }.joined(separator: ",")
+        private static let metaDataField = "meta_data"
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "currency_symbol", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt",
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", metaDataField,
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
         static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
+        /// Order fetches whose consumers only need `_payment_status` from order metadata (e.g. `BookingOrderInfo`)
+        /// limit `meta_data` to that key to keep responses small on stores with heavy metadata.
+        static let paymentStatusIncludedMetaKeys = "_payment_status"
+        /// POS order lists don't consume any order metadata (see `POSOrderMapper`), so `meta_data` is
+        /// excluded from the requested fields to keep responses small on stores with heavy metadata.
+        static let posOrderFieldValues: String = commonOrderFieldValues
+            .filter { $0 != "meta_data" }
+            .joined(separator: ",")
     }
 
     enum NestedFieldKeys {
@@ -687,7 +715,7 @@ public extension OrdersRemote {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues
         ]
         let path = Constants.ordersPath
         let request = JetpackRequest(wooApiVersion: .mark3,

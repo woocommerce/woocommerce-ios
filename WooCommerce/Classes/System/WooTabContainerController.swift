@@ -6,6 +6,11 @@ enum NarrowWindowLayout {
 
 protocol UsesCompactLayoutInNarrowWindow: AnyObject {}
 
+/// Adopted by tab root content controllers that need custom handling when their tab is re-selected.
+protocol TabReselectionHandling {
+    func handleTabReselection()
+}
+
 /// Container for a Woo tab, shown as the root view controller of one of the tabs.
 /// Provided as an alternative to `WooTabNavigationController`, for root controllers which should not be in a nav view
 /// For example, a Split View, which will not work correctly on iPhone when wrapped in a navigation view.

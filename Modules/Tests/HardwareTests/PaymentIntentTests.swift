@@ -17,6 +17,12 @@ final class PaymentIntentTests: XCTestCase {
         XCTAssertEqual(intent.status, .succeeded)
     }
 
+    func test_intent_maps_client_secret() {
+        let intent = PaymentIntent(intent: mockIntent)
+
+        XCTAssertEqual(intent.clientSecret, mockIntent.clientSecret)
+    }
+
     func test_intent_maps_date_created() {
         let intent = PaymentIntent(intent: mockIntent)
 

@@ -36,6 +36,9 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `addProduct`
     private var addProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
+    /// The results to return based on the given site and product IDs in `duplicateProduct`
+    private var duplicateProductResultsByKey = [ResultKey: Result<Int64, Error>]()
+
     /// The results to return based on the given site ID in `deleteProduct`
     private var deleteProductResultsBySiteID = [Int64: Result<Product, Error>]()
 
@@ -64,6 +67,9 @@ final class MockProductsRemote {
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
+    /// The number of times that `duplicateProduct()` was invoked.
+    private(set) var invocationCountOfDuplicateProduct: Int = 0
+
     /// The last requested page size for popular products
     private(set) var lastRequestedPageSize: Int?
 
@@ -88,6 +94,13 @@ final class MockProductsRemote {
     ///
     func whenAddingProduct(siteID: Int64, thenReturn result: Result<Product, Error>) {
         addProductResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `duplicateProduct()` is called.
+    ///
+    func whenDuplicatingProduct(siteID: Int64, productID: Int64, thenReturn result: Result<Int64, Error>) {
+        let key = ResultKey(siteID: siteID, productIDs: [productID])
+        duplicateProductResultsByKey[key] = result
     }
 
     /// Set the value passed to the `completion` block if `deleteProduct()` is called.
@@ -200,6 +213,22 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
+    func duplicateProduct(siteID: Int64, productID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
+
+            self.invocationCountOfDuplicateProduct += 1
+            let key = ResultKey(siteID: siteID, productIDs: [productID])
+            if let result = self.duplicateProductResultsByKey[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else {
@@ -261,7 +290,8 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          productIDs: [Int64],
-                         excludedProductIDs: [Int64]) async throws -> [Product] {
+                         excludedProductIDs: [Int64],
+                         currency: String?) async throws -> [Product] {
         synchronizeProductsTriggered = true
         synchronizeProductsWithStockStatus = stockStatus
         synchronizeProductsWithProductStatus = productStatus
@@ -293,7 +323,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
-                        excludedProductIDs: [Int64]) async throws -> [Product] {
+                        productIDs: [Int64],
+                        excludedProductIDs: [Int64],
+                        currency: String?) async throws -> [Product] {
         searchProductTriggered = true
         searchProductWithStockStatus = stockStatus
         searchProductWithProductType = productType
@@ -313,7 +345,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int) async throws -> [Product] {
+                             pageSize: Int,
+                             productIDs: [Int64],
+                             currency: String?) async throws -> [Product] {
         guard let result = searchProductsBySKUResultsBySKU[keyword] else {
             XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")
             throw NetworkError.notFound()

@@ -298,14 +298,6 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         return await fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
 
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        return false
-    }
-
-    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        return nil
-    }
-
     func stopOngoingSyncs(for siteID: Int64) async {}
 
     func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {

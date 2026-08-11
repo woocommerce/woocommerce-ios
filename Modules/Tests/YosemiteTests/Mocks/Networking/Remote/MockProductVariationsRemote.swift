@@ -90,6 +90,15 @@ final class MockProductVariationsRemote {
 // MARK: - ProductVariationsRemoteProtocol conformance
 
 extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
+    func loadProductVariations(for siteID: Int64,
+                               productID: Int64,
+                               variationIDs: [Int64],
+                               pageNumber: Int,
+                               pageSize: Int,
+                               currency: String?) async throws -> [ProductVariation] {
+        []
+    }
+
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
                                   variationIDs: [Int64],
@@ -199,7 +208,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
 
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }

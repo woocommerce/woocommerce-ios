@@ -6,10 +6,12 @@ struct StatsIntervalDataParser {
     /// Returns the stats intervals, ordered by date.
     ///
     static func sortStatsIntervals<Stats: WCAnalyticsStats>(from stats: Stats?) -> [Stats.Interval] {
-        return stats?.intervals.sorted(by: { lhs, rhs -> Bool in
-            let siteTimezone = TimeZone.siteTimezone
-            return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
-        }) ?? []
+        let siteTimezone = TimeZone.siteTimezone
+        // Skip intervals whose date can't be parsed (bad server data) instead of crashing, then sort by date.
+        return (stats?.intervals ?? [])
+            .compactMap { interval in interval.dateStart(timeZone: siteTimezone).map { (interval: interval, date: $0) } }
+            .sorted { $0.date < $1.date }
+            .map { $0.interval }
     }
 
     /// Returns the requested stats total data values for every interval in the provided stats.

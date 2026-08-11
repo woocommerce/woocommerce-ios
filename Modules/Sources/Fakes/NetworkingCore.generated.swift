@@ -517,6 +517,57 @@ extension NetworkingCore.Refund {
         )
     }
 }
+extension NetworkingCore.RefundPreview {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.RefundPreview {
+        .init(
+            subtotal: .fake(),
+            tax: .fake(),
+            total: .fake(),
+            maxRefundable: .fake(),
+            breakdown: .fake()
+        )
+    }
+}
+extension NetworkingCore.RefundPreview.Breakdown {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.RefundPreview.Breakdown {
+        .init(
+            products: .fake(),
+            shipping: .fake(),
+            fees: .fake()
+        )
+    }
+}
+extension NetworkingCore.RefundPreview.Item {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.RefundPreview.Item {
+        .init(
+            id: .fake(),
+            name: .fake(),
+            quantity: .fake(),
+            subtotal: .fake(),
+            tax: .fake(),
+            total: .fake(),
+            productID: .fake()
+        )
+    }
+}
+extension NetworkingCore.RefundPreview.Section {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.RefundPreview.Section {
+        .init(
+            items: .fake(),
+            subtotal: .fake(),
+            tax: .fake(),
+            total: .fake()
+        )
+    }
+}
 extension NetworkingCore.ShippingLabel {
     /// Returns a "ready to use" type filled with fake values.
     ///

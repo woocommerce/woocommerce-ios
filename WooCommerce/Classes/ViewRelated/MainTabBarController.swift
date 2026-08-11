@@ -109,10 +109,6 @@ final class MainTabBarController: UITabBarController {
         .default
     }
 
-    /// Notifications badge
-    ///
-    private let notificationsBadge = NotificationsBadgeController()
-
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
@@ -146,6 +142,10 @@ final class MainTabBarController: UITabBarController {
 
     private var cancellableSiteID: AnyCancellable?
     private var cancellableSite: AnyCancellable?
+    private var cancellableForeground: AnyCancellable?
+
+    /// The site currently driving the conditional tabs, re-checked when the app enters the foreground.
+    private var conditionalTabsSite: Site?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
@@ -165,17 +165,6 @@ final class MainTabBarController: UITabBarController {
     /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
-
-    /// Refreshes the per-site IPP country expansion eligibility cache (RSM-637) on phones
-    /// where the POS visibility check is short-circuited and would otherwise not run the
-    /// refresher. iPad goes through `POSTabVisibilityChecker` which refreshes inline before
-    /// reading the cache.
-    private lazy var cardPresentExpansionRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher = {
-        CardPresentPaymentsCountryExpansionEligibilityRefresher(
-            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
-        )
-    }()
-    private var cardPresentExpansionRefreshTask: Task<Void, Never>?
 
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
@@ -236,7 +225,6 @@ final class MainTabBarController: UITabBarController {
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
         bookingsEligibilityCheckTask?.cancel()
-        cardPresentExpansionRefreshTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -313,7 +301,7 @@ final class MainTabBarController: UITabBarController {
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
             trackTabReselected(tab: userSelectedTab)
-            scrollContentToTop()
+            handleTabReselection()
         } else {
             trackTabSelected(newTab: userSelectedTab)
         }
@@ -470,19 +458,32 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 }
 
 
-// MARK: - Static navigation helpers
+// MARK: - Tab re-selection
 //
-private extension MainTabBarController {
+extension MainTabBarController {
 
-    /// *When applicable* this method will scroll the visible content to top.
-    ///
-    func scrollContentToTop() {
-        guard let navController = selectedViewController as? UINavigationController else {
+    func handleTabReselection() {
+        guard let selectedViewController else {
+            return
+        }
+        let content = (selectedViewController as? TabContainerController)?.wrappedController ?? selectedViewController
+
+        guard let navigationController = content as? UINavigationController else {
+            (content as? TabReselectionHandling)?.handleTabReselection()
             return
         }
 
-        navController.scrollContentToTop(animated: true)
+        // A refused pop skips the root's own reset, so its guarded screens are never bypassed.
+        guard navigationController.popToRootOrScrollToTop(animated: true) else {
+            return
+        }
+        (navigationController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
     }
+}
+
+// MARK: - Static navigation helpers
+//
+private extension MainTabBarController {
 
     /// Tracks "Tab Selected" Events.
     ///
@@ -491,11 +492,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersSelected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListSelected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsSelect())
         case .hubMenu:
@@ -512,11 +511,9 @@ private extension MainTabBarController {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
-            ServiceLocator.analytics.track(
-                event: .Orders.ordersReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Orders.ordersReselected())
         case .products:
-            ServiceLocator.analytics.track(
-                event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            ServiceLocator.analytics.track(event: .Products.productListReselected())
         case .bookings:
             ServiceLocator.analytics.track(Event.mainTabBookingsReselect())
         case .hubMenu:
@@ -941,39 +938,22 @@ private extension MainTabBarController {
                     return
                 }
 
+                conditionalTabsSite = site
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
-                refreshCardPresentExpansionEligibilityIfNeeded(for: site)
             }
-    }
 
-    /// Refreshes the IPP country expansion eligibility cache for phones, where the
-    /// POS visibility check is skipped. On iPad the visibility checker handles this
-    /// inline before reading the cache, so we no-op to avoid a duplicate dispatch.
-    func refreshCardPresentExpansionEligibilityIfNeeded(for site: Site) {
-        guard !isPad else { return }
-        cardPresentExpansionRefreshTask?.cancel()
-        cardPresentExpansionRefreshTask = Task { @MainActor [weak self] in
-            guard let self else { return }
-            let siteSettings = await waitForSiteSettings(siteID: site.siteID)
-            guard !Task.isCancelled else { return }
-            let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
-            await cardPresentExpansionRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
-        }
-    }
-
-    /// Waits for the first non-empty site settings event matching the given site ID.
-    /// Mirrors `POSTabVisibilityChecker.waitForSiteSettingsRefresh()`.
-    private func waitForSiteSettings(siteID: Int64) async -> [SiteSetting] {
-        for await event in ServiceLocator.selectedSiteSettings.settingsStream.values {
-            guard event.siteID == siteID,
-                  event.settings.isNotEmpty,
-                  event.source != .initialLoad else {
-                continue
+        // Re-validates POS visibility and eligibility whenever the app returns to the foreground,
+        // like Android's onResume re-check. POS entry relies on locally recorded eligibility, so
+        // this checkpoint is what detects a store that became ineligible while the app was inactive.
+        cancellableForeground = NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                guard let self, let site = conditionalTabsSite else {
+                    return
+                }
+                observePOSEligibilityForPOSTabVisibility(site: site)
             }
-            return event.settings
-        }
-        return []
     }
 
     func observeSiteIDForViewControllers() {
@@ -1114,11 +1094,6 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-        guard #available(iOS 26.0, *) else {
-            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
-            notificationsBadge.updateBadge(with: input)
-            return
-        }
 
         switch action {
         case .show:

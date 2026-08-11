@@ -2,6 +2,8 @@ import SwiftUI
 import Yosemite
 
 struct DebugPanelView: View {
+    @Environment(\.dismiss) private var dismiss
+
     @State private var announcementToPresent: Announcement?
     @State private var announcementError: String?
 
@@ -32,6 +34,12 @@ struct DebugPanelView: View {
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
             }
+
+            #if DEBUG || ALPHA
+            NavigationLink("Design System") {
+                DesignSystemDemoView()
+            }
+            #endif
 
             Section("Announcements") {
                 Button("Fetch Test Announcement (v999.0)") {
@@ -82,6 +90,13 @@ struct DebugPanelView: View {
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
+        }
         .sheet(item: $announcementToPresent) { announcement in
             ViewControllerContainer(WhatsNewFactory.whatsNew(announcement) {
                 announcementToPresent = nil

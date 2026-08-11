@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import AutomatticTracks
 import WordPressShared
@@ -44,12 +45,42 @@ public class TracksProvider: NSObject, AnalyticsProvider {
     }
 }
 
+extension TracksProvider {
+    /// Read on the main thread only; UIKit trait reads are main-thread bound. Off the main thread
+    /// (background BGTask/push events, where layout is irrelevant) it returns `.unspecified`, which
+    /// `addHorizontalSizeClass(to:sizeClass:)` skips.
+    func currentHorizontalSizeClass() -> UIUserInterfaceSizeClass {
+        guard Thread.isMainThread else {
+            return .unspecified
+        }
+        return UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass ?? .unspecified
+    }
+
+    /// Adds `horizontal_size_class` to the event's properties when a concrete layout is known,
+    /// without overwriting a value the event already provides.
+    ///
+    func addHorizontalSizeClass(to properties: [AnyHashable: Any]?,
+                                sizeClass: UIUserInterfaceSizeClass) -> [AnyHashable: Any]? {
+        guard sizeClass != .unspecified else {
+            return properties
+        }
+
+        var decoratedProperties = properties ?? [:]
+        guard decoratedProperties[Constants.horizontalSizeClassKey] == nil else {
+            return decoratedProperties
+        }
+
+        decoratedProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
+        return decoratedProperties
+    }
+}
+
 
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData() {
-        switchTracksUsersIfNeeded()
+    func refreshUserData(completion: @escaping () -> Void) {
+        switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()
     }
 
@@ -59,6 +90,7 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
+        let properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
@@ -107,7 +139,7 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
-    func switchTracksUsersIfNeeded() {
+    func switchTracksUsersIfNeeded(completion: @escaping () -> Void = {}) {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
@@ -121,6 +153,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
@@ -129,6 +162,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: true)
+                    completion()
                 }
             } else {
                 // Username changed for some reason - switch back to anonymous first
@@ -138,12 +172,14 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.TracksServiceExecutor.enqueue { tracksService in
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                completion()
             }
         }
     }
@@ -237,6 +273,9 @@ private extension TracksProvider {
             WooAnalyticsStat.cardReaderDisconnectTapped,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
+            WooAnalyticsStat.cardReaderLocationSuccess,
+            WooAnalyticsStat.cardReaderLocationFailure,
+            WooAnalyticsStat.cardReaderLocationMissingTapped,
 
             // Card Reader Software Update
             WooAnalyticsStat.cardReaderSoftwareUpdateTapped,
@@ -347,6 +386,7 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+        static let horizontalSizeClassKey = "horizontal_size_class"
     }
 
     enum UserProperties {

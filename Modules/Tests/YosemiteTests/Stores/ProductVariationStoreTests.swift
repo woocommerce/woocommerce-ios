@@ -49,6 +49,29 @@ final class ProductVariationStoreTests: XCTestCase {
 
     // MARK: - ProductVariationAction.synchronizeProductVariations
 
+    func test_retrieveProductVariationsTransiently_returns_currency_scoped_variations_without_persisting_them() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        let action = ProductVariationAction.retrieveProductVariationsTransiently(siteID: sampleSiteID,
+                                                                                 productID: sampleProductID,
+                                                                                 currency: "EUR",
+                                                                                 pageNumber: 1,
+                                                                                 pageSize: 25) { result in
+            XCTAssertEqual(try? result.get().variations.count, 8)
+            expectation.fulfill()
+        }
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
     /// Verifies that `ProductVariationAction.synchronizeProductVariations` effectively persists any retrieved product variations.
     ///
     func testRetrieveProductVariationsEffectivelyPersisted() {
@@ -931,12 +954,14 @@ final class ProductVariationStoreTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1])
         assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
 
+        let updateVariations = variationIDs.map { PartialProductVariationUpdate(productVariationID: $0, regularPrice: "1") }
+
         // When
         var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
         waitForExpectation { expectation in
             let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
                                                                         productID: sampleProductID,
-                                                                        productVariations: variations) { aResult in
+                                                                        productVariations: updateVariations) { aResult in
                 result = aResult
                 expectation.fulfill()
             }
@@ -970,12 +995,14 @@ final class ProductVariationStoreTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: productVariations[1])
         assertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
 
+        let updateVariations = variationIDs.map { PartialProductVariationUpdate(productVariationID: $0, regularPrice: "1") }
+
         // When
         var result: Result<[Yosemite.ProductVariation], ProductUpdateError>?
         waitForExpectation { expectation in
             let action = ProductVariationAction.updateProductVariations(siteID: sampleSiteID,
                                                                         productID: sampleProductID,
-                                                                        productVariations: productVariations) { aResult in
+                                                                        productVariations: updateVariations) { aResult in
                 result = aResult
                 expectation.fulfill()
             }

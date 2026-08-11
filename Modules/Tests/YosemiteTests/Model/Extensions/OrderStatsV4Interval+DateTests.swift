@@ -9,7 +9,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
                                                             netRevenue: 0,
                                                             averageOrderValue: 0)
 
-    func testDateStartAndDateEnd() {
+    func testDateStartAndDateEnd() throws {
         let dateStringInSiteTimeZone = "2019-08-08 10:45:00"
         let interval = OrderStatsV4Interval(interval: "hour",
                                             dateStart: dateStringInSiteTimeZone,
@@ -19,7 +19,8 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
         // Note that iOS 26 has changed behaviour here, and excess seconds in the timezone break the calculation
         // This is 488 minutes, or 8 hours and 8 minutes
         let timeZone = TimeZone(secondsFromGMT: 29280)!
-        [interval.dateStart(timeZone: timeZone), interval.dateEnd(timeZone: timeZone)].forEach { date in
+        let dates = try [XCTUnwrap(interval.dateStart(timeZone: timeZone)), XCTUnwrap(interval.dateEnd(timeZone: timeZone))]
+        dates.forEach { date in
             let dateComponents = Calendar(identifier: .iso8601).dateComponents(in: timeZone, from: date)
             XCTAssertEqual(dateComponents.year, 2019)
             XCTAssertEqual(dateComponents.month, 8)
@@ -28,6 +29,38 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
             XCTAssertEqual(dateComponents.minute, 45)
             XCTAssertEqual(dateComponents.second, 0)
         }
+    }
+
+    // MARK: - Unparseable dates return nil instead of crashing
+
+    func test_dateStart_when_date_string_is_empty_then_returns_nil() throws {
+        // Given
+        let interval = OrderStatsV4Interval(interval: "hour",
+                                            dateStart: "",
+                                            dateEnd: "2019-08-08 10:45:00",
+                                            subtotals: mockIntervalSubtotals)
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "GMT"))
+
+        // When
+        let dateStart = interval.dateStart(timeZone: timeZone)
+
+        // Then
+        XCTAssertNil(dateStart)
+    }
+
+    func test_dateEnd_when_date_string_is_malformed_then_returns_nil() throws {
+        // Given
+        let interval = OrderStatsV4Interval(interval: "hour",
+                                            dateStart: "2019-08-08 10:45:00",
+                                            dateEnd: "not-a-date",
+                                            subtotals: mockIntervalSubtotals)
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "GMT"))
+
+        // When
+        let dateEnd = interval.dateEnd(timeZone: timeZone)
+
+        // Then
+        XCTAssertNil(dateEnd)
     }
 
     func test_date_start_and_date_end_parsed_when_daylight_saving_time_begins() throws {

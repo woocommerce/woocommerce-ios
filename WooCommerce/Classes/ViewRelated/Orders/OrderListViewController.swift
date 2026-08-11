@@ -140,10 +140,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
-    ///
-    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -314,6 +310,22 @@ private extension OrderListViewController {
                 self.checkSelectedItem()
             }
         }.store(in: &cancellables)
+
+        /// Reconfigure visible cells when the stored order statuses change, so status labels
+        /// pick up the latest server-provided names (e.g. after the first sync completes).
+        viewModel.statusesDidChange
+            .sink { [weak self] in
+                guard let self, let dataSource = self.dataSource else {
+                    return
+                }
+                var snapshot = dataSource.snapshot()
+                guard snapshot.itemIdentifiers.isEmpty == false else {
+                    return
+                }
+                snapshot.reconfigureItems(snapshot.itemIdentifiers)
+                dataSource.apply(snapshot, animatingDifferences: false)
+            }
+            .store(in: &cancellables)
 
         /// Update the top banner when needed
         viewModel.$topBanner
@@ -809,8 +821,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
-                                                                                 horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })

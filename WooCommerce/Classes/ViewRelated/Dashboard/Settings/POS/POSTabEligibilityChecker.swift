@@ -21,8 +21,11 @@ import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
 import protocol WooFoundation.ConnectivityObserver
 import enum Yosemite.POSCountryCurrencyValidator
-import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
+import protocol Yosemite.POSEligibilityServiceProtocol
+import class Yosemite.POSEligibilityService
+import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
+import protocol Yosemite.POSCatalogSyncStatusCheckerProtocol
+import struct Yosemite.POSCatalogSyncStatusChecker
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
@@ -31,8 +34,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
-    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     private let connectivityObserver: ConnectivityObserver
+    private let eligibilityService: POSEligibilityServiceProtocol
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+    private let syncStatusChecker: POSCatalogSyncStatusCheckerProtocol
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
@@ -40,12 +45,16 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService()) {
+         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? = nil,
+         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
         self.connectivityObserver = connectivityObserver
-        self.expansionEligibilityService = expansionEligibilityService
+        self.eligibilityService = eligibilityService
+        self.localCatalogEligibilityService = localCatalogEligibilityService ?? stores.posCatalogEligibilityChecker
+        self.syncStatusChecker = syncStatusChecker ?? POSCatalogSyncStatusChecker(grdbManager: ServiceLocator.grdbManager)
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -65,16 +74,32 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
-    func checkEligibility() async -> POSEligibilityState {
+    ///
+    /// Matches Android's cache-tolerant launchability check: a store that previously passed the
+    /// eligibility checks and has a fully synced local catalog can run POS from local data without
+    /// waiting on remote checks, online or offline. Background refreshes pass `forceRemoteCheck`
+    /// to re-validate remotely and detect a store that became ineligible.
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
         // Bypass eligibility checks for screenshot tests
         if ProcessConfiguration.shouldBypassPOSEligibilityChecks {
             return .eligible
         }
 
         guard connectivityObserver.currentStatus != .notReachable else {
-            return .ineligible(reason: .noInternetConnection)
+            // Offline, only report the missing connection when local state cannot support POS.
+            return await canRunFromLocalCatalog() ? .eligible : .ineligible(reason: .noInternetConnection)
         }
 
+        if !forceRemoteCheck, await canRunFromLocalCatalog() {
+            return .eligible
+        }
+
+        let state = await checkOnlineEligibility()
+        recordLastKnownEligibilityIfDefinite(state)
+        return state
+    }
+
+    private func checkOnlineEligibility() async -> POSEligibilityState {
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
@@ -98,7 +123,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .siteSettingsNotAvailable, .unsupportedCurrency:
             do {
                 try await syncSiteSettingsRemotely()
-                return await checkEligibility()
+                return await checkEligibility(forceRemoteCheck: false)
             } catch POSTabEligibilityCheckerError.selfDeallocated {
                 return .ineligible(reason: .selfDeallocated)
             } catch {
@@ -108,12 +133,88 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
                 throw error
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .noInternetConnection:
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
         case .featureSwitchDisabled:
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
         case .selfDeallocated:
-            return await checkEligibility()
+            return await checkEligibility(forceRemoteCheck: false)
+        }
+    }
+}
+
+// MARK: - Eligibility From Local State
+
+private extension POSTabEligibilityChecker {
+    /// Whether locally available state can support POS without remote checks.
+    ///
+    /// This is not a local re-implementation of `checkOnlineEligibility` — the first criterion
+    /// is the persisted outcome of the *entire* last online check (site settings, currency,
+    /// plugin, feature switch, and any criteria added there in the future), so the two cannot
+    /// drift apart. The remaining criteria are refinements from signals the online outcome
+    /// cannot capture: plugin data that another flow synced more recently (validated with the
+    /// same rule the online check uses), and the local-catalog requirements (feature enabled,
+    /// full sync completed) that select local-catalog mode rather than POS eligibility itself.
+    func canRunFromLocalCatalog() async -> Bool {
+        // `!= false` rather than `== true`: nil (no definite result recorded yet, e.g. right
+        // after updating to this version) must pass, because a completed full sync — required
+        // below — already implies the store was eligible when the catalog synced. The flag is
+        // a veto for stores definitely known to be ineligible, not a required positive.
+        guard eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) != false,
+              await cachedPluginSupportsPOS(),
+              let localCatalogEligibilityService,
+              await localCatalogEligibilityService.isLocalCatalogFeatureEnabled(),
+              await syncStatusChecker.hasCompletedFullSync(for: siteID) else {
+            return false
+        }
+        return true
+    }
+
+    /// Validates against plugin data synced into local storage by any part of the app:
+    /// a plugin known locally to be inactive or below the minimum version blocks entry from
+    /// local state. When no plugin data has been synced, falls back to the persisted outcome
+    /// of the last online check (the first gate criterion).
+    ///
+    /// Reuses `checkWooCommercePluginEligibility` so the plugin rules live in a single place
+    /// shared with the online check. The feature switch cannot be read locally, so its pending
+    /// state falls back to the persisted outcome as well.
+    @MainActor
+    func cachedPluginSupportsPOS() -> Bool {
+        guard let wcPlugin = systemStatusService.loadCachedWooCommercePlugin(siteID: siteID) else {
+            return true
+        }
+        switch checkWooCommercePluginEligibility(wcPlugin: wcPlugin) {
+        case .eligible, .pendingFeatureSwitchCheck:
+            return true
+        case .ineligible:
+            return false
+        }
+    }
+
+    /// Persists definite results from online checks so offline eligibility stays available
+    /// across launches, and is invalidated once the store is definitely known to be ineligible.
+    /// Indeterminate results (e.g. settings unavailable) leave the last known value untouched.
+    func recordLastKnownEligibilityIfDefinite(_ state: POSEligibilityState) {
+        switch state {
+        case .eligible:
+            eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: true)
+        case .ineligible(let reason):
+            guard reason.isDefiniteIneligibility else {
+                return
+            }
+            eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: false)
+        }
+    }
+}
+
+private extension POSIneligibleReason {
+    /// Whether the reason reflects the store's actual state rather than a failure to determine it.
+    var isDefiniteIneligibility: Bool {
+        switch self {
+        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .featureSwitchDisabled, .unsupportedCurrency:
+            return true
+        case .noInternetConnection, .siteSettingsNotAvailable, .selfDeallocated:
+            return false
         }
     }
 }
@@ -235,9 +336,7 @@ private extension POSTabEligibilityChecker {
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let validationResult = POSCountryCurrencyValidator.validate(
             countryCode: countryCode,
-            currencyCode: currencyCode,
-            siteID: siteID,
-            eligibilityService: expansionEligibilityService
+            currencyCode: currencyCode
         )
 
         switch validationResult {

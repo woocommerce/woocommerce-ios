@@ -22,9 +22,16 @@ protocol RequestAuthenticator {
     /// Checks whether app password generation is possible
     func canGenerateApplicationPassword() -> Bool
 
+    /// Checks whether the current app password can be validated with the site.
+    func canValidateApplicationPassword() -> Bool
+
     /// Generates application password
     ///
     func generateApplicationPassword() async throws
+
+    /// Validates the current app password with the site.
+    ///
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult
 
     /// Delete existing application password remotely
     ///
@@ -120,6 +127,14 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         return applicationPasswordUseCase.canRegenerateApplicationPassword
     }
 
+    /// Checks whether the current app password can be validated with the site.
+    func canValidateApplicationPassword() -> Bool {
+        guard let applicationPasswordUseCase else {
+            return false
+        }
+        return applicationPasswordUseCase.canValidateApplicationPassword
+    }
+
     /// Generates application password
     ///
     func generateApplicationPassword() async throws {
@@ -128,6 +143,13 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
+    }
+
+    func validateApplicationPassword() async throws -> ApplicationPasswordValidationResult {
+        guard let applicationPasswordUseCase else {
+            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+        }
+        return try await applicationPasswordUseCase.validateApplicationPassword()
     }
 
     func deleteApplicationPassword() async throws {
@@ -154,7 +176,7 @@ private extension DefaultRequestAuthenticator {
 
         // Use cached REST API root if available, otherwise fall back to default
         let restRoot = WordPressRESTAPIRootCache.shared.root(for: siteAddress)
-            ?? (siteBase + "/" + RESTRequest.Settings.basePath)
+            ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteBase)
         return absoluteString.hasPrefix(restRoot.trimSlashes())
     }
 

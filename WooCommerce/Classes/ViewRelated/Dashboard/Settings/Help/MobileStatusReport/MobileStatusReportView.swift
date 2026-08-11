@@ -25,7 +25,7 @@ struct MobileStatusReportView: View {
 
     /// Notice presenter to present the successful copy message.
     ///
-    let noticePresenter: DefaultNoticePresenter
+    var noticePresenter: NoticePresenter
 
     @State private var report: String = ""
 
@@ -33,10 +33,11 @@ struct MobileStatusReportView: View {
     private let analytics: Analytics
 
     init(reportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         noticePresenter: NoticePresenter = DefaultNoticePresenter()) {
         self.reportProvider = reportProvider
         self.analytics = analytics
-        self.noticePresenter = DefaultNoticePresenter()
+        self.noticePresenter = noticePresenter
     }
 
     var body: some View {

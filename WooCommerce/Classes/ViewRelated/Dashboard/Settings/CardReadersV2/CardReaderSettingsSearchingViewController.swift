@@ -125,14 +125,9 @@ struct CardReaderSettingsSearchingView: View {
     var learnMoreURL: URL
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
-    @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
         verticalSizeClass == .compact
-    }
-
-    var shouldScrollVertically: Bool {
-        isCompact || sizeCategory >= .accessibilityMedium
     }
 
     var illustrationHeight: CGFloat {
@@ -179,11 +174,7 @@ struct CardReaderSettingsSearchingView: View {
             maxHeight: .infinity
         )
         .padding()
-        .if(shouldScrollVertically) { content in
-            ScrollView(.vertical) {
-                content
-            }
-        }
+        .scrollVerticallyIfNeeded()
     }
 }
 

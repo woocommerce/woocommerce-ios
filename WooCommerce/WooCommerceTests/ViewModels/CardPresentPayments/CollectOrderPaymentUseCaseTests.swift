@@ -193,6 +193,47 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertTrue(didCancelFlow)
     }
 
+    func test_collectPayment_when_app_reactivates_before_slow_cancellation_completes_still_requires_confirmation() throws {
+        // Given
+        var cancellationCompletion: ((Result<Void, Error>) -> Void)?
+        mockPaymentOrchestrator.mockCancelPaymentHandler = { completion in
+            cancellationCompletion = completion
+        }
+        var didCancelFlow = false
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader, _, _, _, _, _, _ in
+            self.alertsPresenter.onPresentCalled = { viewModel in
+                self.alertsPresenter.onPresentCalled = nil
+                viewModel.didTapSecondaryButton(in: nil)
+            }
+            onPreparingReader()
+        }
+
+        useCase.collectPayment(using: .tapToPay,
+                               channel: .storeManagement,
+                               onFailure: { _ in },
+                               onCancel: { didCancelFlow = true },
+                               onPaymentCompletion: {},
+                               onCompleted: {})
+        mockPreflightController.completeConnection(reader: MockCardReader.tapToPay(), gatewayID: Mocks.paymentGatewayAccount)
+
+        // When
+        applicationState = .inactive
+        notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil)
+        applicationState = .active
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        try XCTUnwrap(cancellationCompletion)(.success(()))
+
+        // Then
+        XCTAssertFalse(didCancelFlow)
+        let confirmation = try XCTUnwrap(alertsPresenter.spyPresentedAlertViewModels.last as? CardPresentModalTapToPayPaymentCancelled)
+
+        // When
+        confirmation.didTapPrimaryButton(in: nil)
+
+        // Then
+        XCTAssertTrue(didCancelFlow)
+    }
+
     func test_collectPayment_failedCancellation_keepsPaymentFlowActive() {
         // Given
         mockPaymentOrchestrator.mockCancelPaymentResult = .failure(TestError.cancellationFailed)

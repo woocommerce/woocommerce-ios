@@ -96,7 +96,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private let notificationCenter: NotificationCenter
     private let applicationStateProvider: () -> UIApplication.State
+    private var applicationInactivationCancellable: AnyCancellable?
     private var applicationReactivationCancellable: AnyCancellable?
+    private var didObserveApplicationInactiveDuringCancellation = false
 
     private enum CancellationOutcomeState: Equatable {
         case pending
@@ -777,17 +779,18 @@ private extension CollectOrderPaymentUseCase {
         paymentFlowLock.lock()
         defer { paymentFlowLock.unlock() }
         paymentFlowCanceled = true
+        observeApplicationInactivityDuringCancellation()
         paymentOrchestrator.cancelPayment { [weak self] result in
             switch result {
             case .success:
                 self?.analyticsTracker.trackPaymentCancelation(cancelationSource: cancelationSource)
                 guard let self else { return onCompleted() }
-                self.completeCancellationWhenApplicationIsActive(alertProvider: paymentAlerts, onCompleted: onCompleted)
+                self.completeCancellation(alertProvider: paymentAlerts, onCompleted: onCompleted)
             case .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
                 // The synchronized start gate guarantees no Hardware attempt can begin after this cancellation.
                 self?.analyticsTracker.trackPaymentCancelation(cancelationSource: cancelationSource)
                 guard let self else { return onCompleted() }
-                self.completeCancellationWhenApplicationIsActive(alertProvider: paymentAlerts, onCompleted: onCompleted)
+                self.completeCancellation(alertProvider: paymentAlerts, onCompleted: onCompleted)
             case .failure(let error):
                 DDLogWarn("💳 Failed to cancel payment after merchant cancellation: \(error)")
                 self?.setPaymentFlowCanceled(false)
@@ -795,12 +798,50 @@ private extension CollectOrderPaymentUseCase {
         }
     }
 
-    func completeCancellationWhenApplicationIsActive(
+    func observeApplicationInactivityDuringCancellation() {
+        applicationInactivationCancellable?.cancel()
+        applicationInactivationCancellable = notificationCenter
+            .publisher(for: UIApplication.willResignActiveNotification)
+            .sink { [weak self] _ in
+                self?.recordApplicationInactivityDuringCancellation()
+            }
+
+        // Catch an inactive state that began before the subscription was installed.
+        if applicationStateProvider() != .active {
+            recordApplicationInactivityDuringCancellation()
+        }
+    }
+
+    func recordApplicationInactivityDuringCancellation() {
+        paymentFlowLock.lock()
+        defer { paymentFlowLock.unlock() }
+        didObserveApplicationInactiveDuringCancellation = true
+    }
+
+    func completeCancellation(
+        alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+        onCompleted: @escaping () -> Void
+    ) {
+        paymentFlowLock.lock()
+        let shouldPresentConfirmation = didObserveApplicationInactiveDuringCancellation
+        applicationInactivationCancellable?.cancel()
+        applicationInactivationCancellable = nil
+        paymentFlowLock.unlock()
+
+        guard shouldPresentConfirmation else {
+            deliverCancellationCompletion(onCompleted)
+            return
+        }
+
+        presentPaymentCancellationConfirmationWhenApplicationIsActive(alertProvider: paymentAlerts, onCompleted: onCompleted)
+    }
+
+    func presentPaymentCancellationConfirmationWhenApplicationIsActive(
         alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
         onCompleted: @escaping () -> Void
     ) {
         if applicationStateProvider() == .active {
-            deliverCancellationCompletion(onCompleted)
+            presentPaymentCancellationConfirmationIfAvailable(alertProvider: paymentAlerts, onCompleted: onCompleted)
             return
         }
 
@@ -853,6 +894,8 @@ private extension CollectOrderPaymentUseCase {
 
         applicationReactivationCancellable?.cancel()
         applicationReactivationCancellable = nil
+        applicationInactivationCancellable?.cancel()
+        applicationInactivationCancellable = nil
         onCompleted()
     }
 
@@ -862,6 +905,11 @@ private extension CollectOrderPaymentUseCase {
         paymentFlowCanceled = canceled
         if canceled == false {
             cancellationOutcomeState = .pending
+            didObserveApplicationInactiveDuringCancellation = false
+            applicationInactivationCancellable?.cancel()
+            applicationInactivationCancellable = nil
+            applicationReactivationCancellable?.cancel()
+            applicationReactivationCancellable = nil
         }
     }
 

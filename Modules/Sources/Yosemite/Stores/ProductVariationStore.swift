@@ -47,6 +47,14 @@ public final class ProductVariationStore: Store {
                                          onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
+        case let .retrieveProductVariationsTransiently(siteID, productID, currency, variationIDs, pageNumber, pageSize, onCompletion):
+            retrieveProductVariationsTransiently(siteID: siteID,
+                                                 productID: productID,
+                                                 currency: currency,
+                                                 variationIDs: variationIDs,
+                                                 pageNumber: pageNumber,
+                                                 pageSize: pageSize,
+                                                 onCompletion: onCompletion)
         case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
             createProductVariation(siteID: siteID, productID: productID, newVariation: newVariation, onCompletion: onCompletion)
         case .createProductVariations(let siteID, let productID, let productVariations, let onCompletion):
@@ -69,6 +77,28 @@ public final class ProductVariationStore: Store {
 // MARK: - Services!
 //
 private extension ProductVariationStore {
+
+    func retrieveProductVariationsTransiently(siteID: Int64,
+                                              productID: Int64,
+                                              currency: String,
+                                              variationIDs: [Int64],
+                                              pageNumber: Int,
+                                              pageSize: Int,
+                                              onCompletion: @escaping (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let variations = try await remote.loadProductVariations(for: siteID,
+                                                                        productID: productID,
+                                                                        variationIDs: variationIDs,
+                                                                        pageNumber: pageNumber,
+                                                                        pageSize: pageSize,
+                                                                        currency: currency)
+                onCompletion(.success((variations, variations.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
 
     /// Synchronizes all the product reviews associated with a given Site ID (if any!).
     ///

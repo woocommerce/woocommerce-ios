@@ -1,6 +1,7 @@
 import XCTest
 @testable import Networking
 @testable import NetworkingCore
+import Alamofire
 
 
 /// JetpackRequest Unit Tests
@@ -139,6 +140,30 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertTrue(generatedBody.contains("%26_method%3Dput"))
     }
 
+    func test_mutation_request_encodes_query_parameters_in_tunneled_path_and_parameters_in_body() throws {
+        for method: HTTPMethod in [.post, .put] {
+            // Given
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: method,
+                                         siteID: sampleSiteID,
+                                         path: sampleRPC,
+                                         parameters: ["status": "completed"],
+                                         queryParameters: ["currency": "EUR & GBP=1"])
+
+            // When
+            let urlRequest = try request.asURLRequest()
+            let form = try XCTUnwrap(urlRequest.httpBody)
+            let formString = try XCTUnwrap(String(data: form, encoding: .utf8))
+            let formItems = try XCTUnwrap(URLComponents(string: "?\(formString)")?.queryItems)
+            let path = try XCTUnwrap(formItems.first { $0.name == "path" }?.value)
+            let body = try XCTUnwrap(formItems.first { $0.name == "body" }?.value)
+
+            // Then
+            XCTAssertEqual(path, "/wc/v3/\(sampleRPC)&currency=EUR%20%26%20GBP%3D1&_method=\(method.rawValue.lowercased())")
+            XCTAssertEqual(try JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: String], ["status": "completed"])
+        }
+    }
+
     /// Verifies that a JetpackRequest with `locale` encodes `&locale=fr_FR` query string parameter.
     ///
     func test_request_with_locale_includes_locale_parameter() {
@@ -174,6 +199,26 @@ final class JetpackRequestTests: XCTestCase {
         let params = try XCTUnwrap(output.parameters as? [String: String])
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
+    }
+
+    func test_converting_into_RESTRequest_preserves_query_and_body_parameters() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: ["status": "completed"],
+                                     queryParameters: ["currency": "EUR"],
+                                     availableAsRESTRequest: true)
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+        let urlRequest = try restRequest.asURLRequest()
+
+        // Then
+        XCTAssertEqual(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "currency" }?.value, "EUR")
+        XCTAssertEqual(restRequest.jsonBodyParameters as? [String: String], ["status": "completed"])
     }
 
     func test_converting_into_RESTRequest_is_nil_when_availableAsRESTRequest_is_false() {

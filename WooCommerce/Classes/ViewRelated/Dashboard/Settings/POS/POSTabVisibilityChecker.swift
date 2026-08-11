@@ -10,7 +10,8 @@ import struct Yosemite.Site
 import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
-import enum Yosemite.FeatureFlagAction
+import protocol Yosemite.RemoteFeatureFlagServiceProtocol
+import struct Yosemite.RemoteFeatureFlagService
 import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
 
@@ -19,7 +20,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
-    private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let featureFlagService: FeatureFlagService
     private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
     private let connectivityObserver: ConnectivityObserver
@@ -38,7 +39,7 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
-        self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
         self.featureFlagService = featureFlagService
         self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
         self.connectivityObserver = connectivityObserver
@@ -147,17 +148,8 @@ private extension POSTabVisibilityChecker {
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }
 
-    @MainActor
     func isPhonePointOfSaleUSRemoteFlagEnabled() async -> Bool {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: false)
-            }
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.phonePointOfSaleUS, defaultValue: false) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            }
-            self.stores.dispatch(action)
-        }
+        await remoteFeatureFlagService.isEnabled(.phonePointOfSaleUS, defaultValue: false)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
@@ -200,33 +192,16 @@ private extension POSTabVisibilityChecker {
     }
 
     enum RemoteFeatureFlagIneligibleReason: Equatable {
-        case selfDeallocated
         case featureFlagDisabled
     }
 
-    @MainActor
     func checkRemoteFeatureEligibility() async -> RemoteFeatureFlagEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-            }
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false) { [weak self] result in
-                guard let self else {
-                    return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-                }
-                switch result {
-                case true:
-                    // The site is whitelisted.
-                    continuation.resume(returning: .eligible)
-                case false:
-                    // When the site is not whitelisted, check the local feature flag configuration.
-                    let localFeatureFlag = featureFlagService.isFeatureFlagEnabled(.pointOfSale)
-                    continuation.resume(returning: localFeatureFlag ? .eligible : .ineligible(reason: .featureFlagDisabled))
-                }
-            }
-            self.stores.dispatch(action)
+        if await remoteFeatureFlagService.isEnabled(.pointOfSale, defaultValue: false) {
+            return .eligible
         }
+        // When the site is not whitelisted, check the local feature flag configuration.
+        return featureFlagService.isFeatureFlagEnabled(.pointOfSale) ? .eligible : .ineligible(reason: .featureFlagDisabled)
     }
 }

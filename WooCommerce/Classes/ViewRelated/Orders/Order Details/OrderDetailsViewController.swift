@@ -571,6 +571,16 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
+        guard viewModel.order.appliedGiftCards.isEmpty else {
+            let alertController = UIAlertController(title: Localization.Alert.giftCardRefundUnsupportedTitle,
+                                                    message: Localization.Alert.giftCardRefundUnsupportedMessage,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: Localization.Alert.giftCardRefundUnsupportedDismissButton,
+                                                    style: .default))
+            present(alertController, animated: true)
+            return
+        }
+
         let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
         present(issueRefundCoordinatingController, animated: true)
     }
@@ -1056,6 +1066,22 @@ private extension OrderDetailsViewController {
         }
 
         enum Alert {
+            static let giftCardRefundUnsupportedTitle = NSLocalizedString(
+                "orderDetails.issueRefund.giftCardUnsupported.alert.title",
+                value: "Refund from your store admin",
+                comment: "Title of the alert shown when a merchant tries to refund an order paid with a gift card"
+            )
+            static let giftCardRefundUnsupportedMessage = NSLocalizedString(
+                "orderDetails.issueRefund.giftCardUnsupported.alert.message",
+                value: "This order was paid with a gift card. Refunding here won’t restore the gift-card balance. " +
+                "To refund correctly, please process it from your store admin on the web.",
+                comment: "Message explaining why an order paid with a gift card must be refunded from the store admin"
+            )
+            static let giftCardRefundUnsupportedDismissButton = NSLocalizedString(
+                "orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton",
+                value: "OK",
+                comment: "Button dismissing the alert shown when a gift-card order cannot be refunded in the app"
+            )
             static let orderTrashConfirmationTitle = NSLocalizedString("OrderDetail.trashOrder.alert.title",
                                                                        value: "Remove order",
                                                                        comment: "Title of the alert when a user is moving an order to the trash")

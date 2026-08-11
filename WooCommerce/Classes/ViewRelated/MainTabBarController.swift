@@ -301,7 +301,7 @@ final class MainTabBarController: UITabBarController {
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
             trackTabReselected(tab: userSelectedTab)
-            scrollContentToTop()
+            handleTabReselection()
         } else {
             trackTabSelected(newTab: userSelectedTab)
         }
@@ -458,19 +458,32 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 }
 
 
-// MARK: - Static navigation helpers
+// MARK: - Tab re-selection
 //
-private extension MainTabBarController {
+extension MainTabBarController {
 
-    /// *When applicable* this method will scroll the visible content to top.
-    ///
-    func scrollContentToTop() {
-        guard let navController = selectedViewController as? UINavigationController else {
+    func handleTabReselection() {
+        guard let selectedViewController else {
+            return
+        }
+        let content = (selectedViewController as? TabContainerController)?.wrappedController ?? selectedViewController
+
+        guard let navigationController = content as? UINavigationController else {
+            (content as? TabReselectionHandling)?.handleTabReselection()
             return
         }
 
-        navController.scrollContentToTop(animated: true)
+        // A refused pop skips the root's own reset, so its guarded screens are never bypassed.
+        guard navigationController.popToRootOrScrollToTop(animated: true) else {
+            return
+        }
+        (navigationController.viewControllers.first as? TabReselectionHandling)?.handleTabReselection()
     }
+}
+
+// MARK: - Static navigation helpers
+//
+private extension MainTabBarController {
 
     /// Tracks "Tab Selected" Events.
     ///

@@ -424,6 +424,18 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(products.count, 10)
     }
 
+    func test_loadAllProducts_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        _ = try await remote.loadAllProducts(for: sampleSiteID, currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
     /// Verifies that loadAllProducts with `excludedProductIDs` makes a network request with the corresponding parameter.
     ///
     func test_loadAllProducts_with_excluded_ids_includes_an_exclude_param_in_network_request() async throws {
@@ -640,7 +652,90 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    func test_searchProducts_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_searchProducts_without_currency_omits_currency_param_from_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            currency: nil)
+
+        // Then
+        XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
+    }
+
+    func test_searchProducts_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProducts(for: sampleSiteID,
+                                            keyword: "test",
+                                            searchFields: [],
+                                            pageNumber: 1,
+                                            pageSize: 25,
+                                            productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
+
     // MARK: - Search Products by SKU
+
+    func test_searchProductsBySKU_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                 keyword: "SKU",
+                                                 pageNumber: 1,
+                                                 pageSize: 25,
+                                                 currency: "GBP")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+    }
+
+    func test_searchProductsBySKU_with_productIDs_includes_include_param_in_network_request() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                 keyword: "SKU",
+                                                 pageNumber: 1,
+                                                 pageSize: 25,
+                                                 productIDs: [12, 34])
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
 
     func test_searchProductsBySKU_properly_returns_parsed_products() async throws {
         // Given

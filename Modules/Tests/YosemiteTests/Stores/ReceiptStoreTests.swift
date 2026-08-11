@@ -110,7 +110,7 @@ final class ReceiptStoreTests: XCTestCase {
                 promise(result)
             }
             receiptStore.onAction(action)
-            if case let .updateOrder(_, order, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
+            if case let .updateOrder(_, order, _, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
                 onCompletion(.success(order))
             }
         }
@@ -139,7 +139,7 @@ final class ReceiptStoreTests: XCTestCase {
             }
             receiptStore.onAction(action)
 
-            if case let .updateOrder(_, _, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
+            if case let .updateOrder(_, _, _, _, _, onCompletion) = mockProcessor.receivedActions.first as? OrderAction {
                 onCompletion(.failure(OrderStatusError.missingSiteID))
             }
         }

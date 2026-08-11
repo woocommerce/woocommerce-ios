@@ -12,6 +12,12 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageNumber: Int,
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
+    func loadProductVariations(for siteID: Int64,
+                               productID: Int64,
+                               variationIDs: [Int64],
+                               pageNumber: Int,
+                               pageSize: Int,
+                               currency: String?) async throws -> [ProductVariation]
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation>
@@ -71,6 +77,23 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    public func loadProductVariations(for siteID: Int64,
+                                      productID: Int64,
+                                      variationIDs: [Int64] = [],
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      currency: String? = nil) async throws -> [ProductVariation] {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: productID,
+                                               variationIDs: variationIDs,
+                                               context: nil,
+                                               pageNumber: pageNumber,
+                                               pageSize: pageSize,
+                                               currency: currency)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Retrieves all of the `ProductVariation`s available in POS.
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch remote product variations.
@@ -113,7 +136,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int,
-                                          posProductsOnly: Bool = false) -> JetpackRequest {
+                                          posProductsOnly: Bool = false,
+                                          currency: String? = nil) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfRequiredFields = fields.joined(separator: ",")
@@ -127,7 +151,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             ParameterKey.status: status?.rawValue,
             ParameterKey.orderBy: orderBy?.rawValue,
             ParameterKey.order: order?.rawValue,
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(posProductsOnly),
+            ParameterKey.currency: currency
         ]
             .compactMapValues { $0 }
 
@@ -357,6 +382,7 @@ public extension ProductVariationsRemote {
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let posProductsOnly: String = "pos_products_only"
+        static let currency = "currency"
     }
 
     enum OrderByField: String {

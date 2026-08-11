@@ -48,8 +48,8 @@ jobs:
       # screenshots (see the note on `number_of_retries` in the Fastfile).
       fail-fast: false
       matrix:
-        language: [en-US]
-        mode: [light]
+        language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
+        mode: [dark, light]
     steps:
     - uses: actions/checkout@v4
     - name: "Set up Ruby"

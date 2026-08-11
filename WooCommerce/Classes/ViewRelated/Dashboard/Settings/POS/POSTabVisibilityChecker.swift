@@ -78,9 +78,11 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         }
         let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
+            logNotVisible("the device is not an iPad and the phone prototype flag is off")
             return false
         }
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
+            logNotVisible("phone POS needs iOS \(Self.minimumPhonePOSOperatingSystemVersion.majorVersion) or later")
             return false
         }
 
@@ -89,20 +91,41 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         // Unknown connectivity (e.g. before the first path update at cold start) proceeds with
         // the full check so a fresh online launch is not stuck with stale cached visibility.
         if case .notReachable = connectivityObserver.currentStatus {
-            return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
+            guard let cached = eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) else {
+                logNotVisible("offline with no cached visibility for the site")
+                return false
+            }
+            if !cached {
+                logNotVisible("offline, and the last known visibility was hidden")
+            }
+            return cached
         }
 
         async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
         switch await siteSettingsEligibility {
-        case .ineligible(.unsupportedCountry):
-            return false
+        case .ineligible(let reason):
+            if case .unsupportedCountry = reason {
+                logNotVisible(String(describing: reason))
+                return false
+            }
         default:
             break
         }
 
-        return await featureFlagEligibility == .eligible
+        switch await featureFlagEligibility {
+        case .eligible:
+            return true
+        case .ineligible(let reason):
+            logNotVisible(String(describing: reason))
+            return false
+        }
+    }
+
+    /// The literal prefix is quoted by the Mobile Status Report's Point of Sale hint line — keep the two in step.
+    private func logNotVisible(_ reason: String) {
+        DDLogInfo("POS tab not visible for site \(site.siteID): \(reason)")
     }
 
     private var isPhoneOperatingSystemEligible: Bool {

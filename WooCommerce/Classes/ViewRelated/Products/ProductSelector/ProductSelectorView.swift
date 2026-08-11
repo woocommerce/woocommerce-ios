@@ -49,6 +49,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -92,6 +94,15 @@ struct ProductSelectorView: View {
         return shouldShowProductSearchFilter ? rowHeight * 2 : rowHeight
     }
 
+    /// In vertically compact environments the keyboard covers the multi-selection button, so it is
+    /// removed from the layout while the search field is focused to leave the remaining height to the results list.
+    private var shouldShowDoneButton: Bool {
+        guard configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap else {
+            return false
+        }
+        return !(verticalSizeClass == .compact && searchHeaderisBeingEdited)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             productSelectorHeader
@@ -127,7 +138,7 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
+                    .renderedIf(shouldShowDoneButton)
                 }
                 .if(configuration.treatsAllProductsAsSimple == false) { view in
                     view.navigationDestination(isPresented: $viewModel.isShowingProductVariationList) {
@@ -167,6 +178,10 @@ struct ProductSelectorView: View {
                 EmptyView()
             }
         }
+        // Anchors the content to the top when the keyboard-shrunk safe area cannot fit the fixed-height
+        // header rows, so they overflow below (behind the keyboard) instead of above the navigation bar.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .scrollDismissesKeyboard(.interactively)
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)

@@ -26,7 +26,7 @@ final class RefundedProductsDataSource: NSObject {
     ///
     init(order: Order,
          refundedProducts: [AggregateOrderItem],
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType) {
         self.order = order
         self.refundedProducts = refundedProducts
         self.storageManager = storageManager

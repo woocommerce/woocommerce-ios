@@ -584,7 +584,7 @@ extension OrderDetailsViewModel {
                 return
             }
 
-            let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+            let viewModel = RefundDetailsViewModel(order: order, refund: refund, storageManager: storageManager)
             let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
@@ -592,7 +592,7 @@ extension OrderDetailsViewModel {
             guard let refundedProducts = dataSource.refundedProducts else {
                 return
             }
-            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
+            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts, storageManager: storageManager)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         case .trashOrder:

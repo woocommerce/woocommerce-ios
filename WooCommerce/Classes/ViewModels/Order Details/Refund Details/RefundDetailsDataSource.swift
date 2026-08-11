@@ -48,7 +48,7 @@ final class RefundDetailsDataSource: NSObject {
     ///
     init(refund: Refund,
          order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType) {
         self.refund = refund
         self.order = order
         self.storageManager = storageManager
@@ -183,7 +183,7 @@ private extension RefundDetailsDataSource {
     ///
     private func configureProductsRefund(_ cell: LedgerTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .none
-        let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+        let viewModel = RefundDetailsViewModel(order: order, refund: refund, storageManager: storageManager)
         cell.configure(with: viewModel)
     }
 

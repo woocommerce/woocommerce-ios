@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 
 
 25.4

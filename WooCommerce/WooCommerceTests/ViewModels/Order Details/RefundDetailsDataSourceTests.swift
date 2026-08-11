@@ -24,7 +24,7 @@ struct RefundDetailsDataSourceTests {
                                                      productID: productID,
                                                      productVariationID: variationID,
                                                      image: ProductImage.fake().copy(src: "https://example.com/variation.jpg"))
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation)
+        insert(variation: variation)
         let refundedItem = OrderItemRefund.fake().copy(productID: productID, variationID: variationID)
         let dataSource = makeDataSource(items: [refundedItem])
 
@@ -40,7 +40,7 @@ struct RefundDetailsDataSourceTests {
         let product = Product.fake().copy(siteID: siteID,
                                           productID: productID,
                                           images: [ProductImage.fake().copy(src: "https://example.com/product.jpg")])
-        storageManager.insertSampleProduct(readOnlyProduct: product)
+        insert(product: product)
         let refundedItem = OrderItemRefund.fake().copy(productID: productID, variationID: 0)
         let dataSource = makeDataSource(items: [refundedItem])
 
@@ -69,7 +69,7 @@ struct RefundDetailsDataSourceTests {
                                                      productID: productID,
                                                      productVariationID: variationID,
                                                      image: ProductImage.fake().copy(src: "https://example.com/variation image.jpg"))
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation)
+        insert(variation: variation)
         let refundedItem = OrderItemRefund.fake().copy(productID: productID, variationID: variationID)
         let dataSource = makeDataSource(items: [refundedItem])
 
@@ -82,6 +82,27 @@ struct RefundDetailsDataSourceTests {
 }
 
 private extension RefundDetailsDataSourceTests {
+    /// `update(with:)` only copies attributes, so the image relationships are attached manually.
+    func insert(product: Product) {
+        let storageProduct = storageManager.viewStorage.insertNewObject(ofType: StorageProduct.self)
+        storageProduct.update(with: product)
+        for image in product.images {
+            let storageImage = storageManager.viewStorage.insertNewObject(ofType: StorageProductImage.self)
+            storageImage.update(with: image)
+            storageProduct.addToImages(storageImage)
+        }
+    }
+
+    func insert(variation: ProductVariation) {
+        let storageVariation = storageManager.viewStorage.insertNewObject(ofType: StorageProductVariation.self)
+        storageVariation.update(with: variation)
+        if let image = variation.image {
+            let storageImage = storageManager.viewStorage.insertNewObject(ofType: StorageProductImage.self)
+            storageImage.update(with: image)
+            storageVariation.image = storageImage
+        }
+    }
+
     func makeDataSource(items: [OrderItemRefund]) -> RefundDetailsDataSource {
         let dataSource = RefundDetailsDataSource(refund: Refund.fake().copy(items: items),
                                                  order: order,

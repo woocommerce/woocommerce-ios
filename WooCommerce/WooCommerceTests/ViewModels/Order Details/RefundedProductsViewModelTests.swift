@@ -17,7 +17,7 @@ struct RefundedProductsViewModelTests {
                                                      productID: productID,
                                                      productVariationID: variationID,
                                                      image: ProductImage.fake().copy(src: "https://example.com/variation.jpg"))
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation)
+        insert(variation: variation, into: storageManager)
         let refundedItem = MockAggregateOrderItem.emptyItem().copy(productID: productID, variationID: variationID)
         let viewModel = RefundedProductsViewModel(order: Order.fake().copy(siteID: siteID),
                                                   refundedProducts: [refundedItem],
@@ -28,5 +28,18 @@ struct RefundedProductsViewModelTests {
 
         // Then
         #expect(viewModel.dataSource.imageURL(for: refundedItem) == URL(string: "https://example.com/variation.jpg"))
+    }
+}
+
+private extension RefundedProductsViewModelTests {
+    /// `update(with:)` only copies attributes, so the image relationship is attached manually.
+    func insert(variation: ProductVariation, into storageManager: MockStorageManager) {
+        let storageVariation = storageManager.viewStorage.insertNewObject(ofType: StorageProductVariation.self)
+        storageVariation.update(with: variation)
+        if let image = variation.image {
+            let storageImage = storageManager.viewStorage.insertNewObject(ofType: StorageProductImage.self)
+            storageImage.update(with: image)
+            storageVariation.image = storageImage
+        }
     }
 }

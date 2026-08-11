@@ -96,6 +96,17 @@ terse *why* (what makes it unverified). Order by risk. The full list must fit th
 rotation timebox: ~1–2 h per platform. If it doesn't fit, cut the flows whose gap
 is smallest and move them to ✅/best-effort with a note.
 
+Tag each flow by who can run it:
+
+- 🤖 **Agent-verifiable** — reachable on a simulator with no hardware, entitlement,
+  or special store prerequisite (layout/Dynamic Type checks, crash-gesture spot
+  checks, RTL visual passes, navigation flows). These can be pre-cleared with the
+  `/verify` skill (mobile-mcp simulator loop); offer to run it for the iOS ones.
+  A simulator pass is strong but not identical to a beta build — note any flow
+  where release-build config could matter and keep those 🧑.
+- 🧑 **Human-only** — needs real hardware (card readers, Tap to Pay), a real store
+  state, a physical device, or the actual TestFlight/Play beta build.
+
 ### 5. Output
 
 Produce two things in chat (do not post anywhere):

@@ -409,7 +409,7 @@ private extension MobileStatusReportProvider {
     }
 
     func blogID(_ site: Site) -> String {
-        site.siteID == WooConstants.placeholderStoreID ?
+        site.siteID == Constants.applicationPasswordSiteIDPlaceholder ?
             "\(Constants.notSet) (stores connected with application passwords do not have one)" : String(site.siteID)
     }
 
@@ -542,6 +542,9 @@ private extension MobileStatusReportProvider {
         static let unknown = "unknown"
         static let notSet = "not set"
         static let notEvaluated = "not evaluated"
+
+        /// Sites connected with application passwords have no real blog ID, so the app stores this in its place.
+        static let applicationPasswordSiteIDPlaceholder: Int64 = -1
 
         /// The quoted strings are the literal prefixes `POSTabVisibilityChecker` and `POSTabEligibilityChecker`
         /// log with — keep the three in step.

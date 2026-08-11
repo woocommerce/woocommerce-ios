@@ -20,25 +20,21 @@ public extension RemoteFeatureFlagServiceProtocol {
 }
 
 public struct RemoteFeatureFlagService: RemoteFeatureFlagServiceProtocol {
-    private let dispatch: (Action) -> Void
+    private let stores: StoresManager
 
     public init(stores: StoresManager) {
-        self.init(dispatch: { stores.dispatch($0) })
-    }
-
-    /// Internal seam so tests can route actions straight to a `FeatureFlagStore`.
-    init(dispatch: @escaping (Action) -> Void) {
-        self.dispatch = dispatch
+        self.stores = stores
     }
 
     @MainActor
     public func isEnabled(_ featureFlag: RemoteFeatureFlag, defaultValue: Bool, useCache: Bool) async -> Bool {
         await withCheckedContinuation { continuation in
-            dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(featureFlag,
-                                                                  defaultValue: defaultValue,
-                                                                  useCache: useCache) { isEnabled in
+            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(featureFlag,
+                                                                      defaultValue: defaultValue,
+                                                                      useCache: useCache) { isEnabled in
                 continuation.resume(returning: isEnabled)
-            })
+            }
+            stores.dispatch(action)
         }
     }
 }

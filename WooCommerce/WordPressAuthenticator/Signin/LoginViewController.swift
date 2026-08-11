@@ -141,7 +141,14 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController else {
-            fatalError("No navigation controller found to show login epilogue")
+            // A dropped presentation can orphan this VC (a recoverable UIKit race, not programmer
+            // error), so report and skip the epilogue instead of crashing. `flow` tags the concrete
+            // login flow, since this method is shared across all of them.
+            WPAuthenticatorLogError("No navigation controller found to show login epilogue")
+            WordPressAuthenticator.track(.loginMagicLinkFailed,
+                                         properties: ["reason": "missing_navigation_controller",
+                                                      "flow": String(describing: type(of: self))])
+            return
         }
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController,

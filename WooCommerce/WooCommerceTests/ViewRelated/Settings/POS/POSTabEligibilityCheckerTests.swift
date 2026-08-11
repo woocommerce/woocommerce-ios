@@ -18,8 +18,6 @@ struct POSTabEligibilityCheckerTests {
     private var connectivityObserver: MockConnectivityObserver!
     private let site = Site.fake().copy(siteID: 2)
     private var siteID: Int64 { site.siteID }
-    private let ineligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: false)
-    private let eligibleExpansionService = StubCardPresentExpansionEligibilityService(isEligible: true)
 
     init() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -125,7 +123,7 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
@@ -673,18 +671,17 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
     }
 
-    // MARK: - IPP Country Expansion Gate Tests
+    // MARK: - IPP Country Availability Tests
 
     @Test(arguments: [
         (country: Country.nl, currency: CurrencyCode.EUR),
         (country: Country.sg, currency: CurrencyCode.SGD),
-        (country: Country.nz, currency: CurrencyCode.NZD),
-        (country: Country.au, currency: CurrencyCode.AUD)
+        (country: Country.nz, currency: CurrencyCode.NZD)
     ])
-    fileprivate func is_eligible_when_expansion_eligibility_is_enabled(country: Country, currency: CurrencyCode) async throws {
+    fileprivate func launched_expansion_country_is_eligible(country: Country, currency: CurrencyCode) async throws {
         // Given
         setupCountry(country: country, currency: currency)
-        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
@@ -693,23 +690,16 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test(arguments: [
-        Country.nl,
-        Country.sg,
-        Country.nz,
-        Country.au
-    ])
-    fileprivate func is_ineligible_when_expansion_eligibility_is_disabled(country: Country) async throws {
-        // Given - currencies that would be valid if eligibility were enabled
-        let currency: CurrencyCode = country == .sg ? .SGD : (country == .nz ? .NZD : (country == .au ? .AUD : .EUR))
-        setupCountry(country: country, currency: currency)
-        let checker = makeEligibilityChecker(expansionEligibilityService: ineligibleExpansionService)
+    @Test func australia_is_eligible() async throws {
+        // Given
+        setupCountry(country: .au, currency: .AUD)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
 
-        // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
-        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+        // Then
+        #expect(result == .eligible)
     }
 
     @Test(arguments: [
@@ -721,10 +711,10 @@ struct POSTabEligibilityCheckerTests {
         Country.it,
         Country.pt
     ])
-    fileprivate func fiscalization_country_is_ineligible_when_expansion_eligibility_is_enabled(country: Country) async throws {
+    fileprivate func fiscalization_country_is_ineligible(country: Country) async throws {
         // Given
         setupCountry(country: country, currency: .EUR)
-        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
@@ -733,10 +723,10 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
     }
 
-    @Test func expansion_country_with_mismatched_currency_is_ineligible_when_expansion_eligibility_is_enabled() async throws {
+    @Test func expansion_country_with_mismatched_currency_is_ineligible() async throws {
         // Given - NL store with USD currency (mismatch)
         setupCountry(country: .nl, currency: .USD)
-        let checker = makeEligibilityChecker(expansionEligibilityService: eligibleExpansionService)
+        let checker = makeEligibilityChecker()
 
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
@@ -748,28 +738,10 @@ struct POSTabEligibilityCheckerTests {
 
 // MARK: - Test Helper
 
-private final class StubCardPresentExpansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
-    private var isEligibleValue: Bool
-
-    init(isEligible: Bool) {
-        self.isEligibleValue = isEligible
-    }
-
-    func isEligible(siteID: Int64) -> Bool {
-        isEligibleValue
-    }
-
-    func cacheEligibility(siteID: Int64, isEligible: Bool) {
-        isEligibleValue = isEligible
-    }
-}
-
 private extension POSTabEligibilityCheckerTests {
     func makeEligibilityChecker(
         siteSettingService: POSSiteSettingServiceProtocol? = nil,
         connectivityObserver: ConnectivityObserver? = nil,
-        expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol =
-            CardPresentPaymentsCountryExpansionEligibilityService(),
         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? = nil,
         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol = MockPOSCatalogSyncStatusChecker(hasCompletedFullSync: false)
     ) -> POSTabEligibilityChecker {
@@ -779,7 +751,6 @@ private extension POSTabEligibilityCheckerTests {
                                  systemStatusService: mockSystemStatusService,
                                  siteSettingService: siteSettingService,
                                  connectivityObserver: connectivityObserver ?? self.connectivityObserver,
-                                 expansionEligibilityService: expansionEligibilityService,
                                  eligibilityService: eligibilityService,
                                  localCatalogEligibilityService: localCatalogEligibilityService,
                                  syncStatusChecker: syncStatusChecker)

@@ -767,14 +767,23 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
     private let devices: [PrinterDevice]
     private let keepDiscovering: Bool
+    private let failsToConnect: Bool
+    private let failsDiscovery: Bool
 
     /// - Parameters:
     ///   - devices: printers the discovery stream yields, so previews can land on the found states.
     ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
     ///     scanning indicator visible instead of ending the scan.
-    init(devices: [PrinterDevice] = [], keepDiscovering: Bool = false) {
+    ///   - failsToConnect: when `true`, `connect(to:)` throws so previews can land on the error state.
+    ///   - failsDiscovery: when `true`, `discover()` throws so previews can land on the error state.
+    init(devices: [PrinterDevice] = [],
+         keepDiscovering: Bool = false,
+         failsToConnect: Bool = false,
+         failsDiscovery: Bool = false) {
         self.devices = devices
         self.keepDiscovering = keepDiscovering
+        self.failsToConnect = failsToConnect
+        self.failsDiscovery = failsDiscovery
     }
 
     func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
@@ -783,6 +792,10 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
 
     func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
         AsyncThrowingStream { continuation in
+            if failsDiscovery {
+                continuation.finish(throwing: NSError(domain: "POSReceiptPrinterPreviewService", code: 0))
+                return
+            }
             for device in devices {
                 continuation.yield(device)
             }
@@ -794,7 +807,11 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
 
     func stopDiscovery() async {}
 
-    func connect(to printer: PrinterDevice) async throws {}
+    func connect(to printer: PrinterDevice) async throws {
+        if failsToConnect {
+            throw NSError(domain: "POSReceiptPrinterPreviewService", code: 0)
+        }
+    }
 
     func disconnect() async {}
 

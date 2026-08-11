@@ -79,8 +79,8 @@ extension TracksProvider {
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData() {
-        switchTracksUsersIfNeeded()
+    func refreshUserData(completion: @escaping () -> Void) {
+        switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()
     }
 
@@ -139,7 +139,7 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
-    func switchTracksUsersIfNeeded() {
+    func switchTracksUsersIfNeeded(completion: @escaping () -> Void = {}) {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
@@ -153,6 +153,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
@@ -161,6 +162,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: true)
+                    completion()
                 }
             } else {
                 // Username changed for some reason - switch back to anonymous first
@@ -170,12 +172,14 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.TracksServiceExecutor.enqueue { tracksService in
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                completion()
             }
         }
     }
@@ -206,6 +210,8 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
             WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped,
+            WooAnalyticsStat.pointOfSaleTapToPayNotAvailable,
             WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleEditReceiptTapped,
@@ -214,6 +220,18 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleOtherPaymentMethodsTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentFailed,
+            WooAnalyticsStat.pointOfSaleScanToPayCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentDetectedViaPolling,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromScanToPayTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidFailed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidSuccess,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromMarkAsPaidTapped,
             WooAnalyticsStat.pointOfSaleItemsHeaderTapped,
             WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
             WooAnalyticsStat.pointOfSaleSearchButtonTapped,
@@ -298,6 +316,7 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentCanceled,
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
+            WooAnalyticsStat.collectInteracPaymentSuccess,
 
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,

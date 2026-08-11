@@ -77,6 +77,16 @@ private extension ProductsSplitViewWrapperController {
     }
 }
 
+extension ProductsSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the products list (primary column) to its root on re-selection. Leaves an active search intact.
+    func handleTabReselection() {
+        guard let primaryNavigationController = productsSplitViewController.viewController(for: .primary) as? UINavigationController else {
+            return
+        }
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
+    }
+}
+
 extension ProductsSplitViewWrapperController {
     private enum Localization {
         static let tabTitle = NSLocalizedString("productsTab.tabTitle",

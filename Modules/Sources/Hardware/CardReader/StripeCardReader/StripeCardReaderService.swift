@@ -377,7 +377,8 @@ extension StripeCardReaderService: CardReaderService {
         }
         switch activePaymentIntent.status {
         case .requiresPaymentMethod:
-            return collectPaymentMethod(intent: activePaymentIntent)
+            let paymentAttemptID = paymentAttemptTracker.beginAttempt()
+            return collectPaymentMethod(intent: activePaymentIntent, paymentAttemptID: paymentAttemptID)
                 .flatMap { intent in
                     self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
                 }

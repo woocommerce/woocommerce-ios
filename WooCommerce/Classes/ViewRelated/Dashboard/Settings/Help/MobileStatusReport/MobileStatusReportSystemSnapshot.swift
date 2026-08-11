@@ -23,7 +23,7 @@ struct MobileStatusReportSystemSnapshot: Equatable {
     let appLanguage: String
 
     let networkType: String
-    let expensiveConnection: String
+    let meteredConnection: String
     let lowDataMode: String
 
     let apnsEnvironment: String
@@ -55,7 +55,7 @@ extension MobileStatusReportSystemSnapshot {
                                          networkType: connectivityObserver.currentStatus.description,
                                          // From the observer's app-lifetime path monitor — the report must not
                                          // spin up its own and wait on a first update.
-                                         expensiveConnection: connectivityObserver.isConnectionMetered
+                                         meteredConnection: connectivityObserver.isConnectionMetered
                                             .map(String.init) ?? unknown,
                                          lowDataMode: connectivityObserver.isLowDataModeEnabled
                                             .map(String.init) ?? unknown,

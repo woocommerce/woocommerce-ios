@@ -92,6 +92,12 @@ final class PushNotificationsManager: PushNotesManager {
         registrationState.deviceID
     }
 
+    /// Apple's Push Notification device token, as last received from APNs.
+    ///
+    var deviceToken: String? {
+        registrationState.deviceToken
+    }
+
     var wooPushNotificationToken: String? {
         registrationState.wooPushNotificationToken
     }

@@ -1815,6 +1815,38 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isAllowed)
     }
 
+    // MARK: - POS Catalog File Blocked Tests
+
+    func test_getPOSCatalogFileBlockedByHost_when_no_block_is_recorded_then_returns_false() throws {
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isBlocked)
+    }
+
+    func test_getPOSCatalogFileBlockedByHost_when_a_block_is_recorded_then_returns_true() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.mockPOSCatalogFileBlockedByHostAt = Date()
+
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHostCalled)
+        XCTAssertTrue(isBlocked)
+    }
+
     func test_setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
         // When
         waitFor { promise in

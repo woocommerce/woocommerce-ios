@@ -446,4 +446,8 @@ public enum AppSettingsAction: Action {
 
     /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
     case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Gets whether the host blocked the site's POS catalog file download. Recorded when a file sync fails
+    /// with a blocked error and cleared when the file syncs successfully again.
+    case getPOSCatalogFileBlockedByHost(siteID: Int64, onCompletion: (Bool) -> Void)
 }

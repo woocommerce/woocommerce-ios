@@ -161,9 +161,6 @@ pushd "$BASE_WORKTREE"
 
 "$BASE_WORKTREE/.buildkite/commands/shared-set-up.sh"
 
-echo "--- :writing_hand: Copy Files"
-mkdir -pv ~/.configure/woocommerce-ios/secrets
-cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
 rm -rf fastlane/logs
 
 echo "--- :hammer_and_wrench: Building baseline"

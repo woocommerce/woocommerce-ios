@@ -172,7 +172,9 @@ struct SupportForm: View {
                 Divider()
 
                 Button {
-                    viewModel.submitSupportRequest()
+                    Task {
+                        await viewModel.submitSupportRequest()
+                    }
                 } label: {
                     Text(Localization.submitRequest)
                 }

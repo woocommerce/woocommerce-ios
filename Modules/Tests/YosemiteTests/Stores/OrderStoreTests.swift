@@ -1420,6 +1420,25 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(receivedKeys.contains(expectedKeys))
     }
 
+    func test_update_order_with_request_currency_forwards_currency_as_query_parameter() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateOrder(siteID: sampleSiteID,
+                                             order: sampleOrder(),
+                                             giftCard: nil,
+                                             fields: [],
+                                             requestCurrency: "EUR") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.queryParameters.dictionary, ["currency": "EUR"])
+        XCTAssertNil(request.requestParameters.dictionary?["currency"])
+    }
+
     func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

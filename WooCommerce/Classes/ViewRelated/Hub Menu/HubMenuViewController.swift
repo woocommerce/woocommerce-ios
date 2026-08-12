@@ -145,6 +145,24 @@ extension HubMenuViewController: DeepLinkNavigator {
     }
 }
 
+extension HubMenuViewController: TabReselectionHandling {
+    func handleTabReselection() {
+        // Destinations can push UIKit screens onto the `NavigationStack`'s backing navigation
+        // controller (e.g. Settings → Help), which `navigationPath` knows nothing about.
+        // Popping that controller first keeps `navigationPath` in sync with what is on screen.
+        guard let stackNavigationController,
+              stackNavigationController.popToRootOrScrollToTop(animated: true) else {
+            return
+        }
+        viewModel.popToRoot()
+    }
+
+    /// The `UINavigationController` backing the SwiftUI `NavigationStack`.
+    private var stackNavigationController: UINavigationController? {
+        children.compactMap { $0 as? UINavigationController }.first
+    }
+}
+
 private extension HubMenuViewController {
     func configureTabBarItem() {
         tabBarItem.title = Localization.tabTitle

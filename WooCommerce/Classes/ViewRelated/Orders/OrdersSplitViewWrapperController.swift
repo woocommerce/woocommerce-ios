@@ -208,6 +208,16 @@ private extension OrdersSplitViewWrapperController {
     }
 }
 
+extension OrdersSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
+    func handleTabReselection() {
+        guard let primaryNavigationController = ordersSplitViewController.viewController(for: .primary) as? UINavigationController else {
+            return
+        }
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
+    }
+}
+
 extension OrdersSplitViewWrapperController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let ordersDestination = destination as? OrdersDestination else {

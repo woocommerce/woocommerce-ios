@@ -380,9 +380,8 @@ private extension CardPresentPaymentStore {
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
-        paymentCancellable?.cancel()
-        paymentCancellable = nil
-
+        // Keep the payment subscription alive until Hardware confirms the Stripe flow has stopped. If cancellation
+        // loses a race with native Tap to Pay presentation, the ongoing payment must still reach Woo for processing.
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
             switch value {

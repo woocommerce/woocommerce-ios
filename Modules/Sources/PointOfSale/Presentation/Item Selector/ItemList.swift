@@ -109,6 +109,9 @@ struct ItemListRow: View {
     let position: Int
     let itemActionHandler: POSItemActionHandler
 
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posLayoutScale) private var layoutScale
+
     var body: some View {
         switch item {
         case let .simpleProduct(product):
@@ -148,7 +151,10 @@ struct ItemListRow: View {
                     itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {
-                CouponCardView(coupon: coupon)
+                CouponCardView(coupon: coupon,
+                               isApplied: ItemListViewHelper().shouldShowAppliedCouponIndicator(coupon: coupon,
+                                                                                                cartCoupons: posModel.cart.coupons,
+                                                                                                layoutScale: layoutScale))
             })
         }
     }
@@ -171,6 +177,7 @@ private extension ItemListRow {
         node: .root,
         itemActionHandler: PointOfSalePreviewItemActionHandler()
     )
+    .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #Preview("Loading") {

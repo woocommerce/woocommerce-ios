@@ -1,4 +1,5 @@
 import XCTest
+import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -119,6 +120,53 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         // Then
         let skuText = String.localizedStringWithFormat(Localization.skuFormat, sku)
         XCTAssertFalse(detailsText.contains(skuText))
+    }
+
+    func test_details_contain_formatted_price_when_isPriceShown_is_true() {
+        // Given
+        let product = Product.fake().copy(price: "6").toListItem()
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: true,
+                                                    currencySettings: currencySettings)
+
+        // Then
+        XCTAssertTrue(viewModel.detailsAttributedString.string.contains("$6.00"))
+    }
+
+    func test_details_do_not_contain_price_when_isPriceShown_is_false() {
+        // Given
+        let product = Product.fake().copy(price: "6").toListItem()
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: false,
+                                                    currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.detailsAttributedString.string.contains("$6.00"))
+    }
+
+    func test_details_do_not_add_price_separator_when_price_is_empty() {
+        // Given
+        let product = Product.fake().copy(price: "").toListItem()
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product, isPriceShown: true)
+
+        // Then
+        XCTAssertFalse(viewModel.detailsAttributedString.string.hasSuffix(" • "))
     }
 
     func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {

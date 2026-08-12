@@ -189,6 +189,33 @@ private extension POSRefundSubmissionAdaptorTests {
             createRefundReason = reason
             return .fake()
         }
+
+        func previewRefund(siteID: Int64,
+                           orderID: Int64,
+                           lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
+            if manualPreviewResolution {
+                return try await withCheckedThrowingContinuation { continuation in
+                    pendingPreviewCompletions.append { result in
+                        continuation.resume(with: result)
+                    }
+                }
+            }
+            guard let previewResult else {
+                throw MockError.notStubbed
+            }
+            return try previewResult.get()
+        }
+
+        func createRefund(siteID: Int64,
+                          orderID: Int64,
+                          reason: String,
+                          automaticRefund: Bool,
+                          restockItems: Bool,
+                          amountOverride: String?,
+                          lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+            createRefundReason = reason
+            return .fake()
+        }
     }
 
     struct Harness {

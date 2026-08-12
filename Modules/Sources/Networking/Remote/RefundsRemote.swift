@@ -2,8 +2,10 @@ import CocoaLumberjackSwift
 import Foundation
 
 
-/// The v4 refund endpoints (WC 10.9.0+ behind the server `rest-api-v4` flag),
-/// abstracted for injection into `RefundService`.
+/// The server-calculated refund endpoints, abstracted for injection into `RefundService`.
+/// Carries both generations while the POS flow migrates: the v4 endpoints (WC 10.9.0+ behind
+/// the server `rest-api-v4` flag) and their `/wc/v3` replacements (WC 11.1.0+, production).
+/// The v4 pair is removed once the flow switches.
 ///
 public protocol RefundsRemoteProtocol {
     func previewRefund(for siteID: Int64,
@@ -16,6 +18,18 @@ public protocol RefundsRemoteProtocol {
                         automaticRefund: Bool,
                         restockItems: Bool,
                         lineItems: [RefundV4LineItem]) async throws -> Refund
+
+    func previewRefund(for siteID: Int64,
+                       orderID: Int64,
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview
+
+    func createComputedRefund(for siteID: Int64,
+                              orderID: Int64,
+                              reason: String,
+                              apiRefund: Bool,
+                              apiRestock: Bool,
+                              amountOverride: String?,
+                              lineItems: [ComputedRefundLineItem]) async throws -> Refund
 }
 
 /// Refunds: Remote Endpoints
@@ -158,7 +172,7 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     public func previewRefund(for siteID: Int64,
                               orderID: Int64,
                               lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
-        let body = PreviewRefundBody(orderID: orderID, lineItems: lineItems)
+        let body = V4PreviewRefundBody(orderID: orderID, lineItems: lineItems)
         let request = JetpackRequest(wooApiVersion: .mark4,
                                      method: .post,
                                      siteID: siteID,
@@ -201,6 +215,76 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
         return try await enqueue(request, mapper: RefundV4Mapper(siteID: siteID, orderID: orderID))
     }
 
+    // MARK: Server-calculated refund endpoints (wc/v3)
+
+    /// Previews a refund via `POST /wc/v3/orders/{orderID}/refunds/preview` (WC 11.1.0+),
+    /// returning the server-calculated breakdown. When the route is not registered the request fails
+    /// with either `DotcomError.noRestRoute` through the Jetpack tunnel or `NetworkError.notFound`
+    /// with error code `rest_no_route` through direct REST — the signal callers use to fall back
+    /// to locally calculated refunds.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll preview a refund.
+    ///     - orderID: Unique identifier for the order the refund is previewed against.
+    ///     - lineItems: What to refund; the server computes all monetary values.
+    ///
+    public func previewRefund(for siteID: Int64,
+                              orderID: Int64,
+                              lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
+        let body = PreviewRefundBody(lineItems: lineItems)
+        let path = "\(Path.orders)/\(orderID)/\(Path.refunds)/preview"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: try parameters(from: body),
+                                     availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: SingleItemMapper<RefundPreview>(siteID: siteID))
+    }
+
+    /// Creates a refund with server-computed totals via `POST /wc/v3/orders/{orderID}/refunds`
+    /// with `compute_totals: true` (WC 11.1.0+). Sends only *what* to refund; the server owns the math.
+    ///
+    /// SAFETY: on stores older than 11.1.0 the unknown `compute_totals` parameter is silently
+    /// dropped and the request is handled by the classic v3 create, where a quantity-only body
+    /// produces a ghost zero-amount refund with restock. Callers must never invoke this method
+    /// unless a successful v3 preview has confirmed server-calculated refund support for the site.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll send a refund.
+    ///     - orderID: Unique identifier for the order we're sending a refund for.
+    ///     - reason: Optional merchant-facing reason for the refund.
+    ///     - apiRefund: Whether the payment gateway should refund the payment (`api_refund`).
+    ///       Always sent explicitly — the v3 endpoint defaults it to `true`.
+    ///     - apiRestock: Whether refunded items are restocked (`api_restock`). Always sent
+    ///       explicitly — the v3 endpoint defaults it to `true`.
+    ///     - amountOverride: Optional order-level total override. When omitted the server
+    ///       derives the amount from the line items.
+    ///     - lineItems: What to refund; the server computes all monetary values.
+    ///
+    public func createComputedRefund(for siteID: Int64,
+                                     orderID: Int64,
+                                     reason: String,
+                                     apiRefund: Bool,
+                                     apiRestock: Bool,
+                                     amountOverride: String?,
+                                     lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+        let body = ComputedRefundBody(computeTotals: String(true),
+                                      reason: reason,
+                                      apiRefund: String(apiRefund),
+                                      apiRestock: String(apiRestock),
+                                      amount: amountOverride,
+                                      lineItems: lineItems)
+        let path = "\(Path.orders)/\(orderID)/\(Path.refunds)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: try parameters(from: body),
+                                     availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: RefundMapper(siteID: siteID, orderID: orderID))
+    }
+
     /// Serializes an encodable request body into the parameter dictionary `JetpackRequest` expects.
     ///
     private func parameters<Body: Encodable>(from body: Body) throws -> RequestParameterDictionary? {
@@ -211,12 +295,43 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
 
 // MARK: - v4 request bodies
 //
-private struct PreviewRefundBody: Encodable {
+private struct V4PreviewRefundBody: Encodable {
     let orderID: Int64
     let lineItems: [RefundV4LineItem]
 
     enum CodingKeys: String, CodingKey {
         case orderID = "order_id"
+        case lineItems = "line_items"
+    }
+}
+
+// MARK: - Server-calculated refund request bodies (wc/v3)
+//
+private struct PreviewRefundBody: Encodable {
+    let lineItems: [RefundPreviewLineItem]
+
+    enum CodingKeys: String, CodingKey {
+        case lineItems = "line_items"
+    }
+}
+
+/// Stringified booleans follow the codebase's request-encoding convention; the v3 schema declares
+/// `compute_totals`/`api_refund`/`api_restock` as booleans, so the REST layer sanitizes both forms.
+private struct ComputedRefundBody: Encodable {
+    let computeTotals: String
+    let reason: String
+    let apiRefund: String
+    let apiRestock: String
+    let amount: String?
+    let lineItems: [ComputedRefundLineItem]
+
+    // The synthesized conformance omits a nil `amount` (optionals encode via `encodeIfPresent`).
+    enum CodingKeys: String, CodingKey {
+        case computeTotals = "compute_totals"
+        case reason
+        case apiRefund = "api_refund"
+        case apiRestock = "api_restock"
+        case amount
         case lineItems = "line_items"
     }
 }

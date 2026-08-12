@@ -61,9 +61,14 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
 
     var spyDidCallCancelPayment = false
     var mockCancelPaymentResult: Result<Void, Error> = .success(())
+    var mockCancelPaymentHandler: ((@escaping (Result<Void, Error>) -> Void) -> Void)?
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         spyDidCallCancelPayment = true
-        onCompletion(mockCancelPaymentResult)
+        if let mockCancelPaymentHandler {
+            mockCancelPaymentHandler(onCompletion)
+        } else {
+            onCompletion(mockCancelPaymentResult)
+        }
     }
 
     func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Result<Yosemite.Receipt, Error>) -> Void) {

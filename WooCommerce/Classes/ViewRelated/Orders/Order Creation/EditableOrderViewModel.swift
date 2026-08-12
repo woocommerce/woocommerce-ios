@@ -16,6 +16,7 @@ final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let orderCurrencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
@@ -453,12 +454,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let quantityDebounceDuration: Double
 
+    private let requestCurrency: String?
+
     @MainActor
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         requestCurrency: String? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
@@ -467,13 +471,30 @@ final class EditableOrderViewModel: ObservableObject {
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
+        let orderCurrencySettings: CurrencySettings = {
+            guard let requestCurrency,
+                  let currencyCode = CurrencyCode(caseInsensitiveRawValue: requestCurrency) else {
+                return currencySettings
+            }
+            return CurrencySettings(currencyCode: currencyCode,
+                                    currencyPosition: currencySettings.currencyPosition,
+                                    thousandSeparator: currencySettings.groupingSeparator,
+                                    decimalSeparator: currencySettings.decimalSeparator,
+                                    numberOfDecimals: currencySettings.fractionDigits)
+        }()
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.requestCurrency = requestCurrency
+        self.orderCurrencySettings = orderCurrencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: orderCurrencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID,
+                                                         flow: flow,
+                                                         stores: stores,
+                                                         currencySettings: orderCurrencySettings,
+                                                         requestCurrency: requestCurrency)
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
@@ -482,7 +503,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
-        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: orderCurrencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -491,7 +512,10 @@ final class EditableOrderViewModel: ObservableObject {
                                                                    onAddressUpdate: nil)
         self.addressFormViewModel = addressFormViewModel
 
-        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID,
+                                                                        flow: flow,
+                                                                        orderSynchronizer: orderSynchronizer,
+                                                                        currencySettings: orderCurrencySettings)
         self.couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
@@ -592,7 +616,8 @@ final class EditableOrderViewModel: ObservableObject {
                                   name: rowViewModel.productRow.name,
                                   totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                  currencySettings: orderCurrencySettings)
     }
 
     /// Removes an item from the order.
@@ -681,6 +706,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   stockQuantity: variation.stockQuantity,
                                                                   manageStock: variation.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
@@ -724,6 +750,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   stockQuantity: product.stockQuantity,
                                                                   manageStock: product.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics,
                                                                   configure: { [weak self] in
                 guard let self else { return }
@@ -1029,6 +1056,7 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 storeCurrencySettings: orderCurrencySettings,
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
 
@@ -1910,6 +1938,7 @@ private extension EditableOrderViewModel {
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     source: .orderForm(flow: flow.analyticsFlow),
+                    currency: requestCurrency,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,

@@ -232,7 +232,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                 onCancelRequested: cancellationState.markCancelled,
                 isPresentationAllowed: { !cancellationState.wasCancelledByMerchant }
             ),
-            cardPresentConfiguration: CardPresentConfigurationLoader(stores: stores).configuration,
+            cardPresentConfiguration: CardPresentConfigurationLoader().configuration,
             cardReaderConnectionAlerts: CardPresentPaymentBluetoothReaderConnectionAlertsProvider(),
             alertPresenter: alertPresenter,
             dependencies: .init(currencyFormatter: currencyFormatter,

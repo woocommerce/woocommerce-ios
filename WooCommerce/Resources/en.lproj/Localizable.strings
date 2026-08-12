@@ -4302,7 +4302,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Dismiss";
@@ -5364,10 +5363,9 @@ which should be translated separately and considered part of this sentence. */
 /* Gift Cards section title */
 "Gift Cards" = "Gift Cards";
 
-/* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title of the button to give feedback about the add-ons feature
+/* Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
-   Title on the navigation bar for the products feedback survey */
+   Title on the navigation bar for feedback surveys */
 "Give feedback" = "Give feedback";
 
 /* Subtitle of the store onboarding task to get paid. */
@@ -7048,9 +7046,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "New Caledonia" = "New Caledonia";
-
-/* The title of the top banner on the Products tab. */
-"New features available!" = "New features available!";
 
 /* Title for the order creation screen */
 "New Order" = "New Order";
@@ -11105,6 +11100,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Mark as favorite";
+
+/* Button that cancels product duplication and keeps unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.cancel" = "Cancel";
+
+/* Destructive button that confirms duplication using the last saved product version. */
+"productFormViewController.productDuplicationConfirmation.confirm" = "Discard & duplicate";
+
+/* Message explaining that product duplication uses the last saved version instead of unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.message" = "Your unsaved changes will be lost. The duplicate will use the last saved version.";
+
+/* Title of the confirmation alert shown before duplicating a product with unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.title" = "Discard changes and duplicate?";
 
 /* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
 "productFormViewController.productSavingError.cancel" = "Cancel";

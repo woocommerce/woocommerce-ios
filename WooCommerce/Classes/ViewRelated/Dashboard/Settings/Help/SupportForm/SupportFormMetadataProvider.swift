@@ -1,6 +1,7 @@
 import Foundation
 import CoreTelephony
 import Yosemite
+import class UIKit.UIDevice
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.ConnectivityObserver
@@ -150,26 +151,7 @@ private extension SupportFormMetadataProvider {
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
-        guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-              let capacityBytes = resourceValues.volumeAvailableCapacity else {
-            return Constants.unknownValue
-        }
-
-        // format string using human readable units. ex: 1.5 GB
-        // Since ByteCountFormatter.string translates the string and has no locale setting,
-        // do the byte conversion manually so the Free Space is in English.
-        let sizeAbbreviations = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-        var sizeAbbreviationsIndex = 0
-        var capacity = Double(capacityBytes)
-
-        while capacity > 1024 {
-            capacity /= 1024
-            sizeAbbreviationsIndex += 1
-        }
-
-        let formattedCapacity = String(format: "%4.2f", capacity)
-        let sizeAbbreviation = sizeAbbreviations[sizeAbbreviationsIndex]
-        return "\(formattedCapacity) \(sizeAbbreviation)"
+        UIDevice.current.freeDiskSpaceInEnglish ?? Constants.unknownValue
     }
 
     /// Gets the content of the main/first log file. Trimmed with a character limit.

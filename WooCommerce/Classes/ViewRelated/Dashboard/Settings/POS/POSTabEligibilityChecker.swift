@@ -21,8 +21,6 @@ import enum PointOfSale.POSEligibilityState
 import enum PointOfSale.POSIneligibleReason
 import protocol WooFoundation.ConnectivityObserver
 import enum Yosemite.POSCountryCurrencyValidator
-import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
 import protocol Yosemite.POSEligibilityServiceProtocol
 import class Yosemite.POSEligibilityService
 import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
@@ -36,7 +34,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
-    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
     private let connectivityObserver: ConnectivityObserver
     private let eligibilityService: POSEligibilityServiceProtocol
     private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
@@ -48,7 +45,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol? = nil,
          syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil) {
@@ -56,7 +52,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.siteSettings = siteSettings
         self.stores = stores
         self.connectivityObserver = connectivityObserver
-        self.expansionEligibilityService = expansionEligibilityService
         self.eligibilityService = eligibilityService
         self.localCatalogEligibilityService = localCatalogEligibilityService ?? stores.posCatalogEligibilityChecker
         self.syncStatusChecker = syncStatusChecker ?? POSCatalogSyncStatusChecker(grdbManager: ServiceLocator.grdbManager)
@@ -207,6 +202,9 @@ private extension POSTabEligibilityChecker {
             guard reason.isDefiniteIneligibility else {
                 return
             }
+            // The literal prefix is quoted by the Mobile Status Report's Point of Sale hint line — keep the
+            // two in step.
+            DDLogInfo("POS cannot be launched for site \(siteID): \(String(describing: reason))")
             eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: false)
         }
     }
@@ -341,9 +339,7 @@ private extension POSTabEligibilityChecker {
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let validationResult = POSCountryCurrencyValidator.validate(
             countryCode: countryCode,
-            currencyCode: currencyCode,
-            siteID: siteID,
-            eligibilityService: expansionEligibilityService
+            currencyCode: currencyCode
         )
 
         switch validationResult {

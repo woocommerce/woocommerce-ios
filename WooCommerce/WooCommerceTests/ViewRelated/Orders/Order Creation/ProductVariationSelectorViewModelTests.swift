@@ -25,6 +25,99 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_sync_when_currency_is_configured_then_retrieves_and_paginates_variations_in_memory_with_order_currency() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        insert(sampleProductVariation.copy(productVariationID: 99, price: "99"))
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          currency: "GBP",
+                                                          storageManager: storageManager,
+                                                          stores: stores)
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .retrieveProductVariationsTransiently(_, productID, currency, _, pageNumber, _, onCompletion):
+                XCTAssertEqual(productID, self.sampleProductID)
+                XCTAssertEqual(currency, "GBP")
+                let variation = self.sampleProductVariation.copy(productVariationID: Int64(pageNumber), price: "\(pageNumber * 10)")
+                onCompletion(.success(([variation], pageNumber == 1)))
+            default:
+                XCTFail("Currency mode dispatched a persistent variation action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 1, onCompletion: nil)
+        viewModel.sync(pageNumber: 2, pageSize: 1, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productVariationRows.map(\.productOrVariationID), [1, 2])
+        XCTAssertEqual(viewModel.productVariationRows.first?.priceLabel, "£10.00")
+        XCTAssertFalse(viewModel.productVariationRows.contains { $0.productOrVariationID == 99 })
+    }
+
+    func test_syncNextPage_when_transient_page_is_partially_filtered_then_retrieves_next_page() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          currency: "GBP",
+                                                          storageManager: storageManager,
+                                                          stores: stores)
+        var retrievedPages: [Int] = []
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .retrieveProductVariationsTransiently(_, _, _, _, pageNumber, pageSize, onCompletion):
+                retrievedPages.append(pageNumber)
+                let variations = (0..<pageSize).map { index in
+                    self.sampleProductVariation.copy(productVariationID: Int64(pageNumber * pageSize + index),
+                                                     purchasable: index != 0)
+                }
+                onCompletion(.success((variations, pageNumber == 1)))
+            default:
+                XCTFail("Currency mode dispatched a persistent variation action")
+            }
+        }
+
+        // When
+        viewModel.syncFirstPage()
+        viewModel.syncNextPage()
+
+        // Then
+        XCTAssertEqual(retrievedPages, [1, 2])
+    }
+
+    func test_sync_when_transient_page_has_no_purchasable_variations_then_automatically_retrieves_next_page() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          currency: "GBP",
+                                                          storageManager: storageManager,
+                                                          stores: stores)
+        var retrievedPages: [Int] = []
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .retrieveProductVariationsTransiently(_, _, _, _, pageNumber, _, onCompletion):
+                retrievedPages.append(pageNumber)
+                let variation = self.sampleProductVariation.copy(productVariationID: Int64(pageNumber),
+                                                                 purchasable: pageNumber > 1)
+                onCompletion(.success(([variation], pageNumber == 1)))
+            default:
+                XCTFail("Currency mode dispatched a persistent variation action")
+            }
+        }
+
+        // When
+        viewModel.syncFirstPage()
+
+        // Then
+        waitUntil {
+            retrievedPages == [1, 2]
+        }
+        XCTAssertEqual(viewModel.productVariationRows.map(\.productOrVariationID), [2])
+    }
+
     func test_view_model_adds_product_variation_rows_with_expected_values() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID,

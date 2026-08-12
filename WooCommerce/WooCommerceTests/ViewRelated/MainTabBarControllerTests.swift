@@ -712,6 +712,99 @@ final class MainTabBarControllerTests: XCTestCase {
             isBookingsTabVisible: true
         ), isAnInstanceOf: BookingsTabViewHostingController.self)
     }
+
+    // MARK: - Tab re-selection
+
+    func test_handleTabReselection_when_tab_is_container_wrapped_reselection_handler_then_forwards_to_handler() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let containerController = TabContainerController()
+        containerController.wrappedController = reselectionHandler
+        tabBarController.viewControllers = [containerController]
+        tabBarController.selectedViewController = containerController
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must unwrap the container and forward to its wrapped `TabReselectionHandling` content.
+        XCTAssertEqual(reselectionHandler.handledCount, 1)
+    }
+
+    func test_handleTabReselection_when_tab_is_navigation_controller_then_pops_to_root() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        navigationController.pushViewController(UIViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must pop the selected tab's navigation stack back to its root.
+        waitUntil {
+            navigationController.viewControllers.count == 1
+        }
+    }
+
+    func test_handleTabReselection_when_navigation_root_is_reselection_handler_then_pops_and_forwards() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let navigationController = UINavigationController(rootViewController: reselectionHandler)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // The dispatch must pop the stack to its root and forward to the root's handler.
+        waitUntil {
+            navigationController.viewControllers.count == 1 && reselectionHandler.handledCount == 1
+        }
+    }
+
+    func test_handleTabReselection_when_a_screen_refuses_to_pop_then_root_handler_is_not_notified() throws {
+        // Given
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        let reselectionHandler = SpyReselectionController()
+        let navigationController = UINavigationController(rootViewController: reselectionHandler)
+        navigationController.pushViewController(NonPoppableViewController(), animated: false)
+        tabBarController.viewControllers = [navigationController]
+        tabBarController.selectedViewController = navigationController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.handleTabReselection()
+
+        // Then
+        // A refused pop must leave the stack alone and skip the root's own reset.
+        XCTAssertEqual(navigationController.viewControllers.count, 2)
+        XCTAssertEqual(reselectionHandler.handledCount, 0)
+    }
+}
+
+private final class SpyReselectionController: UIViewController, TabReselectionHandling {
+    private(set) var handledCount = 0
+
+    func handleTabReselection() {
+        handledCount += 1
+    }
+}
+
+/// Refuses to pop, mimicking a screen with unsaved changes.
+private final class NonPoppableViewController: UIViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        false
+    }
 }
 
 extension MainTabBarController {

@@ -51,7 +51,7 @@
                                         <action selector="addStoreWasPressed" destination="-1" eventType="touchUpInside" id="ceu-IF-kAI"/>
                                     </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
+                                <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="70" width="374" height="50"/>
                                     <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>

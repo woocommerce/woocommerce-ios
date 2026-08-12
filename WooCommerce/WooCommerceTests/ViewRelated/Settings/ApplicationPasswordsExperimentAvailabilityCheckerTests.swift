@@ -67,6 +67,8 @@ final class ApplicationPasswordsExperimentAvailabilityCheckerTests: XCTestCase {
             switch action {
             case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
 
@@ -98,6 +100,8 @@ final class ApplicationPasswordsExperimentAvailabilityCheckerTests: XCTestCase {
             switch action {
             case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(false)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
 

@@ -223,6 +223,8 @@ private extension POSRefundConfirmationView {
             return .displayReaderMessage(.displayReaderMessage(message))
         case .cancelledOnReader:
             return .cancelledOnReader(.cancelledOnReader(backToRefund: onBack ?? onClose))
+        case .paymentCancellationConfirmation:
+            return nil
         case .paymentError(let error, let retryApproach, let cancelPayment):
             return .error(.init(error: error,
                                 retryAction: retryAction(for: retryApproach),
@@ -329,7 +331,7 @@ extension CardPresentPaymentEventDetails {
             return cancel
         case .connectingToReader, .connectionSuccess, .paymentSuccess, .processing,
                 .locationRequestPreAlert,
-                .displayReaderMessage, .cancelledOnReader:
+                .displayReaderMessage, .cancelledOnReader, .paymentCancellationConfirmation:
             return nil
         }
     }

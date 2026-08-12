@@ -50,6 +50,13 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// - Returns: Cached eligibility state, or eligible if not yet checked
     func catalogEligibility(for siteID: Int64) async throws -> POSLocalCatalogEligibilityState
 
+    /// The eligibility state already computed for the site, without evaluating anything: unlike
+    /// `catalogEligibility(for:)` a cache miss does not trigger a refresh, which can fetch.
+    /// `nil` when nothing has evaluated eligibility for the site this session.
+    ///
+    /// For diagnostics. Callers deciding behaviour should use `catalogEligibility(for:)`.
+    func cachedCatalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState?
+
     /// Update POS eligibility and refresh catalog eligibility for the specified site
     /// - Parameters:
     ///   - isEligible: Whether POS is eligible for the site

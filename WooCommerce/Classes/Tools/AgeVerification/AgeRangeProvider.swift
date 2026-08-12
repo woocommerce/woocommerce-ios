@@ -72,6 +72,8 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
             @unknown default:
                 throw AgeRangeProviderError.unknown
             }
+        } catch let error as AgeRangeProviderError {
+            throw error
         } catch {
             throw AgeRangeProviderError.other(error)
         }

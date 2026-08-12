@@ -131,8 +131,7 @@ private extension ProductListItem {
         guard price.isNotEmpty else {
             return nil
         }
-        let currency = currencySettings.symbol(from: currencySettings.currencyCode)
-        return CurrencyFormatter(currencySettings: currencySettings).formatAmount(price, with: currency)
+        return CurrencyFormatter(currencySettings: currencySettings).formatAmount(price)
     }
 }
 

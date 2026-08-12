@@ -58,8 +58,6 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
             switch response {
             case let .sharing(range):
                 let approvalRequired: Bool = {
-                    // On iOS 26.4+ requiredRegulatoryFeatures is the primary source for this value,
-                    // but keep reading activeParentalControls as a fallback for when that fetch fails.
                     if #available(iOS 26.2, *) {
                         return range.activeParentalControls.contains(.significantAppChangeApprovalRequired)
                     }

@@ -143,6 +143,8 @@ private extension AgeRangeVerificationService {
     ) -> AgeRangeVerificationResult {
         if let lowerBound = snapshot.lowerBound, lowerBound >= minimumAge {
             return .eligible(
+                // On iOS 26.4+, use the regulatory requirements value whenever it was retrieved,
+                // including `false`; otherwise fall back to the legacy snapshot.
                 significantAppChangeApprovalRequired: significantAppChangeApprovalRequired ?? snapshot.significantAppChangeApprovalRequired,
                 isMinor: isMinor(lowerBound: lowerBound)
             )

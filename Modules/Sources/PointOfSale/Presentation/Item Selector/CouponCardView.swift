@@ -48,7 +48,7 @@ struct CouponCardView: View {
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(cardBackgroundColor)
         .posItemCardBorderStyles()
-        .accessibilityValue(imageState == .applied ? Localization.appliedAccessibilityValue : "")
+        .accessibilityValue(accessibilityValue)
     }
 }
 
@@ -74,6 +74,10 @@ private extension CouponCardView {
             return .expired
         }
         return isApplied ? .applied : .normal
+    }
+
+    var accessibilityValue: String {
+        imageState == .applied ? Localization.appliedAccessibilityValue : ""
     }
 
     func formattedExpirationText(date: Date) -> String {

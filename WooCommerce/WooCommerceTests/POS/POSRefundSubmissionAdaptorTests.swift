@@ -236,7 +236,7 @@ private extension POSRefundSubmissionAdaptorTests {
         }
 
         let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posRefundsV4: flagEnabled]
+        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let previewUseCase = POSV4RefundPreviewUseCase(refundService: service,
                                                        stores: stores,
                                                        featureFlagService: flags,

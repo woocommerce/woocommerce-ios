@@ -24,7 +24,7 @@ struct POSRefundFlowResolverTests {
         // Given a probe already returned `rest_no_route` for the site
         let cache = ServerRefundAvailabilityCache()
         cache.markUnavailable(siteID: siteID)
-        let sut = makeSUT(cachedWooVersion: "11.2.0", cache: cache)
+        let sut = makeSUT(cachedWooVersion: Versions.aboveMinimum, cache: cache)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
@@ -32,7 +32,7 @@ struct POSRefundFlowResolverTests {
 
     @Test func resolveFlow_when_wc_version_below_minimum_then_local() {
         // Given the last release before the endpoints shipped
-        let sut = makeSUT(cachedWooVersion: "11.0.9")
+        let sut = makeSUT(cachedWooVersion: Versions.belowMinimum)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
@@ -40,7 +40,7 @@ struct POSRefundFlowResolverTests {
 
     @Test func resolveFlow_when_wc_version_at_minimum_then_server() {
         // Given
-        let sut = makeSUT(cachedWooVersion: "11.1.0")
+        let sut = makeSUT(cachedWooVersion: Versions.minimum)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
@@ -48,7 +48,7 @@ struct POSRefundFlowResolverTests {
 
     @Test func resolveFlow_when_wc_version_above_minimum_then_server() {
         // Given
-        let sut = makeSUT(cachedWooVersion: "11.2.1")
+        let sut = makeSUT(cachedWooVersion: Versions.aboveMinimum)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
@@ -56,7 +56,7 @@ struct POSRefundFlowResolverTests {
 
     @Test func resolveFlow_when_wc_version_is_prerelease_of_minimum_then_server() {
         // Given a beta of the minimum version (11.1.0-beta1 must not read as below 11.1.0)
-        let sut = makeSUT(cachedWooVersion: "11.1.0-beta1")
+        let sut = makeSUT(cachedWooVersion: Versions.betaOfMinimum)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .serverComputed)
@@ -86,7 +86,7 @@ struct POSRefundFlowResolverTests {
         // authoritative for the create capability and is not bypassed by the cache
         let cache = ServerRefundAvailabilityCache()
         cache.markAvailable(siteID: siteID)
-        let sut = makeSUT(cachedWooVersion: "11.0.9", cache: cache)
+        let sut = makeSUT(cachedWooVersion: Versions.belowMinimum, cache: cache)
 
         // Then
         #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
@@ -95,8 +95,17 @@ struct POSRefundFlowResolverTests {
 
 private extension POSRefundFlowResolverTests {
 
+    /// Store version fixtures relative to `Versions.minimum`, the earliest release with the
+    /// server-calculated refund endpoints (also passed to the SUT as `minimumWooVersion`).
+    enum Versions {
+        static let minimum = "11.1.0"
+        static let betaOfMinimum = "11.1.0-beta1"
+        static let aboveMinimum = "11.2.1"
+        static let belowMinimum = "11.0.9"
+    }
+
     func makeSUT(flagEnabled: Bool = true,
-                 cachedWooVersion: String? = "11.1.0",
+                 cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil) -> POSRefundFlowResolver {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
@@ -109,6 +118,6 @@ private extension POSRefundFlowResolverTests {
         return POSRefundFlowResolver(stores: stores,
                                      featureFlagService: flags,
                                      availabilityCache: cache,
-                                     minimumWooVersion: "11.1.0")
+                                     minimumWooVersion: Versions.minimum)
     }
 }

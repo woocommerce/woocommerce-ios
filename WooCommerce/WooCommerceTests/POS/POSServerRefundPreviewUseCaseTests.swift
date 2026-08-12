@@ -44,7 +44,7 @@ struct POSServerRefundPreviewUseCaseTests {
     @Test func previewRefund_when_wc_version_below_minimum_then_falls_back_without_writing_cache() async {
         // Given
         let cache = ServerRefundAvailabilityCache()
-        let (sut, service, stores) = makeSUT(cachedWooVersion: "11.0.9", cache: cache, previewResult: .success(preview()))
+        let (sut, service, stores) = makeSUT(cachedWooVersion: Versions.belowMinimum, cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
@@ -55,7 +55,7 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(cache.isAvailable(siteID: siteID) == nil)
 
         // When the cached version is corrected, the next call probes normally.
-        (stores.sessionManager as? SessionManager)?.cachedWooCommerceVersion = "11.1.0"
+        (stores.sessionManager as? SessionManager)?.cachedWooCommerceVersion = Versions.minimum
         let secondResult = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
@@ -68,7 +68,7 @@ struct POSServerRefundPreviewUseCaseTests {
         // authoritative for the create capability and is not bypassed by the cache
         let cache = ServerRefundAvailabilityCache()
         cache.markAvailable(siteID: siteID)
-        let (sut, service, _) = makeSUT(cachedWooVersion: "11.0.9", cache: cache, previewResult: .success(preview()))
+        let (sut, service, _) = makeSUT(cachedWooVersion: Versions.belowMinimum, cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
@@ -82,7 +82,7 @@ struct POSServerRefundPreviewUseCaseTests {
     @Test func previewRefund_when_wc_version_is_prerelease_of_minimum_then_probes() async {
         // Given a beta of the minimum version (11.1.0-beta1 must not read as below 11.1.0)
         let cache = ServerRefundAvailabilityCache()
-        let (sut, _, _) = makeSUT(cachedWooVersion: "11.1.0-beta1", cache: cache, previewResult: .success(preview()))
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.betaOfMinimum, cache: cache, previewResult: .success(preview()))
 
         // When
         let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
@@ -191,8 +191,16 @@ struct POSServerRefundPreviewUseCaseTests {
 
 private extension POSServerRefundPreviewUseCaseTests {
 
+    /// Store version fixtures relative to `Versions.minimum`, the earliest release with the
+    /// server-calculated refund endpoints (also passed to the SUT's resolver as `minimumWooVersion`).
+    enum Versions {
+        static let minimum = "11.1.0"
+        static let betaOfMinimum = "11.1.0-beta1"
+        static let belowMinimum = "11.0.9"
+    }
+
     func makeSUT(flagEnabled: Bool = true,
-                 cachedWooVersion: String? = "11.1.0",
+                 cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil,
                  previewResult: Swift.Result<RefundPreview, Error>? = nil)
     -> (POSServerRefundPreviewUseCase, MockRefundService, MockStoresManager) {
@@ -210,7 +218,7 @@ private extension POSServerRefundPreviewUseCaseTests {
                                                 flowResolver: POSRefundFlowResolver(stores: stores,
                                                                                     featureFlagService: flags,
                                                                                     availabilityCache: cache,
-                                                                                    minimumWooVersion: "11.1.0"),
+                                                                                    minimumWooVersion: Versions.minimum),
                                                 availabilityCache: cache)
         return (sut, service, stores)
     }

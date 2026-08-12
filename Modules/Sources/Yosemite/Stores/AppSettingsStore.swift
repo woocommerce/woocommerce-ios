@@ -336,6 +336,8 @@ public class AppSettingsStore: Store {
             setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
         case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
             getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
+        case .getPOSCatalogFileBlockedByHost(let siteID, let onCompletion):
+            getPOSCatalogFileBlockedByHost(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1467,6 +1469,10 @@ private extension AppSettingsStore {
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
         let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         onCompletion(allowed)
+    }
+
+    func getPOSCatalogFileBlockedByHost(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(siteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHost(siteID: siteID))
     }
 }
 

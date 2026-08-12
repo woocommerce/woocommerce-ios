@@ -1326,6 +1326,99 @@ struct PointOfSaleAggregateModelTests {
                 sut.barcodeScanned(.success("123456"))
             }
         }
+
+        @Test func barcodeScanned_when_scan_succeeds_then_emits_scan_event() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.latestBarcodeScanEvent == nil)
+
+            // When
+            await waitForScanEventChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then
+            #expect(sut.latestBarcodeScanEvent != nil)
+        }
+
+        @Test func barcodeScanned_when_parse_fails_then_emits_scan_event() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.latestBarcodeScanEvent == nil)
+
+            // When
+            await waitForScanEventChange(on: sut) {
+                sut.barcodeScanned(.failure(.scanTooShort(barcode: "1")))
+            }
+
+            // Then
+            #expect(sut.latestBarcodeScanEvent != nil)
+        }
+
+        @Test func barcodeScanned_when_scanned_twice_then_emits_distinct_events() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+
+            // When: two scans of the same barcode.
+            await waitForScanEventChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let firstEventID = sut.latestBarcodeScanEvent?.id
+            await waitForScanEventChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let secondEventID = sut.latestBarcodeScanEvent?.id
+
+            // Then: distinct ids, so `.onChange` observers fire for consecutive identical scans.
+            #expect(firstEventID != nil)
+            #expect(secondEventID != nil)
+            #expect(firstEventID != secondEventID)
+        }
+
+        @Test func barcodeScanned_when_lookup_fails_then_emits_single_event() async {
+            // Given
+            let soundPlayer = MockPointOfSaleSoundPlayer()
+            let barcodeScanService = MockPointOfSaleBarcodeScanService()
+            barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
+            let sut = makePointOfSaleAggregateModel(
+                barcodeScanService: barcodeScanService,
+                soundPlayer: soundPlayer)
+
+            // When: capture the event emitted at scan initiation, then wait for the failed
+            // lookup to complete (the failure sound is the last step of that path).
+            var initiationEventID: UUID?
+            await fireOnce { fire in
+                withObservationTracking {
+                    _ = sut.latestBarcodeScanEvent
+                } onChange: {
+                    Task { @MainActor in
+                        initiationEventID = sut.latestBarcodeScanEvent?.id
+                    }
+                }
+                soundPlayer.onPlaySound = { _ in
+                    fire()
+                }
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then: the lookup failure did not emit a second event.
+            #expect(initiationEventID != nil)
+            #expect(sut.latestBarcodeScanEvent?.id == initiationEventID)
+        }
+
+        private func waitForScanEventChange(on sut: PointOfSaleAggregateModel, when action: () -> Void) async {
+            await withCheckedContinuation { continuation in
+                withObservationTracking {
+                    _ = sut.latestBarcodeScanEvent
+                } onChange: {
+                    Task { @MainActor in
+                        // Task needed because onChange fires with willSet semantics.
+                        continuation.resume()
+                    }
+                }
+                action()
+            }
+        }
     }
 
     @MainActor struct PriceChangeDetectionTests {

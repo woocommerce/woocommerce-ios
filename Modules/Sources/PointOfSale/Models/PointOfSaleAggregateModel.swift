@@ -71,6 +71,9 @@ protocol PointOfSaleAggregateModelProtocol {
     /// by the items list view as a navigation push and doesn't go through this state.
     var editingCustomAmount: POSCustomAmount?
 
+    /// The most recent hardware barcode scan (successful or failed)
+    private(set) var latestBarcodeScanEvent: POSBarcodeScanEvent?
+
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
     let entryPointController: POSEntryPointController
@@ -338,11 +341,21 @@ extension PointOfSaleAggregateModel {
     }
 }
 
+/// A single hardware barcode scan, stamped with a unique id so view-layer `.onChange`
+/// observers fire for every scan, including consecutive scans of the same barcode.
+struct POSBarcodeScanEvent: Equatable {
+    let id: UUID
+}
+
 // MARK: - Barcode Scanning
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
         Task { @MainActor [weak self] in
             guard let self else { return }
+            // One event per physical scan, emitted at scan initiation so it covers both
+            // successful parses and parse failures. Lookup failures reuse the same event:
+            // the cart is already opening and the loading row morphs into the error row.
+            latestBarcodeScanEvent = POSBarcodeScanEvent(id: UUID())
             switch result {
             case .success(let barcode):
                 await handleSuccessfulScan(barcode: barcode)

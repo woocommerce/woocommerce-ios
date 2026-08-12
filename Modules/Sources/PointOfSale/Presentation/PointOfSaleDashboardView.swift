@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
+    @EnvironmentObject private var modalManager: POSModalManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -279,6 +280,15 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
+        .onChange(of: posModel.latestBarcodeScanEvent) { _, event in
+            // Auto-opens the cart sheet on scan
+            guard event != nil,
+                  PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
+                                                                          orderStage: posModel.orderStage) else {
+                return
+            }
+            phoneShowingCart = true
+        }
         .posSheet(isPresented: $phoneShowingCart) {
             phoneCartSheetView
                 .presentationDetents([.medium, .large])
@@ -455,6 +465,12 @@ struct PointOfSaleDashboardView: View {
         }
         return cart
             .background(Color.posSurface)
+            // Keep scanning available while the cart sheet is open: ItemListView's scanner is
+            // gated off whenever a POSSheetManager sheet is presented (this one included), so
+            // without this a scan with the sheet open would silently do nothing.
+            .barcodeScanning(enabled: Binding(get: { !modalManager.isPresented }, set: { _ in })) { result in
+                posModel.barcodeScanned(result)
+            }
     }
 
     private var tabletContentView: some View {

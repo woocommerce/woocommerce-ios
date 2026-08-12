@@ -1259,7 +1259,8 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
         case .notConnectedToReader,
                 .commandNotAllowedDuringCall,
                 .featureNotAvailableWithConnectedReader,
-                .paymentMethodCollectionTimedOut:
+                .paymentMethodCollectionTimedOut,
+                .paymentIntentIdMissing:
             return false
         default:
             return true

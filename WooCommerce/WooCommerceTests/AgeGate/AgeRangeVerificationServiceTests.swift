@@ -1,4 +1,5 @@
 import XCTest
+import WooFoundationCore
 @testable import WooCommerce
 
 final class AgeRangeVerificationServiceTests: XCTestCase {
@@ -227,6 +228,53 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func test_verifyAgeRange_when_requirements_fetch_fails_with_underlying_error_reports_warning() {
+        // Given
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            requirementsResult: .failure(AgeRangeProviderError.other(TestError.requirementsFetch))
+        )
+        let crashLogging = MockCrashLogger()
+        let sut = AgeRangeVerificationService(provider: provider, crashLogging: crashLogging)
+        let exp = expectation(description: "completion")
+
+        // When
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { _ in
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        // Then
+        XCTAssertEqual(crashLogging.loggedErrors.count, 1)
+        XCTAssertTrue(crashLogging.loggedErrors[0].error is TestError)
+        XCTAssertEqual(crashLogging.loggedErrors[0].userInfo?["operation"] as? String, "retrieve_age_range_requirements")
+        guard case .warning = crashLogging.loggedErrors[0].level else {
+            return XCTFail("Expected warning severity")
+        }
+    }
+
+    func test_verifyAgeRange_when_requirements_are_unavailable_does_not_report_error() {
+        // Given
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            requirementsResult: .failure(AgeRangeProviderError.notAvailable)
+        )
+        let crashLogging = MockCrashLogger()
+        let sut = AgeRangeVerificationService(provider: provider, crashLogging: crashLogging)
+        let exp = expectation(description: "completion")
+
+        // When
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { _ in
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        // Then
+        XCTAssertTrue(crashLogging.loggedErrors.isEmpty)
+    }
+
     func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
@@ -298,6 +346,25 @@ private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable
         }
         return try requirementsResult.get()
     }
+}
+
+private final class MockCrashLogger: CrashLogger {
+    private(set) var loggedErrors: [(error: Error, userInfo: [String: Any]?, level: SeverityLevel)] = []
+
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {}
+
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
+        loggedErrors.append((error, userInfo, level))
+    }
+
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
+        // The test logger cannot recover if the production code unexpectedly invokes fatal logging.
+        fatalError(error.localizedDescription)
+    }
+}
+
+private enum TestError: Error {
+    case requirementsFetch
 }
 
 private extension AgeRangeRequirements {

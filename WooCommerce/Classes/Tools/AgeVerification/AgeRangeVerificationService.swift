@@ -1,6 +1,7 @@
 import Foundation
 import CocoaLumberjack
 import UIKit
+import protocol WooFoundationCore.CrashLogger
 
 enum AgeRangeVerificationResult {
     /// The feature is supported and declared user age is within the required range.
@@ -43,11 +44,16 @@ protocol AgeRangeVerificationServiceProtocol {
 
 final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
     private let provider: AgeRangeProviding
+    private let crashLogging: CrashLogger
     @MainActor private var isVerificationInProgress = false
     @MainActor private var pendingCompletions: [(AgeRangeVerificationResult) -> Void] = []
 
-    init(provider: AgeRangeProviding = DeclaredAgeRangeProvider()) {
+    init(
+        provider: AgeRangeProviding = DeclaredAgeRangeProvider(),
+        crashLogging: CrashLogger = ServiceLocator.crashLogging
+    ) {
         self.provider = provider
+        self.crashLogging = crashLogging
     }
 
     /// Requests the user's declared age range via the provider.
@@ -83,6 +89,14 @@ private extension AgeRangeVerificationService {
             }.value
         } catch {
             DDLogError("Age Range: Failed to fetch regulatory requirements. Error: \(error)")
+            if let providerError = error as? AgeRangeProviderError,
+               case let .other(underlyingError) = providerError {
+                crashLogging.logError(
+                    underlyingError,
+                    userInfo: ["operation": "retrieve_age_range_requirements"],
+                    level: .warning
+                )
+            }
             requirements = nil
         }
 

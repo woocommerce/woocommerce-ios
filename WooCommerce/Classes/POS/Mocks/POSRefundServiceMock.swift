@@ -13,7 +13,7 @@ final class POSRefundServiceMock: RefundServiceProtocol {
 
     func previewRefund(siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         let order: Order?
         do {
             order = try await orderService.loadOrder(orderID: orderID)
@@ -26,7 +26,7 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                 return runningTotal + refundTotal
             }
             let unitPrice = order?.items.first { $0.itemID == lineItem.lineItemID }?.price.decimalValue ?? .zero
-            return runningTotal + unitPrice * (lineItem.quantity ?? .zero)
+            return runningTotal + unitPrice * Decimal(lineItem.quantity ?? 0)
         }
         let emptySection = RefundPreview.Section(items: [], subtotal: .zero, tax: .zero, total: .zero)
         return RefundPreview(subtotal: subtotal,
@@ -41,8 +41,19 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund {
-        let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: lineItems)
+                      amountOverride: String?,
+                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
+        let previewLineItems = lineItems.map { lineItem -> RefundPreviewLineItem in
+            if let refundTotal = lineItem.refundTotal {
+                return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: refundTotal)
+            }
+            if let quantity = lineItem.quantity {
+                return .quantityBased(lineItemID: lineItem.lineItemID, quantity: quantity)
+            }
+            assertionFailure("ComputedRefundLineItem carries quantity or refundTotal by construction; the factories enforce it.")
+            return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: .zero)
+        }
+        let preview = try await previewRefund(siteID: siteID, orderID: orderID, lineItems: previewLineItems)
         return Refund(refundID: 1,
                       orderID: orderID,
                       siteID: siteID,
@@ -54,53 +65,5 @@ final class POSRefundServiceMock: RefundServiceProtocol {
                       createAutomated: automaticRefund,
                       items: [],
                       shippingLines: [])
-    }
-
-    func previewRefund(siteID: Int64,
-                       orderID: Int64,
-                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
-        try await previewRefund(siteID: siteID,
-                                orderID: orderID,
-                                lineItems: lineItems.map { refundV4LineItem(from: $0) })
-    }
-
-    func createRefund(siteID: Int64,
-                      orderID: Int64,
-                      reason: String,
-                      automaticRefund: Bool,
-                      restockItems: Bool,
-                      amountOverride: String?,
-                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
-        try await createRefund(siteID: siteID,
-                               orderID: orderID,
-                               reason: reason,
-                               automaticRefund: automaticRefund,
-                               restockItems: restockItems,
-                               lineItems: lineItems.map { refundV4LineItem(from: $0) })
-    }
-
-    /// The mock computes totals the same way for every generation of the request models,
-    /// so the v3 shapes are bridged to the v4 model the computation helpers consume.
-    /// These bridges are deleted together with the v4 flow when the switch lands.
-    private func refundV4LineItem(from lineItem: RefundPreviewLineItem) -> RefundV4LineItem {
-        if let quantity = lineItem.quantity {
-            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: Decimal(quantity))
-        }
-        if let refundTotal = lineItem.refundTotal {
-            return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: refundTotal)
-        }
-        assertionFailure("RefundPreviewLineItem carries quantity or refundTotal by construction; the factories enforce it.")
-        return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: .zero)
-    }
-
-    private func refundV4LineItem(from lineItem: ComputedRefundLineItem) -> RefundV4LineItem {
-        if let quantity = lineItem.quantity {
-            return .quantityBased(lineItemID: lineItem.lineItemID, quantity: Decimal(quantity))
-        }
-        if let refundTotal = lineItem.refundTotal {
-            return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: refundTotal)
-        }
-        assertionFailure("ComputedRefundLineItem carries quantity or refundTotal by construction; the factories enforce it.")
-        return .amountBased(lineItemID: lineItem.lineItemID, refundTotal: .zero)
     }
 }

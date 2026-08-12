@@ -1,7 +1,7 @@
 {
   "project_name": "woocommerce-ios",
   "branch": "trunk",
-  "pinned_hash": "f02646ddea3f50a35d9a77f3b752156b017fd665",
+  "pinned_hash": "e738acd2e242981e2ebdfd2cfab573615b8c39bd",
   "files_to_copy": [
     {
       "file": "iOS/WCiOS/woo_app_credentials.json",

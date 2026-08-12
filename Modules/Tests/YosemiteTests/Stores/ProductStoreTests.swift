@@ -332,6 +332,59 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
+    func test_retrieveProductsTransiently_returns_currency_scoped_products_without_persisting_them() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        let action = ProductAction.retrieveProductsTransiently(siteID: sampleSiteID,
+                                                               currency: "EUR",
+                                                               pageNumber: 1,
+                                                               pageSize: 25,
+                                                               stockStatus: nil,
+                                                               productStatus: nil,
+                                                               productType: nil,
+                                                               productCategory: nil,
+                                                               sortOrder: .nameAscending) { result in
+            XCTAssertEqual(try? result.get().products.count, 10)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_searchProductsTransiently_returns_currency_scoped_products_without_persisting_products_or_search_results() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        let action = ProductAction.searchProductsTransiently(siteID: sampleSiteID,
+                                                             currency: "GBP",
+                                                             keyword: "photo",
+                                                             pageNumber: 1,
+                                                             pageSize: 25,
+                                                             productIDs: [12, 34]) { result in
+            XCTAssertFalse((try? result.get().products.isEmpty) ?? true)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSearchResults.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
+
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
     func testRetrieveProductsEffectivelyPersistsRetrievedProducts() {
@@ -1026,8 +1079,8 @@ final class ProductStoreTests: XCTestCase {
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 

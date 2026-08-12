@@ -104,6 +104,32 @@ final class StorePickerViewModel {
         userDefaults.unhideStoreID(siteID)
         updateDisplayedStores()
     }
+
+    /// Returns the store that should be selected when the picker first loads.
+    func siteToPreselect(from sites: [Site]) -> Site? {
+        guard let firstAvailableStore = sites.first(where: \.isWooCommerceActive) else {
+            return nil
+        }
+
+        // Login only preselects an explicit credential match or an unambiguous sole result.
+        if configuration != .login, let site = stores.sessionManager.defaultSite {
+            return site
+        }
+
+        if case let .wpcom(_, _, siteAddress) = stores.sessionManager.defaultCredentials,
+           let site = sites.first(where: { $0.url == siteAddress }),
+           site.isWooCommerceActive {
+            return site
+        }
+
+        if configuration != .login {
+            return firstAvailableStore
+        }
+        guard sites.count == 1 else {
+            return nil
+        }
+        return firstAvailableStore
+    }
 }
 
 // MARK: - Private helpers

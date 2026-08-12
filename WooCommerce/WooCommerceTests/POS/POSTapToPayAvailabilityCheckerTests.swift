@@ -10,6 +10,43 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     private let siteID: Int64 = 123
 
+    // MARK: - Hardware Support Gate
+
+    @Test func checkAvailability_when_tapToPay_hardware_unsupported_then_returns_deviceNotSupported() async {
+        // Given
+        let featureFlags = makeEnabledFeatureFlags()
+        let eligibilityService = MockPOSEligibilityService()
+        eligibilityService.cachedTabVisibility[siteID] = true
+        let sut = makeSUT(featureFlagService: featureFlags,
+                          eligibilityService: eligibilityService,
+                          isTapToPayHardwareSupported: false)
+
+        // When
+        let result = await sut.checkAvailability()
+
+        // Then
+        #expect(result == .unavailable(reason: .deviceNotSupported))
+    }
+
+    @Test func checkAvailability_when_tapToPay_hardware_unsupported_then_does_not_dispatch_device_check() async {
+        // Given
+        let featureFlags = makeEnabledFeatureFlags()
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var deviceCheckDispatched = false
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case .checkDeviceSupport = action {
+                deviceCheckDispatched = true
+            }
+        }
+        let sut = makeSUT(featureFlagService: featureFlags, stores: stores, isTapToPayHardwareSupported: false)
+
+        // When
+        _ = await sut.checkAvailability()
+
+        // Then
+        #expect(deviceCheckDispatched == false)
+    }
+
     // MARK: - Feature Flag Gate
 
     @Test func checkAvailability_when_featureFlag_disabled_then_returns_featureFlagDisabled() async {
@@ -162,16 +199,20 @@ private extension POSTapToPayAvailabilityCheckerTests {
         return service
     }
 
+    /// Hardware support defaults to `true` so the flag / device / eligibility tests stay deterministic
+    /// regardless of the simulator the suite runs on.
     func makeSUT(
         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
         stores: MockStoresManager = MockStoresManager(sessionManager: .makeForTesting()),
-        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService()
+        eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService(),
+        isTapToPayHardwareSupported: Bool = true
     ) -> POSTapToPayAvailabilityChecker {
         POSTapToPayAvailabilityChecker(
             siteID: siteID,
             stores: stores,
             featureFlagService: featureFlagService,
-            eligibilityService: eligibilityService
+            eligibilityService: eligibilityService,
+            isTapToPayHardwareSupported: isTapToPayHardwareSupported
         )
     }
 }

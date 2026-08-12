@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Fixed universal links using www.woocommerce.com or www.woo.com opening in Safari instead of the app. [https://github.com/woocommerce/woocommerce-ios/pull/17682]
 - [*] In-Person Payments: Fixed Tap to Pay appearing after cancellation and clarified when no payment was taken. [https://github.com/woocommerce/woocommerce-ios/pull/17675]
 - [*] Login: QR login now waits for you to choose a store when multiple sites are available. [https://github.com/woocommerce/woocommerce-ios/pull/17681]
 - [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]

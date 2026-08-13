@@ -76,10 +76,8 @@ struct POSRefundFlowResolver {
     }
 
     enum Constants {
-        /// The earliest WooCommerce core release guaranteed to contain BOTH the `/wc/v3` refund
-        /// preview route (woocommerce/woocommerce#67042) and the `compute_totals` create support
-        /// (woocommerce/woocommerce#67043). If the two land in different releases, this constant
-        /// must point at the release containing the latter.
+        /// The earliest WooCommerce core release containing both the `/wc/v3` refund preview
+        /// route and the `compute_totals` create support.
         static let minimumWooVersionForServerRefunds = "11.1.0"
     }
 }

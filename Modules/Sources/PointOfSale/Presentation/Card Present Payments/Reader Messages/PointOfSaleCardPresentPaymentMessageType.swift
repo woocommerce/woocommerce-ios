@@ -14,4 +14,5 @@ enum PointOfSaleCardPresentPaymentMessageType: Equatable {
     case paymentCaptureError(viewModel: PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel)
     case paymentIntentCreationError(viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel)
     case cancelledOnReader(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
+    case paymentCancellationConfirmation(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
 }

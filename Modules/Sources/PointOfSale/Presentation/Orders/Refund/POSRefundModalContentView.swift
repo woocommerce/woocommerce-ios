@@ -534,7 +534,7 @@ private extension CardPresentPaymentEventDetails {
                 .tapSwipeOrInsertCard, .cardInserted, .processing,
                 .displayReaderMessage, .paymentSuccess, .paymentError,
                 .paymentCaptureError, .paymentIntentCreationError,
-                .cancelledOnReader:
+                .cancelledOnReader, .paymentCancellationConfirmation:
             return nil
         }
     }

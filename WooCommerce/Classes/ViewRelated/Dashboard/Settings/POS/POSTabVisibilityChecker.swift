@@ -10,22 +10,18 @@ import struct Yosemite.Site
 import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
-import enum Yosemite.FeatureFlagAction
+import protocol Yosemite.RemoteFeatureFlagServiceProtocol
+import struct Yosemite.RemoteFeatureFlagService
 import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
-import protocol Yosemite.CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityService
-import class Yosemite.CardPresentPaymentsCountryExpansionEligibilityRefresher
 
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
-    private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let featureFlagService: FeatureFlagService
-    private let expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-    private let expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher
     private let isOperatingSystemAtLeast: (OperatingSystemVersion) -> Bool
     private let connectivityObserver: ConnectivityObserver
 
@@ -38,22 +34,15 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         expansionEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol = CardPresentPaymentsCountryExpansionEligibilityService(),
-         expansionEligibilityRefresher: CardPresentPaymentsCountryExpansionEligibilityRefresher? = nil,
          isOperatingSystemAtLeast: @escaping (OperatingSystemVersion) -> Bool = ProcessInfo.processInfo.isOperatingSystemAtLeast) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
-        self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
         self.featureFlagService = featureFlagService
-        self.expansionEligibilityService = expansionEligibilityService
         self.isOperatingSystemAtLeast = isOperatingSystemAtLeast
         self.connectivityObserver = connectivityObserver
-        self.expansionEligibilityRefresher = expansionEligibilityRefresher ?? CardPresentPaymentsCountryExpansionEligibilityRefresher(
-            eligibilityService: expansionEligibilityService,
-            remoteFeatureFlagProvider: CardPresentPaymentsCountryExpansionEligibilityRefresher.makeRemoteFeatureFlagProvider(stores: stores)
-        )
     }
 
     /// Checks the initial visibility of the POS tab without dependence on network requests.
@@ -90,9 +79,11 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         }
         let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
         guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
+            logNotVisible("the device is not an iPad and the phone prototype flag is off")
             return false
         }
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
+            logNotVisible("phone POS needs iOS \(Self.minimumPhonePOSOperatingSystemVersion.majorVersion) or later")
             return false
         }
 
@@ -101,20 +92,41 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         // Unknown connectivity (e.g. before the first path update at cold start) proceeds with
         // the full check so a fresh online launch is not stuck with stale cached visibility.
         if case .notReachable = connectivityObserver.currentStatus {
-            return eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
+            guard let cached = eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) else {
+                logNotVisible("offline with no cached visibility for the site")
+                return false
+            }
+            if !cached {
+                logNotVisible("offline, and the last known visibility was hidden")
+            }
+            return cached
         }
 
         async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
         switch await siteSettingsEligibility {
-        case .ineligible(.unsupportedCountry):
-            return false
+        case .ineligible(let reason):
+            if case .unsupportedCountry = reason {
+                logNotVisible(String(describing: reason))
+                return false
+            }
         default:
             break
         }
 
-        return await featureFlagEligibility == .eligible
+        switch await featureFlagEligibility {
+        case .eligible:
+            return true
+        case .ineligible(let reason):
+            logNotVisible(String(describing: reason))
+            return false
+        }
+    }
+
+    /// The literal prefix is quoted by the Mobile Status Report's Point of Sale hint line — keep the two in step.
+    private func logNotVisible(_ reason: String) {
+        DDLogInfo("POS tab not visible for site \(site.siteID): \(reason)")
     }
 
     private var isPhoneOperatingSystemEligible: Bool {
@@ -147,16 +159,20 @@ private extension POSTabVisibilityChecker {
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
-        guard userInterfaceIdiom != .phone || countryCode == .GB else {
-            return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+        // Phone POS is GB-only, except for US stores when the `woo_pos_phone_us` remote flag
+        // is enabled — WPCOM whitelists that flag to Automattic accounts so internal testers
+        // can use Tap to Pay on US stores ahead of a wider rollout (WOOMOB-3775).
+        if userInterfaceIdiom == .phone, countryCode != .GB {
+            guard countryCode == .US, await isPhonePointOfSaleUSRemoteFlagEnabled() else {
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: [.GB]))
+            }
         }
 
-        // Refresh the per-site IPP country expansion eligibility cache (RSM-637) before
-        // validating, so the country/currency check reflects the latest remote feature
-        // flag rather than a stale or empty cache on first launch.
-        await expansionEligibilityRefresher.refresh(siteID: site.siteID, countryCode: countryCode)
-
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
+    }
+
+    func isPhonePointOfSaleUSRemoteFlagEnabled() async -> Bool {
+        await remoteFeatureFlagService.isEnabled(.phonePointOfSaleUS, defaultValue: false)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
@@ -173,9 +189,7 @@ private extension POSTabVisibilityChecker {
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let validationResult = POSCountryCurrencyValidator.validate(
             countryCode: countryCode,
-            currencyCode: currencyCode,
-            siteID: site.siteID,
-            eligibilityService: expansionEligibilityService
+            currencyCode: currencyCode
         )
 
         switch validationResult {
@@ -201,33 +215,16 @@ private extension POSTabVisibilityChecker {
     }
 
     enum RemoteFeatureFlagIneligibleReason: Equatable {
-        case selfDeallocated
         case featureFlagDisabled
     }
 
-    @MainActor
     func checkRemoteFeatureEligibility() async -> RemoteFeatureFlagEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-            }
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.pointOfSale, defaultValue: false) { [weak self] result in
-                guard let self else {
-                    return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-                }
-                switch result {
-                case true:
-                    // The site is whitelisted.
-                    continuation.resume(returning: .eligible)
-                case false:
-                    // When the site is not whitelisted, check the local feature flag configuration.
-                    let localFeatureFlag = featureFlagService.isFeatureFlagEnabled(.pointOfSale)
-                    continuation.resume(returning: localFeatureFlag ? .eligible : .ineligible(reason: .featureFlagDisabled))
-                }
-            }
-            self.stores.dispatch(action)
+        if await remoteFeatureFlagService.isEnabled(.pointOfSale, defaultValue: false) {
+            return .eligible
         }
+        // When the site is not whitelisted, check the local feature flag configuration.
+        return featureFlagService.isFeatureFlagEnabled(.pointOfSale) ? .eligible : .ineligible(reason: .featureFlagDisabled)
     }
 }

@@ -1,6 +1,7 @@
 @testable import WooCommerce
 import protocol WooFoundation.Analytics
 import struct Yosemite.CardPresentPaymentsConfiguration
+import typealias Yosemite.PaymentIntent
 import enum WooFoundation.CountryCode
 import Foundation
 import Testing
@@ -223,6 +224,109 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // Then
         #expect(property("milliseconds_since_customer_interaction_started", in: "cash_collect_payment_success") == "1000.0")
+    }
+
+    @Test func test_track_payment_failure_then_tracks_event_with_error_and_properties() {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
+        let expectedEvent = "card_present_collect_payment_failed"
+        let expectedProperties = [
+            "card_reader_model",
+            "country",
+            "plugin_slug",
+            "milliseconds_since_customer_interaction_started",
+            "milliseconds_since_order_sync_success",
+            "milliseconds_since_reader_ready_to_collect_payment",
+            "milliseconds_since_card_tapped",
+            "checkout_tap_count"
+        ]
+
+        // When
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        let trackedEvent = analytics.events.first(where: { $0.eventName == expectedEvent })
+        #expect(trackedEvent != nil)
+        #expect(trackedEvent?.error is TestError)
+        #expect(expectedProperties.allSatisfy { trackedEvent?.properties.keys.contains($0) == true })
+    }
+
+    @Test func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
+
+        // When
+        sut.trackPaymentCancelation(cancelationSource: .paymentWaitingForInput)
+
+        // Then
+        #expect(property("cancellation_source", in: "card_present_collect_payment_canceled") == "payment_waiting_for_input")
+        #expect(property("country", in: "card_present_collect_payment_canceled") == "US")
+    }
+
+    @Test func test_track_payment_failure_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+
+        // When
+        clock.now = 1000 // customer interaction started
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1002 // reader ready
+        sut.trackCardReaderReady()
+        clock.now = 1003 // card tapped
+        sut.trackCardReaderTapped()
+        clock.now = 1005 // payment failed
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(property("milliseconds_since_customer_interaction_started", in: "card_present_collect_payment_failed") == "5000.0")
+        #expect(property("milliseconds_since_reader_ready_to_collect_payment", in: "card_present_collect_payment_failed") == "3000.0")
+        #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_failed") == "2000.0")
+    }
+
+    @Test func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .CA))
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
+
+        // When
+        sut.trackProcessingCompletion(intent: intent)
+
+        // Then
+        #expect(property("country", in: "card_interac_collect_payment_success") == "CA")
+    }
+
+    @Test func test_track_processing_completion_when_payment_method_is_not_interac_then_tracks_nothing() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US))
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
+
+        // When
+        sut.trackProcessingCompletion(intent: intent)
+
+        // Then
+        #expect(analytics.events.isEmpty)
+    }
+
+    @Test func test_track_payment_failure_when_checkout_retried_then_preserves_checkout_tap_count() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US))
+
+        // When
+        sut.trackCheckoutTapped()
+        sut.trackPaymentFailure(with: TestError())
+        sut.trackCheckoutTapped()
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(properties("checkout_tap_count", in: "card_present_collect_payment_failed") == ["1", "2"])
     }
 }
 

@@ -16,4 +16,17 @@ extension UIDevice {
 
         return String(cString: machine)
     }
+
+    /// The device's available disk space in English, e.g. `12.40 GB`, or `nil` when the volume cannot be read.
+    ///
+    /// English (not `ByteCountFormatter`, which translates its units) because every consumer — support ticket
+    /// metadata and the Mobile Status Report — leaves the device to be read by Happiness Engineers.
+    ///
+    var freeDiskSpaceInEnglish: String? {
+        guard let values = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
+              let capacity = values.volumeAvailableCapacity else {
+            return nil
+        }
+        return Int64(capacity).englishByteCountRepresentable
+    }
 }

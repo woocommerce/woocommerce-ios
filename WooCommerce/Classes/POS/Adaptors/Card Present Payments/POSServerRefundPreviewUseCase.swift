@@ -42,8 +42,11 @@ final class POSServerRefundPreviewUseCase {
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
-        guard lineItems.isNotEmpty,
-              flowResolver.resolveFlow(siteID: siteID) == .serverComputed else {
+        guard lineItems.isNotEmpty else {
+            return .fallbackToLocal
+        }
+        guard flowResolver.resolveFlow(siteID: siteID) == .serverComputed else {
+            DDLogInfo("ℹ️ POS refund preview: site \(siteID) not eligible for the server flow; using local calculation")
             return .fallbackToLocal
         }
 
@@ -53,6 +56,7 @@ final class POSServerRefundPreviewUseCase {
             return .serverCalculated(preview)
         } catch {
             if isRouteNotRegistered(error) {
+                DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
                 return .fallbackToLocal
             }

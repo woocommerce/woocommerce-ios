@@ -645,6 +645,8 @@ extension POSTabVisibilityCheckerTests {
                 default:
                     completion(false)
                 }
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
     }

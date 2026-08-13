@@ -571,9 +571,9 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
-        guard viewModel.order.appliedGiftCards.isEmpty else {
+        if let eligibilityFailure = viewModel.order.refundEligibilityFailure {
             let alertController = UIAlertController(title: Localization.Alert.giftCardRefundUnsupportedTitle,
-                                                    message: Localization.Alert.giftCardRefundUnsupportedMessage,
+                                                    message: eligibilityFailure.localizedDescription,
                                                     preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: Localization.Alert.giftCardRefundUnsupportedDismissButton,
                                                     style: .default))
@@ -1070,12 +1070,6 @@ private extension OrderDetailsViewController {
                 "orderDetails.issueRefund.giftCardUnsupported.alert.title",
                 value: "Refund from your store admin",
                 comment: "Title of the alert shown when a merchant tries to refund an order paid with a gift card"
-            )
-            static let giftCardRefundUnsupportedMessage = NSLocalizedString(
-                "orderDetails.issueRefund.giftCardUnsupported.alert.message",
-                value: "This order was paid with a gift card. Refunding here won’t restore the gift-card balance. " +
-                "To refund correctly, please process it from your store admin on the web.",
-                comment: "Message explaining why an order paid with a gift card must be refunded from the store admin"
             )
             static let giftCardRefundUnsupportedDismissButton = NSLocalizedString(
                 "orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton",

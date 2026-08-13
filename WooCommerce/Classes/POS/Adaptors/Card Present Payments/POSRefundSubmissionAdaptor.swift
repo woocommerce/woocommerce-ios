@@ -308,6 +308,9 @@ private extension POSRefundSubmissionAdaptor {
 
     private func loadPreparedRefundSnapshot(for order: POSOrder) async throws -> PreparedRefundSnapshot {
         let fullOrder = try await orderService.loadOrder(orderID: order.id)
+        if let eligibilityFailure = fullOrder.refundEligibilityFailure {
+            throw eligibilityFailure
+        }
         let refunds = try await loadDetailedRefunds(for: fullOrder)
         let fetchedCharge = try await fetchChargeIfNeeded(for: fullOrder)
         let charge = fetchedCharge.map { refundMapping.normalizedForPOSInteracRefund(charge: $0) }

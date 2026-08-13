@@ -572,10 +572,10 @@ private extension OrderDetailsViewController {
 
     func issueRefundWasPressed() {
         if let eligibilityFailure = viewModel.order.refundEligibilityFailure {
-            let alertController = UIAlertController(title: Localization.Alert.giftCardRefundUnsupportedTitle,
+            let alertController = UIAlertController(title: eligibilityFailure.title,
                                                     message: eligibilityFailure.localizedDescription,
                                                     preferredStyle: .alert)
-            alertController.addAction(UIAlertAction(title: Localization.Alert.giftCardRefundUnsupportedDismissButton,
+            alertController.addAction(UIAlertAction(title: eligibilityFailure.dismissButtonTitle,
                                                     style: .default))
             present(alertController, animated: true)
             return
@@ -1066,16 +1066,6 @@ private extension OrderDetailsViewController {
         }
 
         enum Alert {
-            static let giftCardRefundUnsupportedTitle = NSLocalizedString(
-                "orderDetails.issueRefund.giftCardUnsupported.alert.title",
-                value: "Refund from your store admin",
-                comment: "Title of the alert shown when a merchant tries to refund an order paid with a gift card"
-            )
-            static let giftCardRefundUnsupportedDismissButton = NSLocalizedString(
-                "orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton",
-                value: "OK",
-                comment: "Button dismissing the alert shown when a gift-card order cannot be refunded in the app"
-            )
             static let orderTrashConfirmationTitle = NSLocalizedString("OrderDetail.trashOrder.alert.title",
                                                                        value: "Remove order",
                                                                        comment: "Title of the alert when a user is moving an order to the trash")

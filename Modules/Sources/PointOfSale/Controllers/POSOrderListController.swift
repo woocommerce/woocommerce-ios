@@ -10,13 +10,15 @@ import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
+import enum Yosemite.OrderRefundEligibilityFailure
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
 
-enum StartRefundFlowResult {
+enum StartRefundFlowResult: Equatable {
     case hasItemsToRefund
     case nothingToRefund
+    case ineligible(OrderRefundEligibilityFailure)
     case failed
 }
 
@@ -435,6 +437,9 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         do {
             preparation = try await refundSubmissionProcessor.prepareRefund(for: order)
             selectedOrderRefundsState = .loaded(preparation)
+        } catch let eligibilityFailure as OrderRefundEligibilityFailure {
+            selectedOrderRefundsState = .failed(eligibilityFailure)
+            return .ineligible(eligibilityFailure)
         } catch {
             selectedOrderRefundsState = .failed(error)
             return .failed

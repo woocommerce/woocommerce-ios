@@ -322,11 +322,19 @@ private extension POSTabCoordinator {
                     return
                 }
 
+                let refundFlowResolver = POSRefundFlowResolver(stores: storesManager,
+                                                               featureFlagService: ServiceLocator.featureFlagService,
+                                                               availabilityCache: .shared,
+                                                               minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
+                let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,
+                                                                               flowResolver: refundFlowResolver,
+                                                                               availabilityCache: .shared)
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
                                                                            refundService: refundService,
                                                                            stores: storesManager,
                                                                            storageManager: storageManager,
-                                                                           currencySettings: currencySettings)
+                                                                           currencySettings: currencySettings,
+                                                                           serverRefundPreviewUseCase: serverRefundPreviewUseCase)
 
                 guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
                                                          selectedSite: defaultSitePublisher,

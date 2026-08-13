@@ -901,6 +901,10 @@ private actor MockLocalCatalogEligibilityService: POSLocalCatalogEligibilityServ
         .eligible
     }
 
+    func cachedCatalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState? {
+        .eligible
+    }
+
     func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {}
 
     func refreshEligibilityState(for siteID: Int64) async -> POSLocalCatalogEligibilityState {

@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] In-Person Payments: Fixed card payment options being unavailable when trying a Tap to Pay payment on multi-currency stores. [https://github.com/woocommerce/woocommerce-ios/pull/17704]
 - [*] Orders: Refunding an order paid with a gift card is now blocked in the app with a prompt to refund from your store admin. [https://github.com/woocommerce/woocommerce-ios/pull/17691]
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]

@@ -126,8 +126,8 @@ private extension GoogleAdsDashboardCardViewModel {
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,
                 timeZone: TimeZone.siteTimezone,
-                earliestDateToInclude: Date(),
-                latestDateToInclude: Date.distantPast) { result in
+                earliestDateToInclude: Date(timeIntervalSince1970: 0),
+                latestDateToInclude: Date.now) { result in
                     continuation.resume(with: result)
                 }
             )

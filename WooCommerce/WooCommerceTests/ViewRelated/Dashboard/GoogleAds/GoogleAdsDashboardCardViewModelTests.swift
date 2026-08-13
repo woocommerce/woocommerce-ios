@@ -125,6 +125,36 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_reloadCard_when_campaign_exists_retrieves_stats_from_epoch_through_current_date() async {
+        // Given
+        let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
+        let dateBeforeReload = Date.now
+        var requestedEarliestDate: Date?
+        var requestedLatestDate: Date?
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .fetchAdsCampaigns(_, onCompletion):
+                onCompletion(.success([.fake()]))
+            case let .retrieveCampaignStats(_, _, _, earliestDateToInclude, latestDateToInclude, onCompletion):
+                requestedEarliestDate = earliestDateToInclude
+                requestedLatestDate = latestDateToInclude
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // When
+        await viewModel.reloadCard()
+
+        // Then
+        let dateAfterReload = Date.now
+        XCTAssertEqual(requestedEarliestDate, Date(timeIntervalSince1970: 0))
+        XCTAssertGreaterThanOrEqual(try XCTUnwrap(requestedLatestDate), dateBeforeReload)
+        XCTAssertLessThanOrEqual(try XCTUnwrap(requestedLatestDate), dateAfterReload)
+    }
+
+    @MainActor
     func test_performanceStats_is_updated_correctly() async {
         // Given
         let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)

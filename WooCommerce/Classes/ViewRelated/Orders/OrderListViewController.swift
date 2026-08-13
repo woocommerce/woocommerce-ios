@@ -171,8 +171,14 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         }
     }
 
+    @available(*, deprecated, message: "temporary warning guard test")
+    private func temporaryDeprecatedTestFunction() {}
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        var temporaryNeverMutatedTestValue = 2
+        _ = temporaryNeverMutatedTestValue
+        temporaryDeprecatedTestFunction()
         createDataSource()
 
         registerUserActivity()

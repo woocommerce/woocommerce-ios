@@ -186,16 +186,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         guard stores.isAuthenticated else {
             return localDefault
         }
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
-                .smarterNotifications,
-                defaultValue: localDefault,
-                useCache: true,
-                completion: { value in
-                    continuation.resume(returning: value)
-                })
-            )
-        }
+        return await RemoteFeatureFlagService(stores: stores).isEnabled(.smarterNotifications, defaultValue: localDefault)
     }
 
     /// Reloads the sites when store picker gets dismissed.

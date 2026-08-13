@@ -167,6 +167,8 @@ public class MockStoresManager: StoresManager {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         case let action as StoreOnboardingTasksAction:
             switch action {

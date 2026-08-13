@@ -6,6 +6,11 @@ import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
 
+public enum POSAnalyticsEntryPoint: String {
+    case posTab = "pos_tab"
+    case autoReopen = "auto_reopen"
+}
+
 public class TracksProvider: NSObject, AnalyticsProvider {
 
     /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
@@ -40,8 +45,17 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 
     private static var isPOSModeActive: Bool = false
 
+    private(set) static var posEntryPoint: POSAnalyticsEntryPoint?
+
     public static func setPOSMode(_ active: Bool) {
         isPOSModeActive = active
+        if active == false {
+            posEntryPoint = nil
+        }
+    }
+
+    public static func setPOSEntryPoint(_ entryPoint: POSAnalyticsEntryPoint) {
+        posEntryPoint = entryPoint
     }
 }
 
@@ -73,6 +87,19 @@ extension TracksProvider {
         decoratedProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
         return decoratedProperties
     }
+
+    func addPointOfSaleProperties(to properties: [AnyHashable: Any]?,
+                                  deviceType: String,
+                                  entryPoint: POSAnalyticsEntryPoint?) -> [AnyHashable: Any] {
+        var decoratedProperties = properties ?? [:]
+        decoratedProperties[Constants.deviceTypeKey] = deviceType
+
+        if let entryPoint {
+            decoratedProperties[Constants.entryPointKey] = entryPoint.rawValue
+        }
+
+        return decoratedProperties
+    }
 }
 
 
@@ -89,8 +116,14 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        let properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
+        let carriesPOSProperties = carriesPointOfSaleProperties(eventName)
+        let eventName = needsPointOfSaleNamePrefix(eventName) ? Constants.pointOfSaleEventNamePrefix + eventName : eventName
+        var properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
+        if carriesPOSProperties {
+            properties = addPointOfSaleProperties(to: properties,
+                                                  deviceType: UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics,
+                                                  entryPoint: Self.posEntryPoint)
+        }
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
@@ -184,10 +217,22 @@ private extension TracksProvider {
         }
     }
 
-    private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+    private func carriesPointOfSaleProperties(_ eventName: String) -> Bool {
+        guard let event = WooAnalyticsStat(rawValue: eventName) else {
+            return false
+        }
+
+        return needsPointOfSaleNamePrefix(eventName) || alreadyPointOfSaleNamedEventList.contains(event)
+    }
+
+    private var alreadyPointOfSaleNamedEventList: Set<WooAnalyticsStat> {
+        [WooAnalyticsStat.pointOfSaleTabVisibilityChecked]
+    }
+
+    private func needsPointOfSaleNamePrefix(_ eventName: String) -> Bool {
         guard let event = WooAnalyticsStat(rawValue: eventName) else {
             DDLogWarn("⚠️ Event not found in WooAnalyticsStat list")
-            return eventName
+            return false
         }
 
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
@@ -365,11 +410,7 @@ private extension TracksProvider {
         ]
 
         // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event
-        guard (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event) else {
-            return eventName
-        }
-        let prefix = "pos_"
-        return "\(prefix)\(eventName)"
+        return (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event)
     }
 
     func refreshTracksMetadata() {
@@ -401,7 +442,10 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+        static let pointOfSaleEventNamePrefix = "pos_"
         static let horizontalSizeClassKey = "horizontal_size_class"
+        static let deviceTypeKey = "device_type"
+        static let entryPointKey = "entry_point"
     }
 
     enum UserProperties {

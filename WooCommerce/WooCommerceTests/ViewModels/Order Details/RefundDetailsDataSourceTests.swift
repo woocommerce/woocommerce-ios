@@ -84,23 +84,27 @@ struct RefundDetailsDataSourceTests {
 private extension RefundDetailsDataSourceTests {
     /// `update(with:)` only copies attributes, so the image relationships are attached manually.
     func insert(product: Product) {
-        let storageProduct = storageManager.viewStorage.insertNewObject(ofType: StorageProduct.self)
-        storageProduct.update(with: product)
-        for image in product.images {
-            let storageImage = storageManager.viewStorage.insertNewObject(ofType: StorageProductImage.self)
-            storageImage.update(with: image)
-            storageProduct.addToImages(storageImage)
-        }
+        storageManager.performAndSave({ storage in
+            let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            storageProduct.update(with: product)
+            for image in product.images {
+                let storageImage = storage.insertNewObject(ofType: StorageProductImage.self)
+                storageImage.update(with: image)
+                storageProduct.addToImages(storageImage)
+            }
+        }, completion: {}, on: .main)
     }
 
     func insert(variation: ProductVariation) {
-        let storageVariation = storageManager.viewStorage.insertNewObject(ofType: StorageProductVariation.self)
-        storageVariation.update(with: variation)
-        if let image = variation.image {
-            let storageImage = storageManager.viewStorage.insertNewObject(ofType: StorageProductImage.self)
-            storageImage.update(with: image)
-            storageVariation.image = storageImage
-        }
+        storageManager.performAndSave({ storage in
+            let storageVariation = storage.insertNewObject(ofType: StorageProductVariation.self)
+            storageVariation.update(with: variation)
+            if let image = variation.image {
+                let storageImage = storage.insertNewObject(ofType: StorageProductImage.self)
+                storageImage.update(with: image)
+                storageVariation.image = storageImage
+            }
+        }, completion: {}, on: .main)
     }
 
     func makeDataSource(items: [OrderItemRefund]) -> RefundDetailsDataSource {

@@ -32,7 +32,7 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         let rows = viewModel.getRows()
 
         // Then, .systemStatusReport should not be included.
-        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog])
+        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .mobileStatusReport])
     }
 
     func test_given_authenticated_user_when_getting_rows_then_all_options_are_shown() {
@@ -43,7 +43,7 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         let rows = viewModel.getRows()
 
         // Then
-        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .chatHistory])
+        XCTAssertEqual(rows, [.helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .mobileStatusReport, .chatHistory])
     }
 
     func test_given_all_options_when_getting_rows_then_order_is_correct() {

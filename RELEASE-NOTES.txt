@@ -4,12 +4,19 @@
 25.5
 -----
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
+- [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
+- [*] Order Creation: Fixed a white spacer appearing below the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/17692]
+- [Internal] POS refunds: bound the server-calculated preview total to the selection it was calculated for, so the submitted amount always matches the reviewed one. [https://github.com/woocommerce/woocommerce-ios/pull/17667]
+- [*] Fixed universal links using www.woocommerce.com or www.woo.com opening in Safari instead of the app. [https://github.com/woocommerce/woocommerce-ios/pull/17682]
+- [*] In-Person Payments: Fixed Tap to Pay appearing after cancellation and clarified when no payment was taken. [https://github.com/woocommerce/woocommerce-ios/pull/17675]
 - [*] Login: QR login now waits for you to choose a store when multiple sites are available. [https://github.com/woocommerce/woocommerce-ios/pull/17681]
 - [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
 - [*] Tapping an already-selected tab now returns it to its root screen. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
+- [*] Order Details: Refunded variable products now show their product thumbnail [https://github.com/woocommerce/woocommerce-ios/pull/17684]
 - [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
+- [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]
 
 25.4
 -----
@@ -20,6 +27,7 @@
 - [*] Login: Fixed stores failing to load when hosting blocks one of the WordPress REST API URL formats. [https://github.com/woocommerce/woocommerce-ios/pull/17602]
 - [*] Order statuses now display in the store's language across the order list, search, filters, and the dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17595]
 - [*] Orders: Fixed a crash when rotating order details on large iPhones running iOS 27. [https://github.com/woocommerce/woocommerce-ios/pull/17620]
+- [*] Orders: Enabled editing orders in currencies other than the store default on WooCommerce 11.1 or newer. [https://github.com/woocommerce/woocommerce-ios/pull/17619]
 - [*] Fixed the in-app new order notification showing a cut-off title and a wrong-coloured "View" button in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/17601]
 - [*] Products: Fixed bulk Regular Price update failing for variable products whose variations share a duplicate SKU or GTIN. [https://github.com/woocommerce/woocommerce-ios/pull/17556]
 - [Internal] Removed leftover code for the retired Products tab feedback banner and its survey. [https://github.com/woocommerce/woocommerce-ios/pull/17569]

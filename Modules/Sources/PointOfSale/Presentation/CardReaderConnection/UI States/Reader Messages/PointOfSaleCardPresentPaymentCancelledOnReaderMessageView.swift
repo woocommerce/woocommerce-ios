@@ -23,6 +23,13 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
+
+                if let message = viewModel.message {
+                    Text(message)
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                }
             }
             .dynamicWidthScaling(containerWidth: width)
 

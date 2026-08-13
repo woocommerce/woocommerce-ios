@@ -724,9 +724,9 @@ private extension DashboardViewModel {
             return
         }
 
-        var supportedCards = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
-        supportedCards.insert(.stock)
-        let supportedVisibleCards = showOnDashboardCards.filter { supportedCards.contains($0.type) }
+        var cardsSupportingRefreshOnAppearance = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
+        cardsSupportingRefreshOnAppearance.insert(.stock)
+        let supportedVisibleCards = showOnDashboardCards.filter { cardsSupportingRefreshOnAppearance.contains($0.type) }
 
         await reloadCardsIfNeeded(supportedVisibleCards)
     }

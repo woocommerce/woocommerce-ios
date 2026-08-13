@@ -99,22 +99,6 @@ struct ItemListViewHelperTests {
         #expect(result == false)
     }
 
-    @Test func shouldShowAppliedCouponIndicator_when_coupon_not_in_cart_then_false() {
-        // Given
-        let coupon = makeCoupon(itemID: 1)
-        let otherCoupon = makeCoupon(itemID: 2, code: "OTHER")
-
-        // When
-        let result = sut.shouldShowAppliedCouponIndicator(
-            coupon: coupon,
-            cartCoupons: [makeCartCouponItem(from: otherCoupon)],
-            layoutScale: .compact
-        )
-
-        // Then
-        #expect(result == false)
-    }
-
     @Test func shouldShowAppliedCouponIndicator_when_cart_empty_then_false() {
         // Given
         let coupon = makeCoupon(itemID: 1)

@@ -74,13 +74,13 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
-    func test_submitRefund_with_v4_line_items_creates_v4_refund_with_restock_instead_of_v3_create() throws {
+    func test_submitRefund_with_server_line_items_creates_computed_refund_with_restock_instead_of_classic_create() throws {
         // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
                                     charge: nil,
                                     amount: "2.28",
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
-                                    v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
         refundService.createRefundResult = .success(.fake())
 
@@ -94,6 +94,8 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
+        // The server owns the math: the submission path never sends an amount override.
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
         let dispatchedV3Create = stores.receivedActions.contains(where: { action in
             guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
                 return false
@@ -103,13 +105,13 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(dispatchedV3Create)
     }
 
-    func test_submitRefund_with_v4_line_items_relays_create_failure() throws {
+    func test_submitRefund_with_server_line_items_relays_create_failure() throws {
         // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
                                     charge: nil,
                                     amount: "2.28",
                                     paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
-                                    v4LineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
         let useCase = createUseCase(details: details)
         refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
 

@@ -74,7 +74,11 @@ private extension RefundDetailsResultController {
             onReload()
         }
 
-        try? productResultsController.performFetch()
+        do {
+            try productResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
+        }
     }
 
     /// Handle product variation event changes
@@ -88,6 +92,10 @@ private extension RefundDetailsResultController {
             onReload()
         }
 
-        try? productVariationResultsController.performFetch()
+        do {
+            try productVariationResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch ProductVariations for Site \(siteID): \(error)")
+        }
     }
 }

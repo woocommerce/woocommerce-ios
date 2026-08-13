@@ -4,7 +4,7 @@ import enum NetworkingCore.NetworkError
 
 /// A refund rejection returned by the server-calculated refund endpoints
 /// (`POST /wc/v3/orders/{id}/refunds/preview` and `POST /wc/v3/orders/{id}/refunds` with
-/// `compute_totals`) as an unprefixed error code with a 400/422 status.
+/// `compute_totals`) as a `woocommerce_rest_`-prefixed error code with a 400/422 status.
 ///
 /// Only codes a cashier can act on are mapped — they occur when the order changed after the
 /// screen was loaded (for example another register refunded part of the order). Codes that

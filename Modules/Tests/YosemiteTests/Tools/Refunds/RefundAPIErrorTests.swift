@@ -9,7 +9,7 @@ import enum NetworkingCore.NetworkError
 struct RefundAPIErrorTests {
 
     @Test func init_maps_each_actionable_code_from_dotcom_unknown_error() {
-        // Given the unprefixed codes the refund endpoints return with 400/422 statuses
+        // Given the `woocommerce_rest_`-prefixed codes the refund endpoints return with 400/422 statuses
         let expectations: [(code: String, rejection: RefundAPIError)] = [
             ("woocommerce_rest_quantity_exceeds_refundable", .quantityExceedsRefundable),
             ("woocommerce_rest_line_item_already_refunded", .lineItemAlreadyRefunded),

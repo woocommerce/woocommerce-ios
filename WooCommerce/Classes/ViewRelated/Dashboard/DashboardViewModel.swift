@@ -696,7 +696,7 @@ private extension DashboardViewModel {
                     }
                 case .stock:
                     group.addTask { [weak self] in
-                        await self?.productStockCardViewModel.reloadData()
+                        await self?.productStockCardViewModel.reloadDataIfNeeded(forceRefresh: forceRefresh)
                     }
                 case .reviews:
                     group.addTask { [weak self] in
@@ -724,7 +724,8 @@ private extension DashboardViewModel {
             return
         }
 
-        let supportedCards = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
+        var supportedCards = Set(DashboardTimestampStore.Card.allCases.map { $0.dashboardCard } )
+        supportedCards.insert(.stock)
         let supportedVisibleCards = showOnDashboardCards.filter { supportedCards.contains($0.type) }
 
         await reloadCardsIfNeeded(supportedVisibleCards)

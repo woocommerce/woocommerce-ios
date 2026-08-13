@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
 - [*] Order Creation: Fixed a white spacer appearing below the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/17692]
 - [Internal] POS refunds: bound the server-calculated preview total to the selection it was calculated for, so the submitted amount always matches the reviewed one. [https://github.com/woocommerce/woocommerce-ios/pull/17667]

@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [Internal] POS: every POS analytics event now carries device_type (phone/tablet) and entry_point (pos_tab or auto_reopen), so POS usage can be split by form factor and merchant-opened sessions separated from POS-lock cold-launch restores. [https://github.com/woocommerce/woocommerce-ios/pull/17705]
 - [*] Orders: Refunding an order paid with a gift card is now blocked in the app with a prompt to refund from your store admin. [https://github.com/woocommerce/woocommerce-ios/pull/17691]
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]

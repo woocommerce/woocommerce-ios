@@ -1,7 +1,7 @@
 import Foundation
 import Codegen
 
-/// Server-calculated refund breakdown returned by `POST /wc/v4/refunds/preview`.
+/// Server-calculated refund breakdown returned by `POST /wc/v3/orders/{order_id}/refunds/preview`.
 ///
 /// The preview is transient — it is never persisted. All monetary values arrive from the API as
 /// strings (possibly null); decoding is lenient, mapping null/missing values to zero and null

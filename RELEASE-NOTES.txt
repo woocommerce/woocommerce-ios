@@ -4,12 +4,22 @@
 25.5
 -----
 - [*] Orders: Refunding an order paid with a gift card is now blocked in the app with a prompt to refund from your store admin. [https://github.com/woocommerce/woocommerce-ios/pull/17691]
+- [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
+- [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
+- [*] Order Creation: Fixed a white spacer appearing below the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/17692]
+- [Internal] POS refunds: bound the server-calculated preview total to the selection it was calculated for, so the submitted amount always matches the reviewed one. [https://github.com/woocommerce/woocommerce-ios/pull/17667]
+- [*] Fixed universal links using www.woocommerce.com or www.woo.com opening in Safari instead of the app. [https://github.com/woocommerce/woocommerce-ios/pull/17682]
+- [*] In-Person Payments: Fixed Tap to Pay appearing after cancellation and clarified when no payment was taken. [https://github.com/woocommerce/woocommerce-ios/pull/17675]
 - [*] Login: QR login now waits for you to choose a store when multiple sites are available. [https://github.com/woocommerce/woocommerce-ios/pull/17681]
 - [*] Toggling Pay in Person now asks for confirmation and explains what changes at your store's checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17658]
 - [*] Orders: Fixed refunds failing with "Invalid refund amount" on stores with tax-inclusive pricing. [https://github.com/woocommerce/woocommerce-ios/pull/17630]
 - [*] Tapping an already-selected tab now returns it to its root screen. [https://github.com/woocommerce/woocommerce-ios/pull/17624]
+- [*] Phone POS: Now it shows the applied state for coupons in the coupon list [https://github.com/woocommerce/woocommerce-ios/pull/17697]
+- [*] Receipts: Fixed email receipt rejecting addresses with trailing whitespace [https://github.com/woocommerce/woocommerce-ios/pull/17687]
+- [*] Order Details: Refunded variable products now show their product thumbnail [https://github.com/woocommerce/woocommerce-ios/pull/17684]
 - [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
+- [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]
 
 25.4
 -----

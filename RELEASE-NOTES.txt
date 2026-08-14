@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Analytics Hub: Fixed quarter date ranges displaying incorrect dates for some store timezones. [https://github.com/woocommerce/woocommerce-ios/pull/17713]
 - [*] Google Ads: Fixed the dashboard campaign card failing to show existing campaign performance data. [https://github.com/woocommerce/woocommerce-ios/pull/17706]
 - [*] POS: Fixed the barcode scanner setup test not recognizing scans on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17702]
 - [*] Dashboard: Fixed the Stock card not refreshing after product edits or when its data becomes stale. [https://github.com/woocommerce/woocommerce-ios/pull/17707]

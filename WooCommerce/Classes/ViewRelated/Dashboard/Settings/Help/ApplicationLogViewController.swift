@@ -22,6 +22,10 @@ class ApplicationLogViewController: UIViewController {
     ///
     var logFiles = [DDLogFileInfo]()
 
+    /// The temporary archive must remain available until the share sheet finishes using it.
+    ///
+    private var exportedLogsURL: URL?
+
     /// Date formatter
     ///
     let dateFormatter: DateFormatter = {
@@ -94,6 +98,7 @@ class ApplicationLogViewController: UIViewController {
         }
 
         sections = [
+            Section(title: nil, footer: nil, rows: [.exportAllLogs]),
             Section(title: logFileTitle, footer: logFileFooter, rows: logFileRows),
             Section(title: nil, footer: nil, rows: [.clearLogs])
         ]
@@ -153,6 +158,8 @@ extension ApplicationLogViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .exportAllLogs:
+            exportAllLogs(from: tableView.cellForRow(at: indexPath))
         case .logFile:
             logFileWasPressed(in: indexPath.row)
         case .clearLogs:
@@ -174,6 +181,8 @@ private extension ApplicationLogViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as BasicTableViewCell where row == .exportAllLogs:
+            configureExportAllLogs(cell: cell)
         case let cell as BasicTableViewCell where row == .logFile:
             configureLogFile(cell: cell, indexPath: indexPath)
         case let cell as BasicTableViewCell where row == .clearLogs:
@@ -181,6 +190,15 @@ private extension ApplicationLogViewController {
         default:
             fatalError()
         }
+    }
+
+    /// Export all application logs cell.
+    ///
+    func configureExportAllLogs(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = .accent
+        cell.textLabel?.text = Localization.exportAllLogs
     }
 
     /// Application Log cell.
@@ -206,6 +224,43 @@ private extension ApplicationLogViewController {
 // MARK: - Actions
 //
 private extension ApplicationLogViewController {
+
+    /// Creates and shares a ZIP archive containing every retained log file.
+    ///
+    func exportAllLogs(from sourceView: UIView?) {
+        removeExportedLogs()
+
+        do {
+            let logFileURLs = fileLogger.logFileManager.sortedLogFileInfos.map { URL(fileURLWithPath: $0.filePath) }
+            let archiveURL = try ApplicationLogsExporter().export(logFileURLs: logFileURLs)
+            exportedLogsURL = archiveURL
+
+            let activityViewController = UIActivityViewController(activityItems: [archiveURL], applicationActivities: nil)
+            activityViewController.popoverPresentationController?.sourceView = sourceView ?? view
+            activityViewController.popoverPresentationController?.sourceRect = sourceView?.bounds ?? view.bounds
+            activityViewController.completionWithItemsHandler = { [weak self] _, _, _, _ in
+                self?.removeExportedLogs()
+            }
+            present(activityViewController, animated: true)
+        } catch {
+            DDLogError("⛔️ Error exporting application logs: \(error)")
+            presentExportError()
+        }
+    }
+
+    func removeExportedLogs() {
+        guard let exportedLogsURL else {
+            return
+        }
+        try? FileManager.default.removeItem(at: exportedLogsURL.deletingLastPathComponent())
+        self.exportedLogsURL = nil
+    }
+
+    func presentExportError() {
+        let alert = UIAlertController(title: Localization.exportErrorTitle, message: Localization.exportErrorMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: Localization.ok, style: .default))
+        present(alert, animated: true)
+    }
 
     /// View log file action
     ///
@@ -254,11 +309,14 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
+    case exportAllLogs
     case logFile
     case clearLogs
 
     var type: UITableViewCell.Type {
         switch self {
+        case .exportAllLogs:
+            return BasicTableViewCell.self
         case .logFile:
             return BasicTableViewCell.self
         case .clearLogs:
@@ -268,5 +326,30 @@ private enum Row: CaseIterable {
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+private extension ApplicationLogViewController {
+    enum Localization {
+        static let exportAllLogs = NSLocalizedString(
+            "applicationLog.exportAllLogs",
+            value: "Export All Logs",
+            comment: "Button that exports all retained application logs as a ZIP file."
+        )
+        static let exportErrorTitle = NSLocalizedString(
+            "applicationLog.exportError.title",
+            value: "Unable to Export Logs",
+            comment: "Title of an alert shown when application logs could not be exported."
+        )
+        static let exportErrorMessage = NSLocalizedString(
+            "applicationLog.exportError.message",
+            value: "Please try again.",
+            comment: "Message of an alert shown when application logs could not be exported."
+        )
+        static let ok = NSLocalizedString(
+            "applicationLog.exportError.ok",
+            value: "OK",
+            comment: "Button that dismisses the application log export error alert."
+        )
     }
 }

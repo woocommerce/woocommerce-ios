@@ -1,5 +1,4 @@
 import SwiftUI
-import CocoaLumberjackSwift
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
@@ -47,35 +46,24 @@ struct PointOfSalePaymentSuccessView: View {
         .onChange(of: showPrinterSetupModal) { _, isShowing in
             // The setup modal auto-dismisses when a printer connects, so the modal closing with a
             // printer connected means setup succeeded — print the receipt the merchant asked for.
-            if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
-                isPresented: isShowing,
-                isPrinterConnected: posModel.isReceiptPrinterConnected) == .print {
-                printReceipt()
+            Task {
+                await printCoordinator.handleSetupModalVisibilityChange(
+                    isPresented: isShowing,
+                    isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
     }
 
-    private func handlePrintReceiptTap() {
-        analytics.track(.receiptPrintTapped)
-        switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
-        case .presentSetup:
-            showPrinterSetupModal = true
-        case .print:
-            printReceipt()
-        case .none:
-            break
+    private var printCoordinator: POSPrintReceiptCoordinator {
+        POSPrintReceiptCoordinator(analytics: analytics) {
+            try await posModel.printReceipt()
         }
     }
 
-    private func printReceipt() {
-        // Print-failure UX (retry + email fallback) is deferred to a follow-up; log for now.
+    private func handlePrintReceiptTap() {
         Task {
-            do {
-                try await posModel.printReceipt()
-                analytics.track(.receiptPrintSuccess)
-            } catch {
-                DDLogError("⛔️ POS receipt print failed: \(error)")
-                analytics.track(.receiptPrintFailed, parameters: [:], error: error)
+            if await printCoordinator.handlePrintButtonTap(isPrinterConnected: posModel.isReceiptPrinterConnected) {
+                showPrinterSetupModal = true
             }
         }
     }

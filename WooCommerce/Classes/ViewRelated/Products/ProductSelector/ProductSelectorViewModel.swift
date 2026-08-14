@@ -81,6 +81,12 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     let source: ProductSelectorSource
 
+    private let bundleChecker: UnsupportedBundledProductChecker
+
+    /// The bundle currently being checked, if any. Further taps are dropped while one is in flight.
+    ///
+    private var productIDBeingVerified: Int64?
+
     /// View model for the filter list.
     ///
     var filterListViewModel: FilterProductListViewModel {
@@ -292,6 +298,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
         self.onConfigureProductRow = onConfigureProductRow
+        self.bundleChecker = UnsupportedBundledProductChecker(stores: stores)
         tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
 
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
@@ -365,6 +372,38 @@ final class ProductSelectorViewModel: ObservableObject {
             onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID), selected)
         } else {
             onProductSelectionStateChanged?(selectedProduct, selected)
+        }
+    }
+
+    /// Only a bundle needs checking: the selector already greys out the products it refuses outright.
+    private func requiresBundleVerification(_ product: Product) -> Bool {
+        guard case .orderForm = source else {
+            return false
+        }
+        return product.productType == .bundle
+    }
+
+    /// Whether a bundle holds nothing which would keep it off an order. A bundle whose check can't
+    /// complete is kept off too, and taps arriving while a check runs are dropped.
+    @MainActor
+    private func bundleCanBeAddedToOrder(_ product: Product) async -> Bool {
+        guard productIDBeingVerified == nil else {
+            return false
+        }
+
+        productIDBeingVerified = product.productID
+        let result = await bundleChecker.check(bundle: product)
+        productIDBeingVerified = nil
+
+        switch result {
+        case .supported:
+            return true
+        case let .unsupported(restriction):
+            productNotice = Notice(title: restriction.bundleReason, feedbackType: .error)
+            return false
+        case .unknown:
+            productNotice = Notice(title: Localization.cannotCheckBundledProductsMessage, feedbackType: .error)
+            return false
         }
     }
 
@@ -1007,7 +1046,21 @@ private extension ProductSelectorViewModel {
             }()
 
             let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
-                self?.onConfigureProductRow?(product)
+                guard let self else {
+                    return
+                }
+
+                guard requiresBundleVerification(product) else {
+                    onConfigureProductRow?(product)
+                    return
+                }
+
+                Task { @MainActor [weak self] in
+                    guard let self, await bundleCanBeAddedToOrder(product) else {
+                        return
+                    }
+                    onConfigureProductRow?(product)
+                }
             }
 
             return ProductRowViewModel(product: product,
@@ -1093,6 +1146,11 @@ extension ProductSelectorViewModel {
 
 private extension ProductSelectorViewModel {
     enum Localization {
+        static let cannotCheckBundledProductsMessage = NSLocalizedString(
+            "productSelectorViewModel.cannotCheckBundledProducts",
+            value: "Cannot check the bundled products. Please try again.",
+            comment: "Message shown when the products inside a bundle could not be loaded, so the app cannot tell " +
+            "whether the bundle can be added to the order.")
         static let syncErrorMessage = NSLocalizedString("There was an error syncing products",
                                                         comment: "Notice displayed when syncing the list of products fails")
         static let searchErrorMessage = NSLocalizedString("There was an error searching products",

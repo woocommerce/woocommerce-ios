@@ -3,7 +3,7 @@
 
 25.5
 -----
-- [Internal] POS refunds: refund events now report whether totals were calculated locally or by the server, the wire error code on failures, and when a store falls back for lack of the server route.
+- [Internal] POS refunds: refund events now report whether totals were calculated locally or by the server, the wire error code on failures, and when a store falls back for lack of the server route. [https://github.com/woocommerce/woocommerce-ios/pull/17716]
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
 - [*] Order Creation: Fixed a white spacer appearing below the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/17692]

@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
+    @EnvironmentObject private var modalManager: POSModalManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -23,6 +24,7 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
+    @State private var phoneCartPresentationDetent: PresentationDetent = .medium
 
     /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
@@ -279,9 +281,19 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
+        .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
+            // Auto-opens the cart sheet on scan
+            guard itemID != nil,
+                  PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
+                                                                          orderStage: posModel.orderStage) else {
+                return
+            }
+            phoneCartPresentationDetent = .large
+            phoneShowingCart = true
+        }
         .posSheet(isPresented: $phoneShowingCart) {
             phoneCartSheetView
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
         // Phone-only covers presented at the dashboard level:
@@ -411,6 +423,7 @@ struct PointOfSaleDashboardView: View {
 
     private var phoneCartButton: some View {
         Button {
+            phoneCartPresentationDetent = .medium
             phoneShowingCart = true
         } label: {
             Text(String(format: Localization.phoneCart, phoneCartItemsCount))
@@ -455,6 +468,12 @@ struct PointOfSaleDashboardView: View {
         }
         return cart
             .background(Color.posSurface)
+            // Keep scanning available while the cart sheet is open: ItemListView's scanner is
+            // gated off whenever a POSSheetManager sheet is presented (this one included), so
+            // without this a scan with the sheet open would silently do nothing.
+            .barcodeScanning(enabled: Binding(get: { !modalManager.isPresented }, set: { _ in })) { result in
+                posModel.barcodeScanned(result)
+            }
     }
 
     private var tabletContentView: some View {

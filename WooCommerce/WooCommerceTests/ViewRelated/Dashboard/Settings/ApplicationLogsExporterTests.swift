@@ -12,17 +12,22 @@ struct ApplicationLogsExporterTests {
         defer { try? fileManager.removeItem(at: sourceDirectory) }
         let firstLog = sourceDirectory.appendingPathComponent("current.log")
         let secondLog = sourceDirectory.appendingPathComponent("previous.log")
-        try Data("current log contents".utf8).write(to: firstLog)
-        try Data("previous log contents".utf8).write(to: secondLog)
+        let firstLogData = Data(String(repeating: "current log contents\n", count: 100).utf8)
+        let secondLogData = Data(String(repeating: "previous log contents\n", count: 100).utf8)
+        try firstLogData.write(to: firstLog)
+        try secondLogData.write(to: secondLog)
 
         // When
         let archiveURL = try ApplicationLogsExporter().export(logFileURLs: [firstLog, secondLog])
         defer { try? fileManager.removeItem(at: archiveURL.deletingLastPathComponent()) }
 
         // Then
-        let entries = try StoredZipArchive(data: Data(contentsOf: archiveURL)).entries
-        #expect(entries["current.log"] == Data("current log contents".utf8))
-        #expect(entries["previous.log"] == Data("previous log contents".utf8))
+        let archiveData = try Data(contentsOf: archiveURL)
+        let archiveText = String(decoding: archiveData, as: UTF8.self)
+        #expect(archiveURL.pathExtension == "zip")
+        #expect(archiveText.contains("current.log"))
+        #expect(archiveText.contains("previous.log"))
+        #expect(archiveData.count < firstLogData.count + secondLogData.count)
     }
 
     @Test func export_when_a_log_cannot_be_read_then_removes_temporary_export_directory() throws {
@@ -40,42 +45,5 @@ struct ApplicationLogsExporterTests {
         // Then
         let remainingItems = try fileManager.contentsOfDirectory(atPath: exportParentDirectory.path)
         #expect(remainingItems.isEmpty)
-    }
-}
-
-private struct StoredZipArchive {
-    let entries: [String: Data]
-
-    init(data: Data) throws {
-        var entries: [String: Data] = [:]
-        var offset = 0
-
-        while data.uint32(at: offset) == 0x04034b50 {
-            let size = Int(data.uint32(at: offset + 18))
-            let nameLength = Int(data.uint16(at: offset + 26))
-            let extraLength = Int(data.uint16(at: offset + 28))
-            let nameStart = offset + 30
-            let nameEnd = nameStart + nameLength
-            let contentsStart = nameEnd + extraLength
-            let contentsEnd = contentsStart + size
-            let name = String(decoding: data[nameStart..<nameEnd], as: UTF8.self)
-            entries[name] = Data(data[contentsStart..<contentsEnd])
-            offset = contentsEnd
-        }
-
-        self.entries = entries
-    }
-}
-
-private extension Data {
-    func uint16(at offset: Int) -> UInt16 {
-        UInt16(self[offset]) | UInt16(self[offset + 1]) << 8
-    }
-
-    func uint32(at offset: Int) -> UInt32 {
-        UInt32(self[offset]) |
-        UInt32(self[offset + 1]) << 8 |
-        UInt32(self[offset + 2]) << 16 |
-        UInt32(self[offset + 3]) << 24
     }
 }

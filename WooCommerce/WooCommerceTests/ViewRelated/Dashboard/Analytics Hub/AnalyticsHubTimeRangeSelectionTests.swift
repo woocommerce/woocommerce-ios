@@ -93,6 +93,25 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(previousTimeRange.end, endDate(from: "2021-12-31"))
     }
 
+    func test_lastQuarter_uses_store_timezone_when_calendar_has_different_timezone() throws {
+        // Given
+        let storeTimezone = try XCTUnwrap(TimeZone(secondsFromGMT: 3600))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let referenceDate = try XCTUnwrap(ISO8601DateFormatter().date(from: "2024-04-17T12:00:00Z"))
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastQuarter,
+                                                       currentDate: referenceDate,
+                                                       timezone: storeTimezone,
+                                                       calendar: calendar)
+
+        // When
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+
+        // Then
+        XCTAssertEqual(currentTimeRange.start, Date(timeIntervalSince1970: 1_704_063_600)) // January 1, 2024 00:00:00 UTC+1
+        XCTAssertEqual(currentTimeRange.end, Date(timeIntervalSince1970: 1_711_925_999)) // March 31, 2024 23:59:59 UTC+1
+    }
+
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_ranges() throws {
         // Given
         let today = currentDate(from: "2010-07-31")

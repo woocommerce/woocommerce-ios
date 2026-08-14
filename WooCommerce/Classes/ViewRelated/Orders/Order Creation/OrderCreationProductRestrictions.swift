@@ -33,14 +33,6 @@ enum ProductRestriction: CaseIterable {
         case .bookable: Localization.bookableReason
         }
     }
-
-    /// Shown when the restricted product is inside a bundle, where the bundle itself isn't the problem.
-    var bundleReason: String {
-        switch self {
-        case .subscription: Localization.subscriptionBundleReason
-        case .bookable: Localization.bookableBundleReason
-        }
-    }
 }
 
 private extension ProductRestriction {
@@ -53,13 +45,5 @@ private extension ProductRestriction {
             "productSelectorViewModel.bookableProductUnsupportedReason",
             value: "Bookable products are not supported for order creation",
             comment: "Message explaining unsupported bookable products for order creation")
-        static let subscriptionBundleReason = NSLocalizedString(
-            "orderCreationProductRestrictions.subscriptionBundleReason",
-            value: "This bundle contains a subscription product, which is not supported for order creation",
-            comment: "Message shown when a merchant tries to add a bundle holding a subscription product to an order.")
-        static let bookableBundleReason = NSLocalizedString(
-            "orderCreationProductRestrictions.bookableBundleReason",
-            value: "This bundle contains a bookable product, which is not supported for order creation",
-            comment: "Message shown when a merchant tries to add a bundle holding a bookable product to an order.")
     }
 }

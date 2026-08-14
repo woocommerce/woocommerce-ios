@@ -31,11 +31,9 @@ struct OrderCreationProductRestrictionsTests {
     }
 
     @Test
-    func every_restriction_explains_itself_both_on_its_own_and_inside_a_bundle() {
+    func every_restriction_explains_itself() {
         for restriction in ProductRestriction.allCases {
             #expect(restriction.reason.isNotEmpty)
-            #expect(restriction.bundleReason.isNotEmpty)
-            #expect(restriction.reason != restriction.bundleReason)
         }
     }
 }

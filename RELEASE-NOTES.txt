@@ -3,7 +3,7 @@
 
 25.5
 -----
-- [Internal] POS refunds: the server-calculated create now pins the confirmed total and fails instead of reporting success when a store books a zero-amount refund from a quantity-only request.
+- [Internal] POS refunds: the server-calculated create now pins the confirmed total and fails instead of reporting success when a store books a zero-amount refund from a quantity-only request. [https://github.com/woocommerce/woocommerce-ios/pull/17715]
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]
 - [*] Order Creation: Fixed a white spacer appearing below the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/17692]

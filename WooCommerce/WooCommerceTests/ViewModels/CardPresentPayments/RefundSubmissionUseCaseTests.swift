@@ -123,7 +123,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             }
         }
 
-        // Then both the request and its outcome are attributable to the server flow
+        // Then
         let requestIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create"))
         XCTAssertEqual(analyticsProvider.receivedProperties[requestIndex]["refund_flow"] as? String, "server_computed")
 
@@ -132,7 +132,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     }
 
     func test_submitRefund_without_server_line_items_reports_the_local_refund_flow() throws {
-        // Given a classic submission, which carries no server line items
+        // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: nil,
                                                    amount: "2.28",
@@ -152,7 +152,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     }
 
     func test_submitRefund_when_create_is_rejected_then_failure_event_carries_the_wire_error_code() throws {
-        // Given a deterministic server rejection rather than a transport failure
+        // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
                                     charge: nil,
                                     amount: "2.28",
@@ -170,7 +170,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             }
         }
 
-        // Then the rejection is separable from a network failure, and attributed to its flow
+        // Then
         let failureIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create_failed"))
         let properties = analyticsProvider.receivedProperties[failureIndex]
         XCTAssertEqual(properties["error_code"] as? String, "woocommerce_rest_refund_exceeds_remaining")
@@ -178,7 +178,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     }
 
     func test_submitRefund_when_create_fails_without_a_code_then_no_error_code_property_is_sent() throws {
-        // Given a transport-style failure that carries no REST error code
+        // Given
         let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
                                     charge: nil,
                                     amount: "2.28",
@@ -194,7 +194,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             }
         }
 
-        // Then the property is omitted rather than reported as an empty or placeholder value
+        // Then
         let failureIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create_failed"))
         XCTAssertNil(analyticsProvider.receivedProperties[failureIndex]["error_code"])
     }

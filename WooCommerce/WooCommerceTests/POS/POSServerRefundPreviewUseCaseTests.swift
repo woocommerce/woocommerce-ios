@@ -189,7 +189,7 @@ struct POSServerRefundPreviewUseCaseTests {
     }
 
     @Test func previewRefund_when_route_missing_then_reports_the_fallback_with_the_store_woo_version() async throws {
-        // Given a store whose refund preview route is not registered
+        // Given
         let analyticsProvider = MockAnalyticsProvider()
         let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
                                   previewResult: .failure(DotcomError.noRestRoute()),
@@ -198,7 +198,7 @@ struct POSServerRefundPreviewUseCaseTests {
         // When
         _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
-        // Then the fallback is measurable, and the version says whether the gate misjudged the store
+        // Then
         let index = try #require(analyticsProvider.receivedEvents.firstIndex(of: "refund_server_flow_unavailable"))
         #expect(analyticsProvider.receivedProperties[index]["woocommerce_version"] as? String == Versions.minimum)
         #expect(analyticsProvider.receivedProperties[index]["site_id"] as? String == "\(siteID)")

@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import YosemiteTestHelpers
+import enum NetworkingCore.DotcomError
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
@@ -103,6 +104,99 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             return true
         })
         XCTAssertFalse(dispatchedV3Create)
+    }
+
+    func test_submitRefund_with_server_line_items_reports_the_server_computed_refund_flow() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then both the request and its outcome are attributable to the server flow
+        let requestIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create"))
+        XCTAssertEqual(analyticsProvider.receivedProperties[requestIndex]["refund_flow"] as? String, "server_computed")
+
+        let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create_success"))
+        XCTAssertEqual(analyticsProvider.receivedProperties[successIndex]["refund_flow"] as? String, "server_computed")
+    }
+
+    func test_submitRefund_without_server_line_items_reports_the_local_refund_flow() throws {
+        // Given a classic submission, which carries no server line items
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        let requestIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create"))
+        XCTAssertEqual(analyticsProvider.receivedProperties[requestIndex]["refund_flow"] as? String, "local")
+    }
+
+    func test_submitRefund_when_create_is_rejected_then_failure_event_carries_the_wire_error_code() throws {
+        // Given a deterministic server rejection rather than a transport failure
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining",
+                                                                        message: nil,
+                                                                        data: nil))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then the rejection is separable from a network failure, and attributed to its flow
+        let failureIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create_failed"))
+        let properties = analyticsProvider.receivedProperties[failureIndex]
+        XCTAssertEqual(properties["error_code"] as? String, "woocommerce_rest_refund_exceeds_remaining")
+        XCTAssertEqual(properties["refund_flow"] as? String, "server_computed")
+    }
+
+    func test_submitRefund_when_create_fails_without_a_code_then_no_error_code_property_is_sent() throws {
+        // Given a transport-style failure that carries no REST error code
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then the property is omitted rather than reported as an empty or placeholder value
+        let failureIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "refund_create_failed"))
+        XCTAssertNil(analyticsProvider.receivedProperties[failureIndex]["error_code"])
     }
 
     func test_submitRefund_with_server_line_items_relays_create_failure() throws {

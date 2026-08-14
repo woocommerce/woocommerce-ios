@@ -1022,6 +1022,7 @@ public enum WooAnalyticsStat: String {
     case refundCreate = "refund_create"
     case refundCreateFailed = "refund_create_failed"
     case refundCreateSuccess = "refund_create_success"
+    case refundServerFlowUnavailable = "refund_server_flow_unavailable"
     case createOrderRefundSelectAllItemsButtonTapped = "create_order_refund_select_all_items_button_tapped"
     case createOrderRefundItemQuantityDialogOpened = "create_order_refund_item_quantity_dialog_opened"
     case createOrderRefundNextButtonTapped = "create_order_refund_next_button_tapped"

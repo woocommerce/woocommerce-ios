@@ -28,13 +28,16 @@ final class POSServerRefundPreviewUseCase {
     private let refundService: RefundServiceProtocol
     private let flowResolver: POSRefundFlowResolver
     private let availabilityCache: ServerRefundAvailabilityCache
+    private let analytics: Analytics
 
     init(refundService: RefundServiceProtocol,
          flowResolver: POSRefundFlowResolver,
-         availabilityCache: ServerRefundAvailabilityCache) {
+         availabilityCache: ServerRefundAvailabilityCache,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
+        self.analytics = analytics
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
@@ -54,6 +57,10 @@ final class POSServerRefundPreviewUseCase {
             if isRouteNotRegistered(error) {
                 DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
+                // Reported once per site per version: the cache short-circuits the resolver on
+                // subsequent refunds, so this counts stores that fell back rather than refunds.
+                analytics.track(event: .IssueRefund.serverRefundFlowUnavailable(siteID: siteID,
+                                                                                wooCommerceVersion: flowResolver.cachedWooCommerceVersion))
                 return .fallbackToLocal
             }
             DDLogError("⛔️ POS refund preview failed for order \(orderID): \(error)")

@@ -64,6 +64,12 @@ struct POSRefundFlowResolver {
         return .serverComputed
     }
 
+    /// The WooCommerce version this resolver judged the site on, for reporting alongside a
+    /// fallback so a store that fell back can be told apart from one that was never eligible.
+    var cachedWooCommerceVersion: String? {
+        stores.sessionManager.cachedWooCommerceVersion
+    }
+
     private func isWooVersionAtLeastMinimum() -> Bool {
         // Unknown version fails closed: eligibility must never rest on the preview probe alone,
         // because the preview route does not prove `compute_totals` create support.

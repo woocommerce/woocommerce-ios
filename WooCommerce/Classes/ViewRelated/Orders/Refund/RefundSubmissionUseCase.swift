@@ -507,17 +507,25 @@ private extension RefundSubmissionUseCase {
                                                                           fullyRefunded: details.amount == details.order.total,
                                                                           method: .items,
                                                                           gateway: details.order.paymentMethodID,
-                                                                          amount: details.amount))
+                                                                          amount: details.amount,
+                                                                          flow: refundFlow))
     }
 
     /// Tracks when the create refund request succeeds.
     func trackCreateRefundRequestSuccess() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID, flow: refundFlow))
     }
 
     /// Tracks when the create refund request fails.
     func trackCreateRefundRequestFailed(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error, flow: refundFlow))
+    }
+
+    /// Which side calculated the totals for this submission. `serverLineItems` is set only when a
+    /// preview succeeded for this exact selection, which is also the only condition under which
+    /// the computed create is used — so it is the same predicate the submission path branches on.
+    var refundFlow: WooAnalyticsEvent.IssueRefund.RefundFlow {
+        details.serverLineItems != nil ? .serverComputed : .local
     }
 
     /// Tracks when the refund request succeeds on the client-side before submitting to the site.

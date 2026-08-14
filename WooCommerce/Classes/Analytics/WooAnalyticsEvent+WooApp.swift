@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 import Yosemite
 import WooFoundation
+import enum NetworkingCore.DotcomError
+import enum NetworkingCore.NetworkError
 
 typealias WooAnalyticsEvent = WooFoundationCore.WooAnalyticsEvent
 typealias WooAnalyticsStat = WooFoundationCore.WooAnalyticsStat
@@ -246,25 +248,68 @@ extension WooAnalyticsEvent {
             case amount = "AMOUNT"
         }
 
-        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, amount: String) -> WooAnalyticsEvent {
+        /// Which side calculated the refund totals. Reported on every create event so success and
+        /// failure rates can be compared between the two flows during the server-refunds rollout.
+        /// Keep the raw values in step with Android's `refund_flow` property.
+        enum RefundFlow: String {
+            case local
+            case serverComputed = "server_computed"
+        }
+
+        static func createRefund(orderID: Int64,
+                                 fullyRefunded: Bool,
+                                 method: RefundMethod,
+                                 gateway: String,
+                                 amount: String,
+                                 flow: RefundFlow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .refundCreate, properties: [
                 "order_id": "\(orderID)",
                 "is_full": "\(fullyRefunded)",
                 "method": method.rawValue,
                 "gateway": gateway,
-                "amount": amount
+                "amount": amount,
+                "refund_flow": flow.rawValue
             ])
         }
 
-        static func createRefundSuccess(orderID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .refundCreateSuccess, properties: ["order_id": "\(orderID)"])
+        static func createRefundSuccess(orderID: Int64, flow: RefundFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreateSuccess, properties: [
+                "order_id": "\(orderID)",
+                "refund_flow": flow.rawValue
+            ])
         }
 
-        static func createRefundFailed(orderID: Int64, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .refundCreateFailed, properties: [
+        static func createRefundFailed(orderID: Int64, error: Error, flow: RefundFlow) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
                 "order_id": "\(orderID)",
                 "error_description": error.localizedDescription,
+                "refund_flow": flow.rawValue
+            ]
+            // The wire code separates deterministic server rejections (`woocommerce_rest_*`) from
+            // transport failures, which `error_description` alone cannot do — it is localized to
+            // the store and varies by message.
+            if let code = refundErrorCode(from: error) {
+                properties["error_code"] = code
+            }
+            return WooAnalyticsEvent(statName: .refundCreateFailed, properties: properties)
+        }
+
+        /// Reported when a preview probe finds the server-calculated refund route missing and the
+        /// site falls back to local calculation. The WooCommerce version tells us whether the
+        /// version gate is behaving or the store is genuinely too old.
+        static func serverRefundFlowUnavailable(siteID: Int64, wooCommerceVersion: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundServerFlowUnavailable, properties: [
+                "site_id": "\(siteID)",
+                "woocommerce_version": wooCommerceVersion ?? "unknown"
             ])
+        }
+
+        /// Reads the REST error code from either shape the refund endpoints return it in.
+        private static func refundErrorCode(from error: Error) -> String? {
+            if let dotcomError = error as? DotcomError, case .unknown(let code, _, _) = dotcomError {
+                return code
+            }
+            return (error as? NetworkError)?.errorCode
         }
 
         static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {

@@ -18,6 +18,17 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
+    @Test func prepareRefund_when_order_was_paid_with_gift_card_then_throws_eligibility_failure() async throws {
+        // Given
+        let giftCard = OrderGiftCard(giftCardID: 1, code: "GIFT-CARD", amount: 10)
+        let sut = makeSUT(previewResult: nil, order: order().copy(appliedGiftCards: [giftCard]))
+
+        // When / Then
+        await #expect(throws: OrderRefundEligibilityFailure.giftCardUnsupported) {
+            _ = try await sut.adaptor.prepareRefund(for: posOrder())
+        }
+    }
+
     @Test func prepareReviewData_when_preview_is_server_calculated_then_shows_server_totals_and_submits_via_computed_create() async throws {
         // Given
         let sut = makeSUT(previewResult: .success(preview()))
@@ -281,7 +292,8 @@ private extension POSRefundSubmissionAdaptorTests {
     func makeSUT(previewResult: Result<RefundPreview, Error>?,
                      flagEnabled: Bool = true,
                      manualPreviewResolution: Bool = false,
-                     orderQuantity: Decimal = 1) -> SUT {
+                     orderQuantity: Decimal = 1,
+                     order suppliedOrder: Order? = nil) -> SUT {
         let session = SessionManager.testingInstance
         session.cachedWooCommerceVersion = "11.1.0"
         let stores = MockStoresManager(sessionManager: session)
@@ -323,7 +335,7 @@ private extension POSRefundSubmissionAdaptorTests {
                                                            availabilityCache: availabilityCache)
 
         let orderService = MockPOSOrderService()
-        orderService.orderToReturn = order(quantity: orderQuantity)
+        orderService.orderToReturn = suppliedOrder ?? order(quantity: orderQuantity)
 
         let analyticsProvider = MockAnalyticsProvider()
         let adaptor = POSRefundSubmissionAdaptor(orderService: orderService,

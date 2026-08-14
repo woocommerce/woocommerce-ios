@@ -571,6 +571,16 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
+        if let eligibilityFailure = viewModel.order.refundEligibilityFailure {
+            let alertController = UIAlertController(title: eligibilityFailure.title,
+                                                    message: eligibilityFailure.localizedDescription,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: eligibilityFailure.dismissButtonTitle,
+                                                    style: .default))
+            present(alertController, animated: true)
+            return
+        }
+
         let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
         present(issueRefundCoordinatingController, animated: true)
     }

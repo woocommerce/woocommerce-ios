@@ -125,17 +125,20 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_reloadCard_when_campaign_exists_retrieves_stats_from_epoch_through_current_date() async {
+    func test_reloadCard_when_campaign_exists_retrieves_stats_from_January_1_1970_in_store_timezone_through_current_date() async throws {
         // Given
-        let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores)
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "America/Los_Angeles"))
+        let viewModel = GoogleAdsDashboardCardViewModel(siteID: sampleSiteID, stores: stores, timeZone: timeZone)
         let dateBeforeReload = Date.now
+        var requestedTimeZone: TimeZone?
         var requestedEarliestDate: Date?
         var requestedLatestDate: Date?
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {
             case let .fetchAdsCampaigns(_, onCompletion):
                 onCompletion(.success([.fake()]))
-            case let .retrieveCampaignStats(_, _, _, earliestDateToInclude, latestDateToInclude, onCompletion):
+            case let .retrieveCampaignStats(_, _, timeZone, earliestDateToInclude, latestDateToInclude, onCompletion):
+                requestedTimeZone = timeZone
                 requestedEarliestDate = earliestDateToInclude
                 requestedLatestDate = latestDateToInclude
                 onCompletion(.success(.fake()))
@@ -149,7 +152,12 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
 
         // Then
         let dateAfterReload = Date.now
-        XCTAssertEqual(requestedEarliestDate, Date(timeIntervalSince1970: 0))
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        dateFormatter.timeZone = timeZone
+        XCTAssertEqual(requestedTimeZone, timeZone)
+        XCTAssertEqual(dateFormatter.string(from: try XCTUnwrap(requestedEarliestDate)), "1970-01-01T00:00:00")
         XCTAssertGreaterThanOrEqual(try XCTUnwrap(requestedLatestDate), dateBeforeReload)
         XCTAssertLessThanOrEqual(try XCTUnwrap(requestedLatestDate), dateAfterReload)
     }

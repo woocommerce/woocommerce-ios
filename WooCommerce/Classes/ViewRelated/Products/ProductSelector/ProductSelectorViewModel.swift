@@ -83,9 +83,9 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let bundleChecker: UnsupportedBundledProductChecker
 
-    /// The bundle currently being checked, if any. Further taps are dropped while one is in flight.
+    /// The bundle currently being checked, if any. Its row shows as loading, and further taps are dropped.
     ///
-    private var productIDBeingVerified: Int64?
+    @Published private(set) var productIDBeingVerified: Int64?
 
     /// View model for the filter list.
     ///
@@ -1004,30 +1004,39 @@ private extension ProductSelectorViewModel {
     /// Observes changes in selections to update product rows
     ///
     func observeSelections() {
-        $sections.combineLatest($selectedItemsIDs) {
-            [weak self] sections, selectedItemsIDs -> [ProductsSectionViewModel] in
+        $sections.combineLatest($selectedItemsIDs, $productIDBeingVerified) {
+            [weak self] sections, selectedItemsIDs, productIDBeingVerified -> [ProductsSectionViewModel] in
             guard let self else {
                 return []
             }
             return self.generateProductsSectionViewModels(sections: sections,
-                                                          selectedItemsIDs: selectedItemsIDs)
+                                                          selectedItemsIDs: selectedItemsIDs,
+                                                          productIDBeingVerified: productIDBeingVerified)
         }.assign(to: &$productsSectionViewModels)
     }
 
     func generateProductsSectionViewModels(sections: [ProductSelectorSection],
-                                           selectedItemsIDs: [Int64]) -> [ProductsSectionViewModel] {
+                                           selectedItemsIDs: [Int64],
+                                           productIDBeingVerified: Int64? = nil) -> [ProductsSectionViewModel] {
         sections.map { ProductsSectionViewModel(title: $0.type.title,
                                                 productRows: generateProductRows(products: $0.products,
-                                                                                 selectedItemsIDs: selectedItemsIDs)) }
+                                                                                 selectedItemsIDs: selectedItemsIDs,
+                                                                                 productIDBeingVerified: productIDBeingVerified)) }
     }
 
     /// Generates product rows based on products and selected product/variation IDs
     ///
-    func generateProductRows(products: [Product], selectedItemsIDs: [Int64]) -> [ProductRowViewModel] {
+    func generateProductRows(products: [Product],
+                             selectedItemsIDs: [Int64],
+                             productIDBeingVerified: Int64? = nil) -> [ProductRowViewModel] {
         return products.map { product in
             let selectedState: ProductRow.SelectedState = {
                 if case .orderForm = source, let restriction = ProductRestriction.restriction(for: product) {
                     return .unsupported(reason: restriction.reason)
+                }
+
+                if product.productID == productIDBeingVerified {
+                    return .verifying
                 }
 
                 switch product.variations {

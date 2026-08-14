@@ -41,6 +41,7 @@ final class AddProductCoordinator: Coordinator {
     private let analytics: Analytics
     private let navigateToProductForm: ((UIViewController) -> Void)?
     private let onDeleteCompletion: () -> Void
+    private let onDuplicateCompletion: ((Product) -> Void)?
 
     /// ResultController to to track the current product count.
     ///
@@ -77,7 +78,8 @@ final class AddProductCoordinator: Coordinator {
          analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool,
          navigateToProductForm: ((UIViewController) -> Void)? = nil,
-         onDeleteCompletion: @escaping () -> Void = {}) {
+         onDeleteCompletion: @escaping () -> Void = {},
+         onDuplicateCompletion: ((Product) -> Void)? = nil) {
         self.siteID = siteID
         self.source = source
         switch sourceView {
@@ -100,6 +102,7 @@ final class AddProductCoordinator: Coordinator {
         self.isFirstProduct = isFirstProduct
         self.navigateToProductForm = navigateToProductForm
         self.onDeleteCompletion = onDeleteCompletion
+        self.onDuplicateCompletion = onDuplicateCompletion
     }
 
     func start() {
@@ -270,13 +273,22 @@ private extension AddProductCoordinator {
                                                  showShareProductButton: viewModel.canShareProduct())
             }
         }
+        let onDuplicateCompletion = self.onDuplicateCompletion
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        isAIContent: isAIContent,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
-                                                       onDeleteCompletion: onDeleteCompletion)
+                                                       onDeleteCompletion: onDeleteCompletion,
+                                                       onDuplicateCompletion: { sourceViewController, duplicatedProduct in
+            if let onDuplicateCompletion {
+                onDuplicateCompletion(duplicatedProduct)
+            } else {
+                ProductDetailNavigator.shared.replaceDestination(sourceViewController: sourceViewController,
+                                                                 with: duplicatedProduct)
+            }
+        })
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         if let navigateToProductForm {

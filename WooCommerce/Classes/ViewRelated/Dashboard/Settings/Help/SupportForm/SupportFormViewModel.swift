@@ -60,7 +60,11 @@ public final class SupportFormViewModel: ObservableObject {
     ///
     private let zendeskProvider: ZendeskManagerProtocol
 
-    private let applicationLogsProvider: ApplicationLogProvider
+    private let attachmentProvider: SupportRequestAttachmentProviding
+
+    /// Builds the app-level status report attached to every ticket.
+    ///
+    private let mobileStatusReportProvider: MobileStatusReportProviding
 
     /// Handles the communication with Tracks..
     ///
@@ -71,6 +75,14 @@ public final class SupportFormViewModel: ObservableObject {
     private let defaultSite: Site?
 
     private let attachments: [ZendeskAttachment]
+
+    /// Immutable transcript context appended to the editable message when the request is submitted.
+    private let transcript: String?
+
+    /// Whether the form should disclose that an AI chat transcript will be included.
+    var shouldShowTranscriptDisclosure: Bool {
+        transcript?.isNonBlank == true
+    }
 
     /// Called when a ticket is successfully created.
     private let onTicketCreated: (() -> Void)?
@@ -110,9 +122,11 @@ public final class SupportFormViewModel: ObservableObject {
          additionalTags: [String] = [],
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
-         applicationLogsProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
+         attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
+         transcript: String? = nil,
          preselectedArea: Area? = nil,
          prefilledSubject: String? = nil,
          prefilledSiteAddress: String? = nil,
@@ -124,9 +138,11 @@ public final class SupportFormViewModel: ObservableObject {
         self.additionalTags = additionalTags
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
-        self.applicationLogsProvider = applicationLogsProvider
+        self.attachmentProvider = attachmentProvider
+        self.mobileStatusReportProvider = mobileStatusReportProvider
         self.defaultSite = defaultSite
         self.attachments = attachments
+        self.transcript = transcript
         self.area = preselectedArea
         self.onTicketCreated = onTicketCreated
         self.onTicketCreationFailed = onTicketCreationFailed
@@ -168,17 +184,28 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Submits the support request using the Zendesk Provider.
     ///
-    func submitSupportRequest() {
+    /// Async because the Mobile Status Report reads notification settings and the POS catalog, neither of which
+    /// can be read synchronously. It is generated here rather than prefetched so it always describes the app as
+    /// it was when the ticket was filed.
+    ///
+    @MainActor
+    func submitSupportRequest() async {
         guard let area else { return }
 
         showLoadingIndicator = true
 
+        let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
+        let (customFields, requestAttachments) = MobileStatusReportZendesk.embed(
+            mobileStatusReport,
+            intoCustomFields: area.datasource.customFields(siteAddress: siteAddress),
+            attachments: attachmentProvider.attachments(including: attachments))
+
         let request = ZendeskSupportRequest(formID: area.datasource.formID,
-                                            customFields: area.datasource.customFields(siteAddress: siteAddress),
+                                            customFields: customFields,
                                             tags: assembleTags(),
                                             subject: subject,
-                                            description: description,
-                                            attachments: wrapAttachments())
+                                            description: requestDescription,
+                                            attachments: requestAttachments)
         zendeskProvider.createSupportRequest(request) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false
@@ -261,14 +288,11 @@ private extension SupportFormViewModel {
         shouldShowIdentityInput = true
     }
 
-    func wrapAttachments() -> [ZendeskAttachment] {
-        guard let applicationLogs = applicationLogsProvider.applicationLogs()?.data(using: .utf8) else {
-            return []
+    var requestDescription: String {
+        guard shouldShowTranscriptDisclosure, let transcript else {
+            return description
         }
-
-        return attachments + [ZendeskAttachment(data: applicationLogs,
-                                                filename: "application_log.txt",
-                                                contentType: "text/plain")]
+        return [description, transcript].joined(separator: "\n\n")
     }
 }
 

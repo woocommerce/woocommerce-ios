@@ -258,7 +258,7 @@ private extension PointOfSaleOrderController {
         let totalsCalculator = OrderTotalsCalculator(for: order,
                                                      using: currencyFormatter)
         return PointOfSaleOrderTotals(
-            cartTotal: formattedPrice(totalsCalculator.itemsTotal.stringValue,
+            cartTotal: formattedPrice(totalsCalculator.itemsTotal,
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
@@ -277,18 +277,27 @@ private extension PointOfSaleOrderController {
         return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
     }
 
+    func formattedPrice(_ price: NSDecimalNumber?, currency: String?, isNegative: Bool = false) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
+    }
+
     func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
         return order.coupons.compactMap { coupon in
-            PointOfSaleCouponTotal(
+            let discount = currencyFormatter.convertToDecimal(coupon.discount) ?? .zero
+            return PointOfSaleCouponTotal(
                 code: coupon.code,
-                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? ""
+                total: formattedPrice(discount, currency: order.currency, isNegative: true) ?? "",
+                hasDiscount: discount.compare(NSDecimalNumber.zero) == .orderedDescending
             )
         }
     }
 
     func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
         guard !discount.isZero(),
-              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency, isNegative: true) else {
+              let formattedDiscount = formattedPrice(discount, currency: currency, isNegative: true) else {
             return nil
         }
 
@@ -299,7 +308,7 @@ private extension PointOfSaleOrderController {
     /// (`cartTotal`). We surface them on their own line, returning `nil` when there are none.
     func formattedCustomAmounts(_ fees: NSDecimalNumber, currency: String) -> String? {
         guard !fees.isZero(),
-              let formattedFees = formattedPrice(fees.stringValue, currency: currency) else {
+              let formattedFees = formattedPrice(fees, currency: currency) else {
             return nil
         }
 

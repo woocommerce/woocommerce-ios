@@ -172,7 +172,8 @@ private struct CouponResultsControllerAdapter {
                     id: POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID),
                     code: coupon.code,
                     summary: coupon.summary(currencySettings: currencySettings),
-                    dateExpires: coupon.dateExpires
+                    dateExpires: coupon.dateExpires,
+                    appliesToWholeCart: coupon.appliesToWholeCart
                 ))
         }
     }

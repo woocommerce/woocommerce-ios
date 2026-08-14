@@ -308,10 +308,33 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod = .bluetooth
                 }
 
+                let refundService: RefundServiceProtocol
+                if let mockRefundService = makeMockPOSRefundService(orderService: orderService) {
+                    refundService = mockRefundService
+                } else if let posRefundService = RefundService(credentials: credentials,
+                                                              selectedSite: defaultSitePublisher,
+                                                              appPasswordSupportState: isAppPasswordSupported,
+                                                              storageManager: storageManager) {
+                    refundService = posRefundService
+                } else {
+                    DDLogError("RefundService not provided")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
+                let refundFlowResolver = POSRefundFlowResolver(stores: storesManager,
+                                                               featureFlagService: ServiceLocator.featureFlagService,
+                                                               availabilityCache: .shared,
+                                                               minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
+                let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,
+                                                                               flowResolver: refundFlowResolver,
+                                                                               availabilityCache: .shared)
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
+                                                                           refundService: refundService,
                                                                            stores: storesManager,
                                                                            storageManager: storageManager,
-                                                                           currencySettings: currencySettings)
+                                                                           currencySettings: currencySettings,
+                                                                           serverRefundPreviewUseCase: serverRefundPreviewUseCase)
 
                 guard let staffFetcher = POSStaffAdaptor(credentials: credentials,
                                                          selectedSite: defaultSitePublisher,
@@ -416,6 +439,20 @@ private extension POSTabCoordinator {
 
         if ProcessConfiguration.shouldBypassPOSOrderSyncing {
             return POSOrderServiceScreenshotMock(currency: currency)
+        }
+
+        return nil
+    }
+
+    func makeMockPOSRefundService(orderService: POSOrderServiceProtocol) -> RefundServiceProtocol? {
+        #if DEBUG
+        if ProcessConfiguration.shouldUsePOSUITestMocks {
+            return POSRefundServiceMock(orderService: orderService)
+        }
+        #endif
+
+        if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+            return POSRefundServiceMock(orderService: orderService)
         }
 
         return nil

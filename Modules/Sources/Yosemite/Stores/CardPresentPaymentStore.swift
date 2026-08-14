@@ -139,6 +139,8 @@ public final class CardPresentPaymentStore: Store {
                                onCardReaderMessage: event,
                                onProcessingCompletion: processPaymentCompletion,
                                onCompletion: completion)
+        case .retrievePaymentIntent(let clientSecret, let completion):
+            retrievePaymentIntent(clientSecret: clientSecret, onCompletion: completion)
         case .cancelPayment(let completion):
             cancelPayment(onCompletion: completion)
         case .refundPayment(let parameters, let onCardReaderMessage, let completion):
@@ -378,9 +380,8 @@ private extension CardPresentPaymentStore {
     }
 
     func cancelPayment(onCompletion: ((Result<Void, Error>) -> Void)?) {
-        paymentCancellable?.cancel()
-        paymentCancellable = nil
-
+        // Keep the payment subscription alive until Hardware confirms the Stripe flow has stopped. If cancellation
+        // loses a race with native Tap to Pay presentation, the ongoing payment must still reach Woo for processing.
         cardReaderService.cancelPaymentIntent()
             .subscribe(Subscribers.Sink(receiveCompletion: { value in
             switch value {
@@ -392,6 +393,19 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {
             onCompletion?(.success(()))
         }))
+    }
+
+    func retrievePaymentIntent(clientSecret: String,
+                               onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
+        cardReaderService.retrievePaymentIntent(clientSecret: clientSecret)
+            .sink(receiveCompletion: { completion in
+                if case let .failure(error) = completion {
+                    onCompletion(.failure(error))
+                }
+            }, receiveValue: { intent in
+                onCompletion(.success(intent))
+            })
+            .store(in: &cancellables)
     }
 
     func refundPayment(parameters: RefundParameters, onCardReaderMessage: @escaping (CardReaderEvent) -> Void, onCompletion: ((Result<Void, Error>) -> Void)?) {

@@ -26,6 +26,37 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     // MARK: - Load all product variations tests
 
+    func test_loadProductVariations_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        _ = try await remote.loadProductVariations(for: sampleSiteID,
+                                                   productID: sampleProductID,
+                                                   pageNumber: 1,
+                                                   pageSize: 25,
+                                                   currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_loadProductVariations_without_currency_omits_currency_param_from_network_request() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        _ = try await remote.loadProductVariations(for: sampleSiteID,
+                                                   productID: sampleProductID,
+                                                   pageNumber: 1,
+                                                   pageSize: 25)
+
+        // Then
+        XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
+    }
+
     /// Verifies that loadAllProductVariations properly parses the `product-variations-load-all` sample response.
     ///
     func testLoadAllProductVariationsProperlyReturnsParsedData() {
@@ -417,7 +448,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.
     ///
-    func testUpdateProductVariationProperlyReturnsParsedProduct() {
+    func testPartialProductVariationUpdateProperlyReturnsParsedProduct() {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 2783
@@ -446,11 +477,12 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
         let productVariations = [sampleProductVariation(siteID: sampleSiteID, productID: sampleProductID, id: sampleProductVariationID)]
+        let updateVariations = productVariations.map { PartialProductVariationUpdate(productVariationID: $0.productVariationID, regularPrice: "1") }
 
         // When
         var updatedProductVariation: [ProductVariation]?
         waitForExpectation { expectation in
-            remote.updateProductVariations(siteID: sampleSiteID, productID: sampleProductID, productVariations: productVariations) { result in
+            remote.updateProductVariations(siteID: sampleSiteID, productID: sampleProductID, productVariations: updateVariations) { result in
                 updatedProductVariation = try? result.get()
                 expectation.fulfill()
             }
@@ -460,9 +492,48 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(updatedProductVariation, productVariations)
     }
 
+    /// Regression test for the bulk regular-price update.
+    ///
+    /// Verifies that the bulk regular-price update sends ONLY `{id, regular_price}` per variation and never
+    /// re-sends the full variation object (no `sku` / `global_unique_id` / `image`). Re-sending those fields
+    /// made the server re-validate untouched data (e.g. duplicate SKU/GTIN) and reject the whole update.
+    ///
+    func test_bulk_update_productVariations_sends_only_id_and_regular_price_per_variation() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let variationIDs: [Int64] = [17, 42]
+        let regularPrice = "109"
+        let updateVariations = variationIDs.map { PartialProductVariationUpdate(productVariationID: $0, regularPrice: regularPrice) }
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/batch", filename: "product-variations-bulk-update")
+
+        // When
+        waitForExpectation { expectation in
+            remote.updateProductVariations(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariations: updateVariations) { _ in
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        // The whole payload is a single `update` key — nothing else leaves the device.
+        XCTAssertEqual(Array(request.parameters.keys), ["update"])
+
+        let updates = try XCTUnwrap(request.parameters["update"] as? [[String: Any]])
+        XCTAssertEqual(updates.count, variationIDs.count)
+
+        for (item, expectedID) in zip(updates, variationIDs) {
+            // Each item carries EXACTLY `id` and `regular_price` — no `sku`, `global_unique_id`, `image`, etc.
+            XCTAssertEqual(Set(item.keys), ["id", "regular_price"])
+            XCTAssertEqual(item["id"] as? Int, Int(expectedID))
+            XCTAssertEqual(item["regular_price"] as? String, regularPrice)
+        }
+    }
+
     /// Verifies that updateProductVariation properly relays Networking Layer errors.
     ///
-    func testUpdateProductVariationProperlyRelaysNetwokingErrors() {
+    func testPartialProductVariationUpdateProperlyRelaysNetwokingErrors() {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 2783

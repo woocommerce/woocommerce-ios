@@ -103,6 +103,48 @@ struct POSRefundSubmissionMapping {
         return (refundItems, fees)
     }
 
+    /// Builds the preview request lines: products refunded by quantity, fees by tax-inclusive amount.
+    func refundPreviewLineItems(from selectedItems: [POSRefundSelectableItem],
+                                context: PreparedRefundContext) -> [RefundPreviewLineItem] {
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: RefundPreviewLineItem.quantityBased,
+                    amountBased: RefundPreviewLineItem.amountBased)
+    }
+
+    /// Builds the `compute_totals` creation request lines. Same construction as
+    /// `refundPreviewLineItems(from:context:)`, but the creation endpoint keys lines by `id`.
+    func computedRefundLineItems(from selectedItems: [POSRefundSelectableItem],
+                                 context: PreparedRefundContext) -> [ComputedRefundLineItem] {
+        refundLines(from: selectedItems,
+                    context: context,
+                    quantityBased: ComputedRefundLineItem.quantityBased,
+                    amountBased: ComputedRefundLineItem.amountBased)
+    }
+
+    /// Shared construction for both request shapes. The safety invariant is that a computed create
+    /// sends exactly what was previewed, so the two differ only in the line type they build — never
+    /// in which lines they include or what amounts those lines carry.
+    private func refundLines<Line>(from selectedItems: [POSRefundSelectableItem],
+                                   context: PreparedRefundContext,
+                                   quantityBased: (Int64, Int) -> Line,
+                                   amountBased: (Int64, Decimal) -> Line) -> [Line] {
+        let components = refundComponents(from: selectedItems, context: context)
+
+        let productLines = components.items.map {
+            quantityBased($0.item.itemID, $0.quantity)
+        }
+
+        let feeLines = components.fees.compactMap { fee -> Line? in
+            guard let refundTotal = grossRefundTotal(for: fee) else {
+                return nil
+            }
+            return amountBased(fee.feeID, refundTotal)
+        }
+
+        return productLines + feeLines
+    }
+
     func refundValues(items: [RefundableOrderItem], fees: [OrderFeeLine]) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
         let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()
@@ -145,6 +187,18 @@ struct POSRefundSubmissionMapping {
 }
 
 private extension POSRefundSubmissionMapping {
+    /// The tax-inclusive amount to request for a fee line, or nil for a zero-total fee.
+    /// Zero lines must be dropped from both the preview and the computed create: the server
+    /// rejects a gross line refund of zero with `invalid_refund_total`, and a zero line
+    /// contributes nothing to the refund. Fee totals are store-formatted decimal strings,
+    /// so an exact-zero comparison is sufficient.
+    func grossRefundTotal(for fee: OrderFeeLine) -> Decimal? {
+        let total = currencyFormatter.convertToDecimal(fee.total) as Decimal? ?? .zero
+        let totalTax = currencyFormatter.convertToDecimal(fee.totalTax) as Decimal? ?? .zero
+        let gross = total + totalTax
+        return gross == .zero ? nil : gross
+    }
+
     func displayName(for fee: OrderFeeLine) -> String {
         let trimmedName = (fee.name ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedName.isEmpty ? Localization.defaultFeeName : trimmedName

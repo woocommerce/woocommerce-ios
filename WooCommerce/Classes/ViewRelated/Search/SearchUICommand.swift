@@ -22,6 +22,10 @@ protocol SearchUICommand {
     ///
     var hideNavigationBar: Bool { get }
 
+    /// Whether navigation bar visibility changes should be animated.
+    ///
+    var animateNavigationBarVisibilityChanges: Bool { get }
+
     /// Makes the search bar first responder on start, focusing on there.
     ///
     var makeSearchBarFirstResponderOnStart: Bool { get }
@@ -148,6 +152,10 @@ extension SearchUICommand {
     }
 
     var hideNavigationBar: Bool {
+        true
+    }
+
+    var animateNavigationBarVisibilityChanges: Bool {
         true
     }
 

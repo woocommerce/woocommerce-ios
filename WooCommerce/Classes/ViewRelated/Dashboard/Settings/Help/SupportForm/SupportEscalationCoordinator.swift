@@ -21,6 +21,8 @@ final class SupportEscalationCoordinator {
 
     private weak var navigationController: UINavigationController?
     private let additionalAttachmentsProvider: () -> [ZendeskAttachment]
+    private let attachmentProvider: SupportRequestAttachmentProviding
+    private let mobileStatusReportProvider: MobileStatusReportProviding
     private let zendeskProvider: ZendeskManagerProtocol
     private let analytics: Analytics
     private let stores: StoresManager
@@ -29,6 +31,10 @@ final class SupportEscalationCoordinator {
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
+
+    /// The in-flight direct ticket creation. The UI fires this and forgets it, so without a handle there is
+    /// nothing to await — neither a caller that needs to know it finished nor a test asserting on the request.
+    private(set) var directTicketCreationTask: Task<Void, Never>?
     private var escalationSiteAddress: String?
     private var hasReceivedBotResponse = true
 
@@ -37,6 +43,8 @@ final class SupportEscalationCoordinator {
     /// - Parameters:
     ///   - navigationController: The navigation controller to present from.
     ///   - additionalAttachmentsProvider: Closure that returns extra attachments (e.g., troubleshooting logs).
+    ///   - attachmentProvider: Composes diagnostics with the application log for each request.
+    ///   - mobileStatusReportProvider: Builds the app-level status report attached to every ticket.
     ///   - zendeskProvider: Zendesk service provider.
     ///   - analytics: Analytics tracker.
     ///   - stores: Stores manager for site info.
@@ -45,6 +53,8 @@ final class SupportEscalationCoordinator {
     ///     update its in-session state.
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
+         attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
@@ -52,6 +62,8 @@ final class SupportEscalationCoordinator {
          transcriptConsentPresenter: TranscriptConsentPresenter? = nil) {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
+        self.attachmentProvider = attachmentProvider
+        self.mobileStatusReportProvider = mobileStatusReportProvider
         self.zendeskProvider = zendeskProvider
         self.analytics = analytics
         self.stores = stores
@@ -80,16 +92,17 @@ final class SupportEscalationCoordinator {
         self.chatID = chatID
         self.escalationSiteAddress = siteAddress
         self.hasReceivedBotResponse = hasReceivedBotResponse
+        let transcript = formattedTranscript(transcript)
 
         guard let supportAreaInfo else {
             showSupportForm(transcript: transcript, supportAreaInfo: nil, entryPoint: entryPoint)
             return
         }
 
-        // Only offer direct ticket creation if high confidence, user identity exists, and
-        // a site URL is available. Otherwise the form lets users provide missing details.
-        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity && hasSiteAddress {
-            confirmTranscriptConsent(for: supportAreaInfo, entryPoint: entryPoint)
+        // Only offer direct ticket creation if high confidence, a nonempty transcript and user identity exist,
+        // and a site URL is available. Otherwise the form lets users provide missing details.
+        if supportAreaInfo.isHighConfidence && zendeskProvider.haveUserIdentity && hasSiteAddress && transcript != nil {
+            confirmTranscriptConsent(for: supportAreaInfo, transcript: transcript, entryPoint: entryPoint)
         } else {
             showSupportForm(transcript: transcript, supportAreaInfo: supportAreaInfo, entryPoint: entryPoint)
         }
@@ -97,7 +110,7 @@ final class SupportEscalationCoordinator {
 
     // MARK: - Private Methods
 
-    private func showSupportForm(transcript: String, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func showSupportForm(transcript: String?, supportAreaInfo: SupportAreaInfo?, entryPoint: SupportChatViewModel.EntryPoint) {
         let attachments = additionalAttachmentsProvider()
 
         let prefilledSubject: String?
@@ -115,7 +128,10 @@ final class SupportEscalationCoordinator {
             sourceTag: Tags.sourceTag,
             additionalTags: additionalTags(for: supportAreaInfo),
             zendeskProvider: zendeskProvider,
+            attachmentProvider: attachmentProvider,
+            mobileStatusReportProvider: mobileStatusReportProvider,
             attachments: attachments,
+            transcript: transcript,
             preselectedArea: supportAreaInfo?.area,
             prefilledSubject: prefilledSubject,
             prefilledSiteAddress: siteAddress,
@@ -146,21 +162,25 @@ final class SupportEscalationCoordinator {
         }
     }
 
-    private func confirmTranscriptConsent(for areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func confirmTranscriptConsent(for areaInfo: SupportAreaInfo,
+                                          transcript: String?,
+                                          entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         transcriptConsentPresenter(
             presentingVC,
             { [weak self] in
-                self?.createTicketDirectly(with: areaInfo, entryPoint: entryPoint)
+                self?.createTicketDirectly(with: areaInfo, transcript: transcript, entryPoint: entryPoint)
             },
             { [weak self] in
-                self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+                self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
             }
         )
     }
 
-    private func createTicketDirectly(with areaInfo: SupportAreaInfo, entryPoint: SupportChatViewModel.EntryPoint) {
+    private func createTicketDirectly(with areaInfo: SupportAreaInfo,
+                                      transcript: String?,
+                                      entryPoint: SupportChatViewModel.EntryPoint) {
         guard let presentingVC = navigationController?.topViewController else { return }
 
         let loadingViewController = InProgressViewController(
@@ -168,41 +188,55 @@ final class SupportEscalationCoordinator {
         )
         presentingVC.present(loadingViewController, animated: true)
 
-        let description = [Localization.transcriptHeader, areaInfo.transcript].joined(separator: "\n\n")
-        let attachments = additionalAttachmentsProvider()
-
         let siteAddress = siteAddress ?? ""
         let tags = areaInfo.area.datasource.tags + additionalTags(for: areaInfo) + [Tags.sourceTag]
-        let request = ZendeskSupportRequest(
-            formID: areaInfo.area.datasource.formID,
-            customFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
-            tags: tags,
-            subject: SupportFormViewModel.subject(for: areaInfo.areaType),
-            description: description,
-            attachments: attachments
-        )
 
-        zendeskProvider.createSupportRequest(request) { [weak self] result in
-            loadingViewController.dismiss(animated: true) {
-                switch result {
-                case .success:
-                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
-                        route: .directTicketCreation,
-                        supportAreaInfo: areaInfo,
-                        entryPoint: entryPoint
-                    ))
-                    self?.persistTicketCreated()
-                    self?.onTicketCreated?()
-                    self?.showSuccessAndPop()
-                case .failure(let error):
-                    DDLogError("⛔️ Support chat ticket creation failed via direct ticket creation: \(error)")
-                    self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
-                        route: .directTicketCreation,
-                        supportAreaInfo: areaInfo,
-                        entryPoint: entryPoint,
-                        errorType: Self.errorType(for: error)
-                    ))
-                    self?.showSupportForm(transcript: areaInfo.transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+        // Generating the Mobile Status Report is async — it reads notification settings and the POS catalog,
+        // neither of which can be read synchronously — so the request is assembled once it is ready.
+        directTicketCreationTask = Task { @MainActor [weak self] in
+            guard let self else {
+                // The coordinator went away mid-generation; the merchant must not stay stuck behind the spinner.
+                loadingViewController.dismiss(animated: true, completion: nil)
+                return
+            }
+
+            let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
+            let (customFields, attachments) = MobileStatusReportZendesk.embed(
+                mobileStatusReport,
+                intoCustomFields: areaInfo.area.datasource.customFields(siteAddress: siteAddress),
+                attachments: attachmentProvider.attachments(including: additionalAttachmentsProvider()))
+
+            let request = ZendeskSupportRequest(
+                formID: areaInfo.area.datasource.formID,
+                customFields: customFields,
+                tags: tags,
+                subject: SupportFormViewModel.subject(for: areaInfo.areaType),
+                description: transcript ?? "",
+                attachments: attachments
+            )
+
+            zendeskProvider.createSupportRequest(request) { [weak self] result in
+                loadingViewController.dismiss(animated: true) {
+                    switch result {
+                    case .success:
+                        self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreated(
+                            route: .directTicketCreation,
+                            supportAreaInfo: areaInfo,
+                            entryPoint: entryPoint
+                        ))
+                        self?.persistTicketCreated()
+                        self?.onTicketCreated?()
+                        self?.showSuccessAndPop()
+                    case .failure(let error):
+                        DDLogError("⛔️ Support chat ticket creation failed via direct ticket creation: \(error)")
+                        self?.analytics.track(event: WooAnalyticsEvent.SupportChat.ticketCreationFailed(
+                            route: .directTicketCreation,
+                            supportAreaInfo: areaInfo,
+                            entryPoint: entryPoint,
+                            errorType: Self.errorType(for: error)
+                        ))
+                        self?.showSupportForm(transcript: transcript, supportAreaInfo: areaInfo, entryPoint: entryPoint)
+                    }
                 }
             }
         }
@@ -253,6 +287,14 @@ final class SupportEscalationCoordinator {
         return nil
     }
 
+    private func formattedTranscript(_ transcript: String?) -> String? {
+        guard let transcript,
+              transcript.isNonBlank else {
+            return nil
+        }
+        return [Localization.transcriptHeader, transcript].joined(separator: "\n\n")
+    }
+
     private static func errorType(for error: Error) -> String {
         switch error {
         case ZendeskError.failedToCreateIdentity:
@@ -283,7 +325,7 @@ final class SupportEscalationCoordinator {
 
 // MARK: - Localization
 
-private extension SupportEscalationCoordinator {
+extension SupportEscalationCoordinator {
     enum Localization {
         static let creatingTicket = NSLocalizedString(
             "supportEscalationCoordinator.creatingTicket",
@@ -311,8 +353,8 @@ private extension SupportEscalationCoordinator {
             comment: "Title for the alert asking consent to send an AI chat transcript to support"
         )
         static let transcriptConsentMessage = NSLocalizedString(
-            "supportEscalationCoordinator.transcriptConsentMessage",
-            value: "We can create a support request using this chat transcript, or you can open the contact form and enter the details yourself.",
+            "supportEscalationCoordinator.transcriptConsentMessageV2",
+            value: "Both options include this chat transcript. Send the request now, or open the contact form to add more details first.",
             comment: "Message for the alert asking consent to send an AI chat transcript to support"
         )
         static let contactForm = NSLocalizedString(

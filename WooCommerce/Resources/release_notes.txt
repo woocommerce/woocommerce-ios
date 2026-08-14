@@ -1,1 +1,1 @@
-Your "Report Crashes" privacy setting now follows you across devices and reinstalls. Shipping Labels now require a valid phone number before confirming. It's now easier to connect your card reader in landscape, and refund details in POS appear clearly while loading and in dark mode.
+Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.

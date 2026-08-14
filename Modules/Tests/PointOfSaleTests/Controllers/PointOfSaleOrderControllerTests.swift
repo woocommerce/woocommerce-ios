@@ -625,6 +625,27 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
+    @Test func syncOrder_maps_coupon_line_discounts_into_hasDiscount() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountingCoupon = OrderCouponLine.fake().copy(code: "SAVE10", discount: "5.00")
+        let zeroDiscountCoupon = OrderCouponLine.fake().copy(code: "ZERO", discount: "0.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", coupons: [discountingCoupon, zeroDiscountCoupon])
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.couponsTotals.map(\.hasDiscount) == [true, false])
+    }
+
     @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

@@ -39,7 +39,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/?rest_route=/sample"
+        let expectedURL = "https://wordpress.com/wp-json/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 
@@ -62,7 +62,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/?rest_route=/wc/v3/sample"
+        let expectedURL = "https://wordpress.com/wp-json/wc/v3/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 
@@ -74,7 +74,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/?rest_route=/wp/v2/sample"
+        let expectedURL = "https://wordpress.com/wp-json/wp/v2/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 
@@ -109,6 +109,46 @@ final class RESTRequestTests: XCTestCase {
 
         // Then
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
+    }
+
+    func test_post_and_put_encode_query_parameters_in_URL_and_parameters_in_JSON_body() throws {
+        for method: HTTPMethod in [.post, .put] {
+            // Given
+            let request = RESTRequest(siteURL: sampleSiteAddress,
+                                      wooApiVersion: sampleWooApiVersion,
+                                      method: method,
+                                      path: sampleRPC,
+                                      parameters: ["status": "completed"],
+                                      queryParameters: ["currency": "EUR & GBP"])
+
+            // When
+            let urlRequest = try request.asURLRequest()
+            let components = try XCTUnwrap(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false))
+
+            // Then
+            XCTAssertEqual(components.queryItems?.first { $0.name == "currency" }?.value, "EUR & GBP")
+            XCTAssertEqual(request.jsonBodyParameters as? [String: String], ["status": "completed"])
+        }
+    }
+
+    func test_get_merges_parameters_and_queryParameters_with_queryParameters_taking_precedence() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wooApiVersion: sampleWooApiVersion,
+                                  method: .get,
+                                  path: sampleRPC,
+                                  parameters: ["currency": "USD", "status": "completed"],
+                                  queryParameters: ["currency": "EUR", "context": "edit"])
+
+        // When
+        let urlRequest = try request.asURLRequest()
+        let components = try XCTUnwrap(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false))
+        let queryItems = try XCTUnwrap(components.queryItems)
+
+        // Then
+        XCTAssertEqual(queryItems.filter { $0.name == "currency" }.map(\.value), ["EUR"])
+        XCTAssertEqual(queryItems.first { $0.name == "status" }?.value, "completed")
+        XCTAssertEqual(queryItems.first { $0.name == "context" }?.value, "edit")
     }
 
     func test_it_does_not_use_JSON_encoding_for_methods_other_than_post_put_and_patch() throws {
@@ -217,7 +257,7 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
     }
 
-    func test_request_url_falls_back_to_rest_route_when_cache_is_empty() throws {
+    func test_request_url_falls_back_to_wp_json_when_cache_is_empty() throws {
         // Given — no cache entry for sampleSiteAddress
         let request = RESTRequest(siteURL: sampleSiteAddress, method: .get, path: sampleRPC)
 
@@ -225,7 +265,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
     }
 
     func test_request_url_with_cached_wp_json_root_and_api_version() throws {

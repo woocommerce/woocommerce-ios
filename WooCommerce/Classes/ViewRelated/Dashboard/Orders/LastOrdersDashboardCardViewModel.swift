@@ -75,13 +75,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         var id: String {
             status?.rawValue ?? "any"
         }
-
-        var description: String {
-            guard let status else {
-                return Localization.anyStatusCase
-            }
-            return status.description
-        }
     }
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
@@ -96,7 +89,22 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         guard let selectedOrderStatus else {
             return Localization.anyStatusCase
         }
-        return selectedOrderStatus.description
+        return siteStatuses.displayName(for: selectedOrderStatus)
+    }
+
+    /// Display name for the currently selected status, used by the empty state. Nil when no status is selected.
+    ///
+    var selectedOrderStatusDisplayName: String? {
+        selectedOrderStatus.map { siteStatuses.displayName(for: $0) }
+    }
+
+    /// Resolves the display name for a status selector menu row, preferring the server-provided name.
+    ///
+    func title(for row: OrderStatusRow) -> String {
+        guard let status = row.status else {
+            return Localization.anyStatusCase
+        }
+        return siteStatuses.displayName(for: status)
     }
 
     private let siteID: Int64
@@ -110,6 +118,11 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
+
+    /// The current list of order statuses for the site, used to resolve server-provided display names.
+    /// Cached and refreshed via the results controller's change handlers to avoid re-mapping on every access.
+    ///
+    private var siteStatuses: [OrderStatus] = []
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -137,8 +150,9 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
+            let siteStatuses = statusResultsController.fetchedObjects
             rows = try await orders
-                .map { LastOrderDashboardRowViewModel(order: $0) }
+                .map { LastOrderDashboardRowViewModel(order: $0, siteStatuses: siteStatuses) }
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .lastOrders))
         } catch {
             syncingError = error
@@ -229,10 +243,8 @@ private extension LastOrdersDashboardCardViewModel {
     }
 
     func updateStatuses() {
-        let remoteStatuses = statusResultsController.fetchedObjects
-            .map { OrderStatusEnum(rawValue: $0.slug) }
-            .map { OrderStatusRow($0) }
-        allStatuses = [.any] + remoteStatuses
+        siteStatuses = statusResultsController.fetchedObjects
+        allStatuses = [.any] + siteStatuses.map { OrderStatusRow($0.status) }
     }
 
     @MainActor

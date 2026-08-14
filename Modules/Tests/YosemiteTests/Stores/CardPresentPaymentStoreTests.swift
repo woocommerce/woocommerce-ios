@@ -91,6 +91,25 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
+    func test_retrievePaymentIntent_action_returns_refreshed_intent_from_service() throws {
+        // Given
+        let clientSecret = "pi_client_secret"
+        let intent = PaymentIntent.fake().copy(status: .succeeded)
+        mockCardReaderService.whenRetrievingPaymentIntent(
+            thenReturn: Just(intent).setFailureType(to: Error.self).eraseToAnyPublisher()
+        )
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { promise in
+            let action = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret, onCompletion: promise)
+            self.cardPresentStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result.get().id, intent.id)
+        XCTAssertEqual(mockCardReaderService.retrievedPaymentIntentClientSecret, clientSecret)
+    }
+
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
     ///
     func test_start_discovery_action_hits_start_in_service() {
@@ -975,6 +994,44 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         let errorFromResult = try XCTUnwrap(result.failure)
         XCTAssertEqual(errorFromResult as? UnderlyingError, error)
+    }
+
+    func test_cancelPayment_keeps_payment_subscription_alive_when_reader_cancellation_fails() throws {
+        // Given
+        let capturePaymentSubject = PassthroughSubject<PaymentIntent, Error>()
+        let cancellationError = UnderlyingError.readerBusy
+        let paymentError = UnderlyingError.commandNotAllowed
+        mockCardReaderService.whenCapturingPayment(thenReturn: capturePaymentSubject.eraseToAnyPublisher())
+        mockCardReaderService.whenCancelingPaymentIntent(thenReturn: Future { promise in
+            promise(.failure(cancellationError))
+        })
+
+        let paymentCompleted = expectation(description: "Ongoing payment publisher remains subscribed")
+        var receivedPaymentError: Error?
+        let collectAction = CardPresentPaymentAction.collectPayment(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            onCardReaderMessage: { _ in },
+            onProcessingCompletion: { _ in },
+            onCompletion: { result in
+                receivedPaymentError = result.failure
+                paymentCompleted.fulfill()
+            })
+        cardPresentStore.onAction(collectAction)
+
+        // When
+        let cancellationResult: Result<Void, Error> = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.cancelPayment(onCompletion: promise))
+        }
+        capturePaymentSubject.send(completion: .failure(paymentError))
+        wait(for: [paymentCompleted], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(cancellationResult.failure as? UnderlyingError, cancellationError)
+        XCTAssertEqual(receivedPaymentError as? UnderlyingError, paymentError)
     }
 
     func test_selectedPaymentGatewayAccount_when_sent_use_before_then_returns_the_same_account() {

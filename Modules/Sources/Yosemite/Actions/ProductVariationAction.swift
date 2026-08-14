@@ -26,6 +26,16 @@ public enum ProductVariationAction: Action {
                                             pageSize: Int,
                                             onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Retrieves a currency-scoped page of variations without writing the results to local storage.
+    ///
+    case retrieveProductVariationsTransiently(siteID: Int64,
+                                              productID: Int64,
+                                              currency: String,
+                                              variationIDs: [Int64] = [],
+                                              pageNumber: Int,
+                                              pageSize: Int,
+                                              onCompletion: (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void)
+
     /// Retrieves the specified ProductVariation.
     ///
     case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, Error>) -> Void)
@@ -59,7 +69,7 @@ public enum ProductVariationAction: Action {
     ///
     case updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  onCompletion: (Result<[ProductVariation], ProductUpdateError>) -> Void)
 
     /// Requests the variations in a specified Order that have not been fetched.

@@ -8,6 +8,8 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
     private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
+    // Keep one navigation bar owner while the split view moves between compact and expanded layouts.
+    private let secondaryNavigationController = WooNavigationController()
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -49,14 +51,12 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
                 return
             }
             let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
-            let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-            return showSecondaryView(loaderNavigationController)
+            return showSecondaryView(loaderViewController)
         }
     }
 
     private func orderLoaderAlreadyShownInSecondaryView(for orderID: Int64) -> Bool {
-        guard let navigationController = ordersSplitViewController.viewController(for: .secondary) as? WooNavigationController,
-              let loaderController = navigationController.topViewController as? OrderLoaderViewController else {
+        guard let loaderController = secondaryNavigationController.topViewController as? OrderLoaderViewController else {
             return false
         }
         return loaderController.orderID == orderID
@@ -77,13 +77,11 @@ private extension OrdersSplitViewWrapperController {
         let config = EmptyStateViewController.Config.simpleImageWithDescription(image: .shoppingBagsImage,
                                                                                details: Localization.emptyOrderDetails)
         emptyStateViewController.configure(config)
-        let navigationController = WooNavigationController(rootViewController: emptyStateViewController)
-        showSecondaryView(navigationController)
+        showSecondaryView(emptyStateViewController)
     }
 
     func isShowingEmptyView() -> Bool {
-        (ordersSplitViewController.viewController(for: .secondary) as? UINavigationController)?
-            .viewControllers.contains(where: { $0 is EmptyStateViewController }) == true
+        secondaryNavigationController.viewControllers.contains(where: { $0 is EmptyStateViewController })
     }
 
     func showSecondaryView(_ viewController: UIViewController, onCompletion: (() -> Void)? = nil) {
@@ -91,7 +89,7 @@ private extension OrdersSplitViewWrapperController {
         // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
         ordersViewController.navigationController?.popToRootViewController(animated: false)
 
-        ordersSplitViewController.setViewController(viewController, for: .secondary)
+        secondaryNavigationController.setViewControllers([viewController], animated: false)
         ordersSplitViewController.show(.secondary)
         completeAfterShowingSecondary(onCompletion)
     }
@@ -148,13 +146,11 @@ private extension OrdersSplitViewWrapperController {
         // The up and down arrows are enabled when there is more than one item in `viewModels`.
         guard
             let viewModel = viewModels[safe: currentIndex],
-            let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
             let existingOrderDetailsViewController = secondaryNavigationController.topViewController as? OrderDetailsViewController,
             existingOrderDetailsViewController.isQuickOrderNavigationSupported() == orderDetailsViewController.isQuickOrderNavigationSupported()
         else {
             // When showing an order without quick navigation, it simply sets the order details to the secondary view.
-            let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-            showSecondaryView(orderDetailsNavigationController) {
+            showSecondaryView(orderDetailsViewController) {
                 onCompletion?(true)
             }
             return
@@ -181,12 +177,12 @@ private extension OrdersSplitViewWrapperController {
         ordersNavigationController.viewControllers = [ordersViewController]
         ordersSplitViewController.setViewController(ordersNavigationController, for: .primary)
 
+        ordersSplitViewController.setViewController(secondaryNavigationController, for: .secondary)
         showEmptyView()
     }
 
-    func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
-        if let navigationController = splitViewController.viewController(for: .secondary) as? UINavigationController,
-           navigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }) {
+    func handleCollapsingSplitView(splitViewController _: UISplitViewController) -> UISplitViewController.Column {
+        if secondaryNavigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }) {
             return .secondary
         }
         return .primary
@@ -209,6 +205,16 @@ private extension OrdersSplitViewWrapperController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+}
+
+extension OrdersSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
+    func handleTabReselection() {
+        guard let primaryNavigationController = ordersSplitViewController.viewController(for: .primary) as? UINavigationController else {
+            return
+        }
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

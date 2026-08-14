@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
+    @EnvironmentObject private var modalManager: POSModalManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -23,6 +24,7 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
+    @State private var phoneCartPresentationDetent: PresentationDetent = .medium
 
     /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
@@ -234,13 +236,15 @@ struct PointOfSaleDashboardView: View {
                             ))
                         }
                     )
-                    // Always shown — even with an empty cart — so the flow is always discoverable
-                    // and the merchant has a consistent landmark at the bottom of the screen.
-                    // Suppressed when a pushed view (e.g. the custom amount form) signals via
-                    // POSHidesFloatingControlPreferenceKey that overlays should hide.
-                    phoneCartButton
-                        .renderedIf(!floatingControlSuppressed)
+                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                        cartIsEmpty: posModel.cart.isEmpty,
+                        floatingControlSuppressed: floatingControlSuppressed
+                    ) {
+                        phoneCartButton
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
+                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
@@ -277,9 +281,19 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
+        .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
+            // Auto-opens the cart sheet on scan
+            guard itemID != nil,
+                  PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
+                                                                          orderStage: posModel.orderStage) else {
+                return
+            }
+            phoneCartPresentationDetent = .large
+            phoneShowingCart = true
+        }
         .posSheet(isPresented: $phoneShowingCart) {
             phoneCartSheetView
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
         // Phone-only covers presented at the dashboard level:
@@ -409,6 +423,7 @@ struct PointOfSaleDashboardView: View {
 
     private var phoneCartButton: some View {
         Button {
+            phoneCartPresentationDetent = .medium
             phoneShowingCart = true
         } label: {
             Text(String(format: Localization.phoneCart, phoneCartItemsCount))
@@ -453,6 +468,12 @@ struct PointOfSaleDashboardView: View {
         }
         return cart
             .background(Color.posSurface)
+            // Keep scanning available while the cart sheet is open: ItemListView's scanner is
+            // gated off whenever a POSSheetManager sheet is presented (this one included), so
+            // without this a scan with the sheet open would silently do nothing.
+            .barcodeScanning(enabled: Binding(get: { !modalManager.isPresented }, set: { _ in })) { result in
+                posModel.barcodeScanned(result)
+            }
     }
 
     private var tabletContentView: some View {
@@ -651,6 +672,7 @@ private extension PointOfSaleDashboardView {
         // Slightly longer than the 0.25s POS modal transition so the override modal fully dismisses
         // before the exit confirmation presents on the shared modal manager.
         static let exitOverrideHandoffDelay: TimeInterval = 0.3
+        static let cartButtonAppearanceDuration: TimeInterval = 0.25
         static let supportTag = "origin:point-of-sale"
     }
 

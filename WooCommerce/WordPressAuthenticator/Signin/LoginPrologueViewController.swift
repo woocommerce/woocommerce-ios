@@ -2,6 +2,11 @@ import UIKit
 import WordPressShared
 import WordPressUI
 
+/// WooCommerce addition. Screens that keep the shared navigation bar hidden adopt this so the prologue skips re-showing the bar when they are pushed.
+public protocol LoginNavigationBarHiding: AnyObject {
+    var prefersNavigationBarHidden: Bool { get }
+}
+
 class LoginPrologueViewController: LoginViewController {
 
     @IBOutlet private weak var topContainerView: UIView!
@@ -122,11 +127,20 @@ class LoginPrologueViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        if let incoming = navigationController?.topViewController as? LoginNavigationBarHiding,
+           incoming.prefersNavigationBarHidden {
+            return
+        }
+
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

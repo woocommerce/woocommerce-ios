@@ -101,7 +101,7 @@ private extension ProductsSplitViewCoordinator {
                 }, onCancel: { [weak self] in
                     guard let self else { return }
                     primaryNavigationController.viewControllers = [productsViewController]
-                    primaryNavigationController.setNavigationBarHidden(false, animated: true)
+                    primaryNavigationController.setNavigationBarHidden(false, animated: false)
                 })
                 let searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,
@@ -187,6 +187,8 @@ private extension ProductsSplitViewCoordinator {
             self?.showSecondaryView(contentType: .productForm(product: nil), viewController: viewController, replacesNavigationStack: true)
         }, onDeleteCompletion: { [weak self] in
             self?.onSecondaryProductFormDeletion()
+        }, onDuplicateCompletion: { [weak self] duplicatedProduct in
+            self?.showProductForm(product: duplicatedProduct)
         })
         addProductCoordinator.onProductCreated = { [weak self] product in
             guard let self, let lastContentType = contentTypes.last, lastContentType == .productForm(product: nil) else { return }

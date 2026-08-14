@@ -5,6 +5,7 @@ import StripeTerminal
 // are annotated as NS_UNAVAILABLE
 struct MockStripePaymentIntent {
     let stripeId: String?
+    let clientSecret: String?
     let created: Date
     let status: StripeTerminal.PaymentIntentStatus
     let amount: UInt
@@ -14,17 +15,12 @@ struct MockStripePaymentIntent {
     let paymentMethod: StripeTerminal.PaymentMethod?
 }
 
-extension MockStripePaymentIntent: StripePaymentIntent {
-    // While SCPPaymentIntent `id` can be nullable in order to support offline payments
-    // this is not the case for the app. PaymentIntent always need to have an associated `id`
-    var id: String {
-        stripeId ?? ""
-    }
-}
+extension MockStripePaymentIntent: StripePaymentIntent {}
 
 extension MockStripePaymentIntent {
-    static func mock() -> Self {
-        MockStripePaymentIntent(stripeId: "id",
+    static func mock(stripeId: String? = "id") -> Self {
+        MockStripePaymentIntent(stripeId: stripeId,
+                                clientSecret: "pi_secret",
                                 created: Date(),
                                 status: .succeeded,
                                 amount: 100,

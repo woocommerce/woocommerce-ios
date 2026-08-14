@@ -31,6 +31,10 @@ public final class StripeCardReaderService: NSObject {
 
     private var activePaymentIntent: StripeTerminal.PaymentIntent? = nil
 
+    /// A cancellation can arrive while Stripe is still creating the PaymentIntent, before there is an intent or SDK command to cancel.
+    /// Track canceled attempts so a late creation callback cannot advance to presenting the Tap to Pay interface afterwards.
+    private var paymentAttemptTracker = PaymentAttemptCancellationTracker()
+
     /// A lock to ensure that the service only initiates or cancels a discovery process at the same time
     private let discoveryLock = NSLock()
 
@@ -349,18 +353,22 @@ extension StripeCardReaderService: CardReaderService {
         // This isn't enforced by the type system, but it is guaranteed as long as all the
         // steps produce a Future.
 
+        let paymentAttemptID = paymentAttemptTracker.beginAttempt()
+
         // If a card was left from a previous payment attempt, we want that removed before we initiate a new payment.
         return waitForInsertedCardToBeRemoved()
             .flatMap {
-                self.createPaymentIntent(parameters)
+                self.createPaymentIntent(parameters, paymentAttemptID: paymentAttemptID)
             }.flatMap { intent in
-                self.collectPaymentMethod(intent: intent)
+                self.collectPaymentMethod(intent: intent, paymentAttemptID: paymentAttemptID)
             }.flatMap { intent in
                 self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }
-            .map(PaymentIntent.init(intent:))
+            .tryMap { intent in
+                try Self.capturedPaymentIntent(from: intent)
+            }
             .eraseToAnyPublisher()
     }
 
@@ -371,14 +379,17 @@ extension StripeCardReaderService: CardReaderService {
         }
         switch activePaymentIntent.status {
         case .requiresPaymentMethod:
-            return collectPaymentMethod(intent: activePaymentIntent)
+            let paymentAttemptID = paymentAttemptTracker.beginAttempt()
+            return collectPaymentMethod(intent: activePaymentIntent, paymentAttemptID: paymentAttemptID)
                 .flatMap { intent in
                     self.prepareForPaymentConfirmation(intent: intent, beforePaymentConfirmation: beforePaymentConfirmation)
                 }
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    try Self.capturedPaymentIntent(from: intent)
+                }
                 .mapError { [weak self] error in
                     if case CardReaderServiceError.paymentMethodCollection = error {
                         // This is supposed to happen in `collectPaymentMethod(intent:)` when there's an error.
@@ -396,12 +407,13 @@ extension StripeCardReaderService: CardReaderService {
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    try Self.capturedPaymentIntent(from: intent)
+                }
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            return Just(PaymentIntent(intent: activePaymentIntent))
-                .setFailureType(to: CardReaderServiceError.self)
-                .mapError({ $0 as Error })
+            return Result { try Self.capturedPaymentIntent(from: activePaymentIntent) }
+                .publisher
                 .eraseToAnyPublisher()
         case .processing:
             return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
@@ -427,11 +439,46 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
+    public func retrievePaymentIntent(clientSecret: String) -> AnyPublisher<PaymentIntent, Error> {
+        Future { promise in
+            Terminal.shared.retrievePaymentIntent(clientSecret: clientSecret) { intent, error in
+                if let error {
+                    let underlyingError = Self.logAndDecodeError(error)
+                    return promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+                }
+
+                guard let intent else {
+                    return promise(.failure(CardReaderServiceError.intentCreation()))
+                }
+
+                do {
+                    promise(.success(try PaymentIntent(intent: intent)))
+                } catch let error as UnderlyingError {
+                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: error)))
+                } catch {
+                    promise(.failure(CardReaderServiceError.intentCreation()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { [weak self] promise in
-            guard let self,
-                  let activePaymentIntent = self.activePaymentIntent else {
+            guard let self else {
                 promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
+                return
+            }
+
+            let paymentAttemptID = self.paymentAttemptTracker.cancelActiveAttempt()
+
+            guard let activePaymentIntent = self.activePaymentIntent else {
+                if paymentAttemptID != nil {
+                    // Intent creation is still in flight. The attempt is marked and its creation callback will cancel it.
+                    promise(.success(()))
+                } else {
+                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
+                }
                 return
             }
 
@@ -448,6 +495,9 @@ extension StripeCardReaderService: CardReaderService {
                         self?.activePaymentIntent = nil
                         promise(.success(()))
                     }
+                    if let paymentAttemptID {
+                        self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
+                    }
                     self?.cancellationStartedInApp = nil
                 }
             }
@@ -461,12 +511,13 @@ extension StripeCardReaderService: CardReaderService {
                 // e.g. it has already completed, the completion block will be called with an
                 // error. Otherwise, the completion block will be called with nil.
                 if let error {
-                    let underlyingError = Self.logAndDecodeError(error)
-                    promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
+                    _ = Self.logAndDecodeError(error)
                 } else {
                     self?.paymentCancellable = nil
-                    cancelPaymentIntent()
                 }
+                // The collection command can complete while cancellation is being requested. Always follow up by
+                // canceling the PaymentIntent so a command that lost the race cannot leave Tap to Pay presented.
+                cancelPaymentIntent()
             })
         }
     }
@@ -704,7 +755,8 @@ private extension StripeCardReaderService {
         connectedReadersSubject.value.first?.readerType.model
     }
 
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
+    func createPaymentIntent(_ parameters: PaymentIntentParameters,
+                             paymentAttemptID: UUID) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             /// Add the reader_ID, reader_model, and platform to the request metadata so we can attribute this intent to the connected reader
             ///
@@ -722,28 +774,51 @@ private extension StripeCardReaderService {
             Terminal.shared.createPaymentIntent(parameters) { intent, error in
                 if let error {
                     let underlyingError = Self.logAndDecodeError(error)
+                    self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+                    return
                 }
 
                 self?.activePaymentIntent = intent
+                let wasCanceled = self?.paymentAttemptTracker.isCanceled(paymentAttemptID) ?? false
 
                 if let intent {
+                    guard wasCanceled == false else {
+                        Terminal.shared.cancelPaymentIntent(intent) { [weak self] _, error in
+                            if let error {
+                                _ = Self.logAndDecodeError(error)
+                            } else {
+                                self?.activePaymentIntent = nil
+                            }
+                            self?.paymentAttemptTracker.finishAttempt(paymentAttemptID)
+                        }
+                        promise(.failure(CardReaderServiceError.paymentMethodCollection(
+                            underlyingError: .commandCancelled(from: .app))))
+                        return
+                    }
                     promise(.success(intent))
                 }
             }
         }
     }
 
-    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
+    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent,
+                              paymentAttemptID: UUID? = nil) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
         let collectPaymentMethodFuture = Future<StripeTerminal.PaymentIntent, Error>() { [weak self] promise in
-            guard let collectConfiguration = self?.collectPaymentIntentConfiguration() else {
+            guard let self,
+                  let collectConfiguration = self.collectPaymentIntentConfiguration() else {
                 return promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: .internalServiceError)))
+            }
+
+            if let paymentAttemptID, self.paymentAttemptTracker.isCanceled(paymentAttemptID) {
+                return promise(.failure(CardReaderServiceError.paymentMethodCollection(
+                    underlyingError: .commandCancelled(from: .app))))
             }
 
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel
-            self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent, collectConfig: collectConfiguration) { intent, error in
+            let paymentCancellable = Terminal.shared.collectPaymentMethod(intent, collectConfig: collectConfiguration) { [weak self] intent, error in
                 if let error {
                     var underlyingError = Self.logAndDecodeError(error)
                     /// the completion block for collectPaymentMethod will be called
@@ -770,6 +845,20 @@ private extension StripeCardReaderService {
                     self?.activePaymentIntent = intent
                     self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
+                }
+            }
+
+            self.paymentCancellable = paymentCancellable?.completed == false ? paymentCancellable : nil
+
+            // Cancellation can occur inside Stripe's call above, before its Cancelable is returned. Recheck after
+            // retaining it and cancel immediately so the native Tap to Pay presentation cannot outlive the Woo flow.
+            if let paymentAttemptID, self.paymentAttemptTracker.isCanceled(paymentAttemptID) {
+                guard let paymentCancellable, paymentCancellable.completed == false else { return }
+                paymentCancellable.cancel { [weak self] error in
+                    if let error {
+                        _ = Self.logAndDecodeError(error)
+                    }
+                    self?.paymentCancellable = nil
                 }
             }
         }
@@ -806,9 +895,13 @@ private extension StripeCardReaderService {
         intent: StripeTerminal.PaymentIntent,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        beforePaymentConfirmation(PaymentIntent(intent: intent))
-            .map { intent }
-            .eraseToAnyPublisher()
+        do {
+            return beforePaymentConfirmation(try Self.capturedPaymentIntent(from: intent))
+                .map { intent }
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
@@ -823,7 +916,7 @@ private extension StripeCardReaderService {
                     }
 
                     self.activePaymentIntent = paymentIntent
-                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    switch (paymentIntent.status, (try? PaymentIntent(intent: paymentIntent))?.paymentMethod()) {
                     case (.requiresCapture, _):
                         // This payment intent can be used, we lost context to get an error with a PI that requires capture
                         self.activePaymentIntent = nil
@@ -841,6 +934,19 @@ private extension StripeCardReaderService {
                     return promise(.success(intent))
                 }
             }
+        }
+    }
+}
+
+// MARK: - Payment intent mapping
+extension StripeCardReaderService {
+    /// Maps a Stripe intent to a `PaymentIntent`, rethrowing any mapping failure as a payment capture error.
+    /// Internal rather than private so unit tests can verify the error wrapping.
+    static func capturedPaymentIntent(from intent: StripePaymentIntent) throws -> PaymentIntent {
+        do {
+            return try PaymentIntent(intent: intent)
+        } catch {
+            throw CardReaderServiceError.paymentCapture(underlyingError: error)
         }
     }
 }

@@ -249,6 +249,12 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                     tryPaymentAgainButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction))
             )
 
+        case .paymentCancellationConfirmation(let onDismiss):
+            self = .message(.paymentCancellationConfirmation(
+                viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(
+                    paymentCancellationConfirmationAction: onDismiss))
+            )
+
             /// Not-yet supported types
         case .selectSearchType:
             return nil

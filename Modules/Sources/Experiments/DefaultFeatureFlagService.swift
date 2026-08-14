@@ -84,9 +84,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
         case .pointOfSaleTapToPay:
-            // Behind the flag while the TTP integration lands. localDeveloper-only so
-            // alpha and beta keep showing only Cash + Card reader for now.
-            return buildConfig == .localDeveloper
+            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:
@@ -104,6 +102,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .smarterNotifications:
             return true
         case .starReceiptPrinterSupport:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .posServerCalculatedRefunds:
+            // Do not widen beyond localDeveloper/alpha until WOOMOB-3787 (prepared-receipt refund API) has
+            // merged: an unverified `compute_totals` create on an older store records a ghost $0.00 refund.
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

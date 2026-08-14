@@ -150,6 +150,134 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertEqual(selectableItems[2].lineItemTotal, NSDecimalNumber(string: "3.50").decimalValue)
         XCTAssertEqual(selectableItems[2].totalTax, NSDecimalNumber(string: "0.35").decimalValue)
     }
+
+    func test_refundPreviewLineItems_maps_products_to_quantities_and_fees_to_tax_inclusive_totals() {
+        // Given
+        let item1 = orderItem(itemID: 10, quantity: 3)
+        let item2 = orderItem(itemID: 20, quantity: 1)
+        let fee = orderFee(feeID: 200, total: "3.50", totalTax: "0.35")
+        let context = makeContext(refundableItems: [
+            RefundableOrderItem(item: item1, quantity: 3),
+            RefundableOrderItem(item: item2, quantity: 1)
+        ], refundableFees: [fee])
+        // Two of item1's three units selected, item2 not selected, and the fee selected.
+        let selectedItems = [
+            selectableItem(itemID: item1.itemID, index: 0),
+            selectableItem(itemID: item1.itemID, index: 1),
+            selectableItem(itemID: fee.feeID, isLumpSum: true, index: 2)
+        ]
+
+        // When
+        let lineItems = sut.refundPreviewLineItems(from: selectedItems, context: context)
+
+        // Then
+        XCTAssertEqual(lineItems.count, 2)
+        let product = lineItems.first { $0.lineItemID == item1.itemID }
+        XCTAssertEqual(product?.quantity, 2)
+        XCTAssertNil(product?.refundTotal)
+        let feeLine = lineItems.first { $0.lineItemID == fee.feeID }
+        XCTAssertNil(feeLine?.quantity)
+        XCTAssertEqual(feeLine?.refundTotal, NSDecimalNumber(string: "3.85").decimalValue) // 3.50 + 0.35
+    }
+
+    func test_computedRefundLineItems_matches_the_preview_line_construction() {
+        // Given the same selection as the preview builder test
+        let item1 = orderItem(itemID: 10, quantity: 3)
+        let item2 = orderItem(itemID: 20, quantity: 1)
+        let fee = orderFee(feeID: 200, total: "3.50", totalTax: "0.35")
+        let context = makeContext(refundableItems: [
+            RefundableOrderItem(item: item1, quantity: 3),
+            RefundableOrderItem(item: item2, quantity: 1)
+        ], refundableFees: [fee])
+        let selectedItems = [
+            selectableItem(itemID: item1.itemID, index: 0),
+            selectableItem(itemID: item1.itemID, index: 1),
+            selectableItem(itemID: fee.feeID, isLumpSum: true, index: 2)
+        ]
+
+        // When
+        let lineItems = sut.computedRefundLineItems(from: selectedItems, context: context)
+
+        // Then the creation lines carry the same quantities and totals as the preview lines
+        XCTAssertEqual(lineItems.count, 2)
+        let product = lineItems.first { $0.lineItemID == item1.itemID }
+        XCTAssertEqual(product?.quantity, 2)
+        XCTAssertNil(product?.refundTotal)
+        let feeLine = lineItems.first { $0.lineItemID == fee.feeID }
+        XCTAssertNil(feeLine?.quantity)
+        XCTAssertEqual(feeLine?.refundTotal, NSDecimalNumber(string: "3.85").decimalValue) // 3.50 + 0.35
+    }
+
+    func test_refundPreviewLineItems_drops_zero_total_fee_lines() {
+        // Given a selection with a product, a zero-total fee, and a nonzero fee. The server
+        // rejects a gross line refund of zero with `invalid_refund_total`, so the zero fee
+        // must not be sent.
+        let item = orderItem(itemID: 10, quantity: 1)
+        let zeroFee = orderFee(feeID: 100, total: "0.00", totalTax: "0.00")
+        let nonzeroFee = orderFee(feeID: 200, total: "3.50", totalTax: "0.35")
+        let context = makeContext(refundableItems: [RefundableOrderItem(item: item, quantity: 1)],
+                                  refundableFees: [zeroFee, nonzeroFee])
+        let selectedItems = [
+            selectableItem(itemID: item.itemID, index: 0),
+            selectableItem(itemID: zeroFee.feeID, isLumpSum: true, index: 1),
+            selectableItem(itemID: nonzeroFee.feeID, isLumpSum: true, index: 2)
+        ]
+
+        // When
+        let lineItems = sut.refundPreviewLineItems(from: selectedItems, context: context)
+
+        // Then only the product and the nonzero fee are sent
+        XCTAssertEqual(lineItems.map(\.lineItemID), [item.itemID, nonzeroFee.feeID])
+    }
+
+    func test_refundPreviewLineItems_keeps_fee_whose_only_amount_is_tax() {
+        // Given a fee with a zero total but nonzero tax: the gross amount is nonzero, so it stays.
+        let fee = orderFee(feeID: 100, total: "0.00", totalTax: "0.10")
+        let context = makeContext(refundableFees: [fee])
+        let selectedItems = [selectableItem(itemID: fee.feeID, isLumpSum: true, index: 0)]
+
+        // When
+        let lineItems = sut.refundPreviewLineItems(from: selectedItems, context: context)
+
+        // Then
+        XCTAssertEqual(lineItems.count, 1)
+        XCTAssertEqual(lineItems.first?.refundTotal, NSDecimalNumber(string: "0.10").decimalValue)
+    }
+
+    func test_refundPreviewLineItems_when_selection_is_only_zero_total_fees_then_returns_empty() {
+        // Given: an empty line-item array makes the preview use case fall back to the local
+        // flow instead of sending a request the server would reject.
+        let zeroFee = orderFee(feeID: 100, total: "0.00", totalTax: "0.00")
+        let context = makeContext(refundableFees: [zeroFee])
+        let selectedItems = [selectableItem(itemID: zeroFee.feeID, isLumpSum: true, index: 0)]
+
+        // When
+        let lineItems = sut.refundPreviewLineItems(from: selectedItems, context: context)
+
+        // Then
+        XCTAssertTrue(lineItems.isEmpty)
+    }
+
+    func test_computedRefundLineItems_drops_zero_total_fee_lines_like_the_preview_builder() {
+        // Given the same selection as the preview zero-fee test: the create must send exactly
+        // what was previewed, so both builders share the zero-fee filter.
+        let item = orderItem(itemID: 10, quantity: 1)
+        let zeroFee = orderFee(feeID: 100, total: "0.00", totalTax: "0.00")
+        let nonzeroFee = orderFee(feeID: 200, total: "3.50", totalTax: "0.35")
+        let context = makeContext(refundableItems: [RefundableOrderItem(item: item, quantity: 1)],
+                                  refundableFees: [zeroFee, nonzeroFee])
+        let selectedItems = [
+            selectableItem(itemID: item.itemID, index: 0),
+            selectableItem(itemID: zeroFee.feeID, isLumpSum: true, index: 1),
+            selectableItem(itemID: nonzeroFee.feeID, isLumpSum: true, index: 2)
+        ]
+
+        // When
+        let lineItems = sut.computedRefundLineItems(from: selectedItems, context: context)
+
+        // Then
+        XCTAssertEqual(lineItems.map(\.lineItemID), [item.itemID, nonzeroFee.feeID])
+    }
 }
 
 private extension POSRefundSubmissionMappingTests {

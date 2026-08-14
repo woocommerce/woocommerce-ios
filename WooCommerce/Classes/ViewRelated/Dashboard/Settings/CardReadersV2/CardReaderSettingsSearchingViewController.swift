@@ -125,16 +125,16 @@ struct CardReaderSettingsSearchingView: View {
     var learnMoreURL: URL
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
-    @Environment(\.sizeCategory) private var sizeCategory
 
     var isCompact: Bool {
-        get {
-            verticalSizeClass == .compact
-        }
+        verticalSizeClass == .compact
     }
 
-    var isSizeCategoryLargeThanExtraLarge: Bool {
-        sizeCategory >= .accessibilityMedium
+    var illustrationHeight: CGFloat {
+        if isCompact {
+            return 80
+        }
+        return 160
     }
 
     var body: some View {
@@ -147,7 +147,7 @@ struct CardReaderSettingsSearchingView: View {
             Image(uiImage: .cardReaderConnect)
                 .resizable()
                 .scaledToFit()
-                .frame(height: isCompact ? 80 : 206)
+                .frame(height: illustrationHeight)
                 .padding(.bottom, isCompact ? 16 : 32)
 
             PaymentSettingsFlowHint(number: 1, text: Localization.hintOne)
@@ -163,6 +163,7 @@ struct CardReaderSettingsSearchingView: View {
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
                 url: learnMoreURL,
                 tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .manageCardReader)))
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.vertical, 8)
             .customOpenURL(action: { url in
                 showURL?(url)
@@ -173,11 +174,7 @@ struct CardReaderSettingsSearchingView: View {
             maxHeight: .infinity
         )
         .padding()
-        .if(isCompact || isSizeCategoryLargeThanExtraLarge) {content in
-            ScrollView(.vertical) {
-                content
-            }
-        }
+        .scrollVerticallyIfNeeded()
     }
 }
 

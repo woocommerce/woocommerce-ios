@@ -92,6 +92,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cart.purchasableItems.count == 1)
+            #expect(cart.latestScannedItemID == loadingItem.id)
             let item = try #require(cart.purchasableItems.first)
             #expect(item.id == loadingItem.id)
             guard case .loading = item.state else {
@@ -111,6 +112,7 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(cart.purchasableItems.count == 1)
             let item = try #require(cart.purchasableItems.first)
+            #expect(item.id == loadingItem.id)
             guard case .loaded(let loadedItem) = item.state else {
                 throw CartTestError.unexpectedItemStateInCart
             }
@@ -1327,55 +1329,55 @@ struct PointOfSaleAggregateModelTests {
             }
         }
 
-        @Test func barcodeScanned_when_scan_succeeds_then_emits_scan_event() async {
+        @Test func barcodeScanned_when_scan_succeeds_then_updates_latest_scanned_item_id() async {
             // Given
             let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
-            #expect(sut.latestBarcodeScanEvent == nil)
+            #expect(sut.cart.latestScannedItemID == nil)
 
             // When
-            await waitForScanEventChange(on: sut) {
+            await waitForScannedItemChange(on: sut) {
                 sut.barcodeScanned(.success("123456"))
             }
 
             // Then
-            #expect(sut.latestBarcodeScanEvent != nil)
+            #expect(sut.cart.latestScannedItemID != nil)
         }
 
-        @Test func barcodeScanned_when_parse_fails_then_emits_scan_event() async {
+        @Test func barcodeScanned_when_parse_fails_then_updates_latest_scanned_item_id() async {
             // Given
             let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
-            #expect(sut.latestBarcodeScanEvent == nil)
+            #expect(sut.cart.latestScannedItemID == nil)
 
             // When
-            await waitForScanEventChange(on: sut) {
+            await waitForScannedItemChange(on: sut) {
                 sut.barcodeScanned(.failure(.scanTooShort(barcode: "1")))
             }
 
             // Then
-            #expect(sut.latestBarcodeScanEvent != nil)
+            #expect(sut.cart.latestScannedItemID != nil)
         }
 
-        @Test func barcodeScanned_when_scanned_twice_then_emits_distinct_events() async {
+        @Test func barcodeScanned_when_scanned_twice_then_sets_distinct_latest_scanned_item_ids() async {
             // Given
             let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
 
             // When: two scans of the same barcode.
-            await waitForScanEventChange(on: sut) {
+            await waitForScannedItemChange(on: sut) {
                 sut.barcodeScanned(.success("123456"))
             }
-            let firstEventID = sut.latestBarcodeScanEvent?.id
-            await waitForScanEventChange(on: sut) {
+            let firstScannedItemID = sut.cart.latestScannedItemID
+            await waitForScannedItemChange(on: sut) {
                 sut.barcodeScanned(.success("123456"))
             }
-            let secondEventID = sut.latestBarcodeScanEvent?.id
+            let secondScannedItemID = sut.cart.latestScannedItemID
 
-            // Then: distinct ids, so `.onChange` observers fire for consecutive identical scans.
-            #expect(firstEventID != nil)
-            #expect(secondEventID != nil)
-            #expect(firstEventID != secondEventID)
+            // Then
+            #expect(firstScannedItemID != nil)
+            #expect(secondScannedItemID != nil)
+            #expect(firstScannedItemID != secondScannedItemID)
         }
 
-        @Test func barcodeScanned_when_lookup_fails_then_emits_single_event() async {
+        @Test func barcodeScanned_when_lookup_fails_then_preserves_latest_scanned_item_id() async {
             // Given
             let soundPlayer = MockPointOfSaleSoundPlayer()
             let barcodeScanService = MockPointOfSaleBarcodeScanService()
@@ -1384,15 +1386,15 @@ struct PointOfSaleAggregateModelTests {
                 barcodeScanService: barcodeScanService,
                 soundPlayer: soundPlayer)
 
-            // When: capture the event emitted at scan initiation, then wait for the failed
-            // lookup to complete (the failure sound is the last step of that path).
-            var initiationEventID: UUID?
+            // When: capture the loading item's ID, then wait for the failed lookup to complete
+            // (the failure sound is the last step of that path).
+            var loadingItemID: UUID?
             await fireOnce { fire in
                 withObservationTracking {
-                    _ = sut.latestBarcodeScanEvent
+                    _ = sut.cart.latestScannedItemID
                 } onChange: {
                     Task { @MainActor in
-                        initiationEventID = sut.latestBarcodeScanEvent?.id
+                        loadingItemID = sut.cart.latestScannedItemID
                     }
                 }
                 soundPlayer.onPlaySound = { _ in
@@ -1401,15 +1403,15 @@ struct PointOfSaleAggregateModelTests {
                 sut.barcodeScanned(.success("123456"))
             }
 
-            // Then: the lookup failure did not emit a second event.
-            #expect(initiationEventID != nil)
-            #expect(sut.latestBarcodeScanEvent?.id == initiationEventID)
+            // Then
+            #expect(loadingItemID != nil)
+            #expect(sut.cart.latestScannedItemID == loadingItemID)
         }
 
-        private func waitForScanEventChange(on sut: PointOfSaleAggregateModel, when action: () -> Void) async {
+        private func waitForScannedItemChange(on sut: PointOfSaleAggregateModel, when action: () -> Void) async {
             await withCheckedContinuation { continuation in
                 withObservationTracking {
-                    _ = sut.latestBarcodeScanEvent
+                    _ = sut.cart.latestScannedItemID
                 } onChange: {
                     Task { @MainActor in
                         // Task needed because onChange fires with willSet semantics.

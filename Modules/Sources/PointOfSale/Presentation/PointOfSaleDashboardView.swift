@@ -281,9 +281,9 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
-        .onChange(of: posModel.latestBarcodeScanEvent) { _, event in
+        .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
             // Auto-opens the cart sheet on scan
-            guard event != nil,
+            guard itemID != nil,
                   PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
                                                                           orderStage: posModel.orderStage) else {
                 return

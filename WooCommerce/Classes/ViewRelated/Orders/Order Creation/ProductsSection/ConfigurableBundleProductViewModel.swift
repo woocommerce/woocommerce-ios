@@ -113,13 +113,22 @@ private extension ConfigurableBundleProductViewModel {
 
         Task { @MainActor in
             do {
-                // When there is a long list of bundle items, products are loaded in a paginated way.
                 let products = try await loadProducts(from: product.bundledItems)
                 createItemViewModels(products: products)
             } catch {
                 DDLogError("⛔️ Error loading products for bundle product items in order form: \(error)")
                 loadProductsErrorMessage = Localization.errorLoadingProducts
             }
+        }
+    }
+
+    @MainActor
+    func loadProducts(from bundleItems: [ProductBundleItem]) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.retrieveProductsIfNeeded(siteID: product.siteID,
+                                                              productIDs: bundleItems.map { $0.productID }) { result in
+                continuation.resume(with: result)
+            })
         }
     }
 
@@ -149,41 +158,6 @@ private extension ConfigurableBundleProductViewModel {
                 }
             }
         initialConfigurations = bundleItemViewModels.compactMap { $0.toConfiguration }
-    }
-
-    @MainActor
-    func loadProducts(from bundleItems: [ProductBundleItem]) async throws -> [Product] {
-        let bundledProductIDs = bundleItems.map { $0.productID }
-        return try await loadProductsRecursively(siteID: product.siteID, productIDs: bundledProductIDs)
-    }
-
-    func loadProductsRecursively(siteID: Int64, productIDs: [Int64]) async throws -> [Product] {
-        let pageNumber = Store.Default.firstPageNumber
-        return try await loadProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, products: [])
-    }
-
-    func loadProducts(siteID: Int64, productIDs: [Int64], pageNumber: Int, products: [Product]) async throws -> [Product] {
-        do {
-            let (loadedProducts, hasNextPage) = try await loadProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber)
-            let products = products + loadedProducts
-            guard hasNextPage == false else {
-                return try await loadProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber + 1, products: products)
-            }
-            return products
-        } catch {
-            throw error
-        }
-    }
-
-    @MainActor
-    func loadProducts(siteID: Int64, productIDs: [Int64], pageNumber: Int) async throws -> (products: [Product], hasNextPage: Bool) {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.retrieveProducts(siteID: product.siteID,
-                                                           productIDs: productIDs,
-                                                           pageNumber: pageNumber) { result in
-                continuation.resume(with: result)
-            })
-        }
     }
 }
 

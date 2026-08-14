@@ -53,6 +53,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
                                               productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
             retrieveProductsTransiently(siteID: siteID,
@@ -473,6 +475,51 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
+    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
+        let storedProductIDs = storedProducts.map { $0.productID }
+        let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
+
+        guard !missingIDs.isEmpty else {
+            return onCompletion(.success(storedProducts))
+        }
+
+        recursivelyRetrieveProducts(siteID: siteID,
+                                    productIDs: missingIDs,
+                                    pageNumber: ProductsRemote.Default.pageNumber,
+                                    retrievedProducts: []) { result in
+            onCompletion(result.map { storedProducts + $0 })
+        }
+    }
+
+    /// Recursively retrieves products starting with the given page number, until there are no more pages left.
+    ///
+    func recursivelyRetrieveProducts(siteID: Int64,
+                                     productIDs: [Int64],
+                                     pageNumber: Int,
+                                     retrievedProducts: [Product],
+                                     onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        retrieveProducts(siteID: siteID,
+                         productIDs: productIDs,
+                         pageNumber: pageNumber,
+                         pageSize: ProductsRemote.Default.pageSize) { [weak self] result in
+            switch result {
+            case .success((let products, let hasNextPage)):
+                let retrievedProducts = retrievedProducts + products
+                guard hasNextPage else {
+                    return onCompletion(.success(retrievedProducts))
+                }
+                self?.recursivelyRetrieveProducts(siteID: siteID,
+                                                  productIDs: productIDs,
+                                                  pageNumber: pageNumber + 1,
+                                                  retrievedProducts: retrievedProducts,
+                                                  onCompletion: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
                           pageNumber: Int,

@@ -31,7 +31,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 1, productID: 2, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -69,7 +69,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 2, productID: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -106,7 +106,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 2, productID: 3, defaultQuantity: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -130,7 +130,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -163,7 +163,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -220,7 +220,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             viewModel.loadProductsErrorMessage != nil
         }
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
         viewModel.retry()
 
         // Then
@@ -235,7 +235,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -271,7 +271,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            // The bundle is not new when there are non-empty child items.
@@ -297,7 +297,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2, minQuantity: 2, maxQuantity: 8, defaultQuantity: 6)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -328,7 +328,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         // When
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -359,7 +359,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -376,10 +376,10 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 }
 
 private extension ConfigurableBundleProductViewModelTests {
-    func mockProductsRetrieval(result: Result<(products: [Product], hasNextPage: Bool), Error>) {
+    func mockProductsRetrieval(result: Result<[Product], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-                case let .retrieveProducts(_, _, _, _, onCompletion):
+                case let .retrieveProductsIfNeeded(_, _, onCompletion):
                     onCompletion(result)
                 default:
                     XCTFail("Unexpected action: \(action)")

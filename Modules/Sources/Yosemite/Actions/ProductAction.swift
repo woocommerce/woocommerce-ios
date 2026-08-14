@@ -108,6 +108,14 @@ public enum ProductAction: Action {
                           pageSize: Int = ProductsRemote.Default.pageSize,
                           onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
+    /// Retrieves every Product in a specified list, fetching only the ones which are not stored already.
+    ///
+    /// Products are fetched a page at a time until there are none left, so the caller does not have to page.
+    ///
+    case retrieveProductsIfNeeded(siteID: Int64,
+                                  productIDs: [Int64],
+                                  onCompletion: (Result<[Product], Error>) -> Void)
+
     /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///
     case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,

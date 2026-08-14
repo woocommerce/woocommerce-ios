@@ -202,4 +202,40 @@ struct PointOfSaleDashboardViewHelperTests {
         // Then
         #expect(result == false)
     }
+
+    // MARK: - Auto-open Cart On Scan
+
+    @Test func shouldAutoOpenCartOnScan_when_phone_layout_and_building_returns_true() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: true,
+            orderStage: .building
+        )
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func shouldAutoOpenCartOnScan_when_phone_layout_and_finalizing_returns_false() async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: true,
+            orderStage: .finalizing
+        )
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test(arguments: [PointOfSaleOrderStage.building, PointOfSaleOrderStage.finalizing])
+    func shouldAutoOpenCartOnScan_when_not_phone_layout_returns_false(orderStage: PointOfSaleOrderStage) async throws {
+        // When
+        let result = PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(
+            isPhoneLayout: false,
+            orderStage: orderStage
+        )
+
+        // Then
+        #expect(result == false)
+    }
 }

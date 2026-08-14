@@ -3,17 +3,15 @@ import Yosemite
 
 /// A reason a product cannot be added to an order.
 ///
-/// Owns the check and the wording that goes with it, so every route onto an order — the product selector,
-/// barcode and SKU scanning, product bundles — answers the question the same way.
-///
-/// Mirrors `ProductRestriction` in the Android app.
+/// Owns the check and the wording that goes with it, so every route onto an order answers the question the
+/// same way.
 ///
 enum ProductRestriction: CaseIterable {
     case subscription
     case bookable
 
     /// The restriction preventing the product from being added to an order, or `nil` if there is none.
-    /// The first matching case wins, so a product matching more than one is explained by whichever comes first.
+    /// The first matching case wins.
     ///
     static func restriction(for product: Product) -> ProductRestriction? {
         allCases.first { $0.applies(to: product) }

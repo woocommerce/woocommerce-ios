@@ -14,6 +14,7 @@ struct PointOfSalePaymentSuccessView: View {
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -55,6 +56,7 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private func handlePrintReceiptTap() {
+        analytics.track(.receiptPrintTapped)
         switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
         case .presentSetup:
             showPrinterSetupModal = true
@@ -70,8 +72,10 @@ struct PointOfSalePaymentSuccessView: View {
         Task {
             do {
                 try await posModel.printReceipt()
+                analytics.track(.receiptPrintSuccess)
             } catch {
                 DDLogError("⛔️ POS receipt print failed: \(error)")
+                analytics.track(.receiptPrintFailed, parameters: [:], error: error)
             }
         }
     }

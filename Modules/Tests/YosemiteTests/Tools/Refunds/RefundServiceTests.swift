@@ -123,6 +123,87 @@ struct RefundServiceTests {
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
     }
 
+    /// Verifies the ghost-refund tripwire: a store that ignored `compute_totals` books a
+    /// zero-amount refund from the quantity-only body, which must surface as a failure rather
+    /// than a successful refund the cashier believes went through.
+    ///
+    @Test func createRefund_when_quantity_lines_return_a_zero_amount_then_throws_ghostRefundDetected() async {
+        // Given a store that responded with a zero-amount refund
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-ghost-zero-amount")
+
+        // When / Then
+        await #expect(throws: RefundServiceError.ghostRefundDetected(refundID: 563, amount: "0.00")) {
+            try await service.createRefund(siteID: sampleSiteID,
+                                           orderID: sampleOrderID,
+                                           reason: "",
+                                           automaticRefund: true,
+                                           restockItems: true,
+                                           amountOverride: nil,
+                                           lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+        }
+    }
+
+    /// Verifies the ghost refund is not stored: treating it as a real refund would show the
+    /// merchant a completed refund for money that never moved.
+    ///
+    @Test func createRefund_when_ghost_refund_is_detected_then_persists_nothing() async {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-ghost-zero-amount")
+
+        // When
+        _ = try? await service.createRefund(siteID: sampleSiteID,
+                                            orderID: sampleOrderID,
+                                            reason: "",
+                                            automaticRefund: true,
+                                            restockItems: true,
+                                            amountOverride: nil,
+                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+
+        // Then
+        #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 0)
+    }
+
+    /// Verifies the tripwire ignores amount-based lines: those carry their own `refund_total`, so
+    /// a zero total is the caller's own doing rather than a dropped `compute_totals`.
+    ///
+    @Test func createRefund_when_only_amount_based_lines_return_a_zero_amount_then_succeeds() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-ghost-zero-amount")
+
+        // When
+        let refund = try await service.createRefund(siteID: sampleSiteID,
+                                                    orderID: sampleOrderID,
+                                                    reason: "",
+                                                    automaticRefund: true,
+                                                    restockItems: true,
+                                                    amountOverride: nil,
+                                                    lineItems: [.amountBased(lineItemID: 50, refundTotal: 0)])
+
+        // Then the refund is returned and stored as usual
+        #expect(refund.refundID == 563)
+        #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
+    }
+
+    /// Verifies a non-zero computed refund is unaffected by the tripwire.
+    ///
+    @Test func createRefund_when_quantity_lines_return_a_non_zero_amount_then_succeeds() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-single")
+
+        // When
+        let refund = try await service.createRefund(siteID: sampleSiteID,
+                                                    orderID: sampleOrderID,
+                                                    reason: "",
+                                                    automaticRefund: true,
+                                                    restockItems: true,
+                                                    amountOverride: "27.00",
+                                                    lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+
+        // Then
+        #expect(refund.amount == "27.00")
+        #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
+    }
+
     /// Verifies that `createRefund` forwards failures without persisting anything.
     ///
     @Test func createRefund_when_request_fails_then_throws_and_persists_nothing() async {

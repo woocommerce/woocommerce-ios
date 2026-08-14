@@ -94,8 +94,10 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
-        // The server owns the math: the submission path never sends an amount override.
-        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
+        // The confirmed total is pinned so the server rejects a create whose recomputed total
+        // drifted above it, and so a store that dropped `compute_totals` books this amount
+        // rather than deriving 0.00 from the quantity-only lines.
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), "2.28")
         let dispatchedV3Create = stores.receivedActions.contains(where: { action in
             guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
                 return false
@@ -103,6 +105,28 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
             return true
         })
         XCTAssertFalse(dispatchedV3Create)
+    }
+
+    func test_submitRefund_with_server_line_items_pins_the_previewed_total_not_the_order_total() throws {
+        // Given a partial refund, so the previewed total differs from the order total
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "10.00"),
+                                    charge: nil,
+                                    amount: "4.50",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 1)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the amount the cashier confirmed is pinned, not the order's own total
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), "4.50")
     }
 
     func test_submitRefund_with_server_line_items_relays_create_failure() throws {

@@ -24,7 +24,9 @@ public protocol RefundServiceProtocol {
     ///
     /// SAFETY: must only be called after a successful `previewRefund` confirmed server-calculated
     /// refund support for the site — older stores silently drop `compute_totals` and would create
-    /// a ghost zero-amount refund with restock from a quantity-only body.
+    /// a ghost zero-amount refund with restock from a quantity-only body. That outcome is detected
+    /// after the fact and thrown as `RefundServiceError.ghostRefundDetected` rather than returned
+    /// as a success; see `createRefund`'s implementation.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,
@@ -77,7 +79,47 @@ public final class RefundService: RefundServiceProtocol {
                                                            apiRestock: restockItems,
                                                            amountOverride: amountOverride,
                                                            lineItems: lineItems)
+        if Self.hasGhostRefundSignature(requestedLineItems: lineItems, createdRefund: refund) {
+            DDLogError("⛔️ Ghost refund detected on order \(orderID): quantity-based lines were sent but the store "
+                       + "created refund \(refund.refundID) for \(refund.amount). The store most likely dropped "
+                       + "`compute_totals`, so the items may have been restocked without any money moving.")
+            // Deliberately not upserted: this is not a refund the merchant asked for, and treating it
+            // as a success would show a completed refund for money that never moved. The record does
+            // exist on the store, so it appears on the next order sync.
+            throw RefundServiceError.ghostRefundDetected(refundID: refund.refundID, amount: refund.amount)
+        }
         await upserter.upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund])
         return refund
     }
+
+    /// The signature of a `compute_totals` request handled by a store that does not support it:
+    /// quantity-based lines carry no monetary value, so the classic create sums the absent per-line
+    /// `refund_total`s to zero and books a refund for nothing while still restocking.
+    ///
+    /// Amount-based lines cannot produce this, because they carry their own `refund_total`.
+    ///
+    /// Known false positive: refunding only zero-priced lines legitimately computes to 0.00. That
+    /// refund is a no-op either way, so failing it is the safer side of the trade.
+    ///
+    private static func hasGhostRefundSignature(requestedLineItems: [ComputedRefundLineItem],
+                                                createdRefund: Refund) -> Bool {
+        guard requestedLineItems.contains(where: { $0.quantity != nil }) else {
+            return false
+        }
+        // POSIX locale: the API emits canonical decimal strings, never locale-formatted ones.
+        // A nil parse means we cannot prove the amount is zero, so the tripwire stays silent.
+        guard let amount = Decimal(string: createdRefund.amount, locale: Locale(identifier: "en_US_POSIX")) else {
+            return false
+        }
+        return amount == .zero
+    }
+}
+
+/// Failures raised by `RefundService` itself, rather than relayed from the network layer.
+///
+public enum RefundServiceError: Error, Equatable {
+    /// A `compute_totals` create came back as a zero-amount refund despite quantity-based lines
+    /// being requested — the signature of a store that silently ignored `compute_totals`.
+    /// The refund exists on the store and the items may have been restocked, but no money moved.
+    case ghostRefundDetected(refundID: Int64, amount: String)
 }

@@ -469,12 +469,18 @@ private extension RefundSubmissionUseCase {
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
         do {
+            // `details.amount` is the previewed server total whenever `serverLineItems` is set (the
+            // adaptor derives both from the same successful preview). Pinning it means the server
+            // rejects the create with a 400 if its recomputed total drifted above what the cashier
+            // confirmed, instead of silently refunding more — and on a store that dropped
+            // `compute_totals` the classic create books this amount rather than deriving 0.00 from
+            // the quantity-only lines.
             let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
                                                                      orderID: details.order.orderID,
                                                                      reason: refund.reason,
                                                                      automaticRefund: refund.createAutomated ?? false,
                                                                      restockItems: true,
-                                                                     amountOverride: nil,
+                                                                     amountOverride: details.amount,
                                                                      lineItems: lineItems)
             retrieveUpdatedRefundData(refund: createdRefund)
             onCompletion(.success(()))

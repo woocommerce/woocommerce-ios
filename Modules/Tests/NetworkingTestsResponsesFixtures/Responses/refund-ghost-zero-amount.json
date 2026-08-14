@@ -1,0 +1,31 @@
+{
+    "data": {
+        "id": 563,
+        "date_created": "2019-10-01T19:33:46",
+        "date_created_gmt": "2019-10-01T19:33:46",
+        "amount": "0.00",
+        "reason": "",
+        "refunded_by": 1,
+        "refunded_payment": false,
+        "meta_data": [],
+        "line_items": [
+            {
+                "id": 68,
+                "name": "Ship Your Idea - Blue, XL",
+                "product_id": 21,
+                "variation_id": 70,
+                "quantity": -1,
+                "tax_class": "",
+                "subtotal": "0.00",
+                "subtotal_tax": "0.00",
+                "total": "0.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [],
+                "sku": "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
+                "price": 0
+            }
+        ],
+        "shipping_lines": []
+    }
+}

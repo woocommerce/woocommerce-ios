@@ -208,6 +208,108 @@ struct CookieNonceAuthenticationEndpointsTests {
         #expect(error == .insecureDowngrade)
     }
 
+    @Test(arguments: [
+        "https://example.com/private-admin/",
+        "https://example.com/private-admin",
+        "https://example.com/private-admin/index.php",
+        "https://example.com/private-admin/admin-ajax.php?action=rest-nonce",
+        "https://example.com/hidden-admin/admin-ajax.php?action=rest-nonce"
+    ])
+    func test_expected_credential_redirect_accepts_exact_configured_admin_or_structural_nonce(location: String) throws {
+        // Given
+        let submissionURL = try url("https://example.com/custom-submit")
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: url("https://example.com"),
+            loginEntryURL: submissionURL,
+            adminBaseURL: url("https://example.com/private-admin/")
+        )
+
+        // When
+        let isExpected = endpoints.isExpectedCredentialRedirect(
+            location: location,
+            from: submissionURL,
+            afterLoginAt: submissionURL
+        )
+
+        // Then
+        #expect(isExpected)
+    }
+
+    @Test(arguments: [
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://attacker.example/private-admin/"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://user:secret@example.com/private-admin/"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://example.com:8443/private-admin/"
+        ),
+        (
+            "http://example.com",
+            "http://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "http://example.com/private-admin/"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://example.com/private-admin/?page=dashboard"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://example.com/other-admin/"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://example.com/private-admin/admin-ajax.php?action=rest-nonce&extra=1"
+        ),
+        (
+            "https://example.com",
+            "https://example.com/private-admin/",
+            "https://example.com/custom-submit",
+            "https://example.com/hidden-admin/admin-ajax.php?action=wrong-action"
+        )
+    ])
+    func test_expected_credential_redirect_rejects_unsafe_or_inexact_destination(
+        site: String,
+        admin: String,
+        login: String,
+        location: String
+    ) throws {
+        // Given
+        let submissionURL = try url(login)
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: url(site),
+            loginEntryURL: submissionURL,
+            adminBaseURL: url(admin)
+        )
+
+        // When
+        let isExpected = endpoints.isExpectedCredentialRedirect(
+            location: location,
+            from: submissionURL,
+            afterLoginAt: submissionURL
+        )
+
+        // Then
+        #expect(isExpected == false)
+    }
+
     @Test func test_form_action_is_transaction_local_and_does_not_replace_the_login_entry() throws {
         // Given
         let entryURL = try url("https://example.com/custom-entry?durable=1")

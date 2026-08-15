@@ -109,6 +109,19 @@ public struct CookieNonceAuthenticationEndpoints: Equatable, Sendable {
         }
         return normalized == expected
     }
+
+    /// Validates a credential response redirect without promoting its target to a request URL.
+    ///
+    /// Some login integrations redirect to a structurally valid custom nonce endpoint or the configured admin base
+    /// instead of honoring the requested nonce URL. Callers must still fetch the internally derived nonce URL rather
+    /// than follow or promote this transaction-local redirect.
+    public func isExpectedCredentialRedirect(location: String, from previousURL: URL, afterLoginAt finalLoginURL: URL) -> Bool {
+        guard let candidate = try? resolveRedirect(location: location, from: previousURL) else {
+            return false
+        }
+        return isNonceEndpoint(candidate) ||
+            isExpectedAdminBaseURL(candidate, afterLoginAt: finalLoginURL)
+    }
 }
 
 public extension CookieNonceAuthenticationEndpoints {

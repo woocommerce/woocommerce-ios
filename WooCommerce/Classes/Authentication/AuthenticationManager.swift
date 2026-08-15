@@ -14,6 +14,7 @@ import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
+import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
@@ -22,6 +23,13 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    typealias ApplicationPasswordUseCaseFactory = (
+        _ username: String,
+        _ password: String,
+        _ siteAddress: String,
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) throws -> ApplicationPasswordUseCase
+
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
@@ -73,6 +81,8 @@ class AuthenticationManager: Authentication {
 
     private let userDefaults: UserDefaults
 
+    private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -80,7 +90,16 @@ class AuthenticationManager: Authentication {
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard,
-         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability()) {
+         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
+         applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory = {
+             username, password, siteAddress, authenticationEndpoints in
+             try DefaultApplicationPasswordUseCase(
+                 username: username,
+                 password: password,
+                 siteAddress: siteAddress,
+                 authenticationEndpoints: authenticationEndpoints
+             )
+         }) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -89,6 +108,7 @@ class AuthenticationManager: Authentication {
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
         self.qrLoginAvailability = qrLoginAvailability
+        self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
     }
 
     /// Initializes the WordPress Authenticator.
@@ -804,6 +824,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let webView = SFSafariViewController(url: url)
         navigationController.present(webView, animated: true)
     }
+
+    func makeApplicationPasswordUseCase(for credentials: WordPressOrgCredentials) throws -> ApplicationPasswordUseCase {
+        try applicationPasswordUseCaseFactory(
+            credentials.username,
+            credentials.password,
+            credentials.siteURL,
+            credentials.authenticationEndpoints
+        )
+    }
 }
 
 // MARK: - Private helpers
@@ -998,12 +1027,13 @@ private extension AuthenticationManager {
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        guard let useCase = try? DefaultApplicationPasswordUseCase(
-            username: siteCredentials.username,
-            password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL
-        ) else {
-            return assertionFailure("⛔️ Error creating application password use case")
+        let useCase: ApplicationPasswordUseCase
+        do {
+            useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
+        } catch {
+            // Authenticated credentials without a constructible canonical site cannot safely enter the eligibility flow.
+            assertionFailure("⛔️ Error creating application password use case")
+            return
         }
         checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
     }

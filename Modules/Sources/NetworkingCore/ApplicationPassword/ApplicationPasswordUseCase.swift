@@ -66,6 +66,10 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let authenticationType: AuthenticationType
 
+    /// Resolved cookie-nonce endpoints used by WordPress.org authentication.
+    ///
+    let authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+
     /// To generate and delete application password
     ///
     private let network: Network
@@ -91,11 +95,14 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 storage: ApplicationPasswordStorageType? = nil,
                 rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
         self.authenticationType = type
+        self.authenticationEndpoints = nil
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
 
-        if case .wporg(_, _, let siteAddress) = type, !(network is AlamofireNetwork) {
+        if case .wporg(_, _, let siteAddress) = type,
+           !(network is AlamofireNetwork),
+           rootCache.root(for: siteAddress) == nil {
             self.discoveryTask = Task {
                 guard rootCache.root(for: siteAddress) == nil else { return }
                 _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
@@ -109,16 +116,35 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public init(username: String,
                 password: String,
                 siteAddress: String,
+                authenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                 network: Network? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
                 rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) throws {
+        let defaultEndpoints: CookieNonceAuthenticationEndpoints
+        do {
+            guard let siteURL = URL(string: siteAddress) else {
+                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+            }
+            defaultEndpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+        } catch {
+            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
+            throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+        }
+
+        self.authenticationEndpoints = authenticationEndpoints ?? defaultEndpoints
+        guard let resolvedEndpoints = self.authenticationEndpoints,
+              resolvedEndpoints.siteURL == defaultEndpoints.siteURL else {
+            DDLogWarn("⚠️ Cookie nonce authentication endpoints do not match site \(siteAddress)")
+            throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+        }
+
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()
 
         if let network {
             self.network = network
-            if network is AlamofireNetwork {
+            if network is AlamofireNetwork || rootCache.root(for: siteAddress) != nil {
                 self.discoveryTask = nil
             } else {
                 self.discoveryTask = Task {
@@ -127,20 +153,18 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 }
             }
         } else {
-            guard let loginURL = URL(string: siteAddress + Constants.loginPath),
-                  let adminURL = URL(string: siteAddress + Constants.adminPath) else {
-                DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
-                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
-            }
             // Prepares the authenticator with username and password
             let config = CookieNonceAuthenticatorConfiguration(username: username,
                                                                password: password,
-                                                               loginURL: loginURL,
-                                                               adminURL: adminURL)
+                                                               endpoints: resolvedEndpoints)
             self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
-            self.discoveryTask = Task {
-                guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
+            if rootCache.root(for: siteAddress) == nil {
+                self.discoveryTask = Task {
+                    guard rootCache.root(for: siteAddress) == nil else { return }
+                    _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
+                }
+            } else {
+                self.discoveryTask = nil
             }
         }
     }
@@ -409,8 +433,6 @@ private extension DefaultApplicationPasswordUseCase {
     }
 
     enum Constants {
-        static let loginPath = "/wp-login.php"
-        static let adminPath = "/wp-admin/"
         static let editValue = "edit"
     }
 }

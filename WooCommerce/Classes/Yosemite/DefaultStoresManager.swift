@@ -209,9 +209,16 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
+        authenticate(credentials: credentials, cookieNonceAuthenticationEndpoints: nil)
+    }
+
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
         let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         state = AuthenticatedState(credentials: credentials,
                                    sessionManager: sessionManager,
+                                   cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints,
                                    isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
         sessionManager.defaultCredentials = credentials
 

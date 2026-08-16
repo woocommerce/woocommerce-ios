@@ -14,7 +14,6 @@ import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
-import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
@@ -762,9 +761,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         if let wporg = credentials.wporg {
-            ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
-                                                                   password: wporg.password,
-                                                                   siteAddress: wporg.siteURL))
+            stores.authenticate(
+                credentials: .wporg(username: wporg.username, password: wporg.password, siteAddress: wporg.siteURL),
+                cookieNonceAuthenticationEndpoints: wporg.authenticationEndpoints
+            )
             return onCompletion()
         }
 
@@ -858,6 +858,14 @@ extension AuthenticationManager {
             credentials.password,
             credentials.siteURL,
             credentials.authenticationEndpoints
+        )
+    }
+
+    static func credentials(for applicationPassword: ApplicationPassword, siteURL: String) -> Credentials {
+        .applicationPassword(
+            username: applicationPassword.wpOrgUsername,
+            password: applicationPassword.password.secretValue,
+            siteAddress: siteURL
         )
     }
 }
@@ -1000,19 +1008,23 @@ private extension AuthenticationManager {
                 DDLogInfo("⚠️ No navigation controller found")
                 return
             }
-            let credentials: Credentials = .applicationPassword(
-                username: applicationPassword.wpOrgUsername,
-                password: applicationPassword.password.secretValue,
-                siteAddress: siteURL
-            )
-            let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
-                                                            siteAddress: siteURL)
-            /// IMPORTANT: authenticate after creating the use case above to make sure that
-            /// the application password is saved into keychain.
-            ServiceLocator.stores.authenticate(credentials: credentials)
-            self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+            guard let self else {
+                return
+            }
+            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController)
         })
         return controller
+    }
+
+    func didAuthorizeApplicationPassword(_ applicationPassword: ApplicationPassword,
+                                         for siteURL: String,
+                                         in navigationController: UINavigationController) {
+        let credentials = Self.credentials(for: applicationPassword, siteURL: siteURL)
+        let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword, siteAddress: siteURL)
+        /// IMPORTANT: authenticate after creating the use case above to make sure that
+        /// the application password is saved into keychain.
+        stores.authenticate(credentials: credentials)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -1048,12 +1060,20 @@ private extension AuthenticationManager {
                               connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
                               in: navigationController)
     }
+}
 
+extension AuthenticationManager {
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
+    /// Internal so tests can verify that the authentication callback forwards its validated endpoint context.
     ///
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
+        let credentials = Credentials.wporg(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL
+        )
         let useCase: ApplicationPasswordUseCase
         do {
             useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
@@ -1062,14 +1082,28 @@ private extension AuthenticationManager {
             assertionFailure("⛔️ Error creating application password use case")
             return
         }
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
+        let endpointPersistence = siteCredentials.authenticationEndpoints.flatMap {
+            SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: $0)
+        }
+        checkSiteCredentialLogin(
+            to: siteURL,
+            with: useCase,
+            in: navigationController,
+            authenticationEndpointPersistence: endpointPersistence,
+            previousViewController: nil
+        )
     }
+}
 
+private extension AuthenticationManager {
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController,
+                                  authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     stores: stores,
+                                                     authenticationEndpointPersistence: authenticationEndpointPersistence,
                                                      previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }

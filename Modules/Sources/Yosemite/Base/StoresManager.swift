@@ -27,6 +27,12 @@ public protocol StoresManager {
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager
 
+    /// Switches the internal state to Authenticated with transient cookie-nonce endpoint configuration.
+    ///
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager
+
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult
@@ -106,4 +112,12 @@ public protocol StoresManager {
     /// on web view using the current credentials.
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
+}
+
+public extension StoresManager {
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        authenticate(credentials: credentials)
+    }
 }

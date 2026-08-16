@@ -8,6 +8,13 @@ import enum NetworkingCore.RequestAuthenticationMode
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+    typealias NetworkFactory = (
+        _ credentials: Credentials,
+        _ selectedSite: AnyPublisher<JetpackSite?, Never>,
+        _ appPasswordSupportState: AnyPublisher<Bool, Never>,
+        _ cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) -> AlamofireNetwork
+
 
     var requestAuthenticationMode: RequestAuthenticationMode? {
         network.authenticationMode
@@ -50,6 +57,15 @@ class AuthenticatedState: StoresManagerState {
     ///
     init(credentials: Credentials,
          sessionManager: SessionManagerProtocol,
+         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
+         networkFactory: NetworkFactory = {
+             AlamofireNetwork(
+                 credentials: $0,
+                 selectedSite: $1,
+                 appPasswordSupportState: $2,
+                 cookieNonceAuthenticationEndpoints: $3
+             )
+         },
          isLocalCatalogFeatureFlagEnabled: Bool) {
         let storageManager = ServiceLocator.storageManager
 
@@ -58,10 +74,11 @@ class AuthenticatedState: StoresManagerState {
             .eraseToAnyPublisher()
 
         self.appPasswordSupportState = .init()
-        self.network = AlamofireNetwork(
-            credentials: credentials,
-            selectedSite: site,
-            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        self.network = networkFactory(
+            credentials,
+            site,
+            appPasswordSupportState.eraseToAnyPublisher(),
+            cookieNonceAuthenticationEndpoints
         )
 
         var services: [ActionsProcessor] = [
@@ -232,13 +249,24 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManagerProtocol) {
+    convenience init?(sessionManager: SessionManagerProtocol,
+                      networkFactory: NetworkFactory? = nil) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
         let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
+        let cookieNonceAuthenticationEndpoints = sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
+                  cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints,
+                  networkFactory: networkFactory ?? {
+                      AlamofireNetwork(
+                          credentials: $0,
+                          selectedSite: $1,
+                          appPasswordSupportState: $2,
+                          cookieNonceAuthenticationEndpoints: $3
+                      )
+                  },
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
     }
 

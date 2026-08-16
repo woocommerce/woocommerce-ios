@@ -45,6 +45,13 @@ protocol RequestAuthenticator {
 /// Authenticates request
 ///
 public struct DefaultRequestAuthenticator: RequestAuthenticator {
+    typealias WordPressOrgApplicationPasswordUseCaseFactory = (
+        _ username: String,
+        _ password: String,
+        _ siteAddress: String,
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) throws -> ApplicationPasswordUseCase
+
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
@@ -64,7 +71,16 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     init(credentials: Credentials?,
          selectedSite: JetpackSite? = nil,
+         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
          applicationPasswordUseCase: ApplicationPasswordUseCase? = nil,
+         wordPressOrgApplicationPasswordUseCaseFactory: @escaping WordPressOrgApplicationPasswordUseCaseFactory = {
+             try DefaultApplicationPasswordUseCase(
+                 username: $0,
+                 password: $1,
+                 siteAddress: $2,
+                 authenticationEndpoints: $3
+             )
+         },
          network: Network? = nil) {
         self.credentials = credentials
 
@@ -74,9 +90,12 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
             }
             switch credentials {
             case let .some(.wporg(username, password, siteAddress)):
-                return try? DefaultApplicationPasswordUseCase(username: username,
-                                                              password: password,
-                                                              siteAddress: siteAddress)
+                return try? wordPressOrgApplicationPasswordUseCaseFactory(
+                    username,
+                    password,
+                    siteAddress,
+                    cookieNonceAuthenticationEndpoints
+                )
             case .some(.applicationPassword(_, _, let siteAddress)):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             case .some(.wpcom):

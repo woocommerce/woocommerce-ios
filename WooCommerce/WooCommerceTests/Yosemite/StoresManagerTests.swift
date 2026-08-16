@@ -81,6 +81,77 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
+    func test_authenticated_state_relaunch_passes_restored_custom_endpoints_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        let state = AuthenticatedState(sessionManager: sessionManager) { credentials, _, _, endpoints in
+            capturedCredentials = credentials
+            capturedEndpoints = endpoints
+            return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+        }
+
+        // Then
+        XCTAssertNotNil(state)
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_transient_custom_endpoints_pass_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: endpoints,
+            networkFactory: { credentials, _, _, endpoints in
+                capturedCredentials = credentials
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            },
+            isLocalCatalogFeatureFlagEnabled: false
+        )
+
+        // Then
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
     /// Verifies that the Initial State is Authenticated with application password credentials.
     ///
     func test_initial_state_is_authenticated_if_defaultCredentials_is_application_password() {
@@ -700,6 +771,15 @@ final class MockSessionManager: SessionManagerProtocol {
     var cachedWooCommerceVersion: String? = nil
 
     var defaultCredentials: Yosemite.Credentials? = nil
+
+    func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints? {
+        nil
+    }
+
+    func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                for credentials: Credentials) throws { }
+
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws { }
 
     func reset() {
         // Do nothing

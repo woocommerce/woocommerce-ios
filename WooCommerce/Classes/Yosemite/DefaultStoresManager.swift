@@ -209,8 +209,15 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
+        authenticate(credentials: credentials, cookieNonceAuthenticationEndpoints: nil)
+    }
+
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
         state = AuthenticatedState(credentials: credentials,
-                                   sessionManager: sessionManager)
+                                   sessionManager: sessionManager,
+                                   cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
         sessionManager.defaultCredentials = credentials
 
         if case .wpcom = credentials {

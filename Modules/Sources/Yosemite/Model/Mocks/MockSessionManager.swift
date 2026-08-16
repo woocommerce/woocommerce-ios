@@ -38,6 +38,15 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultCredentials: Credentials?
 
+    public func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints? {
+        nil
+    }
+
+    public func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                       for credentials: Credentials) throws { }
+
+    public func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws { }
+
     public var anonymousUserID: String? = nil
 
     public var cachedWooCommerceVersion: String?

@@ -1069,11 +1069,6 @@ extension AuthenticationManager {
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        let credentials = Credentials.wporg(
-            username: siteCredentials.username,
-            password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL
-        )
         let useCase: ApplicationPasswordUseCase
         do {
             useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
@@ -1082,6 +1077,11 @@ extension AuthenticationManager {
             assertionFailure("⛔️ Error creating application password use case")
             return
         }
+        let credentials = Credentials.wporg(
+            username: siteCredentials.username,
+            password: siteCredentials.password,
+            siteAddress: siteCredentials.siteURL
+        )
         let endpointPersistence = siteCredentials.authenticationEndpoints.flatMap {
             SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: $0)
         }

@@ -62,6 +62,10 @@ final class SessionManager: SessionManagerProtocol {
 
     private let wordPressOrgApplicationPasswordUseCaseFactory: WordPressOrgApplicationPasswordUseCaseFactory
 
+    /// Persists the non-secret cookie-nonce endpoint configuration alongside the session.
+    ///
+    private let cookieNonceEndpointStore: CookieNonceAuthenticationEndpointStore
+
     /// Serial queue for thread-safe credentials access
     ///
     private let credentialsQueue = DispatchQueue(label: "com.woocommerce.session.credentials", qos: .userInitiated)
@@ -208,10 +212,7 @@ final class SessionManager: SessionManagerProtocol {
         guard let identity = cookieNonceIdentity(for: credentials) else {
             return nil
         }
-        return CookieNonceAuthenticationEndpointStore(userDefaults: defaults).endpoints(
-            siteURL: identity.siteURL,
-            username: identity.username
-        )
+        return cookieNonceEndpointStore.endpoints(siteURL: identity.siteURL, username: identity.username)
     }
 
     func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
@@ -219,21 +220,14 @@ final class SessionManager: SessionManagerProtocol {
         guard let identity = cookieNonceIdentity(for: credentials) else {
             throw CookieNonceAuthenticationEndpointStore.StoreError.invalidIdentity
         }
-        try CookieNonceAuthenticationEndpointStore(userDefaults: defaults).save(
-            endpoints,
-            siteURL: identity.siteURL,
-            username: identity.username
-        )
+        try cookieNonceEndpointStore.save(endpoints, siteURL: identity.siteURL, username: identity.username)
     }
 
     func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws {
         guard let identity = cookieNonceIdentity(for: credentials) else {
             return
         }
-        try CookieNonceAuthenticationEndpointStore(userDefaults: defaults).remove(
-            siteURL: identity.siteURL,
-            username: identity.username
-        )
+        try cookieNonceEndpointStore.remove(siteURL: identity.siteURL, username: identity.username)
     }
 
     /// Keeps strong reference of the use case to keep the password deletion request alive
@@ -254,6 +248,7 @@ final class SessionManager: SessionManagerProtocol {
              )
          }) {
         self.defaults = defaults
+        self.cookieNonceEndpointStore = CookieNonceAuthenticationEndpointStore(userDefaults: defaults)
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
         self.imageCache = imageCache
         self.wordPressOrgApplicationPasswordUseCaseFactory = wordPressOrgApplicationPasswordUseCaseFactory
@@ -349,11 +344,12 @@ final class SessionManager: SessionManagerProtocol {
 //
 private extension SessionManager {
 
+    /// Keeps the persisted endpoints only while they belong to the credentials being stored.
+    ///
     func retainCookieNonceAuthenticationEndpoints(for credentials: Credentials?) {
-        guard let credentials,
-              cookieNonceAuthenticationEndpoints(for: credentials) != nil else {
+        let isOwnedByNewCredentials = credentials.flatMap { cookieNonceAuthenticationEndpoints(for: $0) } != nil
+        if isOwnedByNewCredentials == false {
             removeAllCookieNonceAuthenticationEndpoints()
-            return
         }
     }
 
@@ -367,7 +363,7 @@ private extension SessionManager {
     }
 
     func removeAllCookieNonceAuthenticationEndpoints() {
-        CookieNonceAuthenticationEndpointStore(userDefaults: defaults).remove()
+        cookieNonceEndpointStore.remove()
     }
 
     /// Returns the Default Credentials, if any.

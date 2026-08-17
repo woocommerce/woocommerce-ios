@@ -15,6 +15,17 @@ class AuthenticatedState: StoresManagerState {
         _ cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
     ) -> AlamofireNetwork
 
+    /// The production `NetworkFactory`, used whenever no factory is injected.
+    ///
+    static func makeNetwork(credentials: Credentials,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
+                            cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> AlamofireNetwork {
+        AlamofireNetwork(credentials: credentials,
+                         selectedSite: selectedSite,
+                         appPasswordSupportState: appPasswordSupportState,
+                         cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
+    }
 
     var requestAuthenticationMode: RequestAuthenticationMode? {
         network.authenticationMode
@@ -58,14 +69,7 @@ class AuthenticatedState: StoresManagerState {
     init(credentials: Credentials,
          sessionManager: SessionManagerProtocol,
          cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
-         networkFactory: NetworkFactory = {
-             AlamofireNetwork(
-                 credentials: $0,
-                 selectedSite: $1,
-                 appPasswordSupportState: $2,
-                 cookieNonceAuthenticationEndpoints: $3
-             )
-         },
+         networkFactory: NetworkFactory = AuthenticatedState.makeNetwork,
          isLocalCatalogFeatureFlagEnabled: Bool) {
         let storageManager = ServiceLocator.storageManager
 
@@ -250,7 +254,7 @@ class AuthenticatedState: StoresManagerState {
     /// Convenience Initializer
     ///
     convenience init?(sessionManager: SessionManagerProtocol,
-                      networkFactory: NetworkFactory? = nil) {
+                      networkFactory: NetworkFactory = AuthenticatedState.makeNetwork) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
@@ -259,14 +263,7 @@ class AuthenticatedState: StoresManagerState {
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
                   cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints,
-                  networkFactory: networkFactory ?? {
-                      AlamofireNetwork(
-                          credentials: $0,
-                          selectedSite: $1,
-                          appPasswordSupportState: $2,
-                          cookieNonceAuthenticationEndpoints: $3
-                      )
-                  },
+                  networkFactory: networkFactory,
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
     }
 

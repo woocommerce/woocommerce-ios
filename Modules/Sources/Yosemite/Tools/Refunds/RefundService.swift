@@ -24,10 +24,9 @@ public protocol RefundServiceProtocol {
     ///
     /// SAFETY: must only be called after a successful `previewRefund` confirmed server-calculated
     /// refund support for the site — older stores silently drop `compute_totals` and would create
-    /// a ghost zero-amount refund with restock from a quantity-only body. Two things guard against
-    /// that: sending an `amountOverride`, which both the `compute_totals` path and the classic path
-    /// use as the refund total, and a check on the response that throws
-    /// `RefundServiceError.ghostRefundDetected` instead of returning a success. See `createRefund`.
+    /// a zero-amount refund with restock from a quantity-only body. Sending an `amountOverride`
+    /// guards against that: both the `compute_totals` path and the classic path use it as the
+    /// refund total.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,
@@ -80,59 +79,7 @@ public final class RefundService: RefundServiceProtocol {
                                                            apiRestock: restockItems,
                                                            amountOverride: amountOverride,
                                                            lineItems: lineItems)
-        if Self.hasGhostRefundSignature(requestedLineItems: lineItems, amountOverride: amountOverride, createdRefund: refund) {
-            DDLogError("⛔️ Ghost refund detected on order \(orderID): quantity-based lines were sent but the store "
-                       + "created refund \(refund.refundID) for \(refund.amount). The store most likely dropped "
-                       + "`compute_totals`, so the items may have been restocked without any money moving.")
-            // Deliberately not upserted: this is not a refund the merchant asked for, and treating it
-            // as a success would show a completed refund for money that never moved. The record does
-            // exist on the store, so it appears on the next order sync.
-            throw RefundServiceError.ghostRefundDetected(refundID: refund.refundID, amount: refund.amount)
-        }
         await upserter.upsertStoredRefunds(siteID: siteID, orderID: orderID, readOnlyRefunds: [refund])
         return refund
     }
-
-    /// The signature of a `compute_totals` request handled by a store that does not support it:
-    /// quantity-based lines carry no monetary value, so the classic create sums the absent per-line
-    /// `refund_total`s to zero and creates a 0.00 refund while still restocking.
-    ///
-    /// Amount-based lines cannot produce this, because they carry their own `refund_total`.
-    ///
-    /// A caller that sent a zero `amount` is excluded: the store created the refund it was asked
-    /// for, so nothing was ignored. A refund of only zero-priced lines is the case that lands
-    /// there. Any other zero response to a quantity-only request means the store dropped
-    /// `compute_totals`, because both the `compute_totals` path and the classic path use the
-    /// `amount` when one is sent.
-    ///
-    private static func hasGhostRefundSignature(requestedLineItems: [ComputedRefundLineItem],
-                                                amountOverride: String?,
-                                                createdRefund: Refund) -> Bool {
-        guard requestedLineItems.contains(where: { $0.quantity != nil }) else {
-            return false
-        }
-        if let amountOverride, let requestedAmount = decimal(from: amountOverride), requestedAmount == .zero {
-            return false
-        }
-        // A nil parse means we cannot prove the amount is zero, so the check stays silent.
-        guard let createdAmount = decimal(from: createdRefund.amount) else {
-            return false
-        }
-        return createdAmount == .zero
-    }
-
-    /// POSIX locale: the API emits canonical decimal strings, never locale-formatted ones.
-    ///
-    private static func decimal(from amount: String) -> Decimal? {
-        Decimal(string: amount, locale: Locale(identifier: "en_US_POSIX"))
-    }
-}
-
-/// Failures raised by `RefundService` itself, rather than relayed from the network layer.
-///
-public enum RefundServiceError: Error, Equatable {
-    /// A `compute_totals` create came back as a zero-amount refund despite quantity-based lines
-    /// being requested — the signature of a store that silently ignored `compute_totals`.
-    /// The refund exists on the store and the items may have been restocked, but no money moved.
-    case ghostRefundDetected(refundID: Int64, amount: String)
 }

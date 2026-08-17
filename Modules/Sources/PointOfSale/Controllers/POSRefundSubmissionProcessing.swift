@@ -42,12 +42,6 @@ public enum POSRefundSubmissionState {
 public enum POSRefundSubmissionError: Error, Equatable {
     case canceledByUser
     case refundPreviewFailed
-
-    /// The store created a refund with no amount from a quantity-only request, which means it
-    /// ignored `compute_totals` (a ghost refund). The refund record exists on the store and the
-    /// items may have been restocked, but no money moved. Retrying would create a second refund
-    /// and restock a second time, so the flow sends the cashier back to the order instead.
-    case refundCreatedWithoutPayment
 }
 
 @Observable public final class POSRefundSubmissionModel {

@@ -103,9 +103,6 @@ struct POSRefundModalContentView: View {
     /// example the order changed since the screen was loaded); shown instead of the generic
     /// create-error subtitle.
     @State private var refundRejectionMessage: String?
-    /// Set when the store created a refund with no amount. The refund exists on the store, so the
-    /// error screen drops Retry and sends the cashier back to the order instead.
-    @State private var didCreateRefundWithoutPayment = false
 
     var body: some View {
         ZStack {
@@ -230,21 +227,18 @@ struct POSRefundModalContentView: View {
             )
         case .error(let reviewData):
             let isCardPresentRefundError = orderListModel.ordersController.currentRefundRequiresCardPresentRefund
-            // Both cases may have changed the order on the store, so neither can be retried from
-            // the figures on screen. The cashier goes back to the refreshed order instead.
-            let leftOrderChanged = isCardPresentRefundError || didCreateRefundWithoutPayment
             let dismissError = {
-                if leftOrderChanged {
+                if isCardPresentRefundError {
                     dismissRefundFlowAndRefreshOrder()
                 } else {
                     dismissRefundFlow()
                 }
             }
             POSRefundErrorView(
-                title: createErrorTitle(isCardPresentRefundError: isCardPresentRefundError),
-                subtitle: createErrorSubtitle(isCardPresentRefundError: isCardPresentRefundError),
-                onRetry: leftOrderChanged ? nil : { modalState = .confirmation(reviewData) },
-                cancelButtonTitle: leftOrderChanged ? Localization.backToOrderButton : nil,
+                title: isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle,
+                subtitle: isCardPresentRefundError ? Localization.cardPresentCreateErrorSubtitle : (refundRejectionMessage ?? errorStrings.createSubtitle),
+                onRetry: isCardPresentRefundError ? nil : { modalState = .confirmation(reviewData) },
+                cancelButtonTitle: isCardPresentRefundError ? Localization.backToOrderButton : nil,
                 onCancel: dismissError,
                 onClose: dismissError
             )
@@ -295,29 +289,9 @@ struct POSRefundModalContentView: View {
     }
 
     @MainActor
-    private func createErrorTitle(isCardPresentRefundError: Bool) -> String {
-        if isCardPresentRefundError {
-            return Localization.cardPresentCreateErrorTitle
-        }
-        if didCreateRefundWithoutPayment {
-            return Localization.refundWithoutPaymentTitle
-        }
-        return errorStrings.createTitle
-    }
-
-    private func createErrorSubtitle(isCardPresentRefundError: Bool) -> String {
-        if isCardPresentRefundError {
-            return Localization.cardPresentCreateErrorSubtitle
-        }
-        if didCreateRefundWithoutPayment {
-            return Localization.refundWithoutPaymentSubtitle
-        }
-        return refundRejectionMessage ?? errorStrings.createSubtitle
-    }
-
     private func dismissRefundFlowAndRefreshOrder() {
         dismissRefundFlow()
-        refreshOrderAfterUncertainRefundOutcome()
+        refreshOrderAfterPotentialCardPresentRefund()
     }
 
     private func updateCardPresentAlertItem() {
@@ -403,7 +377,6 @@ struct POSRefundModalContentView: View {
             onRefundFailure?(error)
             refundSubmissionModel.reset()
             refundRejectionMessage = (error as? RefundAPIError)?.localizedDescription
-            didCreateRefundWithoutPayment = (error as? POSRefundSubmissionError) == .refundCreatedWithoutPayment
             modalState = .error(reviewData)
         }
     }
@@ -425,7 +398,6 @@ struct POSRefundModalContentView: View {
     @MainActor
     private func startProcessingRefund(reviewData: POSRefundReviewData) {
         refundRejectionMessage = nil
-        didCreateRefundWithoutPayment = false
         modalState = .processing(reviewData)
         Task { @MainActor in
             await processRefund(reviewData: reviewData)
@@ -459,12 +431,12 @@ struct POSRefundModalContentView: View {
         // keeps that late callback from reopening the modal or tracking a normal refund failure.
     }
 
-    private func refreshOrderAfterUncertainRefundOutcome() {
+    private func refreshOrderAfterPotentialCardPresentRefund() {
         Task { @MainActor in
             do {
                 try await orderListModel.ordersController.updateOrder(orderID: order.id)
             } catch {
-                DDLogError("⛔️ Failed to refresh POS order after an uncertain refund outcome: \(error)")
+                DDLogError("⛔️ Failed to refresh POS order after card-present refund outcome: \(error)")
             }
             await orderListModel.ordersController.loadOrderRefunds()
         }
@@ -503,19 +475,6 @@ private extension POSRefundModalContentView {
             "pos.refundModalContentView.cardPresentCreateError.subtitle",
             value: "Go back to the order and check it before trying again.",
             comment: "Subtitle shown when POS cannot confirm whether a card-present refund was recorded successfully."
-        )
-
-        static let refundWithoutPaymentTitle = NSLocalizedString(
-            "pos.refundModalContentView.refundWithoutPayment.title",
-            value: "Refund not completed",
-            comment: "Title shown when the store recorded a refund with no amount, so no money was returned."
-        )
-
-        static let refundWithoutPaymentSubtitle = NSLocalizedString(
-            "pos.refundModalContentView.refundWithoutPayment.subtitle",
-            value: "The store recorded a refund without an amount, so no money was returned. "
-            + "Go back to the order and check it before trying again.",
-            comment: "Subtitle shown when the store recorded a refund with no amount, so no money was returned."
         )
 
         static let backToOrderButton = NSLocalizedString(

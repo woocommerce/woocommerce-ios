@@ -31,6 +31,15 @@ struct PointOfSaleDashboardViewHelper {
     static func showsCompactCartButton(cartIsEmpty: Bool, floatingControlSuppressed: Bool) -> Bool {
         !cartIsEmpty && !floatingControlSuppressed
     }
+
+    /// Whether a barcode scan should auto-open the compact-layout cart sheet.
+    ///
+    /// On compact layout (ie Phone POS) the cart is a sheet, so a scan's outcome (loading row,
+    /// resolved product, or error row) is invisible until the sheet opens. On regular layout
+    /// the cart pane is always visible.
+    static func shouldAutoOpenCartOnScan(isPhoneLayout: Bool, orderStage: PointOfSaleOrderStage) -> Bool {
+        isPhoneLayout && orderStage == .building
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {

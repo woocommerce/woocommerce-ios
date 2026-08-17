@@ -135,12 +135,16 @@ private extension POSRefundItemsSelectionView {
                     .multilineTextAlignment(.center)
             }
 
-            Button(previewErrorMessage != nil ? Localization.retryButton : Localization.continueButton) {
+            Button(continueButtonTitle) {
                 onContinue()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
             .disabled(isContinueDisabled)
         }
+    }
+
+    var continueButtonTitle: String {
+        previewErrorMessage != nil ? Localization.retryButton : Localization.continueButton
     }
 
     var isContinueDisabled: Bool {

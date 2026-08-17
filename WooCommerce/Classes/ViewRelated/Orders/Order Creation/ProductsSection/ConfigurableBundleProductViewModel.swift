@@ -115,7 +115,8 @@ private extension ConfigurableBundleProductViewModel {
             do {
                 // When there is a long list of bundle items, products are loaded in a paginated way.
                 let products = try await loadProducts(from: product.bundledItems)
-                createItemViewModels(products: products)
+                let defaultVariations = await resolveDefaultVariations(products: products)
+                createItemViewModels(products: products, defaultVariationsByBundledItemID: defaultVariations)
             } catch {
                 DDLogError("⛔️ Error loading products for bundle product items in order form: \(error)")
                 loadProductsErrorMessage = Localization.errorLoadingProducts
@@ -123,7 +124,8 @@ private extension ConfigurableBundleProductViewModel {
         }
     }
 
-    func createItemViewModels(products: [Product]) {
+    func createItemViewModels(products: [Product],
+                              defaultVariationsByBundledItemID: [Int64: ConfigurableBundleItemViewModel.Variation] = [:]) {
         bundleItemViewModels = product.bundledItems
             .compactMap { bundleItem -> ConfigurableBundleItemViewModel? in
                 guard let product = products.first(where: { $0.productID == bundleItem.productID }) else {
@@ -133,13 +135,14 @@ private extension ConfigurableBundleProductViewModel {
                 switch product.productType {
                     case .variable:
                         let allowedVariations = bundleItem.overridesVariations ? bundleItem.allowedVariations: []
-                        let defaultAttributes = bundleItem.overridesDefaultVariationAttributes ? bundleItem.defaultVariationAttributes: []
+                        let defaultAttributes = defaultVariationAttributes(for: bundleItem, product: product)
                         return .init(bundleItem: bundleItem,
                                      product: product,
                                      variableProductSettings:
                                 .init(allowedVariations: allowedVariations, defaultAttributes: defaultAttributes),
                                      existingParentOrderItem: orderItem,
-                                     existingOrderItem: existingOrderItem)
+                                     existingOrderItem: existingOrderItem,
+                                     defaultSelectedVariation: defaultVariationsByBundledItemID[bundleItem.bundledItemID])
                     default:
                         return .init(bundleItem: bundleItem,
                                      product: product,
@@ -181,6 +184,70 @@ private extension ConfigurableBundleProductViewModel {
             stores.dispatch(ProductAction.retrieveProducts(siteID: product.siteID,
                                                            productIDs: productIDs,
                                                            pageNumber: pageNumber) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+}
+
+// MARK: - Default variation pre-selection
+
+private extension ConfigurableBundleProductViewModel {
+    /// Returns the default variation attributes for a bundle item.
+    /// The bundle item's own override wins when `overridesDefaultVariationAttributes` is set, even if the override list
+    /// is empty ("override with nothing"). Otherwise, the bundled product's default form values apply like on the web.
+    func defaultVariationAttributes(for bundleItem: ProductBundleItem, product: Product) -> [ProductVariationAttribute] {
+        guard !bundleItem.overridesDefaultVariationAttributes else {
+            return bundleItem.defaultVariationAttributes
+        }
+        return product.defaultAttributes.compactMap { attribute in
+            guard let name = attribute.name, let option = attribute.option, option.isNotEmpty else {
+                return nil
+            }
+            return ProductVariationAttribute(id: attribute.attributeID, name: name, option: option)
+        }
+    }
+
+    /// Resolves the variation to pre-select for each freshly added variable bundle item whose default attributes
+    /// cover all variation attributes. Any failure results in no pre-selection so the user can select manually.
+    func resolveDefaultVariations(products: [Product]) async -> [Int64: ConfigurableBundleItemViewModel.Variation] {
+        var variationsByBundledItemID = [Int64: ConfigurableBundleItemViewModel.Variation]()
+        for bundleItem in product.bundledItems {
+            guard !childItems.contains(where: { $0.productID == bundleItem.productID }),
+                  let bundledProduct = products.first(where: { $0.productID == bundleItem.productID }),
+                  bundledProduct.productType == .variable else {
+                continue
+            }
+            let defaultAttributes = defaultVariationAttributes(for: bundleItem, product: bundledProduct)
+            let coversAllAttributes = bundledProduct.attributesForVariations.allSatisfy { attribute in
+                defaultAttributes.contains(where: { $0.name == attribute.name })
+            }
+            guard defaultAttributes.isNotEmpty, coversAllAttributes,
+                  let variations = try? await loadAllVariations(productID: bundleItem.productID) else {
+                continue
+            }
+            let allowedVariations = bundleItem.overridesVariations ? bundleItem.allowedVariations: []
+            let matchedVariation = variations.first { variation in
+                (allowedVariations.isEmpty || allowedVariations.contains(variation.productVariationID))
+                && variation.purchasable
+                // Attributes the variation omits are "any" and match any default option.
+                && variation.attributes.allSatisfy { attribute in
+                    defaultAttributes.contains(where: { $0.name == attribute.name && $0.option == attribute.option })
+                }
+            }
+            if let matchedVariation {
+                variationsByBundledItemID[bundleItem.bundledItemID] = .init(variationID: matchedVariation.productVariationID,
+                                                                            attributes: matchedVariation.attributes)
+            }
+        }
+        return variationsByBundledItemID
+    }
+
+    @MainActor
+    func loadAllVariations(productID: Int64) async throws -> [ProductVariation] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductVariationAction.synchronizeAllProductVariations(siteID: product.siteID,
+                                                                                   productID: productID) { result in
                 continuation.resume(with: result)
             })
         }

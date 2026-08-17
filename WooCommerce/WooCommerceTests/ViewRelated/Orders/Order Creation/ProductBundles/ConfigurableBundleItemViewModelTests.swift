@@ -148,6 +148,78 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectableVariationAttributeViewModels.count, 0)
     }
 
+    func test_init_with_defaultSelectedVariation_and_no_existing_order_item_sets_selectedVariation() throws {
+        // Given
+        let variableProduct = createVariableProduct()
+            .copy(attributes: [
+                .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"])
+            ])
+        let defaultSelectedVariation = ConfigurableBundleItemViewModel.Variation(variationID: 7,
+                                                                                 attributes: [.init(id: 0, name: "Flavor", option: "Pineapple")])
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil,
+                                                        defaultSelectedVariation: defaultSelectedVariation)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedVariation, defaultSelectedVariation)
+    }
+
+    func test_init_with_defaultSelectedVariation_and_existing_order_item_keeps_existing_order_item_variation() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(variationID: 6,
+                                                      attributes: [.init(metaID: 0, name: "Flavor", value: "Blackberry")])
+        let variableProduct = createVariableProduct()
+            .copy(attributes: [
+                .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"])
+            ])
+        let defaultSelectedVariation = ConfigurableBundleItemViewModel.Variation(variationID: 7,
+                                                                                 attributes: [.init(id: 0, name: "Flavor", option: "Pineapple")])
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: existingOrderItem,
+                                                        defaultSelectedVariation: defaultSelectedVariation)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedVariation, .init(variationID: 6, attributes: [.init(id: 0, name: "Flavor", option: "Blackberry")]))
+    }
+
+    func test_init_with_defaultSelectedVariation_prefills_selectableVariationAttributeViewModels_with_default_options_for_any_attributes() throws {
+        // Given
+        let variableProduct = createVariableProduct()
+            .copy(attributes: [
+                .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"]),
+                .fake().copy(name: "Color", variation: true, options: ["Indigo", "Orange"])
+            ])
+        // The variation defines Flavor only, so Color is an "any" attribute with a default option.
+        let defaultSelectedVariation = ConfigurableBundleItemViewModel.Variation(variationID: 7,
+                                                                                 attributes: [.init(id: 0, name: "Flavor", option: "Pineapple")])
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings:
+                .init(allowedVariations: [], defaultAttributes: [.init(id: 0, name: "Color", option: "Indigo")]),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil,
+                                                        defaultSelectedVariation: defaultSelectedVariation)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedVariation, defaultSelectedVariation)
+        XCTAssertEqual(viewModel.selectableVariationAttributeViewModels.count, 1)
+        let pickerViewModel = try XCTUnwrap(viewModel.selectableVariationAttributeViewModels.first)
+        XCTAssertEqual(pickerViewModel.name, "Color")
+        XCTAssertEqual(pickerViewModel.selectedOption, "Indigo")
+    }
+
     func test_selecting_variation_sets_selectedVariation_and_selectableVariationAttributeViewModels() throws {
         // Given
         let variableProduct = createVariableProduct()

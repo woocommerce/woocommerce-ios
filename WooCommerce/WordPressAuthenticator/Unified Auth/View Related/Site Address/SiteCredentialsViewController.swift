@@ -12,26 +12,44 @@ final class SiteCredentialsViewController: LoginViewController {
 
     private weak var usernameField: UITextField?
     private weak var passwordField: UITextField?
+    private weak var recoveryURLField: UITextField?
+    private weak var browserAlternativeCell: TextLinkButtonTableViewCell?
+    private weak var cancelRecoveryCell: TextLinkButtonTableViewCell?
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// Endpoint currently being asked for, or `nil` when the credential form is shown.
+    private var recoveryEndpoint: SiteCredentialRecoveryEndpoint?
+    private var recoveryDraft = ""
+    private var recoveryError: SiteCredentialRecoveryError?
+
+    /// Endpoints confirmed by the merchant so far. They survive later attempts so the merchant is never asked twice.
+    private var recoveredLoginURL: String?
+    private var recoveredAdminURL: String?
+    private var isAuthenticatingSiteCredentials = false
+
     private let isDismissible: Bool
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
-    private let configuration = WordPressAuthenticator.shared.configuration
+    private let configuration: WordPressAuthenticatorConfiguration
 
     private var isWPCom: Bool {
         return loginFields.siteAddress == "https://wordpress.com"
     }
 
-    init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
+    init?(coder: NSCoder,
+          isDismissible: Bool,
+          configuration: WordPressAuthenticatorConfiguration = WordPressAuthenticator.shared.configuration,
+          onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         self.isDismissible = isDismissible
+        self.configuration = configuration
         self.completionHandler = onCompletion
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
         self.isDismissible = false
+        self.configuration = WordPressAuthenticator.shared.configuration
         self.completionHandler = nil
         super.init(coder: coder)
     }
@@ -125,11 +143,11 @@ final class SiteCredentialsViewController: LoginViewController {
     override func configureSubmitButton(animating: Bool) {
         submitButton?.showActivityIndicator(animating)
 
-        submitButton?.isEnabled = (
-            !animating &&
-                !loginFields.username.isEmpty &&
-                !loginFields.password.isEmpty
-        )
+        if recoveryEndpoint != nil {
+            submitButton?.isEnabled = !animating && recoveryDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+        } else {
+            submitButton?.isEnabled = !animating && !loginFields.username.isEmpty && !loginFields.password.isEmpty
+        }
     }
 
     /// Sets up accessibility elements in the order which they should be read aloud
@@ -150,8 +168,12 @@ final class SiteCredentialsViewController: LoginViewController {
     /// - Parameter loading: True if the form should be configured to a "loading" state.
     ///
     override func configureViewLoading(_ loading: Bool) {
+        isAuthenticatingSiteCredentials = loading
         usernameField?.isEnabled = !loading
         passwordField?.isEnabled = !loading
+        recoveryURLField?.isEnabled = !loading
+        browserAlternativeCell?.enableButton(!loading)
+        cancelRecoveryCell?.enableButton(!loading)
 
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
@@ -200,14 +222,19 @@ extension SiteCredentialsViewController: UITableViewDelegate {
     /// After a textfield cell is done displaying, remove the textfield reference.
     ///
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let row = rows[safe: indexPath.row] else {
-            return
+        if let textFieldCell = cell as? TextFieldTableViewCell {
+            if usernameField === textFieldCell.textField {
+                usernameField = nil
+            } else if passwordField === textFieldCell.textField {
+                passwordField = nil
+            } else if recoveryURLField === textFieldCell.textField {
+                recoveryURLField = nil
+            }
         }
-
-        if row == .username {
-            usernameField = nil
-        } else if row == .password {
-            passwordField = nil
+        if browserAlternativeCell === cell {
+            browserAlternativeCell = nil
+        } else if cancelRecoveryCell === cell {
+            cancelRecoveryCell = nil
         }
     }
 }
@@ -234,7 +261,7 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
                 passwordField?.placeholder = nil
             }
             passwordField?.becomeFirstResponder()
-        } else if textField == passwordField {
+        } else if textField == passwordField || textField == recoveryURLField {
             validateForm()
         }
         return true
@@ -264,6 +291,15 @@ private extension SiteCredentialsViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
+        guard recoveryEndpoint == nil else {
+            rows = [.recoveryTitle, .recoveryDescription, .recoveryURL]
+            if recoveryError != nil {
+                rows.append(.recoveryError)
+            }
+            rows.append(contentsOf: [.browserAlternative, .cancelRecovery])
+            return
+        }
+
         rows = [.instructions, .username, .password]
 
         if let errorText = errorMessage, !errorText.isEmpty {
@@ -285,10 +321,22 @@ private extension SiteCredentialsViewController {
             configureUsernameTextField(cell)
         case let cell as TextFieldTableViewCell where row == .password:
             configurePasswordTextField(cell)
-        case let cell as TextLinkButtonTableViewCell:
+        case let cell as TextLinkButtonTableViewCell where row == .forgotPassword:
             configureForgotPassword(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
+        case let cell as TextLabelTableViewCell where row == .recoveryTitle:
+            configureRecoveryTitle(cell)
+        case let cell as TextLabelTableViewCell where row == .recoveryDescription:
+            configureRecoveryDescription(cell)
+        case let cell as TextFieldTableViewCell where row == .recoveryURL:
+            configureRecoveryURLField(cell)
+        case let cell as TextLabelTableViewCell where row == .recoveryError:
+            configureRecoveryError(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .browserAlternative:
+            configureBrowserAlternative(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .cancelRecovery:
+            configureCancelRecovery(cell)
         default:
             WPAuthenticatorLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -382,6 +430,70 @@ private extension SiteCredentialsViewController {
         }
     }
 
+    func configureRecoveryTitle(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: recoveryEndpoint == .login ? Localization.loginRecoveryTitle : Localization.adminRecoveryTitle,
+                            style: .headline)
+    }
+
+    func configureRecoveryDescription(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: recoveryEndpoint == .login ? Localization.loginRecoveryDescription : Localization.adminRecoveryDescription,
+                            style: .body)
+    }
+
+    func configureRecoveryURLField(_ cell: TextFieldTableViewCell) {
+        let placeholder = recoveryEndpoint == .login ? Localization.loginURLPlaceholder : Localization.adminURLPlaceholder
+        // `.url` styling reports the current text back, so silence the handler until the draft is in place.
+        cell.onChangeSelectionHandler = nil
+        cell.configure(withStyle: .url, placeholder: placeholder, text: recoveryDraft)
+        recoveryURLField = cell.textField
+        cell.textField.delegate = self
+        cell.textField.isEnabled = !isAuthenticatingSiteCredentials
+        cell.textField.accessibilityLabel = placeholder
+        cell.onChangeSelectionHandler = { [weak self] textField in
+            guard let self else {
+                return
+            }
+            self.recoveryDraft = textField.text ?? ""
+            self.updateRecoveryError(nil)
+            self.configureSubmitButton(animating: self.isAuthenticatingSiteCredentials)
+        }
+    }
+
+    func configureRecoveryError(_ cell: TextLabelTableViewCell) {
+        let text = switch recoveryError {
+        case .invalidURL: Localization.invalidURL
+        case .differentSite: Localization.differentSite
+        case .notFound where recoveryEndpoint == .login: Localization.loginURLNotFound
+        case .notFound: Localization.adminURLNotFound
+        case nil: ""
+        }
+        cell.configureLabel(text: text, style: .error)
+    }
+
+    func configureBrowserAlternative(_ cell: TextLinkButtonTableViewCell) {
+        browserAlternativeCell = cell
+        cell.configureButton(text: Localization.browserAlternative, accessibilityTrait: .link)
+        cell.enableButton(!isAuthenticatingSiteCredentials)
+        cell.actionHandler = { [weak self] in
+            guard let self, !self.isAuthenticatingSiteCredentials else {
+                return
+            }
+            WordPressAuthenticator.shared.delegate?.presentSiteCredentialBrowserAlternative(
+                for: self.loginFields.siteAddress,
+                in: self
+            )
+        }
+    }
+
+    func configureCancelRecovery(_ cell: TextLinkButtonTableViewCell) {
+        cancelRecoveryCell = cell
+        cell.configureButton(text: Localization.cancelRecovery, accessibilityTrait: .link)
+        cell.enableButton(!isAuthenticatingSiteCredentials)
+        cell.actionHandler = { [weak self] in
+            self?.cancelEndpointRecovery()
+        }
+    }
+
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
@@ -455,27 +567,167 @@ private extension SiteCredentialsViewController {
             return
         }
 
-        configureViewLoading(true)
+        authenticateSiteCredentials(verifying: nil)
+    }
 
+    /// Submits the address the merchant entered for the endpoint currently being recovered.
+    ///
+    func validateRecoveryURL() {
+        guard let recoveryEndpoint else {
+            return
+        }
+        let candidate = recoveryDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard candidate.isEmpty == false else {
+            return
+        }
+        if recoveryEndpoint == .login {
+            recoveredLoginURL = candidate
+        } else {
+            recoveredAdminURL = candidate
+        }
+        authenticateSiteCredentials(verifying: recoveryEndpoint)
+    }
+
+    func authenticateSiteCredentials(verifying endpoint: SiteCredentialRecoveryEndpoint?) {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
+            // The authenticator cannot present this screen without a delegate, so the flow is already unusable here.
             fatalError("Error: Where did the delegate go?")
         }
         // manually construct the XMLRPC since this is needed to get the site address later
-        let xmlrpc = loginFields.siteAddress + "/xmlrpc.php"
-        let wporg = WordPressOrgCredentials(username: loginFields.username,
-                                            password: loginFields.password,
-                                            xmlrpc: xmlrpc,
-                                            options: [:])
-        delegate.handleSiteCredentialLogin(credentials: wporg, onLoading: { [weak self] shouldShowLoading in
-            self?.configureViewLoading(shouldShowLoading)
-        }, onSuccess: { [weak self] in
-            self?.finishedLogin(withUsername: wporg.username,
-                                password: wporg.password,
-                                xmlrpc: wporg.xmlrpc,
-                                options: wporg.options)
-        }, onFailure: { [weak self] error, incorrectCredentials in
-            self?.handleLoginFailure(error: error, incorrectCredentials: incorrectCredentials)
-        })
+        let credentials = WordPressOrgCredentials(
+            username: loginFields.username,
+            password: loginFields.password,
+            xmlrpc: loginFields.siteAddress + "/xmlrpc.php",
+            options: [:]
+        )
+        delegate.authenticateSiteCredentials(
+            credentials: credentials,
+            loginURL: recoveredLoginURL,
+            adminURL: recoveredAdminURL,
+            endpointUnderVerification: endpoint,
+            onLoading: { [weak self] in self?.configureViewLoading($0) },
+            onSuccess: { [weak self] credentials in
+                self?.finishedLogin(withUsername: credentials.username,
+                                    password: credentials.password,
+                                    xmlrpc: credentials.xmlrpc,
+                                    options: credentials.options)
+            },
+            onRecovery: { [weak self] recovery in
+                self?.showEndpointRecovery(recovery)
+            },
+            onFailure: { [weak self] error, incorrectCredentials, verifiedLoginURL in
+                self?.handleStructuredLoginFailure(
+                    error: error,
+                    incorrectCredentials: incorrectCredentials,
+                    verifiedLoginURL: verifiedLoginURL
+                )
+            }
+        )
+    }
+
+    /// Swaps the credential form for the inline prompt asking where the given endpoint lives.
+    ///
+    func showEndpointRecovery(_ recovery: SiteCredentialRecovery) {
+        switch recovery {
+        case .login(let draftURL, let error):
+            recoveryEndpoint = .login
+            recoveryError = error
+            recoveredLoginURL = error == .invalidURL || error == .differentSite ? nil : draftURL
+            recoveredAdminURL = nil
+            recoveryDraft = draftURL
+        case .admin(let verifiedLoginURL, let draftURL, let error):
+            recoveryEndpoint = .admin
+            recoveryError = error
+            recoveredLoginURL = verifiedLoginURL
+            recoveredAdminURL = error == .invalidURL || error == .differentSite ? nil : draftURL
+            recoveryDraft = draftURL
+        }
+        reloadRecoveryRows(focusingError: recoveryError != nil)
+    }
+
+    /// Adds, removes, or refreshes only the inline error row so editing is never interrupted.
+    ///
+    func updateRecoveryError(_ error: SiteCredentialRecoveryError?) {
+        guard recoveryError != error else {
+            return
+        }
+        let hadError = recoveryError != nil
+        recoveryError = error
+        let errorIndexPath = IndexPath(row: 3, section: 0)
+        switch (hadError, error != nil) {
+        case (false, true):
+            rows.insert(.recoveryError, at: errorIndexPath.row)
+            tableView.insertRows(at: [errorIndexPath], with: .none)
+        case (true, false):
+            rows.remove(at: errorIndexPath.row)
+            tableView.deleteRows(at: [errorIndexPath], with: .none)
+        case (true, true):
+            tableView.reloadRows(at: [errorIndexPath], with: .none)
+        case (false, false):
+            break
+        }
+        guard error != nil else {
+            return
+        }
+        tableView.layoutIfNeeded()
+        UIAccessibility.post(notification: .layoutChanged, argument: tableView.cellForRow(at: errorIndexPath) ?? tableView)
+    }
+
+    func cancelEndpointRecovery() {
+        guard !isAuthenticatingSiteCredentials else {
+            return
+        }
+        let cancelledEndpoint = recoveryEndpoint
+        recoveryEndpoint = nil
+        recoveryDraft = ""
+        recoveryError = nil
+        if cancelledEndpoint == .login {
+            recoveredLoginURL = nil
+        }
+        recoveredAdminURL = nil
+        reloadRecoveryRows(focusingError: false)
+    }
+
+    func reloadRecoveryRows(focusingError: Bool) {
+        loadRows()
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+        let focus: Any? = if focusingError, let errorIndex = rows.firstIndex(of: .recoveryError) {
+            tableView.cellForRow(at: IndexPath(row: errorIndex, section: 0)) ?? tableView
+        } else if recoveryEndpoint == nil {
+            usernameField ?? tableView
+        } else {
+            recoveryURLField ?? tableView
+        }
+        UIAccessibility.post(notification: focusingError ? .layoutChanged : .screenChanged, argument: focus)
+        configureSubmitButton(animating: isAuthenticatingSiteCredentials)
+    }
+
+    /// Handles a failure that is not an endpoint recovery request.
+    ///
+    /// A verified login entry is promoted back onto the credential form so the merchant is never asked for it again.
+    ///
+    func handleStructuredLoginFailure(error: Error, incorrectCredentials: Bool, verifiedLoginURL: String?) {
+        configureViewLoading(false)
+        if let verifiedLoginURL,
+           recoveryEndpoint == .login || (incorrectCredentials && recoveryEndpoint != nil) {
+            recoveredLoginURL = verifiedLoginURL
+            recoveredAdminURL = nil
+            recoveryEndpoint = nil
+            recoveryDraft = ""
+            recoveryError = nil
+            reloadRecoveryRows(focusingError: false)
+        }
+        guard configuration.enableManualErrorHandlingForSiteCredentialLogin else {
+            handleLoginFailure(error: error, incorrectCredentials: incorrectCredentials)
+            return
+        }
+        WordPressAuthenticator.shared.delegate?.presentSiteCredentialLoginFailure(
+            error: error,
+            offersBrowserAlternative: recoveryEndpoint == nil && recoveredLoginURL == nil && verifiedLoginURL == nil,
+            for: loginFields.siteAddress,
+            in: self
+        )
     }
 
     func handleLoginFailure(error: Error, incorrectCredentials: Bool) {
@@ -534,21 +786,69 @@ private extension SiteCredentialsViewController {
         case password
         case forgotPassword
         case errorMessage
+        case recoveryTitle
+        case recoveryDescription
+        case recoveryURL
+        case recoveryError
+        case browserAlternative
+        case cancelRecovery
 
         var reuseIdentifier: String {
             switch self {
-            case .instructions:
+            case .instructions, .recoveryTitle, .recoveryDescription, .recoveryError:
                 return TextLabelTableViewCell.reuseIdentifier
-            case .username:
+            case .username, .password, .recoveryURL:
                 return TextFieldTableViewCell.reuseIdentifier
-            case .password:
-                return TextFieldTableViewCell.reuseIdentifier
-            case .forgotPassword:
+            case .forgotPassword, .browserAlternative, .cancelRecovery:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:
                 return TextLabelTableViewCell.reuseIdentifier
             }
         }
+    }
+
+    enum Localization {
+        static let loginRecoveryTitle = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.login.title", value: "Where do you sign in to your store?",
+            comment: "Title shown when asking for a custom WordPress sign-in address.")
+        static let loginRecoveryDescription = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.login.description",
+            value: "A security plugin may use a custom WordPress sign-in address. Enter the address you use to sign in.",
+            comment: "Description shown when asking for a custom WordPress sign-in address.")
+        static let loginURLPlaceholder = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.login.placeholder", value: "WordPress sign-in address",
+            comment: "Placeholder for a custom WordPress sign-in address.")
+        static let adminRecoveryTitle = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.admin.title", value: "Where is your store’s dashboard?",
+            comment: "Title shown when asking for a custom WordPress dashboard address.")
+        static let adminRecoveryDescription = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.admin.description",
+            value: "A security plugin may move the WordPress dashboard. Enter the address you use to open it.",
+            comment: "Description shown when asking for a custom WordPress dashboard address.")
+        static let adminURLPlaceholder = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.admin.placeholder", value: "WordPress dashboard address",
+            comment: "Placeholder for a custom WordPress dashboard address.")
+        static let invalidURL = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.error.invalidURL", value: "Enter a full web address, including http:// or https://.",
+            comment: "Error shown when a custom WordPress address is not a full web address.")
+        static let differentSite = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.error.differentSite",
+            value: "Enter an address on the same site without changing its secure connection or port.",
+            comment: "Error shown when a custom WordPress address does not belong to the current site.")
+        static let loginURLNotFound = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.error.loginNotFound",
+            value: "We couldn’t find a WordPress sign-in page at that address. Check it and try again.",
+            comment: "Error shown when no WordPress sign-in page exists at the custom address.")
+        static let adminURLNotFound = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.error.adminNotFound",
+            value: "We couldn’t reach the WordPress dashboard at that address. Check it and try again.",
+            comment: "Error shown when no WordPress dashboard exists at the custom address.")
+        static let browserAlternative = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.browserAlternative", value: "Try signing in with your browser instead",
+            comment: "Browser authentication button shown during custom address recovery.")
+        static let cancelRecovery = NSLocalizedString(
+            "com.woocommerce.siteCredentials.recovery.cancel", value: "Cancel",
+            comment: "Button returning to the username and password form.")
     }
 }
 
@@ -573,7 +873,11 @@ extension SiteCredentialsViewController {
         if configuration.enableManualSiteCredentialLogin,
            !isWPCom {
             // asks the delegate to handle the login
-            validateFormAndTriggerDelegate()
+            if recoveryEndpoint == nil {
+                validateFormAndTriggerDelegate()
+            } else {
+                validateRecoveryURL()
+            }
         } else {
             validateFormAndLogin()
         }

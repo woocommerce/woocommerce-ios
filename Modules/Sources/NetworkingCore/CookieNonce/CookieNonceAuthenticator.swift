@@ -13,7 +13,6 @@ import Foundation
 final class CookieNonceAuthenticator: RequestInterceptor {
     private let username: String
     private let password: String
-    private let loginURL: URL
     private let endpoints: CookieNonceAuthenticationEndpoints
     private let authenticationSessionFactory: @Sendable (Session) -> Session
     private let state = CookieNonceAuthenticatorState()
@@ -33,7 +32,6 @@ final class CookieNonceAuthenticator: RequestInterceptor {
     ) {
         self.username = configuration.username
         self.password = configuration.password
-        self.loginURL = configuration.endpoints.loginEntryURL
         self.endpoints = configuration.endpoints
         self.authenticationSessionFactory = authenticationSessionFactory
     }
@@ -55,7 +53,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
             // Only retry once
             request.retryCount == 0,
             // And don't retry the login request
-            request.request?.url != loginURL,
+            request.request?.url != endpoints.loginEntryURL,
             // Only retry because of failed authorization
             case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError
         else {
@@ -80,27 +78,18 @@ final class CookieNonceAuthenticator: RequestInterceptor {
 
     func authenticate(session: Session) async throws -> String {
         let authenticationSession = authenticationSessionFactory(session)
-        let preflightResult = try await preflight(session: authenticationSession, endpoints: endpoints)
-        let loginURL: URL
+        let preflightResult = try await preflight(session: authenticationSession)
+        let finalLoginURL: URL
         let nonceURL: URL
         switch preflightResult {
         case .credentials(let submissionURL):
-            loginURL = submissionURL
-            nonceURL = try await handleSiteCredentialLogin(
-                submissionURL: submissionURL,
-                session: authenticationSession,
-                endpoints: endpoints
-            )
+            finalLoginURL = submissionURL
+            nonceURL = try await handleSiteCredentialLogin(submissionURL: submissionURL, session: authenticationSession)
         case .authenticated(let documentURL):
-            loginURL = documentURL
+            finalLoginURL = documentURL
             nonceURL = try endpointValue { try endpoints.nonceURL(afterLoginAt: documentURL) }
         }
-        return try await retrieveNonce(
-            at: nonceURL,
-            afterLoginAt: loginURL,
-            session: authenticationSession,
-            endpoints: endpoints
-        )
+        return try await retrieveNonce(at: nonceURL, afterLoginAt: finalLoginURL, session: authenticationSession)
     }
 
     static func authenticationSessionConfiguration(from session: Session) -> URLSessionConfiguration {
@@ -123,7 +112,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func startLoginSequence(session: Session) {
-        DDLogInfo("Starting Cookie+Nonce login sequence for \(loginURL)")
+        DDLogInfo("Starting Cookie+Nonce login sequence for \(endpoints.loginEntryURL)")
         Task(priority: .medium) {
             do {
                 let nonce = try await authenticate(session: session)
@@ -137,7 +126,7 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    private func preflight(session: Session, endpoints: CookieNonceAuthenticationEndpoints) async throws -> PreflightResult {
+    private func preflight(session: Session) async throws -> PreflightResult {
         var requestURL = endpoints.loginEntryURL
         var redirectCount = 0
         while true {
@@ -170,11 +159,7 @@ private extension CookieNonceAuthenticator {
         }
     }
 
-    func handleSiteCredentialLogin(
-        submissionURL: URL,
-        session: Session,
-        endpoints: CookieNonceAuthenticationEndpoints
-    ) async throws -> URL {
+    func handleSiteCredentialLogin(submissionURL: URL, session: Session) async throws -> URL {
         let nonceURL = try endpointValue { try endpoints.nonceURL(afterLoginAt: submissionURL) }
         let request = try authenticatedRequest(submissionURL: submissionURL, nonceURL: nonceURL)
         let response = try await load(request, session: session)
@@ -202,16 +187,11 @@ private extension CookieNonceAuthenticator {
         )
     }
 
-    func retrieveNonce(
-        at nonceURL: URL,
-        afterLoginAt loginURL: URL,
-        session: Session,
-        endpoints: CookieNonceAuthenticationEndpoints
-    ) async throws -> String {
+    func retrieveNonce(at nonceURL: URL, afterLoginAt finalLoginURL: URL, session: Session) async throws -> String {
         let response = try await load(getRequest(url: nonceURL), session: session)
         try validate(response.http, stage: .nonce)
         guard let responseURL = response.http.url,
-              endpoints.isExpectedNonceURL(responseURL, afterLoginAt: loginURL),
+              endpoints.isExpectedNonceURL(responseURL, afterLoginAt: finalLoginURL),
               let nonce = CookieNonceAuthenticationRules.validatedNonce(from: response.data) else {
             throw Error.authenticationFailed(.invalidResponse)
         }
@@ -259,7 +239,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func successfulLoginSequence() {
-        DDLogInfo("Completed Cookie+Nonce login sequence for \(loginURL)")
+        DDLogInfo("Completed Cookie+Nonce login sequence for \(endpoints.loginEntryURL)")
         state.resetAfterSuccess()
         completeRequests(true)
     }
@@ -270,7 +250,7 @@ private extension CookieNonceAuthenticator {
             allowRetry = Self.isOfflineError(originalError)
         }
         state.invalidate(allowRetry: allowRetry)
-        DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")
+        DDLogInfo("Aborting Cookie+Nonce login sequence for \(endpoints.loginEntryURL)")
         completeRequests(false)
     }
 

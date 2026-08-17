@@ -100,13 +100,8 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
 
-        if case .wporg(_, _, let siteAddress) = type,
-           !(network is AlamofireNetwork),
-           rootCache.root(for: siteAddress) == nil {
-            self.discoveryTask = Task {
-                guard rootCache.root(for: siteAddress) == nil else { return }
-                _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
-            }
+        if case .wporg(_, _, let siteAddress) = type, !(network is AlamofireNetwork) {
+            self.discoveryTask = Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
         } else {
             self.discoveryTask = nil
         }
@@ -131,41 +126,40 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
-        self.authenticationEndpoints = authenticationEndpoints ?? defaultEndpoints
-        guard let resolvedEndpoints = self.authenticationEndpoints,
-              resolvedEndpoints.siteURL == defaultEndpoints.siteURL else {
+        let resolvedEndpoints = authenticationEndpoints ?? defaultEndpoints
+        guard resolvedEndpoints.siteURL == defaultEndpoints.siteURL else {
             DDLogWarn("⚠️ Cookie nonce authentication endpoints do not match site \(siteAddress)")
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
+        self.authenticationEndpoints = resolvedEndpoints
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()
 
         if let network {
             self.network = network
-            if network is AlamofireNetwork || rootCache.root(for: siteAddress) != nil {
-                self.discoveryTask = nil
-            } else {
-                self.discoveryTask = Task {
-                    guard rootCache.root(for: siteAddress) == nil else { return }
-                    _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
-                }
-            }
+            self.discoveryTask = network is AlamofireNetwork ? nil : Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
         } else {
             // Prepares the authenticator with username and password
             let config = CookieNonceAuthenticatorConfiguration(username: username,
                                                                password: password,
                                                                endpoints: resolvedEndpoints)
             self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
-            if rootCache.root(for: siteAddress) == nil {
-                self.discoveryTask = Task {
-                    guard rootCache.root(for: siteAddress) == nil else { return }
-                    _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
-                }
-            } else {
-                self.discoveryTask = nil
-            }
+            self.discoveryTask = Self.makeDiscoveryTask(for: siteAddress, rootCache: rootCache)
+        }
+    }
+
+    /// Eagerly resolves the REST API root URL unless it is already cached.
+    ///
+    private static func makeDiscoveryTask(for siteAddress: String, rootCache: RESTAPIRootCaching) -> Task<Void, Never>? {
+        guard rootCache.root(for: siteAddress) == nil else {
+            return nil
+        }
+        return Task {
+            // The root may have been cached between this task being created and started.
+            guard rootCache.root(for: siteAddress) == nil else { return }
+            _ = await WordPressAPIDiscovery().resolveRESTAPIRootURL(for: siteAddress)
         }
     }
 

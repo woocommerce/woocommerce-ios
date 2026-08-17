@@ -229,22 +229,32 @@ private extension ApplicationLogViewController {
     ///
     func exportAllLogs(from sourceView: UIView?) {
         removeExportedLogs()
+        setExportInProgress(true, in: sourceView)
 
-        do {
-            let logFileURLs = fileLogger.logFileManager.sortedLogFileInfos.map { URL(fileURLWithPath: $0.filePath) }
-            let archiveURL = try ApplicationLogsExporter().export(logFileURLs: logFileURLs)
-            exportedLogsURL = archiveURL
-
-            let activityViewController = UIActivityViewController(activityItems: [archiveURL], applicationActivities: nil)
-            activityViewController.popoverPresentationController?.sourceView = sourceView ?? view
-            activityViewController.popoverPresentationController?.sourceRect = sourceView?.bounds ?? view.bounds
-            activityViewController.completionWithItemsHandler = { [weak self] _, _, _, _ in
-                self?.removeExportedLogs()
+        let logFileURLs = fileLogger.logFileManager.sortedLogFileInfos.map { URL(fileURLWithPath: $0.filePath) }
+        Task { [weak self, weak sourceView] in
+            guard let self else {
+                return
             }
-            present(activityViewController, animated: true)
-        } catch {
-            DDLogError("⛔️ Error exporting application logs: \(error)")
-            presentExportError()
+            defer { setExportInProgress(false, in: sourceView) }
+
+            do {
+                let archiveURL = try await Task.detached(priority: .userInitiated) {
+                    try ApplicationLogsExporter().export(logFileURLs: logFileURLs)
+                }.value
+                exportedLogsURL = archiveURL
+
+                let activityViewController = UIActivityViewController(activityItems: [archiveURL], applicationActivities: nil)
+                activityViewController.popoverPresentationController?.sourceView = sourceView ?? view
+                activityViewController.popoverPresentationController?.sourceRect = sourceView?.bounds ?? view.bounds
+                activityViewController.completionWithItemsHandler = { [weak self] _, _, _, _ in
+                    self?.removeExportedLogs()
+                }
+                present(activityViewController, animated: true)
+            } catch {
+                DDLogError("⛔️ Error exporting application logs: \(error)")
+                presentExportError()
+            }
         }
     }
 
@@ -252,8 +262,27 @@ private extension ApplicationLogViewController {
         guard let exportedLogsURL else {
             return
         }
-        try? FileManager.default.removeItem(at: exportedLogsURL.deletingLastPathComponent())
+        do {
+            try FileManager.default.removeItem(at: exportedLogsURL.deletingLastPathComponent())
+        } catch {
+            DDLogError("⛔️ Error removing exported application logs: \(error)")
+        }
         self.exportedLogsURL = nil
+    }
+
+    func setExportInProgress(_ isExporting: Bool, in sourceView: UIView?) {
+        sourceView?.isUserInteractionEnabled = !isExporting
+
+        guard let cell = sourceView as? UITableViewCell else {
+            return
+        }
+        if isExporting {
+            let indicator = UIActivityIndicatorView(style: .medium)
+            indicator.startAnimating()
+            cell.accessoryView = indicator
+        } else {
+            cell.accessoryView = nil
+        }
     }
 
     func presentExportError() {

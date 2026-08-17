@@ -55,6 +55,7 @@ private extension POSRefundErrorView {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(subtitle)

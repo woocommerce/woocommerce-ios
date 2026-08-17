@@ -152,6 +152,10 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                               preparation: preparation,
                               selectedItems: selectedItems,
                               reason: reason)
+        case .rejected(let rejection):
+            // The server rejected this selection with an actionable code; the typed rejection
+            // carries the cashier-facing copy shown inline on the selection step.
+            throw rejection
         case .error:
             // The use case has already logged the underlying error; the cashier sees the generic
             // preview failure with a retry affordance.
@@ -308,6 +312,9 @@ private extension POSRefundSubmissionAdaptor {
 
     private func loadPreparedRefundSnapshot(for order: POSOrder) async throws -> PreparedRefundSnapshot {
         let fullOrder = try await orderService.loadOrder(orderID: order.id)
+        if let eligibilityFailure = fullOrder.refundEligibilityFailure {
+            throw eligibilityFailure
+        }
         let refunds = try await loadDetailedRefunds(for: fullOrder)
         let fetchedCharge = try await fetchChargeIfNeeded(for: fullOrder)
         let charge = fetchedCharge.map { refundMapping.normalizedForPOSInteracRefund(charge: $0) }

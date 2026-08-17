@@ -75,13 +75,11 @@ private extension SiteCredentialLoginViewModel {
     }
 
     func handleCookieAuthentication() {
-        guard let canonicalSiteURL = URL(string: siteURL) else {
-            DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")
-            isLoggingIn = false
-            return
-        }
         let endpoints: CookieNonceAuthenticationEndpoints
         do {
+            guard let canonicalSiteURL = URL(string: siteURL) else {
+                throw CookieNonceAuthenticationEndpoints.ValidationError.invalidURL
+            }
             endpoints = try CookieNonceAuthenticationEndpoints(siteURL: canonicalSiteURL)
         } catch {
             DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteURL)")

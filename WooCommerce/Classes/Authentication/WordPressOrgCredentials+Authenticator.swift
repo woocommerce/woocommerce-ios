@@ -19,20 +19,14 @@ extension WordPressOrgCredentials {
         guard let adminURL = defaultAuthenticationEndpoints?.adminBaseURL.absoluteString else {
             return siteURL
         }
-        return adminURL.hasSuffix("/") ? String(adminURL.dropLast()) : adminURL
+        return adminURL.removingSuffix("/")
     }
 
     /// Validated, canonical endpoints supplied by site discovery, or safe defaults when options are absent.
     var authenticationEndpoints: CookieNonceAuthenticationEndpoints? {
         do {
-            guard let canonicalSiteURL = URL(string: siteURL) else {
-                return nil
-            }
-            return try CookieNonceAuthenticationEndpoints(
-                siteURL: canonicalSiteURL,
-                loginEntryURL: try configuredURL(for: .loginURL),
-                adminBaseURL: try configuredURL(for: .adminURL)
-            )
+            return makeAuthenticationEndpoints(loginEntryURL: try configuredURL(for: .loginURL),
+                                               adminBaseURL: try configuredURL(for: .adminURL))
         } catch {
             return nil
         }
@@ -43,22 +37,27 @@ extension WordPressOrgCredentials {
 //
 private extension WordPressOrgCredentials {
     var defaultAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? {
+        makeAuthenticationEndpoints()
+    }
+
+    func makeAuthenticationEndpoints(loginEntryURL: URL? = nil, adminBaseURL: URL? = nil) -> CookieNonceAuthenticationEndpoints? {
+        guard let canonicalSiteURL = URL(string: siteURL) else {
+            return nil
+        }
         do {
-            guard let canonicalSiteURL = URL(string: siteURL) else {
-                return nil
-            }
-            return try CookieNonceAuthenticationEndpoints(siteURL: canonicalSiteURL)
+            return try CookieNonceAuthenticationEndpoints(siteURL: canonicalSiteURL,
+                                                          loginEntryURL: loginEntryURL,
+                                                          adminBaseURL: adminBaseURL)
         } catch {
             return nil
         }
     }
 
     func configuredURL(for key: Key) throws -> URL? {
-        guard let option = options[key.rawValue] else {
+        guard options[key.rawValue] != nil else {
             return nil
         }
-        guard let container = option as? [String: Any],
-              let value = container[Key.value.rawValue] as? String,
+        guard let value = optionValue(for: key.rawValue) as? String,
               value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
               let url = URL(string: value) else {
             throw EndpointOptionError.invalidValue

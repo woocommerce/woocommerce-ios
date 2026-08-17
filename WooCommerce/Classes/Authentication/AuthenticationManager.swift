@@ -29,6 +29,16 @@ class AuthenticationManager: Authentication {
         _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
     ) throws -> ApplicationPasswordUseCase
 
+    static let defaultApplicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = {
+        username, password, siteAddress, authenticationEndpoints in
+        try DefaultApplicationPasswordUseCase(
+            username: username,
+            password: password,
+            siteAddress: siteAddress,
+            authenticationEndpoints: authenticationEndpoints
+        )
+    }
+
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
@@ -87,15 +97,8 @@ class AuthenticationManager: Authentication {
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard,
          qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
-         applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory = {
-             username, password, siteAddress, authenticationEndpoints in
-             try DefaultApplicationPasswordUseCase(
-                 username: username,
-                 password: password,
-                 siteAddress: siteAddress,
-                 authenticationEndpoints: authenticationEndpoints
-             )
-         }) {
+         applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory
+             = AuthenticationManager.defaultApplicationPasswordUseCaseFactory) {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -818,7 +821,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let webView = SFSafariViewController(url: url)
         navigationController.present(webView, animated: true)
     }
+}
 
+// MARK: - Application password
+extension AuthenticationManager {
     func makeApplicationPasswordUseCase(for credentials: WordPressOrgCredentials) throws -> ApplicationPasswordUseCase {
         try applicationPasswordUseCaseFactory(
             credentials.username,

@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Settings: All retained application logs can now be shared together as a ZIP file. [https://github.com/woocommerce/woocommerce-ios/pull/17714]
 - [*] Fixed a crash that could occur while checking iOS age-range compliance. [https://github.com/woocommerce/woocommerce-ios/pull/17661]
 - [*] Dashboard: Performance stats now remain visible when the selected dates have no revenue. [https://github.com/woocommerce/woocommerce-ios/pull/17717]
 - [*] Google Ads: Fixed the dashboard campaign card failing to show existing campaign performance data. [https://github.com/woocommerce/woocommerce-ios/pull/17706]

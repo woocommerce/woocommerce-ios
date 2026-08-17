@@ -5,37 +5,40 @@ import CocoaLumberjackSwift
 /// presenting printer setup (via `POSPrintReceiptFlowHelper`), performs the print, and tracks the
 /// `receipt_print_*` analytics around it.
 ///
-/// Stores only injected dependencies, never state — the view owns the setup-modal presentation
-/// state, so the flow stays unit-testable with a mock analytics provider and print closure.
+/// Stores only injected dependencies, never state — the effects (printing, presenting the setup
+/// modal) are injected as closures, so the flow stays unit-testable with a mock analytics provider
+/// and spy closures.
 @MainActor
 struct POSPrintReceiptCoordinator {
     private let analytics: POSAnalyticsProviding
     private let printReceipt: () async throws -> Void
+    private let presentPrinterSetup: @MainActor () -> Void
 
-    init(analytics: POSAnalyticsProviding, printReceipt: @escaping () async throws -> Void) {
+    init(analytics: POSAnalyticsProviding,
+         printReceipt: @escaping () async throws -> Void,
+         presentPrinterSetup: @escaping @MainActor () -> Void) {
         self.analytics = analytics
         self.printReceipt = printReceipt
+        self.presentPrinterSetup = presentPrinterSetup
     }
 
-    /// Merchant tapped Print. Prints immediately when a printer is connected, otherwise asks the
-    /// view to present the printer setup flow.
-    /// - Returns: `true` when the view should present the printer setup modal.
-    func handlePrintButtonTap(isPrinterConnected: Bool) async -> Bool {
+    /// Merchant tapped Print. Prints immediately when a printer is connected, otherwise presents
+    /// the printer setup flow via the injected closure.
+    func printButtonTapped(isPrinterConnected: Bool) async {
         analytics.track(.receiptPrintTapped)
         switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: isPrinterConnected) {
         case .presentSetup:
-            return true
+            presentPrinterSetup()
         case .print:
             await performPrint()
-            return false
         case .none:
-            return false
+            break
         }
     }
 
     /// Setup modal visibility changed. Auto-prints when the modal closed because the merchant
     /// completed the setup they opened by tapping Print.
-    func handleSetupModalVisibilityChange(isPresented: Bool, isPrinterConnected: Bool) async {
+    func setupModalVisibilityChanged(isPresented: Bool, isPrinterConnected: Bool) async {
         if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
             isPresented: isPresented,
             isPrinterConnected: isPrinterConnected) == .print {

@@ -47,7 +47,7 @@ struct PointOfSalePaymentSuccessView: View {
             // The setup modal auto-dismisses when a printer connects, so the modal closing with a
             // printer connected means setup succeeded — print the receipt the merchant asked for.
             Task {
-                await printCoordinator.handleSetupModalVisibilityChange(
+                await printCoordinator.setupModalVisibilityChanged(
                     isPresented: isShowing,
                     isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
@@ -55,16 +55,14 @@ struct PointOfSalePaymentSuccessView: View {
     }
 
     private var printCoordinator: POSPrintReceiptCoordinator {
-        POSPrintReceiptCoordinator(analytics: analytics) {
-            try await posModel.printReceipt()
-        }
+        POSPrintReceiptCoordinator(analytics: analytics,
+                                   printReceipt: { try await posModel.printReceipt() },
+                                   presentPrinterSetup: { showPrinterSetupModal = true })
     }
 
     private func handlePrintReceiptTap() {
         Task {
-            if await printCoordinator.handlePrintButtonTap(isPrinterConnected: posModel.isReceiptPrinterConnected) {
-                showPrinterSetupModal = true
-            }
+            await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 

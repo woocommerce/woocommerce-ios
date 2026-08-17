@@ -23,8 +23,8 @@ struct CookieNonceAuthenticationEndpointStore {
 
     func save(_ endpoints: CookieNonceAuthenticationEndpoints, siteURL: String, username: String) throws {
         try withLock {
-            guard let identity = canonicalIdentity(siteURL: siteURL, username: username),
-                  identity.siteURL == endpoints.siteURL else {
+            guard let canonicalSiteURL = canonicalSiteURL(siteURL: siteURL, username: username),
+                  canonicalSiteURL == endpoints.siteURL else {
                 throw StoreError.invalidIdentity
             }
 
@@ -54,10 +54,10 @@ struct CookieNonceAuthenticationEndpointStore {
             guard let ownedData = userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue),
                   let record = try? PropertyListDecoder().decode(Record.self, from: ownedData),
                   record.username == username,
-                  let identity = canonicalIdentity(siteURL: siteURL, username: username),
+                  let canonicalSiteURL = canonicalSiteURL(siteURL: siteURL, username: username),
                   let storedSiteURL = URL(string: record.siteURL),
-                  let storedIdentity = try? CookieNonceAuthenticationEndpoints(siteURL: storedSiteURL),
-                  identity.siteURL == storedIdentity.siteURL else {
+                  let storedEndpoints = try? CookieNonceAuthenticationEndpoints(siteURL: storedSiteURL),
+                  canonicalSiteURL == storedEndpoints.siteURL else {
                 return
             }
             guard userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue) == ownedData else {
@@ -72,11 +72,6 @@ struct CookieNonceAuthenticationEndpointStore {
 }
 
 private extension CookieNonceAuthenticationEndpointStore {
-    struct Identity {
-        let siteURL: URL
-        let username: String
-    }
-
     struct Record: Codable {
         let siteURL: String
         let username: String
@@ -94,7 +89,7 @@ private extension CookieNonceAuthenticationEndpointStore {
         guard let data = userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue),
               let record = try? PropertyListDecoder().decode(Record.self, from: data),
               record.username == username,
-              let canonicalIdentity = canonicalIdentity(siteURL: siteURL, username: username),
+              let canonicalSiteURL = canonicalSiteURL(siteURL: siteURL, username: username),
               let storedSiteURL = URL(string: record.siteURL),
               let loginEntryURL = URL(string: record.loginEntryURL),
               let adminBaseURL = URL(string: record.adminBaseURL),
@@ -103,7 +98,7 @@ private extension CookieNonceAuthenticationEndpointStore {
                   loginEntryURL: loginEntryURL,
                   adminBaseURL: adminBaseURL
               ),
-              endpoints.siteURL == canonicalIdentity.siteURL,
+              endpoints.siteURL == canonicalSiteURL,
               record.siteURL == endpoints.siteURL.absoluteString,
               record.loginEntryURL == endpoints.loginEntryURL.absoluteString,
               record.adminBaseURL == endpoints.adminBaseURL.absoluteString else {
@@ -112,13 +107,15 @@ private extension CookieNonceAuthenticationEndpointStore {
         return endpoints
     }
 
-    func canonicalIdentity(siteURL: String, username: String) -> Identity? {
+    /// The normalized site URL a record must be bound to, or `nil` when the identity is not usable.
+    ///
+    func canonicalSiteURL(siteURL: String, username: String) -> URL? {
         guard username.isEmpty == false,
               let siteURL = URL(string: siteURL),
               let endpoints = try? CookieNonceAuthenticationEndpoints(siteURL: siteURL) else {
             return nil
         }
-        return Identity(siteURL: endpoints.siteURL, username: username)
+        return endpoints.siteURL
     }
 
     func invalidateAttemptedDataIfUnchangedUnlocked(_ attemptedData: Data) {

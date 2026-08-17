@@ -251,32 +251,41 @@ private extension SiteCredentialLoginUseCase {
         try await retrieveNonce(at: nonceURL, afterLoginAt: submissionURL, endpoints: endpoints)
     }
 
-    func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
-        var requestURL = endpoints.loginEntryURL
+    /// Fetches a document, following only same-site redirects and never more than the shared bound.
+    /// Returns the first non-redirect response, so callers only express their own terminal check.
+    func loadDocument(
+        from startURL: URL,
+        stage: CookieNonceAuthenticationResponseStage,
+        endpoints: CookieNonceAuthenticationEndpoints
+    ) async throws -> (url: URL, html: String) {
+        var requestURL = startURL
         var redirectCount = 0
         while true {
             let response = try await load(getRequest(url: requestURL), using: session)
-            try validate(response.http, stage: .preflight)
-            if CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) {
-                guard redirectCount < CookieNonceAuthenticationEndpoints.maximumRedirectCount,
-                      let location = response.http.value(forHTTPHeaderField: "Location") else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
-                requestURL = try endpointValue {
-                    try endpoints.resolveRedirect(location: location, from: response.http.url ?? requestURL)
-                }
-                redirectCount += 1
-                continue
+            try validate(response.http, stage: stage)
+            guard CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) else {
+                let html = try decodedHTML(from: response.data)
+                return (response.http.url ?? requestURL, html)
             }
-            let documentURL = response.http.url ?? requestURL
-            let html = try decodedHTML(from: response.data)
-            guard let submissionURL = try endpointValue({
-                try endpoints.verifiedLoginFormSubmissionURL(in: html, documentURL: documentURL)
-            }) else {
+            guard redirectCount < CookieNonceAuthenticationEndpoints.maximumRedirectCount,
+                  let location = response.http.value(forHTTPHeaderField: "Location") else {
                 throw SiteCredentialLoginError.invalidLoginResponse
             }
-            return submissionURL
+            requestURL = try endpointValue {
+                try endpoints.resolveRedirect(location: location, from: response.http.url ?? requestURL)
+            }
+            redirectCount += 1
         }
+    }
+
+    func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
+        let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
+        guard let submissionURL = try endpointValue({
+            try endpoints.verifiedLoginFormSubmissionURL(in: document.html, documentURL: document.url)
+        }) else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+        return submissionURL
     }
 
     func retrieveNonce(
@@ -294,34 +303,16 @@ private extension SiteCredentialLoginUseCase {
     }
 
     func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
-        var requestURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
-        var redirectCount = 0
-        while true {
-            let response = try await load(getRequest(url: requestURL), using: session)
-            try validate(response.http, stage: .dashboard)
-            if CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) {
-                guard redirectCount < CookieNonceAuthenticationEndpoints.maximumRedirectCount,
-                      let location = response.http.value(forHTTPHeaderField: "Location") else {
-                    throw SiteCredentialLoginError.invalidLoginResponse
-                }
-                requestURL = try endpointValue {
-                    try endpoints.resolveRedirect(location: location, from: response.http.url ?? requestURL)
-                }
-                redirectCount += 1
-                continue
-            }
-            let documentURL = response.http.url ?? requestURL
-            let html = try decodedHTML(from: response.data)
-            guard endpoints.isExpectedAdminBaseURL(documentURL, afterLoginAt: loginURL),
-                  endpoints.isAuthenticatedDashboardHTML(html) else {
-                throw SiteCredentialLoginError(
-                    CookieNonceAuthenticationRules.credentialFailure(
-                        in: html,
-                        endpoints: endpoints
-                    )
+        let adminBaseURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
+        let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
+        guard endpoints.isExpectedAdminBaseURL(document.url, afterLoginAt: loginURL),
+              endpoints.isAuthenticatedDashboardHTML(document.html) else {
+            throw SiteCredentialLoginError(
+                CookieNonceAuthenticationRules.credentialFailure(
+                    in: document.html,
+                    endpoints: endpoints
                 )
-            }
-            return
+            )
         }
     }
 

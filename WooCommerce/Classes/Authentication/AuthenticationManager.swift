@@ -24,11 +24,12 @@ import struct NetworkingCore.WordPressAPIDiscovery
 class AuthenticationManager: Authentication {
     typealias SiteCredentialLoginUseCaseFactory = (
         _ siteURL: String,
-        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+        _ endpoints: CookieNonceAuthenticationEndpoints?,
+        _ verifyAdminDashboard: Bool
     ) -> SiteCredentialLoginProtocol
 
-    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, authenticationEndpoints in
-        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: authenticationEndpoints)
+    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, endpoints, verifyAdminDashboard in
+        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, verifyAdminDashboard: verifyAdminDashboard)
     }
 
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
@@ -97,9 +98,9 @@ class AuthenticationManager: Authentication {
          userDefaults: UserDefaults = .standard,
          qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
          runtimeCookieJar: HTTPCookieStorage = .shared,
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init(),
          siteCredentialLoginUseCaseFactory: @escaping SiteCredentialLoginUseCaseFactory
-             = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory,
-         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init()) {
+             = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -565,25 +566,103 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
-        let useCase = siteCredentialLoginUseCaseFactory(credentials.siteURL, credentials.authenticationEndpoints)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
+        let useCase = siteCredentialLoginUseCaseFactory(
+            credentials.siteURL,
+            credentials.authenticationEndpoints,
+            false
+        )
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _ in
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
-            let challengeType: String? = {
-                if case .basicAuthenticationRequired = error {
-                    return "basic_auth"
-                }
-                return nil
-            }()
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
-                                                                    error: error.underlyingError,
-                                                                    challengeType: challengeType))
+            self.trackSiteCredentialLoginFailure(error)
         })
         self.siteCredentialLoginUseCase = useCase
 
         useCase.handleLogin(username: credentials.username, password: credentials.password)
         onLoading(true)
+    }
+
+    /// Authenticates site credentials against explicitly configured endpoints, asking the merchant where
+    /// the sign-in page or the dashboard lives when the standard addresses do not work.
+    ///
+    func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
+                                     loginURL: String?,
+                                     adminURL: String?,
+                                     endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     onLoading: @escaping (Bool) -> Void,
+                                     onSuccess: @escaping (WordPressOrgCredentials) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onFailure: @escaping (Error, Bool, String?) -> Void) {
+        let endpoints: CookieNonceAuthenticationEndpoints
+        do {
+            endpoints = try siteCredentialRecoveryEndpoints(
+                siteURL: credentials.siteURL,
+                loginURL: loginURL,
+                adminURL: adminURL
+            )
+        } catch let error as SiteCredentialRecoveryValidationError {
+            onRecovery(error.recovery)
+            return
+        } catch {
+            onFailure(SiteCredentialLoginError.invalidLoginResponse, false, nil)
+            return
+        }
+
+        let useCase = siteCredentialLoginUseCaseFactory(
+            credentials.siteURL,
+            endpoints,
+            endpointUnderVerification == .admin
+        )
+        useCase.setupHandlers(onLoginSuccess: {
+            onLoading(false)
+            onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
+        }, onLoginFailure: { [weak self] error, loginEntryVerified in
+            onLoading(false)
+            let normalizedLoginURL = endpoints.loginEntryURL.absoluteString
+            let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
+            switch error {
+            case .inaccessibleLoginPage where endpointUnderVerification != .admin:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
+                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+            case .invalidLoginResponse where endpointUnderVerification == .login && loginEntryVerified == false:
+                onRecovery(.login(draftURL: normalizedLoginURL, error: .notFound))
+            case .inaccessibleAdminPage where loginEntryVerified:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .admin ? .notFound : nil
+                onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,
+                                  draftURL: normalizedAdminURL,
+                                  error: inlineError))
+            default:
+                let incorrectCredentials = if case .invalidCredentials = error { true } else { false }
+                onFailure(error, incorrectCredentials, loginEntryVerified ? normalizedLoginURL : nil)
+            }
+            self?.trackSiteCredentialLoginFailure(error)
+        })
+        siteCredentialLoginUseCase = useCase
+        onLoading(true)
+        useCase.handleLogin(username: credentials.username, password: credentials.password)
+    }
+
+    func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
+        presentApplicationPasswordWebView(for: siteURL, in: viewController)
+    }
+
+    /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
+    /// is only ever offered as a button the merchant has to tap.
+    ///
+    func presentSiteCredentialLoginFailure(error: Error,
+                                           offersBrowserAlternative: Bool,
+                                           for siteURL: String,
+                                           in viewController: UIViewController) {
+        let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
+            guard let self, let viewController else { return }
+            presentApplicationPasswordWebView(for: siteURL, in: viewController)
+        } : nil
+        let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: error.localizedDescription,
+            defaultAction: browserAction
+        )
+        viewController.present(alert, animated: true)
     }
 
     func handleSiteCredentialLoginFailure(error: Error,
@@ -852,8 +931,84 @@ extension AuthenticationManager {
     }
 }
 
+/// Signals that a candidate endpoint was rejected locally, before any request was made.
+///
+private struct SiteCredentialRecoveryValidationError: Error {
+    let recovery: SiteCredentialRecovery
+}
+
 // MARK: - Private helpers
 private extension AuthenticationManager {
+
+    /// Builds normalized, same-site endpoints from the addresses the merchant supplied so far.
+    ///
+    /// Throws `SiteCredentialRecoveryValidationError` when a supplied address cannot be used, so the caller
+    /// can ask for it again instead of starting a doomed login.
+    ///
+    func siteCredentialRecoveryEndpoints(siteURL: String,
+                                         loginURL: String?,
+                                         adminURL: String?) throws -> CookieNonceAuthenticationEndpoints {
+        guard let canonicalURL = URL(string: siteURL) else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+        var endpoints = try CookieNonceAuthenticationEndpoints(siteURL: canonicalURL)
+        if let loginURL {
+            guard let url = URL(string: loginURL), url.scheme != nil, url.host != nil else {
+                throw recoveryValidation(.login, .invalidURL, loginURL, endpoints)
+            }
+            do {
+                endpoints = try CookieNonceAuthenticationEndpoints(siteURL: endpoints.siteURL, loginEntryURL: url)
+            } catch let error as CookieNonceAuthenticationEndpoints.ValidationError {
+                throw recoveryValidation(.login, recoveryError(error), loginURL, endpoints)
+            }
+        }
+        if let adminURL {
+            guard let url = URL(string: adminURL), url.scheme != nil, url.host != nil else {
+                throw recoveryValidation(.admin, .invalidURL, adminURL, endpoints)
+            }
+            do {
+                endpoints = try CookieNonceAuthenticationEndpoints(
+                    siteURL: endpoints.siteURL,
+                    loginEntryURL: endpoints.loginEntryURL,
+                    adminBaseURL: url
+                )
+            } catch let error as CookieNonceAuthenticationEndpoints.ValidationError {
+                throw recoveryValidation(.admin, recoveryError(error), adminURL, endpoints)
+            }
+        }
+        return endpoints
+    }
+
+    func recoveryError(_ error: CookieNonceAuthenticationEndpoints.ValidationError) -> SiteCredentialRecoveryError {
+        switch error {
+        case .invalidURL, .unsupportedScheme, .missingHost:
+            .invalidURL
+        case .userInfoNotAllowed, .queryNotAllowed, .originMismatch, .insecureDowngrade:
+            .differentSite
+        }
+    }
+
+    func recoveryValidation(_ endpoint: SiteCredentialRecoveryEndpoint,
+                            _ error: SiteCredentialRecoveryError,
+                            _ draftURL: String,
+                            _ endpoints: CookieNonceAuthenticationEndpoints) -> SiteCredentialRecoveryValidationError {
+        let recovery: SiteCredentialRecovery = switch endpoint {
+        case .login: .login(draftURL: draftURL, error: error)
+        case .admin: .admin(verifiedLoginURL: endpoints.loginEntryURL.absoluteString, draftURL: draftURL, error: error)
+        }
+        return SiteCredentialRecoveryValidationError(recovery: recovery)
+    }
+
+    func trackSiteCredentialLoginFailure(_ error: SiteCredentialLoginError) {
+        let challengeType: String? = if case .basicAuthenticationRequired = error {
+            "basic_auth"
+        } else {
+            nil
+        }
+        analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
+                                                           error: error.underlyingError,
+                                                           challengeType: challengeType))
+    }
 
     func getAvailableStores() async -> [Site] {
         let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,

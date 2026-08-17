@@ -7,8 +7,10 @@ import enum NetworkingCore.CookieNonceAuthenticationRules
 import protocol NetworkingCore.URLSessionProtocol
 
 protocol SiteCredentialLoginProtocol {
+    /// - Parameter onLoginFailure: called with the failure and whether the configured login entry was proven
+    ///   to render one eligible WordPress login form before the failure occurred.
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void)
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool) -> Void)
 
     func handleLogin(username: String, password: String)
 }
@@ -133,7 +135,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let ownedTransactionSession: URLSession?
     private let verifyAdminDashboard: Bool
     private var successHandler: (() -> Void)?
-    private var errorHandler: ((SiteCredentialLoginError) -> Void)?
+    private var errorHandler: ((SiteCredentialLoginError, Bool) -> Void)?
 
     init(siteURL: String,
          endpoints configuredEndpoints: CookieNonceAuthenticationEndpoints? = nil,
@@ -171,7 +173,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool) -> Void) {
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
     }
@@ -181,6 +183,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         // So we need to clear all cookies before login.
         clearAllCookies()
         Task { @MainActor in
+            var loginEntryVerified = false
             do {
                 let endpoints: CookieNonceAuthenticationEndpoints
                 switch endpointConfiguration {
@@ -190,12 +193,14 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                     DDLogError("⛔️ Error constructing or validating login requests")
                     throw error
                 }
-                try await startLogin(username: username, password: password, endpoints: endpoints)
+                try await startLogin(username: username, password: password, endpoints: endpoints) {
+                    loginEntryVerified = true
+                }
                 successHandler?()
             } catch let error as SiteCredentialLoginError {
-                errorHandler?(error)
+                errorHandler?(error, loginEntryVerified)
             } catch {
-                errorHandler?(.genericFailure(underlyingError: error as NSError))
+                errorHandler?(.genericFailure(underlyingError: error as NSError), loginEntryVerified)
             }
         }
     }
@@ -213,9 +218,11 @@ private extension SiteCredentialLoginUseCase {
     func startLogin(
         username: String,
         password: String,
-        endpoints: CookieNonceAuthenticationEndpoints
+        endpoints: CookieNonceAuthenticationEndpoints,
+        onLoginEntryVerified: () -> Void
     ) async throws {
         let submissionURL = try await preflight(endpoints: endpoints)
+        onLoginEntryVerified()
         let nonceURL = try endpointValue { try endpoints.nonceURL(afterLoginAt: submissionURL) }
         let loginRequest = try credentialRequest(
             username: username,

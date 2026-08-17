@@ -14,6 +14,15 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     private(set) var trackedEvents: [WPAnalyticsStat] = []
     private(set) var lastTrackedProperties: [AnyHashable: Any]?
     private(set) var socialUser: SocialUser?
+    var siteCredentialCredentialsToReturn: WordPressOrgCredentials?
+    var siteCredentialRecoveries = [SiteCredentialRecovery]()
+    var defersSiteCredentialAuthentication = false
+    private(set) var siteCredentialAuthenticationRequests = [SiteCredentialAuthenticationRequest]()
+    private(set) var siteCredentialAuthenticationLoadingHandler: ((Bool) -> Void)?
+    var siteCredentialFailure: (error: Error, incorrectCredentials: Bool, verifiedLoginURL: String?)?
+    private(set) var presentedSiteCredentialFailureCount = 0
+    private(set) var presentedSiteCredentialFailureOffersBrowserAlternative: Bool?
+    private(set) var presentedSiteCredentialBrowserAlternativeCount = 0
 
     func createdWordPressComAccount(username: String, authToken: String) {
         // no-op
@@ -78,6 +87,48 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         completion(false)
     }
 
+    func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
+                                     loginURL: String?,
+                                     adminURL: String?,
+                                     endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     onLoading: @escaping (Bool) -> Void,
+                                     onSuccess: @escaping (WordPressOrgCredentials) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onFailure: @escaping (Error, Bool, String?) -> Void) {
+        siteCredentialAuthenticationRequests.append(.init(
+            credentials: credentials,
+            loginURL: loginURL,
+            adminURL: adminURL,
+            endpointUnderVerification: endpointUnderVerification
+        ))
+        siteCredentialAuthenticationLoadingHandler = onLoading
+        onLoading(true)
+        guard defersSiteCredentialAuthentication == false else {
+            return
+        }
+        onLoading(false)
+        if let failure = siteCredentialFailure {
+            siteCredentialFailure = nil
+            onFailure(failure.error, failure.incorrectCredentials, failure.verifiedLoginURL)
+        } else if siteCredentialRecoveries.isEmpty {
+            onSuccess(siteCredentialCredentialsToReturn ?? credentials)
+        } else {
+            onRecovery(siteCredentialRecoveries.removeFirst())
+        }
+    }
+
+    func presentSiteCredentialLoginFailure(error: Error,
+                                           offersBrowserAlternative: Bool,
+                                           for siteURL: String,
+                                           in viewController: UIViewController) {
+        presentedSiteCredentialFailureCount += 1
+        presentedSiteCredentialFailureOffersBrowserAlternative = offersBrowserAlternative
+    }
+
+    func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
+        presentedSiteCredentialBrowserAlternativeCount += 1
+    }
+
     func track(event: WPAnalyticsStat) {
         trackedEvents.append(event)
     }
@@ -90,4 +141,11 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     func track(event: WPAnalyticsStat, error: Error) {
         trackedEvents.append(event)
     }
+}
+
+struct SiteCredentialAuthenticationRequest {
+    let credentials: WordPressOrgCredentials
+    let loginURL: String?
+    let adminURL: String?
+    let endpointUnderVerification: SiteCredentialRecoveryEndpoint?
 }

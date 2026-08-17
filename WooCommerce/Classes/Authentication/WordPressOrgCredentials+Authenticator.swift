@@ -5,6 +5,27 @@ import Yosemite
 /// Authentication endpoints and URL strings derived from WP.org credentials.
 ///
 extension WordPressOrgCredentials {
+    /// Records verified endpoints on the credentials, keeping only the ones that differ from the site's defaults.
+    ///
+    /// Only normalized, verified configuration is carried. Transaction-local values such as a form action or a
+    /// redirect target must never reach here.
+    ///
+    func replacingAuthenticationEndpoints(with endpoints: CookieNonceAuthenticationEndpoints) -> WordPressOrgCredentials {
+        guard let defaults = try? CookieNonceAuthenticationEndpoints(siteURL: endpoints.siteURL) else {
+            return self
+        }
+        var updatedOptions = options
+        updatedOptions.removeValue(forKey: Key.loginURL.rawValue)
+        updatedOptions.removeValue(forKey: Key.adminURL.rawValue)
+        if endpoints.loginEntryURL != defaults.loginEntryURL {
+            updatedOptions[Key.loginURL.rawValue] = [Key.value.rawValue: endpoints.loginEntryURL.absoluteString]
+        }
+        if endpoints.adminBaseURL != defaults.adminBaseURL {
+            updatedOptions[Key.adminURL.rawValue] = [Key.value.rawValue: endpoints.adminBaseURL.absoluteString]
+        }
+        return WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: updatedOptions)
+    }
+
     var loginURL: String {
         if let value = optionValue(for: Key.loginURL.rawValue) as? String {
             return value

@@ -1,5 +1,4 @@
 import SwiftUI
-import CocoaLumberjackSwift
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
@@ -14,6 +13,7 @@ struct PointOfSalePaymentSuccessView: View {
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -46,33 +46,23 @@ struct PointOfSalePaymentSuccessView: View {
         .onChange(of: showPrinterSetupModal) { _, isShowing in
             // The setup modal auto-dismisses when a printer connects, so the modal closing with a
             // printer connected means setup succeeded — print the receipt the merchant asked for.
-            if POSPrintReceiptFlowHelper.actionAfterSetupModalVisibilityChanged(
-                isPresented: isShowing,
-                isPrinterConnected: posModel.isReceiptPrinterConnected) == .print {
-                printReceipt()
+            Task {
+                await printCoordinator.setupModalVisibilityChanged(
+                    isPresented: isShowing,
+                    isPrinterConnected: posModel.isReceiptPrinterConnected)
             }
         }
+    }
+
+    private var printCoordinator: POSPrintReceiptCoordinator {
+        POSPrintReceiptCoordinator(analytics: analytics,
+                                   printReceipt: { try await posModel.printReceipt() },
+                                   presentPrinterSetup: { showPrinterSetupModal = true })
     }
 
     private func handlePrintReceiptTap() {
-        switch POSPrintReceiptFlowHelper.actionAfterPrintButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected) {
-        case .presentSetup:
-            showPrinterSetupModal = true
-        case .print:
-            printReceipt()
-        case .none:
-            break
-        }
-    }
-
-    private func printReceipt() {
-        // Print-failure UX (retry + email fallback) is deferred to a follow-up; log for now.
         Task {
-            do {
-                try await posModel.printReceipt()
-            } catch {
-                DDLogError("⛔️ POS receipt print failed: \(error)")
-            }
+            await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 

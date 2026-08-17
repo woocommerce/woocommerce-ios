@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// All things view-related for Refunds.
 ///
@@ -18,11 +19,18 @@ final class RefundDetailsViewModel {
     ///
     let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
+    /// StorageManager to fetch products and product variations
+    ///
+    private let storageManager: StorageManagerType
+
     /// Designated Initializer
     ///
-    init(order: Order, refund: Refund) {
+    init(order: Order,
+         refund: Refund,
+         storageManager: StorageManagerType) {
         self.order = order
         self.refund = refund
+        self.storageManager = storageManager
     }
 
     /// Subtotal from all refunded products
@@ -57,7 +65,7 @@ final class RefundDetailsViewModel {
     /// The datasource that will be used to render the Refund Details screen
     ///
     private(set) lazy var dataSource: RefundDetailsDataSource = {
-        return RefundDetailsDataSource(refund: self.refund, order: self.order)
+        return RefundDetailsDataSource(refund: self.refund, order: self.order, storageManager: self.storageManager)
     }()
 }
 

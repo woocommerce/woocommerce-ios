@@ -9,6 +9,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import enum Yosemite.OrderStatusEnum
+import enum Yosemite.OrderRefundEligibilityFailure
 import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
@@ -500,6 +501,23 @@ final class POSOrderListControllerTests {
 
         // Then
         #expect(sut.refundSelectableItems.isEmpty)
+    }
+
+    @MainActor
+    @Test func startRefundFlow_when_order_is_ineligible_then_returns_specific_failure() async throws {
+        // Given
+        let order = makeOrder()
+        refundSubmissionProcessor.prepareRefundErrorToThrow = OrderRefundEligibilityFailure.giftCardUnsupported
+        sut.selectOrder(order)
+
+        // When
+        let result = await sut.startRefundFlow()
+
+        // Then
+        guard case .ineligible(.giftCardUnsupported) = result else {
+            Issue.record("Expected the gift-card eligibility failure.")
+            return
+        }
     }
 
     @MainActor
@@ -2148,12 +2166,16 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
     }
 
     private(set) var preloadedOrderIDs: [Int64] = []
+    var prepareRefundErrorToThrow: Error?
 
     func preloadRefund(for order: POSOrder) async {
         preloadedOrderIDs.append(order.id)
     }
 
     func prepareRefund(for order: POSOrder) async throws -> POSRefundPreparation {
+        if let prepareRefundErrorToThrow {
+            throw prepareRefundErrorToThrow
+        }
         let refundsResult = try await refundsService.providePointOfSaleRefunds(for: order)
         refundResultsByOrderID[order.id] = refundsResult
 

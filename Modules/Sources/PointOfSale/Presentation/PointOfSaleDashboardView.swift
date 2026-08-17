@@ -133,6 +133,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
+        // Applied before the posModal/posRootModal modifiers so only the dashboard content
+        // ignores the iOS 26 container insets — the modal overlay must keep the top safe
+        // area, or full-screen phone modals lay out underneath the status bar.
+        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
@@ -184,7 +188,6 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
-        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
             loadItemsWhenEligible()

@@ -4,6 +4,7 @@
 25.5
 -----
 - [*] Analytics Hub: Fixed quarter date ranges displaying incorrect dates for some store timezones. [https://github.com/woocommerce/woocommerce-ios/pull/17713]
+- [*] Dashboard: Performance stats now remain visible when the selected dates have no revenue. [https://github.com/woocommerce/woocommerce-ios/pull/17717]
 - [*] Google Ads: Fixed the dashboard campaign card failing to show existing campaign performance data. [https://github.com/woocommerce/woocommerce-ios/pull/17706]
 - [*] POS: Fixed the barcode scanner setup test not recognizing scans on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17702]
 - [*] Dashboard: Fixed the Stock card not refreshing after product edits or when its data becomes stale. [https://github.com/woocommerce/woocommerce-ios/pull/17707]
@@ -25,6 +26,7 @@
 - [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
 - [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]
+- [Internal] Track receipt print tapped/success/failed analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/17709]
 
 25.4
 -----

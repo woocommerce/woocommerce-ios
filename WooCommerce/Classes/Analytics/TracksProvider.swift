@@ -220,15 +220,11 @@ private extension TracksProvider {
     }
 
     private func carriesPointOfSaleProperties(_ eventName: String) -> Bool {
-        guard let event = WooAnalyticsStat(rawValue: eventName) else {
+        guard WooAnalyticsStat(rawValue: eventName) != nil else {
             return false
         }
 
-        return needsPointOfSaleNamePrefix(eventName) || alreadyPointOfSaleNamedEventList.contains(event)
-    }
-
-    private var alreadyPointOfSaleNamedEventList: Set<WooAnalyticsStat> {
-        [WooAnalyticsStat.pointOfSaleTabVisibilityChecked]
+        return needsPointOfSaleNamePrefix(eventName) || eventName.hasPrefix(Constants.pointOfSaleEventNamePrefix)
     }
 
     private func needsPointOfSaleNamePrefix(_ eventName: String) -> Bool {

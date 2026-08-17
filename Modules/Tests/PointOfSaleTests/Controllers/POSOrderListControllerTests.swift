@@ -3,6 +3,7 @@ import TestKit
 import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
+import enum Yosemite.RefundAPIError
 import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
@@ -1147,7 +1148,7 @@ final class POSOrderListControllerTests {
 
         // Then the failure is returned and the inline-error state is published for the sheet
         #expect(failedResult == .previewError)
-        #expect(sut.refundReviewPreparationState == .previewError)
+        #expect(sut.refundReviewPreparationState == .previewError())
 
         // When the failure is resolved and the user retries
         refundSubmissionProcessor.prepareReviewDataErrorToThrow = nil
@@ -1159,6 +1160,22 @@ final class POSOrderListControllerTests {
             return
         }
         #expect(sut.refundReviewPreparationState == .idle)
+    }
+
+    @MainActor
+    @Test func prepareRefundReview_when_processor_throws_typed_rejection_then_state_carries_its_message() async throws {
+        // Given the preview was rejected with an actionable code (e.g. the order changed since loading)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.prepareReviewDataErrorToThrow = RefundAPIError.orderNotRefundable
+
+        // When
+        let result = await awaitReviewPreparation(sut)
+
+        // Then the inline-error state carries the rejection's cashier-facing copy
+        #expect(result == .previewError)
+        #expect(sut.refundReviewPreparationState == .previewError(message: RefundAPIError.orderNotRefundable.localizedDescription))
     }
 
     @MainActor

@@ -444,6 +444,11 @@ private extension RefundSubmissionUseCase {
             if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
+                // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+                // as typed errors carrying user-facing copy; other errors stay unchanged.
+                if let rejection = RefundAPIError(error) {
+                    return onCompletion(.failure(rejection))
+                }
                 return onCompletion(.failure(error))
             }
 
@@ -482,6 +487,11 @@ private extension RefundSubmissionUseCase {
         } catch {
             DDLogError("Error creating server-computed refund: \(refund)\nWith Error: \(error)")
             trackCreateRefundRequestFailed(error: error)
+            // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+            // as typed errors carrying user-facing copy; other errors stay unchanged.
+            if let rejection = RefundAPIError(error) {
+                return onCompletion(.failure(rejection))
+            }
             onCompletion(.failure(error))
         }
     }

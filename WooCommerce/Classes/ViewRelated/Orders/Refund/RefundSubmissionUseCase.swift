@@ -475,11 +475,17 @@ private extension RefundSubmissionUseCase {
         trackCreateRefundRequest()
         do {
             // `details.amount` is the previewed server total whenever `serverLineItems` is set (the
-            // adaptor derives both from the same successful preview). Pinning it means the server
-            // rejects the create with a 400 if its recomputed total drifted above what the cashier
-            // confirmed, instead of silently refunding more — and on a store that dropped
-            // `compute_totals` the classic create books this amount rather than deriving 0.00 from
-            // the quantity-only lines.
+            // adaptor derives both from the same successful preview). Sending it has two effects.
+            // On a store that dropped `compute_totals`, the classic create uses this amount instead
+            // of deriving 0.00 from the quantity-only lines. On a store that supports it, the create
+            // is rejected with a 400 if the server recalculates a total above this amount, so the
+            // refund can never exceed what the cashier confirmed.
+            //
+            // The trade-off: if the server recalculates a total *below* this amount, it creates the
+            // refund for this amount anyway. The server allows over-refunding on purpose, capped at
+            // the order's remaining refundable amount. That can happen if the order changed between
+            // the preview and this call. The cashier confirmed this total, so booking it is the
+            // intended outcome, but it does mean the app owns the total once the preview succeeded.
             let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
                                                                      orderID: details.order.orderID,
                                                                      reason: refund.reason,

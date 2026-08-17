@@ -174,6 +174,40 @@ struct RefundServiceTests {
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
     }
 
+    @Test func createRefund_when_a_zero_amount_is_sent_and_the_response_is_zero_then_succeeds() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-ghost-zero-amount")
+
+        // When
+        let refund = try await service.createRefund(siteID: sampleSiteID,
+                                                    orderID: sampleOrderID,
+                                                    reason: "",
+                                                    automaticRefund: true,
+                                                    restockItems: true,
+                                                    amountOverride: "0.00",
+                                                    lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+
+        // Then
+        #expect(refund.refundID == 563)
+        #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
+    }
+
+    @Test func createRefund_when_a_non_zero_amount_is_sent_and_the_response_is_zero_then_throws() async {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-ghost-zero-amount")
+
+        // When / Then
+        await #expect(throws: RefundServiceError.ghostRefundDetected(refundID: 563, amount: "0.00")) {
+            try await service.createRefund(siteID: sampleSiteID,
+                                           orderID: sampleOrderID,
+                                           reason: "",
+                                           automaticRefund: true,
+                                           restockItems: true,
+                                           amountOverride: "27.00",
+                                           lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
+        }
+    }
+
     @Test func createRefund_when_quantity_lines_return_a_non_zero_amount_then_succeeds() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-single")

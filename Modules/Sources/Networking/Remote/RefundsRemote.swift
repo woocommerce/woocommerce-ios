@@ -188,11 +188,16 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     ///       Always sent explicitly — the v3 endpoint defaults it to `true`.
     ///     - apiRestock: Whether refunded items are restocked (`api_restock`). Always sent
     ///       explicitly — the v3 endpoint defaults it to `true`.
-    ///     - amountOverride: Optional order-level total override. When omitted the server
-    ///       derives the amount from the line items. POS always omits it — refund amount calculation is
-    ///       delegated to the backend at create time, Interac card-present refunds included — so
-    ///       this exists to mirror the endpoint's contract for any future caller that needs to pin
-    ///       a total, not because the current flow uses it.
+    ///     - amountOverride: Optional order-level total. When omitted the server derives the amount
+    ///       from the line items. When sent, the server uses it as the refund total instead, and
+    ///       applies three guards: an amount of zero or less is rejected with a 400
+    ///       (`invalid_refund_amount`); an amount below the server's own line-item total is
+    ///       rejected with the same 400, so under-refunding is not possible; an amount above the
+    ///       order's remaining refundable amount is rejected with a 422
+    ///       (`refund_exceeds_remaining`). An amount above the line-item total but within the
+    ///       remaining refundable amount is accepted — the server allows over-refunding on purpose.
+    ///       POS sends the previewed total so that a store which drops `compute_totals` creates a
+    ///       refund for the amount the cashier confirmed rather than 0.00.
     ///     - lineItems: What to refund; the server computes all monetary values.
     ///
     public func createComputedRefund(for siteID: Int64,

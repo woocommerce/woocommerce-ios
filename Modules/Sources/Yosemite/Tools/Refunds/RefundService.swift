@@ -24,9 +24,10 @@ public protocol RefundServiceProtocol {
     ///
     /// SAFETY: must only be called after a successful `previewRefund` confirmed server-calculated
     /// refund support for the site — older stores silently drop `compute_totals` and would create
-    /// a ghost zero-amount refund with restock from a quantity-only body. That outcome is detected
-    /// after the fact and thrown as `RefundServiceError.ghostRefundDetected` rather than returned
-    /// as a success; see `createRefund`'s implementation.
+    /// a ghost zero-amount refund with restock from a quantity-only body. Two things guard against
+    /// that: sending an `amountOverride`, which both the `compute_totals` path and the classic path
+    /// use as the refund total, and a check on the response that throws
+    /// `RefundServiceError.ghostRefundDetected` instead of returning a success. See `createRefund`.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,
@@ -79,7 +80,7 @@ public final class RefundService: RefundServiceProtocol {
                                                            apiRestock: restockItems,
                                                            amountOverride: amountOverride,
                                                            lineItems: lineItems)
-        if Self.hasGhostRefundSignature(requestedLineItems: lineItems, createdRefund: refund) {
+        if Self.hasGhostRefundSignature(requestedLineItems: lineItems, amountOverride: amountOverride, createdRefund: refund) {
             DDLogError("⛔️ Ghost refund detected on order \(orderID): quantity-based lines were sent but the store "
                        + "created refund \(refund.refundID) for \(refund.amount). The store most likely dropped "
                        + "`compute_totals`, so the items may have been restocked without any money moving.")
@@ -94,24 +95,36 @@ public final class RefundService: RefundServiceProtocol {
 
     /// The signature of a `compute_totals` request handled by a store that does not support it:
     /// quantity-based lines carry no monetary value, so the classic create sums the absent per-line
-    /// `refund_total`s to zero and books a refund for nothing while still restocking.
+    /// `refund_total`s to zero and creates a 0.00 refund while still restocking.
     ///
     /// Amount-based lines cannot produce this, because they carry their own `refund_total`.
     ///
-    /// Known false positive: refunding only zero-priced lines legitimately computes to 0.00. That
-    /// refund is a no-op either way, so failing it is the safer side of the trade.
+    /// A caller that sent a zero `amount` is excluded: the store created the refund it was asked
+    /// for, so nothing was ignored. A refund of only zero-priced lines is the case that lands
+    /// there. Any other zero response to a quantity-only request means the store dropped
+    /// `compute_totals`, because both the `compute_totals` path and the classic path use the
+    /// `amount` when one is sent.
     ///
     private static func hasGhostRefundSignature(requestedLineItems: [ComputedRefundLineItem],
+                                                amountOverride: String?,
                                                 createdRefund: Refund) -> Bool {
         guard requestedLineItems.contains(where: { $0.quantity != nil }) else {
             return false
         }
-        // POSIX locale: the API emits canonical decimal strings, never locale-formatted ones.
-        // A nil parse means we cannot prove the amount is zero, so the tripwire stays silent.
-        guard let amount = Decimal(string: createdRefund.amount, locale: Locale(identifier: "en_US_POSIX")) else {
+        if let amountOverride, let requestedAmount = decimal(from: amountOverride), requestedAmount == .zero {
             return false
         }
-        return amount == .zero
+        // A nil parse means we cannot prove the amount is zero, so the check stays silent.
+        guard let createdAmount = decimal(from: createdRefund.amount) else {
+            return false
+        }
+        return createdAmount == .zero
+    }
+
+    /// POSIX locale: the API emits canonical decimal strings, never locale-formatted ones.
+    ///
+    private static func decimal(from amount: String) -> Decimal? {
+        Decimal(string: amount, locale: Locale(identifier: "en_US_POSIX"))
     }
 }
 

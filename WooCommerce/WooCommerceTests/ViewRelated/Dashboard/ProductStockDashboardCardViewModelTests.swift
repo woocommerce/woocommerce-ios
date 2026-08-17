@@ -74,6 +74,144 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_reloadDataIfNeeded_does_not_fetch_when_last_refresh_is_fresh() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let now = Date()
+        let viewModel = ProductStockDashboardCardViewModel(siteID: 123, stores: stores, currentDate: { now })
+        var stockFetchCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .fetchStockReport(_, _, _, _, _, completion) = action {
+                stockFetchCount += 1
+                completion(.success([]))
+            }
+        }
+        await viewModel.reloadData()
+
+        // When
+        await viewModel.reloadDataIfNeeded()
+
+        // Then
+        XCTAssertEqual(stockFetchCount, 1)
+    }
+
+    @MainActor
+    func test_reloadDataIfNeeded_fetches_when_last_refresh_is_stale() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var now = Date()
+        let viewModel = ProductStockDashboardCardViewModel(siteID: 123, stores: stores, currentDate: { now })
+        var stockFetchCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .fetchStockReport(_, _, _, _, _, completion) = action {
+                stockFetchCount += 1
+                completion(.success([]))
+            }
+        }
+        await viewModel.reloadData()
+        now.addTimeInterval(5 * 60)
+
+        // When
+        await viewModel.reloadDataIfNeeded()
+
+        // Then
+        XCTAssertEqual(stockFetchCount, 2)
+    }
+
+    @MainActor
+    func test_reloadDataIfNeeded_fetches_when_force_refresh_is_true() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: 123, stores: stores)
+        var stockFetchCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .fetchStockReport(_, _, _, _, _, completion) = action {
+                stockFetchCount += 1
+                completion(.success([]))
+            }
+        }
+        await viewModel.reloadData()
+
+        // When
+        await viewModel.reloadDataIfNeeded(forceRefresh: true)
+
+        // Then
+        XCTAssertEqual(stockFetchCount, 2)
+    }
+
+    @MainActor
+    func test_onProductDetailDismissed_fetches_when_last_refresh_is_fresh() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: 123, stores: stores)
+        var stockFetchCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .fetchStockReport(_, _, _, _, _, completion) = action {
+                stockFetchCount += 1
+                completion(.success([]))
+            }
+        }
+        await viewModel.reloadData()
+
+        // When
+        await viewModel.onProductDetailDismissed()
+
+        // Then
+        XCTAssertEqual(stockFetchCount, 2)
+    }
+
+    @MainActor
+    func test_reloadData_when_refresh_succeeds_then_updates_lastUpdatedTimestamp() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let now = Date()
+        let viewModel = ProductStockDashboardCardViewModel(siteID: 123, stores: stores, currentDate: { now })
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            if case let .fetchStockReport(_, _, _, _, _, completion) = action {
+                completion(.success([]))
+            }
+        }
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertFalse(viewModel.lastUpdatedTimestamp.isEmpty)
+    }
+
+    @MainActor
+    func test_reloadData_when_refresh_fails_then_preserves_reports_and_marks_them_as_stale() async {
+        // Given
+        let siteID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
+        let product = ProductStock.fake().copy(siteID: siteID, productID: 32)
+        let report = ProductReport.fake().copy(productID: product.productID)
+        let refreshError = NSError(domain: "test", code: 500)
+        var shouldFail = false
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .fetchStockReport(_, _, _, _, _, completion):
+                shouldFail ? completion(.failure(refreshError)) : completion(.success([product]))
+            case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
+                completion(.success([report]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+        shouldFail = true
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertEqual(viewModel.reports, [report])
+        XCTAssertTrue(viewModel.isShowingStaleData)
+        XCTAssertFalse(viewModel.lastUpdatedTimestamp.isEmpty)
+    }
+
+    @MainActor
     func test_reloadData_updates_missing_parent_ids_for_variation_reports() async {
         // Given
         let siteID: Int64 = 123

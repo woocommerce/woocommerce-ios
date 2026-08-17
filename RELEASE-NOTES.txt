@@ -3,6 +3,9 @@
 
 25.5
 -----
+- [*] Google Ads: Fixed the dashboard campaign card failing to show existing campaign performance data. [https://github.com/woocommerce/woocommerce-ios/pull/17706]
+- [*] POS: Fixed the barcode scanner setup test not recognizing scans on phones. [https://github.com/woocommerce/woocommerce-ios/pull/17702]
+- [*] Dashboard: Fixed the Stock card not refreshing after product edits or when its data becomes stale. [https://github.com/woocommerce/woocommerce-ios/pull/17707]
 - [*] Orders: Refunding an order paid with a gift card is now blocked in the app with a prompt to refund from your store admin. [https://github.com/woocommerce/woocommerce-ios/pull/17691]
 - [*] Orders: Fixed Custom Fields and refunded-product rows becoming centered after scrolling order details. [https://github.com/woocommerce/woocommerce-ios/pull/17689]
 - [*] In-Person Payments: Fixed the Manage Card Reader sheet truncating its Learn More text on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17690]

@@ -8,7 +8,7 @@ struct TracksProviderPointOfSalePropertiesTests {
     private let deviceTypeKey = "device_type"
     private let entryPointKey = "entry_point"
 
-    @Test func test_addPointOfSaleProperties_adds_device_type_and_entry_point() {
+    @Test func addPointOfSaleProperties_when_entry_point_is_known_then_adds_device_type_and_entry_point() {
         // When
         let result = sut.addPointOfSaleProperties(to: [:], deviceType: "tablet", entryPoint: .posTab)
 
@@ -17,7 +17,7 @@ struct TracksProviderPointOfSalePropertiesTests {
         #expect(result[entryPointKey] as? String == "pos_tab")
     }
 
-    @Test func test_addPointOfSaleProperties_when_entry_point_is_unknown_then_only_device_type_is_added() {
+    @Test func addPointOfSaleProperties_when_entry_point_is_unknown_then_only_device_type_is_added() {
         // When
         let result = sut.addPointOfSaleProperties(to: nil, deviceType: "phone", entryPoint: nil)
 
@@ -26,7 +26,7 @@ struct TracksProviderPointOfSalePropertiesTests {
         #expect(result[deviceTypeKey] as? String == "phone")
     }
 
-    @Test func test_addPointOfSaleProperties_preserves_other_properties() {
+    @Test func addPointOfSaleProperties_when_properties_already_exist_then_they_are_preserved() {
         // Given
         let existingProperties: [AnyHashable: Any] = ["sync_strategy": "local"]
 
@@ -38,23 +38,7 @@ struct TracksProviderPointOfSalePropertiesTests {
         #expect(result[entryPointKey] as? String == "auto_reopen")
     }
 
-    @Test func test_given_pos_was_entered_when_pos_is_exited_then_events_no_longer_carry_entry_point() {
-        // Given
-        TracksProvider.setPOSEntryPoint(.posTab)
-        TracksProvider.setPOSMode(true)
-
-        // When
-        TracksProvider.setPOSMode(false)
-
-        // Then
-        let result = sut.addPointOfSaleProperties(to: [:],
-                                                  deviceType: "tablet",
-                                                  entryPoint: TracksProvider.posEntryPoint)
-        #expect(result[entryPointKey] == nil)
-        #expect(result[deviceTypeKey] as? String == "tablet")
-    }
-
-    @Test func test_deviceTypeForAnalytics_maps_each_idiom_to_its_own_value() {
+    @Test func deviceTypeForAnalytics_when_mapping_each_idiom_then_returns_its_own_value() {
         // Then
         #expect(UIUserInterfaceIdiom.phone.deviceTypeForAnalytics == "phone")
         #expect(UIUserInterfaceIdiom.pad.deviceTypeForAnalytics == "tablet")

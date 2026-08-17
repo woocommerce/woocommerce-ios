@@ -270,6 +270,14 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                 stateModel.reset()
                 throw POSRefundSubmissionError.canceledByUser
             }
+            if case RefundServiceError.ghostRefundDetected = error {
+                // The store created a refund record and may have restocked the items, so the cached
+                // order, its refunds, and the preview total are all stale. Drop them so a further
+                // attempt has to read the order from the store again instead of resubmitting the
+                // same computed create against figures that no longer hold.
+                removePreloadedRefund(for: preparation.orderID)
+                throw POSRefundSubmissionError.refundCreatedWithoutPayment
+            }
             throw error
         }
 

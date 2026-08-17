@@ -261,6 +261,55 @@ struct POSRefundSubmissionAdaptorTests {
                                                reason: nil)
         }
     }
+
+    @Test func submitRefund_when_the_store_created_a_refund_without_payment_then_throws_refundCreatedWithoutPayment() async throws {
+        // Given a successful preview and a create the service reports as a zero-amount refund
+        let sut = makeSUT(previewResult: .success(preview()))
+        sut.service.createRefundError = RefundServiceError.ghostRefundDetected(refundID: 563, amount: "0.00")
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+
+        // When / Then the POS-facing error is thrown, so the UI can drop Retry
+        await #expect(throws: POSRefundSubmissionError.refundCreatedWithoutPayment) {
+            try await sut.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: preparation.selectableItems,
+                                               reason: nil)
+        }
+    }
+
+    @Test func submitRefund_when_the_store_created_a_refund_without_payment_then_drops_the_prepared_refund() async throws {
+        // Given a submission that failed because the store created a zero-amount refund
+        let sut = makeSUT(previewResult: .success(preview()))
+        sut.service.createRefundError = RefundServiceError.ghostRefundDetected(refundID: 563, amount: "0.00")
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+        _ = try? await sut.adaptor.submitRefund(for: posOrder(),
+                                                preparation: preparation,
+                                                selectedItems: preparation.selectableItems,
+                                                reason: nil)
+
+        // When resubmitting the same preparation
+        do {
+            try await sut.adaptor.submitRefund(for: posOrder(),
+                                               preparation: preparation,
+                                               selectedItems: preparation.selectableItems,
+                                               reason: nil)
+            Issue.record("Expected the resubmission to fail")
+        } catch let error as POSRefundSubmissionError {
+            // Then it does not reach the create again: reaching it would surface the same
+            // submission error rather than the adaptor's missing-preparation failure.
+            Issue.record("Expected the prepared refund to be dropped, but the create ran again: \(error)")
+        } catch {
+            // Expected: the adaptor no longer holds a prepared context for this order.
+        }
+    }
 }
 
 private extension POSRefundSubmissionAdaptorTests {

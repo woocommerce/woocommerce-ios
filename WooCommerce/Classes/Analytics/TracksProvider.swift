@@ -47,6 +47,8 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 
     private(set) static var posEntryPoint: POSAnalyticsEntryPoint?
 
+    let deviceTypeForAnalytics = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+
     public static func setPOSMode(_ active: Bool) {
         isPOSModeActive = active
         if active == false {
@@ -121,7 +123,7 @@ public extension TracksProvider {
         var properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
         if carriesPOSProperties {
             properties = addPointOfSaleProperties(to: properties,
-                                                  deviceType: UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics,
+                                                  deviceType: deviceTypeForAnalytics,
                                                   entryPoint: Self.posEntryPoint)
         }
         Self.TracksServiceExecutor.enqueue { tracksService in

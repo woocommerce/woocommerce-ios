@@ -43,10 +43,11 @@ struct CookieNonceAuthenticationRulesTests {
         #expect(mixedResult)
     }
 
-    @Test func test_basic_authentication_ignores_decoys_inside_quoted_digest_realm() {
+    @Test func test_basic_authentication_ignores_digest_decoys() {
         // Given
         let quotedDecoyHeader = "Digest realm=\"store, Basic realm=decoy\""
         let escapedQuoteDecoyHeader = "Digest realm=\"store\\\", Basic realm=decoy\""
+        let parameterDecoyHeader = "Digest realm=\"store\", Basic = \"decoy\""
 
         // When
         let quotedDecoyResult = CookieNonceAuthenticationRules.containsBasicAuthentication(
@@ -57,10 +58,26 @@ struct CookieNonceAuthenticationRulesTests {
             statusCode: 401,
             authenticateHeader: escapedQuoteDecoyHeader
         )
+        let parameterDecoyResult = CookieNonceAuthenticationRules.containsBasicAuthentication(
+            statusCode: 401,
+            authenticateHeader: parameterDecoyHeader
+        )
 
         // Then
         #expect(quotedDecoyResult == false)
         #expect(escapedQuoteDecoyResult == false)
+        #expect(parameterDecoyResult == false)
+    }
+
+    @Test(arguments: [304, 305, 306, 309, 399])
+    func test_non_redirect_3xx_status_is_rejected(_ statusCode: Int) {
+        // Given a non-redirect 3xx status code
+
+        // When
+        let isRedirect = CookieNonceAuthenticationRules.isRedirect(statusCode: statusCode)
+
+        // Then
+        #expect(isRedirect == false)
     }
 
     @Test func test_credential_body_encodes_reserved_characters_and_policy_nonce_url() throws {
@@ -174,6 +191,7 @@ extension CookieNonceAuthenticationRulesTests {
         ResponseTrace(statusCode: 302, authenticate: nil, location: "/admin/", stage: .credentials, expectedFailure: nil),
         ResponseTrace(statusCode: 302, authenticate: nil, location: "/login", stage: .dashboard, expectedFailure: nil),
         ResponseTrace(statusCode: 302, authenticate: nil, location: "/nonce", stage: .nonce, expectedFailure: .invalidResponse),
+        ResponseTrace(statusCode: 304, authenticate: nil, location: "/admin/", stage: .credentials, expectedFailure: .unacceptableStatusCode(304)),
         ResponseTrace(statusCode: 401, authenticate: "Basic realm=\"store\"", location: nil, stage: .preflight, expectedFailure: .basicAuthenticationRequired),
         ResponseTrace(statusCode: 404, authenticate: nil, location: nil, stage: .preflight, expectedFailure: .inaccessibleLoginPage),
         ResponseTrace(statusCode: 404, authenticate: nil, location: nil, stage: .credentials, expectedFailure: .unacceptableStatusCode(404)),

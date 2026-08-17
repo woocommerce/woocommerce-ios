@@ -31,7 +31,7 @@ public enum CookieNonceAuthenticationRules {
         switch statusCode {
         case 200..<300:
             return nil
-        case 300..<400:
+        case 300...303, 307, 308:
             switch stage {
             case .preflight, .credentials, .dashboard:
                 return locationHeader?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false ? nil : .invalidResponse
@@ -53,7 +53,7 @@ public enum CookieNonceAuthenticationRules {
     }
 
     public static func isRedirect(statusCode: Int) -> Bool {
-        (300..<400).contains(statusCode)
+        (300...303).contains(statusCode) || (307...308).contains(statusCode)
     }
 
     public static func credentialBody(username: String, password: String, redirectTo: URL) -> Data? {
@@ -99,13 +99,18 @@ public enum CookieNonceAuthenticationRules {
         guard statusCode == 401, let authenticateHeader else {
             return false
         }
-        return authenticationChallenges(in: authenticateHeader).contains { challenge in
-            challenge.split(whereSeparator: \.isWhitespace).first?.lowercased() == "basic"
+        return authenticationSegments(in: authenticateHeader).contains { segment in
+            let parts = segment.split(maxSplits: 1, whereSeparator: \.isWhitespace)
+            guard parts.first?.lowercased() == "basic" else {
+                return false
+            }
+            // `Basic = value` continues the preceding challenge's parameters.
+            return parts.count == 1 || parts[1].first != "="
         }
     }
 
-    private static func authenticationChallenges(in header: String) -> [Substring] {
-        var challenges = [Substring]()
+    private static func authenticationSegments(in header: String) -> [Substring] {
+        var segments = [Substring]()
         var start = header.startIndex
         var index = start
         var isInsideQuotes = false
@@ -120,13 +125,13 @@ public enum CookieNonceAuthenticationRules {
             } else if character == "\"" {
                 isInsideQuotes.toggle()
             } else if character == ",", isInsideQuotes == false {
-                challenges.append(header[start..<index].trimmingWhitespace)
+                segments.append(header[start..<index].trimmingWhitespace)
                 start = header.index(after: index)
             }
             index = header.index(after: index)
         }
-        challenges.append(header[start..<header.endIndex].trimmingWhitespace)
-        return challenges
+        segments.append(header[start..<header.endIndex].trimmingWhitespace)
+        return segments
     }
 }
 

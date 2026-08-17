@@ -112,6 +112,25 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         XCTAssertEqual(currentTimeRange.end, Date(timeIntervalSince1970: 1_711_925_999)) // March 31, 2024 23:59:59 UTC+1
     }
 
+    func test_lastQuarter_when_store_has_entered_new_quarter_then_uses_previous_store_quarter() throws {
+        // Given
+        let storeTimezone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: -4 * 3600))
+        let referenceDate = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-07-01T00:30:00Z"))
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .lastQuarter,
+                                                       currentDate: referenceDate,
+                                                       timezone: storeTimezone,
+                                                       calendar: calendar)
+
+        // When
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+
+        // Then
+        XCTAssertEqual(currentTimeRange.start, try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-04-01T00:00:00Z")))
+        XCTAssertEqual(currentTimeRange.end, try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-06-30T23:59:59Z")))
+    }
+
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_ranges() throws {
         // Given
         let today = currentDate(from: "2010-07-31")
@@ -170,6 +189,25 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
 
         XCTAssertEqual(previousTimeRange.start, startDate(from: "2022-06-20"))
         XCTAssertEqual(previousTimeRange.end, currentDate(from: "2022-06-24"))
+    }
+
+    func test_weekToDate_when_store_has_entered_new_week_then_uses_current_store_week() throws {
+        // Given
+        let storeTimezone = try XCTUnwrap(TimeZone(secondsFromGMT: 3600))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        calendar.firstWeekday = 2
+        let referenceDate = try XCTUnwrap(ISO8601DateFormatter().date(from: "2025-08-31T23:30:00Z"))
+        let timeRange = AnalyticsHubTimeRangeSelection(selectionType: .weekToDate,
+                                                       currentDate: referenceDate,
+                                                       timezone: storeTimezone,
+                                                       calendar: calendar)
+
+        // When
+        let currentTimeRange = try timeRange.unwrapCurrentTimeRange()
+
+        // Then
+        XCTAssertEqual(currentTimeRange.start, try XCTUnwrap(ISO8601DateFormatter().date(from: "2025-08-31T23:00:00Z")))
     }
 
     func test_when_time_range_inits_with_lastWeek_then_generate_expected_ranges() throws {

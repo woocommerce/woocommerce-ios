@@ -45,7 +45,11 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 
     private static var isPOSModeActive: Bool = false
 
-    private(set) static var posEntryPoint: POSAnalyticsEntryPoint?
+    private static var posEntryPoint: POSAnalyticsEntryPoint?
+
+    static var activePOSEntryPoint: POSAnalyticsEntryPoint? {
+        isPOSModeActive ? posEntryPoint : nil
+    }
 
     let deviceTypeForAnalytics = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
 
@@ -124,7 +128,7 @@ public extension TracksProvider {
         if carriesPOSProperties {
             properties = addPointOfSaleProperties(to: properties,
                                                   deviceType: deviceTypeForAnalytics,
-                                                  entryPoint: Self.posEntryPoint)
+                                                  entryPoint: Self.activePOSEntryPoint)
         }
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {

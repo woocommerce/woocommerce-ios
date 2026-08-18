@@ -32,7 +32,7 @@
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
 - [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]
 - [Internal] Track receipt print tapped/success/failed analytics events in POS [https://github.com/woocommerce/woocommerce-ios/pull/17709]
-- [Internal] POS refunds: refund events now report whether totals were calculated locally or by the server, the wire error code on failures, and when a store falls back for lack of the server route. [https://github.com/woocommerce/woocommerce-ios/pull/17716]
+- [Internal] POS refunds: the refund processing events now report whether totals were calculated locally or by the server, plus the REST rejection code on failures, and a new event records when a store falls back for lack of the server route. [https://github.com/woocommerce/woocommerce-ios/pull/17716]
 
 25.4
 -----

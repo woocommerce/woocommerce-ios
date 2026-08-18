@@ -114,7 +114,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             paymentMethodDescription: "Via payment card",
             customerEmail: nil,
             refundReason: nil,
-            isFullRefund: selectedItems.count == refundSelectableItems.count
+            isFullRefund: selectedItems.count == refundSelectableItems.count,
+            calculationFlow: .local
         ))
     }
 

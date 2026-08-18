@@ -6,7 +6,9 @@ import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
 import enum Yosemite.PaymentMethod
+import enum Yosemite.RefundAPIError
 import struct WooFoundation.WooAnalyticsEvent
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
     public enum PointOfSale {
@@ -53,6 +55,10 @@ extension WooAnalyticsEvent {
             static let refundType = "refund_type"
             static let hasReason = "has_reason"
             static let refundStep = "refund_step"
+            static let refundFlow = "refund_flow"
+            /// Distinct from the `error_code` the `error:` initializer writes from `NSError.code`:
+            /// this is the REST rejection code, and the two must not share a key.
+            static let apiErrorCode = "api_error_code"
             static let action = "action"
             static let mode = "mode"
             static let isTaxable = "is_taxable"
@@ -633,16 +639,29 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func refundProcessingStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [:])
+        static func refundProcessingStarted(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [:])
+        static func refundProcessingSuccess(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
+        static func refundProcessingFailed(error: Error, flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.refundFlow: flow.rawValue
+            ]
+            // The wire code separates deterministic server rejections (`woocommerce_rest_*`) from
+            // transport failures, which `error_description` alone cannot do — it is localized to
+            // the store and varies by message. Omitted rather than sent empty when there is none.
+            if let code = RefundAPIError.restErrorCode(from: error) {
+                properties[Key.apiErrorCode] = code
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: properties, error: error)
         }
 
         enum RefundStep: String {

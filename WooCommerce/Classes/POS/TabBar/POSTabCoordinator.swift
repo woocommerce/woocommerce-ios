@@ -329,7 +329,8 @@ private extension POSTabCoordinator {
                                                                minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
                 let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,
                                                                                flowResolver: refundFlowResolver,
-                                                                               availabilityCache: .shared)
+                                                                               availabilityCache: .shared,
+                                                                               analytics: ServiceLocator.analytics)
                 let refundSubmissionProcessor = POSRefundSubmissionAdaptor(orderService: orderService,
                                                                            refundService: refundService,
                                                                            stores: storesManager,

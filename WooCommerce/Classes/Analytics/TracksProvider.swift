@@ -321,6 +321,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleRefundProcessingFailed,
             WooAnalyticsStat.pointOfSaleRefundFlowAborted,
             WooAnalyticsStat.pointOfSaleRefundSelectAllTapped,
+            // POS-only: emitted from the POS refund preview probe, so it carries the `pos_`
+            // prefix like the rest of the POS refund funnel and matches Android's event.
+            WooAnalyticsStat.refundServerFlowUnavailable,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,

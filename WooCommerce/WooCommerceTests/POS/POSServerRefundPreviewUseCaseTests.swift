@@ -216,7 +216,7 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
 
-    @Test func previewRefund_when_route_missing_then_reports_the_fallback_with_the_store_woo_version() async throws {
+    @Test func previewRefund_when_route_missing_then_reports_the_fallback() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
@@ -227,9 +227,21 @@ struct POSServerRefundPreviewUseCaseTests {
         _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
 
         // Then
-        let index = try #require(analyticsProvider.receivedEvents.firstIndex(of: "refund_server_flow_unavailable"))
-        #expect(analyticsProvider.receivedProperties[index]["woocommerce_version"] as? String == Versions.minimum)
-        #expect(analyticsProvider.receivedProperties[index]["site_id"] as? String == "\(siteID)")
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
+    @Test func previewRefund_when_the_site_is_not_eligible_then_reports_no_fallback() async {
+        // Given a store below the minimum version, which never probes the route
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.belowMinimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("refund_server_flow_unavailable") == false)
     }
 
     @Test func previewRefund_when_preview_succeeds_then_reports_no_fallback() async {

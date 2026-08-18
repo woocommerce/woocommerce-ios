@@ -2243,7 +2243,8 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             paymentMethodDescription: preparation.paymentMethodDescription,
             customerEmail: preparation.customerEmail,
             refundReason: reason,
-            isFullRefund: selectedItems.count == preparation.selectableItems.count
+            isFullRefund: selectedItems.count == preparation.selectableItems.count,
+            calculationFlow: .local
         )
     }
 

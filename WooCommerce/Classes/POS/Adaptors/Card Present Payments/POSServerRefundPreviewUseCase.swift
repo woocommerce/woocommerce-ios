@@ -37,7 +37,7 @@ final class POSServerRefundPreviewUseCase {
     init(refundService: RefundServiceProtocol,
          flowResolver: POSRefundFlowResolver,
          availabilityCache: ServerRefundAvailabilityCache,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics) {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
@@ -61,10 +61,10 @@ final class POSServerRefundPreviewUseCase {
             if isRouteNotRegistered(error) {
                 DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
-                // Reported once per site per version: the cache short-circuits the resolver on
-                // subsequent refunds, so this counts stores that fell back rather than refunds.
-                analytics.track(event: .IssueRefund.serverRefundFlowUnavailable(siteID: siteID,
-                                                                                wooCommerceVersion: flowResolver.cachedWooCommerceVersion))
+                // Reported once per site per app session, not once per refund: the cache
+                // short-circuits the resolver for the rest of the session, so this counts stores
+                // that fell back rather than the refunds they made afterwards.
+                analytics.track(event: .IssueRefund.serverRefundFlowUnavailable())
                 return .fallbackToLocal
             }
             if let rejection = RefundAPIError(error) {

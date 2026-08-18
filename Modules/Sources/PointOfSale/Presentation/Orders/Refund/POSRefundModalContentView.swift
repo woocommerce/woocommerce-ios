@@ -85,6 +85,10 @@ struct POSRefundModalContentView: View {
     let order: POSOrder
     let onDismiss: () -> Void
     let onReturnToSelection: () -> Void
+    /// Reloads the refundable items and returns to the selection, for rejections a fresh list fixes.
+    let onRefreshSelection: () -> Void
+    /// Ends the flow on the terminal screen when the store reports the order as not refundable.
+    let onNothingToRefund: () -> Void
     let initialRefundReason: String?
     let onRefundReasonChanged: ((String?) -> Void)?
     let onRefundSuccess: (() -> Void)?
@@ -99,10 +103,10 @@ struct POSRefundModalContentView: View {
     @State private var currentRefundReason: String?
     @State private var reasonInputReviewData: POSRefundReviewData?
     @State private var isDismissingAfterAmbiguousRefund = false
-    /// The server's rejection copy when the refund create failed with an actionable code (for
-    /// example the order changed since the screen was loaded); shown instead of the generic
-    /// create-error subtitle.
-    @State private var refundRejectionMessage: String?
+    /// The store's rejection when the refund create failed with an actionable code (for example the
+    /// order changed since the screen was loaded). It carries the copy shown instead of the generic
+    /// create-error subtitle, and what the cashier is offered next.
+    @State private var refundRejection: RefundAPIError?
 
     var body: some View {
         ZStack {
@@ -234,11 +238,27 @@ struct POSRefundModalContentView: View {
                     dismissRefundFlow()
                 }
             }
+            // A recognised rejection is a deterministic validation error, so resubmitting the same
+            // request cannot succeed. Those get the item reload, or no action at all, in place of
+            // the retry; unrecognised failures keep it.
+            let recovery: POSRefundRecovery = isCardPresentRefundError ? .dismiss : (refundRejection?.recovery ?? .retry)
             POSRefundErrorView(
                 title: isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle,
-                subtitle: isCardPresentRefundError ? Localization.cardPresentCreateErrorSubtitle : (refundRejectionMessage ?? errorStrings.createSubtitle),
-                onRetry: isCardPresentRefundError ? nil : { modalState = .confirmation(reviewData) },
-                cancelButtonTitle: isCardPresentRefundError ? Localization.backToOrderButton : nil,
+                subtitle: isCardPresentRefundError ?
+                    Localization.cardPresentCreateErrorSubtitle :
+                    (refundRejection?.localizedDescription ?? errorStrings.createSubtitle),
+                onRetry: {
+                    switch recovery {
+                    case .retry:
+                        return { modalState = .confirmation(reviewData) }
+                    case .refreshItems:
+                        return { onRefreshSelection() }
+                    case .dismiss:
+                        return nil
+                    }
+                }(),
+                retryButtonTitle: recovery == .refreshItems ? Localization.reviewRemainingItemsButton : nil,
+                cancelButtonTitle: recovery == .retry ? nil : Localization.backToOrderButton,
                 onCancel: dismissError,
                 onClose: dismissError
             )
@@ -376,7 +396,15 @@ struct POSRefundModalContentView: View {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
             onRefundFailure?(error)
             refundSubmissionModel.reset()
-            refundRejectionMessage = (error as? RefundAPIError)?.localizedDescription
+            let rejection = error as? RefundAPIError
+            guard rejection != .orderNotRefundable else {
+                // Nothing on the order can be refunded any more, so there is no selection to go
+                // back to: end the flow on the terminal screen instead of an error with no way on.
+                refundRejection = nil
+                onNothingToRefund()
+                return
+            }
+            refundRejection = rejection
             modalState = .error(reviewData)
         }
     }
@@ -397,7 +425,7 @@ struct POSRefundModalContentView: View {
 
     @MainActor
     private func startProcessingRefund(reviewData: POSRefundReviewData) {
-        refundRejectionMessage = nil
+        refundRejection = nil
         modalState = .processing(reviewData)
         Task { @MainActor in
             await processRefund(reviewData: reviewData)
@@ -465,6 +493,12 @@ struct POSRefundModalContentView: View {
 
 private extension POSRefundModalContentView {
     enum Localization {
+        static let reviewRemainingItemsButton = NSLocalizedString(
+            "pos.refundModalContentView.reviewRemainingItemsButton",
+            value: "Review remaining items",
+            comment: "Button to reload the refundable items after the store rejected the refund because the order changed"
+        )
+
         static let cardPresentCreateErrorTitle = NSLocalizedString(
             "pos.refundModalContentView.cardPresentCreateError.title",
             value: "Couldn't confirm refund",

@@ -41,6 +41,7 @@ protocol POSOrderListControllerProtocol {
     func updateOrder(orderID: Int64) async throws
     func preloadRefundDetails() async
     func startRefundFlow() async -> StartRefundFlowResult
+    func refreshRefundableItems() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
@@ -70,8 +71,8 @@ enum POSRefundReviewPreparationState: Equatable {
     case loading
     /// `message` carries the server's rejection copy when the preview failed with an actionable
     /// code (for example the order changed since the screen was loaded); `nil` shows the generic
-    /// preview error copy.
-    case previewError(message: String? = nil)
+    /// preview error copy. `recovery` is what the cashier is offered next to it.
+    case previewError(message: String? = nil, recovery: POSRefundRecovery = .retry)
 }
 
 /// Outcome of `prepareRefundReview()`, returned directly to the caller.
@@ -79,6 +80,9 @@ enum POSRefundReviewPreparationResult: Equatable {
     case ready(POSRefundReviewData)
     case previewError
     case preparationError
+    /// The store rejected the preview because the order has nothing refundable left, so the flow
+    /// ends on the terminal screen rather than back on the selection.
+    case nothingToRefund
     /// A newer preparation or a selection change invalidated this one; callers ignore it.
     case superseded
 }
@@ -456,6 +460,25 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
 
+    /// Reloads the refundable items after the store rejected a preview or a create because the
+    /// order changed since the flow was opened, for example when another register refunded part of
+    /// it. Items the store has since refunded are gone from the reloaded list, so the previous
+    /// selection is intersected with it; when nothing is left of it the default selection applies.
+    @MainActor
+    func refreshRefundableItems() async -> StartRefundFlowResult {
+        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
+        let result = await startRefundFlow()
+
+        guard case .hasItemsToRefund = result,
+              refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) else {
+            return result
+        }
+
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+        }
+        return result
+    }
 
     @MainActor
     func toggleRefundItemSelection(at index: Int) {
@@ -522,8 +545,11 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             } catch POSRefundSubmissionError.refundPreviewFailed {
                 state = .previewError()
                 result = .previewError
+            } catch RefundAPIError.orderNotRefundable {
+                state = .idle
+                result = .nothingToRefund
             } catch let rejection as RefundAPIError {
-                state = .previewError(message: rejection.localizedDescription)
+                state = .previewError(message: rejection.localizedDescription, recovery: rejection.recovery)
                 result = .previewError
             } catch {
                 state = .idle

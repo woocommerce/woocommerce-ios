@@ -4,6 +4,7 @@ import WooFoundation
 struct POSCashAmountInputFormatter {
     private let sanitizer: CurrencyInputSanitizer
     private let decimalSeparator: String
+    private let groupingSeparator: String
 
     let fractionDigits: Int
 
@@ -18,6 +19,7 @@ struct POSCashAmountInputFormatter {
     init(currencySettings: CurrencySettings) {
         self.sanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
         self.decimalSeparator = currencySettings.sanitizedDecimalSeparator
+        self.groupingSeparator = currencySettings.sanitizedGroupingSeparator
         self.fractionDigits = currencySettings.fractionDigits
     }
 
@@ -29,7 +31,7 @@ struct POSCashAmountInputFormatter {
         let inputDigits = numericDigits(in: digits)
 
         guard hasFractionDigits else {
-            return integerPart(from: inputDigits)
+            return groupedIntegerPart(from: inputDigits)
         }
 
         let requiredDigitCount = fractionDigits + 1
@@ -38,7 +40,7 @@ struct POSCashAmountInputFormatter {
         let wholeDigits = String(paddedDigits[..<fractionStartIndex])
         let fractionalPart = String(paddedDigits[fractionStartIndex...])
 
-        return "\(integerPart(from: wholeDigits))\(decimalSeparator)\(fractionalPart)"
+        return "\(groupedIntegerPart(from: wholeDigits))\(decimalSeparator)\(fractionalPart)"
     }
 
     /// Applies a user edit made against the formatted text to the raw digit buffer.
@@ -80,6 +82,20 @@ private extension POSCashAmountInputFormatter {
     func integerPart(from digits: String) -> String {
         let withoutLeadingZeros = digits.drop(while: { $0 == "0" })
         return withoutLeadingZeros.isEmpty ? "0" : String(withoutLeadingZeros)
+    }
+
+    func groupedIntegerPart(from digits: String) -> String {
+        let integerPart = integerPart(from: digits)
+        guard !groupingSeparator.isEmpty else {
+            return integerPart
+        }
+
+        let reversedGroups = stride(from: 0, to: integerPart.count, by: 3).map { offset in
+            let groupEndIndex = integerPart.index(integerPart.endIndex, offsetBy: -offset)
+            let groupStartIndex = integerPart.index(groupEndIndex, offsetBy: -min(3, integerPart.distance(from: integerPart.startIndex, to: groupEndIndex)))
+            return String(integerPart[groupStartIndex..<groupEndIndex])
+        }
+        return reversedGroups.reversed().joined(separator: groupingSeparator)
     }
 
     func editDelta(from oldValue: String, to newValue: String) -> (removed: [Character], inserted: [Character]) {

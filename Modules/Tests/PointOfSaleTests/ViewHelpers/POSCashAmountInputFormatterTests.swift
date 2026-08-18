@@ -26,6 +26,28 @@ struct POSCashAmountInputFormatterTests {
         #expect(sut.hasFractionDigits == false)
     }
 
+    @Test func formattedAmount_when_amount_has_thousands_then_uses_store_grouping_separator() {
+        // Given
+        let sut = makeSUT(groupingSeparator: ",", fractionDigits: 2)
+
+        // When
+        let result = sut.formattedAmount(from: "123434434232333323")
+
+        // Then
+        #expect(result == "1,234,344,342,323,333.23")
+    }
+
+    @Test func formattedAmount_when_zero_decimal_amount_has_thousands_then_uses_store_grouping_separator() {
+        // Given
+        let sut = makeSUT(currencyCode: .JPY, groupingSeparator: ",", fractionDigits: 0)
+
+        // When
+        let result = sut.formattedAmount(from: "1234")
+
+        // Then
+        #expect(result == "1,234")
+    }
+
     @Test func formattedAmount_when_currency_has_three_fraction_digits_then_shifts_three_places() {
         // Given
         let sut = makeSUT(fractionDigits: 3)
@@ -37,7 +59,7 @@ struct POSCashAmountInputFormatterTests {
 
     @Test func formattedAmount_when_store_uses_comma_separator_then_uses_store_separator() {
         // Given
-        let sut = makeSUT(decimalSeparator: ",", fractionDigits: 2)
+        let sut = makeSUT(decimalSeparator: ",", groupingSeparator: ".", fractionDigits: 2)
 
         // When
         let result = sut.formattedAmount(from: "1234")
@@ -152,12 +174,13 @@ private extension POSCashAmountInputFormatterTests {
     func makeSUT(
         currencyCode: CurrencyCode = .USD,
         decimalSeparator: String = ".",
+        groupingSeparator: String = ",",
         fractionDigits: Int
     ) -> POSCashAmountInputFormatter {
         POSCashAmountInputFormatter(currencySettings: CurrencySettings(
             currencyCode: currencyCode,
             currencyPosition: .left,
-            thousandSeparator: ",",
+            thousandSeparator: groupingSeparator,
             decimalSeparator: decimalSeparator,
             numberOfDecimals: fractionDigits
         ))

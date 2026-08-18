@@ -22,12 +22,10 @@ enum POSRefundFlow: Equatable {
 ///   ``Constants/minimumWooVersionForServerRefunds``; an unknown version fails closed to
 ///   `localComputed`.
 ///
-/// The version requirement is authoritative for the create capability and cannot be bypassed by a
-/// successful preview: the preview route and the `compute_totals` create support ship in separate
-/// WooCommerce core changes, so a preview succeeding only proves the preview route exists. A store
-/// with the preview but without `compute_totals` (partial backport, or the changes splitting
-/// across releases) would silently drop the parameter and create a zero-amount refund while
-/// restocking items. Only a version known to contain both changes unlocks the server flow.
+/// The version check is authoritative for the create capability. A successful preview cannot
+/// replace it: the preview route and the `compute_totals` create shipped as separate WooCommerce
+/// changes, so a preview proves only that the preview route exists. A store that answers the
+/// preview but drops `compute_totals` would create a zero-amount refund and restock the items.
 ///
 /// Eligibility here only allows the *preview* probe. A computed create additionally requires that
 /// probe to succeed first — see `ServerRefundAvailabilityCache`.

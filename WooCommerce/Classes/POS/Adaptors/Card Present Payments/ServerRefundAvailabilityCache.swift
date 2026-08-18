@@ -3,9 +3,9 @@ import Foundation
 /// Per-site, in-memory availability of the server-calculated refund endpoints
 /// (`/wc/v3` preview and `compute_totals` create, WC 11.1.0+).
 ///
-/// `markAvailable` must only be called after a successful preview: on stores older than 11.1.0
-/// the unknown `compute_totals` parameter is silently dropped by the classic create, so a
-/// computed create must never be sent unless a preview has confirmed support for the site.
+/// `markAvailable` must only be called after a successful preview. This cache is one of two checks
+/// a computed create needs. It proves the preview route exists. The create capability is gated on
+/// the WooCommerce version in `POSRefundFlowResolver`.
 ///
 @MainActor
 final class ServerRefundAvailabilityCache {

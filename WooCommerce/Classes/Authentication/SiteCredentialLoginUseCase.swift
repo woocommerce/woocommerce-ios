@@ -8,9 +8,10 @@ import protocol NetworkingCore.URLSessionProtocol
 
 protocol SiteCredentialLoginProtocol {
     /// - Parameter onLoginFailure: called with the failure and whether the configured login entry was proven
-    ///   to render one eligible WordPress login form before the failure occurred.
+    ///   to render one eligible WordPress login form before the failure occurred, plus whether the failure
+    ///   came from the credential response and can plausibly be solved by browser authentication.
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool) -> Void)
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void)
 
     func handleLogin(username: String, password: String)
 }
@@ -87,6 +88,22 @@ enum SiteCredentialLoginError: LocalizedError {
         underlyingError.localizedDescription
     }
 
+    func offersBrowserAlternative(at stage: CookieNonceAuthenticationResponseStage) -> Bool {
+        guard stage == .credentials else {
+            return false
+        }
+        switch self {
+        case .invalidCredentials, .invalidLoginResponse, .loginFailed:
+            return true
+        case .basicAuthenticationRequired,
+             .inaccessibleLoginPage,
+             .inaccessibleAdminPage,
+             .unacceptableStatusCode,
+             .genericFailure:
+            return false
+        }
+    }
+
     private enum Localization {
         static let inaccessibleLoginPage = NSLocalizedString(
             "Unable to login because we cannot identify your store's login URL.",
@@ -135,7 +152,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let ownedTransactionSession: URLSession?
     private let verifyAdminDashboard: Bool
     private var successHandler: (() -> Void)?
-    private var errorHandler: ((SiteCredentialLoginError, Bool) -> Void)?
+    private var errorHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
 
     init(siteURL: String,
          endpoints configuredEndpoints: CookieNonceAuthenticationEndpoints? = nil,
@@ -173,7 +190,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool) -> Void) {
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void) {
         self.successHandler = onLoginSuccess
         self.errorHandler = onLoginFailure
     }
@@ -184,6 +201,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         clearAllCookies()
         Task { @MainActor in
             var loginEntryVerified = false
+            var responseStage = CookieNonceAuthenticationResponseStage.preflight
             do {
                 let endpoints: CookieNonceAuthenticationEndpoints
                 switch endpointConfiguration {
@@ -193,14 +211,18 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                     DDLogError("⛔️ Error constructing or validating login requests")
                     throw error
                 }
-                try await startLogin(username: username, password: password, endpoints: endpoints) {
-                    loginEntryVerified = true
-                }
+                try await startLogin(
+                    username: username,
+                    password: password,
+                    endpoints: endpoints,
+                    onLoginEntryVerified: { loginEntryVerified = true },
+                    onResponseStageChanged: { responseStage = $0 }
+                )
                 successHandler?()
             } catch let error as SiteCredentialLoginError {
-                errorHandler?(error, loginEntryVerified)
+                errorHandler?(error, loginEntryVerified, error.offersBrowserAlternative(at: responseStage))
             } catch {
-                errorHandler?(.genericFailure(underlyingError: error as NSError), loginEntryVerified)
+                errorHandler?(.genericFailure(underlyingError: error as NSError), loginEntryVerified, false)
             }
         }
     }
@@ -219,7 +241,8 @@ private extension SiteCredentialLoginUseCase {
         username: String,
         password: String,
         endpoints: CookieNonceAuthenticationEndpoints,
-        onLoginEntryVerified: () -> Void
+        onLoginEntryVerified: () -> Void,
+        onResponseStageChanged: (CookieNonceAuthenticationResponseStage) -> Void
     ) async throws {
         let submissionURL = try await preflight(endpoints: endpoints)
         onLoginEntryVerified()
@@ -230,6 +253,7 @@ private extension SiteCredentialLoginUseCase {
             submissionURL: submissionURL,
             nonceURL: nonceURL
         )
+        onResponseStageChanged(.credentials)
         let loginResponse = try await load(loginRequest, using: loginSession)
         try validate(loginResponse.http, stage: .credentials)
 
@@ -254,8 +278,10 @@ private extension SiteCredentialLoginUseCase {
         }
 
         if verifyAdminDashboard {
+            onResponseStageChanged(.dashboard)
             try await verifyDashboard(afterLoginAt: submissionURL, endpoints: endpoints)
         }
+        onResponseStageChanged(.nonce)
         try await retrieveNonce(at: nonceURL, afterLoginAt: submissionURL, endpoints: endpoints)
     }
 

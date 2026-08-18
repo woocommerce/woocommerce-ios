@@ -20,6 +20,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     private(set) var siteCredentialAuthenticationRequests = [SiteCredentialAuthenticationRequest]()
     private(set) var siteCredentialAuthenticationLoadingHandler: ((Bool) -> Void)?
     var siteCredentialFailure: (error: Error, incorrectCredentials: Bool, verifiedLoginURL: String?)?
+    var siteCredentialFailureOffersBrowserAlternative = false
     private(set) var presentedSiteCredentialFailureCount = 0
     private(set) var presentedSiteCredentialFailureOffersBrowserAlternative: Bool?
     private(set) var presentedSiteCredentialBrowserAlternativeCount = 0
@@ -94,7 +95,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Void,
-                                     onFailure: @escaping (Error, Bool, String?) -> Void) {
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         siteCredentialAuthenticationRequests.append(.init(
             credentials: credentials,
             loginURL: loginURL,
@@ -109,7 +110,12 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         onLoading(false)
         if let failure = siteCredentialFailure {
             siteCredentialFailure = nil
-            onFailure(failure.error, failure.incorrectCredentials, failure.verifiedLoginURL)
+            onFailure(
+                failure.error,
+                failure.incorrectCredentials,
+                failure.verifiedLoginURL,
+                siteCredentialFailureOffersBrowserAlternative
+            )
         } else if siteCredentialRecoveries.isEmpty {
             onSuccess(siteCredentialCredentialsToReturn ?? credentials)
         } else {

@@ -187,6 +187,38 @@ class LoginViewControllerTests: XCTestCase {
         XCTAssertEqual(delegate.presentedSiteCredentialBrowserAlternativeCount, 1)
     }
 
+    func test_site_credentials_controller_when_verified_credential_response_fails_then_retains_login_and_offers_browser() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        delegate.siteCredentialRecoveries = [.login(draftURL: "https://example.com/wp-login.php", error: nil)]
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+        try tapContinue(in: controller)
+        let recoveryCells = try renderedCells(in: controller)
+        edit(try XCTUnwrap(recoveryCells[2] as? TextFieldTableViewCell), text: "https://example.com/custom-login")
+        delegate.siteCredentialFailure = (
+            NSError(domain: "Authentication", code: -1),
+            false,
+            "https://example.com/custom-login"
+        )
+        delegate.siteCredentialFailureOffersBrowserAlternative = true
+
+        // When
+        try tapContinue(in: controller)
+
+        // Then
+        let cells = try renderedCells(in: controller)
+        XCTAssertEqual((cells[1] as? TextFieldTableViewCell)?.textField.text, "merchant")
+        XCTAssertEqual((cells[2] as? TextFieldTableViewCell)?.textField.text, "secret")
+        XCTAssertEqual(delegate.presentedSiteCredentialFailureOffersBrowserAlternative, true)
+        XCTAssertEqual(delegate.presentedSiteCredentialBrowserAlternativeCount, 0)
+
+        delegate.defersSiteCredentialAuthentication = true
+        try tapContinue(in: controller)
+        let retry = try XCTUnwrap(delegate.siteCredentialAuthenticationRequests.last)
+        XCTAssertEqual(retry.loginURL, "https://example.com/custom-login")
+        XCTAssertNil(retry.endpointUnderVerification)
+    }
+
     func test_site_credentials_controller_when_login_recovery_error_changes_then_copies_each_inline_error_independently() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()
@@ -284,7 +316,7 @@ class LoginViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(manualDelegate.presentedSiteCredentialFailureCount, 1)
-        XCTAssertEqual(manualDelegate.presentedSiteCredentialFailureOffersBrowserAlternative, true)
+        XCTAssertEqual(manualDelegate.presentedSiteCredentialFailureOffersBrowserAlternative, false)
         XCTAssertEqual(manualDelegate.presentedSiteCredentialBrowserAlternativeCount, 0)
     }
 
@@ -330,6 +362,7 @@ class LoginViewControllerTests: XCTestCase {
             true,
             "https://example.com/normalized-login"
         )
+        delegate.siteCredentialFailureOffersBrowserAlternative = true
 
         // When
         try tapContinue(in: controller)

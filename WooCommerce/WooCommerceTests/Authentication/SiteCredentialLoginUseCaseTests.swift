@@ -2,6 +2,7 @@ import Network
 import XCTest
 import class Networking.UserAgent
 import struct NetworkingCore.CookieNonceAuthenticationEndpoints
+import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 @testable import WooCommerce
 
 @MainActor
@@ -304,11 +305,13 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         )
         let completion = expectation(description: "Login failure")
         var loginEntryVerified: Bool?
+        var offersBrowserAlternative: Bool?
         useCase.setupHandlers(onLoginSuccess: {
             XCTFail("Expected preflight failure")
             completion.fulfill()
-        }, onLoginFailure: { _, verified in
+        }, onLoginFailure: { _, verified, offersBrowser in
             loginEntryVerified = verified
+            offersBrowserAlternative = offersBrowser
             completion.fulfill()
         })
 
@@ -318,6 +321,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(loginEntryVerified, false)
+        XCTAssertEqual(offersBrowserAlternative, false)
         XCTAssertEqual(loginSession.requestCount, 0)
     }
 
@@ -338,11 +342,13 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         )
         let completion = expectation(description: "Login failure")
         var loginEntryVerified: Bool?
+        var offersBrowserAlternative: Bool?
         useCase.setupHandlers(onLoginSuccess: {
             XCTFail("Expected credential failure")
             completion.fulfill()
-        }, onLoginFailure: { _, verified in
+        }, onLoginFailure: { _, verified, offersBrowser in
             loginEntryVerified = verified
+            offersBrowserAlternative = offersBrowser
             completion.fulfill()
         })
 
@@ -352,6 +358,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertEqual(loginEntryVerified, true)
+        XCTAssertEqual(offersBrowserAlternative, true)
     }
 
     func test_handle_login_when_preflight_requires_basic_authentication_then_returns_basic_authentication_required() async {
@@ -384,10 +391,11 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         loginSession.simulateResponse(for: loginURL, data: Data(invalidCredentialsHTML.utf8))
 
         // When
-        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+        let outcome = await performLoginWithVerification(siteURL: siteURL, session: session, loginSession: loginSession)
 
         // Then
-        assertFailure(result, matches: .loginFailed(message: "Incorrect password"))
+        assertFailure(outcome.result, matches: .loginFailed(message: "Incorrect password"))
+        XCTAssertEqual(outcome.offersBrowserAlternative, true)
     }
 
     func test_handle_login_when_credentials_return_wordpress_shake_marker_then_returns_invalid_credentials() async {
@@ -495,15 +503,16 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         session.simulateResponse(for: adminURL, data: Data(loginPage.utf8))
 
         // When
-        let result = await performLogin(
-            siteURL: siteURL,
+        let outcome = await performLoginWithVerification(
             verifyAdminDashboard: true,
+            siteURL: siteURL,
             session: session,
             loginSession: loginSession
         )
 
         // Then
-        assertFailure(result, matches: .invalidCredentials)
+        assertFailure(outcome.result, matches: .invalidCredentials)
+        XCTAssertEqual(outcome.offersBrowserAlternative, false)
         XCTAssertFalse(session.receivedRequests.contains { $0.url?.absoluteString == nonceURL })
     }
 
@@ -551,7 +560,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         useCase.setupHandlers(onLoginSuccess: {
             XCTFail("Expected endpoint validation to fail")
             completion.fulfill()
-        }, onLoginFailure: { error, _ in
+        }, onLoginFailure: { error, _, _ in
             receivedError = error
             isLoading = false
             completion.fulfill()
@@ -925,10 +934,11 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         )
 
         // When
-        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+        let outcome = await performLoginWithVerification(siteURL: siteURL, session: session, loginSession: loginSession)
 
         // Then
-        assertFailure(result, matches: .invalidLoginResponse)
+        assertFailure(outcome.result, matches: .invalidLoginResponse)
+        XCTAssertEqual(outcome.offersBrowserAlternative, true)
         XCTAssertEqual(loginSession.receivedRequests.compactMap(\.httpMethod), ["POST"])
         XCTAssertEqual(loginSession.receivedRequests.compactMap(\.url?.absoluteString), [loginURL])
         XCTAssertEqual(session.receivedRequests.compactMap(\.url?.absoluteString), [loginURL])
@@ -957,6 +967,31 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         assertFailure(result, matches: .invalidLoginResponse)
         XCTAssertEqual(session.receivedRequests.compactMap(\.url?.absoluteString), [loginURL])
         XCTAssertEqual(loginSession.receivedRequests.compactMap(\.url?.absoluteString), [loginURL])
+    }
+
+    func test_browser_alternative_is_limited_to_credential_response_login_failures() {
+        let eligibleErrors: [SiteCredentialLoginError] = [
+            .invalidCredentials,
+            .invalidLoginResponse,
+            .loginFailed(message: "Captcha required")
+        ]
+        for error in eligibleErrors {
+            XCTAssertTrue(error.offersBrowserAlternative(at: .credentials))
+            XCTAssertFalse(error.offersBrowserAlternative(at: .preflight))
+            XCTAssertFalse(error.offersBrowserAlternative(at: .dashboard))
+            XCTAssertFalse(error.offersBrowserAlternative(at: .nonce))
+        }
+
+        let ineligibleErrors: [SiteCredentialLoginError] = [
+            .basicAuthenticationRequired,
+            .inaccessibleLoginPage,
+            .inaccessibleAdminPage,
+            .unacceptableStatusCode(code: 500),
+            .genericFailure(underlyingError: URLError(.notConnectedToInternet))
+        ]
+        for error in ineligibleErrors {
+            XCTAssertFalse(error.offersBrowserAlternative(at: .credentials))
+        }
     }
 
     func test_handleLogin_when_loginRedirectLocation_is_sameHostDifferentPortRestNonce_then_returns_invalidLoginResponse() async {
@@ -1296,6 +1331,7 @@ private extension SiteCredentialLoginUseCaseTests {
     struct LoginOutcome {
         let result: Result<Void, SiteCredentialLoginError>
         let loginEntryVerified: Bool?
+        let offersBrowserAlternative: Bool?
     }
 
     func performLoginWithVerification(endpoints: CookieNonceAuthenticationEndpoints? = nil,
@@ -1325,10 +1361,18 @@ private extension SiteCredentialLoginUseCaseTests {
     func performLoginWithVerification(using useCase: SiteCredentialLoginUseCase) async -> LoginOutcome {
         return await withCheckedContinuation { continuation in
             useCase.setupHandlers(onLoginSuccess: {
-                continuation.resume(returning: LoginOutcome(result: .success(()), loginEntryVerified: nil))
-            }, onLoginFailure: { error, loginEntryVerified in
+                continuation.resume(returning: LoginOutcome(
+                    result: .success(()),
+                    loginEntryVerified: nil,
+                    offersBrowserAlternative: nil
+                ))
+            }, onLoginFailure: { error, loginEntryVerified, offersBrowserAlternative in
                 continuation.resume(
-                    returning: LoginOutcome(result: .failure(error), loginEntryVerified: loginEntryVerified)
+                    returning: LoginOutcome(
+                        result: .failure(error),
+                        loginEntryVerified: loginEntryVerified,
+                        offersBrowserAlternative: offersBrowserAlternative
+                    )
                 )
             })
 

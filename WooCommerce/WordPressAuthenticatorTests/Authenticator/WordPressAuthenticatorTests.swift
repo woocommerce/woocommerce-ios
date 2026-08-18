@@ -142,7 +142,7 @@ class WordPressAuthenticatorTests: XCTestCase {
             onLoading: { _ in },
             onSuccess: { receivedCredentials.append($0) },
             onRecovery: { _ in XCTFail("Expected legacy success") },
-            onFailure: { _, _, _ in XCTFail("Expected legacy success") }
+            onFailure: { _, _, _, _ in XCTFail("Expected legacy success") }
         )
 
         // Then
@@ -167,6 +167,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         var receivedError: NSError?
         var incorrectCredentials: Bool?
         var verifiedLoginURL: String?
+        var offersBrowserAlternative: Bool?
 
         // When
         delegate.authenticateSiteCredentials(
@@ -181,6 +182,7 @@ class WordPressAuthenticatorTests: XCTestCase {
                 receivedError = $0 as NSError
                 incorrectCredentials = $1
                 verifiedLoginURL = $2
+                offersBrowserAlternative = $3
             }
         )
 
@@ -190,6 +192,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(receivedError?.code, expectedError.code)
         XCTAssertEqual(incorrectCredentials, true)
         XCTAssertNil(verifiedLoginURL)
+        XCTAssertEqual(offersBrowserAlternative, false)
     }
 }
 

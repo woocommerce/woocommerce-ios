@@ -230,6 +230,22 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
     }
 
+    @Test func previewRefund_when_the_route_is_missing_on_a_second_refund_then_reports_the_fallback_once() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When refunding twice on the same site
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the event counts the store that fell back, not the refunds made afterwards:
+        // the cache short-circuits the resolver, so the second refund never probes the route.
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
     @Test func previewRefund_when_the_site_is_not_eligible_then_reports_no_fallback() async {
         // Given a store below the minimum version, which never probes the route
         let analyticsProvider = MockAnalyticsProvider()

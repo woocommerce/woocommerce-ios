@@ -267,13 +267,6 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        /// Reported when a preview probe finds the server-calculated refund route missing and the
-        /// site falls back to local calculation. The store's WooCommerce version arrives with the
-        /// event as the `cached_woo_core_version` property every event carries.
-        static func serverRefundFlowUnavailable() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .refundServerFlowUnavailable, properties: [:])
-        }
-
         static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createOrderRefundSelectAllItemsButtonTapped, properties: ["order_id": "\(orderID)"])
         }

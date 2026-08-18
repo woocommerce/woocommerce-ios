@@ -64,7 +64,7 @@ final class POSServerRefundPreviewUseCase {
                 // Reported once per site per app session, not once per refund: the cache
                 // short-circuits the resolver for the rest of the session, so this counts stores
                 // that fell back rather than the refunds they made afterwards.
-                analytics.track(event: .IssueRefund.serverRefundFlowUnavailable())
+                analytics.track(event: .PointOfSale.refundServerFlowUnavailable())
                 return .fallbackToLocal
             }
             if let rejection = RefundAPIError(error) {

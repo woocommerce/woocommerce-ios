@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] In-Person Payments: Fixed card payment options being unavailable when trying a Tap to Pay payment on multi-currency stores. [https://github.com/woocommerce/woocommerce-ios/pull/17704]
 - [*] Analytics Hub: Fixed quarter date ranges displaying incorrect dates for some store timezones. [https://github.com/woocommerce/woocommerce-ios/pull/17713]
 - [Internal] POS: every POS analytics event now carries device_type (phone/tablet) and entry_point (pos_tab or auto_reopen), so POS usage can be split by form factor and merchant-opened sessions separated from POS-lock cold-launch restores. [https://github.com/woocommerce/woocommerce-ios/pull/17705]
 - [*] Settings: All retained application logs can now be shared together as a ZIP file. [https://github.com/woocommerce/woocommerce-ios/pull/17714]

@@ -1,9 +1,11 @@
 import Foundation
 
-/// The search method used for local search
+/// The search method that produced the results. Present on both the local and the remote search
+/// events so a single query can span the local catalog rollout without a fabricated step change.
 public enum POSSearchMethod: String {
     case fts
     case like
+    case remote
 }
 
 /// The source of search results

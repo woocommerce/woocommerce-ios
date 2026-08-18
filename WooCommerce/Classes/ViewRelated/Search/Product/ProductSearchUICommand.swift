@@ -119,7 +119,10 @@ final class ProductSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
         let hasPendingUploads = activeUploadIds.contains(where: { $0 ==  model.productID })
-        return ProductsTabProductViewModel(product: model.toListItem(), hasPendingUploads: hasPendingUploads, isSKUShown: true)
+        return ProductsTabProductViewModel(product: model.toListItem(),
+                                           hasPendingUploads: hasPendingUploads,
+                                           isSKUShown: true,
+                                           isPriceShown: true)
     }
 
     /// Synchronizes the Products matching a given Keyword

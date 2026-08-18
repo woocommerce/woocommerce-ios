@@ -32,7 +32,7 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
         )
     }
 
-    /// Tracks when a remote search results fetch completes
+    /// Tracks when a remote search results fetch completes. Always reports `POSSearchMethod.remote`.
     /// - Parameters:
     ///   - milliseconds: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
@@ -50,7 +50,7 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     /// - Parameters:
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
-    ///   - searchMethod: The search method used (FTS or LIKE)
+    ///   - searchMethod: How the local catalog produced the results
     ///   - source: The source of the results
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
                                               totalItems: Int,

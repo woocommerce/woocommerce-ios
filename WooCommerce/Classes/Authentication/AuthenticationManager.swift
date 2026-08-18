@@ -658,11 +658,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             guard let self, let viewController else { return }
             presentApplicationPasswordWebView(for: siteURL, in: viewController)
         } : nil
-        let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+        presentSiteCredentialLoginErrorAlert(
             message: error.localizedDescription,
-            defaultAction: browserAction
+            defaultAction: browserAction,
+            in: viewController
         )
-        viewController.present(alert, animated: true)
     }
 
     func handleSiteCredentialLoginFailure(error: Error,
@@ -1288,12 +1288,28 @@ private extension AuthenticationManager {
             guard let self else { return }
             presentApplicationPasswordWebView(for: siteURL, in: viewController)
         } : nil
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+        presentSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
+            defaultAction: defaultAction,
+            in: viewController
+        )
+    }
+
+    /// Presents the site credential failure using the authenticator's centered, dimmed alert treatment.
+    ///
+    /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
+    private func presentSiteCredentialLoginErrorAlert(message: String,
+                                                      defaultAction: (() -> Void)?,
+                                                      in viewController: UIViewController) {
+        let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: message,
             defaultAction: defaultAction
         )
-
-        viewController.present(alertController, animated: true)
+        if let transitioningDelegate = viewController as? UIViewControllerTransitioningDelegate {
+            alert.modalPresentationStyle = .custom
+            alert.transitioningDelegate = transitioningDelegate
+        }
+        viewController.present(alert, animated: true)
     }
 
     /// Presents app password site login using a web view.

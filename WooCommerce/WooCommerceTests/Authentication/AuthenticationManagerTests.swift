@@ -3,6 +3,7 @@ import XCTest
 @testable import Networking
 @testable import NetworkingCore
 import WordPressAuthenticator
+import WordPressUI
 import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
@@ -1157,6 +1158,41 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
     }
 
+    func test_present_site_credential_login_failure_presents_centered_fancy_alert() throws {
+        // Given
+        let presenter = SiteCredentialAlertPresenter()
+        navigationController.setViewControllers([presenter], animated: false)
+        let manager = AuthenticationManager()
+
+        // When
+        manager.presentSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.invalidCredentials,
+            offersBrowserAlternative: false,
+            for: "https://example.com",
+            in: presenter
+        )
+
+        // Then
+        try assertCenteredFancyAlertPresented(by: presenter)
+    }
+
+    func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {
+        // Given
+        let presenter = SiteCredentialAlertPresenter()
+        navigationController.setViewControllers([presenter], animated: false)
+        let manager = AuthenticationManager()
+
+        // When
+        manager.handleSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.invalidCredentials,
+            for: "https://example.com",
+            in: presenter
+        )
+
+        // Then
+        try assertCenteredFancyAlertPresented(by: presenter)
+    }
+
     func test_authenticate_site_credentials_when_custom_or_standard_login_succeeds_then_persists_only_nondefault_endpoints() throws {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1200,6 +1236,13 @@ final class AuthenticationManagerTests: XCTestCase {
 }
 
 private extension AuthenticationManagerTests {
+    func assertCenteredFancyAlertPresented(by presenter: SiteCredentialAlertPresenter) throws {
+        let alert = try XCTUnwrap(presenter.presentedViewController as? FancyAlertViewController)
+        XCTAssertEqual(alert.modalPresentationStyle, .custom)
+        XCTAssertTrue(alert.transitioningDelegate === presenter)
+        XCTAssertTrue(alert.presentationController is FancyAlertPresentationController)
+    }
+
     func siteCredentials(options: [AnyHashable: Any] = [:]) -> WordPressOrgCredentials {
         WordPressOrgCredentials(
             username: "merchant",
@@ -1225,6 +1268,14 @@ private extension AuthenticationManagerTests {
                                       "isJetpackConnected": isJetpackConnected,
                                       "isWordPressDotCom": isWordPressCom,
                                       "isCommerceGarden": isCommerceGarden])
+    }
+}
+
+private final class SiteCredentialAlertPresenter: UIViewController, UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController,
+                                presenting: UIViewController?,
+                                source: UIViewController) -> UIPresentationController? {
+        FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
 

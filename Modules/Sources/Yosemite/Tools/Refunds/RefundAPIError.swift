@@ -48,10 +48,17 @@ public enum RefundAPIError: Error, Equatable {
     /// server rejection from a transport failure — must read it from the same place the typed
     /// mapping above does, including codes this enum deliberately leaves unmapped.
     public static func restErrorCode(from error: Error) -> String? {
-        if let dotcomError = error as? DotcomError, case .unknown(let code, _, _) = dotcomError {
+        switch error {
+        case let error as DotcomError:
+            guard case let .unknown(code, _, _) = error else {
+                return nil
+            }
             return code
+        case let error as NetworkError:
+            return error.errorCode
+        default:
+            return nil
         }
-        return (error as? NetworkError)?.errorCode
     }
 
     private static let rejectionsByCode: [String: RefundAPIError] = [

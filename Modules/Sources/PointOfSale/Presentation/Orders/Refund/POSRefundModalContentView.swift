@@ -1,6 +1,7 @@
 import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
+import enum Yosemite.RefundAPIError
 import struct Yosemite.POSOrder
 
 // MARK: - Refund Modal State
@@ -98,6 +99,10 @@ struct POSRefundModalContentView: View {
     @State private var currentRefundReason: String?
     @State private var reasonInputReviewData: POSRefundReviewData?
     @State private var isDismissingAfterAmbiguousRefund = false
+    /// The server's rejection copy when the refund create failed with an actionable code (for
+    /// example the order changed since the screen was loaded); shown instead of the generic
+    /// create-error subtitle.
+    @State private var refundRejectionMessage: String?
 
     var body: some View {
         ZStack {
@@ -231,7 +236,7 @@ struct POSRefundModalContentView: View {
             }
             POSRefundErrorView(
                 title: isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle,
-                subtitle: isCardPresentRefundError ? Localization.cardPresentCreateErrorSubtitle : errorStrings.createSubtitle,
+                subtitle: isCardPresentRefundError ? Localization.cardPresentCreateErrorSubtitle : (refundRejectionMessage ?? errorStrings.createSubtitle),
                 onRetry: isCardPresentRefundError ? nil : { modalState = .confirmation(reviewData) },
                 cancelButtonTitle: isCardPresentRefundError ? Localization.backToOrderButton : nil,
                 onCancel: dismissError,
@@ -371,6 +376,7 @@ struct POSRefundModalContentView: View {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
             onRefundFailure?(error)
             refundSubmissionModel.reset()
+            refundRejectionMessage = (error as? RefundAPIError)?.localizedDescription
             modalState = .error(reviewData)
         }
     }
@@ -391,6 +397,7 @@ struct POSRefundModalContentView: View {
 
     @MainActor
     private func startProcessingRefund(reviewData: POSRefundReviewData) {
+        refundRejectionMessage = nil
         modalState = .processing(reviewData)
         Task { @MainActor in
             await processRefund(reviewData: reviewData)

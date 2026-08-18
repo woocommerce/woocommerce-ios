@@ -3,7 +3,6 @@ import SwiftUI
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var isPresented: Bool
 
@@ -46,7 +45,7 @@ struct PointOfSaleExitPosAlertView: View {
         }
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var regularCloseButton: some View {

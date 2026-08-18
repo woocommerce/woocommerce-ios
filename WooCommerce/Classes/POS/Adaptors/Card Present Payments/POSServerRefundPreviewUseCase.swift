@@ -19,9 +19,13 @@ final class POSServerRefundPreviewUseCase {
     enum Result {
         case serverCalculated(RefundPreview)
         case fallbackToLocal
-        /// The preview failed for a reason other than route availability: a transport failure,
-        /// or a server error. The error is carried so the cause is attributable in logs rather
-        /// than collapsing every failure into one indistinguishable state.
+        /// The server rejected the requested refund with an actionable code (for example the
+        /// order changed since the screen was loaded); the rejection carries cashier-facing copy.
+        case rejected(RefundAPIError)
+        /// The preview failed for a reason with no cashier-facing mapping: a transport failure, or
+        /// a server error whose code we do not recognise. The error is carried so the cause is
+        /// attributable in logs rather than collapsing every failure into one indistinguishable
+        /// state.
         case error(Error)
     }
 
@@ -63,6 +67,10 @@ final class POSServerRefundPreviewUseCase {
                                                                                 wooCommerceVersion: flowResolver.cachedWooCommerceVersion))
                 return .fallbackToLocal
             }
+            if let rejection = RefundAPIError(error) {
+                DDLogWarn("POS refund preview rejected for order \(orderID): \(rejection)")
+                return .rejected(rejection)
+            }
             DDLogError("⛔️ POS refund preview failed for order \(orderID): \(error)")
             return .error(error)
         }
@@ -88,6 +96,8 @@ extension POSServerRefundPreviewUseCase.Result: Equatable {
             return lhsPreview == rhsPreview
         case (.fallbackToLocal, .fallbackToLocal):
             return true
+        case let (.rejected(lhsRejection), .rejected(rhsRejection)):
+            return lhsRejection == rhsRejection
         case (.error, .error):
             return true
         default:

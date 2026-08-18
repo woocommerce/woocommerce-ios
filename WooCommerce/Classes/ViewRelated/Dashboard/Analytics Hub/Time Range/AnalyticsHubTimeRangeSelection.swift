@@ -34,6 +34,9 @@ public class AnalyticsHubTimeRangeSelection {
          timezone: TimeZone,
          calendar: Calendar = Locale.current.calendar) {
 
+        var calendar = calendar
+        calendar.timeZone = timezone
+
         // Exit early if we can't generate a selection Data.
         guard let selectionData = selectionType.toRangeData(referenceDate: currentDate, timezone: timezone, calendar: calendar) else {
             self.currentTimeRange = nil

@@ -437,7 +437,7 @@ extension MainTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         let isSelectingPOSTab = viewController == posContainerController
         if isSelectingPOSTab {
-            posTabCoordinator?.onTabSelected()
+            posTabCoordinator?.openPOS(entryPoint: .posTab)
         }
         return !isSelectingPOSTab
     }
@@ -1248,7 +1248,7 @@ private extension MainTabBarController {
         // coordinator. If the active site changes mid-flight the old coordinator
         // is released and the closure no-ops.
         DispatchQueue.main.async { [weak coordinator = posTabCoordinator] in
-            coordinator?.onTabSelected()
+            coordinator?.openPOS(entryPoint: .autoReopen)
         }
     }
 }

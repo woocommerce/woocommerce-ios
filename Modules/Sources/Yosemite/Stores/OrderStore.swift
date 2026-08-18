@@ -72,8 +72,13 @@ public class OrderStore: Store {
                         onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, currency, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID,
+                                      status: status,
+                                      amount: amount,
+                                      taxable: taxable,
+                                      currency: currency,
+                                      onCompletion: onCompletion)
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
@@ -322,9 +327,10 @@ private extension OrderStore {
                                    status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
+                                   currency: String,
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable).copy(currency: currency)
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines, .currency]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored

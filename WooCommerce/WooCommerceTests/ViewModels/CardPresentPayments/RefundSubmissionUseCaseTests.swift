@@ -106,28 +106,27 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertFalse(dispatchedV3Create)
     }
 
-    func test_submitRefund_with_server_line_items_does_not_retrieve_refund_after_creation() {
-        let isAutomatedValues: [Bool?] = [true, false, nil]
-        for isAutomated in isAutomatedValues {
-            // Given
-            let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
-                                        charge: nil,
-                                        amount: "2.28",
-                                        paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
-                                        serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
-            let useCase = createUseCase(details: details)
-            refundService.createRefundResult = .success(MockRefunds.sampleRefund(isAutomated: isAutomated))
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    func test_submitRefund_regression_with_server_line_items_does_not_retrieve_refund_after_creation() {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(MockRefunds.sampleRefund(isAutomated: true))
 
-            // When
-            waitFor { promise in
-                useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
-                    promise(())
-                }
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
             }
-
-            // Then
-            XCTAssertFalse(didDispatchRetrieveRefund, "Expected no retrieval when isAutomated is \(String(describing: isAutomated))")
         }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
     }
 
     func test_submitRefund_with_server_line_items_relays_create_failure() throws {
@@ -214,26 +213,25 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(result.failure as? RefundAPIError, .orderNotRefundable)
     }
 
-    func test_submitRefund_with_classic_create_does_not_retrieve_refund_after_creation() {
-        let isAutomatedValues: [Bool?] = [true, false, nil]
-        for isAutomated in isAutomatedValues {
-            // Given
-            let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
-                                                       charge: nil,
-                                                       amount: "2.28",
-                                                       paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-            mockServerSideRefund(refund: MockRefunds.sampleRefund(isAutomated: isAutomated), error: nil)
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    func test_submitRefund_regression_with_classic_create_does_not_retrieve_refund_after_creation() {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: MockRefunds.sampleRefund(isAutomated: true), error: nil)
 
-            // When
-            waitFor { promise in
-                useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
-                    promise(())
-                }
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
             }
-
-            // Then
-            XCTAssertFalse(didDispatchRetrieveRefund, "Expected no retrieval when isAutomated is \(String(describing: isAutomated))")
         }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
     }
 
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {

@@ -458,8 +458,7 @@ private extension RefundSubmissionUseCase {
                 return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
             }
 
-            // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-            self.retrieveUpdatedRefundData(refund: refundData)
+            self.retrieveUpdatedRefundDataIfNeeded(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -481,7 +480,7 @@ private extension RefundSubmissionUseCase {
                                                                      restockItems: true,
                                                                      amountOverride: nil,
                                                                      lineItems: lineItems)
-            retrieveUpdatedRefundData(refund: createdRefund)
+            retrieveUpdatedRefundDataIfNeeded(refund: createdRefund)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()
         } catch {
@@ -496,10 +495,16 @@ private extension RefundSubmissionUseCase {
         }
     }
 
-    /// Retrieves the up-to-date refund data
+    /// Retrieves the up-to-date refund data when the create response does not include whether the
+    /// payment was refunded automatically. WooCommerce 7.8 added `refunded_payment` to create
+    /// responses, but the fallback remains necessary for older stores.
     /// - Parameters:
     ///   - refund: the refund to retrieve details from.
-    private func retrieveUpdatedRefundData(refund: Refund) {
+    private func retrieveUpdatedRefundDataIfNeeded(refund: Refund) {
+        guard refund.isAutomated == nil else {
+            return
+        }
+
         let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { _, error in
                 if let error {
                     DDLogError("Error retrieving refund: \(String(describing: refund))\nWith Error: \(error)")

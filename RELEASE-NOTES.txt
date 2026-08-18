@@ -27,6 +27,7 @@
 - [*] Phone POS: Now it shows the applied state for coupons in the coupon list [https://github.com/woocommerce/woocommerce-ios/pull/17697]
 - [*] Receipts: Fixed email receipt rejecting addresses with trailing whitespace [https://github.com/woocommerce/woocommerce-ios/pull/17687]
 - [*] Order Details: Refunded variable products now show their product thumbnail [https://github.com/woocommerce/woocommerce-ios/pull/17684]
+- [*] POS: Improved cash amount entry and currency formatting [https://github.com/woocommerce/woocommerce-ios/pull/17727]
 - [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
 - [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]

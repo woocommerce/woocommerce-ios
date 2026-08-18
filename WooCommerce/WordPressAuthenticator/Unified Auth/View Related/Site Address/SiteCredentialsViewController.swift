@@ -615,11 +615,12 @@ private extension SiteCredentialsViewController {
             onRecovery: { [weak self] recovery in
                 self?.showEndpointRecovery(recovery)
             },
-            onFailure: { [weak self] error, incorrectCredentials, verifiedLoginURL in
+            onFailure: { [weak self] error, incorrectCredentials, verifiedLoginURL, offersBrowserAlternative in
                 self?.handleStructuredLoginFailure(
                     error: error,
                     incorrectCredentials: incorrectCredentials,
-                    verifiedLoginURL: verifiedLoginURL
+                    verifiedLoginURL: verifiedLoginURL,
+                    offersBrowserAlternative: offersBrowserAlternative
                 )
             }
         )
@@ -707,10 +708,13 @@ private extension SiteCredentialsViewController {
     ///
     /// A verified login entry is promoted back onto the credential form so the merchant is never asked for it again.
     ///
-    func handleStructuredLoginFailure(error: Error, incorrectCredentials: Bool, verifiedLoginURL: String?) {
+    func handleStructuredLoginFailure(error: Error,
+                                      incorrectCredentials: Bool,
+                                      verifiedLoginURL: String?,
+                                      offersBrowserAlternative: Bool) {
         configureViewLoading(false)
         if let verifiedLoginURL,
-           recoveryEndpoint == .login || (incorrectCredentials && recoveryEndpoint != nil) {
+           recoveryEndpoint == .login || (offersBrowserAlternative && recoveryEndpoint != nil) {
             recoveredLoginURL = verifiedLoginURL
             recoveredAdminURL = nil
             recoveryEndpoint = nil
@@ -724,7 +728,7 @@ private extension SiteCredentialsViewController {
         }
         WordPressAuthenticator.shared.delegate?.presentSiteCredentialLoginFailure(
             error: error,
-            offersBrowserAlternative: recoveryEndpoint == nil && recoveredLoginURL == nil && verifiedLoginURL == nil,
+            offersBrowserAlternative: recoveryEndpoint == nil && offersBrowserAlternative,
             for: loginFields.siteAddress,
             in: self
         )

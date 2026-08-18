@@ -566,7 +566,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             credentials.authenticationEndpoints,
             false
         )
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _ in
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _, _ in
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
@@ -588,7 +588,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Void,
-                                     onFailure: @escaping (Error, Bool, String?) -> Void) {
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         let endpoints: CookieNonceAuthenticationEndpoints
         do {
             endpoints = try siteCredentialRecoveryEndpoints(
@@ -600,7 +600,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             onRecovery(error.recovery)
             return
         } catch {
-            onFailure(SiteCredentialLoginError.invalidLoginResponse, false, nil)
+            onFailure(SiteCredentialLoginError.invalidLoginResponse, false, nil, false)
             return
         }
 
@@ -612,7 +612,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         useCase.setupHandlers(onLoginSuccess: {
             onLoading(false)
             onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
-        }, onLoginFailure: { [weak self] error, loginEntryVerified in
+        }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
             onLoading(false)
             let normalizedLoginURL = endpoints.loginEntryURL.absoluteString
             let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
@@ -629,7 +629,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                   error: inlineError))
             default:
                 let incorrectCredentials = if case .invalidCredentials = error { true } else { false }
-                onFailure(error, incorrectCredentials, loginEntryVerified ? normalizedLoginURL : nil)
+                onFailure(error,
+                          incorrectCredentials,
+                          loginEntryVerified ? normalizedLoginURL : nil,
+                          offersBrowserAlternative)
             }
             self?.trackSiteCredentialLoginFailure(error)
         })

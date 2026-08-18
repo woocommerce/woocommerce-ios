@@ -171,7 +171,8 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - onSuccess: the block to finish the login flow, carrying credentials that record the verified endpoints.
     ///     - onRecovery: the block asking the merchant to supply an endpoint address.
     ///     - onFailure: the block to trigger error handling. The closure accepts an error, a boolean indicating if the
-    ///       login failed with incorrect credentials, and the verified login entry address when one is already known.
+    ///       login failed with incorrect credentials, the verified login entry address when one is already known,
+    ///       and whether browser authentication could plausibly solve this credential-response failure.
     ///
     func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
                                      loginURL: String?,
@@ -180,7 +181,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Void,
-                                     onFailure: @escaping (Error, Bool, String?) -> Void)
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void)
 
     /// Signals to the Host App that the merchant explicitly asked to authenticate with a browser instead.
     ///
@@ -287,13 +288,13 @@ public extension WordPressAuthenticatorDelegate {
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Void,
-                                     onFailure: @escaping (Error, Bool, String?) -> Void) {
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         handleSiteCredentialLogin(
             credentials: credentials,
             onLoading: onLoading,
             onSuccess: { onSuccess(credentials) },
             onFailure: { error, incorrectCredentials in
-                onFailure(error, incorrectCredentials, nil)
+                onFailure(error, incorrectCredentials, nil, false)
             }
         )
     }

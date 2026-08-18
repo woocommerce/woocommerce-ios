@@ -941,7 +941,7 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { loading.append($0) },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
             onRecovery: { recovery = $0 },
-            onFailure: { _, _, _ in XCTFail("Expected endpoint recovery") }
+            onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
 
         // Then
@@ -977,7 +977,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 recovery = $0
                 events.append("recovery")
             },
-            onFailure: { _, _, _ in XCTFail("Expected endpoint recovery") }
+            onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: false)
 
@@ -1005,7 +1005,7 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected recovery") },
             onRecovery: { recovery = $0 },
-            onFailure: { _, _, _ in didFail = true }
+            onFailure: { _, _, _, _ in didFail = true }
         )
         useCase.fail(with: .invalidLoginResponse, loginEntryVerified: false)
 
@@ -1038,7 +1038,7 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
             onRecovery: { recovery = $0 },
-            onFailure: { _, _, _ in XCTFail("Expected endpoint recovery") }
+            onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleAdminPage, loginEntryVerified: true)
 
@@ -1077,10 +1077,10 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected failure") },
             onRecovery: { _ in didRecover = true },
-            onFailure: {
-                receivedError = $0
-                incorrectCredentials = $1
-                verifiedLoginURL = $2
+            onFailure: { error, isIncorrectCredentials, loginURL, _ in
+                receivedError = error
+                incorrectCredentials = isIncorrectCredentials
+                verifiedLoginURL = loginURL
             }
         )
         useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: true)
@@ -1113,10 +1113,10 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected failure") },
             onRecovery: { _ in didRecover = true },
-            onFailure: {
-                receivedError = $0
-                incorrectCredentials = $1
-                verifiedLoginURL = $2
+            onFailure: { error, isIncorrectCredentials, loginURL, _ in
+                receivedError = error
+                incorrectCredentials = isIncorrectCredentials
+                verifiedLoginURL = loginURL
             }
         )
         useCase.fail(with: .inaccessibleAdminPage, loginEntryVerified: false)
@@ -1135,6 +1135,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         var incorrectCredentials: Bool?
         var verifiedLoginURL: String?
+        var offersBrowserAlternative: Bool?
         let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
 
         // When
@@ -1149,13 +1150,15 @@ final class AuthenticationManagerTests: XCTestCase {
             onFailure: {
                 incorrectCredentials = $1
                 verifiedLoginURL = $2
+                offersBrowserAlternative = $3
             }
         )
-        useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
+        useCase.fail(with: .invalidCredentials, loginEntryVerified: true, offersBrowserAlternative: true)
 
         // Then
         XCTAssertEqual(incorrectCredentials, true)
         XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
+        XCTAssertEqual(offersBrowserAlternative, true)
     }
 
     func test_present_site_credential_login_failure_presents_centered_fancy_alert() throws {
@@ -1214,7 +1217,7 @@ final class AuthenticationManagerTests: XCTestCase {
             onLoading: { loading.append($0) },
             onSuccess: { receivedCredentials = $0 },
             onRecovery: { _ in XCTFail("Expected success") },
-            onFailure: { _, _, _ in XCTFail("Expected success") }
+            onFailure: { _, _, _, _ in XCTFail("Expected success") }
         )
         useCase.succeed()
 
@@ -1284,10 +1287,10 @@ private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCre
     private(set) var receivedUsername: String?
     private(set) var receivedPassword: String?
     private var successHandler: (() -> Void)?
-    private var failureHandler: ((SiteCredentialLoginError, Bool) -> Void)?
+    private var failureHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
-                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool) -> Void) {
+                       onLoginFailure: @escaping (SiteCredentialLoginError, Bool, Bool) -> Void) {
         successHandler = onLoginSuccess
         failureHandler = onLoginFailure
     }
@@ -1302,8 +1305,10 @@ private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCre
         successHandler?()
     }
 
-    func fail(with error: SiteCredentialLoginError, loginEntryVerified: Bool) {
-        failureHandler?(error, loginEntryVerified)
+    func fail(with error: SiteCredentialLoginError,
+              loginEntryVerified: Bool,
+              offersBrowserAlternative: Bool = false) {
+        failureHandler?(error, loginEntryVerified, offersBrowserAlternative)
     }
 }
 

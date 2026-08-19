@@ -25,6 +25,11 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
+
+    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil) {
+        self.httpsConfigurationNotice = httpsConfigurationNotice
+    }
 
     /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
@@ -70,59 +75,67 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        ZStack(alignment: .bottomLeading) {
-            switch viewState {
-            case .loading(let catalogSyncState):
-                PointOfSaleLoadingView(
-                    catalogSyncState: catalogSyncState,
-                    onExit: { dismiss() }
-                )
-                    .transition(.opacity)
-                    .ignoresSafeArea()
-            case .ineligible(let reason):
-                POSIneligibleView(reason: reason, onRefresh: {
-                    try await posModel.entryPointController.refreshEligibility(reason: reason)
-                })
-                .frame(maxWidth: .infinity)
-            case .error(let error):
-                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                    if error.errorType == .initialCatalogSyncError {
-                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
-                    }
-
-                    Task {
-                        switch viewStateCoordinator.selectedItemListType {
-                        case .products(search: false):
-                            await posModel.purchasableItemsController.loadItems(base: .root)
-                        case .products(search: true):
-                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                        case .coupons(search: false):
-                            await posModel.couponsSearchController.loadItems(base: .root)
-                        case .coupons(search: true):
-                            await posModel.couponsSearchController.loadItems(base: .root)
+        ZStack {
+            Group {
+                switch viewState {
+                case .loading(let catalogSyncState):
+                    PointOfSaleLoadingView(
+                        catalogSyncState: catalogSyncState,
+                        onExit: { dismiss() }
+                    )
+                        .transition(.opacity)
+                        .ignoresSafeArea()
+                case .ineligible(let reason):
+                    POSIneligibleView(reason: reason, onRefresh: {
+                        try await posModel.entryPointController.refreshEligibility(reason: reason)
+                    })
+                    .frame(maxWidth: .infinity)
+                case .error(let error):
+                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                        if error.errorType == .initialCatalogSyncError {
+                            analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
                         }
-                    }
-                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                    dismiss()
-                } : nil)
-            case .content:
-                contentView
-                    .accessibilitySortPriority(2)
-            }
 
-            POSFloatingControlView(onExitSelected: requestExitPermission,
-                                   showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation,
-                                   onSettingsSelected: requestSettingsPermission,
-                                   onOrdersSelected: presentOrders)
-            .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-            .padding(.bottom, Constants.floatingControlBottomPadding)
-            .trackSize(size: $floatingSize)
-            .accessibilitySortPriority(1)
-            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+                        Task {
+                            switch viewStateCoordinator.selectedItemListType {
+                            case .products(search: false):
+                                await posModel.purchasableItemsController.loadItems(base: .root)
+                            case .products(search: true):
+                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                            case .coupons(search: false):
+                                await posModel.couponsSearchController.loadItems(base: .root)
+                            case .coupons(search: true):
+                                await posModel.couponsSearchController.loadItems(base: .root)
+                            }
+                        }
+                    }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
+                        dismiss()
+                    } : nil)
+                case .content:
+                    contentView
+                        .accessibilitySortPriority(2)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
+            // report its own ideal height while POS is being presented, which must not drive this position.
+            .overlay(alignment: .bottomLeading) {
+                POSFloatingControlView(onExitSelected: requestExitPermission,
+                                       showSupport: $showSupport,
+                                       showDocumentation: $showDocumentation,
+                                       onSettingsSelected: requestSettingsPermission,
+                                       onOrdersSelected: presentOrders)
+                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+                .padding(.bottom, Constants.floatingControlBottomPadding)
+                .trackSize(size: $floatingSize)
+                .accessibilitySortPriority(1)
+                .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+            }
 
             POSConnectivityView()
         }
+        // Dashboard-owned modals also need the complete presentation bounds for centring.
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
@@ -232,6 +245,7 @@ struct PointOfSaleDashboardView: View {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
                         searchTerm: $viewStateCoordinator.searchTerm,
+                        httpsConfigurationNotice: httpsConfigurationNotice,
                         phoneHeaderAccessoryBuilder: { context in
                             AnyView(phoneOverflowMenu(
                                 canCreateCoupon: context.canCreateCoupon,
@@ -491,7 +505,8 @@ struct PointOfSaleDashboardView: View {
 
             HStack(spacing: POSSpacing.none) {
                 ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                             searchTerm: $viewStateCoordinator.searchTerm)
+                             searchTerm: $viewStateCoordinator.searchTerm,
+                             httpsConfigurationNotice: httpsConfigurationNotice)
                     .frame(width: productsWidth)
                     .accessibilitySortPriority(posModel.orderStage == .building ? 2 : 0)
                     .allowsHitTesting(posModel.orderStage == .building)

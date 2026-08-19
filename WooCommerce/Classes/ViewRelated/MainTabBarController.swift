@@ -9,6 +9,7 @@ import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 import enum PointOfSale.POSLockStateKey
+import struct PointOfSale.POSHTTPSConfigurationNotice
 
 
 /// Enum representing the individual tabs
@@ -1042,7 +1043,25 @@ private extension MainTabBarController {
             viewControllerToPresent: self,
             storesManager: stores,
             eligibilityChecker: POSTabEligibilityChecker(siteID: siteID),
-            localCatalogEligibilityService: stores.posCatalogEligibilityChecker
+            localCatalogEligibilityService: stores.posCatalogEligibilityChecker,
+            httpsConfigurationNoticeProvider: { [weak self] in
+                guard let self, httpsConfigurationWarningViewModel.isVisible else {
+                    return nil
+                }
+                return POSHTTPSConfigurationNotice(
+                    title: HTTPSConfigurationWarningContent.title,
+                    message: HTTPSConfigurationWarningContent.message,
+                    actionTitle: HTTPSConfigurationWarningContent.actionTitle,
+                    onAction: { [weak self] in
+                        guard let self,
+                              let presenter = presentedViewController else { return }
+                        WebviewHelper.launch(HTTPSConfigurationWarningContent.helpURL, with: presenter)
+                    },
+                    onDismiss: { [weak self] in
+                        self?.httpsConfigurationWarningViewModel.dismiss()
+                    }
+                )
+            }
         )
         posTabCoordinator = coordinator
         autoReopenPOSIfNeeded(siteID: siteID)

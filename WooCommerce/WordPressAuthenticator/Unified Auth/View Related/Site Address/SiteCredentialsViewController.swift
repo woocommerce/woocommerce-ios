@@ -454,7 +454,7 @@ private extension SiteCredentialsViewController {
                 return
             }
             self.recoveryDraft = textField.text ?? ""
-            self.updateRecoveryError(nil)
+            self.clearRecoveryError()
             self.configureSubmitButton(animating: self.isAuthenticatingSiteCredentials)
         }
     }
@@ -646,32 +646,15 @@ private extension SiteCredentialsViewController {
         reloadRecoveryRows(focusingError: recoveryError != nil)
     }
 
-    /// Adds, removes, or refreshes only the inline error row so editing is never interrupted.
+    /// Removes only the inline error row, so correcting the address never interrupts editing.
     ///
-    func updateRecoveryError(_ error: SiteCredentialRecoveryError?) {
-        guard recoveryError != error else {
+    func clearRecoveryError() {
+        guard recoveryError != nil, let errorIndex = rows.firstIndex(of: .recoveryError) else {
             return
         }
-        let hadError = recoveryError != nil
-        recoveryError = error
-        let errorIndexPath = IndexPath(row: 3, section: 0)
-        switch (hadError, error != nil) {
-        case (false, true):
-            rows.insert(.recoveryError, at: errorIndexPath.row)
-            tableView.insertRows(at: [errorIndexPath], with: .none)
-        case (true, false):
-            rows.remove(at: errorIndexPath.row)
-            tableView.deleteRows(at: [errorIndexPath], with: .none)
-        case (true, true):
-            tableView.reloadRows(at: [errorIndexPath], with: .none)
-        case (false, false):
-            break
-        }
-        guard error != nil else {
-            return
-        }
-        tableView.layoutIfNeeded()
-        UIAccessibility.post(notification: .layoutChanged, argument: tableView.cellForRow(at: errorIndexPath) ?? tableView)
+        recoveryError = nil
+        rows.remove(at: errorIndex)
+        tableView.deleteRows(at: [IndexPath(row: errorIndex, section: 0)], with: .none)
     }
 
     func cancelEndpointRecovery() {

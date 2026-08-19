@@ -75,67 +75,64 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        ZStack {
-            Group {
-                switch viewState {
-                case .loading(let catalogSyncState):
-                    PointOfSaleLoadingView(
-                        catalogSyncState: catalogSyncState,
-                        onExit: { dismiss() }
-                    )
-                        .transition(.opacity)
-                        .ignoresSafeArea()
-                case .ineligible(let reason):
-                    POSIneligibleView(reason: reason, onRefresh: {
-                        try await posModel.entryPointController.refreshEligibility(reason: reason)
-                    })
-                    .frame(maxWidth: .infinity)
-                case .error(let error):
-                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                        if error.errorType == .initialCatalogSyncError {
-                            analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
-                        }
+        Group {
+            switch viewState {
+            case .loading(let catalogSyncState):
+                PointOfSaleLoadingView(
+                    catalogSyncState: catalogSyncState,
+                    onExit: { dismiss() }
+                )
+                    .transition(.opacity)
+                    .ignoresSafeArea()
+            case .ineligible(let reason):
+                POSIneligibleView(reason: reason, onRefresh: {
+                    try await posModel.entryPointController.refreshEligibility(reason: reason)
+                })
+                .frame(maxWidth: .infinity)
+            case .error(let error):
+                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                    if error.errorType == .initialCatalogSyncError {
+                        analytics.track(event: WooAnalyticsEvent.LocalCatalog.splashScreenRetryTapped())
+                    }
 
-                        Task {
-                            switch viewStateCoordinator.selectedItemListType {
-                            case .products(search: false):
-                                await posModel.purchasableItemsController.loadItems(base: .root)
-                            case .products(search: true):
-                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                            case .coupons(search: false):
-                                await posModel.couponsSearchController.loadItems(base: .root)
-                            case .coupons(search: true):
-                                await posModel.couponsSearchController.loadItems(base: .root)
-                            }
+                    Task {
+                        switch viewStateCoordinator.selectedItemListType {
+                        case .products(search: false):
+                            await posModel.purchasableItemsController.loadItems(base: .root)
+                        case .products(search: true):
+                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                        case .coupons(search: false):
+                            await posModel.couponsSearchController.loadItems(base: .root)
+                        case .coupons(search: true):
+                            await posModel.couponsSearchController.loadItems(base: .root)
                         }
-                    }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
-                        dismiss()
-                    } : nil)
-                case .content:
-                    contentView
-                        .accessibilitySortPriority(2)
-                }
+                    }
+                }, onExit: error.errorType == .initialCatalogSyncError ? { // TODO: WOOMOB-1692 remove specialisation of errors if possible
+                    dismiss()
+                } : nil)
+            case .content:
+                contentView
+                    .accessibilitySortPriority(2)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
-            // report its own ideal height while POS is being presented, which must not drive this position.
-            .overlay(alignment: .bottomLeading) {
-                POSFloatingControlView(onExitSelected: requestExitPermission,
-                                       showSupport: $showSupport,
-                                       showDocumentation: $showDocumentation,
-                                       onSettingsSelected: requestSettingsPermission,
-                                       onOrdersSelected: presentOrders)
-                .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
-                .padding(.bottom, Constants.floatingControlBottomPadding)
-                .trackSize(size: $floatingSize)
-                .accessibilitySortPriority(1)
-                .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
-            }
-
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
+        // report its own ideal height while POS is being presented, which must not drive this position.
+        .overlay(alignment: .bottomLeading) {
+            POSFloatingControlView(onExitSelected: requestExitPermission,
+                                   showSupport: $showSupport,
+                                   showDocumentation: $showDocumentation,
+                                   onSettingsSelected: requestSettingsPermission,
+                                   onOrdersSelected: presentOrders)
+            .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
+            .padding(.bottom, Constants.floatingControlBottomPadding)
+            .trackSize(size: $floatingSize)
+            .accessibilitySortPriority(1)
+            .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
+        }
+        .overlay {
             POSConnectivityView()
         }
-        // Dashboard-owned modals also need the complete presentation bounds for centring.
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))

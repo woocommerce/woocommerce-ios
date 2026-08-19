@@ -3,6 +3,10 @@ import UIKit
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectivityStatus
 
+extension Notification.Name {
+    static let wooNavigationControllerDidShowViewController = Notification.Name("WooNavigationControllerDidShowViewController")
+}
+
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
 ///
 class WooNavigationController: UINavigationController {
@@ -83,6 +87,7 @@ final class WooNavigationControllerDelegate: NSObject, UINavigationControllerDel
         currentController = viewController
         configureOfflineBanner(for: viewController)
         forwardDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+        NotificationCenter.default.post(name: .wooNavigationControllerDidShowViewController, object: navigationController)
     }
 
     /// Forwards the event to the children delegate.

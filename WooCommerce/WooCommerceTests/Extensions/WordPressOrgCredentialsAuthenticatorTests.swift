@@ -394,7 +394,13 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         // Given
         let harness = try makeAuthenticatedControllerHarness()
         defer { harness.cleanup() }
-        let (sut, webView, endpoints, initialURL) = (harness.controller, harness.webView, harness.endpoints, harness.initialURL)
+        let (sut, webView, endpoints, initialURL, viewModel) = (
+            harness.controller,
+            harness.webView,
+            harness.endpoints,
+            harness.initialURL,
+            harness.viewModel
+        )
         sut.loadViewIfNeeded()
         let credentialRequest = try XCTUnwrap(webView.loadedRequests.first)
         let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
@@ -420,13 +426,101 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         )
         let cleanNavigation = try XCTUnwrap(webView.loadedNavigations.last)
         sut.webView(webView, didFailProvisionalNavigation: cleanNavigation, withError: URLError(.cannotConnectToHost))
-        sut.webView(webView, didFailProvisionalNavigation: cleanNavigation, withError: URLError(.cannotConnectToHost))
+        XCTAssertTrue(viewModel.provisionalNavigationErrors.isEmpty)
+        let fallbackNavigation = try XCTUnwrap(webView.loadedNavigations.last)
+        sut.webView(webView, didFailProvisionalNavigation: fallbackNavigation, withError: URLError(.cannotConnectToHost))
 
         // Then
         XCTAssertEqual(preservedPolicy, .cancel)
         XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, nonceURL, initialURL])
         XCTAssertEqual(webView.loadedRequests[1].httpMethod, "GET")
         XCTAssertNil(webView.loadedRequests[1].httpBody)
+        XCTAssertEqual(viewModel.provisionalNavigationErrors.count, 1)
+    }
+
+    func test_WebKit_policy_interruption_does_not_cancel_scheduled_clean_get() throws {
+        // Given
+        let harness = try makeAuthenticatedControllerHarness()
+        defer { harness.cleanup() }
+        let (sut, webView, endpoints) = (harness.controller, harness.webView, harness.endpoints)
+        sut.loadViewIfNeeded()
+        let credentialRequest = try XCTUnwrap(webView.loadedRequests.first)
+        let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
+        XCTAssertEqual(
+            sut.decideSiteCredentialNavigation(for: credentialRequest, isMainFrame: true, shouldPerformDownload: false),
+            .allow
+        )
+        let nonceURL = try endpoints.nonceURL()
+        var preservedPost = URLRequest(url: nonceURL)
+        preservedPost.httpMethod = "POST"
+        preservedPost.httpBody = Data("credentials".utf8)
+        XCTAssertEqual(
+            sut.decideSiteCredentialNavigation(for: preservedPost, isMainFrame: true, shouldPerformDownload: false),
+            .cancel
+        )
+        let cleanGet = try XCTUnwrap(webView.loadedRequests.last)
+
+        // When
+        sut.webView(
+            webView,
+            didFailProvisionalNavigation: credentialNavigation,
+            withError: NSError(domain: WKError.errorDomain, code: 102)
+        )
+        let cleanGetPolicy = sut.decideSiteCredentialNavigation(for: cleanGet, isMainFrame: true, shouldPerformDownload: false)
+
+        // Then
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, nonceURL])
+        XCTAssertEqual(cleanGet.httpMethod, "GET")
+        XCTAssertNil(cleanGet.httpBody)
+        XCTAssertEqual(cleanGetPolicy, .allow)
+    }
+
+    func test_reload_without_site_credential_authentication_does_not_stop_unrelated_navigation() throws {
+        // Given
+        let suiteName = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let sessionManager = SessionManager(defaults: defaults, keychainServiceName: UUID().uuidString)
+        let initialURL = try XCTUnwrap(URL(string: "https://test.com/products/13"))
+        let webView = RecordingWKWebView()
+        let viewModel = StubAuthenticatedWebViewModel(initialURL: initialURL)
+        let sut = AuthenticatedWebViewController(
+            stores: MockStoresManager(sessionManager: sessionManager),
+            viewModel: viewModel,
+            extraCredentials: nil,
+            webView: webView
+        )
+        sut.loadViewIfNeeded()
+
+        // When
+        viewModel.reloadWebview()
+
+        // Then
+        XCTAssertEqual(webView.stopLoadingCallCount, 0)
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [initialURL, initialURL])
+    }
+
+    func test_reload_during_site_credential_authentication_stops_navigation_and_clears_gate() throws {
+        // Given
+        let harness = try makeAuthenticatedControllerHarness()
+        defer { harness.cleanup() }
+        let (sut, webView, viewModel, initialURL) = (
+            harness.controller,
+            harness.webView,
+            harness.viewModel,
+            harness.initialURL
+        )
+        sut.loadViewIfNeeded()
+
+        // When
+        viewModel.reloadWebview()
+
+        // Then
+        XCTAssertEqual(webView.stopLoadingCallCount, 1)
+        XCTAssertEqual(webView.loadedRequests.last?.url, initialURL)
+        XCTAssertNil(
+            sut.decideSiteCredentialNavigation(for: URLRequest(url: initialURL), isMainFrame: true, shouldPerformDownload: false)
+        )
     }
 
     func test_controller_with_mismatched_persisted_endpoint_identity_falls_back_to_unauthenticated_initial_url() throws {
@@ -537,6 +631,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         webView: RecordingWKWebView,
         endpoints: CookieNonceAuthenticationEndpoints,
         initialURL: URL,
+        viewModel: StubAuthenticatedWebViewModel,
         cleanup: () -> Void
     ) {
         let suiteName = UUID().uuidString
@@ -549,14 +644,15 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         sessionManager.defaultSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://test.com")
         sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
         let webView = RecordingWKWebView()
+        let viewModel = StubAuthenticatedWebViewModel(initialURL: initialURL)
         let controller = AuthenticatedWebViewController(
             stores: MockStoresManager(sessionManager: sessionManager),
-            viewModel: StubAuthenticatedWebViewModel(initialURL: initialURL),
+            viewModel: viewModel,
             extraCredentials: nil,
             webView: webView,
             siteCredentialReplacementScheduler: { $0() }
         )
-        return (controller, webView, endpoints, initialURL, { defaults.removePersistentDomain(forName: suiteName) })
+        return (controller, webView, endpoints, initialURL, viewModel, { defaults.removePersistentDomain(forName: suiteName) })
     }
 
     private func formValue(named name: String, in request: URLRequest) throws -> String? {
@@ -572,6 +668,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
 private final class RecordingWKWebView: WKWebView {
     private(set) var loadedRequests: [URLRequest] = []
     private(set) var loadedNavigations: [WKNavigation] = []
+    private(set) var stopLoadingCallCount = 0
 
     override func load(_ request: URLRequest) -> WKNavigation? {
         loadedRequests.append(request)
@@ -579,13 +676,19 @@ private final class RecordingWKWebView: WKWebView {
         loadedNavigations.append(navigation)
         return navigation
     }
+
+    override func stopLoading() {
+        stopLoadingCallCount += 1
+    }
 }
 
 private final class StubNavigation: WKNavigation { }
 
-private final class StubAuthenticatedWebViewModel: AuthenticatedWebViewModel {
+private final class StubAuthenticatedWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     let title = ""
     let initialURL: URL?
+    var reloadWebview: () -> Void = { }
+    private(set) var provisionalNavigationErrors: [Error] = []
 
     init(initialURL: URL) {
         self.initialURL = initialURL
@@ -594,4 +697,7 @@ private final class StubAuthenticatedWebViewModel: AuthenticatedWebViewModel {
     func handleDismissal() { }
     func handleRedirect(for url: URL?) { }
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy { .allow }
+    func didFailProvisionalNavigation(with error: Error) {
+        provisionalNavigationErrors.append(error)
+    }
 }

@@ -625,8 +625,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
                 onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
-            case .invalidLoginResponse where endpointUnderVerification == .login && loginEntryVerified == false:
-                onRecovery(.login(draftURL: normalizedLoginURL, error: .notFound))
+            case .invalidLoginResponse where endpointUnderVerification != .admin && loginEntryVerified == false:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
+                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
             case .inaccessibleAdminPage where loginEntryVerified:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .admin ? .notFound : nil
                 onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,

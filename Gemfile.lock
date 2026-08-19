@@ -1,13 +1,13 @@
 GIT
   remote: https://github.com/Automattic/dangermattic.git
-  revision: 21a63ef9531f011aff31a07c46128eff4b080570
+  revision: 59227cd8538059fba81fb1cd72f8bc12addbba48
   branch: iangmaia/add-translation-context-plugin
   specs:
-    danger-dangermattic (1.4.0)
+    danger-dangermattic (1.4.1)
       danger (~> 9.6)
       danger-plugin-api (~> 1.0)
       danger-rubocop (~> 0.13)
-      i18n-context-generator (~> 0.5)
+      i18n-context-generator (~> 0.5.2)
       rubocop (~> 1.63)
 
 GEM
@@ -258,7 +258,7 @@ GEM
       domain_name (~> 0.5)
     httpclient (2.9.0)
       mutex_m
-    i18n-context-generator (0.5.1)
+    i18n-context-generator (0.5.2)
       concurrent-ruby (~> 1.2)
       csv (~> 3.3)
       dotstrings (~> 0.6)

@@ -203,9 +203,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            notificationCenter: notificationCenter,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -215,7 +215,7 @@ final class OrderListViewModelTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Assert
-        XCTAssertTrue(resynchronizeRequested)
+        XCTAssertEqual(resynchronizationReason, .viewWillAppear)
     }
 
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
@@ -226,9 +226,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            notificationCenter: notificationCenter,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -237,7 +237,7 @@ final class OrderListViewModelTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Assert
-        XCTAssertFalse(resynchronizeRequested)
+        XCTAssertNil(resynchronizationReason)
     }
 
     // MARK: - Foreground Notifications
@@ -250,9 +250,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            pushNotificationsManager: pushNotificationsManager,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -262,7 +262,7 @@ final class OrderListViewModelTests: XCTestCase {
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
-        XCTAssertTrue(resynchronizeRequested)
+        XCTAssertEqual(resynchronizationReason, .pushNotification)
     }
 
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
@@ -273,9 +273,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            pushNotificationsManager: pushNotificationsManager,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -285,7 +285,7 @@ final class OrderListViewModelTests: XCTestCase {
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
-        XCTAssertFalse(resynchronizeRequested)
+        XCTAssertNil(resynchronizationReason)
     }
 
     // MARK: - Banner visibility

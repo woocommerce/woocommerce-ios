@@ -125,6 +125,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     private let siteID: Int64
 
+    private let stores: StoresManager
+
     /// Current top banner that is displayed.
     ///
     private var topBannerView: UIView?
@@ -151,9 +153,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
+         stores: StoresManager = ServiceLocator.stores,
          switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
+        self.stores = stores
         self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -277,17 +281,17 @@ private extension OrderListViewController {
     /// Initialize ViewModel operations
     ///
     func configureViewModel() {
-        viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
+        viewModel.onShouldResynchronize = { [weak self] reason in
             guard let self else { return }
 
-            // Avoid synchronizing if the view is not visible. The refresh will be handled in
-            // `viewWillAppear` instead.
-            guard self.viewIfLoaded?.window != nil else { return }
+            // New-order notifications should update storage even when Orders is not visible,
+            // so the latest data is ready when the merchant returns to the list.
+            guard reason == .pushNotification || self.viewIfLoaded?.window != nil else { return }
 
             // Send a delegate event in case the updated happened while the app was in the background.
             self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
 
-            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+            self.syncingCoordinator.resynchronize(reason: reason.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -492,7 +496,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 onCompletion?(error == nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Sets the current top banner in the table view header

@@ -22,6 +22,7 @@ struct OrderListViewControllerTests {
         let viewController = OrderListViewController(siteID: siteID,
                                                      title: "Orders",
                                                      viewModel: viewModel,
+                                                     stores: stores,
                                                      switchDetailsHandler: { _, _, _, _ in })
 
         // When
@@ -37,6 +38,52 @@ struct OrderListViewControllerTests {
         #expect(mirror.imageView.image == .boxesImage)
         #expect(mirror.detailsLabel.text == "Explore how you can increase your store sales.")
         #expect(mirror.actionButton.titleLabel?.text == "Learn more")
+    }
+
+    @Test func foreground_order_notification_when_orders_are_hidden_then_synchronizes_first_page() {
+        // Given
+        let siteID: Int64 = 123
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        let storageManager = MockStorageManager()
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           pushNotificationsManager: pushNotificationsManager,
+                                           filters: nil)
+        let viewController = OrderListViewController(siteID: siteID,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { _, _, _, _ in })
+        var synchronizedSiteID: Int64?
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .fetchFilteredOrders(siteID, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                return
+            }
+            synchronizedSiteID = siteID
+            onCompletion(0, .success([]))
+        }
+        viewController.loadViewIfNeeded()
+        let originalSyncDate = OrderListSyncBackgroundTask.latestSyncDate
+        defer { OrderListSyncBackgroundTask.latestSyncDate = originalSyncDate }
+        OrderListSyncBackgroundTask.latestSyncDate = Date()
+
+        // When
+        let notification = WooCommerce.PushNotification(noteID: 1,
+                                                        siteID: siteID,
+                                                        kind: .storeOrder,
+                                                        title: "",
+                                                        subtitle: "",
+                                                        message: "",
+                                                        note: nil,
+                                                        meta: nil)
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Then
+        #expect(viewController.view.window == nil)
+        #expect(synchronizedSiteID == siteID)
     }
 }
 

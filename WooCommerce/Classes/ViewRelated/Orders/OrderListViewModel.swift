@@ -34,10 +34,9 @@ final class OrderListViewModel {
         statusesDidChangeSubject.eraseToAnyPublisher()
     }
 
-    /// The block called if self requests a resynchronization of the first page. The
-    /// resynchronization should only be done if the view is visible.
+    /// The block called if self requests a resynchronization of the first page.
     ///
-    var onShouldResynchronizeIfViewIsVisible: (() -> ())?
+    var onShouldResynchronize: ((OrderListSyncActionUseCase.SyncReason) -> Void)?
 
     /// The block called if new filters are applied
     ///
@@ -161,7 +160,7 @@ final class OrderListViewModel {
         }
 
         isAppActive = true
-        onShouldResynchronizeIfViewIsVisible?()
+        onShouldResynchronize?(.viewWillAppear)
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -256,7 +255,7 @@ private extension OrderListViewModel {
                 return
             }
 
-            self?.onShouldResynchronizeIfViewIsVisible?()
+            self?.onShouldResynchronize?(.pushNotification)
         }
     }
 

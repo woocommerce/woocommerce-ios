@@ -15,7 +15,12 @@ unless respond_to?(:translation_context_checker)
   end
   raise 'Could not install i18n-context-generator 0.5.2' unless installed
 
-  Dir.glob(File.join(gem_dir, 'gems', '*', 'lib')).each { |path| $LOAD_PATH.unshift(path) }
+  Dir.glob(File.join(gem_dir, 'specifications', '*.gemspec')).each do |path|
+    specification = Gem::Specification.load(path)
+    specification.require_paths.each do |require_path|
+      $LOAD_PATH.unshift(File.join(specification.full_gem_path, require_path))
+    end
+  end
   require 'i18n_context_generator'
 
   Dir.mktmpdir('dangermattic-translation-context') do |plugin_dir|

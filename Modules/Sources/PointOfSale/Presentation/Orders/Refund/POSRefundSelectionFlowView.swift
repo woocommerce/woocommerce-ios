@@ -1,11 +1,13 @@
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
+import enum Yosemite.OrderRefundEligibilityFailure
 
 enum RefundSelectionState: Identifiable, Equatable {
     case loading
     case loadingError
     case preparationError
     case nothingToRefund
+    case ineligible(OrderRefundEligibilityFailure)
     case itemSelection
 
     var id: String {
@@ -14,6 +16,7 @@ enum RefundSelectionState: Identifiable, Equatable {
         case .loadingError: return "loadingError"
         case .preparationError: return "preparationError"
         case .nothingToRefund: return "nothingToRefund"
+        case .ineligible: return "ineligible"
         case .itemSelection: return "itemSelection"
         }
     }
@@ -22,7 +25,7 @@ enum RefundSelectionState: Identifiable, Equatable {
         switch self {
         case .itemSelection:
             return .selectItems
-        case .loading, .loadingError, .preparationError, .nothingToRefund:
+        case .loading, .loadingError, .preparationError, .nothingToRefund, .ineligible:
             return nil
         }
     }
@@ -69,6 +72,15 @@ struct POSRefundSelectionFlowView: View {
             )
         case .nothingToRefund:
             POSRefundNothingToRefundView(onClose: onDismiss)
+        case .ineligible(let eligibilityFailure):
+            POSRefundErrorView(
+                title: eligibilityFailure.title,
+                subtitle: eligibilityFailure.localizedDescription,
+                onRetry: nil,
+                cancelButtonTitle: eligibilityFailure.dismissButtonTitle,
+                onCancel: onDismiss,
+                onClose: onDismiss
+            )
         case .itemSelection:
             POSRefundItemsSelectionView(
                 onClose: onDismiss,

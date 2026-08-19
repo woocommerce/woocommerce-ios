@@ -408,7 +408,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
 
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
-        let order = sampleOrder().copy(dateModified: dateModified)
+        let order = sampleOrder().copy(dateModified: dateModified).withMetadataDerivedValues()
         storageManager.insertSampleOrder(readOnlyOrder: order)
 
         // When
@@ -434,7 +434,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated())
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated().withMetadataDerivedValues())
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
@@ -448,6 +448,34 @@ final class OrderStoreTests: XCTestCase {
         // Then
         let expectedOrder = sampleOrder()
         assertEqual(expectedOrder, fetchedOrder)
+    }
+
+    /// Orders stored from list and search fetches carry no metadata-derived values (those fetches omit
+    /// `meta_data`), so the date-modified shortcut is skipped and the order is synced in full.
+    ///
+    func test_retrieveOrder_when_stored_order_lacks_metadata_then_fetches_full_order_from_remote() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // `sampleOrder()` has no custom fields, attribution info, charge ID, or renewal subscription ID —
+        // matching an order stored from a list fetch.
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
+
+        // When
+        let fetchedOrder: Yosemite.Order? = waitFor { promise in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
+                promise(order)
+            }
+
+            orderStore.onAction(action)
+        }
+
+        // Then
+        // The full order from remote is returned, and the order request is the only request made
+        // (no `date_modified_gmt` probe beforehand).
+        assertEqual(sampleOrder(), fetchedOrder)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
     }
 
     // MARK: - OrderAction.retrieveOrderRemotely
@@ -1008,8 +1036,8 @@ final class OrderStoreTests: XCTestCase {
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 
@@ -1044,7 +1072,11 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                           status: .autoDraft,
+                                                           amount: "125.50",
+                                                           taxable: false,
+                                                           currency: "USD") { _ in }
         store.onAction(action)
 
         // Then
@@ -1066,7 +1098,11 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: true) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                           status: .autoDraft,
+                                                           amount: "125.50",
+                                                           taxable: true,
+                                                           currency: "USD") { _ in }
         store.onAction(action)
 
         // Then
@@ -1082,6 +1118,24 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_create_simple_payments_order_sends_currency_when_provided() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
+
+        // When
+        let action = OrderAction.createSimplePaymentsOrder(siteID: sampleSiteID,
+                                                           status: .pending,
+                                                           amount: "0.50",
+                                                           taxable: false,
+                                                           currency: "USD") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["currency"] as? String, "USD")
+    }
+
     func test_create_pending_simple_payments_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1089,7 +1143,11 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .pending, amount: "125.50", taxable: false) { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                               status: .pending,
+                                                               amount: "125.50",
+                                                               taxable: false,
+                                                               currency: "USD") { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -1107,7 +1165,11 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                               status: .autoDraft,
+                                                               amount: "125.50",
+                                                               taxable: false,
+                                                               currency: "USD") { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -1390,6 +1452,25 @@ final class OrderStoreTests: XCTestCase {
         ]
         // Updating an order will also contain `dp` (decimal point), but in this case we're only interested in `gift_cards`
         XCTAssertTrue(receivedKeys.contains(expectedKeys))
+    }
+
+    func test_update_order_with_request_currency_forwards_currency_as_query_parameter() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateOrder(siteID: sampleSiteID,
+                                             order: sampleOrder(),
+                                             giftCard: nil,
+                                             fields: [],
+                                             requestCurrency: "EUR") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.queryParameters.dictionary, ["currency": "EUR"])
+        XCTAssertNil(request.requestParameters.dictionary?["currency"])
     }
 
     func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
@@ -2038,5 +2119,15 @@ private extension OrderStoreTests {
         default:
             return nil
         }
+    }
+}
+
+private extension Networking.Order {
+    /// Returns a copy with a `chargeID`, marking the order as containing metadata-derived values so its
+    /// stored copy is eligible for the date-modified shortcut in `retrieveOrder`.
+    /// `MockStorageManager.insertSampleOrder` persists only scalar attributes (no relationships),
+    /// so the scalar `chargeID` is used as the marker.
+    func withMetadataDerivedValues() -> Networking.Order {
+        copy(chargeID: "ch_123")
     }
 }

@@ -11,11 +11,66 @@ import SwiftUI
 import enum Networking.DotcomError
 import protocol Storage.StorageManagerType
 
+/// Determines whether an order with a different currency can be edited in the app.
+///
+/// WooCommerce 11.1 added support for currency-aware order editing. When either currency is
+/// missing, editing remains available because a mismatch cannot be established.
+struct OrderCurrencyEditingEligibility {
+    private static let minimumSupportedWooCommerceVersion = "11.1.0"
+
+    func shouldBlockEditing(orderCurrency: String,
+                            siteCurrency: String?,
+                            wooCommerceVersion: String?) -> Bool {
+        guard let orderCurrency = nonEmptyCurrencyCode(orderCurrency),
+              let siteCurrency = nonEmptyCurrencyCode(siteCurrency) else {
+            return false
+        }
+        guard orderCurrency.caseInsensitiveCompare(siteCurrency) != .orderedSame else {
+            return false
+        }
+        guard CurrencyCode(caseInsensitiveRawValue: orderCurrency) != nil,
+              CurrencyCode(caseInsensitiveRawValue: siteCurrency) != nil else {
+            return true
+        }
+        guard let wooCommerceVersion else {
+            return true
+        }
+        return !VersionHelpers.isVersionSupported(version: wooCommerceVersion,
+                                                  minimumRequired: Self.minimumSupportedWooCommerceVersion,
+                                                  includesDevAndBetaVersions: true)
+    }
+
+    func requestCurrency(orderCurrency: String,
+                         siteCurrency: String?,
+                         wooCommerceVersion: String?) -> String? {
+        guard !shouldBlockEditing(orderCurrency: orderCurrency,
+                                  siteCurrency: siteCurrency,
+                                  wooCommerceVersion: wooCommerceVersion),
+              let orderCurrency = CurrencyCode(caseInsensitiveRawValue: orderCurrency),
+              let siteCurrency,
+              let siteCurrency = CurrencyCode(caseInsensitiveRawValue: siteCurrency),
+              orderCurrency != siteCurrency else {
+            return nil
+        }
+        return orderCurrency.rawValue
+    }
+
+    private func nonEmptyCurrencyCode(_ currencyCode: String?) -> String? {
+        guard let currencyCode = currencyCode?.trimmingCharacters(in: .whitespacesAndNewlines),
+              currencyCode.isNotEmpty else {
+            return nil
+        }
+        return currencyCode
+    }
+}
+
 final class OrderDetailsViewModel {
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    private let siteCurrencyProvider: (Int64) -> String?
+    private let orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
 
@@ -38,14 +93,22 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         siteCurrencyProvider: ((Int64) -> String?)? = nil,
+         orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
          pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
+        self.siteCurrencyProvider = siteCurrencyProvider ?? { siteID in
+            storageManager.viewStorage
+                .loadSiteSetting(siteID: siteID, settingID: CurrencySettings.Constants.currencyCodeKey)?
+                .value
+        }
+        self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
         self.featureFlagService = featureFlagService
         self.syncStateController = syncStateController
-        self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
+        self.configurationLoader = CardPresentConfigurationLoader()
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
@@ -186,17 +249,38 @@ final class OrderDetailsViewModel {
 
     /// Returns edit action availability given the internal state.
     ///
+    @MainActor
     var editButtonBehaviour: EditButtonBehaviour {
         guard syncStateController.syncState == .synced else {
             return .disabledForSyncing
         }
 
-        guard let orderCurrency = CurrencyCode(caseInsensitiveRawValue: order.currency),
-              orderCurrency == ServiceLocator.currencySettings.currencyCode else {
+        let siteCurrency = siteCurrencyProvider(order.siteID)
+        let wooCommerceVersion = activeWooCommerceVersion()
+        let shouldBlockEditing = orderCurrencyEditingEligibility.shouldBlockEditing(
+            orderCurrency: order.currency,
+            siteCurrency: siteCurrency,
+            wooCommerceVersion: wooCommerceVersion
+        )
+        guard !shouldBlockEditing else {
             return .showNoticeForCurrencyConflict
         }
 
         return .enabled
+    }
+
+    @MainActor
+    var editOrderRequestCurrency: String? {
+        orderCurrencyEditingEligibility.requestCurrency(
+            orderCurrency: order.currency,
+            siteCurrency: siteCurrencyProvider(order.siteID),
+            wooCommerceVersion: activeWooCommerceVersion()
+        )
+    }
+
+    @MainActor
+    private func activeWooCommerceVersion() -> String? {
+        pluginsService.loadPluginInStorage(siteID: order.siteID, plugin: .wooCommerce, isActive: true)?.version
     }
 
     enum EditButtonBehaviour {
@@ -584,7 +668,7 @@ extension OrderDetailsViewModel {
                 return
             }
 
-            let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+            let viewModel = RefundDetailsViewModel(order: order, refund: refund, storageManager: storageManager)
             let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
@@ -592,7 +676,7 @@ extension OrderDetailsViewModel {
             guard let refundedProducts = dataSource.refundedProducts else {
                 return
             }
-            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
+            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts, storageManager: storageManager)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         case .trashOrder:
@@ -1076,8 +1160,11 @@ extension OrderDetailsViewModel {
         DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
     }
 
+    @MainActor
     func showNoticeForEditingWithCurrencyConflict(in viewController: UIViewController) {
-        let siteCurrency = ServiceLocator.currencySettings.currencyCode.rawValue
+        guard let siteCurrency = siteCurrencyProvider(order.siteID) else {
+            return
+        }
         let noticePresenter = DefaultNoticePresenter()
         let title = String(format: Localization.editingOrderWithCurrencyConflictNoticeTitle, order.currency, siteCurrency)
         let notice = Notice(title: title,
@@ -1085,7 +1172,8 @@ extension OrderDetailsViewModel {
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
 
-        DDLogError("Attempt to edit order \(order.orderID) with currency \(order.currency), but did not match site's currency \(siteCurrency).")
+        DDLogError("Attempt to edit order \(order.orderID) with currency \(order.currency), but did not match site's currency \(siteCurrency). " +
+                   "Active WooCommerce version: \(activeWooCommerceVersion() ?? "unknown").")
     }
 
     enum Localization {

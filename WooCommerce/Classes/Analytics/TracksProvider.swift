@@ -6,6 +6,11 @@ import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
 import WooFoundationCore
 
+public enum POSAnalyticsEntryPoint: String {
+    case posTab = "pos_tab"
+    case autoReopen = "auto_reopen"
+}
+
 public class TracksProvider: NSObject, AnalyticsProvider {
 
     /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
@@ -40,8 +45,23 @@ public class TracksProvider: NSObject, AnalyticsProvider {
 
     private static var isPOSModeActive: Bool = false
 
+    private static var posEntryPoint: POSAnalyticsEntryPoint?
+
+    static var activePOSEntryPoint: POSAnalyticsEntryPoint? {
+        isPOSModeActive ? posEntryPoint : nil
+    }
+
+    let deviceTypeForAnalytics = UIDevice.current.userInterfaceIdiom.deviceTypeForAnalytics
+
     public static func setPOSMode(_ active: Bool) {
         isPOSModeActive = active
+        if active == false {
+            posEntryPoint = nil
+        }
+    }
+
+    public static func setPOSEntryPoint(_ entryPoint: POSAnalyticsEntryPoint) {
+        posEntryPoint = entryPoint
     }
 }
 
@@ -73,14 +93,27 @@ extension TracksProvider {
         decoratedProperties[Constants.horizontalSizeClassKey] = sizeClass.nameForAnalytics
         return decoratedProperties
     }
+
+    func addPointOfSaleProperties(to properties: [AnyHashable: Any]?,
+                                  deviceType: String,
+                                  entryPoint: POSAnalyticsEntryPoint?) -> [AnyHashable: Any] {
+        var decoratedProperties = properties ?? [:]
+        decoratedProperties[Constants.deviceTypeKey] = deviceType
+
+        if let entryPoint {
+            decoratedProperties[Constants.entryPointKey] = entryPoint.rawValue
+        }
+
+        return decoratedProperties
+    }
 }
 
 
 // MARK: - AnalyticsProvider Conformance
 //
 public extension TracksProvider {
-    func refreshUserData() {
-        switchTracksUsersIfNeeded()
+    func refreshUserData(completion: @escaping () -> Void) {
+        switchTracksUsersIfNeeded(completion: completion)
         refreshTracksMetadata()
     }
 
@@ -89,8 +122,14 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        let properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
+        let carriesPOSProperties = carriesPointOfSaleProperties(eventName)
+        let eventName = needsPointOfSaleNamePrefix(eventName) ? Constants.pointOfSaleEventNamePrefix + eventName : eventName
+        var properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
+        if carriesPOSProperties {
+            properties = addPointOfSaleProperties(to: properties,
+                                                  deviceType: deviceTypeForAnalytics,
+                                                  entryPoint: Self.activePOSEntryPoint)
+        }
         Self.TracksServiceExecutor.enqueue { tracksService in
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
@@ -139,7 +178,7 @@ public extension TracksProvider {
 // MARK: - Private Helpers
 //
 private extension TracksProvider {
-    func switchTracksUsersIfNeeded() {
+    func switchTracksUsersIfNeeded(completion: @escaping () -> Void = {}) {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         let anonymousID = ServiceLocator.stores.sessionManager.anonymousUserID
         if ServiceLocator.stores.isAuthenticated,
@@ -153,6 +192,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
@@ -161,6 +201,7 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: true)
+                    completion()
                 }
             } else {
                 // Username changed for some reason - switch back to anonymous first
@@ -170,20 +211,30 @@ private extension TracksProvider {
                                                            userID: String(account.userID),
                                                            wpComToken: authToken,
                                                            skipAliasEventCreation: false)
+                    completion()
                 }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
             Self.TracksServiceExecutor.enqueue { tracksService in
                 tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                completion()
             }
         }
     }
 
-    private func decorateEventNameForPOSIfNeeded(_ eventName: String) -> String {
+    private func carriesPointOfSaleProperties(_ eventName: String) -> Bool {
+        guard WooAnalyticsStat(rawValue: eventName) != nil else {
+            return false
+        }
+
+        return needsPointOfSaleNamePrefix(eventName) || eventName.hasPrefix(Constants.pointOfSaleEventNamePrefix)
+    }
+
+    private func needsPointOfSaleNamePrefix(_ eventName: String) -> Bool {
         guard let event = WooAnalyticsStat(rawValue: eventName) else {
             DDLogWarn("⚠️ Event not found in WooAnalyticsStat list")
-            return eventName
+            return false
         }
 
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
@@ -206,14 +257,31 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
             WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped,
+            WooAnalyticsStat.pointOfSaleTapToPayNotAvailable,
             WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleEditReceiptTapped,
+            WooAnalyticsStat.receiptPrintTapped,
+            WooAnalyticsStat.receiptPrintSuccess,
+            WooAnalyticsStat.receiptPrintFailed,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
             WooAnalyticsStat.pointOfSaleCheckoutCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentTapped,
             WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleOtherPaymentMethodsTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentTapped,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentFailed,
+            WooAnalyticsStat.pointOfSaleScanToPayCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleScanToPayPaymentDetectedViaPolling,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromScanToPayTapped,
+            WooAnalyticsStat.pointOfSaleCheckoutMarkAsPaidTapped,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidFailed,
+            WooAnalyticsStat.pointOfSaleMarkAsPaidSuccess,
+            WooAnalyticsStat.pointOfSaleBackToCheckoutFromMarkAsPaidTapped,
             WooAnalyticsStat.pointOfSaleItemsHeaderTapped,
             WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
             WooAnalyticsStat.pointOfSaleSearchButtonTapped,
@@ -298,6 +366,7 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentCanceled,
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
+            WooAnalyticsStat.collectInteracPaymentSuccess,
 
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
@@ -346,11 +415,7 @@ private extension TracksProvider {
         ]
 
         // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event
-        guard (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event) else {
-            return eventName
-        }
-        let prefix = "pos_"
-        return "\(prefix)\(eventName)"
+        return (Self.isPOSModeActive && pointOfSaleEventList.contains(event)) || localCatalogEventList.contains(event)
     }
 
     func refreshTracksMetadata() {
@@ -382,7 +447,10 @@ private extension TracksProvider {
 
     enum Constants {
         static let eventNamePrefix = "woocommerceios"
+        static let pointOfSaleEventNamePrefix = "pos_"
         static let horizontalSizeClassKey = "horizontal_size_class"
+        static let deviceTypeKey = "device_type"
+        static let entryPointKey = "entry_point"
     }
 
     enum UserProperties {

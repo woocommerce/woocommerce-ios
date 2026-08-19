@@ -617,6 +617,8 @@ private extension POSOrderDetailsView {
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
+            case .ineligible(let eligibilityFailure):
+                refundSelectionState = .ineligible(eligibilityFailure)
             case .failed:
                 refundSelectionState = .loadingError
             }

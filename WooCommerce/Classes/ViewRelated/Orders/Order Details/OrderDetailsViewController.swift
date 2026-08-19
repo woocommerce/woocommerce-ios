@@ -243,6 +243,21 @@ private extension OrderDetailsViewController {
                 }
             }
         }
+
+        entityListener.onReplace = { [weak self] _ in
+            guard let self else {
+                return
+            }
+            // The stored order is replaced when the orders list deletes and re-saves all stored
+            // orders (pull-to-refresh or new filters — see `OrderListSyncActionUseCase`), which
+            // re-inserts it without metadata-derived data (custom fields, attribution, charge ID).
+            // Re-sync a visible screen so it stays complete and fresh. A genuine deletion does not
+            // trigger this closure and requires no action here.
+            guard viewIfLoaded?.window != nil else {
+                return
+            }
+            syncEverything()
+        }
     }
 
     private func configureViewModel() {
@@ -365,7 +380,9 @@ private extension OrderDetailsViewController {
     /// Presents the order edit form
     ///
     private func editOrder() {
-        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
+        let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID,
+                                               flow: .editing(initialOrder: viewModel.order),
+                                               requestCurrency: viewModel.editOrderRequestCurrency)
         let viewController = OrderFormHostingController(viewModel: viewModel)
         viewController.modalPresentationStyle = .fullScreen
         present(viewController, animated: true)
@@ -554,6 +571,16 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
+        if let eligibilityFailure = viewModel.order.refundEligibilityFailure {
+            let alertController = UIAlertController(title: eligibilityFailure.title,
+                                                    message: eligibilityFailure.localizedDescription,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: eligibilityFailure.dismissButtonTitle,
+                                                    style: .default))
+            present(alertController, animated: true)
+            return
+        }
+
         let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
         present(issueRefundCoordinatingController, animated: true)
     }

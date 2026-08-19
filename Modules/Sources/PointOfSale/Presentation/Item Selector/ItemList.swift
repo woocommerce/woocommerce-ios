@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import struct Yosemite.POSCoupon
 
 /// Displays a list of POS items or placeholder card based on the given state.
 struct ItemList<HeaderView: View>: View {
@@ -109,6 +110,9 @@ struct ItemListRow: View {
     let position: Int
     let itemActionHandler: POSItemActionHandler
 
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posLayoutScale) private var layoutScale
+
     var body: some View {
         switch item {
         case let .simpleProduct(product):
@@ -148,7 +152,7 @@ struct ItemListRow: View {
                     itemActionHandler.handleTap(item, position: position)
                 }
             }, label: {
-                CouponCardView(coupon: coupon)
+                CouponCardView(coupon: coupon, isApplied: isApplied(coupon))
             })
             .accessibilityIdentifier("pos-coupon-card-\(coupon.id.itemID)")
         }
@@ -156,6 +160,12 @@ struct ItemListRow: View {
 }
 
 private extension ItemListRow {
+    func isApplied(_ coupon: POSCoupon) -> Bool {
+        ItemListViewHelper().shouldShowAppliedCouponIndicator(coupon: coupon,
+                                                              cartCoupons: posModel.cart.coupons,
+                                                              layoutScale: layoutScale)
+    }
+
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
             "pos.parentProductCard.optionsAvailable",
@@ -172,6 +182,7 @@ private extension ItemListRow {
         node: .root,
         itemActionHandler: PointOfSalePreviewItemActionHandler()
     )
+    .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #Preview("Loading") {

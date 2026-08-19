@@ -71,6 +71,11 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         return try await refreshEligibilityState(for: siteID)
     }
 
+    /// The cached state without evaluating: `catalogEligibility(for:)` refreshes on a miss, which can fetch.
+    public func cachedCatalogEligibility(for siteID: Int64) -> POSLocalCatalogEligibilityState? {
+        eligibilityStates[siteID]
+    }
+
     /// Fetch and cache the remote feature flag value
     /// Returns cached value if available, otherwise returns true (assumes eligible)
     private func isRemoteCatalogFeatureFlagEnabled() async -> Bool {

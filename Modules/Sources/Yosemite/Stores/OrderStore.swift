@@ -63,12 +63,22 @@ public class OrderStore: Store {
                               onCompletion: onCompletion)
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
-        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
-            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, fields, requestCurrency, onCompletion):
+            updateOrder(siteID: siteID,
+                        order: order,
+                        giftCard: giftCard,
+                        fields: fields,
+                        requestCurrency: requestCurrency,
+                        onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
-        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
-            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, currency, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID,
+                                      status: status,
+                                      amount: amount,
+                                      taxable: taxable,
+                                      currency: currency,
+                                      onCompletion: onCompletion)
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
@@ -173,7 +183,9 @@ private extension OrderStore {
                     onCompletion(Date().timeIntervalSince(startTime), result)
                 case .deleteAllBeforeSaving, .save:
                     let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
-                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders,
+                                                         removeAllStoredOrders: removeAllStoredOrders,
+                                                         includingMetadataDerivedFields: false) {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
@@ -210,7 +222,7 @@ private extension OrderStore {
                                                             createdVia: createdVia,
                                                             pageNumber: pageNumber,
                                                             pageSize: pageSize)
-                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                upsertStoredOrdersInBackground(readOnlyOrders: orders, includingMetadataDerivedFields: false) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
             } catch {
@@ -244,10 +256,15 @@ private extension OrderStore {
     ///
     func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        // The date-modified shortcut below is only valid when the stored order is complete: order list and
+        // search fetches omit `meta_data` (see `OrdersRemote.ParameterValues.listFieldValues`), so an order
+        // stored without any metadata-derived values must be synced in full before it can be served locally.
         let storage = storageManager.viewStorage
-        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+        guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID),
+              storageOrder.containsMetadataDerivedValues else {
             return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         }
+        let storedOrder = storageOrder.toReadOnly()
 
         Task {
             // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
@@ -310,9 +327,10 @@ private extension OrderStore {
                                    status: OrderStatusEnum,
                                    amount: String,
                                    taxable: Bool,
+                                   currency: String,
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable).copy(currency: currency)
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines, .currency]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -413,7 +431,12 @@ private extension OrderStore {
 
     /// Updates the specified fields from an order.
     ///
-    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func updateOrder(siteID: Int64,
+                     order: Order,
+                     giftCard: String?,
+                     fields: [OrderUpdateField],
+                     requestCurrency: String? = nil,
+                     onCompletion: @escaping (Result<Order, Error>) -> Void) {
         /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
         /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
         /// - Create a new order item with the bundle configuration
@@ -441,7 +464,11 @@ private extension OrderStore {
             }
         }()
 
-        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
+        remote.updateOrder(from: siteID,
+                           order: order.copy(items: items),
+                           giftCard: giftCard,
+                           fields: fields,
+                           requestCurrency: requestCurrency) { [weak self] result in
             self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
@@ -626,7 +653,10 @@ private extension OrderStore {
     func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               insertingSearchResults: true,
+                               includingMetadataDerivedFields: false,
+                               in: derivedStorage)
             upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
@@ -688,13 +718,16 @@ private extension OrderStore {
     ///
     private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
                                                 removeAllStoredOrders: Bool = false,
+                                                includingMetadataDerivedFields: Bool = true,
                                                 onCompletion: (() -> Void)? = nil) {
         storageManager.performAndSave({ [weak self] derivedStorage in
             guard let self else { return }
             if removeAllStoredOrders {
                 derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
             }
-            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders,
+                               includingMetadataDerivedFields: includingMetadataDerivedFields,
+                               in: derivedStorage)
         }, completion: onCompletion, on: .main)
     }
 
@@ -703,13 +736,19 @@ private extension OrderStore {
     /// - Parameters:
     ///     - readOnlyOrders: Remote Orders to be persisted.
     ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - includingMetadataDerivedFields: Pass `false` for orders fetched without the `meta_data` field
+    ///                                       (list and search fetches) so previously stored metadata-derived
+    ///                                       values are preserved instead of overwritten.
     ///     - storage: Where we should save all the things!
     ///
     private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
                                     insertingSearchResults: Bool = false,
+                                    includingMetadataDerivedFields: Bool = true,
                                     in storage: StorageType) {
         let useCase = OrdersUpsertUseCase(storage: storage)
-        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+        useCase.upsert(readOnlyOrders,
+                       insertingSearchResults: insertingSearchResults,
+                       includingMetadataDerivedFields: includingMetadataDerivedFields)
     }
 }
 
@@ -821,5 +860,25 @@ private extension OrderStore.GiftCardError {
                 comment: "Order gift card error notice message when the gift card is invalid."
             )
         }
+    }
+}
+
+private extension Storage.Order {
+    /// Whether this stored order carries any metadata-derived values, proving it was upserted from a
+    /// fetch that included the `meta_data` field. Order list and search fetches omit `meta_data`
+    /// (`OrdersRemote.ParameterValues.listFieldValues`), so an order stored only from those fetches has
+    /// none of these values and cannot be served from storage without a full sync first.
+    ///
+    /// `attributionInfo` alone identifies almost all fully-synced orders: `OrderAttributionInfo(metaData:)`
+    /// is non-failable, so the order decoder produces a non-nil value whenever the response contained at
+    /// least one metadata entry. Orders with zero metadata entries can never be certified as complete and
+    /// always take the full fetch — their payloads are the smallest, so the extra cost is minimal.
+    /// `fulfillmentStatusKey` is deliberately omitted: a non-unknown value implies a `_fulfillment_status`
+    /// metadata entry was present, which already makes `attributionInfo` non-nil.
+    var containsMetadataDerivedValues: Bool {
+        attributionInfo != nil
+            || customFields?.isEmpty == false
+            || chargeID != nil
+            || renewalSubscriptionID != nil
     }
 }

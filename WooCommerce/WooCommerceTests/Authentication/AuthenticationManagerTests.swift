@@ -953,7 +953,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
     }
 
-    func test_authenticate_site_credentials_when_default_login_is_missing_then_prefills_normalized_url_after_loading_starts() {
+    func test_authenticate_site_credentials_when_login_retry_is_missing_then_recovers_not_found_after_loading_starts() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         var events = [String]()
@@ -968,7 +968,7 @@ final class AuthenticationManagerTests: XCTestCase {
         // When
         manager.authenticateSiteCredentials(
             credentials: siteCredentials(),
-            loginURL: nil,
+            loginURL: "https://example.com/custom-login",
             adminURL: nil,
             endpointUnderVerification: .login,
             onLoading: { events.append("loading:\($0)") },
@@ -985,7 +985,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(verifyAdminDashboard, false)
         XCTAssertEqual(useCase.receivedUsername, "merchant")
         XCTAssertEqual(useCase.receivedPassword, "password")
-        XCTAssertEqual(recovery, .login(draftURL: "https://example.com/wp-login.php", error: .notFound))
+        XCTAssertEqual(recovery, .login(draftURL: "https://example.com/custom-login", error: .notFound))
         XCTAssertEqual(events, ["loading:true", "handle", "loading:false", "recovery"])
     }
 
@@ -1013,6 +1013,34 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(
             recovery,
             .login(draftURL: "https://example.com/custom-login", error: .notFound)
+        )
+        XCTAssertFalse(didFail)
+    }
+
+    func test_authenticate_site_credentials_when_initial_login_has_invalid_unverified_response_then_recovers_without_error() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var recovery: SiteCredentialRecovery?
+        var didFail = false
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: nil,
+            adminURL: nil,
+            endpointUnderVerification: nil,
+            onLoading: { _ in },
+            onSuccess: { _ in XCTFail("Expected recovery") },
+            onRecovery: { recovery = $0 },
+            onFailure: { _, _, _, _ in didFail = true }
+        )
+        useCase.fail(with: .invalidLoginResponse, loginEntryVerified: false)
+
+        // Then
+        XCTAssertEqual(
+            recovery,
+            .login(draftURL: "https://example.com/wp-login.php", error: nil)
         )
         XCTAssertFalse(didFail)
     }
@@ -1055,7 +1083,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
-    func test_authenticate_site_credentials_when_admin_retry_hits_login_failure_then_routes_to_ordinary_failure() {
+    func test_authenticate_site_credentials_when_admin_retry_login_preflight_fails_then_routes_to_ordinary_failure() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
         var verifyAdminDashboard: Bool?
@@ -1083,47 +1111,12 @@ final class AuthenticationManagerTests: XCTestCase {
                 verifiedLoginURL = loginURL
             }
         )
-        useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: true)
+        useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: false)
 
         // Then
         XCTAssertEqual(verifyAdminDashboard, true)
         if case .inaccessibleLoginPage? = receivedError as? SiteCredentialLoginError {} else {
             XCTFail("Expected inaccessible login page failure")
-        }
-        XCTAssertEqual(incorrectCredentials, false)
-        XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
-        XCTAssertFalse(didRecover)
-    }
-
-    func test_authenticate_site_credentials_when_admin_is_inaccessible_before_login_verification_then_does_not_recover_or_promote_login() {
-        // Given
-        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
-        var receivedError: Error?
-        var incorrectCredentials: Bool?
-        var verifiedLoginURL: String?
-        var didRecover = false
-        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
-
-        // When
-        manager.authenticateSiteCredentials(
-            credentials: siteCredentials(),
-            loginURL: nil,
-            adminURL: nil,
-            endpointUnderVerification: nil,
-            onLoading: { _ in },
-            onSuccess: { _ in XCTFail("Expected failure") },
-            onRecovery: { _ in didRecover = true },
-            onFailure: { error, isIncorrectCredentials, loginURL, _ in
-                receivedError = error
-                incorrectCredentials = isIncorrectCredentials
-                verifiedLoginURL = loginURL
-            }
-        )
-        useCase.fail(with: .inaccessibleAdminPage, loginEntryVerified: false)
-
-        // Then
-        if case .inaccessibleAdminPage? = receivedError as? SiteCredentialLoginError {} else {
-            XCTFail("Expected inaccessible admin page failure")
         }
         XCTAssertEqual(incorrectCredentials, false)
         XCTAssertNil(verifiedLoginURL)

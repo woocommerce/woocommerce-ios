@@ -155,7 +155,7 @@ struct CookieNonceAuthenticationRulesTests {
         #expect(failure == .invalidCredentials)
     }
 
-    @Test func test_credential_failure_rejects_captcha_even_with_shake_marker() throws {
+    @Test func test_credential_failure_preserves_captcha_message_even_with_shake_marker() throws {
         // Given
         let endpoints = try CookieNonceAuthenticationEndpoints(
             siteURL: #require(URL(string: "https://example.com"))
@@ -167,7 +167,7 @@ struct CookieNonceAuthenticationRulesTests {
         let failure = CookieNonceAuthenticationRules.credentialFailure(in: html, endpoints: endpoints)
 
         // Then
-        #expect(failure == .invalidResponse)
+        #expect(failure == .loginFailed(message: "Complete the CAPTCHA"))
     }
 }
 

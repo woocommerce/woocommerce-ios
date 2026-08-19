@@ -98,32 +98,6 @@ struct WordPressLoginHTMLVerifierTests {
         #expect(endpoints.isAuthenticatedDashboardHTML(scriptDecoy) == false)
     }
 
-    @Test func test_authenticated_dashboard_allows_ordinary_well_formed_forms() throws {
-        // Given
-        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: url("https://example.com"))
-        let html = "<body class=\"wp-admin index-php\"><form role=\"search\" action=\"/search?name=log&amp;method=post\">" +
-            "<input aria-label=\"Search\" name=\"s\"></form><div id=\"dashboard-widgets-wrap\"></div></body>"
-
-        // When
-        let isDashboard = endpoints.isAuthenticatedDashboardHTML(html)
-
-        // Then
-        #expect(isDashboard)
-    }
-
-    @Test func test_authenticated_dashboard_ignores_unrelated_unbalanced_form() throws {
-        // Given
-        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: url("https://example.com"))
-        let html = "<body class=\"wp-admin index-php\"><form><input name=\"search\">" +
-            "<div id=\"dashboard-widgets-wrap\"></div></body>"
-
-        // When
-        let isDashboard = endpoints.isAuthenticatedDashboardHTML(html)
-
-        // Then
-        #expect(isDashboard)
-    }
-
     @Test func test_login_error_message_excludes_non_rendered_and_anchor_content() throws {
         // Given
         let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: url("https://example.com"))

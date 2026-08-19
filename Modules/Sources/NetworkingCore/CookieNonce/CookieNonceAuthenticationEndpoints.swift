@@ -55,7 +55,7 @@ public struct CookieNonceAuthenticationEndpoints: Equatable, Sendable {
         WordPressLoginHTMLVerifier(html: html).isAuthenticatedDashboard
     }
 
-    public func loginErrorMessage(in html: String) -> String? {
+    func loginErrorMessage(in html: String) -> String? {
         WordPressLoginHTMLVerifier(html: html).loginErrorMessage
     }
 
@@ -92,7 +92,7 @@ public struct CookieNonceAuthenticationEndpoints: Equatable, Sendable {
     }
 
     /// Recognizes any structurally exact same-site WordPress REST nonce endpoint.
-    public func isNonceEndpoint(_ candidate: URL) -> Bool {
+    func isNonceEndpoint(_ candidate: URL) -> Bool {
         guard candidate.fragment == nil,
               let components = try? Self.trustedComponents(candidate, relativeTo: siteURL) else {
             return false

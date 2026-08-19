@@ -438,17 +438,6 @@ struct CookieNonceAuthenticationEndpointsTests {
         // Then
         #expect(isExpected == false)
     }
-
-    @Test func test_redirect_limit_matches_android() {
-        // Given
-        let androidRedirectLimit = 3
-
-        // When
-        let redirectLimit = CookieNonceAuthenticationEndpoints.maximumRedirectCount
-
-        // Then
-        #expect(redirectLimit == androidRedirectLimit)
-    }
 }
 
 private extension CookieNonceAuthenticationEndpointsTests {

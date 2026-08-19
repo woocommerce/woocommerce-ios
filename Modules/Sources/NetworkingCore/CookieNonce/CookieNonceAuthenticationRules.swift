@@ -75,8 +75,8 @@ public enum CookieNonceAuthenticationRules {
         endpoints: CookieNonceAuthenticationEndpoints
     ) -> CookieNonceAuthenticationFailure {
         let errorMessage = endpoints.loginErrorMessage(in: html)
-        if errorMessage?.localizedCaseInsensitiveContains("captcha") == true {
-            return .invalidResponse
+        if let errorMessage, errorMessage.localizedCaseInsensitiveContains("captcha") {
+            return .loginFailed(message: errorMessage)
         }
         if html.contains("document.querySelector('form').classList.add('shake')") {
             return .invalidCredentials
@@ -95,7 +95,7 @@ public enum CookieNonceAuthenticationRules {
         return nonce
     }
 
-    public static func containsBasicAuthentication(statusCode: Int, authenticateHeader: String?) -> Bool {
+    static func containsBasicAuthentication(statusCode: Int, authenticateHeader: String?) -> Bool {
         guard statusCode == 401, let authenticateHeader else {
             return false
         }

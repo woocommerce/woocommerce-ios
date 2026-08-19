@@ -87,7 +87,6 @@ extension WooTab {
     }
 }
 
-
 // MARK: - MainTabBarController
 
 /// A view controller that shows the tabs Store, Orders, Products, and Reviews.
@@ -112,6 +111,28 @@ final class MainTabBarController: UITabBarController {
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
+    private let httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
+    private lazy var httpsConfigurationWarningPresenter = HTTPSConfigurationWarningPresenter(
+        viewModel: httpsConfigurationWarningViewModel,
+        presentingViewController: self,
+        tabViewController: { [weak self] tab in
+            self?.rootTabViewController(tab: tab)
+        },
+        visibleTabs: { [weak self] in
+            guard let self else { return [] }
+            return WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
+        },
+        selectedTab: { [weak self] in
+            guard let self else { return nil }
+            return WooTab(visibleIndex: selectedIndex,
+                          isPOSTabVisible: isPOSTabVisible,
+                          isBookingsTabVisible: isBookingsTabVisible)
+        },
+        onAction: { [weak self] in
+            guard let self else { return }
+            WebviewHelper.launch(HTTPSConfigurationWarningContent.helpURL, with: self)
+        }
+    )
 
     /// Tab view controllers
     ///
@@ -190,6 +211,7 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.stores = stores
+        self.httpsConfigurationWarningViewModel = HTTPSConfigurationWarningViewModel(stores: stores)
         self.posTabVisibilityCheckerFactory = posTabVisibilityCheckerFactory ?? { site in
             POSTabVisibilityChecker(site: site)
         }
@@ -209,6 +231,7 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
+        self.httpsConfigurationWarningViewModel = HTTPSConfigurationWarningViewModel(stores: ServiceLocator.stores)
         self.posTabVisibilityCheckerFactory = { site in
             POSTabVisibilityChecker(site: site)
         }
@@ -240,6 +263,7 @@ final class MainTabBarController: UITabBarController {
 
         observeSiteIDForViewControllers()
         observeSiteForConditionalTabs()
+        httpsConfigurationWarningPresenter.start()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -273,6 +297,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidAppear(animated)
 
         viewModel.onViewDidAppear()
+        httpsConfigurationWarningPresenter.update()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -282,6 +307,7 @@ final class MainTabBarController: UITabBarController {
             self?.configureTabBarLayoutOnIpad()
         } completion: { [weak self] _ in
             self?.configureTabBarLayoutOnIpad()
+            self?.httpsConfigurationWarningPresenter.update()
         }
     }
 
@@ -289,6 +315,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLayoutSubviews()
 
         configureLiquidGlassTabBarLayoutOnIpad()
+        httpsConfigurationWarningPresenter.update()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -305,6 +332,7 @@ final class MainTabBarController: UITabBarController {
         } else {
             trackTabSelected(newTab: userSelectedTab)
         }
+        httpsConfigurationWarningPresenter.selectedTabDidChange(to: userSelectedTab)
     }
 
     // MARK: - Public Methods
@@ -326,6 +354,7 @@ final class MainTabBarController: UITabBarController {
     func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
             guard let self else { return }
+            httpsConfigurationWarningPresenter.update(for: tab)
             selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             guard let selectedViewController else {
                 return
@@ -911,6 +940,7 @@ private extension MainTabBarController {
         viewControllers = controllers
         self.isPOSTabVisible = isPOSTabVisible
         self.isBookingsTabVisible = isBookingsTabVisible
+        httpsConfigurationWarningPresenter.updateAll()
     }
 
     func rootTabViewController(tab: WooTab) -> UIViewController {
@@ -939,6 +969,8 @@ private extension MainTabBarController {
                 }
 
                 conditionalTabsSite = site
+                httpsConfigurationWarningViewModel.update(site: site,
+                                                          fallbackSiteAddress: stores.sessionManager.defaultCredentials?.siteAddress)
                 observePOSEligibilityForPOSTabVisibility(site: site)
                 observeBookingsEligibilityForBookingsTabVisibility(site: site)
             }
@@ -952,6 +984,8 @@ private extension MainTabBarController {
                 guard let self, let site = conditionalTabsSite else {
                     return
                 }
+                httpsConfigurationWarningViewModel.update(site: site,
+                                                          fallbackSiteAddress: stores.sessionManager.defaultCredentials?.siteAddress)
                 observePOSEligibilityForPOSTabVisibility(site: site)
             }
     }
@@ -1019,6 +1053,8 @@ private extension MainTabBarController {
 
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
+
+        httpsConfigurationWarningPresenter.updateAll()
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
@@ -1036,6 +1072,7 @@ private extension MainTabBarController {
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
         HubMenuCoordinator(tabContainerController: hubMenuContainerController,
                            storesManager: stores,
+                           httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in

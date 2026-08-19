@@ -36,6 +36,7 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
         guard let pushNotification = PushNotification.from(userInfo: userInfo) else {
             return .noData
         }
+        let siteID = pushNotification.resolvedSiteID(for: stores.sessionManager.defaultStoreID)
 
         do {
             let startTime = Date.now
@@ -57,12 +58,12 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
             }
 
             // Sync the order list data
-            try await OrderListSyncBackgroundTask(siteID: pushNotification.siteID, stores: stores).dispatch()
+            try await OrderListSyncBackgroundTask(siteID: siteID, stores: stores).dispatch()
 
             // There is a change that the specific order was not fetched in the previous operation, specially if the user has some filters set.
             // In that case, specifically sync the notification order so it's available for the user when they tap the notification.
-            if isOrderNotSynced(siteID: pushNotification.siteID, orderID: orderID) {
-                try await synchronizeOrder(siteID: pushNotification.siteID, orderID: orderID)
+            if isOrderNotSynced(siteID: siteID, orderID: orderID) {
+                try await synchronizeOrder(siteID: siteID, orderID: orderID)
             }
 
             let timeTaken = round(Date.now.timeIntervalSince(startTime))

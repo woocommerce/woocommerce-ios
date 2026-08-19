@@ -595,8 +595,9 @@ extension MainTabBarController {
 
     /// Presents the details  of a push notification.
     static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
-        let siteID = notification.siteID
-        showStore(with: Int64(siteID), onCompletion: { _ in
+        let stores = ServiceLocator.stores
+        let siteID = notification.resolvedSiteID(for: stores.sessionManager.defaultStoreID)
+        showStore(with: siteID, onCompletion: { _ in
             presentNotificationDetails(for: notification)
         })
     }

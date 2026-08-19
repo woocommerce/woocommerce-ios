@@ -107,6 +107,39 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(notification.meta?.identifier(forKey: .order), 306)
     }
 
+    func test_resolved_site_id_when_selected_site_uses_site_credentials_then_returns_placeholder_id() throws {
+        // Given
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: userInfo))
+
+        // When
+        let siteID = notification.resolvedSiteID(for: WooConstants.placeholderStoreID)
+
+        // Then
+        XCTAssertEqual(siteID, WooConstants.placeholderStoreID)
+    }
+
+    func test_resolved_site_id_when_selected_site_uses_wpcom_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: userInfo))
+
+        // When
+        let siteID = notification.resolvedSiteID(for: 123)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
+    func test_resolved_site_id_when_there_is_no_selected_site_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: userInfo))
+
+        // When
+        let siteID = notification.resolvedSiteID(for: nil)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
     // MARK: Store Stock
     //
     func test_store_stock_user_info_is_parsed_correctly() throws {

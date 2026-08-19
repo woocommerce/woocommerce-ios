@@ -648,7 +648,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
-        presentApplicationPasswordWebView(for: siteURL, in: viewController)
+        presentAppPasswordTutorial(error: SiteCredentialLoginError.inaccessibleLoginPage, for: siteURL, in: viewController)
     }
 
     /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
@@ -660,7 +660,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                            in viewController: UIViewController) {
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
             guard let self, let viewController else { return }
-            presentApplicationPasswordWebView(for: siteURL, in: viewController)
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
             message: error.localizedDescription,
@@ -1290,7 +1290,7 @@ private extension AuthenticationManager {
         }()
         let defaultAction = shouldEnableWebFlow ? { [weak self] in
             guard let self else { return }
-            presentApplicationPasswordWebView(for: siteURL, in: viewController)
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,

@@ -1172,6 +1172,19 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
+    func test_present_site_credential_browser_alternative_presents_application_password_tutorial() {
+        // Given
+        let presenter = UIViewController()
+        navigationController.setViewControllers([presenter], animated: false)
+        let manager = AuthenticationManager()
+
+        // When
+        manager.presentSiteCredentialBrowserAlternative(for: "https://example.com", in: presenter)
+
+        // Then
+        XCTAssertTrue(navigationController.topViewController is ApplicationPasswordTutorialViewController)
+    }
+
     func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()

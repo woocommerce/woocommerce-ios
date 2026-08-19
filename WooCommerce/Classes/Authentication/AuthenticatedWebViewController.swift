@@ -120,8 +120,7 @@ final class AuthenticatedWebViewController: UIViewController {
         if let initialURL = viewModel.initialURL,
            var viewModel = viewModel as? WebviewReloadable {
             viewModel.reloadWebview = { [weak self] in
-                self?.finishSiteCredentialAuthentication()
-                self?.webView.stopLoading()
+                self?.cancelSiteCredentialAuthentication()
                 self?.webView.load(.init(url: initialURL))
             }
         }
@@ -144,8 +143,7 @@ final class AuthenticatedWebViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isBeingDismissedInAnyWay {
-            finishSiteCredentialAuthentication()
-            webView.stopLoading()
+            cancelSiteCredentialAuthentication()
             viewModel.handleDismissal()
         }
     }
@@ -353,11 +351,18 @@ private extension AuthenticatedWebViewController {
         guard siteCredentialNavigationGate != nil else {
             return
         }
-        finishSiteCredentialAuthentication()
-        webView.stopLoading()
+        cancelSiteCredentialAuthentication()
         if let initialURL = viewModel.initialURL {
             loadContent(url: initialURL)
         }
+    }
+
+    private func cancelSiteCredentialAuthentication() {
+        guard siteCredentialNavigationGate != nil else {
+            return
+        }
+        finishSiteCredentialAuthentication()
+        webView.stopLoading()
     }
 }
 
@@ -367,15 +372,14 @@ extension AuthenticatedWebViewController {
         isMainFrame: Bool,
         shouldPerformDownload: Bool
     ) -> WKNavigationActionPolicy? {
-        guard var gate = siteCredentialNavigationGate else {
-            return nil
-        }
-        let decision = gate.decision(
+        // Optional chaining mutates the stored gate in place, so its phase always advances with the decision.
+        guard let decision = siteCredentialNavigationGate?.decision(
             for: request,
             isMainFrame: isMainFrame,
             shouldPerformDownload: shouldPerformDownload
-        )
-        siteCredentialNavigationGate = gate
+        ) else {
+            return nil
+        }
         switch decision {
         case .allowCredentialPost, .allowDestination:
             return .allow
@@ -393,15 +397,13 @@ extension AuthenticatedWebViewController {
         isMainFrame: Bool,
         canShowMIMEType: Bool
     ) -> WKNavigationResponsePolicy? {
-        guard var gate = siteCredentialNavigationGate else {
-            return nil
-        }
-        let decision = gate.decision(
+        guard let decision = siteCredentialNavigationGate?.decision(
             for: response,
             isMainFrame: isMainFrame,
             canShowMIMEType: canShowMIMEType
-        )
-        siteCredentialNavigationGate = gate
+        ) else {
+            return nil
+        }
         switch decision {
         case .allowContinuation:
             return .allow
@@ -438,9 +440,11 @@ extension AuthenticatedWebViewController {
 
     private func shouldSuppressSiteCredentialCancellation(for navigation: WKNavigation?, error: Error) -> Bool {
         let error = error as NSError
+        let isExpectedCancellation = error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        let isWebKitPolicyInterruption = error.domain == WKError.errorDomain &&
+            error.code == WebKitError.frameLoadInterruptedByPolicyChange
         guard let expectedNavigation = siteCredentialNavigationExpectedToCancel,
-              error.domain == NSURLErrorDomain,
-              error.code == NSURLErrorCancelled,
+              isExpectedCancellation || isWebKitPolicyInterruption,
               navigation === expectedNavigation else {
             return false
         }
@@ -463,8 +467,7 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
             return .allow
         }
 
-        let policy = await viewModel.decidePolicy(for: navigationURL)
-        return policy
+        return await viewModel.decidePolicy(for: navigationURL)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse) async -> WKNavigationResponsePolicy {
@@ -485,21 +488,10 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
                                              authenticationFlow: authenticationFlow,
                                              isFirstNavigation: isFirstNavigation) {
             /// When automatic authentication fails, cancel the navigation and redirect to the original URL instead.
-            if siteCredentialNavigationGate != nil {
-                failSiteCredentialAuthenticationAndLoadInitialURL()
-            } else {
-                loadContent(url: initialURL)
-            }
+            loadContent(url: initialURL)
             return .cancel
         }
-        let policy = await viewModel.decidePolicy(for: response)
-        switch policy {
-        case .allow:
-            break
-        default:
-            finishSiteCredentialAuthentication()
-        }
-        return policy
+        return await viewModel.decidePolicy(for: response)
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
@@ -540,14 +532,22 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
         guard shouldSuppressSiteCredentialCancellation(for: navigation, error: error) == false else {
             return
         }
+        let wasAuthenticatingWithSiteCredentials = siteCredentialNavigationGate != nil
         failSiteCredentialAuthenticationAndLoadInitialURL()
-        viewModel.didFailProvisionalNavigation(with: error)
+        if wasAuthenticatingWithSiteCredentials == false {
+            viewModel.didFailProvisionalNavigation(with: error)
+        }
         activityIndicator.stopAnimating()
     }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         failSiteCredentialAuthenticationAndLoadInitialURL()
     }
+}
+
+private enum WebKitError {
+    /// WebKit's internal policy-change interruption is not exposed through `WKError.Code`.
+    static let frameLoadInterruptedByPolicyChange = 102
 }
 
 extension AuthenticatedWebViewController: WKUIDelegate {

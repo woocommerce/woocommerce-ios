@@ -529,7 +529,7 @@ class DefaultStoresManager: StoresManager {
     /// Overlays verified direct-site endpoints while preserving the fetched site's identity and metadata.
     /// Returns the original site whenever the credential, endpoint, and fetched-site identities do not all match.
     func siteByApplyingCookieNonceAuthenticationEndpoints(to site: Site) -> Site {
-        guard site.siteID == WooConstants.placeholderStoreID,
+        guard site.isNonJetpackSite,
               let credentials = sessionManager.defaultCredentials,
               case let .wporg(_, _, siteAddress) = credentials,
               let credentialURL = URL(string: siteAddress),

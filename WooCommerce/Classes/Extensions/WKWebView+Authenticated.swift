@@ -99,7 +99,7 @@ struct WPOrgWebViewAuthenticationNavigationGate {
 
     init(authenticationRequest: URLRequest,
          authenticationEndpoints: CookieNonceAuthenticationEndpoints) throws {
-        guard authenticationRequest.httpMethod?.uppercased() == HTTPMethod.post.rawValue.uppercased(),
+        guard authenticationRequest.hasMethod(.post),
               authenticationRequest.url == authenticationEndpoints.loginEntryURL else {
             throw AFError.invalidURL(url: authenticationRequest.url?.absoluteString ?? "")
         }
@@ -116,7 +116,7 @@ struct WPOrgWebViewAuthenticationNavigationGate {
 
         switch phase {
         case .credentialPost:
-            if request.httpMethod?.uppercased() == HTTPMethod.post.rawValue.uppercased(),
+            if request.hasMethod(.post),
                url == credentialPostURL {
                 phase = .destinationAction
                 return .allowCredentialPost
@@ -132,7 +132,7 @@ struct WPOrgWebViewAuthenticationNavigationGate {
                 return .cancelAndFinish
             }
             let hasBody = request.httpBody != nil || request.httpBodyStream != nil
-            let isCleanGet = request.httpMethod?.uppercased() == HTTPMethod.get.rawValue.uppercased() && hasBody == false
+            let isCleanGet = request.hasMethod(.get) && hasBody == false
             if let pendingReplacementURL {
                 guard url == pendingReplacementURL, isCleanGet else {
                     return .cancelAndFinish
@@ -152,7 +152,7 @@ struct WPOrgWebViewAuthenticationNavigationGate {
                 return .allowDestination
             }
             if hasReplacedUnsafeDestinationRequest == false,
-               request.httpMethod?.uppercased() == HTTPMethod.post.rawValue.uppercased() || hasBody {
+               request.hasMethod(.post) || hasBody {
                 hasReplacedUnsafeDestinationRequest = true
                 pendingReplacementURL = url
                 return .cancelAndLoadDestination(url)
@@ -195,10 +195,22 @@ struct WPOrgWebViewAuthenticationNavigationGate {
         }
     }
 
+    /// The two destinations the credential POST may reach: the derived nonce endpoint and the admin base.
+    ///
+    /// The `afterLoginAt: url` checks are deliberately self-referential: they re-derive the endpoints as if the login
+    /// transaction ended at `url`, which admits the default-port HTTP-to-HTTPS promoted variants on an `http` site.
+    /// Same host and scheme upgrades only — a downgrade is already rejected by `resolveRedirect` before this runs.
     func isExpectedDestination(_ url: URL) -> Bool {
         url == expectedNonceURL ||
             url == expectedAdminBaseURL ||
             authenticationEndpoints.isExpectedNonceURL(url, afterLoginAt: url) ||
             authenticationEndpoints.isExpectedAdminBaseURL(url, afterLoginAt: url)
+    }
+}
+
+private extension URLRequest {
+    /// Case-insensitive HTTP method comparison, since WebKit may surface a differently cased method than it was given.
+    func hasMethod(_ method: HTTPMethod) -> Bool {
+        httpMethod?.uppercased() == method.rawValue.uppercased()
     }
 }

@@ -79,6 +79,10 @@ final class OrderListViewModel {
         return statusResultsController.fetchedObjects
     }
 
+    /// Minimum quiet period before a burst of order notifications triggers a single resynchronization.
+    ///
+    private let pushNotificationSyncInterval: DispatchQueue.SchedulerTimeType.Stride
+
     private let snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder>
 
     /// Emits snapshots of orders that should be displayed in the table view.
@@ -101,6 +105,7 @@ final class OrderListViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
+         pushNotificationSyncInterval: DispatchQueue.SchedulerTimeType.Stride = .seconds(1),
          filters: FilterOrderListViewModel.Filters?,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
@@ -110,6 +115,7 @@ final class OrderListViewModel {
         self.analytics = analytics
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
+        self.pushNotificationSyncInterval = pushNotificationSyncInterval
         self.filters = filters
         self.featureFlagService = featureFlagService
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
@@ -247,16 +253,22 @@ private extension OrderListViewModel {
     /// Watch for "new order" Remote Notifications that are received while the app is in the
     /// foreground.
     ///
-    /// A refresh will be requested when receiving them.
+    /// A refresh will be requested when receiving them. Notifications for other stores are ignored,
+    /// and a burst of new orders is coalesced into a single resynchronization rather than one per
+    /// notification.
     ///
     func observeForegroundRemoteNotifications() {
-        foregroundNotificationsSubscription = pushNotificationsManager.foregroundNotifications.sink { [weak self] notification in
-            guard notification.kind == .storeOrder else {
-                return
+        foregroundNotificationsSubscription = pushNotificationsManager.foregroundNotifications
+            .filter { [weak self] notification in
+                guard let self, notification.kind == .storeOrder else {
+                    return false
+                }
+                return notification.resolvedSiteID(stores: stores) == siteID
             }
-
-            self?.onShouldResynchronize?(.pushNotification)
-        }
+            .debounce(for: pushNotificationSyncInterval, scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.onShouldResynchronize?(.pushNotification)
+            }
     }
 
     func stopObservingForegroundRemoteNotifications() {

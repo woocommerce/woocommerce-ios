@@ -11,6 +11,9 @@ final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
 
+    /// Time to wait before concluding that an inverted expectation was not fulfilled.
+    private let inverseExpectationTimeout = TimeInterval(0.5)
+
     private var storageManager: MockStorageManager!
 
     private var stores: MockStoresManager!
@@ -245,47 +248,95 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           storageManager: storageManager,
-                                           pushNotificationsManager: pushNotificationsManager,
-                                           filters: nil)
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
 
         var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        let resynchronized = expectation(description: "Resynchronization is requested")
         viewModel.onShouldResynchronize = { reason in
             resynchronizationReason = reason
+            resynchronized.fulfill()
         }
 
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil, meta: nil)
-        pushNotificationsManager.sendForegroundNotification(notification)
+        pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID))
 
         // Assert
+        wait(for: [resynchronized], timeout: Constants.expectationTimeout)
         XCTAssertEqual(resynchronizationReason, .pushNotification)
     }
 
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           storageManager: storageManager,
-                                           pushNotificationsManager: pushNotificationsManager,
-                                           filters: nil)
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
 
-        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
-        viewModel.onShouldResynchronize = { reason in
-            resynchronizationReason = reason
+        let resynchronized = expectation(description: "Resynchronization is not requested")
+        resynchronized.isInverted = true
+        viewModel.onShouldResynchronize = { _ in
+            resynchronized.fulfill()
         }
 
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1,
+                                                        siteID: siteID,
+                                                        kind: .comment,
+                                                        title: "",
+                                                        subtitle: "",
+                                                        message: "",
+                                                        note: nil,
+                                                        meta: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
-        XCTAssertNil(resynchronizationReason)
+        wait(for: [resynchronized], timeout: inverseExpectationTimeout)
+    }
+
+    func test_given_an_order_notification_for_another_site_it_does_not_request_a_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
+
+        let resynchronized = expectation(description: "Resynchronization is not requested")
+        resynchronized.isInverted = true
+        viewModel.onShouldResynchronize = { _ in
+            resynchronized.fulfill()
+        }
+
+        viewModel.activate()
+
+        // Act
+        pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID + 1))
+
+        // Assert
+        wait(for: [resynchronized], timeout: inverseExpectationTimeout)
+    }
+
+    func test_given_a_burst_of_order_notifications_it_requests_a_single_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
+
+        var resynchronizationCount = 0
+        let resynchronized = expectation(description: "Resynchronization is requested")
+        viewModel.onShouldResynchronize = { _ in
+            resynchronizationCount += 1
+            resynchronized.fulfill()
+        }
+
+        viewModel.activate()
+
+        // Act
+        for _ in 0..<5 {
+            pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID))
+        }
+
+        // Assert
+        wait(for: [resynchronized], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(resynchronizationCount, 1)
     }
 
     // MARK: - Banner visibility
@@ -481,4 +532,30 @@ private extension OrderListViewModelTests {
     }
 
     final class MockError: Error { }
+}
+
+// MARK: - Foreground notification helpers
+//
+private extension OrderListViewModelTests {
+    /// Returns a view model wired to `pushNotificationsManager`, with a debounce short enough for tests.
+    ///
+    func makeViewModelObservingNotifications(from pushNotificationsManager: MockPushNotificationsManager) -> OrderListViewModel {
+        OrderListViewModel(siteID: siteID,
+                           stores: stores,
+                           storageManager: storageManager,
+                           pushNotificationsManager: pushNotificationsManager,
+                           pushNotificationSyncInterval: .milliseconds(1),
+                           filters: nil)
+    }
+
+    func orderNotification(siteID: Int64) -> WooCommerce.PushNotification {
+        WooCommerce.PushNotification(noteID: 1,
+                                     siteID: siteID,
+                                     kind: .storeOrder,
+                                     title: "",
+                                     subtitle: "",
+                                     message: "",
+                                     note: nil,
+                                     meta: nil)
+    }
 }

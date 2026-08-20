@@ -40,7 +40,7 @@ struct OrderListViewControllerTests {
         #expect(mirror.actionButton.titleLabel?.text == "Learn more")
     }
 
-    @Test func foreground_order_notification_when_orders_are_hidden_then_synchronizes_first_page() {
+    @Test func foreground_order_notification_when_orders_are_hidden_then_synchronizes_first_page() async throws {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
@@ -51,6 +51,7 @@ struct OrderListViewControllerTests {
                                            stores: stores,
                                            storageManager: storageManager,
                                            pushNotificationsManager: pushNotificationsManager,
+                                           pushNotificationSyncInterval: .milliseconds(1),
                                            filters: nil)
         let viewController = OrderListViewController(siteID: siteID,
                                                      title: "Orders",
@@ -82,6 +83,8 @@ struct OrderListViewControllerTests {
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Then
+        // The resynchronization is debounced, so give the scheduler a chance to deliver it.
+        try await Task.sleep(for: .milliseconds(200))
         #expect(viewController.view.window == nil)
         #expect(synchronizedSiteID == siteID)
     }

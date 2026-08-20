@@ -4,7 +4,7 @@ import Foundation
 /// events so a single query can span the local catalog rollout without a fabricated step change.
 ///
 /// `remote` declines as stores adopt the local catalog, but never reaches zero: coupon search has no
-/// local catalogue at all (`PointOfSaleCouponFetchStrategy`), so every coupon search reports `remote`.
+/// local catalog at all (`PointOfSaleCouponFetchStrategy`), so every coupon search reports `remote`.
 public enum POSSearchMethod: String {
     case fts
     case like

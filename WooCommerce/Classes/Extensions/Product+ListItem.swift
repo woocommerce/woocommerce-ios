@@ -9,6 +9,7 @@ extension Product {
                         productTypeKey: productTypeKey,
                         statusKey: statusKey,
                         sku: sku,
+                        price: price,
                         manageStock: manageStock,
                         stockQuantity: stockQuantity,
                         stockStatusKey: stockStatusKey,

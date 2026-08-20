@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSOrderListServiceError
+import enum Yosemite.RefundAPIError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
@@ -67,7 +68,10 @@ enum POSOrderListSelectedOrderRefundsState {
 enum POSRefundReviewPreparationState: Equatable {
     case idle
     case loading
-    case previewError
+    /// `message` carries the server's rejection copy when the preview failed with an actionable
+    /// code (for example the order changed since the screen was loaded); `nil` shows the generic
+    /// preview error copy.
+    case previewError(message: String? = nil)
 }
 
 /// Outcome of `prepareRefundReview()`, returned directly to the caller.
@@ -502,6 +506,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         refundReviewPreparationState = .loading
         let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
             guard let self else { return .superseded }
+            let state: POSRefundReviewPreparationState
+            let result: POSRefundReviewPreparationResult
             do {
                 let reviewData = try await refundSubmissionProcessor.prepareReviewData(
                     for: order,
@@ -509,20 +515,25 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
                     selectedItems: selectedItems,
                     reason: nil
                 )
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .idle
-                return .ready(reviewData)
+                state = .idle
+                result = .ready(reviewData)
             } catch is CancellationError {
                 return .superseded
             } catch POSRefundSubmissionError.refundPreviewFailed {
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .previewError
-                return .previewError
+                state = .previewError()
+                result = .previewError
+            } catch let rejection as RefundAPIError {
+                state = .previewError(message: rejection.localizedDescription)
+                result = .previewError
             } catch {
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .idle
-                return .preparationError
+                state = .idle
+                result = .preparationError
             }
+            // Applied once for every outcome: a result computed against a selection the cashier has
+            // since changed must not be published, and a new catch must not be able to skip the check.
+            guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+            refundReviewPreparationState = state
+            return result
         }
         refundReviewPreparationTask = preparationTask
         return await preparationTask.value

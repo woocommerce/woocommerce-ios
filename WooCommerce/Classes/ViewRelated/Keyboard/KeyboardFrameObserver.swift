@@ -11,7 +11,7 @@ final class KeyboardFrameObserver {
     private let keyboardStateProvider: KeyboardStateProviding
 
     /// Notifies the closure owner about any keyboard frame change.
-    /// Note that the frame is based on the keyboard window coordinate.
+    /// Note that the frame uses the keyboard screen's coordinate space.
     typealias OnKeyboardFrameUpdate = (_ keyboardFrame: CGRect) -> Void
 
     private let notificationCenter: NotificationCenter
@@ -47,6 +47,11 @@ final class KeyboardFrameObserver {
                                        name: UIResponder.keyboardWillHideNotification,
                                        object: nil)
 
+        notificationCenter.addObserver(self,
+                                       selector: #selector(keyboardWillChangeFrame(_:)),
+                                       name: UIResponder.keyboardWillChangeFrameNotification,
+                                       object: nil)
+
         if sendInitialEvent {
             let currentState = keyboardStateProvider.state
             // Always check the `isVisible` because `frameEnd` can still return a non-zero value.
@@ -66,6 +71,13 @@ private extension KeyboardFrameObserver {
 
     @objc func keyboardWillHide(_ notification: Foundation.Notification) {
         self.keyboardFrame = .zero
+    }
+
+    @objc func keyboardWillChangeFrame(_ notification: Foundation.Notification) {
+        guard let keyboardFrame = keyboardRect(from: notification) else {
+            return
+        }
+        self.keyboardFrame = keyboardFrame
     }
 }
 

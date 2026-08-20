@@ -71,6 +71,22 @@ final class KeyboardStateProviderTests: XCTestCase {
         // Assert
         XCTAssertEqual(provider.state, KeyboardState(isVisible: true, frameEnd: .zero))
     }
+
+    func test_it_updates_the_state_when_the_keyboard_moves_offscreen_without_a_hide_notification() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let provider = KeyboardStateProvider(notificationCenter: notificationCenter)
+        let screen = UIScreen.main
+        let visibleFrame = CGRect(x: 0, y: screen.bounds.maxY - 300, width: screen.bounds.width, height: 300)
+        let offscreenFrame = CGRect(x: 0, y: screen.bounds.maxY, width: screen.bounds.width, height: 300)
+
+        // Act
+        notificationCenter.postKeyboardWillShowNotification(frameEnd: visibleFrame)
+        notificationCenter.postKeyboardWillChangeFrameNotification(frameEnd: offscreenFrame, screen: screen)
+
+        // Assert
+        XCTAssertEqual(provider.state, KeyboardState(isVisible: false, frameEnd: offscreenFrame))
+    }
 }
 
 private extension NotificationCenter {
@@ -89,5 +105,10 @@ private extension NotificationCenter {
     func postKeyboardWillHideNotification(frameEnd: CGRect) {
         let userInfo = [UIResponder.keyboardFrameEndUserInfoKey: frameEnd]
         post(name: UIResponder.keyboardWillHideNotification, object: nil, userInfo: userInfo)
+    }
+
+    func postKeyboardWillChangeFrameNotification(frameEnd: CGRect, screen: UIScreen) {
+        let userInfo = [UIResponder.keyboardFrameEndUserInfoKey: frameEnd]
+        post(name: UIResponder.keyboardWillChangeFrameNotification, object: screen, userInfo: userInfo)
     }
 }

@@ -54,7 +54,11 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     init(notificationCenter: NotificationCenter = NotificationCenter.default) {
         self.notificationCenter = notificationCenter
 
-        let notificationNames = [UIResponder.keyboardWillShowNotification, UIResponder.keyboardWillHideNotification]
+        let notificationNames = [
+            UIResponder.keyboardWillShowNotification,
+            UIResponder.keyboardWillHideNotification,
+            UIResponder.keyboardWillChangeFrameNotification
+        ]
 
         observations.append(contentsOf: notificationNames.map { notificationName in
             // SwiftLint warns when observers are not retained.
@@ -68,10 +72,27 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     }
 
     private func updateState(from notification: Notification) {
+        let frameEnd = notification.keyboardFrameEnd ?? .zero
         state = KeyboardState(
-            isVisible: notification.name == UIResponder.keyboardWillShowNotification,
-            frameEnd: notification.keyboardFrameEnd ?? .zero
+            isVisible: keyboardIsVisible(notification: notification, frameEnd: frameEnd),
+            frameEnd: frameEnd
         )
+    }
+
+    private func keyboardIsVisible(notification: Notification, frameEnd: CGRect) -> Bool {
+        switch notification.name {
+        case UIResponder.keyboardWillShowNotification:
+            return true
+        case UIResponder.keyboardWillHideNotification:
+            return false
+        case UIResponder.keyboardWillChangeFrameNotification:
+            guard let screen = notification.object as? UIScreen else {
+                return state.isVisible
+            }
+            return screen.bounds.intersects(frameEnd)
+        default:
+            return state.isVisible
+        }
     }
 
     deinit {

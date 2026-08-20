@@ -277,6 +277,7 @@ struct NoticePositioning {
 private class NoticeContainerView: UIView {
 
     private let containerMargin: CGFloat = 16.0
+    private let bottomMargin: CGFloat = 8.0
 
     private let contentView: UIView = {
         let view = UIView()
@@ -324,9 +325,10 @@ private class NoticeContainerView: UIView {
         /// NoticeContainer Setup
         ///
         translatesAutoresizingMaskIntoConstraints = false
-        // The presenter positions the container directly against the current bottom obstruction (tab bar or keyboard).
-        // Keep horizontal and top padding for sizing and shadow space, but don't introduce an additional visual gap at the bottom.
-        layoutMargins = UIEdgeInsets(top: containerMargin, left: containerMargin, bottom: 0, right: containerMargin)
+        layoutMargins = UIEdgeInsets(top: containerMargin,
+                                    left: containerMargin,
+                                    bottom: bottomMargin,
+                                    right: containerMargin)
         addSubview(contentView)
 
         /// LayoutContraints: ContentView

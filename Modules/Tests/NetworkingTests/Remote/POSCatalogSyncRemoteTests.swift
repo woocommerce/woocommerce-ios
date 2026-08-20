@@ -1038,6 +1038,22 @@ struct POSCatalogSyncRemoteTests {
         #expect(mockBackgroundDownloader.lastSessionIdentifier?.contains("com.woocommerce.pos.catalog.download.\(sampleSiteID)") == true)
     }
 
+    @Test func downloadCatalog_normalizes_http_download_url_to_https() async throws {
+        // Given
+        let remote = createRemote()
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: "[]")
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        _ = try await remote.downloadCatalog(for: sampleSiteID,
+                                             downloadURL: "http://example.com/catalog.json?token=abc",
+                                             allowCellular: true,
+                                             snapshotDate: sampleSnapshotDate)
+
+        // Then
+        #expect(mockBackgroundDownloader.lastDownloadURL?.absoluteString == "https://example.com/catalog.json?token=abc")
+    }
+
     @Test func downloadCatalog_generates_unique_session_identifiers() async throws {
         // Given
         let remote = createRemote()

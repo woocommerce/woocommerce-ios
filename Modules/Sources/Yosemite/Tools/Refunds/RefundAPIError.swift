@@ -87,9 +87,9 @@ extension RefundAPIError: LocalizedError {
             comment: "Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item."
         )
         static let lineItemAlreadyRefunded = NSLocalizedString(
-            "refundAPIError.lineItemAlreadyRefunded",
+            "refundAPIError.selectedItemAlreadyRefunded",
             value: "One of the selected items has already been fully refunded.",
-            comment: "Error shown when a refund is rejected because the selected item is already fully refunded."
+            comment: "Error shown when a refund is rejected because one of the selected items is already fully refunded."
         )
         static let orderNotRefundable = NSLocalizedString(
             "refundAPIError.orderNotRefundable",

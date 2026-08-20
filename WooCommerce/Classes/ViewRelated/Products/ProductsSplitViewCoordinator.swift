@@ -101,7 +101,6 @@ private extension ProductsSplitViewCoordinator {
                 }, onCancel: { [weak self] in
                     guard let self else { return }
                     primaryNavigationController.viewControllers = [productsViewController]
-                    primaryNavigationController.setNavigationBarHiddenIfNeeded(false, animated: false)
                 })
                 let searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,
@@ -292,10 +291,14 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
             let dismissedProduct = productShownInSecondaryContent()
             DispatchQueue.main.async { [weak self] in
-                self?.clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
+                guard let self else { return }
+                clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
+                updatePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
             }
             return
         }
+
+        updatePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
         // so that the secondary content types state can be updated accordingly.
@@ -316,6 +319,17 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
 }
 
 private extension ProductsSplitViewCoordinator {
+    /// Updates the primary navigation bar only after its navigation controller has finished showing a view controller.
+    /// In a collapsed layout, UIKit temporarily wraps the secondary navigation stack in the primary one. Updating the bar
+    /// from the search view controller's lifecycle can force layout while navigation items are still changing owners.
+    func updatePrimaryNavigationBarVisibility(afterShowing viewController: UIViewController, in navigationController: UINavigationController) {
+        guard navigationController == primaryNavigationController else {
+            return
+        }
+        let isShowingProductSearch = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        primaryNavigationController.setNavigationBarHiddenIfNeeded(isShowingProductSearch, animated: false)
+    }
+
     /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.
     /// When the user taps the back button to leave the last secondary view controller (e.g. product form), we want to reset `contentTypes`
     /// while there is no proper callback that I can find other than observing the primary navigation controller's `didShow`.

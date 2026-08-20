@@ -707,7 +707,7 @@ extension MainTabBarController {
 
         switchToProductsTab {
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+                presentProductDetails(productID: Int64(productID), siteID: notification.resolvedSiteID())
             }
         }
     }

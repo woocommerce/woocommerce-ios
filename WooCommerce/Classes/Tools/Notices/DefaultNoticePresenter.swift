@@ -220,7 +220,7 @@ private extension DefaultNoticePresenter {
         }
 
         let tabBarFrameInView = view.convert(tabBarController.tabBar.bounds, from: tabBarController.tabBar)
-        return NoticePositioning.bottomInset(viewBounds: view.bounds, tabBarFrameInView: tabBarFrameInView)
+        return NoticePositioning.tabBarBottomInset(viewBounds: view.bounds, tabBarFrame: tabBarFrameInView)
     }
 
     func animatePresentation(fromState: (() -> Void)? = nil,
@@ -248,23 +248,12 @@ private extension DefaultNoticePresenter {
 }
 
 struct NoticePositioning {
-    static func bottomInset(viewBounds: CGRect,
-                            tabBarFrameInView: CGRect?) -> CGFloat {
-        bottomOcclusionHeight(of: tabBarFrameInView, in: viewBounds)
-    }
-
-    private static func bottomOcclusionHeight(of occludingFrame: CGRect?, in viewFrame: CGRect) -> CGFloat {
-        guard let occludingFrame,
-              occludingFrame.width > 0,
-              occludingFrame.height > 0,
-              occludingFrame.maxY >= viewFrame.maxY,
-              occludingFrame.maxX > viewFrame.minX,
-              occludingFrame.minX < viewFrame.maxX,
-              occludingFrame.minY < viewFrame.maxY else {
+    static func tabBarBottomInset(viewBounds: CGRect, tabBarFrame: CGRect) -> CGFloat {
+        guard tabBarFrame.maxY >= viewBounds.maxY else {
             return 0
         }
 
-        return viewFrame.maxY - max(viewFrame.minY, occludingFrame.minY)
+        return max(0, viewBounds.maxY - tabBarFrame.minY)
     }
 }
 

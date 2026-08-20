@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-07-28 14:58:15+0000 */
+/* Translation-Revision-Date: 2026-08-12 09:57:00+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -2169,7 +2169,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "Chiudi";
@@ -3038,10 +3037,9 @@ which should be translated separately and considered part of this sentence. */
 /* Order gift card error notice title when the gift card is invalid. */
 "Gift card is not applied" = "La gift card non è inserita nel conteggio";
 
-/* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title of the button to give feedback about the add-ons feature
+/* Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
-   Title on the navigation bar for the products feedback survey */
+   Title on the navigation bar for feedback surveys */
 "Give feedback" = "Lascia un feedback";
 
 /* Subtitle of the store onboarding task to get paid. */
@@ -4199,9 +4197,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Nuove visualizzazioni dell'analisi, che ti consentono di vedere visitatori, rapporti e altro ancora.";
-
-/* The title of the top banner on the Products tab. */
-"New features available!" = "Nuove funzionalità disponibili.";
 
 /* Rich order notification text, will read as: New order for MyCustom store */
 "New order for" = "Nuovo ordine per";
@@ -14217,6 +14212,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "Contrassegna come preferito";
+
+/* Button that cancels product duplication and keeps unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.cancel" = "Annulla";
+
+/* Destructive button that confirms duplication using the last saved product version. */
+"productFormViewController.productDuplicationConfirmation.confirm" = "Elimina e duplica";
+
+/* Message explaining that product duplication uses the last saved version instead of unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.message" = "Le modifiche non salvate verranno perse. Il duplicato utilizzerà l'ultima versione salvata.";
+
+/* Title of the confirmation alert shown before duplicating a product with unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.title" = "Eliminare le modifiche e duplicare?";
 
 /* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
 "productFormViewController.productSavingError.cancel" = "Annulla";

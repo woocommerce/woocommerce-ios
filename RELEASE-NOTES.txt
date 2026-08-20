@@ -3,7 +3,7 @@
 
 25.5
 -----
-- [*] Fixed in-app notices appearing too far above the keyboard or tab bar on iPad. [PR_URL]
+- [*] Fixed in-app notices appearing too far above the keyboard or tab bar on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17743]
 - [*] Products: Product prices and SKUs are now visible from the product list. [https://github.com/woocommerce/woocommerce-ios/pull/17700]
 - [*] In-Person Payments: Fixed card payment options being unavailable when trying a Tap to Pay payment on multi-currency stores. [https://github.com/woocommerce/woocommerce-ios/pull/17704]
 - [*] Analytics Hub: Fixed quarter date ranges displaying incorrect dates for some store timezones. [https://github.com/woocommerce/woocommerce-ios/pull/17713]

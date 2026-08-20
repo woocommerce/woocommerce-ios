@@ -107,8 +107,6 @@ private extension DefaultNoticePresenter {
 
         // Let UIKit track the docked keyboard as part of the view's layout. Unlike keyboard notifications, this remains
         // accurate when keyboard transitions are interrupted and when an iPad window moves or resizes.
-        view.keyboardLayoutGuide.usesBottomSafeArea = false
-
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)

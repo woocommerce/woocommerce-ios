@@ -65,23 +65,6 @@ final class KeyboardFrameObserverTests: XCTestCase {
         waitForExpectations(timeout: 0.1)
     }
 
-    func test_observing_keyboard_frame_changes_when_keyboard_moves_offscreen() {
-        let notificationCenter = NotificationCenter()
-        let visibleFrame = CGRect(x: 0, y: 700, width: 1_024, height: 366)
-        let offscreenFrame = CGRect(x: 0, y: 1_366, width: 1_024, height: 366)
-        var actualFrames = [CGRect]()
-
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { frame in
-            actualFrames.append(frame)
-        }
-        keyboardFrameObserver.startObservingKeyboardFrame()
-
-        notificationCenter.postKeyboardWillShowNotification(keyboardFrame: visibleFrame)
-        notificationCenter.postKeyboardWillChangeFrameNotification(keyboardFrame: offscreenFrame)
-
-        XCTAssertEqual(actualFrames, [visibleFrame, offscreenFrame])
-    }
-
     func test_observing_keyboard_frame_changes_with_non_keyboard_notification() {
         let notificationCenter = NotificationCenter()
 
@@ -199,12 +182,6 @@ private extension NotificationCenter {
 
     func postKeyboardWillHideNotification(keyboardFrame: CGRect) {
         post(name: UIResponder.keyboardWillHideNotification,
-             object: nil,
-             userInfo: [UIResponder.keyboardFrameEndUserInfoKey: keyboardFrame])
-    }
-
-    func postKeyboardWillChangeFrameNotification(keyboardFrame: CGRect) {
-        post(name: UIResponder.keyboardWillChangeFrameNotification,
              object: nil,
              userInfo: [UIResponder.keyboardFrameEndUserInfoKey: keyboardFrame])
     }

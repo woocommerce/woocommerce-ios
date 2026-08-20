@@ -26,10 +26,6 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     weak var presentingViewController: UIViewController?
 
-    /// Observes keyboard and repositions Notice
-    ///
-    private var keyboardFrameObserver: KeyboardFrameObserver?
-
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
@@ -107,31 +103,16 @@ private extension DefaultNoticePresenter {
 
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
 
-        var onScreenBottomOffsetAdjustedForKeyboard = bottomOffset(for: .zero)
-        keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            guard let self else { return }
-
-            onScreenBottomOffsetAdjustedForKeyboard = self.bottomOffset(for: keyboardFrame)
-
-            // Adjust the bottom constraint ONLY if the noticeContainerView is already presented.
-            // If noticeContainerView is not already presented, it will be presented using onScreenBottomOffsetAdjustedForKeyboard.
-            //
-            if noticeContainerView.superview != nil {
-                noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
-                self.animatePresentation(toState: {
-                    noticeContainerView.layoutIfNeeded()
-                })
-            }
-        }
-        keyboardFrameObserver?.startObservingKeyboardFrame(sendInitialEvent: true)
-
         addNoticeContainerToPresentingViewController(noticeContainerView)
+
+        // Let UIKit track the docked keyboard as part of the view's layout. Unlike keyboard notifications, this remains
+        // accurate when keyboard transitions are interrupted and when an iPad window moves or resizes.
+        view.keyboardLayoutGuide.usesBottomSafeArea = false
 
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            makeBottomConstraintForNoticeContainer(noticeContainerView)
-        ])
+            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ] + makeBottomConstraintsForNoticeContainer(noticeContainerView))
 
         let offScreenState = { [weak noticeView, weak self] in
             guard let noticeView, let self else {
@@ -145,7 +126,7 @@ private extension DefaultNoticePresenter {
 
         let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
+            noticeContainerView.noticeBottomConstraint.constant = 0
 
             noticeContainerView.layoutIfNeeded()
         }
@@ -185,7 +166,6 @@ private extension DefaultNoticePresenter {
 
     func dismiss() {
         noticeOnScreen = nil
-        keyboardFrameObserver = nil
         kvoToken = nil
         presentNextNoticeIfPossible()
     }
@@ -198,7 +178,7 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
+    func makeBottomConstraintsForNoticeContainer(_ container: UIView) -> [NSLayoutConstraint] {
         guard let presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
@@ -218,47 +198,31 @@ private extension DefaultNoticePresenter {
             }
         }
 
-        return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
+        let baselineConstraint = container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor,
+                                                                   constant: -tabBarBottomInset)
+        baselineConstraint.priority = .defaultHigh
+
+        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: presentingViewController.view.keyboardLayoutGuide.topAnchor)
+
+        return [baselineConstraint, keyboardConstraint]
     }
 
     var offscreenBottomOffset: CGFloat {
-        bottomInset(for: .zero)
+        tabBarBottomInset
     }
 
-    func bottomOffset(for keyboardFrame: CGRect) -> CGFloat {
-        -bottomInset(for: keyboardFrame)
-    }
-
-    func bottomInset(for keyboardFrame: CGRect) -> CGFloat {
+    var tabBarBottomInset: CGFloat {
         guard let view = presentingViewController?.view else {
             return 0
         }
 
-        let screenCoordinateSpace = view.window?.screen.coordinateSpace
-        let viewFrameInScreen = screenCoordinateSpace.map { view.convert(view.bounds, to: $0) } ?? view.bounds
+        guard let tabBarController = presentingViewController as? UITabBarController,
+              !tabBarController.tabBar.isHidden else {
+            return 0
+        }
 
-        let tabBarFrameInView: CGRect? = {
-            guard let tabBarController = presentingViewController as? UITabBarController,
-                  !tabBarController.tabBar.isHidden else {
-                return nil
-            }
-            return view.convert(tabBarController.tabBar.bounds, from: tabBarController.tabBar)
-        }()
-
-        let keyboardFrameInCoordinateSpace: CGRect? = {
-            guard !keyboardFrame.isEmpty else {
-                return nil
-            }
-
-            // Keyboard notification frames use screen coordinates. Keep them in that coordinate space so an iPad window's
-            // position on screen is included in the overlap calculation. Fall back to window coordinates before the view is attached.
-            return screenCoordinateSpace == nil ? view.convert(keyboardFrame, from: nil) : keyboardFrame
-        }()
-
-        return NoticePositioning.bottomInset(viewBounds: view.bounds,
-                                             viewFrameInScreen: viewFrameInScreen,
-                                             tabBarFrameInView: tabBarFrameInView,
-                                             keyboardFrameInScreen: keyboardFrameInCoordinateSpace)
+        let tabBarFrameInView = view.convert(tabBarController.tabBar.bounds, from: tabBarController.tabBar)
+        return NoticePositioning.bottomInset(viewBounds: view.bounds, tabBarFrameInView: tabBarFrameInView)
     }
 
     func animatePresentation(fromState: (() -> Void)? = nil,
@@ -287,12 +251,8 @@ private extension DefaultNoticePresenter {
 
 struct NoticePositioning {
     static func bottomInset(viewBounds: CGRect,
-                            viewFrameInScreen: CGRect,
-                            tabBarFrameInView: CGRect?,
-                            keyboardFrameInScreen: CGRect?) -> CGFloat {
-        let tabBarInset = bottomOcclusionHeight(of: tabBarFrameInView, in: viewBounds)
-        let keyboardInset = bottomOcclusionHeight(of: keyboardFrameInScreen, in: viewFrameInScreen)
-        return max(tabBarInset, keyboardInset)
+                            tabBarFrameInView: CGRect?) -> CGFloat {
+        bottomOcclusionHeight(of: tabBarFrameInView, in: viewBounds)
     }
 
     private static func bottomOcclusionHeight(of occludingFrame: CGRect?, in viewFrame: CGRect) -> CGFloat {

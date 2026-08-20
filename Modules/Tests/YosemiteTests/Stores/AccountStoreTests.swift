@@ -322,7 +322,7 @@ final class AccountStoreTests: XCTestCase {
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .success(.init(name: "new name",
                                                                                                      description: "new description",
-                                                                                                     url: "newurl")))
+                                                                                                     url: "http://example.com")))
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteIDOfJCPSite, thenReturn: .success(true))
 
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -348,7 +348,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jcpSite.siteID, siteIDOfJCPSite)
         XCTAssertEqual(jcpSite.name, "new name")
         XCTAssertEqual(jcpSite.tagline, "new description")
-        XCTAssertEqual(jcpSite.url, "newurl")
+        XCTAssertEqual(jcpSite.url, "https://example.com")
         XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 1)

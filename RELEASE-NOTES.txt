@@ -4,6 +4,7 @@
 25.5
 -----
 - [*] Fixed in-app notices appearing too far above the keyboard or tab bar on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17743]
+- [Internal] POS: Fixed `waiting_time` reporting a Unix timestamp instead of an elapsed duration, restored site properties (`store_id`, `blog_id`, `site_url`) on events tracked by raw name, and added a `search_method` discriminator to the remote search event. [https://github.com/woocommerce/woocommerce-ios/pull/17731]
 - [*] Products: Product prices and SKUs are now visible from the product list. [https://github.com/woocommerce/woocommerce-ios/pull/17700]
 - [*] In-Person Payments: Fixed card payment options being unavailable when trying a Tap to Pay payment on multi-currency stores. [https://github.com/woocommerce/woocommerce-ios/pull/17704]
 - [*] Analytics Hub: Fixed quarter date ranges displaying incorrect dates for some store timezones. [https://github.com/woocommerce/woocommerce-ios/pull/17713]
@@ -29,6 +30,8 @@
 - [*] Phone POS: Now it shows the applied state for coupons in the coupon list [https://github.com/woocommerce/woocommerce-ios/pull/17697]
 - [*] Receipts: Fixed email receipt rejecting addresses with trailing whitespace [https://github.com/woocommerce/woocommerce-ios/pull/17687]
 - [*] Order Details: Refunded variable products now show their product thumbnail [https://github.com/woocommerce/woocommerce-ios/pull/17684]
+- [*] Order Creation: bundles now pre-select the default variation attributes configured on the variable product, matching the web behavior [https://github.com/woocommerce/woocommerce-ios/issues/13932]
+- [*] POS: Improved cash amount entry and currency formatting [https://github.com/woocommerce/woocommerce-ios/pull/17727]
 - [Internal] Remove the WooCommerce < 5.6 `_shipping_phone` order metadata fallback [https://github.com/woocommerce/woocommerce-ios/pull/17677]
 - [Internal] POS: Scan to pay, mark as paid, and other payment methods events now use the `pos_` Tracks prefix. [https://github.com/woocommerce/woocommerce-ios/pull/17639]
 - [Internal] Added a Mobile Status Report to Help & Support and to every support ticket. [https://github.com/woocommerce/woocommerce-ios/pull/17644]

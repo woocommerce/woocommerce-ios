@@ -11,7 +11,7 @@ struct PointOfSaleCollectCashView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
-    private let currencyInputSanitizer: CurrencyInputSanitizer
+    private let currencySettings: CurrencySettings
     private let presetAmount: Decimal?
 
     @State private var textFieldAmountInput: String = ""
@@ -42,7 +42,7 @@ struct PointOfSaleCollectCashView: View {
 
     init(orderTotal: String, currencySettings: CurrencySettings) {
         self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
-        self.currencyInputSanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
+        self.currencySettings = currencySettings
         self.presetAmount = viewHelper.parseCurrency(orderTotal)
         self.orderTotal = orderTotal
     }
@@ -84,7 +84,7 @@ struct PointOfSaleCollectCashView: View {
                             POSCashAmountTextField(
                                 amount: $textFieldAmountInput,
                                 isFocused: $isTextFieldFocused,
-                                sanitizer: currencyInputSanitizer,
+                                currencySettings: currencySettings,
                                 preset: presetAmount,
                                 onSubmit: {
                                     Task { @MainActor in

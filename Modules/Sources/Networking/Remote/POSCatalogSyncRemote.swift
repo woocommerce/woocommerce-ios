@@ -234,7 +234,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                                 downloadURL: String,
                                 allowCellular: Bool,
                                 snapshotDate: Date) async throws -> POSCatalogResponse {
-        guard let url = URL(string: downloadURL) else {
+        guard let url = URL(string: downloadURL.normalizedToHTTPS()) else {
             throw NetworkError.invalidURL
         }
 

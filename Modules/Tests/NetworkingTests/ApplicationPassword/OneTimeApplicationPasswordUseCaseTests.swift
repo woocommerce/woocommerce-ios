@@ -81,6 +81,18 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Basic dGVzdHVzZXI6c2VjcmV0")
     }
 
+    func test_validateApplicationPassword_normalizes_HTTP_site_address_to_HTTPS() async throws {
+        // Given
+        simulateIntrospectResponse(uuid: "test-uuid")
+        let sut = createSUT(password: createTestPassword(), siteAddress: "http://test.com")
+
+        // When
+        _ = try await sut.validateApplicationPassword()
+
+        // Then
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, introspectURL())
+    }
+
     func test_validateApplicationPassword_throws_notSupported_when_password_is_missing() async {
         // Given
         let sut = createSUT()
@@ -220,6 +232,26 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         // Then
         XCTAssertNil(storage.applicationPassword)
         XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL)
+    }
+
+    func test_deletePassword_when_discovery_returns_HTTP_root_then_uses_HTTPS_url() async throws {
+        // Given
+        let deleteUUID = "fetched-uuid-456"
+        simulateIntrospectResponse(uuid: deleteUUID)
+        simulateDeleteResponse(for: deleteUUID)
+        let sut = OneTimeApplicationPasswordUseCase(
+            applicationPassword: createTestPassword(),
+            siteAddress: siteAddress,
+            injectedStorage: storage,
+            session: mockSession,
+            discovery: { _ in "http://test.com/wp-json/" }
+        )
+
+        // When
+        try await sut.deletePassword(locally: true)
+
+        // Then
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL(for: deleteUUID))
     }
 
     func test_deletePassword_when_discovery_returns_rest_route_root_then_uses_rest_route_url() async throws {

@@ -353,6 +353,41 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     // MARK: - Default variation pre-selection
 
+    func test_bundleItemViewModels_preselect_variation_using_effective_bundle_defaults_when_bundle_item_does_not_override() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1,
+                         productID: 2,
+                         overridesDefaultVariationAttributes: false,
+                         defaultVariationAttributes: [
+                            .init(id: 1, name: "Flavor", option: "pineapple"),
+                            .init(id: 2, name: "Color", option: "indigo")
+                         ],
+                         pricedIndividually: false)
+        ])
+        // Product defaults can be absent even though the bundle response contains the inherited effective defaults.
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2).copy(defaultAttributes: [])
+        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockVariationsRetrieval(result: .success([
+            .fake().copy(productVariationID: 11,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Pineapple"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: false)
+        ]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 11)
+    }
+
     func test_bundleItemViewModels_preselect_variation_matching_product_default_attributes_when_bundle_item_does_not_override() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
@@ -431,7 +466,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
     func test_bundleItemViewModels_preselect_variation_respects_allowedVariations_and_purchasability() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
-            .fake().copy(bundledItemID: 1, productID: 2, overridesVariations: true, allowedVariations: [11, 12])
+            .fake().copy(bundledItemID: 1,
+                         productID: 2,
+                         overridesVariations: true,
+                         allowedVariations: [11, 12],
+                         pricedIndividually: true)
         ])
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
             .copy(defaultAttributes: [

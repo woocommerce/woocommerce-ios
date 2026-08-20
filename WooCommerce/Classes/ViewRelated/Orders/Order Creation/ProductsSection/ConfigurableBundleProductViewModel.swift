@@ -194,17 +194,30 @@ private extension ConfigurableBundleProductViewModel {
 
 private extension ConfigurableBundleProductViewModel {
     /// Returns the default variation attributes for a bundle item.
-    /// The bundle item's own override wins when `overridesDefaultVariationAttributes` is set, even if the override list
-    /// is empty ("override with nothing"). Otherwise, the bundled product's default form values apply like on the web.
+    /// The bundle API returns the effective defaults in `defaultVariationAttributes`, including inherited product defaults
+    /// when `overridesDefaultVariationAttributes` is false. Product defaults remain a fallback for older API responses that
+    /// omit those effective values. An explicit empty override still means "override with nothing".
     func defaultVariationAttributes(for bundleItem: ProductBundleItem, product: Product) -> [ProductVariationAttribute] {
-        guard !bundleItem.overridesDefaultVariationAttributes else {
-            return bundleItem.defaultVariationAttributes
-        }
-        return product.defaultAttributes.compactMap { attribute in
-            guard let name = attribute.name, let option = attribute.option, option.isNotEmpty else {
-                return nil
+        let defaultAttributes: [ProductVariationAttribute]
+        if bundleItem.defaultVariationAttributes.isNotEmpty || bundleItem.overridesDefaultVariationAttributes {
+            defaultAttributes = bundleItem.defaultVariationAttributes
+        } else {
+            defaultAttributes = product.defaultAttributes.compactMap { attribute in
+                guard let name = attribute.name, let option = attribute.option, option.isNotEmpty else {
+                    return nil
+                }
+                return ProductVariationAttribute(id: attribute.attributeID, name: name, option: option)
             }
-            return ProductVariationAttribute(id: attribute.attributeID, name: name, option: option)
+        }
+
+        return defaultAttributes.map { defaultAttribute in
+            guard let productAttribute = product.attributesForVariations.first(where: {
+                attributesMatch($0.attributeID, $0.name, defaultAttribute.id, defaultAttribute.name)
+            }) else {
+                return defaultAttribute
+            }
+            let option = productAttribute.options.first(where: { optionsMatch($0, defaultAttribute.option) }) ?? defaultAttribute.option
+            return ProductVariationAttribute(id: productAttribute.attributeID, name: productAttribute.name, option: option)
         }
     }
 
@@ -220,7 +233,7 @@ private extension ConfigurableBundleProductViewModel {
             }
             let defaultAttributes = defaultVariationAttributes(for: bundleItem, product: bundledProduct)
             let coversAllAttributes = bundledProduct.attributesForVariations.allSatisfy { attribute in
-                defaultAttributes.contains(where: { $0.name == attribute.name })
+                defaultAttributes.contains(where: { attributesMatch($0.id, $0.name, attribute.attributeID, attribute.name) })
             }
             guard defaultAttributes.isNotEmpty, coversAllAttributes,
                   let variations = try? await loadAllVariations(productID: bundleItem.productID) else {
@@ -229,10 +242,13 @@ private extension ConfigurableBundleProductViewModel {
             let allowedVariations = bundleItem.overridesVariations ? bundleItem.allowedVariations: []
             let matchedVariation = variations.first { variation in
                 (allowedVariations.isEmpty || allowedVariations.contains(variation.productVariationID))
-                && variation.purchasable
+                // Unpriced variations are valid when the bundle supplies the price.
+                && (!bundleItem.pricedIndividually || variation.purchasable)
                 // Attributes the variation omits are "any" and match any default option.
                 && variation.attributes.allSatisfy { attribute in
-                    defaultAttributes.contains(where: { $0.name == attribute.name && $0.option == attribute.option })
+                    defaultAttributes.contains(where: {
+                        attributesMatch($0.id, $0.name, attribute.id, attribute.name) && optionsMatch($0.option, attribute.option)
+                    })
                 }
             }
             if let matchedVariation {
@@ -241,6 +257,24 @@ private extension ConfigurableBundleProductViewModel {
             }
         }
         return variationsByBundledItemID
+    }
+
+    func attributesMatch(_ lhsID: Int64, _ lhsName: String, _ rhsID: Int64, _ rhsName: String) -> Bool {
+        if lhsID != .zero, rhsID != .zero {
+            return lhsID == rhsID
+        }
+        return lhsName.caseInsensitiveCompare(rhsName) == .orderedSame
+    }
+
+    func optionsMatch(_ lhs: String, _ rhs: String) -> Bool {
+        lhs.caseInsensitiveCompare(rhs) == .orderedSame || normalizedOption(lhs) == normalizedOption(rhs)
+    }
+
+    func normalizedOption(_ option: String) -> String {
+        option.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: Locale(identifier: "en_US_POSIX"))
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { $0.isNotEmpty }
+            .joined(separator: "-")
     }
 
     @MainActor

@@ -38,16 +38,6 @@ struct PushNotification {
 }
 
 extension PushNotification {
-    /// Returns the site ID that should be used for data operations in the current session.
-    ///
-    /// Push notifications contain the site's real WP.com blog ID. Site-credential sessions,
-    /// however, identify their only selected site with `WooConstants.placeholderStoreID`.
-    /// Using the push ID in those sessions would store the fetched data in a different partition
-    /// from the one observed by the UI.
-    func resolvedSiteID(for selectedSiteID: Int64?) -> Int64 {
-        selectedSiteID == WooConstants.placeholderStoreID ? WooConstants.placeholderStoreID : siteID
-    }
-
     static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
         guard let aps = userInfo.dictionary(forKey: APNSKey.aps) else {
             return nil

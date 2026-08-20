@@ -36,7 +36,7 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
         guard let pushNotification = PushNotification.from(userInfo: userInfo) else {
             return .noData
         }
-        let siteID = pushNotification.resolvedSiteID(for: stores.sessionManager.defaultStoreID)
+        let siteID = pushNotification.resolvedSiteID(stores: stores)
 
         do {
             let startTime = Date.now

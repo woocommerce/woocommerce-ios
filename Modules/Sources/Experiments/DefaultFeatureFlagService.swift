@@ -104,9 +104,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .posServerCalculatedRefunds:
-            // Do not widen beyond localDeveloper/alpha until WOOMOB-3787 (prepared-receipt refund API) has
-            // merged: an unverified `compute_totals` create on an older store records a ghost $0.00 refund.
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

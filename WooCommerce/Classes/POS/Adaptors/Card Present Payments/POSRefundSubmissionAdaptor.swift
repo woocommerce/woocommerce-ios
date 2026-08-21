@@ -6,6 +6,14 @@ import UIKit
 import Yosemite
 import WooFoundation
 
+/// Prepares, previews and submits POS refunds.
+///
+/// Holds the second of the two checks a `compute_totals` create needs. `POSRefundFlowResolver`
+/// checks the site's WooCommerce version, which decides whether a preview runs at all. A successful
+/// preview stores its total under the selection it was calculated for. `submitRefund` sends
+/// computed line items only when a total exists for the selection being submitted. Every other case
+/// uses the classic v3 create.
+///
 @MainActor
 final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     let stateModel = POSRefundSubmissionModel()

@@ -175,14 +175,14 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     /// Creates a refund with server-computed totals via `POST /wc/v3/orders/{orderID}/refunds`
     /// with `compute_totals: true` (WC 11.1.0+). Sends only *what* to refund; the server owns the math.
     ///
-    /// SAFETY: a store without `compute_totals` support drops the parameter. The classic v3 create
-    /// then handles the body. A quantity-only body carries no amount, so the store creates a
-    /// zero-amount refund, restocks the items, and returns 201.
+    /// SAFETY: a store without `compute_totals` support drops the parameter and runs the classic
+    /// v3 create instead. The body carries quantities but no amount, so that store returns 201 for
+    /// a zero-amount refund and restocks the items.
     ///
-    /// Call this only when the site's WooCommerce version supports the `compute_totals` create and
-    /// a preview for the same selection succeeded. A preview alone proves only that the preview
-    /// route exists. `POSRefundFlowResolver` checks the version; `POSRefundSubmissionAdaptor`
-    /// checks that this selection was previewed.
+    /// The caller must check two conditions before calling: the site runs a WooCommerce version
+    /// with `compute_totals` create support, and a preview for the same selection succeeded. A
+    /// preview proves only that the preview route exists — preview and create shipped as separate
+    /// WooCommerce changes.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll send a refund.
@@ -193,9 +193,9 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     ///     - apiRestock: Whether refunded items are restocked (`api_restock`). Always sent
     ///       explicitly — the v3 endpoint defaults it to `true`.
     ///     - amountOverride: Optional order-level total. When omitted, the server derives the
-    ///       amount from the line items. POS always omits it, Interac refunds included. When sent,
-    ///       it becomes the refund total, and the server rejects a value below its own line-item
-    ///       total with a 400.
+    ///       amount from the line items. When sent, it becomes the refund total; the server
+    ///       returns 400 if it is below the server's own line-item total. POS always omits it,
+    ///       Interac refunds included.
     ///     - lineItems: What to refund; the server computes all monetary values.
     ///
     public func createComputedRefund(for siteID: Int64,

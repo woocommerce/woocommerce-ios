@@ -22,11 +22,10 @@ public protocol RefundServiceProtocol {
     /// math unless an explicit `amountOverride` is supplied). On success the returned refund is
     /// upserted to storage exactly like the classic `RefundAction.createRefund` path.
     ///
-    /// SAFETY: call this only when the site's WooCommerce version supports the `compute_totals`
-    /// create and a preview for the same selection succeeded. A preview alone proves only that the
-    /// preview route exists. A store without support drops the parameter and creates a zero-amount
-    /// refund with restock. `POSRefundFlowResolver` checks the version; `POSRefundSubmissionAdaptor`
-    /// checks that this selection was previewed.
+    /// SAFETY: the caller must check two conditions before calling: the site runs a WooCommerce
+    /// version with `compute_totals` create support, and a preview for the same selection
+    /// succeeded. A preview proves only that the preview route exists. A store without create
+    /// support drops the parameter and records a zero-amount refund with restock.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,

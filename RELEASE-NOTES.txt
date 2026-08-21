@@ -3,6 +3,7 @@
 
 25.5
 -----
+- [*] Fixed in-app notices appearing too far above the keyboard or tab bar on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17743]
 - [Internal] POS: Fixed `waiting_time` reporting a Unix timestamp instead of an elapsed duration, restored site properties (`store_id`, `blog_id`, `site_url`) on events tracked by raw name, and added a `search_method` discriminator to the remote search event. [https://github.com/woocommerce/woocommerce-ios/pull/17731]
 - [*] Products: Product prices and SKUs are now visible from the product list. [https://github.com/woocommerce/woocommerce-ios/pull/17700]
 - [*] In-Person Payments: Fixed card payment options being unavailable when trying a Tap to Pay payment on multi-currency stores. [https://github.com/woocommerce/woocommerce-ios/pull/17704]

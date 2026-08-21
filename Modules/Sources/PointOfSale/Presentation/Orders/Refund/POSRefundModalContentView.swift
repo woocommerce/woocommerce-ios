@@ -230,38 +230,66 @@ struct POSRefundModalContentView: View {
                 onEmailReceipt: { isShowingEmailReceiptView = true }
             )
         case .error(let reviewData):
-            let isCardPresentRefundError = orderListModel.ordersController.currentRefundRequiresCardPresentRefund
-            let dismissError = {
-                if isCardPresentRefundError {
-                    dismissRefundFlowAndRefreshOrder()
-                } else {
-                    dismissRefundFlow()
-                }
-            }
-            // A recognised rejection is a deterministic validation error, so resubmitting the same
-            // request cannot succeed. Those get the item reload, or no action at all, in place of
-            // the retry; unrecognised failures keep it.
-            let recovery: POSRefundRecovery = isCardPresentRefundError ? .dismiss : (refundRejection?.recovery ?? .retry)
-            POSRefundErrorView(
-                title: isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle,
-                subtitle: isCardPresentRefundError ?
-                    Localization.cardPresentCreateErrorSubtitle :
-                    (refundRejection?.localizedDescription ?? errorStrings.createSubtitle),
-                onRetry: {
-                    switch recovery {
-                    case .retry:
-                        return { modalState = .confirmation(reviewData) }
-                    case .refreshItems:
-                        return { onRefreshSelection() }
-                    case .dismiss:
-                        return nil
-                    }
-                }(),
-                retryButtonTitle: recovery == .refreshItems ? Localization.reviewRemainingItemsButton : nil,
-                cancelButtonTitle: recovery == .retry ? nil : Localization.backToOrderButton,
-                onCancel: dismissError,
-                onClose: dismissError
-            )
+            errorView(reviewData: reviewData)
+        }
+    }
+
+    // MARK: - Refund Error
+
+    private func errorView(reviewData: POSRefundReviewData) -> some View {
+        POSRefundErrorView(
+            title: errorTitle,
+            subtitle: errorSubtitle,
+            onRetry: errorRecoveryAction(reviewData: reviewData),
+            retryButtonTitle: errorRecovery == .refreshItems ? Localization.reviewRemainingItemsButton : nil,
+            cancelButtonTitle: errorRecovery == .retry ? nil : Localization.backToOrderButton,
+            onCancel: dismissAfterError,
+            onClose: dismissAfterError
+        )
+    }
+
+    /// `true` when the card-present refund itself failed, rather than the store rejecting the request.
+    private var isCardPresentRefundError: Bool {
+        orderListModel.ordersController.currentRefundRequiresCardPresentRefund
+    }
+
+    /// A recognised rejection is a deterministic validation error, so resubmitting the same request
+    /// cannot succeed. Those get the item reload, or no action at all, in place of the retry;
+    /// unrecognised failures keep it.
+    private var errorRecovery: POSRefundRecovery {
+        guard !isCardPresentRefundError else {
+            return .dismiss
+        }
+        return refundRejection?.recovery ?? .retry
+    }
+
+    private var errorTitle: String {
+        isCardPresentRefundError ? Localization.cardPresentCreateErrorTitle : errorStrings.createTitle
+    }
+
+    private var errorSubtitle: String {
+        guard !isCardPresentRefundError else {
+            return Localization.cardPresentCreateErrorSubtitle
+        }
+        return refundRejection?.localizedDescription ?? errorStrings.createSubtitle
+    }
+
+    private func errorRecoveryAction(reviewData: POSRefundReviewData) -> (() -> Void)? {
+        switch errorRecovery {
+        case .retry:
+            return { modalState = .confirmation(reviewData) }
+        case .refreshItems:
+            return onRefreshSelection
+        case .dismiss:
+            return nil
+        }
+    }
+
+    private func dismissAfterError() {
+        if isCardPresentRefundError {
+            dismissRefundFlowAndRefreshOrder()
+        } else {
+            dismissRefundFlow()
         }
     }
 

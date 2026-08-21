@@ -625,8 +625,8 @@ extension MainTabBarController {
 
     /// Presents the details  of a push notification.
     static func switchStoreIfNeededAndPresentNotificationDetails(notification: WooCommerce.PushNotification) {
-        let siteID = notification.siteID
-        showStore(with: Int64(siteID), onCompletion: { _ in
+        let siteID = notification.resolvedSiteID()
+        showStore(with: siteID, onCompletion: { _ in
             presentNotificationDetails(for: notification)
         })
     }
@@ -737,7 +737,7 @@ extension MainTabBarController {
 
         switchToProductsTab {
             DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-                presentProductDetails(productID: Int64(productID), siteID: notification.siteID)
+                presentProductDetails(productID: Int64(productID), siteID: notification.resolvedSiteID())
             }
         }
     }

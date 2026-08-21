@@ -101,7 +101,7 @@ final class HubMenuCoordinator {
             return
         }
         let action = ProductReviewAction.retrieveProductReviewAndProduct(
-            siteID: notification.siteID,
+            siteID: notification.resolvedSiteID(stores: storesManager),
             reviewID: Int64(reviewID),
             onCompletion: { [weak self] result in
                 self?.handleProductReviewResult(result)

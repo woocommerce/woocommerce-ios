@@ -1,1 +1,1 @@
-Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.

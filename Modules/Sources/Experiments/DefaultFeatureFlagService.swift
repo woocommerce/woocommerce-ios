@@ -104,7 +104,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .posServerCalculatedRefunds:
-            // Widening to production is tracked by WOOMOB-3853.
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

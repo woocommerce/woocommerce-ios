@@ -181,7 +181,8 @@ public final class RefundsRemote: Remote, RefundsRemoteProtocol {
     ///
     /// Call this only when the site's WooCommerce version supports the `compute_totals` create and
     /// a preview for the same selection succeeded. A preview alone proves only that the preview
-    /// route exists. `POSRefundFlowResolver` checks both.
+    /// route exists. `POSRefundFlowResolver` checks the version; `POSRefundSubmissionAdaptor`
+    /// checks that this selection was previewed.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll send a refund.

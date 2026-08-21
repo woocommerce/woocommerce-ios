@@ -25,7 +25,8 @@ public protocol RefundServiceProtocol {
     /// SAFETY: call this only when the site's WooCommerce version supports the `compute_totals`
     /// create and a preview for the same selection succeeded. A preview alone proves only that the
     /// preview route exists. A store without support drops the parameter and creates a zero-amount
-    /// refund with restock. `POSRefundFlowResolver` checks both conditions.
+    /// refund with restock. `POSRefundFlowResolver` checks the version; `POSRefundSubmissionAdaptor`
+    /// checks that this selection was previewed.
     func createRefund(siteID: Int64,
                       orderID: Int64,
                       reason: String,

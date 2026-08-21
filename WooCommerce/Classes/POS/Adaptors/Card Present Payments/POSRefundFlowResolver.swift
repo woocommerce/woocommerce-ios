@@ -27,8 +27,8 @@ enum POSRefundFlow: Equatable {
 /// changes, so a preview proves only that the preview route exists. A store that answers the
 /// preview but drops `compute_totals` would create a zero-amount refund and restock the items.
 ///
-/// Eligibility here only allows the *preview* probe. A computed create additionally requires that
-/// probe to succeed first — see `ServerRefundAvailabilityCache`.
+/// Eligibility here only allows the *preview* probe. A computed create additionally requires a
+/// successful preview for the selection being submitted — see `POSRefundSubmissionAdaptor`.
 ///
 @MainActor
 struct POSRefundFlowResolver {

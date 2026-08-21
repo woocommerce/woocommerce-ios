@@ -140,7 +140,8 @@ struct POSOrderDetailsView: View {
                         onRetryPreparation: {
                             self.refundSelectionState = .itemSelection
                         },
-                        onContinue: { navigateToRefundReview() }
+                        onContinue: { navigateToRefundReview() },
+                        onRefreshItems: { refreshRefundSelection() }
                     )
                 }
             }
@@ -153,6 +154,12 @@ struct POSOrderDetailsView: View {
                     order: order,
                     onDismiss: { dismissRefundFlow() },
                     onReturnToSelection: { returnToRefundSelection() },
+                    onRefreshSelection: { refreshRefundSelection() },
+                    onNothingToRefund: {
+                        refundModalState = nil
+                        refundSelectionState = .nothingToRefund
+                        presentRefundSelection()
+                    },
                     initialRefundReason: currentRefundReason,
                     onRefundReasonChanged: { currentRefundReason = $0 },
                     onRefundSuccess: onRefundSuccess,
@@ -617,6 +624,8 @@ private extension POSOrderDetailsView {
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
+            case .ineligible(let eligibilityFailure):
+                refundSelectionState = .ineligible(eligibilityFailure)
             case .failed:
                 refundSelectionState = .loadingError
             }
@@ -631,6 +640,9 @@ private extension POSOrderDetailsView {
                 refundModalState = .review(reviewData)
             case .preparationError:
                 refundSelectionState = .preparationError
+            case .nothingToRefund:
+                refundModalState = nil
+                refundSelectionState = .nothingToRefund
             case .previewError, .superseded:
                 break
             }
@@ -640,6 +652,35 @@ private extension POSOrderDetailsView {
     func returnToRefundSelection() {
         refundSelectionState = .itemSelection
         refundModalState = nil
+    }
+
+    /// Reloads the refundable items after the store rejected the preview or the create because the
+    /// order changed since the flow was opened, then returns to the selection with the remaining
+    /// quantities. The flow is already running, so unlike `initiateRefundFlow()` this does not
+    /// report a refund flow start.
+    func refreshRefundSelection() {
+        let preparationID = UUID()
+        refundFlowPreparationID = preparationID
+        refundModalState = nil
+        refundSelectionState = .loading
+        presentRefundSelection()
+        Task { @MainActor in
+            let result = await orderListModel.ordersController.refreshRefundableItems()
+            guard refundFlowPreparationID == preparationID else {
+                return
+            }
+            refundFlowPreparationID = nil
+            switch result {
+            case .hasItemsToRefund:
+                refundSelectionState = .itemSelection
+            case .nothingToRefund:
+                refundSelectionState = .nothingToRefund
+            case .ineligible(let eligibilityFailure):
+                refundSelectionState = .ineligible(eligibilityFailure)
+            case .failed:
+                refundSelectionState = .loadingError
+            }
+        }
     }
 
     func dismissRefundFlow() {

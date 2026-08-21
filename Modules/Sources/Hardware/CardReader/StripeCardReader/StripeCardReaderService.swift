@@ -366,7 +366,9 @@ extension StripeCardReaderService: CardReaderService {
             }.flatMap { intent in
                 self.processPayment(intent: intent)
             }
-            .map(PaymentIntent.init(intent:))
+            .tryMap { intent in
+                try Self.capturedPaymentIntent(from: intent)
+            }
             .eraseToAnyPublisher()
     }
 
@@ -385,7 +387,9 @@ extension StripeCardReaderService: CardReaderService {
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    try Self.capturedPaymentIntent(from: intent)
+                }
                 .mapError { [weak self] error in
                     if case CardReaderServiceError.paymentMethodCollection = error {
                         // This is supposed to happen in `collectPaymentMethod(intent:)` when there's an error.
@@ -403,12 +407,13 @@ extension StripeCardReaderService: CardReaderService {
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }
-                .map(PaymentIntent.init(intent:))
+                .tryMap { intent in
+                    try Self.capturedPaymentIntent(from: intent)
+                }
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            return Just(PaymentIntent(intent: activePaymentIntent))
-                .setFailureType(to: CardReaderServiceError.self)
-                .mapError({ $0 as Error })
+            return Result { try Self.capturedPaymentIntent(from: activePaymentIntent) }
+                .publisher
                 .eraseToAnyPublisher()
         case .processing:
             return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
@@ -446,7 +451,13 @@ extension StripeCardReaderService: CardReaderService {
                     return promise(.failure(CardReaderServiceError.intentCreation()))
                 }
 
-                promise(.success(PaymentIntent(intent: intent)))
+                do {
+                    promise(.success(try PaymentIntent(intent: intent)))
+                } catch let error as UnderlyingError {
+                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: error)))
+                } catch {
+                    promise(.failure(CardReaderServiceError.intentCreation()))
+                }
             }
         }
         .eraseToAnyPublisher()
@@ -884,9 +895,13 @@ private extension StripeCardReaderService {
         intent: StripeTerminal.PaymentIntent,
         beforePaymentConfirmation: @escaping (PaymentIntent) -> AnyPublisher<Void, Error>
     ) -> AnyPublisher<StripeTerminal.PaymentIntent, Error> {
-        beforePaymentConfirmation(PaymentIntent(intent: intent))
-            .map { intent }
-            .eraseToAnyPublisher()
+        do {
+            return beforePaymentConfirmation(try Self.capturedPaymentIntent(from: intent))
+                .map { intent }
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
     }
 
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
@@ -901,7 +916,7 @@ private extension StripeCardReaderService {
                     }
 
                     self.activePaymentIntent = paymentIntent
-                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    switch (paymentIntent.status, (try? PaymentIntent(intent: paymentIntent))?.paymentMethod()) {
                     case (.requiresCapture, _):
                         // This payment intent can be used, we lost context to get an error with a PI that requires capture
                         self.activePaymentIntent = nil
@@ -919,6 +934,19 @@ private extension StripeCardReaderService {
                     return promise(.success(intent))
                 }
             }
+        }
+    }
+}
+
+// MARK: - Payment intent mapping
+extension StripeCardReaderService {
+    /// Maps a Stripe intent to a `PaymentIntent`, rethrowing any mapping failure as a payment capture error.
+    /// Internal rather than private so unit tests can verify the error wrapping.
+    static func capturedPaymentIntent(from intent: StripePaymentIntent) throws -> PaymentIntent {
+        do {
+            return try PaymentIntent(intent: intent)
+        } catch {
+            throw CardReaderServiceError.paymentCapture(underlyingError: error)
         }
     }
 }

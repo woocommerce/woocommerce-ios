@@ -105,8 +105,7 @@ private extension DefaultNoticePresenter {
 
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
-        // Let UIKit track the docked keyboard as part of the view's layout. Unlike keyboard notifications, this remains
-        // accurate when keyboard transitions are interrupted and when an iPad window moves or resizes.
+        // Let UIKit track the docked keyboard as part of the view's layout so the notice follows keyboard and window changes.
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -181,8 +180,11 @@ private extension DefaultNoticePresenter {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
 
+        let baselineAnchor: NSLayoutYAxisAnchor
         if let tabBarController = presentingViewController as? UITabBarController,
            !tabBarController.tabBar.isHidden {
+            baselineAnchor = tabBarController.tabBar.topAnchor
+
             if kvoToken == nil {
                 kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
                     guard tabBar.isHidden else {
@@ -194,10 +196,11 @@ private extension DefaultNoticePresenter {
                     container.isHidden = true
                 }
             }
+        } else {
+            baselineAnchor = presentingViewController.view.bottomAnchor
         }
 
-        let baselineConstraint = container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor,
-                                                                   constant: -tabBarBottomInset)
+        let baselineConstraint = container.bottomAnchor.constraint(equalTo: baselineAnchor)
         baselineConstraint.priority = .defaultHigh
 
         let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: presentingViewController.view.keyboardLayoutGuide.topAnchor)
@@ -206,21 +209,7 @@ private extension DefaultNoticePresenter {
     }
 
     var offscreenBottomOffset: CGFloat {
-        tabBarBottomInset
-    }
-
-    var tabBarBottomInset: CGFloat {
-        guard let view = presentingViewController?.view else {
-            return 0
-        }
-
-        guard let tabBarController = presentingViewController as? UITabBarController,
-              !tabBarController.tabBar.isHidden else {
-            return 0
-        }
-
-        let tabBarFrameInView = view.convert(tabBarController.tabBar.bounds, from: tabBarController.tabBar)
-        return NoticePositioning.tabBarBottomInset(viewBounds: view.bounds, tabBarFrame: tabBarFrameInView)
+        (presentingViewController as? UITabBarController)?.tabBar.bounds.height ?? 0
     }
 
     func animatePresentation(fromState: (() -> Void)? = nil,
@@ -246,17 +235,6 @@ private extension DefaultNoticePresenter {
         static let dismissDelay: TimeInterval = 5.0
     }
 }
-
-struct NoticePositioning {
-    static func tabBarBottomInset(viewBounds: CGRect, tabBarFrame: CGRect) -> CGFloat {
-        guard tabBarFrame.maxY >= viewBounds.maxY else {
-            return 0
-        }
-
-        return max(0, viewBounds.maxY - tabBarFrame.minY)
-    }
-}
-
 
 // MARK: - NoticeContainerView: Small wrapper view that ensures a notice remains centered and at a maximum width when
 //         displayed in a regular size class.

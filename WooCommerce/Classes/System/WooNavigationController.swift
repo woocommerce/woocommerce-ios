@@ -29,6 +29,7 @@ class WooNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.delegate = navigationDelegate
+        interactivePopGestureRecognizer?.delegate = self
     }
 
     /// Sets the status bar of the pushed view to white.
@@ -42,6 +43,18 @@ class WooNavigationController: UINavigationController {
             return vc.shouldPopOnBackButton()
         }
         return super.shouldPopOnBackButton()
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        topViewController?.shouldPopOnSwipeBack() ?? super.shouldPopOnSwipeBack()
+    }
+
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === interactivePopGestureRecognizer else {
+            return super.gestureRecognizerShouldBegin(gestureRecognizer)
+        }
+
+        return viewControllers.count > 1 && shouldPopOnSwipeBack()
     }
 }
 

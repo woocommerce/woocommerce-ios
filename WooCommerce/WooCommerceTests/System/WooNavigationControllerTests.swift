@@ -108,6 +108,72 @@ struct WooNavigationControllerTests {
         #expect(viewController.view.subviews.contains { $0 is OfflineBannerView } == false)
         #expect(viewController.additionalSafeAreaInsets == .zero)
     }
+
+    @Test func test_view_did_load_then_navigation_controller_owns_interactive_pop_gesture() {
+        // Given
+        let sut = StableNavigationController(rootViewController: UIViewController())
+
+        // When
+        sut.loadViewIfNeeded()
+
+        // Then
+        #expect(sut.interactivePopGestureRecognizer?.delegate === sut)
+    }
+
+    @Test func test_interactive_pop_gesture_when_navigation_controller_is_at_root_then_does_not_begin() throws {
+        // Given
+        let sut = StableNavigationController(rootViewController: UIViewController())
+        sut.loadViewIfNeeded()
+        let gestureRecognizer = try #require(sut.interactivePopGestureRecognizer)
+
+        // When
+        let shouldBegin = sut.gestureRecognizerShouldBegin(gestureRecognizer)
+
+        // Then
+        #expect(shouldBegin == false)
+    }
+
+    @Test func test_interactive_pop_gesture_when_top_view_controller_allows_swipe_back_then_begins() throws {
+        // Given
+        let sut = StableNavigationController(rootViewController: UIViewController())
+        sut.pushViewController(SwipeBackViewController(shouldPop: true), animated: false)
+        sut.loadViewIfNeeded()
+        let gestureRecognizer = try #require(sut.interactivePopGestureRecognizer)
+
+        // When
+        let shouldBegin = sut.gestureRecognizerShouldBegin(gestureRecognizer)
+
+        // Then
+        #expect(shouldBegin)
+    }
+
+    @Test func test_interactive_pop_gesture_when_top_view_controller_blocks_swipe_back_then_does_not_begin() throws {
+        // Given
+        let sut = StableNavigationController(rootViewController: UIViewController())
+        sut.pushViewController(SwipeBackViewController(shouldPop: false), animated: false)
+        sut.loadViewIfNeeded()
+        let gestureRecognizer = try #require(sut.interactivePopGestureRecognizer)
+
+        // When
+        let shouldBegin = sut.gestureRecognizerShouldBegin(gestureRecognizer)
+
+        // Then
+        #expect(shouldBegin == false)
+    }
+
+    @Test func test_handle_swipe_back_gesture_then_navigation_controller_remains_gesture_delegate() {
+        // Given
+        let viewController = UIViewController()
+        let navigationController = StableNavigationController(rootViewController: UIViewController())
+        navigationController.pushViewController(viewController, animated: false)
+        navigationController.loadViewIfNeeded()
+
+        // When
+        viewController.handleSwipeBackGesture()
+
+        // Then
+        #expect(navigationController.interactivePopGestureRecognizer?.delegate === navigationController)
+    }
 }
 
 private extension WooNavigationControllerTests {
@@ -142,5 +208,22 @@ private final class NavigationBarVisibilitySpyNavigationController: UINavigation
 
     func resetVisibilityUpdates() {
         visibilityUpdates = []
+    }
+}
+
+private final class SwipeBackViewController: UIViewController {
+    private let shouldPop: Bool
+
+    init(shouldPop: Bool) {
+        self.shouldPop = shouldPop
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        shouldPop
     }
 }

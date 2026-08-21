@@ -50,7 +50,7 @@ public struct StoreNoticeBanner: View {
                     StoreIcon.Xmark.regular.image(size: .medium)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(dismissAccessibilityLabel ?? "")
+                .accessibilityLabel(dismissAccessibilityLabel ?? Localization.dismissAccessibilityLabel)
             }
         }
         .padding(StorePadding.p6)
@@ -65,4 +65,11 @@ public struct StoreNoticeBanner: View {
         }
         .accessibilityElement(children: action == nil && onDismiss == nil ? .combine : .contain)
     }
+}
+private enum Localization {
+    static let dismissAccessibilityLabel = NSLocalizedString(
+        "storeNoticeBanner.dismiss.accessibilityLabel",
+        value: "Dismiss",
+        comment: "Default accessibility label for dismissing a store notice banner."
+    )
 }

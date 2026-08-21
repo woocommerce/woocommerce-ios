@@ -368,6 +368,14 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentSuccess,
             WooAnalyticsStat.collectInteracPaymentSuccess,
 
+            // Refunds
+            WooAnalyticsStat.refundCreate,
+            WooAnalyticsStat.refundCreateSuccess,
+            WooAnalyticsStat.refundCreateFailed,
+            WooAnalyticsStat.interacRefundSuccess,
+            WooAnalyticsStat.interacRefundFailed,
+            WooAnalyticsStat.interacRefundCanceled,
+
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
             WooAnalyticsStat.couponCreationSuccess,

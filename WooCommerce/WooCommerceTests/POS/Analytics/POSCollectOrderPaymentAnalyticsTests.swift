@@ -1,6 +1,7 @@
 @testable import WooCommerce
 import protocol WooFoundation.Analytics
 import struct Yosemite.CardPresentPaymentsConfiguration
+import enum Yosemite.CardReaderServiceError
 import typealias Yosemite.PaymentIntent
 import enum WooFoundation.CountryCode
 import Foundation
@@ -267,6 +268,32 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(trackedEvent != nil)
         #expect(trackedEvent?.error is TestError)
         #expect(expectedProperties.allSatisfy { trackedEvent?.properties.keys.contains($0) == true })
+    }
+
+    @Test func test_track_payment_failure_when_error_carries_interac_payment_method_then_reports_payment_method_type() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .CA))
+        let error = CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: .paymentDeclinedByCardReader,
+                                                                          paymentMethod: .interacPresent(details: .fake()))
+
+        // When
+        sut.trackPaymentFailure(with: error)
+
+        // Then
+        #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == "card_interac")
+    }
+
+    @Test func test_track_payment_failure_when_error_carries_no_payment_method_then_omits_payment_method_type() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US))
+
+        // When
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == nil)
     }
 
     @Test func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {

@@ -6,6 +6,8 @@ import enum Yosemite.POSSearchMethod
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+import enum Yosemite.CardReaderServiceError
 import enum Yosemite.PaymentMethod
 import struct WooFoundation.WooAnalyticsEvent
 
@@ -284,16 +286,24 @@ extension WooAnalyticsEvent {
                                                            millisecondsSinceReaderReadyToCollect: Double,
                                                            millisecondsSinceCardTapped: Double,
                                                            checkoutTapCount: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .collectPaymentFailed, properties: [
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.paymentMethodType: paymentMethod.map(analyticsValue(for:)),
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
-            ], error: error)
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed, properties: properties, error: error)
         }
 
         /// Tracked when a card present payment is cancelled in POS.

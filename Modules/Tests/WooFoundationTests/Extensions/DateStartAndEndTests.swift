@@ -148,6 +148,38 @@ final class DateStartAndEndTests: XCTestCase {
         XCTAssertEqual(endOfMonth, expectedDate)
     }
 
+    // MARK: Quarter
+
+    func test_startOfQuarter_uses_provided_timezone_when_calendar_has_different_timezone() {
+        // Given
+        let date = Date(timeIntervalSince1970: 1_710_975_600) // March 21, 2024 00:00:00 UTC+1
+        let timeZone = TimeZone(secondsFromGMT: 3600)!
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        // When
+        let startOfQuarter = date.startOfQuarter(timezone: timeZone, calendar: calendar)
+
+        // Then
+        let expectedDate = Date(timeIntervalSince1970: 1_704_063_600) // January 1, 2024 00:00:00 UTC+1
+        XCTAssertEqual(startOfQuarter, expectedDate)
+    }
+
+    func test_endOfQuarter_uses_provided_timezone_when_calendar_has_different_timezone() {
+        // Given
+        let date = Date(timeIntervalSince1970: 1_710_975_600) // March 21, 2024 00:00:00 UTC+1
+        let timeZone = TimeZone(secondsFromGMT: 3600)!
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+
+        // When
+        let endOfQuarter = date.endOfQuarter(timezone: timeZone, calendar: calendar)
+
+        // Then
+        let expectedDate = Date(timeIntervalSince1970: 1_711_925_999) // March 31, 2024 23:59:59 UTC+1
+        XCTAssertEqual(endOfQuarter, expectedDate)
+    }
+
     // MARK: Year
 
     func testStartOfYear() {

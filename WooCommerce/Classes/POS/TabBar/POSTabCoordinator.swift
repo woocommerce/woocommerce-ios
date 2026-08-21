@@ -171,7 +171,8 @@ final class POSTabCoordinator {
         }
     }
 
-    func onTabSelected() {
+    func openPOS(entryPoint: POSAnalyticsEntryPoint) {
+        TracksProvider.setPOSEntryPoint(entryPoint)
         setPOSHasBeenOpened()
         presentPOSView(siteID: siteID)
     }

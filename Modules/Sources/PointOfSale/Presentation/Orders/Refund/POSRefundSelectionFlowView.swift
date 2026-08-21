@@ -38,6 +38,7 @@ struct POSRefundSelectionFlowView: View {
     let onRetryLoading: () -> Void
     let onRetryPreparation: () -> Void
     let onContinue: () -> Void
+    let onRefreshItems: () -> Void
 
     var body: some View {
         content
@@ -84,7 +85,8 @@ struct POSRefundSelectionFlowView: View {
         case .itemSelection:
             POSRefundItemsSelectionView(
                 onClose: onDismiss,
-                onContinue: onContinue
+                onContinue: onContinue,
+                onRefreshItems: onRefreshItems
             )
         }
     }
@@ -98,7 +100,8 @@ struct POSRefundSelectionFlowView: View {
         onDismiss: {},
         onRetryLoading: {},
         onRetryPreparation: {},
-        onContinue: {}
+        onContinue: {},
+        onRefreshItems: {}
     )
 }
 
@@ -109,7 +112,8 @@ struct POSRefundSelectionFlowView: View {
         onDismiss: {},
         onRetryLoading: {},
         onRetryPreparation: {},
-        onContinue: {}
+        onContinue: {},
+        onRefreshItems: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
 }

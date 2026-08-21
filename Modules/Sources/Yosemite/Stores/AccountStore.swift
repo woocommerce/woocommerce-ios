@@ -169,7 +169,10 @@ private extension AccountStore {
                                               return site
                                           }
                                     site = site.copy(isWooCommerceActive: isWooCommerceActive)
-                                    site = site.copy(name: wpSiteSettings.name, description: wpSiteSettings.description, url: wpSiteSettings.url)
+                                    site = site.copy(name: wpSiteSettings.name,
+                                                     description: wpSiteSettings.description,
+                                                     url: wpSiteSettings.url.normalizedToHTTPS(),
+                                                     wasURLNormalizedToHTTPS: .some(wpSiteSettings.url.requiresHTTPSNormalization))
                                     return site
                                 }.eraseToAnyPublisher()
                         } else {
